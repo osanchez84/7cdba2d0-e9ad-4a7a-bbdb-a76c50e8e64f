@@ -91,7 +91,7 @@ namespace GuanajuatoAdminUsuarios
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Inicio}");
+                    pattern: "{controller=Home}/{action=Inicio}/{id?}");
             });
         }
     }

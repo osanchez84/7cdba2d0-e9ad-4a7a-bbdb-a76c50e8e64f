@@ -24,9 +24,16 @@
                 @(Html.Kendo().ComboBoxFor(model => model.IdEntidad)
                     .Filter(FilterType.Contains)
                     .Placeholder("Selecciona una entidad...")
-                    .BindTo(ViewBag.IdEntidad)
                     .DataTextField("Descripcion")
                     .DataValueField("Id")
+                    .DataSource(source =>
+                                          {
+                                            source.Read(read =>
+                                                           {
+                                                            read.Action("GetEntidadesAjax", "CatOficinas");
+                                                           })
+                      .ServerFiltering(false);
+                     })
                     .Suggest(true)
                     .HtmlAttributes(new { style = "width:100%;" })
                     )

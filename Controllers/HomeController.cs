@@ -94,7 +94,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public async Task<IActionResult> CerrarSesion()
         {
               await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete(".GtoAdminApp");         
+            Response.Cookies.Delete(".GtoAdminApp");   
+            HttpContext.Session.Clear();      
             return Redirect("/login");
         }
 

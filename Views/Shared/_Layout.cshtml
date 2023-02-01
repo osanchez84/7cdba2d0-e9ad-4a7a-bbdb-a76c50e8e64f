@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Guanajuato Administracion de Usuarios</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+    <link href="https://cdn.kendostatic.com/2021.3.914/styles/kendo.classic-opal.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.kendostatic.com/2021.3.914/js/jquery.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2021.3.914/js/jszip.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2021.3.914/js/kendo.all.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2021.3.914/js/kendo.aspnetmvc.min.js"></script>
+
+    <globalization culture="es-MX" uiCulture="es" />
+    <script>kendo.culture("es-ES");</script>
+
+</head>
+<body class="k-content">
+    
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <kendo-button name="configure" tag="button" icon="menu" theme-color="ThemeColor.Primary" class="k-rpanel-toggle btn-toggle"></kendo-button>
+                    <partial name="_UserDataPartial" />
+                    <div class="align-baseline">
+                        <img src="~/img/logo-gto.png" width="100" height="50" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+                
+                <div id="responsive-panel" class="row flex-xl-nowrap">
+                    <kendo-responsivepanel name="responsive-panel" auto-close="false" breakpoint="768" orientation="top">
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @(Html.Kendo().Menu()
+                            .Name("Menu")
+                            .Items(items =>
+                            {
+                                items.Add().Text("Administracion")
+                                    .Items(children =>
+                                    {
+                                        children.Add().Text("Usuarios").Action("UsuariosIndex", "CatUsuarios", new { area = "" });
+                                        children.Add().Text("Oficinas").Action("Index", "CatOficinas", new { area = "" });
+                                    }
+                                        ) ;
+
+
+                                items.Add().Text("About").Action("About", "Home", new { area = "" });
+                                items.Add().Text("Contact").Action("Contact", "Home", new { area = "" });
+                            })
+                           )
+
+                        }
+
+
+                    </kendo-responsivepanel>
+                </div>
+        
+        <main>
+            <div class="container">
+                @RenderBody()
+            </div>
+        </main>
+
+        <footer class="footer text-center d-flex align-items-center">
+            <div class="container pb-0">
+                <hr />
+                <p class="text-muted">
+                    &copy; 2023 - Zeitek Soluciones S.A. de C.V
+                </p>
+            </div>
+        </footer>
+
+        <environment names="Development">
+            <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+        </environment>
+        <environment names="Staging,Production">
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+        </environment>
+        @RenderSection("scripts", required: false)
+</body>
+</html>

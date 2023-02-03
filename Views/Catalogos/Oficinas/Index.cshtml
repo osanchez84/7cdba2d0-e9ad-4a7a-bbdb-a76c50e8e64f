@@ -1,8 +1,17 @@
 ﻿<h1>Administración de Oficinas</h1>
+@(Html.Kendo()
+             .Button()
+             .Name("agregar")
+             .Content("Agregar")
+               .Size(ComponentSize.Large)
+              .ThemeColor(ThemeColor.Primary)
+               .Tag("a")
+             .HtmlAttributes(new { @href = Url.Action("Crear", "CatOficinas") })
+ )
 
-<p>
-    <button id="btn" type="button" class="btn btn-primary" onclick="Agregar()">Agregar</button>
-</p>
+
+<button id="btn" type="button" class="btn btn-primary" onclick="Agregar()">Agregar</button>
+
 @{ var dvdTemplate = "#=Estatus ? 'Activo' : 'Inactivo' #";}
 
 
@@ -43,15 +52,13 @@
     .Selectable(selectable => selectable
     .Mode(GridSelectionMode.Single))
 )
-<script>
-    function Agregar() {
+<script>function Agregar() {
         var redirect = '/CatOficinas/Crear/';
         window.location.href = redirect;
     }
     function EditValues(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var redirect = '/CatOficinas/Editar/' + dataItem.Id;
+        var redirect = '/oficinas/editar/' + dataItem.Id;
         window.location.href = redirect;
-    }
-</script>
+    }</script>

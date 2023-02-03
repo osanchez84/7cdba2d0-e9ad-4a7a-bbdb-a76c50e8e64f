@@ -18,6 +18,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         Entidades catalogoEntidad = new Entidades();
 
         // GET: CatOficinasController
+        [HttpGet("oficinas")]
         public IActionResult Index()
         {
             return View("../Catalogos/Oficinas/Index");
@@ -46,13 +47,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         // GET: CatOficinasController/Create
+        [HttpGet("oficinas/crear")]
         public IActionResult Crear()
         {
             return View("../Catalogos/Oficinas/Create");
         }
 
         // POST: CatOficinasController/Create
-        [HttpPost]
+        [HttpPost("oficinas/crear")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear([Bind("Descripcion,IdEntidad")] Oficina oficina)
         {
@@ -60,12 +62,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 var idUsuario = User.FindFirst("IdUsuario").Value;
                 catalogoOficina.GuardaOficina(oficina.Descripcion, oficina.IdEntidad, Int32.Parse(idUsuario));
-                return View("../Catalogos/Oficinas/Index");
+                return RedirectToAction(nameof(Index));
             }
             return View("../Catalogos/Oficinas/Create", oficina);
         }
 
-
+        [HttpGet("oficinas/editar/{id}")]
         public async Task<IActionResult> Editar(int? id)
         {
             if (id == null)
@@ -77,7 +79,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View("../Catalogos/Oficinas/Edit", catOficina);
         }
 
-        [HttpPost]
+        [HttpPost("oficinas/editar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarOficina([Bind("Id,Descripcion,IdEntidad,Estatus")] Oficina oficina)
         {

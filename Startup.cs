@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios
@@ -37,6 +38,8 @@ namespace GuanajuatoAdminUsuarios
                         // Specify the name of the auth cookie.
                         // ASP.NET picks a dumb name by default.
                         options.Cookie.Name = "gto_admin_auth_cookie";
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                        options.SlidingExpiration = true;
                     });
 
             // Add framework services.
@@ -53,13 +56,7 @@ namespace GuanajuatoAdminUsuarios
               services.AddDistributedMemoryCache();
 
             //configuracion de session
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.Cookie.Name = ".GtoAdminApp";
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,13 +83,13 @@ namespace GuanajuatoAdminUsuarios
             app.UseAuthentication();
             app.UseAuthorization();
 
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Inicio}/{id?}");
             });
+
         }
     }
 }

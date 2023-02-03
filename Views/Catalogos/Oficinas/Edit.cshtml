@@ -6,22 +6,20 @@
 
 <h1>Editar Oficina</h1>
 
-<hr />
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditarOficina" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Entidad</label>
-                @(Html.Kendo().ComboBoxFor(model => model.IdEntidad)
+    <form asp-action="EditarOficina" method="post">
+        <div class="row gy-3 gx-4">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label"></label>
+                    <input asp-for="Descripcion" class="form-control" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Entidad</label>
+                    @(Html.Kendo().ComboBoxFor(model => model.IdEntidad)
                     .Filter(FilterType.Contains)
                     .Placeholder("Selecciona una entidad...")
                     .DataTextField("Descripcion")
@@ -38,34 +36,24 @@
                     .HtmlAttributes(new { style = "width:100%;" })
                     )
 
+                </div>
+                <div class="form-group">
+                    <label asp-for="Estatus" class="control-label"></label>
+                    <select asp-for="Estatus"
+                            class="form-control"
+                            asp-items="Html.GetEnumSelectList<GuanajuatoAdminUsuarios.Models.EstatusEnum>()">
+                    </select>
+                    <span asp-validation-for="Estatus" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <a asp-action="Index" class="float-right">Regresar</a>
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Estatus" class="control-label"></label>
-                <select asp-for="Estatus"
-                        class="form-control"
-                        asp-items="Html.GetEnumSelectList<GuanajuatoAdminUsuarios.Models.EstatusEnum>()">
-                </select>
-                <span asp-validation-for="Estatus" class="text-danger"></span>
             </div>
-
-            <hr />
-            <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    @*<a asp-action="Index">Regresar</a>*@
-    <a href="#" onclick="Regresar()">Regresar</a>
-</div>
-<script>
-    function Regresar() {
-        var redirect = '/CatOficinas/Index';
-        window.location.href = redirect;
-    }
- </script>
- @section Scripts{ 
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</form>
+    <script>
+    $(function () {
+            $("form").kendoValidator();
+    });
+    </script>

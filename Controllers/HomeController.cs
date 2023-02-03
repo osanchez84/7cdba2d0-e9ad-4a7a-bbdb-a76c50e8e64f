@@ -20,7 +20,6 @@ using AdminUsuarios.Helpers;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-
     public class HomeController : Controller
     {
 
@@ -35,11 +34,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             configuration = conf;
         }
 
-        [Route("/login")]
+        [HttpGet("/login")]
         [Route("")]
         [AllowAnonymous]
         public IActionResult VistaLogin()
         {
+            if(User.Identity.IsAuthenticated)
+                return View("Inicio");
             return View("Login");
         }
 
@@ -54,14 +55,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewData["msjerror"] = " Usuario y/o contraseña erronea";
                 return Redirect("/login");
             }
-
-            /* var usuarioSession = new UsuarioSession{
-                 IdUsuario =  logi.IdUsuario,
-                 Nombre = logi.Nombre + " " + logi.Paterno + " " + logi.Materno,
-                 Perfil = "Administrador"
-             };
-
-            HttpContext.Session.SetObject("usuarioSession",usuarioSession);*/
 
             await SignInUser(logi.IdUsuario, logi.Nombre + " " + logi.Paterno + " " + logi.Materno, "Administrador");
             if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith("/"))

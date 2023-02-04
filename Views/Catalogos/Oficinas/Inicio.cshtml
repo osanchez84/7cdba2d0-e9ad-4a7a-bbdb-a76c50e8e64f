@@ -6,7 +6,7 @@
                .Size(ComponentSize.Large)
               .ThemeColor(ThemeColor.Primary)
                .Tag("a")
-             .HtmlAttributes(new { @href = Url.Action("Crear", "CatOficinas") })
+             .HtmlAttributes(new { @href = Url.Action("Crear", "Oficinas") })
  )
 
 
@@ -32,7 +32,7 @@
     })
     .DataSource(dataSource => dataSource
     .Ajax()
-    .Read(read => read.Action("GetOficinas", "CatOficinas"))
+    .Read(read => read.Action("GetOficinas", "Oficinas"))
     .Model(model => model.Id(cm => cm.Id))
     .PageSize(10)
     )
@@ -53,7 +53,7 @@
     .Mode(GridSelectionMode.Single))
 )
 <script>function Agregar() {
-        var redirect = '/CatOficinas/Crear/';
+        var redirect = '/Oficinas/Crear/';
         window.location.href = redirect;
     }
     function EditValues(e) {

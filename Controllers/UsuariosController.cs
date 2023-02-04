@@ -15,15 +15,15 @@ using System.Threading.Tasks;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Authorize]
-    public class CatUsuariosController : Controller
+    public class UsuariosController : Controller
     {
 
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<InicioController> _logger;
         Usuarios _Catalogos = new Usuarios();
         private IConfiguration configuration;
 
 
-        public CatUsuariosController(ILogger<HomeController> logger, IConfiguration conf)
+        public UsuariosController(ILogger<InicioController> logger, IConfiguration conf)
         {
             _logger = logger;
             configuration = conf;

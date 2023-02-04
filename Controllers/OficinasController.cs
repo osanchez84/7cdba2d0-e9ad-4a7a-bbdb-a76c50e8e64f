@@ -12,23 +12,18 @@ using System.Threading.Tasks;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Authorize]
-    public class CatOficinasController : Controller
+    public class OficinasController : Controller
     {
         Oficinas catalogoOficina = new Oficinas();
         Entidades catalogoEntidad = new Entidades();
 
         // GET: CatOficinasController
         [HttpGet("oficinas")]
-        public IActionResult Index()
+        public IActionResult Inicio()
         {
-            return View("../Catalogos/Oficinas/Index");
+             return View("../Catalogos/Oficinas/Inicio");
         }
 
-        // GET: CatOficinasController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         public ActionResult GetOficinas([DataSourceRequest] DataSourceRequest request)
         {
@@ -50,7 +45,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("oficinas/crear")]
         public IActionResult Crear()
         {
-            return View("../Catalogos/Oficinas/Create");
+            return View("../Catalogos/Oficinas/Crear");
         }
 
         // POST: CatOficinasController/Create
@@ -64,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 catalogoOficina.GuardaOficina(oficina.Descripcion, oficina.IdEntidad, Int32.Parse(idUsuario));
                 return RedirectToAction(nameof(Index));
             }
-            return View("../Catalogos/Oficinas/Create", oficina);
+            return View("../Catalogos/Oficinas/Crear", oficina);
         }
 
         [HttpGet("oficinas/editar/{id}")]
@@ -76,7 +71,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             var catOficina = catalogoOficina.GetOficinaById(id);
 
-            return View("../Catalogos/Oficinas/Edit", catOficina);
+            return View("../Catalogos/Oficinas/Editar", catOficina);
         }
 
         [HttpPost("oficinas/editar")]
@@ -87,10 +82,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 var idUsuario = User.FindFirst("IdUsuario").Value;
                 catalogoOficina.ActualizaOficina(oficina.Id, oficina.Descripcion, oficina.IdEntidad, oficina.Estatus, idUsuario);
-             return RedirectToAction(nameof(Index));
+             return RedirectToAction(nameof(Inicio));
             }
 
-             return View("../Catalogos/Oficinas/Edit", oficina);
+             return View("../Catalogos/Oficinas/Editar", oficina);
         }
 
         public JsonResult GetEntidadesAjax()

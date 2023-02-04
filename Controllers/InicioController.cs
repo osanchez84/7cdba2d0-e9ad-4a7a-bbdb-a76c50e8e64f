@@ -20,15 +20,15 @@ using AdminUsuarios.Helpers;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class HomeController : Controller
+    public class InicioController : Controller
     {
 
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<InicioController> _logger;
         Seguridad _Seguridad = new Seguridad();
         private IConfiguration configuration;
 
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration conf)
+        public InicioController(ILogger<InicioController> logger, IConfiguration conf)
         {
             _logger = logger;
             configuration = conf;
@@ -37,15 +37,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("/login")]
         [Route("")]
         [AllowAnonymous]
-        public IActionResult VistaLogin()
+        public IActionResult Login()
         {
             if(User.Identity.IsAuthenticated)
                 return View("Inicio");
-            return View("Login");
+            return View();
         }
 
 
-        [HttpPost]
+        [HttpPost("/login")]
         public async Task<IActionResult> Login(string usuario, string password, string returnUrl)
         {
             var logi = _Seguridad.GetLogin(usuario, password);
@@ -59,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             await SignInUser(logi.IdUsuario, logi.Nombre + " " + logi.Paterno + " " + logi.Materno, "Administrador");
             if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith("/"))
             {
-                returnUrl = "/index";
+                returnUrl = "/inicio";
             }
 
             return Redirect(returnUrl);
@@ -100,7 +100,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        [Route("/index")]
+        [Route("/inicio")]
         [Authorize]
         public IActionResult Inicio()
         {

@@ -56,13 +56,13 @@
                                     .Items(children =>
                                     {
                                         children.Add().Text("Usuarios").Action("UsuariosIndex", "CatUsuarios", new { area = "" });
-                                        children.Add().Text("Oficinas").Action("Index", "CatOficinas", new { area = "" });
+                                        children.Add().Text("Oficinas").Action("Inicio", "Oficinas", new { area = "" });
                                     }
                                         ) ;
 
 
-                                items.Add().Text("About").Action("About", "Home", new { area = "" });
-                                items.Add().Text("Contact").Action("Contact", "Home", new { area = "" });
+                                items.Add().Text("About").Action("About", "Inicio", new { area = "" });
+                                items.Add().Text("Contact").Action("Contact", "Inicio", new { area = "" });
                             })
                            )
 

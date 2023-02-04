@@ -6,10 +6,10 @@
 
 <h1>Editar Oficina</h1>
 
-
-    <form asp-action="EditarOficina" method="post">
-        <div class="row gy-3 gx-4">
+      <div class="row gy-3 gx-4">
             <div class="col-md-6">
+    <form asp-action="EditarOficina" method="post">
+  
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
                 <div class="form-group">
@@ -28,7 +28,7 @@
                                           {
                                             source.Read(read =>
                                                            {
-                                                            read.Action("GetEntidadesAjax", "CatOficinas");
+                                                            read.Action("GetEntidadesAjax", "Oficinas");
                                                            })
                       .ServerFiltering(false);
                      })
@@ -46,12 +46,19 @@
                     <span asp-validation-for="Estatus" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <a asp-action="Index" class="float-right">Regresar</a>
-                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                    <a asp-action="Inicio">Regresar</a>
+                    @(Html.Kendo()
+             .Button()
+             .Name("guardar")
+             .Content("Guardar")
+               .Size(ComponentSize.Large)
+              .ThemeColor(ThemeColor.Dark)
+             .HtmlAttributes(new { type="submit" })
+ )
                 </div>
-            </div>
-            </div>
 </form>
+        </div>
+            </div>
     <script>
     $(function () {
             $("form").kendoValidator();

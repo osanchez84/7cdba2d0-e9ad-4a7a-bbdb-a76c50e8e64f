@@ -48,15 +48,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost("/login")]
         public async Task<IActionResult> Login(string usuario, string password, string returnUrl)
         {
-            var logi = _Seguridad.GetLogin(usuario, password);
+            var login = _Seguridad.GetLogin(usuario, password);
 
-            if (logi.IdUsuario < 1)
+            if (login.IdUsuario < 1)
             {
                 ViewData["msjerror"] = " Usuario y/o contraseña erronea";
                 return Redirect("/login");
             }
 
-            await SignInUser(logi.IdUsuario, logi.Nombre + " " + logi.Paterno + " " + logi.Materno, "Administrador");
+            await SignInUser(login.IdUsuario, login.Nombre + " " + login.Paterno + " " + login.Materno, "Administrador");
             if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith("/"))
             {
                 returnUrl = "/inicio";
@@ -104,21 +104,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [Authorize]
         public IActionResult Inicio()
         {
-            return View();
-        }
-
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 

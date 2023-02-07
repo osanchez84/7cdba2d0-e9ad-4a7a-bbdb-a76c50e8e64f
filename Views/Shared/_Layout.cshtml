@@ -48,24 +48,8 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @(Html.Kendo().Menu()
-                            .Name("Menu")
-                            .Items(items =>
-                            {
-                                items.Add().Text("Administracion")
-                                    .Items(children =>
-                                    {
-                                        children.Add().Text("Usuarios").Action("UsuariosIndex", "CatUsuarios", new { area = "" });
-                                        children.Add().Text("Oficinas").Action("Inicio", "Oficinas", new { area = "" });
-                                    }
-                                        ) ;
-
-
-                                items.Add().Text("About").Action("About", "Inicio", new { area = "" });
-                                items.Add().Text("Contact").Action("Contact", "Inicio", new { area = "" });
-                            })
-                           )
-
+                           
+                            @await Component.InvokeAsync("Menu")
                         }
 
 

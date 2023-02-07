@@ -70,19 +70,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View("../Catalogos/Usuarios/Create");
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUsuario([Bind("Nombre,Paterno,Materno,Email,Login,Clave")] Usuario usuario)
+        public IActionResult CreateUsuario([Bind("Nombre,Paterno,Materno,Email,Login,Clave")] Usuario usuario)
         {
-           
+
             if (ModelState.IsValid)
             {
                 var usuarioSesion = (string)HttpContext.Session.GetString("idUsuario") ?? "0";
                 //redirecciona si no hay sesion
                 if (usuarioSesion == "0")
                 {
-                   // await HttpContext.SignOutAsync();
+                    // await HttpContext.SignOutAsync();
                     return RedirectToAction("Index", "Home", new { @id = 0 });
                 }
 
@@ -93,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return View("../Catalogos/Usuarios/Index");
             }
             return View("../Catalogos/Usuarios/Create", usuario);
-           
+
         }
 
 

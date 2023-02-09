@@ -6,7 +6,7 @@
                .Size(ComponentSize.Large)
               .ThemeColor(ThemeColor.Primary)
                .Tag("a")
-             .HtmlAttributes(new { @href = Url.Action("Crear", "Oficinas") })
+             .HtmlAttributes(new { @href = Url.Action("Crear", "Oficina") })
  )
 
 
@@ -32,7 +32,7 @@
     })
     .DataSource(dataSource => dataSource
     .Ajax()
-    .Read(read => read.Action("GetOficinas", "Oficinas"))
+    .Read(read => read.Action("GetOficinas", "Oficina"))
     .Model(model => model.Id(cm => cm.Id))
     .PageSize(10)
     )

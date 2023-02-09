@@ -3,34 +3,46 @@ using System.Data;
 using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 using System;
+using GuanajuatoAdminUsuarios.Data;
 
-namespace GuanajuatoAdminUsuarios.Data
+namespace GuanajuatoAdminUsuarios.Services
 {
-    public class Oficinas
+    public class OficinaService
     {
+
+        private ConexionBD _conexion;
+
+        public OficinaService(ConexionBD conexion)
+        {
+            _conexion = conexion;
+        }
 
         public List<Oficina> GetOficinas()
         {
             var oLista = new List<Oficina>();
-            var cn = new Conexion();
-            using (var conexion = new SqlConnection(cn.getCadenaSQL()))
+            using (var conexion = new SqlConnection(_conexion.CadenaConexion))
             {
-                conexion.Open();
-                SqlCommand cmd = new SqlCommand("sp_getOficinas", conexion);
-                cmd.CommandType = CommandType.StoredProcedure;
-                using (var dr = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand("sp_getOficinas"))
                 {
-                    while (dr.Read())
+                    cmd.Connection = conexion;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conexion.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var dr = cmd.ExecuteReader())
                     {
-                        oLista.Add(new Oficina()
+                        while (dr.Read())
                         {
-                            Id = Convert.ToInt32(dr["ID"]),
-                            Descripcion = dr["DESCRIPCION"].ToString(),
-                            Estatus = Convert.ToInt32(dr["Estatus"])
+                            oLista.Add(new Oficina()
+                            {
+                                Id = Convert.ToInt32(dr["ID"]),
+                                Descripcion = dr["DESCRIPCION"].ToString(),
+                                Estatus = Convert.ToInt32(dr["Estatus"])
 
 
-                        });
+                            });
+                        }
                     }
+                    conexion.Close();
                 }
 
             }
@@ -41,32 +53,35 @@ namespace GuanajuatoAdminUsuarios.Data
         public string GuardaOficina(string descripcion, int idEntidad, int idUsuario)
         {
             // var oApss = new AppsModel();
-            var cn = new Conexion();
             string salida = "";
 
-            using (var conexion = new SqlConnection(cn.getCadenaSQL()))
+            using (var conexion = new SqlConnection(_conexion.CadenaConexion))
             {
-                conexion.Open();
-                SqlCommand cmd = new SqlCommand("sp_guardaOficina", conexion);
-                cmd.Parameters.AddWithValue("Descripcion", descripcion);
-                cmd.Parameters.AddWithValue("IdUsuarioAlta", idUsuario);
-                cmd.Parameters.AddWithValue("IdEntidad", idEntidad);
-
-                SqlParameter parm = new SqlParameter()
+                using (SqlCommand cmd = new SqlCommand("sp_guardaOficina"))
                 {
-                    ParameterName = "@returnVal",
-                    SqlDbType = SqlDbType.VarChar,
-                    Direction = System.Data.ParameterDirection.Output,
-                    Size = 250
-                };
+                    cmd.Connection = conexion;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conexion.Open();
+                    cmd.Parameters.AddWithValue("Descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("IdUsuarioAlta", idUsuario);
+                    cmd.Parameters.AddWithValue("IdEntidad", idEntidad);
 
-                cmd.Parameters.Add(parm);
-                cmd.CommandType = CommandType.StoredProcedure;
-                using (var dr = cmd.ExecuteReader())
-                {
-                    salida = parm.Value.ToString();
+                    SqlParameter parm = new SqlParameter()
+                    {
+                        ParameterName = "@returnVal",
+                        SqlDbType = SqlDbType.VarChar,
+                        Direction = System.Data.ParameterDirection.Output,
+                        Size = 250
+                    };
+
+                    cmd.Parameters.Add(parm);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        salida = parm.Value.ToString();
+                    }
+                    conexion.Close();
                 }
-
             }
 
             return salida;
@@ -75,26 +90,29 @@ namespace GuanajuatoAdminUsuarios.Data
         public Oficina GetOficinaById(int? idOficina)
         {
             var oficina = new Oficina();
-            var cn = new Conexion();
-            using (var conexion = new SqlConnection(cn.getCadenaSQL()))
+            using (var conexion = new SqlConnection(_conexion.CadenaConexion))
             {
-                conexion.Open();
-                SqlCommand cmd = new SqlCommand("sp_getOficina", conexion);
-                cmd.Parameters.AddWithValue("id", idOficina);
-                cmd.CommandType = CommandType.StoredProcedure;
-                using (var dr = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand("sp_getOficina"))
                 {
-                    while (dr.Read())
+                    cmd.Connection = conexion;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conexion.Open();
+                    cmd.Parameters.AddWithValue("id", idOficina);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var dr = cmd.ExecuteReader())
                     {
+                        while (dr.Read())
+                        {
 
-                        oficina.Id = Convert.ToInt32(dr["ID"]);
-                        oficina.Descripcion = dr["DESCRIPCION"].ToString();
-                        oficina.IdEntidad = Int32.Parse(dr["ID_ENTIDAD"].ToString());
-                        oficina.Estatus = Convert.ToInt32(dr["Estatus"]);
+                            oficina.Id = Convert.ToInt32(dr["ID"]);
+                            oficina.Descripcion = dr["DESCRIPCION"].ToString();
+                            oficina.IdEntidad = Int32.Parse(dr["ID_ENTIDAD"].ToString());
+                            oficina.Estatus = Convert.ToInt32(dr["Estatus"]);
 
+                        }
                     }
+                    conexion.Close();
                 }
-
             }
 
             return oficina;
@@ -103,41 +121,39 @@ namespace GuanajuatoAdminUsuarios.Data
         public string ActualizaOficina(int id, string descripcion, int idEntidad,
                                     int estatus, string idUsuario)
         {
-            // var oApss = new AppsModel();
-            var cn = new Conexion();
             string salida = "";
 
-            using (var conexion = new SqlConnection(cn.getCadenaSQL()))
+            using (var conexion = new SqlConnection(_conexion.CadenaConexion))
             {
-                conexion.Open();
-                SqlCommand cmd = new SqlCommand("sp_actualizaOficina", conexion);
-                cmd.Parameters.AddWithValue("id", id);
-                cmd.Parameters.AddWithValue("Descripcion", descripcion);
-                cmd.Parameters.AddWithValue("IdEntidad", idEntidad);
-                cmd.Parameters.AddWithValue("Estatus", estatus);
-                cmd.Parameters.AddWithValue("IdUsuarioAlta", idUsuario);
-
-                SqlParameter parm = new SqlParameter()
+                using (SqlCommand cmd = new SqlCommand("sp_actualizaOficina"))
                 {
-                    ParameterName = "@returnVal",
-                    SqlDbType = SqlDbType.VarChar,
-                    Direction = System.Data.ParameterDirection.Output,
-                    Size = 250
-                };
+                    cmd.Connection = conexion;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conexion.Open();
+                    cmd.Parameters.AddWithValue("id", id);
+                    cmd.Parameters.AddWithValue("Descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("IdEntidad", idEntidad);
+                    cmd.Parameters.AddWithValue("Estatus", estatus);
+                    cmd.Parameters.AddWithValue("IdUsuarioAlta", idUsuario);
 
-                //  cmd.Parameters.AddWithValue("returnVal","");
-                cmd.Parameters.Add(parm);
-                cmd.CommandType = CommandType.StoredProcedure;
-                using (var dr = cmd.ExecuteReader())
-                {
-                    //while (dr.Read())
-                    //{
-                    //   salida = dr["ID"].ToString();
+                    SqlParameter parm = new SqlParameter()
+                    {
+                        ParameterName = "@returnVal",
+                        SqlDbType = SqlDbType.VarChar,
+                        Direction = System.Data.ParameterDirection.Output,
+                        Size = 250
+                    };
 
-                    //}
-                    salida = parm.Value.ToString();
+                    //  cmd.Parameters.AddWithValue("returnVal","");
+                    cmd.Parameters.Add(parm);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var dr = cmd.ExecuteReader())
+                    {
+
+                        salida = parm.Value.ToString();
+                    }
+                    conexion.Close();
                 }
-
             }
 
             return salida;

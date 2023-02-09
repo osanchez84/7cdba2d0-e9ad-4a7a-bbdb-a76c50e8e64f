@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using GuanajuatoAdminUsuarios.Services;
+using GuanajuatoAdminUsuarios.Data;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -28,7 +30,7 @@ namespace GuanajuatoAdminUsuarios
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure cookie based authentication
+               // Configure cookie based authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>
                     {
@@ -57,6 +59,15 @@ namespace GuanajuatoAdminUsuarios
 
             //configuracion de session
             services.AddSession();
+
+            //Hacer accesible la cadena de conexion a la base desde la clase
+            services.AddTransient<ConexionBD>();
+
+            //Servicios
+            services.AddScoped<SeguridadService>();
+            services.AddScoped<EntidadService>();
+            services.AddScoped<OficinaService>();
+            services.AddScoped<UsuarioService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +93,13 @@ namespace GuanajuatoAdminUsuarios
          //Autorizacion y autenticacion de usuario
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "area",
+                    pattern: "{area:exists}/{controller=Inicio}/{action=Inicio}/{id?}");
+            });
 
             app.UseEndpoints(endpoints =>
             {

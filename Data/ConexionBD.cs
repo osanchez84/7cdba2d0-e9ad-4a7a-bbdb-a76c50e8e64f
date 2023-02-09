@@ -11,11 +11,12 @@ namespace GuanajuatoAdminUsuarios.Data
 {
     public class ConexionBD
     {
-        private IConfiguration _configuracion;
+        private readonly IConfiguration _configuracion;
         public string CadenaConexion { get; set; }
 
-        public ConexionBD(IConfiguration configuration)
+        public ConexionBD(IConfiguration configuracion)
         {
+            _configuracion = configuracion;
             CadenaConexion = _configuracion.GetConnectionString("ConexionDefault");
         }
        

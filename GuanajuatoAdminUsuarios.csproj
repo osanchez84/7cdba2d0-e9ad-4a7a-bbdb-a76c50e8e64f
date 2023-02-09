@@ -23,10 +23,20 @@
     <None Remove="Templates\**" />
     <None Remove="Telerik.UI.for.AspNet.Core.Trial" />
     <None Remove="Helpers\" />
+    <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
+    <None Remove="Microsoft.EntityFrameworkCore" />
+    <None Remove="Areas\" />
+    <None Remove="Areas\Administracion\" />
+    <None Remove="Areas\Administracion\Controllers\" />
+    <None Remove="Areas\Administracion\Views\" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Areas\" />
+    <Folder Include="Areas\Administracion\" />
+    <Folder Include="Areas\Administracion\Controllers\" />
+    <Folder Include="Areas\Administracion\Views\" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties UseCdnSupport="" /></VisualStudio></ProjectExtensions>
 

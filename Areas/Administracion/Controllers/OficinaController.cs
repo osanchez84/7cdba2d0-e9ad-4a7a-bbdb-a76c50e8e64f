@@ -10,15 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GuanajuatoAdminUsuarios.Controllers
+namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
 {
     [Authorize]
-    public class OficinasController : Controller
+    [Area("Administracion")]
+    public class OficinaController : Controller
     {
         private OficinaService _oficinaService;
         private EntidadService _entidadService;
 
-            public OficinasController(OficinaService oficinaService,EntidadService entidadService) {
+            public OficinaController(OficinaService oficinaService,EntidadService entidadService) {
             _oficinaService = oficinaService;
             _entidadService = entidadService;
         }
@@ -27,9 +28,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("oficinas")]
         public IActionResult Inicio()
         {
-             return View("../Catalogos/Oficinas/Inicio");
+             return View();
         }
-
 
         public ActionResult GetOficinas([DataSourceRequest] DataSourceRequest request)
         {
@@ -51,7 +51,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("oficinas/crear")]
         public IActionResult Crear()
         {
-            return View("../Catalogos/Oficinas/Crear");
+            return View();
         }
 
         // POST: CatOficinasController/Create
@@ -65,7 +65,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 _oficinaService.GuardaOficina(oficina.Descripcion, oficina.IdEntidad, Int32.Parse(idUsuario));
                 return RedirectToAction(nameof(Index));
             }
-            return View("../Catalogos/Oficinas/Crear", oficina);
+            return View(oficina);
         }
 
         [HttpGet("oficinas/editar/{id}")]
@@ -77,7 +77,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             var catOficina = _oficinaService.GetOficinaById(id);
 
-            return View("../Catalogos/Oficinas/Editar", catOficina);
+            return View(catOficina);
         }
 
         [HttpPost("oficinas/editar")]
@@ -91,7 +91,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return RedirectToAction(nameof(Inicio));
             }
 
-            return View("../Catalogos/Oficinas/Editar", oficina);
+            return View(oficina);
         }
 
         public JsonResult GetEntidadesAjax()

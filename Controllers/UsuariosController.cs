@@ -19,14 +19,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ILogger<InicioController> _logger;
-        Usuarios _Catalogos = new Usuarios();
-        private IConfiguration configuration;
+        private UsuarioService _usuarioService;
 
 
-        public UsuariosController(ILogger<InicioController> logger, IConfiguration conf)
+        public UsuariosController(ILogger<InicioController> logger, UsuarioService usuarioService)
         {
             _logger = logger;
-            configuration = conf;
+            _usuarioService = usuarioService;
         }
 
 
@@ -41,7 +40,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             List<Usuario> listUsuarios = new List<Usuario>();
 
-             listUsuarios = _Catalogos.ListarUsuarios();
+             listUsuarios = _usuarioService.ListarUsuarios();
 
 
             DataSourceResult gridUsuarios = listUsuarios.ToDataSourceResult(request, cm => new
@@ -86,7 +85,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     return RedirectToAction("Index", "Home", new { @id = 0 });
                 }
 
-                String resultado = _Catalogos.GuardaUsuario(usuario.Nombre, usuario.Paterno, usuario.Materno, usuario.Email,
+                String resultado = _usuarioService.GuardaUsuario(usuario.Nombre, usuario.Paterno, usuario.Materno, usuario.Email,
                                                             usuario.Login, usuario.Clave, usuarioSesion);
 
 
@@ -97,12 +96,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        public async Task<IActionResult> EditUsuario(int? id)
+        public IActionResult EditUsuario(int? id)
         {
             //redirecciona si no hay sesion
             if (((string)HttpContext.Session.GetString("idUsuario") ?? "0") == "0")
             {
-             //   await HttpContext.SignOutAsync();
+                //   await HttpContext.SignOutAsync();
                 return RedirectToAction("Index", "Home", new { @id = 0 });
             }
 
@@ -111,15 +110,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return NotFound();
             }
 
-            var CatUsuario = _Catalogos.GetUsuario(id);
-      
+            var CatUsuario = _usuarioService.GetUsuario(id);
+
             return View("../Catalogos/Usuarios/Edit", CatUsuario);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUsuario( [Bind("IdUsuario,Nombre,Paterno,Materno,Email,Estatus,Login")] Usuario usuario)
+        public IActionResult EditUsuario([Bind("IdUsuario,Nombre,Paterno,Materno,Email,Estatus,Login")] Usuario usuario)
         {
             //redirecciona si no hay sesion
             if (((string)HttpContext.Session.GetString("idUsuario") ?? "0") == "0")
@@ -130,14 +129,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var usuarioSesion = (string)HttpContext.Session.GetString("idUsuario") ?? "0";
 
 
-            var CatUsuario = _Catalogos.ActualizaUsuario(usuario.IdUsuario, usuario.Nombre, usuario.Paterno, usuario.Materno, usuario.Email,
+            var CatUsuario = _usuarioService.ActualizaUsuario(usuario.IdUsuario, usuario.Nombre, usuario.Paterno, usuario.Materno, usuario.Email,
                                                             usuario.Login, usuario.Estatus, usuarioSesion);
 
             return View("../Catalogos/Usuarios/Index");
         }
 
 
-        public async Task<IActionResult> DetailsUsuario(int? id)
+        public IActionResult DetailsUsuario(int? id)
         {
             //redirecciona si no hay sesion
             if (((string)HttpContext.Session.GetString("idUsuario") ?? "0") == "0")
@@ -151,7 +150,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return NotFound();
             }
 
-            var CatUsuario = _Catalogos.GetUsuario(id);
+            var CatUsuario = _usuarioService.GetUsuario(id);
 
             return View("../Catalogos/Usuarios/Details", CatUsuario);
         }

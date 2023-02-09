@@ -24,14 +24,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ILogger<InicioController> _logger;
-        Seguridad _Seguridad = new Seguridad();
-        private IConfiguration configuration;
+        private SeguridadService _seguridadService;
 
 
-        public InicioController(ILogger<InicioController> logger, IConfiguration conf)
+        public InicioController(ILogger<InicioController> logger, SeguridadService seguridadService)
         {
             _logger = logger;
-            configuration = conf;
+            _seguridadService = seguridadService;
         }
 
         [HttpGet("/login")]
@@ -48,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost("/login")]
         public async Task<IActionResult> Login(string usuario, string password, string returnUrl)
         {
-            var login = _Seguridad.GetLogin(usuario, password);
+            var login = _seguridadService.GetLogin(usuario, password);
 
             if (login.IdUsuario < 1)
             {

@@ -15,8 +15,8 @@ namespace GuanajuatoAdminUsuarios.Components
                 {
                     new MenuViewModel (){ Id=100, Titulo="Administracion",Nivel=0,Orden=1 },
                     new MenuViewModel (){ Id=200, Titulo="Licencias",Nivel=0, Orden=2},
-                    new MenuViewModel (){ Id=101, Titulo="Usuarios",Accion="Inicio",Controlador="Usuarios",Nivel=100, Orden=1 },
-                    new MenuViewModel (){ Id=101, Titulo="Oficinas",Accion="Inicio",Controlador="Oficinas",Nivel=100, Orden=2},
+                    new MenuViewModel (){ Id=101, Titulo="Usuarios",Accion="Inicio",Controlador="Usuario",Nivel=100, Orden=1 },
+                    new MenuViewModel (){ Id=101, Titulo="Oficinas",Accion="Inicio",Controlador="Oficina",Nivel=100, Orden=2},
                 };
             return View(menus);
         }

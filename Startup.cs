@@ -44,6 +44,10 @@ namespace GuanajuatoAdminUsuarios
                         options.SlidingExpiration = true;
                     });
 
+            services.AddRouting(setupAction =>
+            {
+                setupAction.LowercaseUrls = true;
+            });
             // Add framework services.
             services
                 .AddControllersWithViews()
@@ -96,6 +100,7 @@ namespace GuanajuatoAdminUsuarios
 
             app.UseEndpoints(endpoints =>
             {
+           
                 endpoints.MapControllerRoute(
                     name: "area",
                     pattern: "{area:exists}/{controller=Inicio}/{action=Inicio}/{id?}");

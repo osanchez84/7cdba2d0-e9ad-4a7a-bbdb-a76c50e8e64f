@@ -20,6 +20,7 @@ using AdminUsuarios.Helpers;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Route("")]
     public class InicioController : Controller
     {
 
@@ -33,7 +34,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _seguridadService = seguridadService;
         }
 
-        [HttpGet("/login")]
+        [HttpGet("login")]
         [Route("")]
         [AllowAnonymous]
         public IActionResult Login()
@@ -44,7 +45,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(string usuario, string password, string returnUrl)
         {
             var login = _seguridadService.GetLogin(usuario, password);
@@ -82,7 +83,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity));
         }
-
+        [Route("cerrar-sesion")]
         public async Task<IActionResult> CerrarSesion()
         {
               await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -91,12 +92,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Redirect("/login");
         }
 
-         public async Task<IActionResult> CambiarContrasena()
-        {
-              await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete(".GtoAdminApp");         
-            return Redirect("/login");
-        }
+        
 
 
         [Route("/inicio")]
@@ -105,7 +101,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return View();
         }
-
+        [Route("error")]
         public IActionResult Error()
         {
             return View();

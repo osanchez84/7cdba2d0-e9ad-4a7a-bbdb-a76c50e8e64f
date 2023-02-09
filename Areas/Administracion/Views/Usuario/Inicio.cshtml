@@ -1,4 +1,5 @@
-﻿<h1>Administración de Oficinas</h1>
+﻿
+<h1>Administración de Usuarios</h1>
 @(Html.Kendo()
              .Button()
              .Name("agregar")
@@ -6,34 +7,32 @@
                .Size(ComponentSize.Large)
               .ThemeColor(ThemeColor.Primary)
                .Tag("a")
-             .HtmlAttributes(new { @href = Url.Action("Crear", "Oficina") })
+             .HtmlAttributes(new { @href = Url.Action("Crear", "Usuario") })
  )
-
-
-<button id="btn" type="button" class="btn btn-primary" onclick="Agregar()">Agregar</button>
 
 @{ var dvdTemplate = "#=Estatus ? 'Activo' : 'Inactivo' #";}
 
 
-@(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.Oficina>
+@(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.Usuario>
     ()
     .Name("grid")
     .Columns(columns =>
     {
-        columns.Bound(cm => cm.Id);
-        columns.Bound(cm => cm.Descripcion);
+        columns.Bound(cm => cm.IdUsuario);
+        columns.Bound(cm => cm.Nombre);
+        columns.Bound(cm => cm.Paterno);
+        columns.Bound(cm => cm.Materno);
         columns.Bound(cm => cm.Estatus).ClientTemplate(dvdTemplate).EditorTemplateName("Estatus");
         columns.Command(command =>
         {
             command.Custom("Editar").Click("EditValues").IconClass("k-icon k-i-pencil").Text(" ");
-     
         });
 
     })
     .DataSource(dataSource => dataSource
     .Ajax()
-    .Read(read => read.Action("GetOficinas", "Oficina", new { area = "Administracion" }).Type(HttpVerbs.Get))
-    .Model(model => model.Id(cm => cm.Id))
+    .Read(read => read.Action("GetUsuarios", "Usuario", new { area = "Administracion" }))
+    .Model(model => model.Id(cm => cm.IdUsuario))
     .PageSize(10)
     )
     .ColumnMenu()
@@ -52,10 +51,14 @@
     .Selectable(selectable => selectable
     .Mode(GridSelectionMode.Single))
 )
+
+
 <script>
     function EditValues(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var redirect = '/administracion/oficinas/editar/' + dataItem.Id;
+        console.log("dataItem usuario " + dataItem.IdUsuario);
+        var redirect = '/administracion/usuarios/editar/' + dataItem.IdUsuario;
         window.location.href = redirect;
-    }</script>
+    }
+</script >

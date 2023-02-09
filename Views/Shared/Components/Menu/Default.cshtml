@@ -14,7 +14,7 @@
            {
             foreach (var submenu in Model.Where(m => m.Nivel == menu.Id))
              {
-                       children.Add().Text(submenu.Titulo).Action(submenu.Accion, submenu.Controlador);
+                       children.Add().Text(submenu.Titulo).Action(submenu.Accion, submenu.Controlador, new { area = "Administracion" });
              }
            });
        }

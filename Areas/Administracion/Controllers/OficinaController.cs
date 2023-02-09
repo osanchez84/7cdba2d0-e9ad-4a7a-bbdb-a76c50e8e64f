@@ -14,6 +14,7 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
 {
     [Authorize]
     [Area("Administracion")]
+    [Route("[area]/oficinas/[action]")]
     public class OficinaController : Controller
     {
         private OficinaService _oficinaService;
@@ -25,12 +26,12 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
         }
 
         // GET: CatOficinasController
-        [HttpGet("oficinas")]
+        [HttpGet]
+        [Route("")]
         public IActionResult Inicio()
         {
              return View();
         }
-
         public ActionResult GetOficinas([DataSourceRequest] DataSourceRequest request)
         {
             List<Oficina> listOficinas = new List<Oficina>();
@@ -48,27 +49,29 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
         }
 
         // GET: CatOficinasController/Create
-        [HttpGet("oficinas/crear")]
+        [HttpGet]
+        [Route("crear")]
         public IActionResult Crear()
         {
             return View();
         }
 
         // POST: CatOficinasController/Create
-        [HttpPost("oficinas/crear")]
+        [HttpPost("crear")]
         [ValidateAntiForgeryToken]
-        public IActionResult Crear([Bind("Descripcion,IdEntidad")] Oficina oficina)
+        public IActionResult CrearOficina([Bind("Descripcion,IdEntidad")] Oficina oficina)
         {
             if (ModelState.IsValid)
             {
                 var idUsuario = User.FindFirst("IdUsuario").Value;
                 _oficinaService.GuardaOficina(oficina.Descripcion, oficina.IdEntidad, Int32.Parse(idUsuario));
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Inicio));
             }
             return View(oficina);
         }
 
-        [HttpGet("oficinas/editar/{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public IActionResult Editar(int? id)
         {
             if (id == null)
@@ -80,7 +83,7 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
             return View(catOficina);
         }
 
-        [HttpPost("oficinas/editar")]
+        [HttpPost("editar")]
         [ValidateAntiForgeryToken]
         public IActionResult EditarOficina([Bind("Id,Descripcion,IdEntidad,Estatus")] Oficina oficina)
         {

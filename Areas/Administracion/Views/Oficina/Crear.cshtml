@@ -27,7 +27,7 @@
                                     {
                                         source.Read(read =>
                                             {
-                                                read.Action("GetEntidadesAjax", "Oficina");
+                            read.Action("GetEntidadesAjax", "Oficina", new { area = "Administracion" });
                                             })
                                     .ServerFiltering(false);
         })
@@ -47,5 +47,5 @@
      </div>
 </div>
 <div>
-    <a asp-action="Index">Regresar</a>
+    <a asp-action="Inicio">Regresar</a>
 </div>

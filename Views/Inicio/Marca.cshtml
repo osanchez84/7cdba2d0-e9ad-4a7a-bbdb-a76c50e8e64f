@@ -1,0 +1,361 @@
+﻿
+<div class="mainContainer bg-light">
+
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <i class="icon-oficial h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>SITTEG</b></h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+</div>
+    </div>
+<!-- Modal -->
+
+
+
+
+
+<div class="modal fade modalCustom" id="editOficial" tabindex="-1" aria-labelledby="editOficialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+
+            <section class=" bg-white rounded">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                    <div class="col-auto pe-0">
+                        <div class="row align-items-center justify-content-center justify-content-md-start">
+                            <div class="col-auto pe-0">
+                                <i class="icon-editOficial h1 colorPrimary"></i>
+                            </div>
+                            <div class="col-auto my-3">
+                                <h2 class="m-0 h3"><b>Editar oficial de tránsito</b></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto my-3">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light py-1"></div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12 my-4">
+                        <h5 class="px-4"><b>Datos del oficial de tránsito</b></h5>
+                        <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
+                    </div>
+                </div>
+                <form class="px-4 mb-4">
+                    <div class="row align-items-end">
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                <label>Delegación<b>(obligatorio)</b>:</label>
+                                <span>
+                                    @(Html.Kendo().DropDownList()
+                                        .Name("delegaciónEditOficial")
+                                        .DataTextField("")
+                                        .DataValueField("")
+                                        .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+                                        .DataSource(source => source
+                                        .Read(read => read.Action("GetProducts", "Home"))
+                                        )
+                                        )
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-end">
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("nombreEditOficial")
+                                    .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el nombre del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("paternoEditOficial")
+                                    .Label(l => l.Content("Apellido paterno <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el apellido paterno del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("maternoEditOficial")
+                                    .Label(l => l.Content("Apellido materno <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el apellido materno del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="row my-4">
+                    <div class="col-12 col-md-6 mx-md-auto">
+                        <div class="row justify-content-around">
+                            <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                                    <h6 class="m-0 px-3"><b>Cerrar</b></h6>
+                                </button>
+                            </div>
+                            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <div class="controlButton">
+                                    @(Html.Kendo().Button()
+                                        .Name("EditOficial")
+                                        .HtmlAttributes(new { @class = "btnPrimary px-3" })
+                                        .Content("<h5 class=\"m-0\"><b>Guardar ajustes</b></h5>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade modalCustom" id="addOficial" tabindex="-1" aria-labelledby="addOficialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+
+            <section class=" bg-white rounded">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                    <div class="col-auto pe-0">
+                        <div class="row align-items-center justify-content-center justify-content-md-start">
+                            <div class="col-auto pe-0">
+                                <i class="icon-addOficial h1 colorPrimary"></i>
+                            </div>
+                            <div class="col-auto my-3">
+                                <h2 class="m-0 h3"><b>Agregar nuevo oficial de tránsito</b></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto my-3">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light py-1"></div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12 my-4">
+                        <h5 class="px-4"><b>Datos del oficial de tránsito</b></h5>
+                        <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
+                    </div>
+                </div>
+                <form class="px-4 mb-4">
+                    <div class="row align-items-end">
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                <label>Delegación<b>(obligatorio)</b>:</label>
+                                <span>
+                                    @(Html.Kendo().DropDownList()
+                                        .Name("delegaciónAddOficial")
+                                        .DataTextField("")
+                                        .DataValueField("")
+                                        .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+                                        .DataSource(source => source
+                                        .Read(read => read.Action("GetProducts", "Home"))
+                                        )
+                                        )
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-end">
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("nombreAddOficial")
+                                    .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el nombre del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("paternoAddOficial")
+                                    .Label(l => l.Content("Apellido paterno <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el apellido paterno del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBox()
+                                    .Name("maternoAddOficial")
+                                    .Label(l => l.Content("Apellido materno <b>(obligatorio)</b>:"))
+                                    .Placeholder("Ingresa el apellido materno del oficial")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <div class="row my-4">
+                    <div class="col-12 col-md-6 mx-md-auto">
+                        <div class="row justify-content-around">
+                            <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                                    <h6 class="m-0 px-3"><b>Cerrar</b></h6>
+                                </button>
+                            </div>
+                            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <div class="controlButton">
+                                    @(Html.Kendo().Button()
+                                        .Name("AddOficial")
+                                        .HtmlAttributes(new { @class = "btnPrimary px-3" })
+                                        .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modalCustom" id="deleteOficial" tabindex="-1" aria-labelledby="editOficialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
+        <div class="modal-content">
+
+            <section class=" bg-white rounded">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                    <div class="col-auto pe-0">
+                        <div class="row align-items-center justify-content-center justify-content-md-start">
+                            <div class="col-auto pe-0">
+                                <i class="icon-deleteOficial h1 colorDanger"></i>
+                            </div>
+                            <div class="col-auto my-3">
+                                <h2 class="m-0 h3"><b>Eliminar oficial de tránsito</b></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto my-3">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light py-1"></div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center my-4">
+                        <h3><b>Eliminar registro del catálogo</b></h3>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-8 col-md-9 mt-2">
+                        <h6 class="text-muted">Delegación:</h6>
+                        <h5><b>Acámbaro</b></h5>
+                    </div>
+                </div>
+                <div class="row justify-content-center mb-5">
+
+                    <div class="col-8 col-md-3 mt-2">
+                        <h6 class="text-muted">Nombre:</h6>
+                        <h5><b>Juan</b></h5>
+                    </div>
+                    <div class="col-8 col-md-3 mt-2">
+                        <h6 class="text-muted">Apellido paterno:</h6>
+                        <h5><b>Lopez</b></h5>
+                    </div>
+                    <div class="col-8 col-md-3 mt-2">
+                        <h6 class="text-muted">Apellido materno:</h6>
+                        <h5><b>Lopez</b></h5>
+                    </div>
+
+                </div>
+
+                <div class="row my-4">
+                    <div class="col-12">
+                        <div class="row justify-content-around">
+                            <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                                    <h6 class="m-0 px-3"><b>No eliminar</b></h6>
+                                </button>
+                            </div>
+                            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <div class="controlButton">
+                                    @(Html.Kendo().Button()
+                                        .Name("EditMunicipio")
+                                        .HtmlAttributes(new { @class = "btnPrimary px-3" })
+                                        .Content("<h5 class=\"m-0 px-3\"><b>Eliminar</b></h5>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+</main>

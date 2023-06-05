@@ -1,0 +1,41 @@
+﻿<div class="row">
+    <div class="col-12 mb-4 px-4 rounded gridCustom">
+
+@(
+    Html.Kendo().Grid<GuanajuatoAdminUsuarios.Entity.MarcasVehiculo>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.IdMarcaVehiculo).Width(40);
+            columns.Bound(c => c.MarcaVehiculo).Width(190);
+            columns.Bound(c => c.Estatus).Width(190);
+            columns.Command(c => c.Custom("Editar")).Width(100);
+            //columns.Command(c => c.Custom("Delete").Click("Eliminar")).Width(180);
+
+
+        }).HtmlAttributes(new { style = "height:650px" })
+        .Sortable()
+        .Groupable()
+        .Scrollable()
+        .Pageable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+        .Read(read => read.Action("GetMarca2", "MarcasVehiculos"))
+            .PageSize(5).Model(model => model.Id(p => p.IdMarcaVehiculo))
+        )
+     .ToolBar(t => t.Search())
+        .Search(s =>
+        {
+            s.Field(c => c.MarcaVehiculo);
+        })
+
+        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
+        .Type(GridSelectionType.Row)
+        )
+
+    @*.Events(ev=>ev.Change("onChange"))*@
+    )
+    </div>
+    </div>
+   
+        

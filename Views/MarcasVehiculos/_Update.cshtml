@@ -1,0 +1,50 @@
+﻿@model GuanajuatoAdminUsuarios.Models.MarcaVehiculoModel
+@{
+}
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="ProductForm" novalidate class="needs-validation">
+
+
+            @(Html.Kendo().TextBoxFor(t => t.MarcaVehiculo)
+                .HtmlAttributes(new { placeholder = "Marca de Vehículo", required = "required", validationmessage = "Enter Category Name" })
+                .Label(l => l.Content("Marca de Vehículo"))
+                )
+
+        </form>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <a href='@Url.Action("IndexModal")' class="btn btn-default">Cancelar</a>
+                <button class="btn btn-success" onclick="update()">GuardarXXXXXXX</button>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    function update() {
+
+        var Mydata = $("#ProductForm").serialize();
+        console.log(Mydata);
+        $('#addMarca').modal('hide');
+        $('body').removeClass('model-open');
+        $('.modal-backdrop').remove();
+        $.ajax({
+            url: '@Url.Action("CreatePartialModal")',
+            type: 'POST',
+            data: Mydata,
+            success: function (result) {
+                $("#tablaDependencias").html(result);
+            }
+        });
+    }
+
+</script>

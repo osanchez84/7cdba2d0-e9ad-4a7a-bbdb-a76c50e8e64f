@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿/*using System.Data.SqlClient;
 using System.Data;
 using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
@@ -160,4 +160,4 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
     }
-}
+}*/

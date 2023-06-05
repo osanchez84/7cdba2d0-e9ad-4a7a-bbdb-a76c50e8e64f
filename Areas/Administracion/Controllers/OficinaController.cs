@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Data;
+﻿/*using GuanajuatoAdminUsuarios.Data;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
@@ -104,4 +104,4 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
             return Json(entidades, new Newtonsoft.Json.JsonSerializerSettings());
         }
     }
-}
+}*/

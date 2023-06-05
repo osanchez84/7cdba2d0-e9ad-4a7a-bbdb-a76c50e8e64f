@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Models;
+﻿/*using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System;
@@ -38,4 +38,4 @@ namespace GuanajuatoAdminUsuarios.Data
             return oLista;
         }
     }
-}
+}*/

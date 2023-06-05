@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Models;
+﻿/*using GuanajuatoAdminUsuarios.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -193,5 +193,5 @@ namespace GuanajuatoAdminUsuarios.Data
 
     }
 }
-
+*/
 

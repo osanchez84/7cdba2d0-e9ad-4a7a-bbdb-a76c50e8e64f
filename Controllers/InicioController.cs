@@ -1,22 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GuanajuatoAdminUsuarios.Data;
-using GuanajuatoAdminUsuarios.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Kendo.Mvc.UI;
-using Kendo.Mvc.Extensions;
-using Microsoft.AspNetCore.Http;
-using AdminUsuarios.Models.Commons;
-using AdminUsuarios;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Security.Claims;
-using AdminUsuarios.Helpers;
+using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -25,45 +15,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ILogger<InicioController> _logger;
-        private SeguridadService _seguridadService;
 
 
-        public InicioController(ILogger<InicioController> logger, SeguridadService seguridadService)
+        public InicioController(ILogger<InicioController> logger)
         {
             _logger = logger;
-            _seguridadService = seguridadService;
+
         }
 
-        [HttpGet("login")]
+        [HttpGet("Inicio")]
         [Route("")]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Index()
         {
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
                 return View("Inicio");
-            return View();
+            return View("Marca");
         }
 
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string usuario, string password, string returnUrl)
-        {
-            var login = _seguridadService.GetLogin(usuario, password);
 
-            if (login.IdUsuario < 1)
-            {
-                ViewData["msjerror"] = " Usuario y/o contraseña erronea";
-                return Redirect("/login");
-            }
 
-            await SignInUser(login.IdUsuario, login.Nombre + " " + login.Paterno + " " + login.Materno, "Administrador");
-            if (string.IsNullOrWhiteSpace(returnUrl) || !returnUrl.StartsWith("/"))
-            {
-                returnUrl = "/inicio";
-            }
 
-            return Redirect(returnUrl);
-        }
 
 
 
@@ -86,16 +59,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [Route("cerrar-sesion")]
         public async Task<IActionResult> CerrarSesion()
         {
-              await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete(".GtoAdminApp");   
-            HttpContext.Session.Clear();      
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete(".GtoAdminApp");
+            HttpContext.Session.Clear();
             return Redirect("/login");
         }
 
-        
 
 
-        [Route("/inicio")]
+
+        [Route("/MarcasVehiculos")]
         [Authorize]
         public IActionResult Inicio()
         {

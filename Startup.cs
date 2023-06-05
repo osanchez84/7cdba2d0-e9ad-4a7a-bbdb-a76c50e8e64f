@@ -1,20 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using GuanajuatoAdminUsuarios.Services;
-using GuanajuatoAdminUsuarios.Data;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -30,7 +23,7 @@ namespace GuanajuatoAdminUsuarios
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-               // Configure cookie based authentication
+            // Configure cookie based authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>
                     {
@@ -58,20 +51,43 @@ namespace GuanajuatoAdminUsuarios
             // Servicios KEndo Telerik
             services.AddKendo();
 
-             //Added for session state
-              services.AddDistributedMemoryCache();
+            //Added for session state
+            services.AddDistributedMemoryCache();
 
             //configuracion de session
             services.AddSession();
 
             //Hacer accesible la cadena de conexion a la base desde la clase
-            services.AddTransient<ConexionBD>();
+            // services.AddTransient<ConexionBD>();
 
             //Servicios
-            services.AddScoped<SeguridadService>();
-            services.AddScoped<EntidadService>();
-            services.AddScoped<OficinaService>();
-            services.AddScoped<UsuarioService>();
+            services.AddScoped<ISqlClientConnectionBD, SqlClientConnectionBD>();
+            services.AddScoped<ICatMarcasVehiculosService, CatMarcasVehiculosService>();
+            services.AddScoped<ICatSubmarcasVehiculosService, CatSubmarcasVehiculosService>();
+            services.AddScoped<IDependencias, DependenciasService>();
+            services.AddScoped<ICatFactoresAccidentesService, CatFactoresAccidentesService>();
+            services.AddScoped<ICatFactoresOpcionesAccidentesService, CatFactoresOpcionesAccidentesService>();
+            services.AddScoped<ICatCausasAccidentesService, CatCausasAccidentesService>();
+            services.AddScoped<ICatHospitalesService, CatHospitalesService>();
+            services.AddScoped<ICatClasificacionAccidentes, CatClasificacionAccidentesService>();
+            services.AddScoped<IOficiales, OficialesService>();
+            services.AddScoped<ICatMunicipiosService, CatMunicipiosService>();
+            services.AddScoped<ICatTramosService, CatTramosService>();
+            services.AddScoped<ICatCarreterasService, CatCarreterasService>();
+            services.AddScoped<IRegistroReciboPagoService, RegistroReciboPagoService>();
+            services.AddScoped<ICancelarInfraccionService, CancelarInfraccionService>();
+            services.AddScoped<ICapturaAccidentesService, CapturaAccidentesService>();
+
+
+            services
+                    .AddControllersWithViews()
+                    .AddJsonOptions(options =>
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+            services.AddKendo();
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,15 +108,15 @@ namespace GuanajuatoAdminUsuarios
             // implementa la validacion de sesion
             app.UseSession();
             app.UseRouting();
-          
 
-         //Autorizacion y autenticacion de usuario
+
+            //Autorizacion y autenticacion de usuario
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-           
+
                 endpoints.MapControllerRoute(
                     name: "area",
                     pattern: "{area:exists}/{controller=Inicio}/{action=Inicio}/{id?}");

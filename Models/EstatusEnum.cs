@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GuanajuatoAdminUsuarios.Models
+﻿namespace GuanajuatoAdminUsuarios.Models
 {
     public enum EstatusEnum
     {

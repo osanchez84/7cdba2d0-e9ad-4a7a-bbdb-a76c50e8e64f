@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -21,7 +18,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "El campo es Obligatorio")]
-       
+
         public int Estatus { get; set; }
         public string Login { get; set; }
 
@@ -44,6 +41,6 @@ namespace GuanajuatoAdminUsuarios.Models
         [Required(ErrorMessage = "El campo es Obligatorio")]
         public DateTime FechaUmodif { get; set; }
 
-      
+
     }
 }

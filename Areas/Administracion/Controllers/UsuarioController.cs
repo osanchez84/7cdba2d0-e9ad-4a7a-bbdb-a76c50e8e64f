@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Controllers;
+﻿/*using GuanajuatoAdminUsuarios.Controllers;
 using GuanajuatoAdminUsuarios.Data;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
@@ -119,4 +119,4 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
         }
 
     }
-}
+}*/

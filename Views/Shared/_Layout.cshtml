@@ -7,7 +7,6 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -16,6 +15,7 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <link href="https://cdn.kendostatic.com/2021.3.914/styles/kendo.classic-opal.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/css/main.css" />
     <script src="https://cdn.kendostatic.com/2021.3.914/js/jquery.min.js"></script>
     <script src="https://cdn.kendostatic.com/2021.3.914/js/jszip.min.js"></script>
     <script src="https://cdn.kendostatic.com/2021.3.914/js/kendo.all.min.js"></script>
@@ -25,60 +25,146 @@
     <script>kendo.culture("es-ES");</script>
 
 </head>
-<body class="k-content">
-    
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+<body>
+    <main class="container-fluid">
+        <div class="row minH100">
+            <nav class="navPrincipal">
+                <div class="row h-100">
+                    <div class="col-auto mx-0 px-0 pt-1 pt-md-5 navPrincipal-content">
+                        <div class="nav nav-tabs border-0 col-auto d-flex flex-column mt-5" id="nav-tab" role="tablist">
+                            <button class="nav-link active d-flex justify-content-center align-items-center" id="nav-vehiculo-tab" data-bs-toggle="tab" data-bs-target="#nav-vehiculo" type="button" role="tab" aria-controls="nav-vehiculo" aria-selected="true"><i class="icon icon-car h4 m-0"></i></button>
+                            <button class="nav-link d-flex justify-content-center align-items-center" id="nav-catalogo-tab" data-bs-toggle="tab" data-bs-target="#nav-catalogo" type="button" role="tab" aria-controls="nav-catalogo" aria-selected="false"><i class="icon icon-data h4 m-0"></i></button>
+                            
+                        </div>
+                    </div>
+                    <div class="col text-center pt-3 pt-md-5">
+                        <img width="90%" src="~/img/logo-gto.png" />
+                        <div class="tab-content col" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-vehiculo" role="tabpanel" aria-labelledby="nav-vehiculo-tab">
+                                <ul class="navbar-nav mt-4">
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Anexo/Anexo">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Anexo</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Depositos/Depositos">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Depósitos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/ModificacionVehiculos/ModificacionVehiculos">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Vehículos</p>
+                                        </a>
+                                    </li>
+                                    
 
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <kendo-button name="configure" tag="button" icon="menu" theme-color="ThemeColor.Primary" class="k-rpanel-toggle btn-toggle"></kendo-button>
-                    <partial name="_UserDataPartial" />
-                    <div class="align-baseline">
-                        <img src="~/img/logo-gto.png" width="100" height="50" class="img-fluid">
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="nav-catalogo" role="tabpanel" aria-labelledby="nav-catalogo-tab">
+                                <ul class="navbar-nav mt-4">
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Carreteras/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Carreteras</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Colores/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Colores</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Dependencias/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Dependencias</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/DiasInhabiles/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Días Inhabiles</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Entidades/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Entidades</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/MarcasVehiculos/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Marcas Vehiculos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/MotivosInfraccion/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Motivo Infracción</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Municipios/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Municipios</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Oficiales/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Oficiales</p>
+                                        </a>
+                                    </li>
+                                    
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/SubmarcasVehiculos/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Submarcas Vehiculos</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/SalariosMinimos/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Salarios Mínimos</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/TiposCarga/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Tipo de Carga</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/TiposVehiculos/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Tipo Vehículo</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="https://localhost:44367/Tramos/indexModal">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Tramos</p>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
-
-    </header>
                 
-                <div id="responsive-panel" class="row flex-xl-nowrap">
-                    <kendo-responsivepanel name="responsive-panel" auto-close="false" breakpoint="768" orientation="top">
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                           
-                            @await Component.InvokeAsync("Menu")
-                        }
-
-
-                    </kendo-responsivepanel>
-                </div>
-        
-        <main>
-            <div class="container">
-                @RenderBody()
-            </div>
-        </main>
-
-        <footer class="footer text-center d-flex align-items-center">
-            <div class="container pb-0">
-                <hr />
-                <p class="text-muted">
-                    &copy; 2023 - Zeitek Soluciones S.A. de C.V
-                </p>
-            </div>
-        </footer>
-
-        <environment names="Development">
-            <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-        </environment>
-        <environment names="Staging,Production">
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-                    asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
-        </environment>
-        @RenderSection("scripts", required: false)
+            </nav>
+            @RenderBody()
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

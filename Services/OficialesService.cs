@@ -1,13 +1,13 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
+using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System;
-using Microsoft.Data.SqlClient;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class OficialesService : IOficiales 
+    public class OficialesService : IOficiales
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
         public OficialesService(ISqlClientConnectionBD sqlClientConnectionBD)
@@ -150,7 +150,6 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    
                     return result;
                 }
                 finally

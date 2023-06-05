@@ -6,6 +6,7 @@ using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,89 +24,6 @@ namespace Example.WebUI.Controllers
 
         }
 
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-            SetDDLDependencias();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(DependenciasModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("NombreDependencia");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateDependencia(model);
-                return RedirectToAction("Index");
-            }
-            SetDDLDependencias();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdDependencia)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLDependencias();
-            var dependenciasModel = GetDependenciaByID(IdDependencia);
-            return View(dependenciasModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(DependenciasModel dependenciasModel)
-        {
-            ModelState.Remove("CategoryName");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateDependencia(dependenciasModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLDependencias();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdDependencia)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLDependencias();
-            var dependenciasModel = GetDependenciaByID(IdDependencia);
-            return View(dependenciasModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(DependenciasModel dependenciasModel)
-        {
-            ModelState.Remove("CategoryName");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteProduct(dependenciasModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLDependencias();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -113,24 +31,31 @@ namespace Example.WebUI.Controllers
         {
             var ListDependenciasModel = GetDependencias();
             //return View("IndexModal");
-            return View("IndexModal", ListDependenciasModel);
+            return View("Index", ListDependenciasModel);
         }
 
         [HttpPost]
         public ActionResult AgregarPacial()
         {
             //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarParcial(int IdDependencia)
         {
-            var dependenciasModel = GetDependenciaByID(IdDependencia); 
-            return PartialView("_Update", dependenciasModel);
+            var dependenciasModel = GetDependenciaByID(IdDependencia);
+            return PartialView("_Editar", dependenciasModel);
         }
 
-        
+        [HttpPost]
+        public ActionResult EliminarParcial(int IdDependencia)
+        {
+            var dependenciasModel = GetDependenciaByID(IdDependencia);
+            return PartialView("_Eliminar", dependenciasModel);
+        }
+
+
 
         public JsonResult Categories_Read()
         {
@@ -155,12 +80,14 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult UpdatePartialModal(DependenciasModel model)
         {
+            bool switchDependencias = Request.Form["switchDependencias"].Contains("true");
+            model.Estatus = switchDependencias ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("NombreDependencia");
             if (ModelState.IsValid)
@@ -173,9 +100,25 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Editar");
         }
 
+        [HttpPost]
+        public ActionResult DeletePartialModal(DependenciasModel model)
+        {
+            var errors = ModelState.Values.Select(s => s.Errors);
+            ModelState.Remove("NombreDependencia");
+            if (ModelState.IsValid)
+            {
+                //Crear el producto
+
+                DeleteDependencia(model);
+                var ListDependenciasModel = GetDependencias();
+                return PartialView("_ListaDependencias", ListDependenciasModel);
+            }
+
+            return PartialView("_Eliminar");
+        }
         public JsonResult GetDeps([DataSourceRequest] DataSourceRequest request)
         {
             var ListProuctModel = GetDependencias();
@@ -197,32 +140,32 @@ namespace Example.WebUI.Controllers
             dependencia.IdDependencia = model.IdDependencia;
             dependencia.NombreDependencia = model.NombreDependencia;
             dependencia.Estatus = 1;
+            dependencia.FechaActualizacion = DateTime.Now;
             dbContext.Dependencias.Add(dependencia);
             dbContext.SaveChanges();
         }
 
         public void UpdateDependencia(DependenciasModel model)
         {
-            //Sera mas rapido con automapeo de clases
             Dependencias dependencia = new Dependencias();
             dependencia.IdDependencia = model.IdDependencia;
-            dependencia.NombreDependencia = model.NombreDependencia;       
-            //Lineas de codigo para la modificacion del producto con EF
+            dependencia.NombreDependencia = model.NombreDependencia;
+            dependencia.Estatus = model.Estatus;
+            dependencia.FechaActualizacion = DateTime.Now;
             dbContext.Entry(dependencia).State = EntityState.Modified;
             dbContext.SaveChanges();
 
         }
 
-        public void DeleteProduct(DependenciasModel model)
+        public void DeleteDependencia(DependenciasModel model)
         {
-            //Sera mas rapido con automapeo de clases
             Dependencias dependencia = new Dependencias();
             dependencia.IdDependencia = model.IdDependencia;
             dependencia.NombreDependencia = model.NombreDependencia;
-
-            dbContext.Dependencias.Remove(dependencia);
+            dependencia.Estatus = 0;
+            dependencia.FechaActualizacion = DateTime.Now;
+            dbContext.Entry(dependencia).State = EntityState.Modified;
             dbContext.SaveChanges();
-
         }
 
         private void SetDDLDependencias()
@@ -241,11 +184,11 @@ namespace Example.WebUI.Controllers
                                     select new DependenciasModel
 
                                     {
-                                    IdDependencia = dependencias.IdDependencia,
-                                    NombreDependencia = dependencias.NombreDependencia,
-                                   
+                                        IdDependencia = dependencias.IdDependencia,
+                                        NombreDependencia = dependencias.NombreDependencia,
 
-                                }).Where(w => w.IdDependencia == IdDependencia).FirstOrDefault();
+
+                                    }).Where(w => w.IdDependencia == IdDependencia).FirstOrDefault();
 
             return dependenciaModel;
         }
@@ -258,11 +201,15 @@ namespace Example.WebUI.Controllers
         public List<DependenciasModel> GetDependencias()
         {
             var ListDependenciasModel = (from dependencias in dbContext.Dependencias.ToList()
+                                         join estatus in dbContext.Estatus.ToList()
+                                         on dependencias.Estatus equals estatus.estatus
 
                                          select new DependenciasModel
                                          {
                                              IdDependencia = dependencias.IdDependencia,
                                              NombreDependencia = dependencias.NombreDependencia,
+                                             Estatus= dependencias.Estatus,
+                                             estatusDesc = estatus.estatusDesc,
 
                                          }).ToList();
             return ListDependenciasModel;

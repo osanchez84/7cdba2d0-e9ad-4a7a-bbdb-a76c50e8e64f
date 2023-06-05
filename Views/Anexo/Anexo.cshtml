@@ -40,6 +40,19 @@
                 document.getElementById("sec1Estatal").style.display = "none";
 
             }
+
+
+        function finalizarCap() {
+            console.log("finalizar");
+            document.getElementById("sec0").style.display = "block";
+            document.getElementById("secFisica").style.display = "none";
+            document.getElementById("sec1").style.display = "none";
+            document.getElementById("sec2").style.display = "none";
+            document.getElementById("sec1Sitteg").style.display = "none";
+            document.getElementById("sec1Estatal").style.display = "none";
+            window.location.href = "https://localhost:44367/";
+
+        }
         </script>
     </head>
 
@@ -926,7 +939,7 @@
                                     <h4>y se desconoce el propietario o conductor</h4>
                                     <div class="row ">
                                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                                            <div class="controlButton my-3" onclick="finalizar()">
+                                            <div class="controlButton my-3" onclick="finalizarCap()">
                                                 @(Html.Kendo().Button()
                                                     .Name("buscarFisica")
                                                     .HtmlAttributes(new { @class = "btnPrimary" })
@@ -1080,7 +1093,7 @@
 
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onclick="finalizar()">
+                                <div class="controlButton" onclick="finalizarCap()">
                                     @(Html.Kendo().Button()
                                         .Name("saveFisico")
                                         .HtmlAttributes(new { @class = "btnPrimary px-5" })

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Entity
 
         public int? Estatus { get; set; }
 
-        public virtual ICollection<Municipios> Municipio { get; } = new List<Municipios>();
+        public virtual ICollection<CatMunicipios> Municipio { get; } = new List<CatMunicipios>();
 
     }
 }

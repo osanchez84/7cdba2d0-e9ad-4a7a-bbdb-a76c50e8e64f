@@ -14,8 +14,8 @@
 
 @font-face {
     font-family: 'SITTEG';
-    src: url('fonts/SITTEG.eot?ld5bdf');
-    src: url('fonts/SITTEG.eot?ld5bdf#iefix') format('embedded-opentype'), url('fonts/SITTEG.ttf?ld5bdf') format('truetype'), url('fonts/SITTEG.woff?ld5bdf') format('woff'), url('fonts/SITTEG.svg?ld5bdf#SITTEG') format('svg');
+    src: url('fonts/SITTEG.eot?nsynek');
+    src: url('fonts/SITTEG.eot?nsynek#iefix') format('embedded-opentype'), url('fonts/SITTEG.ttf?nsynek') format('truetype'), url('fonts/SITTEG.woff?nsynek') format('woff'), url('fonts/SITTEG.svg?nsynek#SITTEG') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -33,6 +33,86 @@
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-addFactorAccidente:before {
+    content: "\e996";
+}
+
+.icon-addInvolucrado:before {
+    content: "\e997";
+}
+
+.icon-deleteFactorAccidente:before {
+    content: "\e998";
+}
+
+.icon-down:before {
+    content: "\e999";
+}
+
+.icon-editfactorAccidente:before {
+    content: "\e99a";
+}
+
+.icon-editInvolucrado:before {
+    content: "\e99b";
+}
+
+.icon-factorAccidente:before {
+    content: "\e99c";
+}
+
+.icon-involucrado:before {
+    content: "\e99d";
+}
+
+.icon-up:before {
+    content: "\e99e";
+}
+
+.icon-infoAdicional:before {
+    content: "\e995";
+}
+
+.icon-deleteClasificacionAccidente:before {
+    content: "\e993";
+}
+
+.icon-addClasificacionAccidente:before {
+    content: "\e994";
+}
+
+.icon-clasificacionAccidente:before {
+    content: "\e98f";
+}
+
+.icon-editClasificacionAccidente:before {
+    content: "\e990";
+}
+
+.icon-estadisticas:before {
+    content: "\e991";
+}
+
+.icon-excel:before {
+    content: "\e992";
+}
+
+.icon-addCortesia:before {
+    content: "\e98b";
+}
+
+.icon-addEnviar:before {
+    content: "\e98c";
+}
+
+.icon-cortesia:before {
+    content: "\e98d";
+}
+
+.icon-enviar:before {
+    content: "\e98e";
 }
 
 .icon-editRecibo:before {
@@ -1145,17 +1225,32 @@
 }
 
 
-.gridMotivo .k-pager-wrap{
-    display:none
+.gridMotivo .k-pager-wrap {
+    display: none
+}
+.gridEnvio .k-pager-wrap {
+    bottom:-75px;
 }
 
-    .gridMotivo .footerGrid{
-        padding-right:11px;
+.gridMotivo .footerGrid {
+    padding-right: 11px;
+}
+
+    .gridEnvio .footerGrid {
+        padding-left: 11px;
     }
 
         .gridMotivo .footerGrid div {
             max-width: calc(100% - 80% - 13px);
             min-width: 180px;
+        }
+
+        .gridEnvio .footerGrid div {
+            max-width: calc(100% -  11px);
+            min-width: 180px;
+            top: -46px;
+            position: relative;
+
         }
 
     .gridMotivo .salarios {
@@ -1166,6 +1261,8 @@
     .gridMotivo .inputSalario input {
         height: 32px
     }
+
+
 
 
 @media (min-width: 768px) {
@@ -1309,4 +1406,9 @@
 
 .borderDanger input {
     border: 2px var(--danger-color) solid;
+}
+
+
+.barCustom path[d="M0 9 L 15 9 15 12 0 12Z"] {
+    fill: var(--main-color);
 }

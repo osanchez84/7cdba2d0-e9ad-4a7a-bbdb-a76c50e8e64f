@@ -16,4 +16,7 @@ public partial class SubmarcasVehiculo
     public int? ActualizadoPor { get; set; }
 
     public int? estatus { get; set; }
+
+    public virtual ICollection<MarcasVehiculo> MarcaVehiculo { get; } = new List<MarcasVehiculo>();
+
 }

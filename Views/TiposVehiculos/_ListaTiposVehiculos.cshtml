@@ -9,7 +9,7 @@
                 columns.Bound(c => c.TipoVehiculo).Width(100);
                 columns.Bound(c => c.estatusDesc).Width(80);
                 columns.Command(c => c.Custom("Editar").Click("getId")).Width(70);
-                columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(70);
+                //columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(70);
 
 
             }).HtmlAttributes(new { style = "height:550px" })

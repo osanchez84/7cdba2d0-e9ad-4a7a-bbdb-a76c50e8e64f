@@ -14,7 +14,7 @@ public partial class MarcasVehiculo
     public int? ModificadoPor { get; set; }
 
     public int? Estatus { get; set; }
+    public virtual ICollection<SubmarcasVehiculo> SubmarcasVehiculo { get; } = new List<SubmarcasVehiculo>();
 
-    public virtual ICollection<SubmarcasVehiculo> SubmarcasVehiculos { get; } = new List<SubmarcasVehiculo>();
 
 }

@@ -1,13 +1,13 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
+using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System;
-using Microsoft.Data.SqlClient;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class SubmarcasVehiculosService :ISubmarcasVehiculos
+    public class SubmarcasVehiculosService : ISubmarcasVehiculos
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
         public SubmarcasVehiculosService(ISqlClientConnectionBD sqlClientConnectionBD)

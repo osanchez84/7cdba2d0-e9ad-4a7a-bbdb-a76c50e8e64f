@@ -3,9 +3,6 @@
     var marcas = (SelectList)ViewBag.Marcas;
 
 }
-<div class="row">
-    <div class="col-md-12">
-            <div class="modal-content" id="addSubmarcaBody">
                 <section class=" bg-white rounded">
                     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                         <div class="col-auto pe-0">
@@ -84,9 +81,6 @@
 
                     </div>
                 </section>
-            </div>
-    </div>
-</div>
 
 <script>
     function submitProduct() {
@@ -101,7 +95,7 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                $("#tablaDependencias").html(result);
+                $("#tablaSubmarcas").html(result);
             }
         });
     }

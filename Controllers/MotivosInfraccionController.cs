@@ -23,88 +23,6 @@ namespace Example.WebUI.Controllers
 
         }
 
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-            //SetDDLColores();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(MotivosInfraccionModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateMotivo(model);
-                return RedirectToAction("Index");
-            }
-            //SetDDLColores();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdMotivoInfraccion)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            var motivosInfraccionsModel = GetMotivoByID(IdMotivoInfraccion);
-            return View(motivosInfraccionsModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(MotivosInfraccionModel motivosInfraccionsModel)
-        {
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateMotivo(motivosInfraccionsModel);
-                return RedirectToAction("Index");
-            }
-            //SetDDLColores();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdMotivoInfraccion)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            //SetDDLColores();
-            var motivosInfraccionsModel = GetMotivoByID(IdMotivoInfraccion);
-            return View(motivosInfraccionsModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(MotivosInfraccionModel motivosInfraccionsModel)
-        {
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteMotivo(motivosInfraccionsModel);
-                return RedirectToAction("Index");
-            }
-           // SetDDLColores();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -112,14 +30,13 @@ namespace Example.WebUI.Controllers
         {
             var ListMotivosInfraccionModel = GetMotivos();
             //return View("IndexModal");
-            return View("IndexModal", ListMotivosInfraccionModel);
+            return View("Index", ListMotivosInfraccionModel);
         }
 
         [HttpPost]
         public ActionResult AgregarMotivoParcial()
         {
-            //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         public ActionResult EditarParcial(int IdMotivoInfraccion)
@@ -156,12 +73,14 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarParcialModal(MotivosInfraccionModel model)
         {
+            bool switchMotivosInfraccion = Request.Form["motivosInfraccionSwitch"].Contains("true");
+            model.Estatus = switchMotivosInfraccion ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Nombre");
             if (ModelState.IsValid)
@@ -172,7 +91,6 @@ namespace Example.WebUI.Controllers
                 var ListMotivosInfraccionModel = GetMotivos();
                 return PartialView("_ListaMotivosInfraccion", ListMotivosInfraccionModel);
             }
-         
             return PartialView("_Editar");
         }
 
@@ -189,7 +107,6 @@ namespace Example.WebUI.Controllers
                 var ListMotivosInfraccionModel = GetMotivos();
                 return PartialView("_ListaMotivosInfraccion", ListMotivosInfraccionModel);
             }
-            
             return PartialView("_Eliminar");
         }
         public JsonResult GetMotInf([DataSourceRequest] DataSourceRequest request)
@@ -229,7 +146,7 @@ namespace Example.WebUI.Controllers
             motivo.Fundamento = model.Fundamento;
             motivo.CalificacionMinima = model.CalificacionMinima;
             motivo.CalificacionMaxima = model.CalificacionMaxima;
-            motivo.Estatus = 1;
+            motivo.Estatus = model.Estatus;
             motivo.FechaActualizacion = DateTime.Now;
             dbContext.Entry(motivo).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -265,16 +182,16 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.MotivosInfraccion.Find(IdMotivoInfraccion);
 
             var motivosInfraccionModel = (from motivosInfraccion in dbContext.MotivosInfraccion.ToList()
-                              select new MotivosInfraccionModel
+                                          select new MotivosInfraccionModel
 
-                              {
-                                  IdMotivoInfraccion = motivosInfraccion.IdMotivoInfraccion,
-                                  Nombre = motivosInfraccion.Nombre,
-                                  CalificacionMinima = motivosInfraccion.CalificacionMinima,
-                                  CalificacionMaxima = motivosInfraccion.CalificacionMaxima,
-                                  Fundamento = motivosInfraccion.Fundamento
+                                          {
+                                              IdMotivoInfraccion = motivosInfraccion.IdMotivoInfraccion,
+                                              Nombre = motivosInfraccion.Nombre,
+                                              CalificacionMinima = motivosInfraccion.CalificacionMinima,
+                                              CalificacionMaxima = motivosInfraccion.CalificacionMaxima,
+                                              Fundamento = motivosInfraccion.Fundamento
 
-                              }).Where(w => w.IdMotivoInfraccion == IdMotivoInfraccion).FirstOrDefault();
+                                          }).Where(w => w.IdMotivoInfraccion == IdMotivoInfraccion).FirstOrDefault();
 
             return motivosInfraccionModel;
         }
@@ -287,16 +204,16 @@ namespace Example.WebUI.Controllers
                                               on motivosInfraccion.Estatus equals estatus.estatus
                                               where motivosInfraccion.Estatus == 1
 
-                                    select new MotivosInfraccionModel
-                                    {
-                                        IdMotivoInfraccion = motivosInfraccion.IdMotivoInfraccion,
-                                        Nombre = motivosInfraccion.Nombre,
-                                        Fundamento = motivosInfraccion.Fundamento,
-                                        CalificacionMinima = motivosInfraccion.CalificacionMinima,
-                                        CalificacionMaxima = motivosInfraccion.CalificacionMaxima,
-                                        Estatus = motivosInfraccion.Estatus,
-                                        EstatusDesc = estatus.estatusDesc,
-                                    }).ToList();
+                                              select new MotivosInfraccionModel
+                                              {
+                                                  IdMotivoInfraccion = motivosInfraccion.IdMotivoInfraccion,
+                                                  Nombre = motivosInfraccion.Nombre,
+                                                  Fundamento = motivosInfraccion.Fundamento,
+                                                  CalificacionMinima = motivosInfraccion.CalificacionMinima,
+                                                  CalificacionMaxima = motivosInfraccion.CalificacionMaxima,
+                                                  Estatus = motivosInfraccion.Estatus,
+                                                  EstatusDesc = estatus.estatusDesc,
+                                              }).ToList();
             return ListMotivosInfraccionModel;
         }
         #endregion

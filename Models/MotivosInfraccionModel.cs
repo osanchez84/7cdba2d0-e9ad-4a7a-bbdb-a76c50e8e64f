@@ -22,5 +22,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string EstatusDesc { get; set; }
 
+         public bool ValorEstatusMotivosInfraccion { get; set; }
+
     }
 }

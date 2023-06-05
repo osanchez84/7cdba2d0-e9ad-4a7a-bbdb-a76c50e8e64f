@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;

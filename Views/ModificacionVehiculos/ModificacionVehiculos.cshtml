@@ -1,4 +1,16 @@
 ﻿
+<head>
+        <script>
+
+            function busqueda() {
+                console.log("busqueda");
+                document.getElementById("tablaBusqueda").style.display = "block";
+            document.getElementById("tablaBusqueda1").style.display = "block";
+
+            }
+            </script>
+            </head>
+
 <div class="mainContainer bg-light">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -8,17 +20,17 @@
                         <i class="icon-edit-car h1 colorPrimary"></i>
                     </div>
                     <div class="col-auto my-3">
-                        <h2 class="m-0 h3"><b>Modificación de vehículos</b></h2>
+                        <h2 class="m-0 h3"><b>Vehículos</b></h2>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <!--div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <button>
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Alta de vehículo sistema</b></h6>
                         </button>
-                    </div>
+                    </div-->
                 </div>
             </div>
         </div>
@@ -31,7 +43,7 @@
             <h5 class="px-4"><b>Búsqueda del vehículo</b></h5>
             <h6 class="px-4 text-muted">Filtros de búsqueda para localizar el vehículo. Se pueden combinar filtros, por ejemplo se puede combinar marca Ford con color Negro.</h6>
         </div>
-        <form class="row px-4 mb-4 align-items-end">
+        <div class="row px-4 mb-4 align-items-end">
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm mb-3">
                     <label>Entidad de registro</label>
@@ -144,7 +156,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3 col-xl-3">
-                <div class="controlButton my-3">
+                <div class="controlButton my-3" onclick="busqueda()">
                     @(Html.Kendo().Button()
                     .Name("BuscarVehiculo")
                     .HtmlAttributes(new { @class = "btnPrimary" })
@@ -155,17 +167,21 @@
 
 
 
-        </form>
-        <div class="row justify-content-between mb-1 titleCustom">
+        </div>
+        
+        
+        <div id="tablaBusqueda" class="row justify-content-between mb-1 titleCustom" style="display:none">
             <div class="col-12 col-md-auto mt-4 mb-2">
                 <h5 class="px-4"><b>Listado de vehículo</b></h5>
                 <h6 class="px-4 text-muted">Edita los datos de vehículo.</h6>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12 mb-4 px-4 rounded gridCustom">
-                <kendo-grid name="grid" height="450">
-                    <datasource type="DataSourceTagHelperType.Custom" custom-type="odata" page-size="20">
+        </div><br /><br /><br /><br />
+        <div id="tablaBusqueda1" class="row" style="display:none; padding:30px">
+            <div id="grid" class="col-12 mb-4 px-4 rounded gridCustom">
+
+
+                <!--kendo-grid name="grid" height="450">
+                    <datasource type="DataSourceTagHelperType.Custom" custom-type="odata" page-size="5">
                         <transport>
                             <read url="https://demos.telerik.com/kendo-ui/service/Northwind.svc/Orders" />
                         </transport>
@@ -191,10 +207,105 @@
                     <toolbar>
                         <toolbar-button name="search"></toolbar-button>
                     </toolbar>
-                </kendo-grid>
+                </!--kendo-grid-->
 
 
             </div>
+
+            <script>
+                $(document).ready(function () {
+      $("#grid").kendoGrid({
+          sortable: true,
+          groupable: true,
+                    toolbar: ["search"],
+          search: {
+                    fields: [
+                            { name: "entidad", operator: "contains" },
+                            { name: "placas", operator: "contains" },
+                            { name: "marca", operator: "contains" },
+                            { name: "submarca", operator: "contains" },
+                            { name: "tipo", operator: "contains" },
+                            { name: "modelo", operator: "contains" },
+                            { name: "color", operator: "contains" },
+                            { name: "propietario", operator: "contains" },
+                    ]
+                },
+        dataSource: {
+          data: {
+            "items" :[
+              {
+                "entidad": "Guanajuato",
+                "placas": "GTD7308",
+								"serie": "ASD3456SDF6789DFG",
+                "marca": "Nissan",
+                "submarca": "Sentra",
+                "tipo": "Sedan",
+                "modelo": "2006",
+                "color": "Azul",
+                "propietario": "Lourdes Ramirez Garcia",
+              },
+              {
+                "entidad": "Guanajuato",
+                "placas": "GTD7301",
+								"serie": "ASD3456SDF6789DFG",
+                "marca": "Honda",
+                "submarca": "Civic",
+                "tipo": "Sedan",
+                "modelo": "2006",
+                "color": "Azul",
+                "propietario": "Ximena Lara Perez",
+              }
+,
+              {
+                "entidad": "Guanajuato",
+                "placas": "GTD7302",
+								"serie": "ASD3456SDF6789DFG",
+                "marca": "Honda",
+                "submarca": "Accord",
+                "tipo": "Sedan",
+                "modelo": "2006",
+                "color": "Azul",
+                "propietario": "Roberto Mejia Alcantara",
+              }
+            ]
+          },
+          schema: {
+            data: "items"
+          }
+        },
+        columns: [
+          {
+            field: "entidad",
+            title: "Entidad"
+          },
+          {   field: "placas",
+           title: "Placas",
+          },
+          {   field: "serie",
+           title: "Serie",
+          },
+          {   field: "marca",
+           title: "Marca",
+          },
+          {   field: "submarca",
+           title: "Submarca",
+          },
+          {   field: "tipo",
+           title: "Tipo",
+          },
+          {   field: "modelo",
+           title: "Modelo",
+          },
+          {   field: "color",
+           title: "Color",
+          },
+          {   field: "propietario",
+           title: "Propietario",
+          }
+        ]
+                    });
+                });
+    </script>
 
         </div>
 
@@ -203,7 +314,7 @@
     </section>
 
 </div>
-    </div>
+    
     <!-- Modal -->
 
 
@@ -434,7 +545,3 @@
 
 
 
-    
-
-
-</main>

@@ -7,6 +7,7 @@ using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,90 +30,6 @@ namespace Example.WebUI.Controllers
         {
             _oficialesService = oficialesService;
         }
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-            SetDDLOficiales();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(OficialesModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-             
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateOficial(model);
-                return RedirectToAction("Index");
-            }
-            SetDDLOficiales();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdOficial)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLOficiales();
-            var oficialesModel = GetOficialByID(IdOficial);
-            return View(oficialesModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(OficialesModel oficialesModel)
-        {
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateOficial(oficialesModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLOficiales();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdOficial)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLOficiales();
-            var oficialesModel = GetOficialByID(IdOficial);
-            return View(oficialesModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(OficialesModel oficialesModel)
-        {
-            ModelState.Remove("Nombre");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteOficial(oficialesModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLOficiales();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -120,14 +37,30 @@ namespace Example.WebUI.Controllers
         {
             var ListOficialessModel = GetOficiales();
             //return View("IndexModal");
-            return View("IndexModal", ListOficialessModel);
+            return View("Index", ListOficialessModel);
         }
 
         [HttpPost]
-        public ActionResult AgregarParcial()
+        public ActionResult AgregarOficialParcial()
         {
-            //SetDDLDependencias();
-            return PartialView("_Create");
+            SetDDLDelegaciones();
+            return PartialView("_Crear");
+        }
+
+        [HttpPost]
+        public ActionResult EditarOficialParcial(int IdOficial)
+        {
+            SetDDLDelegaciones();
+            var oficialesModel = GetOficialByID(IdOficial);
+            return View("_Editar", oficialesModel);
+        }
+
+        [HttpPost]
+        public ActionResult EliminarOficialParcial(int IdOficial)
+        {
+            SetDDLDelegaciones();
+            var oficialesModel = GetOficialByID(IdOficial);
+            return View("_Eliminar", oficialesModel);
         }
 
         public JsonResult Categories_Read()
@@ -139,21 +72,53 @@ namespace Example.WebUI.Controllers
 
 
         [HttpPost]
-        public ActionResult CreatePartialModal(OficialesModel model)
+        public ActionResult AgregarOficialModal(OficialesModel model)
         {
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Nombre");
             if (ModelState.IsValid)
             {
-                //Crear el producto
 
                 CreateOficial(model);
                 var ListOficialesModel = GetOficiales();
                 return PartialView("_ListaOficiales", ListOficialesModel);
             }
-            //SetDDLCategories();
-            //return View("Create");
-            return PartialView("_Create");
+
+            return PartialView("_Crear");
+        }
+
+        [HttpPost]
+        public ActionResult EditarOficial(OficialesModel model)
+        {
+            bool switchOficiales = Request.Form["oficialesSwitch"].Contains("true");
+            model.Estatus = switchOficiales ? 1 : 0;
+            var errors = ModelState.Values.Select(s => s.Errors);
+            ModelState.Remove("Nombre");
+            if (ModelState.IsValid)
+            {
+
+                UpdateOficial(model);
+                var ListOficialesModel = GetOficiales();
+                return PartialView("_ListaOficiales", ListOficialesModel);
+            }
+
+            return PartialView("_Editar");
+        }
+
+        [HttpPost]
+        public ActionResult EliminarOficial(OficialesModel model)
+        {
+            var errors = ModelState.Values.Select(s => s.Errors);
+            ModelState.Remove("Nombre");
+            if (ModelState.IsValid)
+            {
+
+                DeleteOficial(model);
+                var ListOficialesModel = GetOficiales();
+                return PartialView("_ListaOficiales", ListOficialesModel);
+            }
+
+            return PartialView("_Eliminar");
         }
 
         public JsonResult GetOficialess([DataSourceRequest] DataSourceRequest request)
@@ -179,6 +144,8 @@ namespace Example.WebUI.Controllers
             oficial.Nombre = model.Nombre;
             oficial.ApellidoPaterno = model.ApellidoPaterno;
             oficial.ApellidoMaterno = model.ApellidoMaterno;
+            oficial.Estatus = 1;
+            oficial.FechaActualizacion = DateTime.Now;
             oficial.IdDelegacion = model.IdDelegacion;
 
             dbContext.Oficiales.Add(oficial);
@@ -189,10 +156,13 @@ namespace Example.WebUI.Controllers
         {
             Oficiales oficial = new Oficiales();
             oficial.IdOficial = model.IdOficial;
-            oficial.Rango = model.Rango;
             oficial.Nombre = model.Nombre;
             oficial.ApellidoPaterno = model.ApellidoPaterno;
             oficial.ApellidoMaterno = model.ApellidoMaterno;
+            oficial.Estatus = model.Estatus;
+            oficial.FechaActualizacion = DateTime.Now;
+            oficial.IdDelegacion = model.IdDelegacion;
+
             dbContext.Entry(oficial).State = EntityState.Modified;
             dbContext.SaveChanges();
 
@@ -202,23 +172,25 @@ namespace Example.WebUI.Controllers
         {
             Oficiales oficial = new Oficiales();
             oficial.IdOficial = model.IdOficial;
-            oficial.Rango = model.Rango;
             oficial.Nombre = model.Nombre;
             oficial.ApellidoPaterno = model.ApellidoPaterno;
             oficial.ApellidoMaterno = model.ApellidoMaterno;
-            dbContext.Oficiales.Remove(oficial);
-            dbContext.SaveChanges();
+            oficial.Estatus = 0;
+            oficial.FechaActualizacion = DateTime.Now;
+            oficial.IdDelegacion = model.IdDelegacion;
 
+            dbContext.Entry(oficial).State = EntityState.Modified;
+            dbContext.SaveChanges();
         }
 
-        private void SetDDLOficiales()
+        private void SetDDLDelegaciones()
         {
             ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
             ViewBag.Delegaciones = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
         }
 
-       
-      
+
+
 
         public OficialesModel GetOficialByID(int IdOficial)
         {
@@ -226,18 +198,18 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.Oficiales.Find(IdOficial);
 
             var oficialModel = (from oficiales in dbContext.Oficiales.ToList()
-                                 select new OficialesModel
+                                select new OficialesModel
 
-                                 {
-                                     IdOficial = oficiales.IdOficial,
-                                     Rango = oficiales.Rango,
-                                     Nombre = oficiales.Nombre,
-                                     ApellidoPaterno = oficiales.ApellidoPaterno,
-                                     ApellidoMaterno = oficiales.ApellidoMaterno,
+                                {
+                                    IdOficial = oficiales.IdOficial,
+                                    Rango = oficiales.Rango,
+                                    Nombre = oficiales.Nombre,
+                                    ApellidoPaterno = oficiales.ApellidoPaterno,
+                                    ApellidoMaterno = oficiales.ApellidoMaterno,
 
 
 
-                                 }).Where(w => w.IdOficial == IdOficial).FirstOrDefault();
+                                }).Where(w => w.IdOficial == IdOficial).FirstOrDefault();
 
             return oficialModel;
         }
@@ -250,19 +222,22 @@ namespace Example.WebUI.Controllers
         public List<OficialesModel> GetOficiales()
         {
             var ListOficialessModel = (from oficiales in dbContext.Oficiales.ToList()
-                                       join Delegaciones in dbContext.Delegaciones.ToList()
-                                       on oficiales.IdDelegacion equals Delegaciones.IdDelegacion
-
+                                       join delegaciones in dbContext.Delegaciones.ToList()
+                                       on oficiales.IdDelegacion equals delegaciones.IdDelegacion
+                                       join estatus in dbContext.Estatus.ToList()
+                                       on oficiales.Estatus equals estatus.estatus
+                                       where oficiales.Estatus == 1
                                        select new OficialesModel
-                                      {
-                                          IdOficial = oficiales.IdOficial,
-                                          Rango = oficiales.Rango,
-                                          Nombre = oficiales.Nombre,
-                                          ApellidoPaterno = oficiales.ApellidoPaterno,
-                                          ApellidoMaterno = oficiales.ApellidoMaterno,
-                                          Delegacion= Delegaciones.Delegacion,
+                                       {
+                                           IdOficial = oficiales.IdOficial,
+                                           Nombre = oficiales.Nombre,
+                                           ApellidoPaterno = oficiales.ApellidoPaterno,
+                                           ApellidoMaterno = oficiales.ApellidoMaterno,
+                                           estatusDesc = estatus.estatusDesc,
+                                           Delegacion = delegaciones.Delegacion,
 
-                                      }).ToList();
+
+                                       }).ToList();
             return ListOficialessModel;
         }
         #endregion

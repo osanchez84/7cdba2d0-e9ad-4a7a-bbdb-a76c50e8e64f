@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
 using GuanajuatoAdminUsuarios.Entity;
+using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IColores
     {
-        List<Colores> Getcoloress();
+        List<CatColores> Getcoloress();
 
-        Colores GetColorById(int IdColor);
+        CatColores GetColorById(int IdColor);
 
-        int SaveColor(Colores color);
+        int SaveColor(CatColores color);
 
-        int UpdateColor(Colores color);
+        int UpdateColor(CatColores color);
 
         int DeleteColor(int color);
 

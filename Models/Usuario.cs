@@ -21,7 +21,6 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "El campo es Obligatorio")]
-       
         public int Estatus { get; set; }
         public string Login { get; set; }
 

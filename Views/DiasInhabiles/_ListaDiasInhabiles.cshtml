@@ -10,10 +10,7 @@
                 columns.Bound(c => c.Municipio).Width(100);
                 columns.Bound(c => c.EstatusDesc).Title("Estatus en sistema").Width(100);
                 columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-                columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
-
-                //columns.Command(c => c.Custom("Delete").Click("redirectDelete")).Width(180);
-
+               // columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
 
             }).HtmlAttributes(new { style = "height:550px" })
             .Sortable()
@@ -29,8 +26,9 @@
             .ToolBar(t => t.Search())
             .Search(s =>
             {
-                s.Field(c => c.fecha);
                 s.Field(c => c.Municipio);
+                s.Field(c => c.todosMunicipiosDesc);
+
 
             })
 

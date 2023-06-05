@@ -24,85 +24,6 @@ namespace Example.WebUI.Controllers
         }
 
 
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-            //SetDDLDiasInhabiles();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(DiasInhabilesModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("fecha");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateDiaInhabil(model);
-                return RedirectToAction("Index");
-            }
-           // SetDDLDiasInhabiles();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdDiaInhabil)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            //SetDDLDiasInhabiles();
-            var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
-            return View(diasInhabilesModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(DiasInhabilesModel diasInhabilesModel)
-        {
-            ModelState.Remove("fecha");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateDiaInhabil(diasInhabilesModel);
-                return RedirectToAction("Index");
-            }
-           // SetDDLDiasInhabiles();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdDiaInhabil)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-          //  SetDDLDiasInhabiles();
-            var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
-            return View(diasInhabilesModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(DiasInhabilesModel diasInhabilesModel)
-        {
-            ModelState.Remove("fecha");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteDiaInhabil(diasInhabilesModel);
-                return RedirectToAction("Index");
-            }
-            //SetDDLDiasInhabiles();
-            return View("Delete");
-        }
 
         public JsonResult MunicipiosDDL()
         {
@@ -119,14 +40,14 @@ namespace Example.WebUI.Controllers
         {
             var ListDiasInhabilesModel = GetDiasInhabiles();
             //return View("IndexModal");
-            return View("IndexModal", ListDiasInhabilesModel);
+            return View("Index", ListDiasInhabilesModel);
         }
 
         [HttpPost]
         public ActionResult AgregarParcialDiaInhabil()
         {
             SetDDLMunicipios();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         public ActionResult EditarParcial(int IdDiaInhabil)
@@ -145,7 +66,7 @@ namespace Example.WebUI.Controllers
 
         public JsonResult Municipios_Read()
         {
-            var dataSource = new SelectList(dbContext.Municipios.ToList(), "IdMunicipio", "Municipio");
+            var dataSource = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
             return Json(dataSource);
         }
 
@@ -165,25 +86,24 @@ namespace Example.WebUI.Controllers
                 return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarParcialModal(DiasInhabilesModel model)
         {
+            bool switchDiasinhabiles = Request.Form["diasInhabilesSwitch"].Contains("true");
+            model.Estatus = switchDiasinhabiles ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("fecha");
             if (ModelState.IsValid)
             {
-
-
                 UpdateDiaInhabil(model);
                 var ListDiasInhabilesModel = GetDiasInhabiles();
                 return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
             SetDDLMunicipios();
-            //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Editar");
         }
 
         [HttpPost]
@@ -238,10 +158,10 @@ namespace Example.WebUI.Controllers
             diaInhabil.idDiaInhabil = model.idDiaInhabil;
             diaInhabil.fecha = model.fecha;
             diaInhabil.idMunicipio = model.idMunicipio;
-            diaInhabil.todosMunicipiosBool = model.todosMunicipiosBool;
-            diaInhabil.Estatus = 1;
+            diaInhabil.todosMunicipiosDesc = model.todosMunicipiosDesc;
+            diaInhabil.Estatus = model.Estatus;
             diaInhabil.FechaActualizacion = DateTime.Now;
-          
+
             dbContext.Entry(diaInhabil).State = EntityState.Modified;
             dbContext.SaveChanges();
 
@@ -253,7 +173,7 @@ namespace Example.WebUI.Controllers
             diaInhabil.idDiaInhabil = model.idDiaInhabil;
             diaInhabil.fecha = model.fecha;
             diaInhabil.idMunicipio = model.idMunicipio;
-            diaInhabil.todosMunicipiosBool = model.todosMunicipiosBool;
+            diaInhabil.todosMunicipiosDesc = model.todosMunicipiosDesc;
             diaInhabil.Estatus = 0;
             diaInhabil.FechaActualizacion = DateTime.Now;
             dbContext.Entry(diaInhabil).State = EntityState.Modified;
@@ -264,7 +184,7 @@ namespace Example.WebUI.Controllers
         private void SetDDLMunicipios()
         {
             ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Municipios = new SelectList(dbContext.Municipios.ToList(), "idMunicipio", "Municipio");
+            ViewBag.Municipios = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
         }
 
 
@@ -274,50 +194,43 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.DiasInhabiles.Find(IdDiaInhabil);
 
             var diaInhabilModel = (from diasInhabiles in dbContext.DiasInhabiles.ToList()
-                              select new DiasInhabilesModel
+                                   select new DiasInhabilesModel
 
-                              {
-                                  idDiaInhabil = diasInhabiles.idDiaInhabil,
-                                  fecha = diasInhabiles.fecha,
-                                  idMunicipio = diasInhabiles.idMunicipio,
-                                  todosMunicipiosBool = diasInhabiles.todosMunicipiosBool,
-                                  todosMunicipiosDesc = diasInhabiles.todosMunicipiosDesc,
-                                 
+                                   {
+                                       idDiaInhabil = diasInhabiles.idDiaInhabil,
+                                       fecha = diasInhabiles.fecha,
+                                       idMunicipio = diasInhabiles.idMunicipio,
+                                       todosMunicipiosBool = diasInhabiles.todosMunicipiosBool,
+                                       todosMunicipiosDesc = diasInhabiles.todosMunicipiosDesc,
 
 
-                              }).Where(w => w.idDiaInhabil == IdDiaInhabil).FirstOrDefault();
+
+                                   }).Where(w => w.idDiaInhabil == IdDiaInhabil).FirstOrDefault();
 
             return diaInhabilModel;
         }
 
-        /// <summary>
-        /// Linq es una tecnologia de control de datos (excel, txt,EF,sqlclient etc)
-        /// para la gestion un mejor control de la info
-        /// </summary>
-        /// <returns></returns>
         public List<DiasInhabilesModel> GetDiasInhabiles()
         {
             var ListDiasInhabilesModel = (from diasInhabiles in dbContext.DiasInhabiles.ToList()
-                                          join Municipios in dbContext.Municipios.ToList()
-                                          on diasInhabiles.idMunicipio equals Municipios.idMunicipio
+                                          join municipio in dbContext.CatMunicipios.ToList()
+                                          on diasInhabiles.idMunicipio equals municipio.IdMunicipio
                                           join estatus in dbContext.Estatus.ToList()
                                           on diasInhabiles.Estatus equals estatus.estatus
-                                          where diasInhabiles.Estatus == 1
-
-                                          
-
-                                        select new DiasInhabilesModel
-                                    {
-                                        idDiaInhabil = diasInhabiles.idDiaInhabil,
-                                        fecha = diasInhabiles.fecha,
-                                        idMunicipio = diasInhabiles.idMunicipio,
-                                        todosMunicipiosDesc = diasInhabiles.todosMunicipiosDesc,
-                                        Municipio = Municipios.Municipio,
-                                        Estatus = diasInhabiles.Estatus,
-                                        EstatusDesc= estatus.estatusDesc
 
 
-                                    }).ToList();
+
+                                          select new DiasInhabilesModel
+                                          {
+                                              idDiaInhabil = diasInhabiles.idDiaInhabil,
+                                              fecha = diasInhabiles.fecha,
+                                              idMunicipio = diasInhabiles.idMunicipio,
+                                              todosMunicipiosDesc = diasInhabiles.todosMunicipiosDesc,
+                                              Estatus = diasInhabiles.Estatus,
+                                              EstatusDesc = estatus.estatusDesc,
+                                              Municipio = municipio.Municipio
+
+                                          }).ToList();
             return ListDiasInhabilesModel;
         }
         #endregion

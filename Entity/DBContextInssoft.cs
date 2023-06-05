@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,7 @@ public partial class DBContextInssoft : DbContext
 
     public virtual DbSet<Delegaciones> Delegaciones { get; set; }
 
-    public virtual DbSet<Colores> Colores{ get; set; }
+    public virtual DbSet<CatColores> Colores { get; set; }
 
     public virtual DbSet<TipoVehiculos> TipoVehiculos { get; set; }
 
@@ -35,11 +35,35 @@ public partial class DBContextInssoft : DbContext
 
     public virtual DbSet<DiasInhabiles> DiasInhabiles { get; set; }
 
-    public virtual DbSet<Municipios> Municipios { get; set; }
+    public virtual DbSet<CatMunicipios> CatMunicipios { get; set; }
 
     public virtual DbSet<TiposCarga> TiposCarga { get; set; }
 
     public virtual DbSet<MotivosInfraccion> MotivosInfraccion { get; set; }
+
+    public virtual DbSet<CatAutoridadesDisposicion> CatAutoridadesDisposicion { get; set; }
+
+    public virtual DbSet<CatAutoridadesEntrega> CatAutoridadesEntrega { get; set; }
+
+    public virtual DbSet<CatInstitucionesTraslado> CatInstitucionesTraslado { get; set; }
+
+    public virtual DbSet<CatOficinasRenta> CatOficinasRenta { get; set; }
+
+    public virtual DbSet<CatAgenciasMinisterio> CatAgenciasMinisterio { get; set; }
+
+    public virtual DbSet<CatClasificacionAccidentes> CatClasificacionAccidentes { get; set; }
+
+    public virtual DbSet<CatFactoresAccidentes> CatFactoresAccidentes { get; set; }
+
+    public virtual DbSet<CatCausasAccidentes> CatCausasAccidentes { get; set; }
+
+    public virtual DbSet<CatFactoresOpcionesAccidentes> CatFactoresOpcionesAccidentes { get; set; }
+
+    public virtual DbSet<CatHospitales> CatHospitales { get; set; }
+
+    public virtual DbSet<CatDelegacionesOficinasTransporte> CatDelegacionesOficinasTransporte { get; set; }
+
+
 
 
 
@@ -151,29 +175,29 @@ public partial class DBContextInssoft : DbContext
         });
 
         modelBuilder.Entity<Delegaciones>(entity =>
-        { 
-         entity.HasKey(e => e.IdDelegacion);
+        {
+            entity.HasKey(e => e.IdDelegacion);
 
-        entity.ToTable("delegaciones");
-        entity.Property(e => e.IdDelegacion).HasColumnName("IdDelegacion");
+            entity.ToTable("delegaciones");
+            entity.Property(e => e.IdDelegacion).HasColumnName("IdDelegacion");
 
-        entity.Property(e => e.Delegacion).HasColumnName("Delegacion")
-            .HasMaxLength(100)
-            .IsUnicode(false)
-            .HasColumnName("Delegacion");
-        entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.Delegacion).HasColumnName("Delegacion")
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("Delegacion");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
             entity.Property(e => e.FechaActualizacion)
              .HasColumnType("datetime")
              .HasColumnName("fechaActualizacion");
-        entity.Property(e => e.Estatus).HasColumnName("Estatus");
-       
-    });
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
 
-        modelBuilder.Entity<Colores>(entity =>
+        });
+
+        modelBuilder.Entity<CatColores>(entity =>
         {
             entity.HasKey(e => e.IdColor);
 
-            entity.ToTable("colores");
+            entity.ToTable("catColores");
             entity.Property(e => e.IdColor).HasColumnName("IdColor");
 
             entity.Property(e => e.color).HasColumnName("color")
@@ -245,7 +269,6 @@ public partial class DBContextInssoft : DbContext
             entity.Property(e => e.idDiaInhabil).HasColumnName("idDiaInhabil");
 
             entity.Property(e => e.fecha).HasColumnName("fecha");
-              
             entity.Property(e => e.idMunicipio).HasColumnName("idMunicipio");
             entity.Property(e => e.todosMunicipiosBool).HasColumnName("todosMunicipiosBool");
             entity.Property(e => e.todosMunicipiosDesc).HasColumnName("todosMunicipiosDesc")
@@ -258,17 +281,22 @@ public partial class DBContextInssoft : DbContext
 
         });
 
-        modelBuilder.Entity<Municipios>(entity =>
+        modelBuilder.Entity<CatMunicipios>(entity =>
         {
-            entity.HasKey(e => e.idMunicipio).HasName("IdMunicipio");
+            entity.HasKey(e => e.IdMunicipio).HasName("IdMunicipio");
 
-            entity.ToTable("municipios");
+            entity.ToTable("catMunicipios");
 
-            entity.Property(e => e.idMunicipio).HasColumnName("IdMunicipio");           
+            entity.Property(e => e.IdMunicipio).HasColumnName("idMunicipio");
             entity.Property(e => e.Municipio)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("municipio");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
         });
         modelBuilder.Entity<TiposCarga>(entity =>
         {
@@ -310,7 +338,215 @@ public partial class DBContextInssoft : DbContext
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
 
         });
+        modelBuilder.Entity<CatAutoridadesDisposicion>(entity =>
+        {
+            entity.HasKey(e => e.IdAutoridadDisposicion);
 
+            entity.ToTable("catAutoridadesDisposicion");
+            entity.Property(e => e.IdAutoridadDisposicion).HasColumnName("IdAutoridadDisposicion");
+
+            entity.Property(e => e.NombreAutoridadDisposicion).HasColumnName("NombreAutoridadDisposicion")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatAutoridadesEntrega>(entity =>
+        {
+            entity.HasKey(e => e.IdAutoridadEntrega);
+
+            entity.ToTable("catAutoridadesEntrega");
+            entity.Property(e => e.IdAutoridadEntrega).HasColumnName("IdAutoridadEntrega");
+
+            entity.Property(e => e.AutoridadEntrega).HasColumnName("AutoridadEntrega")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatInstitucionesTraslado>(entity =>
+        {
+            entity.HasKey(e => e.IdInstitucionTraslado);
+
+            entity.ToTable("catInstitucionesTraslado");
+            entity.Property(e => e.IdInstitucionTraslado).HasColumnName("IdInstitucionTraslado");
+
+            entity.Property(e => e.InstitucionTraslado).HasColumnName("InstitucionTraslado")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+        OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<CatOficinasRenta>(entity =>
+        {
+            entity.HasKey(e => e.IdOficinaRenta);
+
+            entity.ToTable("catOficinasRenta");
+            entity.Property(e => e.IdOficinaRenta).HasColumnName("IdOficinaRenta");
+
+            entity.Property(e => e.NombreOficina).HasColumnName("NombreOficina")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdDelegacion).HasColumnName("IdDelegacion");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+        OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<CatAgenciasMinisterio>(entity =>
+        {
+            entity.HasKey(e => e.IdAgenciaMinisterio);
+
+            entity.ToTable("catAgenciasMinisterio");
+            entity.Property(e => e.IdAgenciaMinisterio).HasColumnName("IdAgenciaMinisterio");
+
+            entity.Property(e => e.NombreAgencia).HasColumnName("NombreAgencia")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdDelegacion).HasColumnName("IdDelegacion");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+        OnModelCreatingPartial(modelBuilder);
+
+        modelBuilder.Entity<CatClasificacionAccidentes>(entity =>
+        {
+            entity.HasKey(e => e.IdClasificacionAccidente);
+
+            entity.ToTable("catClasificacionAccidentes");
+            entity.Property(e => e.IdClasificacionAccidente).HasColumnName("IdClasificacionAccidente");
+
+            entity.Property(e => e.NombreClasificacion).HasColumnName("NombreClasificacion")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatFactoresAccidentes>(entity =>
+        {
+            entity.HasKey(e => e.IdFactorAccidente);
+
+            entity.ToTable("catFactoresAccidentes");
+            entity.Property(e => e.IdFactorAccidente).HasColumnName("IdFactorAccidente");
+
+            entity.Property(e => e.FactorAccidente).HasColumnName("FactorAccidente")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatCausasAccidentes>(entity =>
+        {
+            entity.HasKey(e => e.IdCausaAccidente);
+
+            entity.ToTable("catCausasAccidentes");
+            entity.Property(e => e.IdCausaAccidente).HasColumnName("IdCausaAccidente");
+
+            entity.Property(e => e.CausaAccidente).HasColumnName("CausaAccidente")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatFactoresOpcionesAccidentes>(entity =>
+        {
+            entity.HasKey(e => e.IdFactorOpcionAccidente);
+
+            entity.ToTable("catFactoresOpcionesAccidentes");
+            entity.Property(e => e.IdFactorOpcionAccidente).HasColumnName("IdFactorOpcionAccidente");
+
+            entity.Property(e => e.FactorOpcionAccidente).HasColumnName("FactorOpcionAccidente")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdFactorAccidente).HasColumnName("IdFactorAccidente");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatHospitales>(entity =>
+        {
+            entity.HasKey(e => e.IdHospital);
+
+            entity.ToTable("catHospitales");
+            entity.Property(e => e.IdHospital).HasColumnName("IdHospital");
+
+            entity.Property(e => e.NombreHospital).HasColumnName("NombreHospital")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdMunicipio).HasColumnName("IdMunicipio");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
+
+        modelBuilder.Entity<CatDelegacionesOficinasTransporte>(entity =>
+        {
+            entity.HasKey(e => e.IdOficinaTransporte);
+
+            entity.ToTable("catDelegacionesOficinasTransporte");
+            entity.Property(e => e.IdOficinaTransporte).HasColumnName("IdOficinaTransporte");
+            entity.Property(e => e.NombreOficina).HasColumnName("NombreOficina")
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.JefeOficina).HasColumnName("JefeOficina")
+               .HasMaxLength(100)
+               .IsUnicode(false);
+            entity.Property(e => e.IdMunicipio).HasColumnName("IdMunicipio");
+            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+            entity.Property(e => e.FechaActualizacion)
+             .HasColumnType("datetime")
+             .HasColumnName("fechaActualizacion");
+
+            entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

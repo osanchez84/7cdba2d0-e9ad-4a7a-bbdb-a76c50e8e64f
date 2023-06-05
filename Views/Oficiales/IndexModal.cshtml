@@ -1,9 +1,6 @@
 ﻿@model List<GuanajuatoAdminUsuarios.Models.OficialesModel>
 @*RazorCoder*@
 
-
-<div class="row minH100">
-    <nav class="navPrincipal">nav</nav>
     <div class="mainContainer bg-light">
 
         <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -26,7 +23,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="bg-light py-1"></div>
@@ -37,60 +33,57 @@
                     <h5 class="px-4"><b>Edita o elimina los registros de oficales.</b></h5>
                 </div>
             </div>
-        </section>
         <div class="row">
-            <div id="tablaDependencias">
+            <div id="tablaOficiales">
                 <partial name="_ListaOficiales" model="Model" />
-                @*@Html.Partial("_ProductModelList", Model)*@
-                <div class="row">
-                    <div class="col-12">
-                        <div class="tabCustomEnd"></div>
-                    </div>
-                </div>
+<!--/////////////////////////////////////////////////////////////////////********AGREGAR*********////////////////////////////////////////////////////////////////////-->
 
-            </div>
-
-            <div class="tab-pane tabCustomConteiner fade" id="delegaciones" role="tabpanel" aria-labelledby="delegaciones-tab">
-                <div class="row p-4 align-items-center justify-content-around">
-                    <div class="col-auto btnToggleCustom my-2">
+      <div class="modal fade modalCustom" id="agregarOficial" tabindex="-1" aria-labelledby="agregarOficialLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                        <div class="modal-body" id="ModalBodyCrearOficial">
+                </div>           
             </div>
         </div>
     </div>
+<!--/////////////////////////////////////////////////////////////////////********EDITAR*********////////////////////////////////////////////////////////////////////-->
 
-    <div class="modal fade modalCustom" id="addDependencia" tabindex="-1" aria-labelledby="addDependenciaLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Registrar Oficial</h4>
-                    @* <button type="button" class="close" id="hidden-cancel" data-dismiss="modal" aria-label="close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>*@
-
+            <div class="modal fade modalCustom" id="editarOficial" tabindex="-1" aria-labelledby="editarOficialLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body" id="ModalBodyEditarOficial">
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body" id="ModalBodyCreate">
+            </div>
+
+<!--/////////////////////////////////////////////////////////////////////********ELIMINAR*********////////////////////////////////////////////////////////////////////-->
+
+            <div class="modal fade modalCustom" id="eliminarOficial" tabindex="-1" aria-labelledby="eliminarOficialLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body" id="ModalBodyEliminarOficial">
+                        </div>
+                    </div>
                 </div>
-                @*  <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>*@
             </div>
 
         </div>
     </div>
 </div>
+</section>
 
-@*<script src="~/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>*@
+</div>
 <script>
     function mostrarModal() {
         $.ajax({
-            url: '@Url.Action("AgregarParcial")',
+            url: '@Url.Action("AgregarOficialParcial")',
             type: 'POST',
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (data) {
-                $('#ModalBodyCreate').html(data);
-                $('#addDependencia').modal('show');
+                $('#ModalBodyCrearOficial').html(data);
+                $('#agregarOficial').modal('show');
             }
         });
     }

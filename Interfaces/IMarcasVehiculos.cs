@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
 using GuanajuatoAdminUsuarios.Entity;
+using System.Collections.Generic;
 
 
 namespace GuanajuatoAdminUsuarios.Interfaces

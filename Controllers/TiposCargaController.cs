@@ -23,111 +23,27 @@ namespace Example.WebUI.Controllers
 
         }
 
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-           // SetDDLColores();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(TiposCargaModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("TipoCarga");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateTipoCarga(model);
-                return RedirectToAction("Index");
-            }
-            //SetDDLColores();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdTipoCarga)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLTiposCarga();
-            var tiposCargaModel = GetTipoCargaByID(IdTipoCarga);
-            return View(tiposCargaModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(TiposCargaModel tiposCargaModel)
-        {
-            ModelState.Remove("TipoCarga");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateTipoCarga(tiposCargaModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLTiposCarga();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdTipoCarga)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLTiposCarga();
-            var tiposCargaModel = GetTipoCargaByID(IdTipoCarga);
-            return View(tiposCargaModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(TiposCargaModel tiposCargaModel)
-        {
-            ModelState.Remove("TipoCarga");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteTipoCarga(tiposCargaModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLTiposCarga();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
-
 
         #region Modal Action
         public ActionResult IndexModal()
         {
             var ListTiposCargaModel = GetTiposCarga();
             //return View("IndexModal");
-            return View("IndexModal", ListTiposCargaModel);
+            return View("Index", ListTiposCargaModel);
         }
 
         [HttpPost]
         public ActionResult AgregarTipoCargaParcial()
         {
             //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarParcial(int IdTipoCarga)
         {
             var tiposCargaModel = GetTipoCargaByID(IdTipoCarga);
-            return View("_Editar",tiposCargaModel);
+            return View("_Editar", tiposCargaModel);
         }
 
         [HttpPost]
@@ -159,12 +75,14 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarParcialModal(TiposCargaModel model)
         {
+            bool switchTiposCarga = Request.Form["tiposCargaSwitch"].Contains("true");
+            model.Estatus = switchTiposCarga ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("TipoCarga");
             if (ModelState.IsValid)
@@ -175,8 +93,8 @@ namespace Example.WebUI.Controllers
                 var ListTiposCargaModel = GetTiposCarga();
                 return PartialView("_ListaTiposCarga", ListTiposCargaModel);
             }
-         
-            return PartialView("_Create");
+
+            return PartialView("_Editar");
         }
 
         [HttpPost]
@@ -192,7 +110,6 @@ namespace Example.WebUI.Controllers
                 var ListTiposCargaModel = GetTiposCarga();
                 return PartialView("_ListaTiposCarga", ListTiposCargaModel);
             }
-           
             return PartialView("_Eliminar");
         }
 
@@ -221,13 +138,12 @@ namespace Example.WebUI.Controllers
             dbContext.TiposCarga.Add(tipo);
             dbContext.SaveChanges();
         }
-         
         public void UpdateTipoCarga(TiposCargaModel model)
         {
             TiposCarga tipo = new TiposCarga();
             tipo.IdTipoCarga = model.IdTipoCarga;
             tipo.TipoCarga = model.TipoCarga;
-            tipo.Estatus = 1;
+            tipo.Estatus = model.Estatus;
             tipo.FechaActualizacion = DateTime.Now;
             dbContext.Entry(tipo).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -259,14 +175,14 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.TiposCarga.Find(IdTipoCarga);
 
             var tipoCargaModel = (from tiposCarga in dbContext.TiposCarga.ToList()
-                              select new TiposCargaModel
+                                  select new TiposCargaModel
 
-                              {
-                                  IdTipoCarga = tiposCarga.IdTipoCarga,
-                                  TipoCarga = tiposCarga.TipoCarga,
+                                  {
+                                      IdTipoCarga = tiposCarga.IdTipoCarga,
+                                      TipoCarga = tiposCarga.TipoCarga,
 
 
-                              }).Where(w => w.IdTipoCarga == IdTipoCarga).FirstOrDefault();
+                                  }).Where(w => w.IdTipoCarga == IdTipoCarga).FirstOrDefault();
 
             return tipoCargaModel;
         }
@@ -281,16 +197,16 @@ namespace Example.WebUI.Controllers
             var ListTiposcargaModel = (from tiposCarga in dbContext.TiposCarga.ToList()
                                        join estatus in dbContext.Estatus.ToList()
                                        on tiposCarga.Estatus equals estatus.estatus
-                                       where tiposCarga.Estatus == 1
+                                       
 
-                                    select new TiposCargaModel
-                                    {
-                                        IdTipoCarga = tiposCarga.IdTipoCarga,
-                                        TipoCarga = tiposCarga.TipoCarga,
-                                        Estatus = tiposCarga.Estatus,
-                                        EstatusDesc = estatus.estatusDesc
+                                       select new TiposCargaModel
+                                       {
+                                           IdTipoCarga = tiposCarga.IdTipoCarga,
+                                           TipoCarga = tiposCarga.TipoCarga,
+                                           Estatus = tiposCarga.Estatus,
+                                           EstatusDesc = estatus.estatusDesc
 
-                                    }).ToList();
+                                       }).ToList();
             return ListTiposcargaModel;
         }
         #endregion

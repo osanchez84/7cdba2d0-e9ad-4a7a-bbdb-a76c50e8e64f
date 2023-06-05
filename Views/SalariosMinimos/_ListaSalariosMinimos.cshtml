@@ -8,7 +8,7 @@
             columns.Bound(c => c.Salario).Width(190);
             columns.Bound(c => c.estatusDesc).Title("Estatus en sistema").Width(100);
             columns.Command(c => c.Custom("Editar").Click("getId")).Width(80);
-            columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
+           // columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
 
 
 
@@ -27,7 +27,6 @@
         {
             s.Field(c => c.Area);
             s.Field(c => c.Salario);
-            s.Field(c => c.Fecha);
 
         })
 

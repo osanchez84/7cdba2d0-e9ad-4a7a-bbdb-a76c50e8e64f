@@ -36,49 +36,29 @@
             </div>
             <div class="row">
                 <div class="col-12 mb-4 px-4 rounded gridCustom">
-            <div id="tablaDependencia">
+            <div id="tablaMarcas">
                 <partial name="_ListaMarcasVehiculos" model="Model" />
-                @*@Html.Partial("_ProductModelList", Model)*@
-                </div>
-            </div>
-        </div>
-       </section>
-    
-
+        
     <div class="modal fade modalCustom" id="addMarca" tabindex="-1" aria-labelledby="addMarcaLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
 
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Agregar Marca</h4>
-                    @* <button type="button" class="close" id="hidden-cancel" data-dismiss="modal" aria-label="close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>*@
-
-                </div>
                 <div class="modal-body" id="ModalBodyCreate">
                 </div>
             </div>
 
         </div>
     </div>
-</div>
 
 <!--UPDATE MODAL-->
 
-<div class="modal fade modalCustom" id="editMarca" tabindex="-1" aria-labelledby="editMarcaLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="editarMarca" tabindex="-1" aria-labelledby="editMarcaLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
 
         <!-- Modal content-->
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Editar Marca</h4>
-                @* <button type="button" class="close" id="hidden-cancel" data-dismiss="modal" aria-label="close">
-                <span aria-hidden="true">&times;</span>
-                </button>*@
-
-            </div>
+        
             <div class="modal-body" id="ModalBodyUpdate">
             </div>
         </div>
@@ -86,8 +66,24 @@
     </div>
 </div>
 
+<!--/////////////////////////////////////////////////////////////////////****ELIMINAR****/////////////////////////////////////////////////////////////////////////-->
+<div class="modal fade modalCustom" id="eliminarMarca" tabindex="-1" aria-labelledby="editMarcaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodyEliminarMarca">
 
-@*<script src="~/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>*@
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+</div>
+
 <script>
     function mostrarModal() {
         $.ajax({

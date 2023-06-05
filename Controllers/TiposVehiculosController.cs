@@ -22,81 +22,6 @@ namespace Example.WebUI.Controllers
             return View(ListTiposVehiculosModel);
 
         }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            SetDDLTiposVehiculos();
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Create(TiposVehiculosModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("TipoVehiculo");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateTipoVehiculo(model);
-                return RedirectToAction("Index");
-            }
-            SetDDLTiposVehiculos();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdTipoVehiculo)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLTiposVehiculos();
-            var tiposVehiculosModel = GetTipoVehiculoByID(IdTipoVehiculo);
-            return View(tiposVehiculosModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(TiposVehiculosModel tiposVehiculosModel)
-        {
-            ModelState.Remove("color");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateTipoVehiculo(tiposVehiculosModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLTiposVehiculos();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdTipoVehiculo)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLTiposVehiculos();
-            var tiposVehiculosModel = GetTipoVehiculoByID(IdTipoVehiculo);
-            return View(tiposVehiculosModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(TiposVehiculosModel tiposVehiculosModel)
-        {
-            ModelState.Remove("TipoVehiculo");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteTipoVehiculo(tiposVehiculosModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLTiposVehiculos();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -104,7 +29,7 @@ namespace Example.WebUI.Controllers
         {
             var ListTiposVehiculosModel = GetTiposVehiculos();
             //return View("IndexModal");
-            return View("IndexModal", ListTiposVehiculosModel);
+            return View("Index", ListTiposVehiculosModel);
         }
 
         [HttpPost]
@@ -112,16 +37,16 @@ namespace Example.WebUI.Controllers
         {
 
             //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
 
         [HttpPost]
-        public ActionResult EditarTipoVehiculo(int  IdTipoVehiculo)
+        public ActionResult EditarTipoVehiculo(int IdTipoVehiculo)
         {
 
             var tiposVehiculosModel = GetTipoVehiculoByID(IdTipoVehiculo);
-            return View("_Update",tiposVehiculosModel); 
+            return View("_Editar", tiposVehiculosModel);
         }
 
         [HttpPost]
@@ -153,21 +78,24 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
-       
+
         public ActionResult UpdatePartialTipoModal(TiposVehiculosModel model)
         {
+            bool switchTiposVehiculos = Request.Form["tiposVehiculoSwitch"].Contains("true");
+            model.Estatus = switchTiposVehiculos ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("TipoVehiculo");
             if (ModelState.IsValid)
             {
+               
                 UpdateTipoVehiculo(model);
                 var ListTiposVehiculosModel = GetTiposVehiculos();
                 return PartialView("_ListaTiposVehiculos", ListTiposVehiculosModel);
             }
-         
-            return PartialView("_Update");
+
+            return PartialView("_Editar");
         }
 
         public ActionResult EliminarPartialTipoVehiculoModal(TiposVehiculosModel model)
@@ -180,8 +108,8 @@ namespace Example.WebUI.Controllers
                 var ListTiposVehiculosModel = GetTiposVehiculos();
                 return PartialView("_ListaTiposVehiculos", ListTiposVehiculosModel);
             }
-           
-            return PartialView("_Update");
+
+            return PartialView("_Eliminar");
         }
 
         public JsonResult GetTipos([DataSourceRequest] DataSourceRequest request)
@@ -215,7 +143,7 @@ namespace Example.WebUI.Controllers
             TipoVehiculos tipo = new TipoVehiculos();
             tipo.IdTipoVehiculo = model.IdTipoVehiculo;
             tipo.TipoVehiculo = model.TipoVehiculo;
-            tipo.Estatus = 1;
+            tipo.Estatus = model.Estatus;
             tipo.FechaActualizacion = DateTime.Now;
             dbContext.Entry(tipo).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -236,7 +164,7 @@ namespace Example.WebUI.Controllers
 
         private void SetDDLTiposVehiculos()
         {
-            ViewBag.Categories = new SelectList(dbContext.TipoVehiculos.ToList(), "IdTipoVehiculo" ,"TipoVehiculo");
+            ViewBag.Categories = new SelectList(dbContext.TipoVehiculos.ToList(), "IdTipoVehiculo", "TipoVehiculo");
         }
 
 
@@ -246,14 +174,14 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.TipoVehiculos.Find(IdTipoVehiculo);
 
             var tipoVehiculoModel = (from tiposVehiculo in dbContext.TipoVehiculos.ToList()
-                              select new TiposVehiculosModel
+                                     select new TiposVehiculosModel
 
-                              {
-                                  IdTipoVehiculo = tiposVehiculo.IdTipoVehiculo,
-                                  TipoVehiculo = tiposVehiculo.TipoVehiculo,
+                                     {
+                                         IdTipoVehiculo = tiposVehiculo.IdTipoVehiculo,
+                                         TipoVehiculo = tiposVehiculo.TipoVehiculo,
 
 
-                              }).Where(w => w.IdTipoVehiculo == IdTipoVehiculo).FirstOrDefault();
+                                     }).Where(w => w.IdTipoVehiculo == IdTipoVehiculo).FirstOrDefault();
 
             return tipoVehiculoModel;
         }
@@ -268,17 +196,16 @@ namespace Example.WebUI.Controllers
             var ListTiposVehiculosModel = (from tiposVehiculo in dbContext.TipoVehiculos.ToList()
                                            join Estatus in dbContext.Estatus.ToList()
                                            on tiposVehiculo.Estatus equals Estatus.estatus
-                                           where tiposVehiculo.Estatus == 1
 
 
-                                    select new TiposVehiculosModel
-                                    {
-                                        IdTipoVehiculo = tiposVehiculo.IdTipoVehiculo,
-                                        TipoVehiculo = tiposVehiculo.TipoVehiculo,
-                                        Estatus =tiposVehiculo.Estatus,
-                                        estatusDesc= Estatus.estatusDesc
+                                           select new TiposVehiculosModel
+                                           {
+                                               IdTipoVehiculo = tiposVehiculo.IdTipoVehiculo,
+                                               TipoVehiculo = tiposVehiculo.TipoVehiculo,
+                                               Estatus = tiposVehiculo.Estatus,
+                                               estatusDesc = Estatus.estatusDesc
 
-                                    }).ToList();
+                                           }).ToList();
             return ListTiposVehiculosModel;
         }
         #endregion

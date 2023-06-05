@@ -35,78 +35,8 @@ namespace Example.WebUI.Controllers
             return View();
         }
 
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(ColoresModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("color");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateColor(model);
-                return RedirectToAction("Index");
-            }
-            SetDDLColores();
-            return View("Create");
-        }
 
 
-        [HttpGet]
-        public IActionResult Update(int IdColor)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLColores();
-            var coloresModel = GetColorByID(IdColor);
-            return View(coloresModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(ColoresModel coloresModel)
-        {
-            ModelState.Remove("color");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateColor(coloresModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLColores();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdColor)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLColores();
-            var coloresModel = GetColorByID(IdColor);
-            return View(coloresModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(ColoresModel coloresModel)
-        {
-            ModelState.Remove("CategoryName");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteColor(coloresModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLColores();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -121,13 +51,13 @@ namespace Example.WebUI.Controllers
         public ActionResult AgregarPacial()
         {
             //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         public ActionResult EditarParcial(int Id)
         {
             var coloresModel = GetColorByID(Id);
-            return View("_Update",coloresModel); 
+            return View("_Editar", coloresModel);
         }
 
         public ActionResult EliminarColorParcial(int IdColor)
@@ -142,7 +72,6 @@ namespace Example.WebUI.Controllers
             return Json(result);
         }
 
-      
 
 
 
@@ -153,7 +82,6 @@ namespace Example.WebUI.Controllers
             ModelState.Remove("color");
             if (ModelState.IsValid)
             {
-              
 
                 CreateColor(model);
                 var ListColoresModel = GetColores();
@@ -161,11 +89,13 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         public ActionResult UpdatePartialModal(ColoresModel model)
         {
+            bool switchColores = Request.Form["coloresSwitch"].Contains("true");
+            model.Estatus = switchColores ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("color");
             if (ModelState.IsValid)
@@ -178,7 +108,7 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Update");
+            return PartialView("_Editar");
         }
 
         public ActionResult EliminarPartialModal(ColoresModel model)
@@ -195,7 +125,7 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Update");
+            return PartialView("_Eliminar");
         }
         public JsonResult GetCols([DataSourceRequest] DataSourceRequest request)
         {
@@ -214,7 +144,7 @@ namespace Example.WebUI.Controllers
 
         public void CreateColor(ColoresModel model)
         {
-            Colores color = new Colores();
+            CatColores color = new CatColores();
             color.IdColor = model.IdColor;
             color.color = model.color;
             color.Estatus = 1;
@@ -225,10 +155,10 @@ namespace Example.WebUI.Controllers
 
         public void UpdateColor(ColoresModel model)
         {
-            Colores color = new Colores();
+            CatColores color = new CatColores();
             color.IdColor = model.IdColor;
             color.color = model.color;
-            color.Estatus = 1;
+            color.Estatus = model.Estatus;
             color.FechaActualizacion = DateTime.Now;
             dbContext.Entry(color).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -237,7 +167,7 @@ namespace Example.WebUI.Controllers
 
         public void DeleteColor(ColoresModel model)
         {
-            Colores color = new Colores();
+            CatColores color = new CatColores();
             color.IdColor = model.IdColor;
             color.color = model.color;
             color.Estatus = 0;
@@ -260,23 +190,18 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.Colores.Find(Id);
 
             var colorModel = (from colores in dbContext.Colores.ToList()
-                                    select new ColoresModel
+                              select new ColoresModel
 
-                                    {
-                                        IdColor = colores.IdColor,
-                                        color = colores.color,
+                              {
+                                  IdColor = colores.IdColor,
+                                  color = colores.color,
 
 
-                                    }).Where(w => w.IdColor == Id).FirstOrDefault();
+                              }).Where(w => w.IdColor == Id).FirstOrDefault();
 
             return colorModel;
         }
 
-        /// <summary>
-        /// Linq es una tecnologia de control de datos (excel, txt,EF,sqlclient etc)
-        /// para la gestion un mejor control de la info
-        /// </summary>
-        /// <returns></returns>
         public List<ColoresModel> GetColores()
         {
             var ListColoresModel = (from colores in dbContext.Colores.ToList()
@@ -284,12 +209,12 @@ namespace Example.WebUI.Controllers
                                     on colores.Estatus equals estatus.estatus
                                     where colores.Estatus == 1
                                     select new ColoresModel
-                                         {
-                                             IdColor = colores.IdColor,
-                                             color = colores.color,
-                                             estatusDesc = estatus.estatusDesc
+                                    {
+                                        IdColor = colores.IdColor,
+                                        color = colores.color,
+                                        estatusDesc = estatus.estatusDesc
 
-                                         }).ToList();
+                                    }).ToList();
             return ListColoresModel;
         }
         #endregion

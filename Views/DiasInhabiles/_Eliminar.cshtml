@@ -4,6 +4,10 @@
 
 }
 
+@{
+    Layout = null;
+}
+
 
 <section class=" bg-white rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -75,11 +79,11 @@
             <div class="controlForm my-3">
                 <label>Aplica a todos los municipios <b>(obligatorio)</b>:</label>
                 <div class="radioCustomTelerik">
-                    @(Html.Kendo().RadioGroupFor(t => t.todosMunicipiosBool)
+                    @(Html.Kendo().RadioGroupFor(t => t.todosMunicipiosDesc)
                         .Items(i =>
                         {
-                            i.Add().Label("Si").Value("1");
-                            i.Add().Label("No").Value("2");
+                            i.Add().Label("Si").Value("Si");
+                            i.Add().Label("No").Value("No");
 
                         })
                         )

@@ -14,5 +14,9 @@
 
         public string estatusDesc { get; set; }
 
+        public string MarcaVehiculo { get; set; }
+
+         public bool ValorEstatusSubmarcas { get; set; }
+
     }
 }

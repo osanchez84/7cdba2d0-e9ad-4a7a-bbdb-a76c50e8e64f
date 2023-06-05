@@ -23,89 +23,6 @@ namespace Example.WebUI.Controllers
 
         }
 
-        /// <summary>
-        /// Accion que redirige a la vista
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Create()
-        {
-            SetDDLSalarios();
-            return View();
-        }
-
-        /// <summary>
-        /// Accion que recupera los datos de la vista para insertar en BDD
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Create(SalariosMinimosModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Salario");
-            if (ModelState.IsValid)
-            {
-                //Crear el producto
-
-                CreateSalario(model);
-                return RedirectToAction("Index");
-            }
-            SetDDLSalarios();
-            return View("Create");
-        }
-
-
-        [HttpGet]
-        public IActionResult Update(int IdSalario)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLSalarios();
-            var salariosModel = GetSalarioByID(IdSalario);
-            return View(salariosModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Update(SalariosMinimosModel salariosModel)
-        {
-            ModelState.Remove("Salario");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                UpdateSalario(salariosModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLSalarios();
-            return View("Update");
-        }
-
-        [HttpGet]
-        public IActionResult Delete(int IdColor)
-        {
-            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
-            SetDDLSalarios();
-            var salariosModel = GetSalarioByID(IdColor);
-            return View(salariosModel);
-        }
-
-
-        [HttpPost]
-        public IActionResult Delete(SalariosMinimosModel salariosModel)
-        {
-            ModelState.Remove("Salario");
-            if (ModelState.IsValid)
-            {
-                //Modificiacion del registro
-                DeleteSalario(salariosModel);
-                return RedirectToAction("Index");
-            }
-            SetDDLSalarios();
-            return View("Delete");
-        }
-
-
-
-        ///Crear metodo de update (post)
 
 
         #region Modal Action
@@ -113,21 +30,21 @@ namespace Example.WebUI.Controllers
         {
             var ListSalariosModel = GetSalarios();
             //return View("IndexModal");
-            return View("IndexModal", ListSalariosModel);
+            return View("Index", ListSalariosModel);
         }
 
         [HttpPost]
         public ActionResult AgregarSalarioPacial()
         {
             //SetDDLDependencias();
-            return PartialView("_Create");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarSalarioParcial(int IdSalario)
         {
             var salariosModel = GetSalarioByID(IdSalario);
-            return View("_Update",salariosModel);
+            return View("_Editar", salariosModel);
         }
 
         [HttpPost]
@@ -160,25 +77,26 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Update");
+            return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult UpdatePartialSalarioModal(SalariosMinimosModel model)
         {
+            bool switchSalarios = Request.Form["salariosSwitch"].Contains("true");
+            model.Estatus = switchSalarios ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Salario");
             if (ModelState.IsValid)
             {
-
-
+               
                 UpdateSalario(model);
                 var ListSalariosModel = GetSalarios();
                 return PartialView("_ListaSalariosMinimos", ListSalariosModel);
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Update");
+            return PartialView("_Editar");
         }
 
         [HttpPost]
@@ -196,7 +114,7 @@ namespace Example.WebUI.Controllers
             }
             //SetDDLCategories();
             //return View("Create");
-            return PartialView("_Update");
+            return PartialView("_Eliminar");
         }
 
         public JsonResult GetMins([DataSourceRequest] DataSourceRequest request)
@@ -234,7 +152,7 @@ namespace Example.WebUI.Controllers
             salario.Area = model.Area;
             salario.Salario = model.Salario;
             salario.Fecha = model.Fecha;
-            salario.Estatus = 1;
+            salario.Estatus = model.Estatus;
             salario.FechaActualizacion = DateTime.Now;
             dbContext.Entry(salario).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -268,18 +186,18 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.SalariosMinimos.Find(IdSalario);
 
             var SalarioModel = (from salariosMinimos in dbContext.SalariosMinimos.ToList()
-                              select new SalariosMinimosModel
+                                select new SalariosMinimosModel
 
-                              {
-                                  IdSalario = salariosMinimos.IdSalario,
-                                  Area = salariosMinimos.Area,
-                                  Salario = salariosMinimos.Salario,
-                                  Fecha = salariosMinimos.Fecha,
-                                  Estatus = salariosMinimos.Estatus,
+                                {
+                                    IdSalario = salariosMinimos.IdSalario,
+                                    Area = salariosMinimos.Area,
+                                    Salario = salariosMinimos.Salario,
+                                    Fecha = salariosMinimos.Fecha,
+                                    Estatus = salariosMinimos.Estatus,
 
 
 
-                              }).Where(w => w.IdSalario == IdSalario).FirstOrDefault();
+                                }).Where(w => w.IdSalario == IdSalario).FirstOrDefault();
 
             return SalarioModel;
         }
@@ -294,16 +212,16 @@ namespace Example.WebUI.Controllers
             var ListSalariosModel = (from salariosMinimos in dbContext.SalariosMinimos.ToList()
                                      join estatus in dbContext.Estatus.ToList()
                                     on salariosMinimos.Estatus equals estatus.estatus
-                                        where salariosMinimos.Estatus == 1
-                                   
+                                     where salariosMinimos.Estatus == 1
+
                                      select new SalariosMinimosModel
-                                    {
-                                        IdSalario = salariosMinimos.IdSalario,
-                                        Area = salariosMinimos.Area,
-                                        Salario = salariosMinimos.Salario,
-                                        Fecha = salariosMinimos.Fecha,
-                                        Estatus = salariosMinimos.Estatus,
-                                        estatusDesc = estatus.estatusDesc,
+                                     {
+                                         IdSalario = salariosMinimos.IdSalario,
+                                         Area = salariosMinimos.Area,
+                                         Salario = salariosMinimos.Salario,
+                                         Fecha = salariosMinimos.Fecha,
+                                         Estatus = salariosMinimos.Estatus,
+                                         estatusDesc = estatus.estatusDesc,
 
                                      }).ToList();
             return ListSalariosModel;

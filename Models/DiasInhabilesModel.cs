@@ -6,7 +6,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public int idDiaInhabil { get; set; }
 
-        public DateTime  fecha { get; set; }
+        public DateTime fecha { get; set; }
 
         public int idMunicipio { get; set; }
 
@@ -23,6 +23,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string EstatusDesc { get; set; }
 
+         public bool ValorEstatusDiasInhabiles { get; set; }
 
     }
 

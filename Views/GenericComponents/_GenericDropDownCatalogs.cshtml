@@ -1,0 +1,16 @@
+﻿
+@{
+    bool multiple = (bool)ViewBag.multiple;
+    bool isRequired = (bool)ViewBag.isRequired;
+    string htmlName = (string)ViewBag.htmlName;
+    string functionName = (string)ViewBag.functionName;
+    var modelList = (IEnumerable<SystemCatalogListModel>)ViewBag.ModelList;
+}
+
+@(Html.Kendo().DropDownList()
+        .DataValueField("Id")
+        .DataTextField("Text")
+        .Name(htmlName)
+        .BindTo(modelList)
+        .OptionLabel("-- Seleccione --")
+        .HtmlAttributes(new { style = "width:100%;", id= htmlName }))

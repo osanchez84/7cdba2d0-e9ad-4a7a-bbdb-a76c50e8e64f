@@ -40,8 +40,18 @@
                         <div class="controlForm my-3">
                             <label>Factor<b>(obligatorio)</b>:</label>
                             <span>
-                    @Html.DropDownListFor(t=>t.IdFactorAccidente,factores)
-
+                    @(Html.Kendo().DropDownListFor(t => t.IdFactorAccidente)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .OptionLabel("Selecciona un Factor de Accidente")
+                        .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Factores_Drop", "CatFactoresOpcionesAccidentes");
+                            });
+                        }))
                             </span>
                         </div>
                     </div>

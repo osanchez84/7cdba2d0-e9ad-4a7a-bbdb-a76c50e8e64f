@@ -33,7 +33,7 @@
             <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
         </div>
         <div class="col-12 col-lg-6 my-4">
-            <div class="row justify-content-center">
+                <div class="row justify-content-center btnToggleActive">
 
                     @(Html.Kendo().SwitchFor(t => t.SwitchEstatusCausaAccidente)
                         .Name("causaAccidenteSwitch")
@@ -96,6 +96,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaCausasAccidentes").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

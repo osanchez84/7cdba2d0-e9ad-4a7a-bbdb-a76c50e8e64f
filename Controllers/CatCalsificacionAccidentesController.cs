@@ -3,9 +3,11 @@ using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Example.WebUI.Controllers
@@ -160,14 +162,14 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.CatAutoridadesEntrega.Find(IdClasificacionAccidente);
 
             var clasificacionAccidentesModel = (from catClasificacionAccidentes in dbContext.CatClasificacionAccidentes.ToList()
-                                                select new CatClasificacionAccidentesModel
+                                              select new CatClasificacionAccidentesModel
 
-                                                {
-                                                    IdClasificacionAccidente = catClasificacionAccidentes.IdClasificacionAccidente,
-                                                    NombreClasificacion = catClasificacionAccidentes.NombreClasificacion,
+                                              {
+                                                  IdClasificacionAccidente = catClasificacionAccidentes.IdClasificacionAccidente,
+                                                  NombreClasificacion = catClasificacionAccidentes.NombreClasificacion,
 
 
-                                                }).Where(w => w.IdClasificacionAccidente == IdClasificacionAccidente).FirstOrDefault();
+                                              }).Where(w => w.IdClasificacionAccidente == IdClasificacionAccidente).FirstOrDefault();
 
             return clasificacionAccidentesModel;
         }

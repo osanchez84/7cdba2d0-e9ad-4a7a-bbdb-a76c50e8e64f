@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -13,11 +14,17 @@ namespace Example.WebUI.Controllers
 {
     public class CatHospitalesController : Controller
     {
+        private readonly ICatHospitalesService _catHospitalesService;
+
+        public CatHospitalesController(ICatHospitalesService catHospitalesService)
+        {
+            _catHospitalesService = catHospitalesService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
 
-            var ListHospitalesModel = GetHospitales();
+            var ListHospitalesModel = _catHospitalesService.GetHospitales();
 
             return View(ListHospitalesModel);
 
@@ -29,27 +36,27 @@ namespace Example.WebUI.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListHospitalesModel = GetHospitales();
+            var ListHospitalesModel = _catHospitalesService.GetHospitales();
             return View("Index", ListHospitalesModel);
         }
 
         [HttpPost]
         public ActionResult AgregarHospitalModal()
         {
-            SetDDLMunicipios();
+            Municipios_Drop();
             return PartialView("_Crear");
         }
 
         public ActionResult EditarHospitalModal(int IdHospital)
         {
-            SetDDLMunicipios();
+            Municipios_Drop();
             var hospitalesModel = GetHospitalByID(IdHospital);
             return PartialView("_Editar", hospitalesModel);
         }
 
         public ActionResult EliminarHospitalModal(int IdHospital)
         {
-            SetDDLMunicipios();
+            Municipios_Drop();
             var hospitalesModel = GetHospitalByID(IdHospital);
             return PartialView("_Eliminar", hospitalesModel);
         }
@@ -66,7 +73,7 @@ namespace Example.WebUI.Controllers
 
 
                 CrearHospital(model);
-                var ListHospitalesModel = GetHospitales();
+                var ListHospitalesModel = _catHospitalesService.GetHospitales();
                 return PartialView("_ListaHospitales", ListHospitalesModel);
             }
 
@@ -84,7 +91,7 @@ namespace Example.WebUI.Controllers
 
 
                 EditarHospital(model);
-                var ListHospitalesModel = GetHospitales();
+                var ListHospitalesModel = _catHospitalesService.GetHospitales();
                 return PartialView("_ListaHospitales", ListHospitalesModel);
             }
             return PartialView("_Editar");
@@ -98,23 +105,23 @@ namespace Example.WebUI.Controllers
             {
 
                 EliminarHospital(model);
-                var ListHospitalesModel = GetHospitales();
+                var ListHospitalesModel = _catHospitalesService.GetHospitales();
                 return PartialView("_ListaHospitales", ListHospitalesModel);
             }
             return PartialView("_Eliminar");
         }
         public JsonResult GetHospitalesLista([DataSourceRequest] DataSourceRequest request)
         {
-            var ListHospitalesModel = GetHospitales();
+            var ListHospitalesModel = _catHospitalesService.GetHospitales();
 
             return Json(ListHospitalesModel.ToDataSourceResult(request));
         }
-
-        private void SetDDLMunicipios()
+        public JsonResult Municipios_Drop()
         {
-            ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Municipios = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
+           var result = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
+            return Json(result);
         }
+     
 
 
 

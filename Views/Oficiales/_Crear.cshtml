@@ -42,8 +42,18 @@
                 <div class="controlForm my-3">
                     <label>Delegación<b>(obligatorio)</b>:</label>
                     <span>
-                        @Html.DropDownListFor(t => t.IdDelegacion,delegaciones)
-                        
+                        @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una  Delegación")
+                            .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Drop", "Oficiales");
+                                });
+                            }))
                     </span>
                 </div>
             </div>

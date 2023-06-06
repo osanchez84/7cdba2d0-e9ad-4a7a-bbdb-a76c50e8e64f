@@ -114,6 +114,12 @@ namespace Example.WebUI.Controllers
             return Json(ListAgenciasMinisterioModel.ToDataSourceResult(request));
         }
 
+        public JsonResult Delegaciones_Drop()
+        {
+            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            return Json(result);
+        }
+
 
 
 
@@ -200,7 +206,6 @@ namespace Example.WebUI.Controllers
                                                on catAgenciasMinisterio.IdDelegacion equals delegaciones.IdDelegacion
                                                join estatus in dbContext.Estatus.ToList()
                                                on catAgenciasMinisterio.Estatus equals estatus.estatus
-                                               where catAgenciasMinisterio.Estatus == 1
                                                select new CatAgenciasMinisterioModel
                                                {
                                                    IdAgenciaMinisterio = catAgenciasMinisterio.IdAgenciaMinisterio,

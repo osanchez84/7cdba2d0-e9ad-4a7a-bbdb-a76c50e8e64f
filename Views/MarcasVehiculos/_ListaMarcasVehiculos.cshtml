@@ -10,7 +10,7 @@
             columns.Bound(c => c.MarcaVehiculo).Width(190);
                 columns.Bound(c => c.estatusDesc).Title("Estatus en sistema").Width(90);
             columns.Command(c => c.Custom("Editar").Click("getId")).Width(80);
-            //columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
+            columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
 
         }).HtmlAttributes(new { style = "height:650px" })
         .Sortable()

@@ -41,7 +41,7 @@
             <h5 class="px-4"><b>Datos de día inhábil</b></h5>
             <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
         </div>
-        <div class="col-12 col-lg-6 my-4">
+            <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusDiasInhabiles)
                 .Name("diasInhabilesSwitch")
                 .Checked(true)
@@ -66,7 +66,18 @@
             <div class="controlForm my-3">
                 <label>Municipio <b>(obligatorio)</b>:</label>
                 <span>
-                    @Html.DropDownListFor(t => t.idMunicipio,municipios)
+                    @(Html.Kendo().DropDownListFor(t => t.idMunicipio)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .OptionLabel("Selecciona un Municipio")
+                        .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Municipios_Drop", "DiasInhabiles");
+                            });
+                        }))
                 </span>
             </div>
         </div>

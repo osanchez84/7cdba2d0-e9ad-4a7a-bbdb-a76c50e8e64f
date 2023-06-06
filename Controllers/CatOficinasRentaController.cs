@@ -37,7 +37,7 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarOficinaRentaModal()
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             return PartialView("_Crear");
         }
 
@@ -51,14 +51,14 @@ namespace Example.WebUI.Controllers
 
         public ActionResult EditarOficinaRentaModal(int IdOficinaRenta)
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             var oficinasRentaModel = GetOficinaRentaByID(IdOficinaRenta);
             return PartialView("_Editar", oficinasRentaModel);
         }
 
         public ActionResult EliminarOficinaRentaModal(int IdOficinaRenta)
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             var oficinasRentaModel = GetOficinaRentaByID(IdOficinaRenta);
             return PartialView("_Eliminar", oficinasRentaModel);
         }
@@ -78,7 +78,7 @@ namespace Example.WebUI.Controllers
                 var ListOficinasRentaModel = GetOficinas();
                 return PartialView("_ListaOficinasRenta", ListOficinasRentaModel);
             }
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             return PartialView("_Crear");
         }
 
@@ -96,7 +96,7 @@ namespace Example.WebUI.Controllers
                 var ListOficinasRentaModel = GetOficinas();
                 return PartialView("_ListaOficinasRenta", ListOficinasRentaModel);
             }
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             return PartialView("_Editar");
         }
 
@@ -112,7 +112,7 @@ namespace Example.WebUI.Controllers
                 var ListOficinasRentaModel = GetOficinas();
                 return PartialView("_ListaOficinasRenta", ListOficinasRentaModel);
             }
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             return PartialView("_Eliminar");
         }
 
@@ -178,13 +178,13 @@ namespace Example.WebUI.Controllers
 
         }
 
-        private void SetDDLDelegaciones()
+       
+
+        public JsonResult Delegaciones_Drop()
         {
-            ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Delegaciones = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            return Json(result);
         }
-
-
         public CatOficinasRentaModel GetOficinaRentaByID(int IdOficinaRenta)
         {
 

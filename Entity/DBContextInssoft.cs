@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace GuanajuatoAdminUsuarios.Entity;
 
@@ -62,6 +63,8 @@ public partial class DBContextInssoft : DbContext
     public virtual DbSet<CatHospitales> CatHospitales { get; set; }
 
     public virtual DbSet<CatDelegacionesOficinasTransporte> CatDelegacionesOficinasTransporte { get; set; }
+
+    public virtual DbSet<Infracciones> Infracciones { get; set; }
 
 
 
@@ -547,8 +550,65 @@ public partial class DBContextInssoft : DbContext
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
 
         });
-        OnModelCreatingPartial(modelBuilder);
+        OnModelCreatingPartial(modelBuilder);    
+
+
+        modelBuilder.Entity<Infracciones>(entity =>
+            {
+                entity.HasKey(e => e.IdInfraccion);
+
+                entity.ToTable("infracciones");
+                entity.Property(e => e.IdInfraccion).HasColumnName("IdInfraccion");
+                entity.Property(e => e.FolioInfraccion).HasColumnName("folioInfraccion")
+                 .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.Placas).HasColumnName("placas")
+                 .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.IdOficial).HasColumnName("idOficial");
+                entity.Property(e => e.IdDependencia).HasColumnName("idDependencia");
+                entity.Property(e => e.IdDelegacion).HasColumnName("idDelegacion");
+                entity.Property(e=> e.Oficial).HasColumnName("oficial")
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+                entity.Property(e => e.Municipio).HasColumnName("municipio")
+                   .HasMaxLength(150)
+                   .IsUnicode(false);
+                entity.Property(e => e.FechaInfraccion)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaInfraccion");
+                entity.Property(e => e.Carretera).HasColumnName("carretera")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.Tramo).HasColumnName("tramo")
+                       .HasMaxLength(100)
+                       .IsUnicode(false);
+                 entity.Property(e => e.KmCarretera).HasColumnName("kmCarretera")
+                   .HasMaxLength(100)
+                   .IsUnicode(false);
+                entity.Property(e => e.IdVehiculo).HasColumnName("idVehiculo");
+                entity.Property(e => e.IdConductor).HasColumnName("IdConductor");
+                entity.Property(e => e.Conductor).HasColumnName("conductor")
+                      .HasMaxLength(150)
+                      .IsUnicode(false);
+                entity.Property(e => e.Propietario).HasColumnName("propietario")
+                      .HasMaxLength(100)
+                      .IsUnicode(false);
+                entity.Property(e => e.IdAplicacion).HasColumnName("idAplicacion");
+                entity.Property(e => e.InfraccionCortesia).HasColumnName("infraccionCortesia");
+                entity.Property(e => e.IdGarantia).HasColumnName("idGarantia");
+                entity.Property(e => e.EstatusProceso).HasColumnName("estatusProceso");
+                entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+                entity.Property(e => e.FechaActualizacion)
+                 .HasColumnType("datetime")
+                 .HasColumnName("fechaActualizacion");
+
+                entity.Property(e => e.Estatus).HasColumnName("Estatus");
+
+
+            });
     }
+      
 
 
 

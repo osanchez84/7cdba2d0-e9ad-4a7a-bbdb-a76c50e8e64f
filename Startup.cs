@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +54,14 @@ namespace GuanajuatoAdminUsuarios
                 setupAction.LowercaseUrls = true;
             });
             // Add framework services.
+            services
+                .AddControllersWithViews()
+                // Maintain property names during serialization. See:
+                // https://github.com/aspnet/Announcements/issues/194
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+            // Servicios KEndo Telerik
+            services.AddKendo();
+
             //Added for session state
             services.AddDistributedMemoryCache();
 
@@ -90,6 +100,20 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatalogosService, CatalogosService>();
             services.AddScoped<ICatDictionary, CatDictionary>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
+
+            services.AddScoped<ICatFactoresAccidentesService, CatFactoresAccidentesService>();
+            services.AddScoped<ICatFactoresOpcionesAccidentesService, CatFactoresOpcionesAccidentesService>();
+            services.AddScoped<ICatCausasAccidentesService, CatCausasAccidentesService>();
+            services.AddScoped<ICatHospitalesService, CatHospitalesService>();
+            services.AddScoped<ICatClasificacionAccidentes, CatClasificacionAccidentesService>();
+            services.AddScoped<ICatMarcasVehiculosService, CatMarcasVehiculosService>();
+            services.AddScoped<ICatSubmarcasVehiculosService, CatSubmarcasVehiculosService>();
+            services.AddScoped<ICatMunicipiosService, CatMunicipiosService>();
+            services.AddScoped<ICatTramosService, CatTramosService>();
+            services.AddScoped<ICatCarreterasService, CatCarreterasService>();
+            services.AddScoped<IRegistroReciboPagoService, RegistroReciboPagoService>();
+            services.AddScoped<ICancelarInfraccionService, CancelarInfraccionService>();
+            services.AddScoped<ICapturaAccidentesService, CapturaAccidentesService>();
 
             services
                .AddControllersWithViews()

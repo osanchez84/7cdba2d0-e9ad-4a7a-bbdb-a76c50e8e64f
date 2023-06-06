@@ -32,7 +32,7 @@
             <h5 class="px-4"><b>Datos de autoridad de entrega</b></h5>
             <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
         </div>
-        <div class="col-12 col-lg-6 my-4">
+            <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusAutEntrega)
                 .Name("autEntregaSwitch")
                 .Checked(true)
@@ -92,6 +92,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaAutoridadesEntrega").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

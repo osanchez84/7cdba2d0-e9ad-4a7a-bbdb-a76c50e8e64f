@@ -14,8 +14,13 @@
 
 @font-face {
     font-family: 'SITTEG';
+<<<<<<< HEAD
     src: url('fonts/SITTEG.eot?nsynek');
     src: url('fonts/SITTEG.eot?nsynek#iefix') format('embedded-opentype'), url('fonts/SITTEG.ttf?nsynek') format('truetype'), url('fonts/SITTEG.woff?nsynek') format('woff'), url('fonts/SITTEG.svg?nsynek#SITTEG') format('svg');
+=======
+    src: url('fonts/SITTEG.eot?ld5bdf');
+    src: url('fonts/SITTEG.eot?ld5bdf#iefix') format('embedded-opentype'), url('fonts/SITTEG.ttf?ld5bdf') format('truetype'), url('fonts/SITTEG.woff?ld5bdf') format('woff'), url('fonts/SITTEG.svg?ld5bdf#SITTEG') format('svg');
+>>>>>>> origin/juandos
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -35,6 +40,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+<<<<<<< HEAD
 .icon-addFactorAccidente:before {
     content: "\e996";
 }
@@ -115,6 +121,8 @@
     content: "\e98e";
 }
 
+=======
+>>>>>>> origin/juandos
 .icon-editRecibo:before {
     content: "\e986";
 }
@@ -673,14 +681,22 @@
 
 
 .h7 {
+<<<<<<< HEAD
     font-size:12px
+=======
+    font-size: 12px
+>>>>>>> origin/juandos
 }
 
 .navPrincipal {
     background-color: var(--second-color);
 }
 
+<<<<<<< HEAD
     .navPrincipal img{
+=======
+    .navPrincipal img {
+>>>>>>> origin/juandos
         object-fit: contain;
         max-width: 280px;
     }
@@ -689,6 +705,7 @@
         padding: 1rem .2rem;
     }
 
+<<<<<<< HEAD
     .navPrincipal .nav-tabs .nav-link.active, .navPrincipal .nav-tabs .nav-item.show .nav-link {
         background-color: var(--second-color);
         border-color: var(--second-color);
@@ -698,6 +715,17 @@
     .navPrincipal .nav-tabs .nav-link.active i, .navPrincipal .nav-tabs .nav-item.show .nav-link i {
         color: var(--main-color);
     }
+=======
+        .navPrincipal .nav-tabs .nav-link.active, .navPrincipal .nav-tabs .nav-item.show .nav-link {
+            background-color: var(--second-color);
+            border-color: var(--second-color);
+            border-radius: 0;
+        }
+
+            .navPrincipal .nav-tabs .nav-link.active i, .navPrincipal .nav-tabs .nav-item.show .nav-link i {
+                color: var(--main-color);
+            }
+>>>>>>> origin/juandos
 
 .navPrincipal-content {
     background-color: var(--main-color);
@@ -711,6 +739,10 @@
     padding-top: .4rem;
     padding-bottom: .4rem;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/juandos
     .navPrincipal-link .nav-item.active {
         background-color: white;
         border-radius: 0.25rem;
@@ -740,6 +772,10 @@
         max-width: 80%;
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/juandos
 .colorPrimary {
     color: var(--main-color);
 }
@@ -780,16 +816,26 @@
     .navPrincipal .k-drawer {
     }
 
+<<<<<<< HEAD
     .mainContainer {
         width: 100%
     }
+=======
+.mainContainer {
+    width: 100%
+}
+>>>>>>> origin/juandos
 
 .minH100 {
     min-height: 100vh;
 }
 
 .opacity-50 {
+<<<<<<< HEAD
     opacity:.5
+=======
+    opacity: .5
+>>>>>>> origin/juandos
 }
 
 .boxShadow {
@@ -803,10 +849,15 @@
 .controlForm .k-timepicker {
     width: 100%;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/juandos
     .controlForm .k-picker-wrap, .controlForm .k-picker-wrap input, .controlForm .k-datetimepicker input, .controlForm .k-timepicker input {
         border: none;
         height: 100%;
     }
+<<<<<<< HEAD
 .controlForm .k-textbox, .controlForm .k-dropdown, .controlForm .k-datepicker, .controlForm .k-datetimepicker, .controlForm .k-timepicker input {
     border: none;
     height: 58px;
@@ -817,15 +868,35 @@
         align-items: center;
     }
 
+=======
+
+    .controlForm .k-textbox, .controlForm .k-dropdown, .controlForm .k-datepicker, .controlForm .k-datetimepicker, .controlForm .k-timepicker input {
+        border: none;
+        height: 58px;
+    }
+
+        .controlForm .k-dropdown .k-dropdown-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+>>>>>>> origin/juandos
 .controlForm label {
     font-weight: bold;
     color: #292929;
     margin: 0 0 10px 8px;
     text-align: left;
 }
+<<<<<<< HEAD
 .controlForm label b {
    font-weight: 400;
  }
+=======
+
+    .controlForm label b {
+        font-weight: 400;
+    }
+>>>>>>> origin/juandos
 
 .controlForm .k-i-calendar::before, .controlForm .k-i-clock::before {
     font-size: 32px;
@@ -853,6 +924,7 @@
     display: block;
     border-radius: 4px;
 }
+<<<<<<< HEAD
     .controlForm .k-imageeditor .k-toolbar {
     background-color: #f2f2f6;
     }
@@ -879,6 +951,39 @@
     .controlForm .k-datetimepicker .k-select .k-link-date, .controlForm .k-datetimepicker .k-select .k-link-time {
         margin:auto 8px;
     }
+=======
+
+.controlForm .k-imageeditor .k-toolbar {
+    background-color: #f2f2f6;
+}
+
+.controlForm .k-imageeditor .k-dropdown {
+    height: 42px;
+}
+
+.controlForm .k-imageeditor .k-toolbar .k-button, .controlForm .k-imageeditor .k-toolbar .k-button-secondary {
+    border-color: #bacdd5;
+    color: #212121;
+    background-color: #f2f2f6;
+    background-image: linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,0));
+}
+
+}
+
+.controlForm .k-datepicker .k-select.k-state-hover, .controlForm .k-datepicker .k-select:hover, .controlForm .k-timepicker .k-select.k-state-hover, .controlForm .k-timepicker .k-select:hover, .controlForm .k-dropdown .k-dropdown-wrap.k-state-hover, .controlForm .k-dropdown .k-dropdown-wrap:hover, .controlForm .k-dropdowntree .k-dropdown-wrap.k-state-hover, .controlForm .k-dropdowntree .k-dropdown-wrap:hover, .controlForm .k-datetimepicker .k-link:hover {
+    border-color: #f1f1f1;
+    background-color: #f1f1f1;
+}
+
+.controlForm .k-textarea > .k-input {
+    padding: 4px 0;
+}
+
+.controlForm .k-datetimepicker .k-select .k-link-date, .controlForm .k-datetimepicker .k-select .k-link-time {
+    margin: auto 8px;
+}
+
+>>>>>>> origin/juandos
 .controlButton button {
     height: 58px;
     width: 100%;
@@ -978,7 +1083,10 @@
         width: 92%;
         max-width: 1300px;
         margin: 12px auto;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/juandos
     }
 
 
@@ -1009,8 +1117,14 @@
 
 .btnToggleActive .k-switch {
     width: 100%;
+<<<<<<< HEAD
     height:58px;
 }
+=======
+    height: 58px;
+}
+
+>>>>>>> origin/juandos
 .btnToggleActive .k-switch-container, .btnToggleActive .k-switch-container:hover {
     height: 100%;
     border: solid 2px #292929c7;
@@ -1020,6 +1134,7 @@
 }
 
 
+<<<<<<< HEAD
         .btnToggleActive .k-switch-container .k-switch-label-on, .btnToggleActive .k-switch-container .k-switch-label-off {
             font-size: 18px;
             letter-spacing: 1px;
@@ -1048,6 +1163,38 @@
             border-color: var(--main-color);
             z-index: 1;
         }
+=======
+    .btnToggleActive .k-switch-container .k-switch-label-on, .btnToggleActive .k-switch-container .k-switch-label-off {
+        font-size: 18px;
+        letter-spacing: 1px;
+        font-weight: bold;
+        text-transform: capitalize;
+        width: 50%;
+        max-width: 50%;
+        text-align: center;
+        color: #292929c7;
+        z-index: 2;
+    }
+
+.btnToggleActive .k-switch[aria-checked="true"] .k-switch-container .k-switch-label-on {
+    color: white;
+}
+
+.btnToggleActive .k-switch[aria-checked="false"] .k-switch-container .k-switch-label-off {
+    color: white;
+}
+
+.btnToggleActive .k-switch-container .k-switch-handle {
+    width: 49.6%;
+    height: 50px;
+    margin-top: 2px;
+    border-radius: 2px;
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    z-index: 1;
+}
+
+>>>>>>> origin/juandos
 .btnToggleActive .k-switch-on .k-switch-handle {
     left: calc(100% - 100%);
 }
@@ -1056,9 +1203,15 @@
     left: calc(100% - 50%);
 }
 
+<<<<<<< HEAD
         input[type="radio"].toggle {
             display: none;
         }
+=======
+input[type="radio"].toggle {
+    display: none;
+}
+>>>>>>> origin/juandos
 
     input[type="radio"].toggle + label {
         cursor: pointer;
@@ -1082,7 +1235,10 @@
             transition: left 200ms cubic-bezier(0.77, 0, 0.175, 1);
             width: 100%;
             z-index: -1;
+<<<<<<< HEAD
             
+=======
+>>>>>>> origin/juandos
         }
 
 .btnToggle input[type="radio"].toggle.toggle-left + label {
@@ -1160,9 +1316,15 @@
     background-image: linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,0));
 }
 
+<<<<<<< HEAD
 .k-grid td{
     color:#292929;
     font-weight:400;
+=======
+.k-grid td {
+    color: #292929;
+    font-weight: 400;
+>>>>>>> origin/juandos
 }
 
 .k-checkbox.k-checked, .k-checkbox:checked {
@@ -1171,9 +1333,15 @@
     background-color: var(--main-color);
 }
 
+<<<<<<< HEAD
 .k-checkbox{
     width:22px;
     height:22px;
+=======
+.k-checkbox {
+    width: 22px;
+    height: 22px;
+>>>>>>> origin/juandos
 }
 
 .k-grid td.k-state-selected, .k-grid tr.k-state-selected > td {
@@ -1186,6 +1354,7 @@
     border: 2px #292929c7 solid;
 }
 
+<<<<<<< HEAD
 .btnToggleCustom button.active {
     border: 2px var(--main-color) solid;
     background-color: var(--main-color);
@@ -1197,6 +1366,20 @@
         background-color: var(--main-color);
     }
 
+=======
+    .btnToggleCustom button.active {
+        border: 2px var(--main-color) solid;
+        background-color: var(--main-color);
+        color: white;
+    }
+
+        .btnToggleCustom button.active .radioCustom div {
+            border-color: var(--main-color);
+            box-shadow: inset 0px 0px 0 3px white;
+            background-color: var(--main-color);
+        }
+
+>>>>>>> origin/juandos
 .gridCustom .k-grid-toolbar {
     background-color: transparent;
 }
@@ -1228,14 +1411,18 @@
 .gridMotivo .k-pager-wrap {
     display: none
 }
+<<<<<<< HEAD
 .gridEnvio .k-pager-wrap {
     bottom:-75px;
 }
+=======
+>>>>>>> origin/juandos
 
 .gridMotivo .footerGrid {
     padding-right: 11px;
 }
 
+<<<<<<< HEAD
     .gridEnvio .footerGrid {
         padding-left: 11px;
     }
@@ -1263,6 +1450,21 @@
     }
 
 
+=======
+    .gridMotivo .footerGrid div {
+        max-width: calc(100% - 80% - 13px);
+        min-width: 180px;
+    }
+
+.gridMotivo .salarios {
+    height: 16px;
+    margin-left: 6px;
+}
+
+.gridMotivo .inputSalario input {
+    height: 32px
+}
+>>>>>>> origin/juandos
 
 
 @media (min-width: 768px) {
@@ -1271,12 +1473,20 @@
         z-index: 1;
         width: 400px;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/juandos
     .gridCustom .k-grid-toolbar .k-grid-search {
         width: 240px;
     }
 }
 
+<<<<<<< HEAD
 .inputNumberCustom input{
+=======
+.inputNumberCustom input {
+>>>>>>> origin/juandos
     min-width: 50px;
     min-height: 40px;
     padding: 5px;
@@ -1299,7 +1509,11 @@
     border: solid #bacdd5 1px;
     background-color: #e8ebed;
     box-shadow: #292929 0px 0px 0px 1px;
+<<<<<<< HEAD
     border-radius:4px;
+=======
+    border-radius: 4px;
+>>>>>>> origin/juandos
 }
 
 .drop-zone__input {
@@ -1338,6 +1552,7 @@
 }
 
     .radioCustomTelerik .k-radio-list li {
+<<<<<<< HEAD
         position:relative;
         
     }
@@ -1347,6 +1562,17 @@
             top: 21px;
             left: 18px;
             padding:0px;
+=======
+        position: relative;
+    }
+
+        .radioCustomTelerik .k-radio-list li input {
+            position: absolute;
+            z-index: 1;
+            top: 21px;
+            left: 18px;
+            padding: 0px;
+>>>>>>> origin/juandos
         }
 
 .radioCustomTelerik .k-radio {
@@ -1360,11 +1586,19 @@
 
 
 .radioCustomTelerik .k-radio-list li label {
+<<<<<<< HEAD
     margin-bottom:1rem;
     padding: 1rem 1rem 1rem 2.6rem;
     border: 2px #292929c7 solid;
     font-size: 1.25rem;
     font-weight:500;
+=======
+    margin-bottom: 1rem;
+    padding: 1rem 1rem 1rem 2.6rem;
+    border: 2px #292929c7 solid;
+    font-size: 1.25rem;
+    font-weight: 500;
+>>>>>>> origin/juandos
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -1384,6 +1618,7 @@
     border-color: var(--main-color);
     box-shadow: var(--main-color) 0px 0px 0px 1px;
 }
+<<<<<<< HEAD
 .radioCustomTelerik .k-radio.k-checked::before, .radioCustomTelerik .k-radio:checked::before {
     width: 10px;
     height: 10px;
@@ -1396,6 +1631,21 @@
 
 .mxW-16rem {
     max-width:16rem;
+=======
+
+.radioCustomTelerik .k-radio.k-checked::before, .radioCustomTelerik .k-radio:checked::before {
+    width: 10px;
+    height: 10px;
+    background-color: var(--main-color)
+}
+
+.h-95px {
+    height: 95px;
+}
+
+.mxW-16rem {
+    max-width: 16rem;
+>>>>>>> origin/juandos
 }
 
 
@@ -1407,8 +1657,11 @@
 .borderDanger input {
     border: 2px var(--danger-color) solid;
 }
+<<<<<<< HEAD
 
 
 .barCustom path[d="M0 9 L 15 9 15 12 0 12Z"] {
     fill: var(--main-color);
 }
+=======
+>>>>>>> origin/juandos

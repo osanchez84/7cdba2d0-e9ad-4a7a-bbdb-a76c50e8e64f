@@ -1,4 +1,4 @@
-﻿using AdminUsuarios;
+using AdminUsuarios;
 using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

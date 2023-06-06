@@ -1,7 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
-using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -43,14 +42,14 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarOficialParcial()
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             return PartialView("_Crear");
         }
 
         [HttpPost]
         public ActionResult EditarOficialParcial(int IdOficial)
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             var oficialesModel = GetOficialByID(IdOficial);
             return View("_Editar", oficialesModel);
         }
@@ -58,7 +57,7 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult EliminarOficialParcial(int IdOficial)
         {
-            SetDDLDelegaciones();
+            Delegaciones_Drop();
             var oficialesModel = GetOficialByID(IdOficial);
             return View("_Eliminar", oficialesModel);
         }
@@ -183,13 +182,13 @@ namespace Example.WebUI.Controllers
             dbContext.SaveChanges();
         }
 
-        private void SetDDLDelegaciones()
+       
+
+        public JsonResult Delegaciones_Drop()
         {
-            ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Delegaciones = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            return Json(result);
         }
-
-
 
 
         public OficialesModel GetOficialByID(int IdOficial)

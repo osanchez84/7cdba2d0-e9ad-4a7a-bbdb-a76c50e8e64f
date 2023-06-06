@@ -39,7 +39,7 @@
         </div>
     </div>
     <form id="EditarOficialForm" class="px-4 mb-4">
-        <div class="col-12 col-lg-6 my-4">
+        <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusOficiales)
                 .Name("oficialesSwitch")
                 .Checked(true)
@@ -54,8 +54,18 @@
                     <label>Delegación<b>(obligatorio)</b>:</label>
                     <span>
                         @Html.HiddenFor(m=>m.IdOficial)
-                        @Html.DropDownListFor(t => t.IdDelegacion,delegaciones)
-
+                        @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una Delegación")
+                            .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Drop", "Oficiales");
+                                });
+                            }))
                     </span>
                 </div>
             </div>

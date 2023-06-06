@@ -38,7 +38,7 @@
                         <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
                     </div>
                 </div>
-                 <div class="col-12 col-lg-6 my-4">
+        <div class="col-12 col-lg-6 my-4btnToggleActive btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusColores)
                 .Name("coloresSwitch")
                 .Checked(true)
@@ -56,10 +56,15 @@
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
 
+                <span asp-validation-for="color" class="text-danger"></span>
+                @if (TempData["Error"] != null)
+                        @TempData["Error"]
+                    </div>
+                }
+
                         </div>
                     </div>
 
-                </form>
                 <div class="row my-4">
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
@@ -100,6 +105,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaColores").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

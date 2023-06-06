@@ -27,7 +27,7 @@
         </div>
 
     </div>
-    <div class="row align-items-end">
+        <div class="row align-items-end btnToggleActive">
         <div class="col-12 col-lg-6 my-4">
             <h5 class="px-4"><b>Datos de factor de accidente</b></h5>
             <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
@@ -91,6 +91,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaFactoresAccidentes").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

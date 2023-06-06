@@ -23,15 +23,6 @@ namespace Example.WebUI.Controllers
 
         }
 
-
-
-        public JsonResult MunicipiosDDL()
-        {
-            //Data source
-            var dataSource = GetDiasInhabiles().AsEnumerable();
-            return Json(dataSource);
-        }
-
         ///Crear metodo de update (post)
 
 
@@ -46,21 +37,21 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarParcialDiaInhabil()
         {
-            SetDDLMunicipios();
+            Municipios_Drop();
             return PartialView("_Crear");
         }
 
         public ActionResult EditarParcial(int IdDiaInhabil)
         {
             var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
-            SetDDLMunicipios();
+            Municipios_Drop();
             return View("_Editar", diasInhabilesModel);
         }
 
         public ActionResult EliminarDiaInhabilParcial(int IdDiaInhabil)
         {
             var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
-            SetDDLMunicipios();
+            Municipios_Drop();
             return View("_Eliminar", diasInhabilesModel);
         }
 
@@ -85,7 +76,7 @@ namespace Example.WebUI.Controllers
                 var ListDiasInhabilesModel = GetDiasInhabiles();
                 return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
-            //return View("Create");
+            Municipios_Drop();
             return PartialView("_Crear");
         }
 
@@ -102,7 +93,7 @@ namespace Example.WebUI.Controllers
                 var ListDiasInhabilesModel = GetDiasInhabiles();
                 return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
-            SetDDLMunicipios();
+            Municipios_Drop();
             return PartialView("_Editar");
         }
 
@@ -119,7 +110,7 @@ namespace Example.WebUI.Controllers
                 var ListDiasInhabilesModel = GetDiasInhabiles();
                 return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
-            SetDDLMunicipios();
+            Municipios_Drop();
             //return View("Create");
             return PartialView("_Eliminar");
         }
@@ -181,12 +172,13 @@ namespace Example.WebUI.Controllers
 
         }
 
-        private void SetDDLMunicipios()
-        {
-            ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Municipios = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
-        }
+      
 
+        public JsonResult Municipios_Drop()
+        {
+            var result = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
 
         public DiasInhabilesModel GetDiaInhabilByID(int IdDiaInhabil)
         {

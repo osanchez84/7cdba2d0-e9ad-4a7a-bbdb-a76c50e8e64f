@@ -34,7 +34,7 @@
                 </div>
     <form id="EditarDependenciaForm" class="row px-4 mb-4 align-items-end justify-content-center">
         <div class="col-12 col-lg-6 my-4">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center btnToggleActive">
                
                    
                     @(Html.Kendo().SwitchFor(t => t.valorEstatusDep)
@@ -96,6 +96,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaDependencias").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

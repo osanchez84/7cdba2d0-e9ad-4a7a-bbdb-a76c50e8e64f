@@ -97,7 +97,7 @@ namespace Example.WebUI.Controllers
             bool switchColores = Request.Form["coloresSwitch"].Contains("true");
             model.Estatus = switchColores ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("color");
+            ModelState.Remove("idColor");
             if (ModelState.IsValid)
             {
 

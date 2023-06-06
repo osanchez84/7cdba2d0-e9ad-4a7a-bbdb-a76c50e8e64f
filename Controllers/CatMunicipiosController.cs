@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -13,11 +14,17 @@ namespace Example.WebUI.Controllers
 {
     public class CatMunicipiosController : Controller
     {
+        private readonly ICatMunicipiosService _catMunicipiosService;
+
+        public CatMunicipiosController(ICatMunicipiosService catMunicipiosService)
+        {
+            _catMunicipiosService = catMunicipiosService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
             //var products = dbContext.Products.ToList();
-            var ListMunicipiosModel = GetMunicipios();
+            var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
 
             return View(ListMunicipiosModel);
 
@@ -26,7 +33,7 @@ namespace Example.WebUI.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListMunicipiosModel = GetMunicipios();
+            var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
             return View("Index", ListMunicipiosModel);
         }
 
@@ -59,7 +66,7 @@ namespace Example.WebUI.Controllers
 
 
                 AgregarMunicipio(model);
-                var ListMunicipiosModel = GetMunicipios();
+                var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
                 return PartialView("_ListaMunicipios", ListMunicipiosModel);
             }
             //SetDDLCategories();
@@ -76,7 +83,7 @@ namespace Example.WebUI.Controllers
 
 
                 EditarMunicipio(model);
-                var ListMunicipiosModel = GetMunicipios();
+                var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
                 return PartialView("_ListaMunicipios", ListMunicipiosModel);
             }
 
@@ -92,7 +99,7 @@ namespace Example.WebUI.Controllers
 
 
                 EliminarMunicipio(model);
-                var ListMunicipiosModel = GetMunicipios();
+                var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
                 return PartialView("_ListaMunicipios", ListMunicipiosModel);
             }
 
@@ -100,7 +107,7 @@ namespace Example.WebUI.Controllers
         }
         public JsonResult GetMun([DataSourceRequest] DataSourceRequest request)
         {
-            var ListMunicipiosModel = GetMunicipios();
+            var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
 
             return Json(ListMunicipiosModel.ToDataSourceResult(request));
         }
@@ -173,7 +180,7 @@ namespace Example.WebUI.Controllers
         }
 
 
-        public List<CatMunicipiosModel> GetMunicipios()
+       /* public List<CatMunicipiosModel> GetMunicipios()
         {
             var ListMunicipiosModel = (from catMunicipios in dbContext.CatMunicipios.ToList()
                                        join estatus in dbContext.Estatus.ToList()
@@ -186,7 +193,7 @@ namespace Example.WebUI.Controllers
 
                                        }).ToList();
             return ListMunicipiosModel;
-        }
+        }*/
         #endregion
 
 

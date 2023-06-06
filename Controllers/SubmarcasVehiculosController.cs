@@ -23,20 +23,104 @@ namespace Example.WebUI.Controllers
 
         }
 
+        /// <summary>
+        /// Accion que redirige a la vista
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Create()
+        {
+            //SetDDLSubmarcas();
+            return View();
+        }
+
+        /// <summary>
+        /// Accion que recupera los datos de la vista para insertar en BDD
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Create(SubmarcasVehiculosModel model)
+        {
+            var errors = ModelState.Values.Select(s => s.Errors);
+            ModelState.Remove("NombreSubmarca");
+            if (ModelState.IsValid)
+            {
+                //Crear el producto
+
+                CreateSubmarca(model);
+                return RedirectToAction("Index");
+            }
+           // SetDDLSubmarcas();
+            return View("Create");
+        }
+
+
+        [HttpGet]
+        public IActionResult Update(int IdSubmarca)
+        {
+            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
+           // SetDDLSubmarcas();
+            var submarcasModel = GetSubmarcaByID(IdSubmarca);
+            return View(submarcasModel);
+        }
+
+
+        [HttpPost]
+        public IActionResult Update(SubmarcasVehiculosModel submarcasModel)
+        {
+            ModelState.Remove("NombreSubmarca");
+            if (ModelState.IsValid)
+            {
+                //Modificiacion del registro
+                UpdateSubmarca(submarcasModel);
+                return RedirectToAction("Index");
+            }
+            //SetDDLSubmarcas();
+            return View("Update");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int IdSubmarca)
+        {
+            //aqui con productId debemos Consultar el producto para mostrar los datos actuales en la vista, para que sean modificados
+           // SetDDLSubmarcas();
+            var submarcasModel = GetSubmarcaByID(IdSubmarca);
+            return View(submarcasModel);
+        }
+
+
+        [HttpPost]
+        public IActionResult Delete(SubmarcasVehiculosModel submarcasModel)
+        {
+            ModelState.Remove("NombreSubmarca");
+            if (ModelState.IsValid)
+            {
+                //Modificiacion del registro
+                DeleteSubmarca(submarcasModel);
+                return RedirectToAction("Index");
+            }
+           // SetDDLSubmarcas();
+            return View("Delete");
+        }
+
+
+
+        ///Crear metodo de update (post)
+
 
         #region Modal Action
         public ActionResult IndexModal()
         {
             var ListSubmarcasModel = GetSubmarcas();
             //return View("IndexModal");
-            return View("Index", ListSubmarcasModel);
+            return View("IndexModal", ListSubmarcasModel);
         }
 
         [HttpPost]
         public ActionResult AgregarSubmarcaParcial()
         {
             SetDDLMarcas();
-            return PartialView("_Crear");
+            return PartialView("_Create");
         }
 
         public ActionResult EditarSubmarcaParcial(int IdSubmarca)
@@ -76,14 +160,12 @@ namespace Example.WebUI.Controllers
             }
             SetDDLMarcas();
             //return View("Create");
-            return PartialView("_Crear");
+            return PartialView("_Create");
         }
 
         [HttpPost]
         public ActionResult EditarSubmarca(SubmarcasVehiculosModel model)
         {
-            bool switchSubmarcas = Request.Form["submarcasSwitch"].Contains("true");
-            model.Estatus = switchSubmarcas ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("NombreSubmarca");
             if (ModelState.IsValid)
@@ -152,7 +234,7 @@ namespace Example.WebUI.Controllers
             submarca.IdSubmarca = model.IdSubmarca;
             submarca.NombreSubmarca = model.NombreSubmarca;
             submarca.IdMarcaVehiculo = model.IdMarcaVehiculo;
-            submarca.estatus = model.Estatus;
+            submarca.estatus = 1;
             submarca.FechaActualizacion = DateTime.Now;
             dbContext.Entry(submarca).State = EntityState.Modified;
             dbContext.SaveChanges();
@@ -194,14 +276,14 @@ namespace Example.WebUI.Controllers
             var productEnitity = dbContext.SubmarcasVehiculos.Find(IdSubmarca);
 
             var submarcaModel = (from submarcasVehiculos in dbContext.SubmarcasVehiculos.ToList()
-                                 select new SubmarcasVehiculosModel
+                                    select new SubmarcasVehiculosModel
 
-                                 {
-                                     IdSubmarca = submarcasVehiculos.IdSubmarca,
-                                     NombreSubmarca = submarcasVehiculos.NombreSubmarca,
+                                    {
+                                        IdSubmarca = submarcasVehiculos.IdSubmarca,
+                                        NombreSubmarca = submarcasVehiculos.NombreSubmarca,
 
 
-                                 }).Where(w => w.IdSubmarca == IdSubmarca).FirstOrDefault();
+                                    }).Where(w => w.IdSubmarca == IdSubmarca).FirstOrDefault();
 
             return submarcaModel;
         }
@@ -214,17 +296,17 @@ namespace Example.WebUI.Controllers
         /// 
         public List<SubmarcasVehiculosModel> GetSubmarcasWithMarcas()
         {
-            var ListSubmarcasModel = (from SubmarcasVehiculo in dbContext.SubmarcasVehiculos.ToList()
-                                      join MarcasVehiculo in dbContext.MarcasVehiculos.ToList()
-                                      on SubmarcasVehiculo.IdMarcaVehiculo equals MarcasVehiculo.IdMarcaVehiculo
-                                      select new SubmarcasVehiculosModel
-                                      {
-                                          IdSubmarca = SubmarcasVehiculo.IdSubmarca,
-                                          NombreSubmarca = SubmarcasVehiculo.NombreSubmarca,
-                                          IdMarcaVehiculo = MarcasVehiculo.IdMarcaVehiculo,
+            var ListSubmarcasModel = (from SubmarcasVehiculo  in dbContext.SubmarcasVehiculos.ToList()
+                                    join MarcasVehiculo in dbContext.MarcasVehiculos.ToList()
+                                    on SubmarcasVehiculo.IdMarcaVehiculo equals MarcasVehiculo.IdMarcaVehiculo
+                                    select new SubmarcasVehiculosModel
+                                    {
+                                        IdSubmarca = SubmarcasVehiculo.IdSubmarca,
+                                        NombreSubmarca = SubmarcasVehiculo.NombreSubmarca,
+                                        IdMarcaVehiculo = MarcasVehiculo.IdMarcaVehiculo,
+                                       
 
-
-                                      }).ToList();
+                                    }).ToList();
             return ListSubmarcasModel;
         }
         public List<SubmarcasVehiculosModel> GetSubmarcas()
@@ -237,16 +319,16 @@ namespace Example.WebUI.Controllers
                                       where submarcasVehiculo.estatus == 1
                                       select new SubmarcasVehiculosModel
 
-                                      {
-                                          IdSubmarca = submarcasVehiculo.IdSubmarca,
-                                          NombreSubmarca = submarcasVehiculo.NombreSubmarca,
-                                          Estatus = estatus.estatus,
-                                          estatusDesc = estatus.estatusDesc,
-                                          IdMarcaVehiculo = submarcasVehiculo.IdMarcaVehiculo,
-                                          MarcaVehiculo = marcasVehiculos.MarcaVehiculo
+                                         {
+                                             IdSubmarca = submarcasVehiculo.IdSubmarca,
+                                             NombreSubmarca = submarcasVehiculo.NombreSubmarca,
+                                             Estatus= estatus.estatus,
+                                             estatusDesc=estatus.estatusDesc,
+                                             IdMarcaVehiculo = submarcasVehiculo.IdMarcaVehiculo,
+                                             MarcaVehiculo = marcasVehiculos.MarcaVehiculo
 
 
-                                      }).ToList();
+                                         }).ToList();
             return ListSubmarcasModel;
         }
         #endregion

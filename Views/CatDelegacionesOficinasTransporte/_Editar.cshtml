@@ -35,7 +35,7 @@
             <h5 class="px-4"><b>Datos de Oficinas-Transporte</b></h5>
             <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
         </div>
-        <div class="col-12 col-lg-6 my-4">
+            <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusDelegacionOfTrasporte)
                 .Name("delegacionOficinaSwitch")
                 .Checked(true)
@@ -50,8 +50,18 @@
                 <label>Sede / Municipio <b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdOficinaTransporte)
-                    @Html.DropDownListFor(t=>t.IdMunicipio,municipios)
-
+                    @(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .OptionLabel("Selecciona un Municipio")
+                        .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Municipios_Drop", "CatDelegacionesOficinasTransporte");
+                            });
+                        }))
                 </span>
             </div>
         </div>
@@ -114,6 +124,11 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaDelegacionesOficinas").html(result);
+                alert("Se ha Actualizado la Información");
+
+            },
+            error: function (error) {
+                alert("!Sucedio um error, intente mas tarde...");
             }
         });
     }

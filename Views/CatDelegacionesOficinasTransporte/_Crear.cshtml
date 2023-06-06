@@ -1,8 +1,4 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.CatDelegacionesOficinasTransporteModel
-@{
-    var municipios = (SelectList)ViewBag.Municipios;
-
-}
 <section class=" bg-white rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
         <div class="col-auto pe-0">
@@ -40,8 +36,18 @@
             <div class="controlForm my-3">
                 <label>Sede / Municipio <b>(obligatorio)</b>:</label>
                 <span>
-                    @Html.DropDownListFor(t=>t.IdMunicipio,municipios)
-
+                    @(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .OptionLabel("Selecciona un Municipio")
+                        .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Municipios_Drop", "CatDelegacionesOficinasTransporte");
+                            });
+                        }))
                 </span>
             </div>
         </div>

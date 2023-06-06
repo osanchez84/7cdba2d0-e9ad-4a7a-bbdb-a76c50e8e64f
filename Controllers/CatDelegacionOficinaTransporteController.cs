@@ -36,20 +36,20 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarDelegacionOficinaModal()
         {
-            SetDDLMunicpios();
+            Municipios_Drop();
             return PartialView("_Crear");
         }
 
         public ActionResult EditarDelegacionOficinaModal(int IdOficinaTransporte)
         {
-            SetDDLMunicpios();
+            Municipios_Drop();
             var delegacionOficinaModel = GetDelegacionOficinaByID(IdOficinaTransporte);
             return PartialView("_Editar", delegacionOficinaModel);
         }
 
         public ActionResult EliminarDelegacionOficinaModal(int IdOficinaTransporte)
         {
-            SetDDLMunicpios();
+            Municipios_Drop();
             var delegacionOficinaModel = GetDelegacionOficinaByID(IdOficinaTransporte);
             return PartialView("_Eliminar", delegacionOficinaModel);
         }
@@ -111,19 +111,21 @@ namespace Example.WebUI.Controllers
             return Json(ListDelegacionesOficinasTModel.ToDataSourceResult(request));
         }
 
-        private void SetDDLMunicpios()
+        
+        public JsonResult Municipios_Drop()
         {
-            ViewBag.Municipios = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
+            var result = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
+            return Json(result);
         }
+    
 
 
+    #endregion
 
-        #endregion
 
+    #region Acciones a base de datos
 
-        #region Acciones a base de datos
-
-        public void CrearDelegacionOficina(CatDelegacionesOficinasTransporteModel model)
+    public void CrearDelegacionOficina(CatDelegacionesOficinasTransporteModel model)
         {
             CatDelegacionesOficinasTransporte delOficina = new CatDelegacionesOficinasTransporte();
             delOficina.IdOficinaTransporte = model.IdOficinaTransporte;

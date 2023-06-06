@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -13,6 +14,12 @@ namespace Example.WebUI.Controllers
 {
     public class CatFactoresOpcionesAccidentesController : Controller
     {
+        private readonly ICatFactoresOpcionesAccidentesService _catFactoresOpcionesAccidentesService;
+
+        public CatFactoresOpcionesAccidentesController(ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService)
+        {
+            _catFactoresOpcionesAccidentesService = catFactoresOpcionesAccidentesService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
@@ -36,20 +43,20 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarFactoresOpcionesAccidenteModal()
         {
-            SetDDLFactores();
+            Factores_Drop();
             return PartialView("_Crear");
         }
 
         public ActionResult EditarFactoresOpcionesAccidenteModal(int IdFactoropcionAccidente)
         {
-            SetDDLFactores();
+            Factores_Drop();
             var factoresOpcionesAccidentesModel = GetFactorOpcionAccidenteByID(IdFactoropcionAccidente);
             return PartialView("_Editar", factoresOpcionesAccidentesModel);
         }
 
         public ActionResult EliminarFactoresOpcionesAccidenteModal(int IdFactoropcionAccidente)
         {
-            SetDDLFactores();
+            Factores_Drop();
             var factoresOpcionesAccidentesModel = GetFactorOpcionAccidenteByID(IdFactoropcionAccidente);
             return PartialView("_Eliminar", factoresOpcionesAccidentesModel);
         }
@@ -111,12 +118,12 @@ namespace Example.WebUI.Controllers
             return Json(ListFactoresOpcionesAccidentesModel.ToDataSourceResult(request));
         }
 
-        private void SetDDLFactores()
+       
+        public JsonResult Factores_Drop()
         {
-            ///Espacio en memoria de manera temporal que solo existe en la petición bool, list, string ,clases , selectlist
-            ViewBag.Factores = new SelectList(dbContext.CatFactoresAccidentes.ToList(), "IdFactorAccidente", "FactorAccidente");
+            var result = new SelectList(dbContext.CatFactoresAccidentes.ToList(), "IdFactorAccidente", "FactorAccidente");
+            return Json(result);
         }
-
 
 
         #endregion

@@ -19,7 +19,7 @@ namespace Example.WebUI.Controllers
         {
             _catCausasAccidentesService = catCausasAccidentesService;
         }
-        DBContextInssoft dbContext = new DBContextInssoft();
+        DBContextInssoft dbContext = new  DBContextInssoft();
         public IActionResult Index()
         {
             var ListCausasAccidentesModel = GetCausasAccidentes();

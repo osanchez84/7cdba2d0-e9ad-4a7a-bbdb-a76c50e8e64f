@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IDelegacionesService _delegacionesService;
         private readonly IGarantiasService _garantiasService;
         private readonly IInfraccionesService _infraccionesService;
-        private readonly IPdfGenerator<Infracciones1Model> _pdfService;
+        private readonly IPdfGenerator<InfraccionesModel> _pdfService;
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;
         private readonly IPersonasService _personasService;
@@ -27,7 +27,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public InfraccionesController(
             IEstatusInfraccionService estatusInfraccionService, IDelegacionesService delegacionesService,
             ITipoCortesiaService tipoCortesiaService, IDependencias dependeciaService, IGarantiasService garantiasService,
-            IInfraccionesService infraccionesService, IPdfGenerator<Infracciones1Model> pdfService,
+            IInfraccionesService infraccionesService, IPdfGenerator<InfraccionesModel> pdfService,
             ICatDictionary catDictionary,
             IVehiculosService vehiculosService,
             IPersonasService personasService
@@ -49,7 +49,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
-            List<Infracciones1Model> listInfracciones = _infraccionesService.GetAllInfracciones();
+            List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones();
             searchModel.ListInfracciones = listInfracciones;
             return View(searchModel);
         }
@@ -77,10 +77,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"folioInfraccion","Folio"},
-            {"conductor","Conductor"},
-            {"propietario","Propietario"},
-            {"FullFechaConductor","Fecha Aplicada a"},
-            {"garantia","Garantía"},
+            {"NombreConductor","Conductor"},
+            {"NombrePropietario","Propietario"},
+            {"fechaInfraccion","Fecha Aplicada a"},
+            {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
             var ListTransitoModel = _infraccionesService.GetAllInfracciones(model);
@@ -94,10 +94,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"folioInfraccion","Folio"},
-            {"conductor","Conductor"},
-            {"propietario","Propietario"},
-            {"FullFechaConductor","Fecha Aplicada a"},
-            {"garantia","Garantía"},
+            {"NombreConductor","Conductor"},
+            {"NombrePropietario","Propietario"},
+            {"fechaInfraccion","Fecha Aplicada a"},
+            {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
             var InfraccionModel = _infraccionesService.GetInfraccionById(IdInfraccion);
@@ -173,17 +173,37 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            var vehiculosList = _vehiculosService.GetAllVehiculos();
-            var personasList = _personasService.GetAllPersonas();
+            var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+            var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
+            var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
 
+            ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
+            ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
-            ViewBag.Vehiculos = vehiculosList;
-            ViewBag.Personas = personasList;
+            ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ajax_editarInfraccion(InfraccionesModel model)
+        {
+            int idGarantia = 0;
+            if (model.idGarantia == null || model.idGarantia == 0)
+            {
+                model.Garantia.numPlaca = model.placasVehiculo;
+                idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
+                model.idGarantia = idGarantia;
+            }
+            else
+            {
+                var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
+            }
+            var idInfraccion = _infraccionesService.ModificarInfraccion(model);
+            return Json(new { id = idInfraccion });
         }
 
         [HttpPost]
@@ -194,6 +214,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idInfraccion = _infraccionesService.CrearInfraccion(model);
             return Json(new { id = idInfraccion });
         }
+
+        [HttpGet]
+        public ActionResult ajax_ModalCrearMotivo()
+        {
+            var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");
+            ViewData["CatConcepto"] = new SelectList(catConcepto.CatalogList, "Id", "Text");
+            //ViewBag.CatConcepto = catConcepto;
+            return PartialView("_CrearMotivo", new MotivoInfraccionModel());
+        }
+
+        [HttpPost]
+        public ActionResult ajax_CrearMotivos(MotivoInfraccionModel model)
+        {
+            var id = _infraccionesService.CrearMotivoInfraccion(model);
+            var modelList = _infraccionesService.GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+            return PartialView("_ListadoMotivos", modelList);
+        }
+
 
 
         [HttpGet]
@@ -222,6 +260,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var modelList = _personasService.GetAllPersonas();
             return PartialView("_ListadoPersonas", modelList);
+        }
+
+        [HttpGet]
+        public ActionResult ajax_listadoMotivosInfracciones(int idInfraccion)
+        {
+            var modelList = _infraccionesService.GetMotivosInfraccionByIdInfraccion(idInfraccion);
+            return PartialView("_ListadoMotivos", modelList);
         }
 
 

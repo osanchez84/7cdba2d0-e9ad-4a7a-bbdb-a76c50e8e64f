@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -10,9 +11,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string placas { get; set; }
         public string serie { get; set; }
         public string tarjeta { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime vigenciaTarjeta { get; set; }
         public int idMarcaVehiculo { get; set; }
         public int idSubmarca { get; set; }
+        public int idSubmarcaUpdated { get; set; }
         public int idTipoVehiculo { get; set; }
         public string modelo { get; set; }
         public int idColor { get; set; }
@@ -25,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string marca { get; set; }
         public string submarca { get; set; }
-        public string tipoVehiculo { get; set; }       
+        public string tipoVehiculo { get; set; }
         public string color { get; set; }
         public string entidadRegistro { get; set; }
         public string tipoServicio { get; set; }
@@ -43,10 +47,12 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public PersonaMoralBusquedaModel PersonaMoralBusquedaModel { get; set; }
 
-        public string RFC { get; set; }
-        public string RazonSoccial { get; set; }
+        //public string RFC { get; set; }
+        //public string RazonSoccial { get; set; }
 
         public virtual PersonaModel Persona { get; set; }
+
+        //public virtual PersonaModel PersonaUpdate { get; set; }
 
     }
 }

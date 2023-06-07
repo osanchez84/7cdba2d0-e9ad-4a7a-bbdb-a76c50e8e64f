@@ -37,7 +37,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,v.idCatTipoServicio
                                 ,v.propietario
                                 ,v.numeroEconomico
-                                ,v.paisMaufactura
+                                ,v.paisManufactura
                                 ,v.idPersona
                                 ,v.fechaActualizacion
                                 ,v.actualizadoPor
@@ -154,7 +154,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,v.idCatTipoServicio
                                 ,v.propietario
                                 ,v.numeroEconomico
-                                ,v.paisMaufactura
+                                ,v.paisManufactura
                                 ,v.idPersona
                                 ,v.fechaActualizacion
                                 ,v.actualizadoPor
@@ -266,7 +266,8 @@ namespace GuanajuatoAdminUsuarios.Services
             string strQuery = @"SELECT
                                 v.idVehiculo, v.placas, v.serie, v.tarjeta, v.vigenciaTarjeta, v.idMarcaVehiculo
                                 ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
-                                ,v.propietario, v.numeroEconomico, v.paisMaufactura, v.idPersona
+                                ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona
+                                ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
                                 ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.tipoServicio
                                 ,catE.nombreEntidad, catC.color  
                                 FROM vehiculos v
@@ -286,7 +287,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);                    
+                    SqlCommand command = new SqlCommand(strQuery, connection);
                     command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)modelSearch.IdEntidadBusqueda ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)modelSearch.PlacasBusqueda != null ? modelSearch.PlacasBusqueda.ToUpper() : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)modelSearch.SerieBusqueda != null ? modelSearch.SerieBusqueda.ToUpper() : DBNull.Value;
@@ -312,7 +313,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.propietario = reader["propietario"].ToString();
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
                             model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
-                            model.paisManufactura = reader["paisMaufactura"].ToString();
+                            model.paisManufactura = reader["paisManufactura"].ToString();
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
 
                             model.marca = reader["marcaVehiculo"].ToString();
@@ -321,6 +322,13 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.color = reader["color"].ToString();
                             model.entidadRegistro = reader["nombreEntidad"].ToString();
                             model.tipoServicio = reader["tipoServicio"].ToString();
+
+                            model.motor = reader["motor"].ToString();
+                            model.capacidad = Convert.ToInt32(reader["capacidad"].ToString());
+                            model.poliza = reader["poliza"].ToString();
+                            model.carga = Convert.ToBoolean(reader["carga"].ToString());
+                            model.otros = reader["otros"].ToString();
+
                         }
                     }
                 }
@@ -351,5 +359,183 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return model;
         }
+
+        public int CreateVehiculo(VehiculoModel model)
+        {
+            int result = 0;
+            string strQuery = @"INSERT INTO vehiculos(
+                                 placas
+                                ,serie
+                                ,tarjeta
+                                ,vigenciaTarjeta
+                                ,idMarcaVehiculo
+                                ,idSubmarca
+                                ,idTipoVehiculo
+                                ,modelo
+                                ,idColor
+                                ,idEntidad
+                                ,idCatTipoServicio
+                                ,propietario
+                                ,numeroEconomico
+                                ,paisManufactura
+                                ,idPersona
+                                ,fechaActualizacion
+                                ,actualizadoPor
+                                ,estatus
+                                ,motor
+                                ,capacidad
+                                ,poliza
+                                ,carga
+                                ,otros
+                                ) VALUES (
+                                @placas
+                                ,@serie
+                                ,@tarjeta
+                                ,@vigenciaTarjeta
+                                ,@idMarcaVehiculo
+                                ,@idSubmarca
+                                ,@idTipoVehiculo
+                                ,@modelo
+                                ,@idColor
+                                ,@idEntidad
+                                ,@idCatTipoServicio
+                                ,@propietario
+                                ,@numeroEconomico
+                                ,@paisManufactura
+                                ,@idPersona
+                                ,@fechaActualizacion
+                                ,@actualizadoPor
+                                ,@estatus
+                                ,@motor
+                                ,@capacidad
+                                ,@poliza
+                                ,@carga
+                                ,@otros
+                                );select CAST (SCOPE_IDENTITY() As int)";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+
+                    command.Parameters.Add(new SqlParameter("@placas", SqlDbType.NVarChar)).Value = (object)model.placas ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@serie", SqlDbType.NVarChar)).Value = (object)model.serie ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@tarjeta", SqlDbType.NVarChar)).Value = (object)model.tarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaTarjeta", SqlDbType.DateTime)).Value = (object)model.vigenciaTarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = (object)model.idMarcaVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idSubmarca", SqlDbType.Int)).Value = (object)model.idSubmarca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@modelo", SqlDbType.NVarChar)).Value = (object)model.modelo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)model.idColor ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)model.idEntidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idCatTipoServicio", SqlDbType.Int)).Value = (object)model.idCatTipoServicio ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@propietario", SqlDbType.NVarChar)).Value = (object)model.propietario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.numeroEconomico ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@paisManufactura", SqlDbType.NVarChar)).Value = (object)model.paisManufactura ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.Persona.idPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@motor", SqlDbType.NVarChar)).Value = (object)model.motor ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@capacidad", SqlDbType.Int)).Value = (object)model.capacidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)model.poliza ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@carga", SqlDbType.Bit)).Value = (object)model.carga ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)model.otros ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    result = Convert.ToInt32(command.ExecuteScalar());
+                    //result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
+
+        public int UpdateVehiculo(VehiculoModel model)
+        {
+            int result = 0;
+            string strQuery = @"Update vehiculos
+                                set				   
+                                placas			   = @placas
+                                ,serie			   = @serie
+                                ,tarjeta		   = @tarjeta
+                                ,vigenciaTarjeta   = @vigenciaTarjeta
+                                ,idMarcaVehiculo   = @idMarcaVehiculo
+                                ,idSubmarca		   = @idSubmarca
+                                ,idTipoVehiculo	   = @idTipoVehiculo
+                                ,modelo			   = @modelo
+                                ,idColor		   = @idColor
+                                ,idEntidad		   = @idEntidad
+                                ,idCatTipoServicio = @idCatTipoServicio
+                                ,propietario	   = @propietario
+                                ,numeroEconomico   = @numeroEconomico
+                                ,paisManufactura   = @paisManufactura
+                                ,idPersona		   = @idPersona
+                                ,fechaActualizacion= @fechaActualizacion
+                                ,actualizadoPor	   = @actualizadoPor
+                                ,estatus		   = @estatus
+                                ,motor			   = @motor
+                                ,capacidad		   = @capacidad
+                                ,poliza			   = @poliza
+                                ,carga			   = @carga
+                                ,otros			   = @otros
+                                where idVehiculo= @idVehiculo
+                                ";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@placas", SqlDbType.NVarChar)).Value = (object)model.placas ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@serie", SqlDbType.NVarChar)).Value = (object)model.serie ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@tarjeta", SqlDbType.NVarChar)).Value = (object)model.tarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaTarjeta", SqlDbType.DateTime)).Value = (object)model.vigenciaTarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = (object)model.idMarcaVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idSubmarca", SqlDbType.Int)).Value = (object)model.idSubmarca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@modelo", SqlDbType.NVarChar)).Value = (object)model.modelo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)model.idColor ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)model.idEntidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idCatTipoServicio", SqlDbType.Int)).Value = (object)model.idCatTipoServicio ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@propietario", SqlDbType.NVarChar)).Value = (object)model.propietario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.numeroEconomico ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@paisManufactura", SqlDbType.NVarChar)).Value = (object)model.paisManufactura ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.Persona.idPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@motor", SqlDbType.NVarChar)).Value = (object)model.motor ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@capacidad", SqlDbType.Int)).Value = (object)model.capacidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)model.poliza ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@carga", SqlDbType.Bit)).Value = (object)model.carga ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)model.otros ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    //result = Convert.ToInt32(command.ExecuteScalar());
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
     }
 }

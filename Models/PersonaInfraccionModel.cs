@@ -10,6 +10,9 @@
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
         public int idCatTipoPersona { get; set; }
+        public string tipoPersona { get; set; }
+        public string nombreCompleto { get { return nombre + " " + apellidoPaterno + " " + apellidoMaterno; } }
+        public virtual PersonaDireccionModel PersonaDireccion { get; set; }
 
     }
 }

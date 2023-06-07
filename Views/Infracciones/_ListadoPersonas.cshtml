@@ -37,28 +37,6 @@
 <script>
     $(document).ready(function () {
         var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
-        grid.tbody.on("click", ".k-checkbox", onClick);
-        function onClick(e) {
-            var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
-            var row = $(e.target).closest("tr");
-            var dataItem = grid.dataItem(row);
-            var idVehiculo = dataItem.idPersona;
-            if (row.hasClass("k-selected")) {
-                setTimeout(function (e) {
-                    var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
-                    grid.clearSelection();
-                })
-            } else {
-                grid.clearSelection();
-            };
-        };
-    })
-</script>
-
-
-<script>
-    $(document).ready(function () {
-        var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
         grid.tbody.on("click", ".k-checkbox", onClickPersonas);
         function onClickPersonas(e) {
             var grid = $("#gridInfraccionesPersonas").data("kendoGrid");

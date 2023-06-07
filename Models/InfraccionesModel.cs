@@ -32,10 +32,19 @@ namespace GuanajuatoAdminUsuarios.Models
         public bool? infraccionCortesia { get; set; }
         public string NumTarjetaCirculacion { get; set; }
         public bool isPropietarioConductor { get; set; }
+        public string strIsPropietarioConductor { get; set; }
         public virtual VehiculoModel Vehiculo { get; set; }
+        public PersonaModel Persona { get; set; }
         public virtual PersonaInfraccionModel PersonaInfraccion { get; set; }
         public virtual IEnumerable<MotivoInfraccionModel> MotivosInfraccion { get; set; }
         public virtual GarantiaInfraccionModel Garantia { get; set; }
 
+        #region Columnas Adicionales Reportes
+        public string delegacion { get; set; }
+        public string NombreConductor { get; set; }
+        public string NombrePropietario { get; set; }
+        public string NombreGarantia { get; set; }
+
+        #endregion
     }
 }

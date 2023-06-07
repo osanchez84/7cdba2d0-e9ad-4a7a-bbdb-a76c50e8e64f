@@ -5,9 +5,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IInfraccionesService
     {
-        List<Infracciones1Model> GetAllInfracciones();
-        List<Infracciones1Model> GetAllInfracciones(InfraccionesBusquedaModel model);
-        Infracciones1Model GetInfraccionById(int IdInfraccion);
+        List<InfraccionesModel> GetAllInfracciones();
+        List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model);
+        InfraccionesModel GetInfraccionById(int IdInfraccion);
         public List<MotivoInfraccionModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);
@@ -20,7 +20,6 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int CrearInfraccion(InfraccionesModel model);
         public int ModificarInfraccion(InfraccionesModel model);
 
-        Infracciones1Model GetInfraccionCompleteById(int IdInfraccion);
 
     }
 }

@@ -70,7 +70,7 @@ namespace GuanajuatoAdminUsuarios.Models
         /// </summary>
         public string NumeroEconomico { get; set; } = null!;
 
-        public List<Infracciones1Model> ListInfracciones { get; set; }
+        public List<InfraccionesModel> ListInfracciones { get; set; }
 
     }
 }

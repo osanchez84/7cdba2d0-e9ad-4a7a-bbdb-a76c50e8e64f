@@ -362,7 +362,7 @@
     $("#ddlCarreteras").on("change", function () {
         var value = $(this).val();
         if (value == "") {
-            $("#idConcesionario option[value!='']").remove();
+            $("#idTramo option[value!='']").remove();
         }
         else {
             _set_combo_catalog("CatTramosByFilter", value, "idTramo", "false", "divTramo", "");

@@ -50,8 +50,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var errors = ModelState.Values.Select(s => s.Errors);
             if (ModelState.IsValid)
             {
-                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
                 int id = _personasService.CreatePersona(model);
+                model.PersonaDireccion.idPersona = id;
+                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+                
                 var modelList = _personasService.GetAllPersonas();
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
                 return PartialView("_ListadoPersonas", modelList);

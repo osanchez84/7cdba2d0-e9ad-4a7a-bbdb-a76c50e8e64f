@@ -4,7 +4,6 @@
         .Name("gridPrevioVehiculo")
         .Columns(columns =>
         {
-            columns.Command(c => c.Custom("Seleccionar").Click("agregarVehiculo")).Width(100);
             columns.Bound(c => c.Marca).Title("Marca").Width(100);
             columns.Bound(c => c.Submarca).Title("Submarca").Width(100);
             columns.Bound(c => c.Placa).Title("Placa").Width(100);
@@ -15,6 +14,9 @@
             columns.Bound(c => c.Propietario).Title("Propietario").Width(100);
             columns.Bound(c => c.Color).Title("Color").Width(100);
             columns.Bound(c => c.EntidadRegistro).Title("Entidad").Width(100);
+            columns.Command(c => c.Custom("Seleccionar").Click("agregarVehiculo")).Width(50);
+
+
         })
         .HtmlAttributes(new { style = "height:250px" })
         .Sortable()
@@ -30,23 +32,9 @@
         )
 </div>
 
-<div class="row px-4 py-5 align-items-end bg-light">
-    <div class="col-12 col-md-10 mx-md-auto text-center">
-        <div class="row ">
-            <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                <div class="btnOutline btnOutlinePrimary my-3">
-                    <button id="btnSiguiente" onclick="agregarVehiculo(event)">
-                        <h5 class="m-0"><i class="me-2 icon-addCar"></i><b>Agregar nuevo vehículo</b></h5>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     function agregarVehiculo(e) {
-        var dataItem = $("#gridPrevioVehiculo").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+       var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdVehiculo = dataItem.IdVehiculo;
         console.log(IdVehiculo);
 
@@ -55,4 +43,11 @@
             type: 'POST',
             data: { IdVehiculo: IdVehiculo },
             success: function (result) {
-                alert("GUARDADO
+                alert("GUARDADO")
+            },
+            error: function (error) {
+                alert("ERROR");
+            }
+        });
+    }
+    </script>

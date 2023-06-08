@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -13,11 +14,19 @@ namespace Example.WebUI.Controllers
 {
     public class CatDelegacionesOficinasTransporteController : Controller
     {
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+
+
+
+        public CatDelegacionesOficinasTransporteController(ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
+        {
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
 
-            var ListDelegacionesOficinasTModel = GetDelegacionesOficinas();
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinas();
 
             return View("Index", ListDelegacionesOficinasTModel);
 

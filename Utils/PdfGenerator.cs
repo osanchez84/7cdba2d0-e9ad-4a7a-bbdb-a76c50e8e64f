@@ -178,7 +178,7 @@ namespace GuanajuatoAdminUsuarios.Utils
                     {
                         PropertyInfo property = type.GetProperty(item.Key);
                         var value = property.GetValue(ModelData);
-                        AddCellToBody(tableLayout, value.ToString(), count);
+                        AddCellToBody(tableLayout, count, Convert.ToString(value));
                     }
                     count++;
                 }
@@ -238,7 +238,7 @@ namespace GuanajuatoAdminUsuarios.Utils
                         {
                             PropertyInfo property = type.GetProperty(item.Key);
                             var value = property.GetValue(objectItem);
-                            AddCellToBody(tableLayout, value.ToString(), count);
+                            AddCellToBody(tableLayout, count, Convert.ToString(value));
                         }
                         count++;
                     }
@@ -269,7 +269,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             });
         }
 
-        private static void AddCellToBody(PdfPTable tableLayout, string cellText, int count)
+        private static void AddCellToBody(PdfPTable tableLayout, int count, string cellText = null)
         {
             if (count % 2 == 0)
             {
@@ -291,7 +291,5 @@ namespace GuanajuatoAdminUsuarios.Utils
                 });
             }
         }
-
-
     }
 }

@@ -15,5 +15,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int CreatePersonaDireccion(PersonaDireccionModel model);
         int UpdatePersonaDireccion(PersonaDireccionModel model);
         PersonaModel GetPersonaTypeById(int idPersona);
+
+        public int UpdatePersona(PersonaModel model);
+        public int CreatePersona(PersonaModel model);
     }
 }

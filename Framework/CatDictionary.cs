@@ -18,8 +18,8 @@ namespace GuanajuatoAdminUsuarios.Framework
 
 
         public CatDictionary(IPadronDepositosGruasService padronDepositosGruasService,
-                             IGruasService gruasService, 
-                             IMunicipiosService municipiosService, 
+                             IGruasService gruasService,
+                             IMunicipiosService municipiosService,
                              IConcesionariosService concesionariosService,
                              ICatalogosService catalogosService)
         {
@@ -76,6 +76,46 @@ namespace GuanajuatoAdminUsuarios.Framework
             string[] campos;
             switch (catalog)
             {
+                case "CatGeneros":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idGenero", "genero" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catGeneros", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idGenero"]),
+                                Text = Convert.ToString(s["genero"])
+                            }).ToList();
+                    break;
+                case "CatTipoLicencia":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idTipoLicencia", "tipoLicencia" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catTipoLicencia", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idTipoLicencia"]),
+                                Text = Convert.ToString(s["tipoLicencia"])
+                            }).ToList();
+                    break;
+                case "CatTipoPlaca":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idTipoPlaca", "tipoPlaca" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catTipoPlaca", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idTipoPlaca"]),
+                                Text = Convert.ToString(s["tipoPlaca"])
+                            }).ToList();
+                    break;
+                case "CatGarantias":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idGarantia", "garantia" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catGarantias", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idGarantia"]),
+                                Text = Convert.ToString(s["garantia"])
+                            }).ToList();
+                    break;
                 case "CatTramosByFilter":
                     if (int.TryParse(parameter, out intId))
                     {
@@ -132,6 +172,19 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Text = string.Concat(Convert.ToString(s["nombre"]), " ", Convert.ToString(s["apellidoPaterno"]), " ", Convert.ToString(s["apellidoMaterno"]))
                             }).ToList();
                     break;
+                case "CatMotivosInfraccion":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idMotivoInfraccion", "catMotivo" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogosByFilter("catMotivosInfraccion", campos, "IdSubConcepto", intId)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idMotivoInfraccion"]),
+                                    Text = Convert.ToString(s["catMotivo"])
+                                }).ToList();
+                    }
+                    break;
                 case "CatConceptoInfraccion":
                     catalogModel.CatalogName = catalog;
                     campos = new string[] { "idConcepto", "concepto" };
@@ -180,7 +233,7 @@ namespace GuanajuatoAdminUsuarios.Framework
                     catalogModel.CatalogName = catalog;
                     campos = new string[] { "idMunicipio", "municipio" };
                     catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catMunicipios", campos)
-                            .Select(s => 
+                            .Select(s =>
                             new SystemCatalogListModel()
                             {
                                 Id = Convert.ToInt32(s["idMunicipio"]),
@@ -274,6 +327,19 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Id = Convert.ToInt32(s["idMarcaVehiculo"]),
                                 Text = Convert.ToString(s["marcaVehiculo"])
                             }).ToList();
+                    break;
+                case "CatSubmarcasByFilter":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idSubmarca", "nombreSubmarca" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogosByFilter("catSubmarcasVehiculos", campos, "idMarcaVehiculo", intId)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idSubmarca"]),
+                                    Text = Convert.ToString(s["nombreSubmarca"])
+                                }).ToList();
+                    }
                     break;
                 case "CatSubmarcasVehiculos":
                     catalogModel.CatalogName = catalog;

@@ -32,7 +32,7 @@
             <div class="col-md-4 auto">
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <button href="#" id="btnGuardarInfraccion" onclick="btnGuardarInfraccion()">
+                        <button href="#" id="btnEditarInfraccion" onclick="btnEditarInfraccion()">
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-addInfracion h5 mb-0 me-2"></i><b>Guardar infracción</b></h6>
                         </button>
                     </div>
@@ -109,6 +109,10 @@
                     @Html.HiddenFor(m=> m.idInfraccion)
                     @Html.HiddenFor(m=> m.placasVehiculo)
                     @Html.HiddenFor(m=> m.NumTarjetaCirculacion)
+                    @Html.HiddenFor(m=> m.idGarantia)
+                    @Html.HiddenFor(m=> m.idPersonaInfraccion)
+                    @Html.HiddenFor(m=> m.idPersona)
+                    @Html.HiddenFor(m=> m.idVehiculo)
                     @*Contenidos de cada tab*@
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane tabCustomConteiner fade show active" id="informacionInfraccion-container" role="tabpanel" aria-labelledby="informacionInfraccion-tab">
@@ -306,7 +310,6 @@
                                 </div>
                                 </div>*@
                             </div>
-                            @Html.HiddenFor(m=> m.idVehiculo)
                             <div id="divIsPropietarioConductor" class="row my-4 px-4">
                                 <div class="form-group col-md-8">
                                     <div class="checkbox">
@@ -363,7 +366,6 @@
                                 </div>
                                 </div>*@
                             </div>
-                            @Html.HiddenFor(m=> m.idPersona)
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
                                     <partial name="_DetallePersona" model="Model.Persona" />
@@ -452,7 +454,7 @@
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoPlaca)
                                                     .BindTo((SelectList)ViewBag.CatTipoPlaca)
                                                     .OptionLabel("-- Seleccione --")
-                                                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                                                    .HtmlAttributes(new { style = "width:100%;" }))
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
@@ -481,7 +483,7 @@
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia)
                                                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                                                     .OptionLabel("-- Seleccione --")
-                                                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                                                    .HtmlAttributes(new { style = "width:100%;" }))
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
@@ -489,7 +491,7 @@
                                                 @(Html.Kendo().TextBoxFor(t => t.Garantia.numLicencia)
                                                     .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
                                                     .Placeholder("Ingresa licencia")
-                                                    .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                                    .HtmlAttributes(new { style = "width: 100%" })
                                                     )
                                             </div>
                                         </div>
@@ -561,8 +563,8 @@
         var idCatGarantia = '@(Model.Garantia.idCatGarantia ?? 0)';
 
         if (idCatGarantia == 1) { $("#divGarantiaPlaca").show(); }
-        if (idCatGarantia == 2) { $("#divGarantiaTarjeta").show(); }
-        if (idCatGarantia == 3) { $("#divGarantiaLicencia").show(); }
+        if (idCatGarantia == 2) { $("#divGarantiaLicencia").show(); }
+        if (idCatGarantia == 3) { $("#divGarantiaTarjeta").show(); }
         if (idCatGarantia == 4) { $("#divGarantiaVehiculo").show(); }
     }
 
@@ -573,8 +575,8 @@
         $("#divGarantiaLicencia").hide();
         $("#divGarantiaVehiculo").hide();
         if (idCatGarantia == 1) { $("#divGarantiaPlaca").show(); }
-        if (idCatGarantia == 2) { $("#divGarantiaTarjeta").show(); }
-        if (idCatGarantia == 3) { $("#divGarantiaLicencia").show(); }
+        if (idCatGarantia == 2) { $("#divGarantiaLicencia").show(); }
+        if (idCatGarantia == 3) { $("#divGarantiaTarjeta").show(); }
         if (idCatGarantia == 4) { $("#divGarantiaVehiculo").show(); }
     });
 
@@ -602,8 +604,8 @@
         }
     });
 
-    function btnGuardarInfraccion() {
-        var validator = $("#frmCrearInfraccion").kendoValidator().data('kendoValidator');
+    function btnEditarInfraccion() {
+        var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         validator.validate();
         if ($("#idVehiculo").val() == '') {
             sitteg_info('Debe seleccionar un vehículo');
@@ -616,18 +618,18 @@
         }
 
         if (validator.validate()) {
-            var formData = $("#frmCrearInfraccion").serialize();
+            var formData = $("#frmEditarInfraccion").serialize();
             //var formData = new FormData();
             //formData.delete('idDelegacion');
             //alert(json);
             $.ajax({
-                url: '@Url.Action("ajax_crearInfraccion")',
+                url: '@Url.Action("ajax_editarInfraccion")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
                     window.setTimeout(function () {
-                        window.location.href = '/Infracciones/Editar/' + result
+                        window.location.href = '/Infracciones/Index'
                     }, 500);
                 },
                 error: function (xhr, status) {

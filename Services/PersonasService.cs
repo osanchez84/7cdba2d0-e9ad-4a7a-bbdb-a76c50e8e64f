@@ -571,6 +571,135 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
+        public int CreatePersona(PersonaModel model)
+        {
+            int result = 0;
+            string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
+                              ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
+                              ,idTipoLicencia
+                              ,fechaNacimiento
+                              ,vigenciaLicencia
+                              ,idGenero
+                              ) VALUES (@numeroLicencia
+							,@CURP
+							,@RFC
+							,@nombre
+							,@apellidoPaterno
+							,@apellidoMaterno
+							,@fechaActualizacion
+							,@actualizadoPor
+							,@estatus
+							,@idCatTipoPersona	
+							,@idTipoLicencia
+                            ,@fechaNacimiento
+                            ,@vigenciaLicencia
+                            ,@idGenero
+							);SELECT SCOPE_IDENTITY()";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombre ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoPaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoMaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+
+                    command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
+
+                    command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)model.vigenciaLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
+                    command.CommandType = CommandType.Text;
+                    result = Convert.ToInt32(command.ExecuteScalar());
+                    model.PersonaDireccion.idPersona = result;
+                    var resultIdDireccion = CreatePersonaDireccion(model.PersonaDireccion);
+
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+            return result;
+        }
+
+        public int UpdatePersona(PersonaModel model)
+        {
+            int result = 0;
+            string strQuery = @"
+                            Update personas
+                            set 
+                             numeroLicencia	   = @numeroLicencia
+                            ,CURP			   = @CURP
+                            ,RFC			   = @RFC
+                            ,nombre			   = @nombre
+                            ,apellidoPaterno   = @apellidoPaterno
+                            ,apellidoMaterno   = @apellidoMaterno
+                            ,fechaActualizacion= @fechaActualizacion
+                            ,actualizadoPor	   = @actualizadoPor
+                            ,estatus		   = @estatus
+                            ,idCatTipoPersona  = @idCatTipoPersona
+                            ,idTipoLicencia	   = @idTipoLicencia
+                            ,fechaNacimiento = @fechaNacimiento
+                            ,vigenciaLicencia = @vigenciaLicencia
+                            ,idGenero = @idGenero
+                            where idPersona= @idPersona";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombre ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoPaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoMaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)model.vigenciaLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    //result = Convert.ToInt32(command.ExecuteScalar());
+                    result = command.ExecuteNonQuery();
+                    model.PersonaDireccion.idPersona = model.idPersona;
+                    var resultIdDireccion = UpdatePersonaDireccion(model.PersonaDireccion);
+
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return result;
+        }
+
         public int CreatePersonaDireccion(PersonaDireccionModel model)
         {
             int result = 0;

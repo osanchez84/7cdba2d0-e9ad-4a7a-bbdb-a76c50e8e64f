@@ -63,6 +63,10 @@
     <None Include="Views\Inicio\Marca.cshtml" />
     <None Include="Views\MarcasVehiculos\Create.cshtml" />
     <None Include="Views\MarcasVehiculos\Index.cshtml" />
+    <None Include="Views\Personas\Index.cshtml" />
+    <None Include="Views\Personas\_CrearPersona.cshtml" />
+    <None Include="Views\Personas\_EditarPersona.cshtml" />
+    <None Include="Views\Personas\_ListadoPersonas.cshtml" />
     <None Include="Views\Shared\Components\Menu\Default.cshtml" />
     <None Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
     <None Include="Views\Shared\EditorTemplates\Country.cshtml" />

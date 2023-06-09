@@ -324,9 +324,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.tipoServicio = reader["tipoServicio"].ToString();
 
                             model.motor = reader["motor"].ToString();
-                            model.capacidad = Convert.ToInt32(reader["capacidad"].ToString());
+                            model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
                             model.poliza = reader["poliza"].ToString();
-                            model.carga = Convert.ToBoolean(reader["carga"].ToString());
+                            model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
                             model.otros = reader["otros"].ToString();
 
                         }

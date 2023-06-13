@@ -128,8 +128,10 @@
 
     $("#ddlConcepto").on("change", function () {
         var value = $(this).val();
-        $("#IdSubConcepto option[value!='']").remove();
-        $("#idCatMotivosInfraccion option[value!='']").remove();
+        var ddlIdSubConcepto = $("#IdSubConcepto").data("kendoDropDownList");
+        var ddlidCatMotivosInfraccion = $("#idCatMotivosInfraccion").data("kendoDropDownList");
+        ddlIdSubConcepto.dataSource.data([]);
+        ddlidCatMotivosInfraccion.dataSource.data([]);
 
         var functionName = "_on_change_SubConcepto";
         _set_combo_catalog("CatSubConceptoInfraccion", value, "IdSubConcepto", "false", "divSubConcepto", functionName);

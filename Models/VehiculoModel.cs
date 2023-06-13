@@ -37,7 +37,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string motor { get; set; }
         public int? capacidad { get; set; }
         public string poliza { get; set; }
-        public bool carga { get; set; }
+        public bool? carga { get; set; }
         public string otros { get; set; }
 
         /// <summary>

@@ -132,8 +132,8 @@
                             <div class="row my-4 px-4">
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
+                                        <label>Folio: <b>(obligatorio):</b></label>
                                         @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
-                                            .Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
                                             .Placeholder("Ingresa folio")
                                             .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                             )
@@ -148,7 +148,6 @@
                                             .OptionLabel("-- Seleccione --")
                                             .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                             )
-                                        @Html.ValidationMessageFor(x => x.idOficial)
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">

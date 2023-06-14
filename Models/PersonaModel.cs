@@ -13,12 +13,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
         public string nombreCompleto { get { return nombre + " " + apellidoPaterno + " " + apellidoMaterno; } }
-        public int? idCatTipoPersona { get; set; }
+        public int idCatTipoPersona { get; set; }
         public string tipoPersona { get; set; }
         public int idGenero { get; set; }
         public string genero { get; set; }
         public DateTime fechaNacimiento { get; set; }
-        public int? idTipoLicencia { get; set; }
+        public int idTipoLicencia { get; set; }
         public string tipoLicencia { get; set; }
         public DateTime vigenciaLicencia { get; set; }
         public virtual PersonaDireccionModel PersonaDireccion { get; set; }

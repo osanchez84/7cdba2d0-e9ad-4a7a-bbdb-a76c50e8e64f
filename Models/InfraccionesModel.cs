@@ -2,6 +2,7 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -22,6 +23,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idPersonaInfraccion { get; set; }
         public string placasVehiculo { get; set; }
         public string folioInfraccion { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime fechaInfraccion { get; set; } = DateTime.Now;
         public int kmCarretera { get; set; }
         public string observaciones { get; set; }
@@ -33,6 +36,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string NumTarjetaCirculacion { get; set; }
         public bool isPropietarioConductor { get; set; }
         public string strIsPropietarioConductor { get; set; }
+        public string estatusInfraccion { get; set; }
+        public string observacionesCortesia { get; set; }
+        
         public virtual VehiculoModel Vehiculo { get; set; }
         public PersonaModel Persona { get; set; }
         public virtual PersonaInfraccionModel PersonaInfraccion { get; set; }

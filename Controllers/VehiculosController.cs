@@ -27,16 +27,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _personasService = personasService;
         }
 
-
         public IActionResult Index()
         {
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-
             //ViewBag.PersonasFisicas= _personasService.GetAllPersonas();
             return View(vehiculoBusquedaModel);
+        }
+
+        public IActionResult Editar()
+        {
+            var vehiculosModel = _vehiculosService.GetAllVehiculos();
+            VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
+            vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
+            vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+            return View(vehiculoBusquedaModel);
+        }
+
+        public ActionResult EditarVehiculo(int id)
+        {
+            var vehiculosModel = _vehiculosService.GetVehiculoById(id);
+            VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
+            vehiculoBusquedaModel.Vehiculo = vehiculosModel;
+            vehiculoBusquedaModel.Vehiculo.idSubmarcaUpdated = vehiculosModel.idSubmarca;
+            vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            vehiculoBusquedaModel.isFromUpdate = true;
+            vehiculosModel.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
+            return View("Index", vehiculoBusquedaModel);
         }
 
         public JsonResult Entidades_Read()
@@ -82,7 +104,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //selected.Selected = true;
             return Json(result);
         }
-
+      
         public JsonResult TiposVehiculo_Read()
         {
             var catEntidades = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
@@ -99,6 +121,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             return PartialView("_Create", vehiculosModel);
         }
+
+        [HttpPost]
+        public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
+        {
+            var vehiculosModel = _vehiculosService.GetVehiculos(model);
+            return PartialView("_ListVehiculos", vehiculosModel);
+        }
+
 
         [HttpPost]
         public ActionResult ajax_BuscarPersonaMoral(PersonaMoralBusquedaModel PersonaMoralBusquedaModel)
@@ -140,8 +170,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var personasMoralesModel = _personasService.GetAllPersonasMorales();
             return PartialView("_ListPersonasMorales", personasMoralesModel);
         }
-
-
 
 
         [HttpPost]

@@ -8,8 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         List<TransitoTransporteModel> GetAllTransitoTransporte();
         List<TransitoTransporteModel> GetTransitoTransportes(TransitoTransporteBusquedaModel model);
-        TransitoTransporteModel GetTransitoTransporteById(int IdDeposito);
-        List<Delegaciones> GetDelegaciones();
+        TransitoTransporteModel GetTransitoTransporteById(int IdDeposito);       
         List<Pensiones> GetPensiones();
         int DeleteTransitoTransporte(int IdDeposito, int IdSolicitud);
 

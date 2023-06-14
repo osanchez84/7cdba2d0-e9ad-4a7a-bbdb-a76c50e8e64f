@@ -25,7 +25,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                        @"select dep.iddeposito,dep.idsolicitud,dep.iddelegacion,dep.idmarca,dep.idsubmarca,dep.idpension,dep.idtramo,
+                        @"select dep.iddeposito,dep.idsolicitud,dep.idDelegacion,dep.idmarca,dep.idsubmarca,dep.idpension,dep.idtramo,
                             dep.idcolor,dep.serie,dep.placa,dep.fechaingreso,dep.folio,dep.km,dep.liberado,dep.autoriza,dep.fechaactualizacion,
                             del.delegacion, dep.actualizadopor, dep.estatus, dep.FechaLiberacion,
                             dep.IdDependenciaGenera,dep.IdDependenciaTransito,dep.IdDependenciaNoTransito,
@@ -37,10 +37,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             con.IdConcesionario, con.concesionario
 
                             from depositos dep 
-                            inner join delegaciones del on dep.iddelegacion= del.iddelegacion
+                            inner join catDelegaciones del on dep.idDelegacion= del.idDelegacion
                             inner join pensiones pen on dep.idpension	= pen.idpension
                             inner join solicitudes sol on dep.idsolicitud = sol.idsolicitud
-                            inner join Concesionarios con on  con.IdConcesionario = dep.IdConcesionario
+                            inner join concesionarios con on  con.IdConcesionario = dep.IdConcesionario
                             inner join gruas g  on g.idConcesionario = con.idConcesionario";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
@@ -99,7 +99,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                        @"select dep.iddeposito,dep.idsolicitud,dep.iddelegacion,dep.idmarca,dep.idsubmarca,dep.idpension,dep.idtramo,
+                        @"select dep.iddeposito,dep.idsolicitud,dep.idDelegacion,dep.idmarca,dep.idsubmarca,dep.idpension,dep.idtramo,
                             dep.idcolor,dep.serie,dep.placa,dep.fechaingreso,dep.folio,dep.km,dep.liberado,dep.autoriza,dep.fechaactualizacion,
                             del.delegacion, dep.actualizadopor, dep.estatus, dep.FechaLiberacion,
                             dep.IdDependenciaGenera,dep.IdDependenciaTransito,dep.IdDependenciaNoTransito,
@@ -111,10 +111,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             con.IdConcesionario, con.concesionario
 
                             from depositos dep 
-                            inner join delegaciones del on dep.iddelegacion= del.iddelegacion
+                            inner join catDelegaciones del on dep.idDelegacion= del.idDelegacion
                             inner join pensiones pen on dep.idpension	= pen.idpension
                             inner join solicitudes sol on dep.idsolicitud = sol.idsolicitud
-                            inner join Concesionarios con on  con.IdConcesionario = dep.IdConcesionario
+                            inner join concesionarios con on  con.IdConcesionario = dep.IdConcesionario
                             inner join gruas g  on g.idConcesionario = con.idConcesionario 
                             where g.IdGrua=@IdGrua OR pen.idPension=@IdPension
                             OR  dep.fechaIngreso between @FechaIngreso and  @FechaIngresoFin

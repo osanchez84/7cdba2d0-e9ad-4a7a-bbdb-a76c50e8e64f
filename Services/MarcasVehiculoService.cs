@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from marcasVehiculos", connection);
+                    SqlCommand command = new SqlCommand("Select * from catMarcasVehiculos where estatus=1", connection);
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -37,8 +37,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             MarcasVehiculo marcasVehiculo = new MarcasVehiculo();
-                            marcasVehiculo.IdMarcaVehiculo = Convert.ToInt32(reader["IdMarcaVehiculo"].ToString());
-                            marcasVehiculo.MarcaVehiculo = reader["MarcaVehiculo"].ToString();
+                            marcasVehiculo.IdMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"].ToString());
+                            marcasVehiculo.MarcaVehiculo = reader["marcaVehiculo"].ToString();
                             marcas.Add(marcasVehiculo);
 
                         }
@@ -67,7 +67,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from marcasVehiculos where idMarcaVehiculo=@idMarcaVehiculo", connection);
+                    SqlCommand command = new SqlCommand("Select * from catMarcasVehiculos where idMarcaVehiculo=@idMarcaVehiculo", connection);
                     command.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = IdMarcaVehiculo;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -98,7 +98,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand sqlCommand = new SqlCommand("Insert into marcasVehiculos(marcaVehiculo) values(@MarcaVehiculo)", connection);
+                    SqlCommand sqlCommand = new SqlCommand("Insert into catMarcasVehiculos(marcaVehiculo) values(@MarcaVehiculo)", connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@MarcaVehiculo", SqlDbType.VarChar)).Value = marca.MarcaVehiculo;
                     sqlCommand.CommandType = CommandType.Text;
                     result = sqlCommand.ExecuteNonQuery();
@@ -124,7 +124,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand sqlCommand = new
-                        SqlCommand("Update marcasVehiculos set MarcaVehiculo=@MarcaVehiculo where idMarcaVehiculo=@idMarcaVehiculo",
+                        SqlCommand("Update marcasVehiculos set catMarcasVehiculos=@MarcaVehiculo where idMarcaVehiculo=@idMarcaVehiculo",
                         connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = marca.IdMarcaVehiculo;
                     sqlCommand.Parameters.Add(new SqlParameter("@MarcaVehiculo", SqlDbType.VarChar)).Value = marca.MarcaVehiculo;
@@ -153,7 +153,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Delete from marcasVehiculos where idMarcaVehiculo=@idMarcaVehiculo", connection);
+                    SqlCommand command = new SqlCommand("Delete from catMarcasVehiculos where idMarcaVehiculo=@idMarcaVehiculo", connection);
                     command.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = IdMarca;
                     command.CommandType = CommandType.Text;
                     result = command.ExecuteNonQuery();

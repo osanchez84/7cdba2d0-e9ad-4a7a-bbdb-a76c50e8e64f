@@ -374,6 +374,28 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Text = Convert.ToString(s["nombreEntidad"])
                             }).ToList();
                     break;
+                case "CatEstatusInfraccion":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idEstatusInfraccion", "estatusInfraccion" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catEstatusInfraccion", campos)
+                            .Select(s =>
+                            new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idEstatusInfraccion"]),
+                                Text = Convert.ToString(s["estatusInfraccion"])
+                            }).ToList();
+                    break;
+                case "CatDependencias":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idDependencia", "nombreDependencia" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catDependencias", campos)
+                            .Select(s =>
+                            new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idDependencia"]),
+                                Text = Convert.ToString(s["nombreDependencia"])
+                            }).ToList();
+                    break;
 
                 default:
                     return catalogModel;

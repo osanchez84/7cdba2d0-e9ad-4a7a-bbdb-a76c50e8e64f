@@ -29,26 +29,44 @@
             {
                 columns.Bound(p => p.folioInfraccion).Title("Folio").Width(90);
                 columns.Bound(p => p.PersonaInfraccion.nombreCompleto).Title("Conductor").Width(90);
-                columns.Bound(p => p.Vehiculo.Persona.nombreCompleto).Title("Propietario").Width(100);
-                columns.Bound(c => c.fechaInfraccion).Title("Fecha Aplicada a").Width(150);
+                columns.Bound(p => p.Vehiculo.Persona.nombreCompleto).Title("Propietario").Width(90);
+                columns.Bound(c => c.fechaInfraccion).Title("Fecha Aplicada a").Width(100);
                 columns.Bound(c => c.Garantia.garantia).Title("Garantía").Width(90);
                 columns.Bound(c => c.delegacion).Title("Delegación/Oficina").Width(90);
-
+                columns.Bound(c => c.estatusInfraccion).Title("Estatus").Width(90);
                 @*Columna Vehiculo tampoco se que poner si se relaciona a alguna tabla *@
                 @*Aun no se usa cortesia pro que no saben como se relaciona *@
                 @*columns.Bound(c => c.cortesia).Title("Estatus/Cortesía").Width(120);*@
 
+                @*    columns.Bound(p => p.idInfraccion)
+        .ClientTemplate(
+        "# if (idEstatusInfraccion == 5) { #" +
+        "<input type=\"checkbox\" id=\"checkBox\" class=\"parentCheckBox\" window-call=\"template\" checked/>" +
+        "# } else { #" +
+        "<input type=\"checkbox\" id=\"checkBox\" class=\"parentCheckBox\" window-call=\"template\" />" +
+        "# } #")
+        .Width(90);*@
+
+                columns.Bound(p => p.idInfraccion)
+            .ClientTemplate(
+            "# if (idEstatusInfraccion == 5) { #" +
+            "<button disabled onclick=\"ShowCortesia('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorWarning'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>" +
+            "# } else { #" +
+            "<button onclick=\"ShowCortesia('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>" +
+            "# } #")
+            .Title("Cortesía").Sortable(false).Width(90);
+
                 columns.Bound(p => p.idInfraccion).ClientTemplate(
-            "<button onclick=\"ShowUpdate('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
-            ).Title("Editar").Sortable(false).Width(90);
+                "<button onclick=\"ShowUpdate('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
+                ).Title("Editar").Sortable(false).Width(90);
 
                 @*columns.Bound(p => p.idInfraccion).ClientTemplate(
-                "<button onclick=\"ShowDetail('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>"
-                ).Title("Ver").Sortable(false).Width(90);*@
+        "<button onclick=\"ShowDetail('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>"
+        ).Title("Ver").Sortable(false).Width(90);*@
 
                 columns.Bound(p => p.idInfraccion).ClientTemplate(
-                "<button onclick=\"downLoadPdf('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
-                ).Title("Exportar").Sortable(false).Width(90);
+            "<button onclick=\"downLoadPdf('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
+            ).Title("Exportar").Sortable(false).Width(90);
 
             }).HtmlAttributes(new { style = "height:450" })
             .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
@@ -60,6 +78,55 @@
             )
             )
         @*</div>*@
+    </div>
+</div>
+
+
+@*Modal*@
+<div class="modal fade modalCustom" id="modalCortesia" tabindex="-1" aria-labelledby="editVehiculo" aria-hidden="true">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+
+            <section class=" bg-white rounded">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                    <div class="col-auto pe-0">
+                        <div class="row align-items-center justify-content-center justify-content-md-start">
+                            <div class="col-auto pe-0">
+                                <i class="icon-edit-car h1 colorPrimary"></i>
+                            </div>
+                            <div class="col-auto my-3">
+                                <h2 class="m-0 h3"><b>Cortesías no aplicadas</b></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col-auto my-3">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light py-1"></div>
+                    </div>
+
+                </div>
+
+                <div class="row align-items-end">
+                    <div class="col-12 col-lg-6 my-4">
+                        <h5 class="px-4"><b>Infracción:</b></h5>
+                    </div>
+
+                </div>
+
+
+                <div class="modal-body" id="ModalBodyCortesia">
+                </div>
+
+            </section>
+        </div>
     </div>
 </div>
 
@@ -99,5 +166,21 @@
         //console.log(Id);
         window.location = '/Infracciones/Editar?id=' + Id;
     }
+
+    function ShowCortesia(Id) {
+        $.ajax({
+            url: '@Url.Action("ajax_CortesiaInfraccion")',
+            type: 'GET',
+            data: { id: Id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (value) {
+                $('#ModalBodyCortesia').html(value);
+                $('#modalCortesia').modal('show');
+            }
+        });
+    }
+
+
 
 </script>

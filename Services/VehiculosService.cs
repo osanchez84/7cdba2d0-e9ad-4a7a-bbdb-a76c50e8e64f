@@ -159,6 +159,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,v.fechaActualizacion
                                 ,v.actualizadoPor
                                 ,v.estatus
+                                ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
                                 ,p.idPersona
                                 ,p.numeroLicencia
                                 ,p.CURP
@@ -238,6 +239,12 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.entidadRegistro = reader["nombreEntidad"].ToString();
                             model.color = reader["color"].ToString();
                             model.propietario = model.Persona.nombre + " " + model.Persona.apellidoPaterno + " " + model.Persona.apellidoMaterno;
+
+                            model.motor = reader["motor"].ToString();
+                            model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
+                            model.poliza = reader["poliza"].ToString();
+                            model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
+                            model.otros = reader["otros"].ToString();
                             modelList.Add(model);
                         }
                     }
@@ -254,7 +261,6 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return modelList.FirstOrDefault();
         }
-
 
         public VehiculoModel GetVehiculoToAnexo(VehiculoBusquedaModel modelSearch)
         {
@@ -360,6 +366,118 @@ namespace GuanajuatoAdminUsuarios.Services
             return model;
         }
 
+        public List<VehiculoModel> GetVehiculos(VehiculoBusquedaModel modelSearch)
+        {
+            List<VehiculoModel> ListVehiculos = new List<VehiculoModel>();
+            //ToDo: Revisar si se buscar primero en el registro estatal
+            //Busqueda en Sitteg:
+
+            string strQuery = @"SELECT
+                                v.idVehiculo, v.placas, v.serie, v.tarjeta, v.vigenciaTarjeta, v.idMarcaVehiculo
+                                ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
+                                ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona
+                                ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
+                                ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.tipoServicio
+                                ,catE.nombreEntidad, catC.color  
+                                FROM vehiculos v
+                                INNER JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
+                                INNER JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
+                                INNER JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
+                                INNER JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
+                                INNER JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
+                                INNER JOIN catColores catC on v.idColor = catC.idColor  
+                                WHERE v.estatus = 1
+                                AND (v.idEntidad = @idEntidad 
+                                OR v.serie  LIKE '%' + @Serie + '%'  
+                                OR v.placas LIKE '%' + @Placas + '%'  
+                                OR v.tarjeta LIKE '%' + @Tarjeta + '%' 
+                                OR v.motor LIKE '%' + @Motor + '%'
+                                OR v.modelo LIKE '%' + @Modelo + '%'
+                                OR v.numeroEconomico LIKE '%' + @NumeroEconomico + '%'
+                                OR v.propietario LIKE '%' + @Propietario + '%'
+                                OR v.idMarcaVehiculo = @idMarca
+                                OR v.idSubMarca = @idSubMarca
+                                OR v.idTipoVehiculo = @idTipoVehiculo
+                                OR v.idCatTipoServicio = @idTipoServicio
+                                OR v.idColor = @idColor
+                                )";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)modelSearch.IdEntidadBusqueda ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)modelSearch.PlacasBusqueda != null ? modelSearch.PlacasBusqueda.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)modelSearch.SerieBusqueda != null ? modelSearch.SerieBusqueda.ToUpper() : DBNull.Value;
+
+                    command.Parameters.Add(new SqlParameter("@Tarjeta", SqlDbType.NVarChar)).Value = (object)modelSearch.tarjeta != null ? modelSearch.tarjeta.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Motor", SqlDbType.NVarChar)).Value = (object)modelSearch.motor != null ? modelSearch.motor.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Modelo", SqlDbType.NVarChar)).Value = (object)modelSearch.modelo != null ? modelSearch.modelo.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@NumeroEconomico", SqlDbType.NVarChar)).Value = (object)modelSearch.numeroEconomico != null ? modelSearch.numeroEconomico.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)modelSearch.propietario != null ? modelSearch.propietario.ToUpper() : DBNull.Value;
+
+                    command.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = (object)modelSearch.idMarca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idSubMarca", SqlDbType.Int)).Value = (object)modelSearch.idSubMarca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)modelSearch.idTipoVehiculo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoServicio", SqlDbType.Int)).Value = (object)modelSearch.idTipoServicio ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)modelSearch.idColor ?? DBNull.Value;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            VehiculoModel model = new VehiculoModel();
+                            model.idVehiculo = Convert.ToInt32(reader["idVehiculo"]);
+                            model.placas = reader["placas"].ToString();
+
+                            model.serie = reader["serie"].ToString();
+                            model.tarjeta = reader["tarjeta"].ToString();
+                            model.vigenciaTarjeta = Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                            model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
+                            model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
+                            model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"]);
+
+                            model.modelo = reader["modelo"].ToString();
+                            model.idColor = Convert.ToInt32(reader["idColor"]);
+                            model.idEntidad = Convert.ToInt32(reader["idEntidad"]);
+                            model.idCatTipoServicio = Convert.ToInt32(reader["idCatTipoServicio"]);
+                            model.propietario = reader["propietario"].ToString();
+                            model.numeroEconomico = reader["numeroEconomico"].ToString();
+                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
+                            model.paisManufactura = reader["paisManufactura"].ToString();
+                            model.numeroEconomico = reader["numeroEconomico"].ToString();
+
+                            model.marca = reader["marcaVehiculo"].ToString();
+                            model.submarca = reader["nombreSubmarca"].ToString();
+                            model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                            model.color = reader["color"].ToString();
+                            model.entidadRegistro = reader["nombreEntidad"].ToString();
+                            model.tipoServicio = reader["tipoServicio"].ToString();
+
+                            model.motor = reader["motor"].ToString();
+                            model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
+                            model.poliza = reader["poliza"].ToString();
+                            model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
+                            model.otros = reader["otros"].ToString();
+                            model.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
+                            ListVehiculos.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return ListVehiculos;
+        }
+
         public int CreateVehiculo(VehiculoModel model)
         {
             int result = 0;
@@ -458,7 +576,6 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
-
 
         public int UpdateVehiculo(VehiculoModel model)
         {

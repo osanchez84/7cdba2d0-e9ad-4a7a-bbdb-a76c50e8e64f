@@ -39,7 +39,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             return new HtmlString(result);
         }
 
-        public static IHtmlContent CustomTextBoxFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string placeholderval, bool @readonly)
+        public static IHtmlContent CustomTextBoxFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string placeholderval, bool @readonlyVal)
         {
             string result;
 
@@ -47,14 +47,14 @@ namespace GuanajuatoAdminUsuarios.Utils
             span.MergeAttribute("class", "k-widget k-textbox");
             span.MergeAttribute("style", "width:100%;");
             IHtmlContent textbox;
-            if (@readonly)
+            if (@readonlyVal)
             {
                 textbox = helper.TextBoxFor(expression, new
                 {
                     placeholder = placeholderval,
                     @class = "k-input k-state-disabled",
                     style = "width:100%;",
-                    disabled = "disabled"
+                    @readonly = "readonly"
                 });
             }
             else

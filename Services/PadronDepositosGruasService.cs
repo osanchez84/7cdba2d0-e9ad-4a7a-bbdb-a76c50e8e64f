@@ -47,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             c.Concesionario,dep.IdDeposito,dep.IdPension,dep.IdConcesionario,p.Pension,
                             p.Direccion, p.Telefono,  p.IdMunicipio, m.Municipio
                             from gruas g 
-                            inner join Concesionarios c on g.IdConcesionario= c.IdConcesionario
+                            inner join concesionarios c on g.IdConcesionario= c.IdConcesionario
                             inner join catTipoGrua tg on g.IdTipoGrua= tg.IdTipoGrua
                             inner join depositos dep on c.IdConcesionario =dep.IdConcesionario
                             inner join pensiones p on dep.idPension= p.idPension
@@ -193,7 +193,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             c.Concesionario,dep.IdDeposito,dep.IdPension,dep.IdConcesionario,p.Pension,
                             p.Direccion, p.Telefono,  p.IdMunicipio, m.Municipio
                             from gruas g 
-                            inner join Concesionarios c on g.IdConcesionario= c.IdConcesionario
+                            inner join concesionarios c on g.IdConcesionario= c.IdConcesionario
                             inner join catTipoGrua tg on g.IdTipoGrua= tg.IdTipoGrua
                             inner join depositos dep on c.IdConcesionario =dep.IdConcesionario
                             inner join pensiones p on dep.idPension= p.idPension

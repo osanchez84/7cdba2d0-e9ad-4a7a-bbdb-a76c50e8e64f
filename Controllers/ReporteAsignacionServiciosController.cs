@@ -17,10 +17,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IEventoService _eventoService;
         private readonly IReporteAsignacionService _reporteAsignacionService;
         private readonly IPdfGenerator<ReporteAsignacionModel> _pdfService;
+        private readonly ICatDictionary _catDictionary;
+        private readonly ITransitoTransporteService _transitoTransporteService;
 
-        public ReporteAsignacionServiciosController(IPadronDepositosGruasService padronDepositosGruasService,
+        public ReporteAsignacionServiciosController(
+            ITransitoTransporteService transitoTransporteService,
+            IPadronDepositosGruasService padronDepositosGruasService,
              IGruasService gruasService, IEventoService eventoService,
              IReporteAsignacionService reporteAsignacionService, IPdfGenerator<ReporteAsignacionModel> pdfService
+            , ICatDictionary catDictionary
             )
         {
             _padronDepositosGruasService = padronDepositosGruasService;
@@ -28,6 +33,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _eventoService = eventoService;
             _reporteAsignacionService = reporteAsignacionService;
             _pdfService = pdfService;
+            _catDictionary = catDictionary;
+            _transitoTransporteService = transitoTransporteService;
         }
         public IActionResult Index()
         {
@@ -75,9 +82,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Pension_Read()
         {
-            var result = new SelectList(_padronDepositosGruasService.GetPensiones(), "IdPension", "Pension");
+            var result = new SelectList(_transitoTransporteService.GetPensiones(), "IdPension", "Pension");
             return Json(result);
         }
+
 
         public JsonResult Grua_Read()
         {

@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using GuanajuatoAdminUsuarios.Utils;
 using GuanajuatoAdminUsuarios.Framework;
+using System.Linq;
+using System;
+using iTextSharp.text;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -232,8 +235,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListadoMotivos", modelList);
         }
 
-
-
         [HttpGet]
         public ActionResult ajax_detalleVehiculo(int idVehiculo)
         {
@@ -269,6 +270,43 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListadoMotivos", modelList);
         }
 
+        public JsonResult InfraccionesEstatus_Read()
+        {
+            var catEntidades = _catDictionary.GetCatalog("CatEstatusInfraccion", "0");
+            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            //var selected = result.Where(x => x.Value == Convert.ToString(idSubmarca)).First();
+            //selected.Selected = true;
+            return Json(result);
+        }
+
+        [HttpGet]
+        public ActionResult ajax_CortesiaInfraccion(int id)
+        {
+            //var model = _vehiculosService.GetVehiculoById(id);
+            var model = _infraccionesService.GetInfraccion2ById(id);
+            return PartialView("_Cortesia", model);
+        }
+
+        [HttpPost]
+        public ActionResult ajax_UpdateCortesiaInfraccion(InfraccionesModel model)
+        {
+            var result = new SelectList(_estatusInfraccionService.GetEstatusInfracciones(), "idEstatusInfraccion", "estatusInfraccion");
+            var Cortesia = result.Where(x => x.Text.ToUpper() == "Cortesia".ToUpper()).FirstOrDefault();
+            model.idEstatusInfraccion = Convert.ToInt32(Cortesia.Value);
+            var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
+            if (modelInf == 1)
+            {
+                var listInfracciones = _infraccionesService.GetAllInfracciones();
+                return PartialView("_ListadoInfracciones", listInfracciones);
+                //return Json(listInfracciones);
+            }
+            else
+            {
+                //Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(null);
+            }
+
+        }
 
     }
 }

@@ -5,6 +5,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IInfraccionesService
     {
+        public List<InfraccionesModel> GetAllInfracciones2();
         List<InfraccionesModel> GetAllInfracciones();
         List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model);
         InfraccionesModel GetInfraccionById(int IdInfraccion);

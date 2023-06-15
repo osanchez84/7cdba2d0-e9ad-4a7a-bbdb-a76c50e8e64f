@@ -114,6 +114,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IRegistroReciboPagoService, RegistroReciboPagoService>();
             services.AddScoped<ICancelarInfraccionService, CancelarInfraccionService>();
             services.AddScoped<ICapturaAccidentesService, CapturaAccidentesService>();
+            services.AddScoped<IEstadisticasService, EstadisticasService>();
 
             services
                .AddControllersWithViews()

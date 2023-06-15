@@ -42,10 +42,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View("Marca");
         }
 
-     
+        [Route("/Principal")]
+        public IActionResult Principal()
+        {
+                return View("Inicio");
+        }
 
 
-     
+
+
+
 
 
 

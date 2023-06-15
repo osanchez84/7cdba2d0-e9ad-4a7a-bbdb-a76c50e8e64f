@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GuanajuatoAdminUsuarios.Models.Estadisticas
+namespace GuanajuatoAdminUsuarios.Models
 {
     public class IncidenciasBusquedaModel
     {

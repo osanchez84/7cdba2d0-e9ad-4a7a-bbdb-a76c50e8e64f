@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Framework;
+using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;

@@ -519,11 +519,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET idCausaAccidente = @IdCausaAccidente WHERE idAccidente = @idAccidente";
+                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente) values(@idAccidente, @idCausaAccidente)";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue("@IdCausaAccidente", IdCausaAccidente);
+                    command.Parameters.AddWithValue("@idCausaAccidente", IdCausaAccidente);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
                     command.ExecuteNonQuery();
@@ -550,7 +550,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT a.*, c.causaAccidente FROM accidentes a JOIN catCausasAccidentes c ON a.idCausaAccidente = c.idCausaAccidente WHERE a.idAccidente = @idAccidente AND a.idCausaAccidente > 0;", connection);
+                    SqlCommand command = new SqlCommand("SELECT ac.*, c.causaAccidente FROM accidenteCausas ac JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0;", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -561,7 +561,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             CapturaAccidentesModel causa = new CapturaAccidentesModel();
                             causa.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
                             causa.IdCausaAccidente = Convert.ToInt32(reader["IdCausaAccidente"].ToString());
-                            causa.CausaAccidente = reader["CausaAccidente"].ToString();
+                            causa.CausaAccidente = reader["causaAccidente"].ToString();
 
                             ListaGridCausa.Add(causa);
 

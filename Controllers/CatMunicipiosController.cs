@@ -15,57 +15,57 @@ namespace Example.WebUI.Controllers
     public class CatMunicipiosController : Controller
     {
         private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
 
-        public CatMunicipiosController(ICatMunicipiosService catMunicipiosService)
+
+
+
+        public CatMunicipiosController(ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
         {
             _catMunicipiosService = catMunicipiosService;
+            _catEntidadesService = catEntidadesService;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
-        DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            //var products = dbContext.Products.ToList();
             var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
 
             return View(ListMunicipiosModel);
 
         }
-
-        #region Modal Action
-        public ActionResult IndexModal()
-        {
-            var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
-            return View("Index", ListMunicipiosModel);
-        }
-
         [HttpPost]
         public ActionResult AgregarMunicipioModal()
         {
             return PartialView("_Crear");
         }
-
+        public JsonResult Entidades_Drop()
+        {
+            var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            return Json(result);
+        }
+        public JsonResult Delegaciones_Drop()
+        {
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinas(), "IdOficinaTransporte", "NombreOficina");
+            return Json(result);
+        }
         public ActionResult EditarMunicipioModal(int IdMunicipio)
         {
-            var municipiosModel = GetMunicipioByID(IdMunicipio);
+            var municipiosModel = _catMunicipiosService.GetMunicipioByID(IdMunicipio);
             return View("_Editar", municipiosModel);
         }
 
-        public ActionResult EliminarMunicipioModal(int IdMunicipio)
-        {
-            var municipiosModel = GetMunicipioByID(IdMunicipio);
-            return View("_Eliminar", municipiosModel);
-        }
 
 
         [HttpPost]
         public ActionResult CrearMunicipioMod(CatMunicipiosModel model)
         {
             var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Municipio");
             if (ModelState.IsValid)
             {
 
 
-                AgregarMunicipio(model);
+                _catMunicipiosService.AgregarMunicipio(model);
                 var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
                 return PartialView("_ListaMunicipios", ListMunicipiosModel);
             }
@@ -76,13 +76,14 @@ namespace Example.WebUI.Controllers
 
         public ActionResult EditarMunicipioMod(CatMunicipiosModel model)
         {
+            bool switchMunicipios = Request.Form["municipiosSwitch"].Contains("true");
+            model.Estatus = switchMunicipios ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Municipio");
             if (ModelState.IsValid)
             {
 
 
-                EditarMunicipio(model);
+                _catMunicipiosService.EditarMunicipio(model);
                 var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
                 return PartialView("_ListaMunicipios", ListMunicipiosModel);
             }
@@ -90,113 +91,12 @@ namespace Example.WebUI.Controllers
             return PartialView("_Editar");
         }
 
-        public ActionResult EliminarMunicipioMod(CatMunicipiosModel model)
-        {
-            var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Municipio");
-            if (ModelState.IsValid)
-            {
-
-
-                EliminarMunicipio(model);
-                var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
-                return PartialView("_ListaMunicipios", ListMunicipiosModel);
-            }
-
-            return PartialView("_Eliminar");
-        }
         public JsonResult GetMun([DataSourceRequest] DataSourceRequest request)
         {
             var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
 
             return Json(ListMunicipiosModel.ToDataSourceResult(request));
         }
-
-
-
-
-        #endregion
-
-
-        #region Acciones a base de datos
-
-        public void AgregarMunicipio(CatMunicipiosModel model)
-        {
-            CatMunicipios municipio = new CatMunicipios();
-            municipio.IdMunicipio = model.IdMunicipio;
-            municipio.Municipio = model.Municipio;
-            municipio.Estatus = 1;
-            municipio.FechaActualizacion = DateTime.Now;
-            dbContext.CatMunicipios.Add(municipio);
-            dbContext.SaveChanges();
-        }
-
-        public void EditarMunicipio(CatMunicipiosModel model)
-        {
-            CatMunicipios municipio = new CatMunicipios();
-            municipio.IdMunicipio = model.IdMunicipio;
-            municipio.Municipio = model.Municipio;
-            municipio.Estatus = 1;
-            municipio.FechaActualizacion = DateTime.Now;
-            dbContext.Entry(municipio).State = EntityState.Modified;
-            dbContext.SaveChanges();
-
-        }
-
-        public void EliminarMunicipio(CatMunicipiosModel model)
-        {
-            CatMunicipios municipio = new CatMunicipios();
-            municipio.IdMunicipio = model.IdMunicipio;
-            municipio.Municipio = model.Municipio;
-            municipio.Estatus = 1;
-            municipio.FechaActualizacion = DateTime.Now;
-            dbContext.Entry(municipio).State = EntityState.Modified;
-            dbContext.SaveChanges();
-
-        }
-
-        private void SetDDLMunicipios()
-        {
-            ViewBag.Municipios = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
-        }
-
-
-        public CatMunicipiosModel GetMunicipioByID(int IdMunicipio)
-        {
-
-            var productEnitity = dbContext.CatMunicipios.Find(IdMunicipio);
-
-            var municipiosModel = (from catMunicipios in dbContext.CatMunicipios.ToList()
-                                   select new CatMunicipiosModel
-
-                                   {
-                                       IdMunicipio = catMunicipios.IdMunicipio,
-                                       Municipio = catMunicipios.Municipio,
-
-
-                                   }).Where(w => w.IdMunicipio == IdMunicipio).FirstOrDefault();
-
-            return municipiosModel;
-        }
-
-
-       /* public List<CatMunicipiosModel> GetMunicipios()
-        {
-            var ListMunicipiosModel = (from catMunicipios in dbContext.CatMunicipios.ToList()
-                                       join estatus in dbContext.Estatus.ToList()
-                                       on catMunicipios.Estatus equals estatus.estatus
-                                       select new CatMunicipiosModel
-                                       {
-                                           IdMunicipio = catMunicipios.IdMunicipio,
-                                           Municipio = catMunicipios.Municipio,
-                                           estatusDesc = estatus.estatusDesc
-
-                                       }).ToList();
-            return ListMunicipiosModel;
-        }*/
-        #endregion
-
-
 
     }
 }

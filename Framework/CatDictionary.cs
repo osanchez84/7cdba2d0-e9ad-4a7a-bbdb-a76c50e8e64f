@@ -304,17 +304,6 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Text = Convert.ToString(s["situacion"])
                             }).ToList();
                     break;
-                case "CatTiposVehiculo":
-                    catalogModel.CatalogName = catalog;
-                    campos = new string[] { "idTipoVehiculo", "tipoVehiculo" };
-                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catTiposVehiculo", campos)
-                            .Select(s =>
-                            new SystemCatalogListModel()
-                            {
-                                Id = Convert.ToInt32(s["idTipoVehiculo"]),
-                                Text = Convert.ToString(s["tipoVehiculo"])
-                            }).ToList();
-                    break;
                 case "CatTipoPersona":
                     catalogModel.CatalogName = catalog;
                     campos = new string[] { "idCatTipoPersona", "tipoPersona" };
@@ -324,17 +313,6 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idCatTipoPersona"]),
                                 Text = Convert.ToString(s["tipoPersona"])
-                            }).ToList();
-                    break;
-                case "CatTipoServicio":
-                    catalogModel.CatalogName = catalog;
-                    campos = new string[] { "idCatTipoServicio", "tipoServicio" };
-                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catTipoServicio", campos)
-                            .Select(s =>
-                            new SystemCatalogListModel()
-                            {
-                                Id = Convert.ToInt32(s["idCatTipoServicio"]),
-                                Text = Convert.ToString(s["tipoServicio"])
                             }).ToList();
                     break;
                 case "CatMarcasVehiculos":

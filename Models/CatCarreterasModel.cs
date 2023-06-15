@@ -8,7 +8,8 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string Carretera { get; set; }
 
-        public int IdDelegacion { get; set; }
+        public int idOficinaTransporte { get; set; }
+        public string nombreOficina { get; set; }
 
         public DateTime? FechaActualizacion { get; set; }
 
@@ -17,5 +18,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? Estatus { get; set; }
 
         public string estatusDesc { get; set; }
+        public bool ValorEstatusCarretera { get; set; }
+
+        
     }
 }

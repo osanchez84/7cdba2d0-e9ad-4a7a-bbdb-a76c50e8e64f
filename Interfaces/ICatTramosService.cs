@@ -8,7 +8,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
 
         List<CatTramosModel> ObtenerTamosPorCarretera(int carreteraDDValue);
+        List<CatTramosModel> ObtenerTramos();
 
+        public CatTramosModel ObtenerTramoByID(int IdTramo);
+        public int CrearTramo(CatTramosModel model);
+        public int EditarTramo(CatTramosModel model);
 
     }
 }

@@ -70,7 +70,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdDeposito)
         {
-
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"fullSolicitudfolioInfraccion","Fecha_evento/Folio_Solicitud/Folio_Infracción"},

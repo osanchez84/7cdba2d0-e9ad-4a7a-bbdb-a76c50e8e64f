@@ -71,11 +71,13 @@ namespace GuanajuatoAdminUsuarios
             //Hacer accesible la cadena de conexion a la base desde la clase
             // services.AddTransient<ConexionBD>();
 
-            //Servicios
+            //Servicios 
             services.AddScoped(typeof(IPdfGenerator<>), typeof(PdfGenerator<>));
             services.AddScoped<ISqlClientConnectionBD, SqlClientConnectionBD>();
             services.AddScoped<IMarcasVehiculos, MarcasVehiculoService>();
+            services.AddScoped<ICatEntidadesService, CatEntidadesService>();
             services.AddScoped<ISubmarcasVehiculos, SubmarcasVehiculosService>();
+            services.AddScoped<ICatDelegacionesOficinasTransporteService, CatDelegacionesOficinasTransporteService>();
             services.AddScoped<IDependencias, DependenciasService>();
             services.AddScoped<IOficiales, OficialesService>();
             services.AddScoped<IPlacaServices, PlacaServices>();

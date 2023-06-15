@@ -1,4 +1,5 @@
-﻿using GuanajuatoAdminUsuarios.Interfaces;
+﻿using GuanajuatoAdminUsuarios.Framework;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +18,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IGruasService _gruasService;
         private readonly IMunicipiosService _municipiosService;
         private readonly IConcesionariosService _concesionariosService;
-
+        private readonly ICatDictionary _catDictionary;
 
         public PadronDepositosGruasController(IPadronDepositosGruasService padronDepositosGruasService,
              IGruasService gruasService, IMunicipiosService municipiosService, IConcesionariosService concesionariosService
+            , ICatDictionary catDictionary
             )
         {
             _padronDepositosGruasService = padronDepositosGruasService;
             _gruasService = gruasService;
             _municipiosService = municipiosService;
             _concesionariosService = concesionariosService;
+            _catDictionary = catDictionary;
         }
 
 
@@ -45,12 +48,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListadoPadron", ListPadronDepositosGruas);
 
         }
+
         public JsonResult Municipios_Read()
         {
-            var result = new SelectList(_municipiosService.GetMunicipios(), "IdMunicipio", "Municipio");
+            var CatMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+            var result = new SelectList(CatMunicipios.CatalogList, "Id", "Text");
             return Json(result);
         }
-
+        
         public JsonResult Concesionarios_Read()
         {
             var result = new SelectList(_concesionariosService.GetConcesionarios(), "IdConcesionario", "Concesionario");

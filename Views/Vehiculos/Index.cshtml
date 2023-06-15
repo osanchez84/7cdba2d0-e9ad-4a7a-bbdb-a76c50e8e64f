@@ -1,6 +1,21 @@
 ﻿@model VehiculoBusquedaModel
+@{
+    var isFromUpdate = Model.isFromUpdate;
+}
+
 <head>
     <script>
+
+        $(document).ready(function () {
+            var value = $('#hdnIsFromUpdate').val();
+            console.log("valor update", value);
+            var isTrueSet = (value.toLowerCase() === 'true');
+            console.log("valor evaluado", isTrueSet);
+            if (isTrueSet) {
+                document.getElementById("sec0").style.display = "none";
+                document.getElementById("VehiculoLocalizado").style.display = "block";
+            }
+        });
 
         function submitSearch() {
 
@@ -12,7 +27,7 @@
                 data: Mydata,
                 success: function (result) {
                     //var dataObject = JSON.parse(result);
-                    //console.log("IDDs: ", dataObject.idMarcaVehiculo);                        
+                    //console.log("IDDs: ", dataObject.idMarcaVehiculo);
                     document.getElementById("sec0").style.display = "none";
                     document.getElementById("VehiculoLocalizado").style.display = "block";
                     $("#VehiculoLocalizado").html(result);
@@ -68,7 +83,7 @@
 
 <!-- ***************************** -->
 <div class="mainContainer bg-light">
-
+    @Html.HiddenFor(m=> m.isFromUpdate, new { @id = "hdnIsFromUpdate" })
     <!-- ** Busqueda ** -->
     <section id="sec0" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow mt-3 mb-5 rounded" style="display:block">
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">

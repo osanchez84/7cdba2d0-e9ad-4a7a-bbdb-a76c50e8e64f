@@ -21,17 +21,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IDependencias _dependeciaService;
         private readonly IGruasService _gruasService;
         private readonly IPdfGenerator<TransitoTransporteModel> _pdfService;
-
+        private readonly ICatDictionary _catDictionary;
 
         public TransitoTransporteController(ITransitoTransporteService transitoTransporteService,
             IDependencias dependeciaService, IGruasService gruasService,
-            IPdfGenerator<TransitoTransporteModel> pdfService
+            IPdfGenerator<TransitoTransporteModel> pdfService, ICatDictionary catDictionary
             )
         {
             _transitoTransporteService = transitoTransporteService;
             _dependeciaService = dependeciaService;
             _gruasService = gruasService;
             _pdfService = pdfService;
+            _catDictionary = catDictionary;
         }
 
         public IActionResult Index()
@@ -49,7 +50,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
 
             model.FolioInfraccion = model.FolioInfraccion == string.Empty ? null : model.FolioInfraccion;
-            model.FolioSolicitud= model.FolioSolicitud == string.Empty ? null : model.FolioSolicitud;
+            model.FolioSolicitud = model.FolioSolicitud == string.Empty ? null : model.FolioSolicitud;
             model.NumeroEconomico = model.NumeroEconomico == string.Empty ? null : model.NumeroEconomico;
             model.Placas = model.Placas == string.Empty ? null : model.Placas;
             model.Propietario = model.Propietario == string.Empty ? null : model.Propietario;
@@ -69,7 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdDeposito)
         {
-          
+
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"fullSolicitudfolioInfraccion","Fecha_evento/Folio_Solicitud/Folio_Infracción"},
@@ -82,19 +83,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return File(result.Item1, "application/pdf", result.Item2);
         }
 
-        private static byte[] StreamToBytes(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
 
         [HttpPost]
         public ActionResult ajax_BuscarTransito(TransitoTransporteBusquedaModel model)
@@ -106,7 +94,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Delegacion_Read()
         {
-            var result = new SelectList(_transitoTransporteService.GetDelegaciones(), "IdDelegacion", "Delegacion");
+            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            var result = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
             return Json(result);
         }
 
@@ -118,7 +107,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Dependencia_Read()
         {
-            var result = new SelectList(_dependeciaService.GetDependencias(), "IdDependencia", "NombreDependencia");
+            var CatDependencias = _catDictionary.GetCatalog("CatDependencias", "0");
+            var result = new SelectList(CatDependencias.CatalogList, "Id", "Text");
             return Json(result);
         }
 

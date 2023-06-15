@@ -49,12 +49,12 @@
             <div class="controlForm col-md-4">
                 @(Html.Kendo().TextBox()
                     .Name("noEconomico")
-                    .Label(l => l.Content("No. Economico:"))
+                    .Label(l => l.Content("No. Económico:"))
                     .Placeholder("Ingresa las placas validas")
                     .HtmlAttributes(new { style = "width: 100%", id = "txtNoEconomico" }))
             </div>
             <div class="controlForm col-md-4">
-                <label>Tipo Grua:</label>
+                <label>Tipo Grúa:</label>
                 @(Html.Kendo().DropDownList()
                     .Name("idTipoGruas")
                     .BindTo((SelectList)ViewBag.CatTipoGruas)

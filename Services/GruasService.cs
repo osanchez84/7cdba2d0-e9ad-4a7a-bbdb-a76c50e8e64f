@@ -26,7 +26,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact =
                         @"select g.IdGrua,  c.IdConcesionario,g.noEconomico,g.placas,g.modelo,g.capacidad,
                             c.Concesionario,catg.IdTipoGrua, catg.TipoGrua
-                            from Concesionarios c
+                            from concesionarios c
                             inner join Gruas g on g.idConcesionario= c.idConcesionario
                             inner join catTipoGrua catg ON catg.IdTipoGrua=g.IdTipoGrua
                             where c.IdConcesionario=@IdConcesionario";

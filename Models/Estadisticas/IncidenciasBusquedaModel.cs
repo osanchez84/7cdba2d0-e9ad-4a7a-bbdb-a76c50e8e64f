@@ -1,4 +1,6 @@
-﻿namespace GuanajuatoAdminUsuarios.Models.Estadisticas
+﻿using System;
+
+namespace GuanajuatoAdminUsuarios.Models.Estadisticas
 {
     public class IncidenciasBusquedaModel
     {

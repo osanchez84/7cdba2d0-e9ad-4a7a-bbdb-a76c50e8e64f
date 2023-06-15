@@ -940,6 +940,101 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList.FirstOrDefault();
         }
 
+        public List<InfraccionesModel> GetAllInfracciones2()
+        {
+            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+            string strQuery = @"SELECT idInfraccion
+                                      ,idOficial
+                                      ,idDependencia
+                                      ,idDelegacion
+                                      ,idVehiculo
+                                      ,idAplicacion
+                                      ,idGarantia
+                                      ,idEstatusInfraccion
+                                      ,idMunicipio
+                                      ,idTramo
+                                      ,idCarretera
+                                      ,idPersona
+                                      ,idPersonaInfraccion
+                                      ,placasVehiculo
+                                      ,folioInfraccion
+                                      ,fechaInfraccion
+                                      ,kmCarretera
+                                      ,observaciones
+                                      ,lugarCalle
+                                      ,lugarNumero
+                                      ,lugarColonia
+                                      ,lugarEntreCalle
+                                      ,infraccionCortesia
+                                      ,NumTarjetaCirculacion
+                                      ,fechaActualizacion
+                                      ,actualizadoPor
+                                      ,estatus
+                               FROM infracciones
+                               WHERE estatus = 1"
+            ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            InfraccionesModel model = new InfraccionesModel();
+                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+                            model.placasVehiculo = reader["placasVehiculo"].ToString();
+                            model.folioInfraccion = reader["folioInfraccion"].ToString();
+                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            model.observaciones = reader["observaciones"].ToString();
+                            model.lugarCalle = reader["lugarCalle"].ToString();
+                            model.lugarNumero = reader["lugarNumero"].ToString();
+                            model.lugarColonia = reader["lugarColonia"].ToString();
+                            model.lugarEntreCalle = reader["lugarEntreCalle"].ToString();
+                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+
+            return modelList;
+        }
+
         public int CrearInfraccion(InfraccionesModel model)
         {
             int result = 0;

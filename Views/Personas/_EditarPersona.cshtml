@@ -2,7 +2,7 @@
 
 <form id="frmEditarPersona" class="row px-4 mb-4 align-items-end justify-content-center">
     @Html.HiddenFor(m=> m.idPersona)
-    @Html.HiddenFor(m=> m.PersonaDireccion.idPersona);
+    @Html.HiddenFor(m=> m.PersonaDireccion.idPersonasDirecciones)
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
@@ -86,7 +86,7 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Genéro:</label>
+                <label>Tipo licencia:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia)
                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                     .OptionLabel("-- Seleccione --")
@@ -201,7 +201,7 @@
         if (validator.validate()) {
             var formData = $("#frmEditarPersona").serialize();
             $.ajax({
-                url: '@Url.Action("ajax_EditarPersona","Persona")',
+                url: '@Url.Action("ajax_EditarPersona","Personas")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {

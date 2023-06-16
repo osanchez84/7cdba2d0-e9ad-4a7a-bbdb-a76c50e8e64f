@@ -494,7 +494,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 AND g.idTipoGrua = {2}";
 
             string strWherePlacas = !string.IsNullOrEmpty(placas) ? string.Format("'{0}'", placas) : "g.placas";
-            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{1}'", noEconomico) : "g.noEconomico";
+            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{0}'", noEconomico) : "g.noEconomico";
             string strWhereidTipoGrua = idTipoGrua != null ? idTipoGrua.ToString() : "g.idTipoGrua";
             strQuery = string.Format(strQuery, strWherePlacas, strWhereNoEconomico, strWhereidTipoGrua);
 

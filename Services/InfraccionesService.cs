@@ -920,6 +920,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+                            model.umas = GetUmas();
+                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+                            {
+                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+                            }
                             modelList.Add(model);
                         }
                     }
@@ -938,6 +943,42 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
             return modelList.FirstOrDefault();
+        }
+
+        public decimal GetUmas()
+        {
+            decimal umas = 0M;
+            string strQuery = @"SELECT salario
+                               FROM catSalariosMinimos
+                               WHERE estatus = 1 AND area = 'C'"
+            ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            umas = reader["salario"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["salario"].ToString());
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return umas;
         }
 
         public List<InfraccionesModel> GetAllInfracciones2()
@@ -1015,6 +1056,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+                            model.umas = GetUmas();
+                            if (model.MotivosInfraccion.Any(w=> w.calificacion != null))
+                            {
+                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+                            }
                             modelList.Add(model);
                         }
                     }

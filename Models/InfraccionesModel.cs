@@ -51,6 +51,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string NombrePropietario { get; set; }
         public string NombreGarantia { get; set; }
 
+        public decimal umas { get; set; }
+        public decimal totalInfraccion { get; set; }
+
         #endregion
     }
 }

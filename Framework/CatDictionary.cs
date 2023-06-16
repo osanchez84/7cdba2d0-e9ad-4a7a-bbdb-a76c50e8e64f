@@ -76,6 +76,16 @@ namespace GuanajuatoAdminUsuarios.Framework
             string[] campos;
             switch (catalog)
             {
+                case "CatSalariosMinimos":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idSalario", "area", "salario" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catSalariosMinimos", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["salario"]),
+                                Text = Convert.ToString(s["area"])
+                            }).ToList();
+                    break;
                 case "CatTipoServicio":
                     catalogModel.CatalogName = catalog;
                     campos = new string[] { "idCatTipoServicio", "tipoServicio" };

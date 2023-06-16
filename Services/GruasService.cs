@@ -26,7 +26,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact =
                         @"select g.IdGrua,  c.IdConcesionario,g.noEconomico,g.placas,g.modelo,g.capacidad,
                             c.Concesionario,catg.IdTipoGrua, catg.TipoGrua
-                            from Concesionarios c
+                            from concesionarios c
                             inner join Gruas g on g.idConcesionario= c.idConcesionario
                             inner join catTipoGrua catg ON catg.IdTipoGrua=g.IdTipoGrua
                             where c.IdConcesionario=@IdConcesionario";
@@ -494,7 +494,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 AND g.idTipoGrua = {2}";
 
             string strWherePlacas = !string.IsNullOrEmpty(placas) ? string.Format("'{0}'", placas) : "g.placas";
-            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{1}'", noEconomico) : "g.noEconomico";
+            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{0}'", noEconomico) : "g.noEconomico";
             string strWhereidTipoGrua = idTipoGrua != null ? idTipoGrua.ToString() : "g.idTipoGrua";
             strQuery = string.Format(strQuery, strWherePlacas, strWhereNoEconomico, strWhereidTipoGrua);
 

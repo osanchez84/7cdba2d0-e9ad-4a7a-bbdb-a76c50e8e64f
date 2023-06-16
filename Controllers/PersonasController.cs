@@ -87,7 +87,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var errors = ModelState.Values.Select(s => s.Errors);
             if (ModelState.IsValid)
             {
-                if (model.PersonaDireccion.idPersona <= 0)
+                if (model.PersonaDireccion.idPersona == null || model.PersonaDireccion.idPersona <= 0)
                 {
                     model.PersonaDireccion.idPersona = model.idPersona;
                     int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);

@@ -47,9 +47,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
             //var model = json.ToObject<Gruas2Model>();
-            var errors = ModelState.Values.Select(s => s.Errors);
-            if (ModelState.IsValid)
-            {
+            //var errors = ModelState.Values.Select(s => s.Errors);
+            //if (ModelState.IsValid)
+            //{
                 int id = _personasService.CreatePersona(model);
                 model.PersonaDireccion.idPersona = id;
                 int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
@@ -57,8 +57,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var modelList = _personasService.GetAllPersonas();
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
                 return PartialView("_ListadoPersonas", modelList);
-            }
-            return RedirectToAction("Index");
+            //}
+            //return RedirectToAction("Index");
         }
 
 

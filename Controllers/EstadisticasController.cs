@@ -47,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                             .GroupBy(g => g.catMotivo)
                                             .Select(s => new EstadisticaInfraccionMotivosModel() { Motivo = s.Key, Contador = s.Count() }).ToList();
 
-            var catMotivosInfraccion = _catDictionary.GetCatalog("CatMotivosInfraccion", "0");
+            var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
             var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
             var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
             var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");

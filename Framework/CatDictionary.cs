@@ -192,6 +192,19 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Text = string.Concat(Convert.ToString(s["nombre"]), " ", Convert.ToString(s["apellidoPaterno"]), " ", Convert.ToString(s["apellidoMaterno"]))
                             }).ToList();
                     break;
+                case "CatAllMotivosInfraccion":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idMotivoInfraccion", "catMotivo" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catMotivosInfraccion", campos)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idMotivoInfraccion"]),
+                                    Text = Convert.ToString(s["catMotivo"])
+                                }).ToList();
+                    }
+                    break;
                 case "CatMotivosInfraccion":
                     if (int.TryParse(parameter, out intId))
                     {

@@ -7,7 +7,7 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.Motivo).Title("Motivos de infracción");
-                columns.Bound(p => p.Contador).Title("").ClientFooterTemplate("Total : #=sum#");
+                columns.Bound(p => p.Contador).Title("Totales").ClientFooterTemplate("Total : #=sum#");
             }).HtmlAttributes(new { style = "height:auto" })
             .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
             .Sortable()

@@ -201,7 +201,7 @@
         if (validator.validate()) {
             var formData = $("#frmCrearPersona").serialize();
             $.ajax({
-                url: '@Url.Action("ajax_CrearPersona","Persona")',
+                url: '@Url.Action("ajax_CrearPersona","Personas")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {

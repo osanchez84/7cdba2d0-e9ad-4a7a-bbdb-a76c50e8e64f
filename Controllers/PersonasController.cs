@@ -53,7 +53,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int id = _personasService.CreatePersona(model);
                 model.PersonaDireccion.idPersona = id;
                 int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
-                
+
                 var modelList = _personasService.GetAllPersonas();
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
                 return PartialView("_ListadoPersonas", modelList);
@@ -87,7 +87,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var errors = ModelState.Values.Select(s => s.Errors);
             if (ModelState.IsValid)
             {
-                int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+                if (model.PersonaDireccion.idPersona <= 0)
+                {
+                    model.PersonaDireccion.idPersona = model.idPersona;
+                    int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+                }
+                else
+                {
+                    int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+                }
                 int id = _personasService.UpdatePersona(model);
                 var modelList = _personasService.GetAllPersonas();
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();

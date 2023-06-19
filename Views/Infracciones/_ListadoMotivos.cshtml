@@ -7,30 +7,41 @@
         <h6 class="px-4 text-muted">Agregue los motivos de la infracción.</h6>
     </div>
 </div>
-    <div class="col-12 rounded gridCustom">
-        @(Html.Kendo().Grid(Model)
-            .Name("gridInfraccionesPersonas")
-            .Columns(columns =>
-            {
-                columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
-                columns.Bound(p => p.nombre).Title("Motivo");
-                columns.Bound(p => p.fundamento).Title("Fundamento legal");
-                columns.Bound(p => p.calificacionMinima).Title("Calif. Min.");
-                columns.Bound(c => c.calificacionMaxima).Title("Calif. Max.");
-                columns.Bound(c => c.calificacion).Title("Calificación");
-                columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
-                "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
-                ).Title("Acciones").Sortable(false).Width(100);
+<div class="col-12 rounded gridCustom">
+    @(Html.Kendo().Grid(Model)
+        .Name("gridInfraccionesPersonas")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
+            columns.Bound(p => p.nombre).Title("Motivo");
+            columns.Bound(p => p.fundamento).Title("Fundamento legal");
+            columns.Bound(p => p.calificacionMinima).Title("Calif. Min.");
+            columns.Bound(c => c.calificacionMaxima).Title("Calif. Max.");
+            columns.Bound(c => c.calificacion).Title("Calificación").ClientFooterTemplate("Total : #=sum#");
+            @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
+            "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
+            ).Title("Acciones").Sortable(false).Width(100);*@
         }).HtmlAttributes(new { style = "height:auto" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
-            .Sortable()
-            .Scrollable(scr => scr.Enabled(true))
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            .ServerOperation(false)
-            .PageSize(5)
-            )
-            .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
-            )
+        .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+        .Sortable()
+        .Scrollable(scr => scr.Enabled(true))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .ServerOperation(false)
+        .Aggregates(aggregates =>
+        {
+            aggregates.Add(p => p.calificacion).Sum();
+        })
+        .PageSize(5)
+        )
+        .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
+        )
 
 </div>
+<br />
+<br />
+<br />
+<label>UMAS:</label>&nbsp;<label id="lblUmas">@ViewBag.Umas</label>
+<br />
+<br />
+<label>Total:</label>&nbsp;<label id="lblTotales">Total: @ViewBag.Totales</label>

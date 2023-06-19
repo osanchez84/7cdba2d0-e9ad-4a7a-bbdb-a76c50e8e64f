@@ -76,6 +76,16 @@ namespace GuanajuatoAdminUsuarios.Framework
             string[] campos;
             switch (catalog)
             {
+                case "CatSalariosMinimos":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idSalario", "area", "salario" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catSalariosMinimos", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["salario"]),
+                                Text = Convert.ToString(s["area"])
+                            }).ToList();
+                    break;
                 case "CatTipoServicio":
                     catalogModel.CatalogName = catalog;
                     campos = new string[] { "idCatTipoServicio", "tipoServicio" };
@@ -191,6 +201,19 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 Id = Convert.ToInt32(s["idOficial"]),
                                 Text = string.Concat(Convert.ToString(s["nombre"]), " ", Convert.ToString(s["apellidoPaterno"]), " ", Convert.ToString(s["apellidoMaterno"]))
                             }).ToList();
+                    break;
+                case "CatAllMotivosInfraccion":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idMotivoInfraccion", "catMotivo" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catMotivosInfraccion", campos)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idMotivoInfraccion"]),
+                                    Text = Convert.ToString(s["catMotivo"])
+                                }).ToList();
+                    }
                     break;
                 case "CatMotivosInfraccion":
                     if (int.TryParse(parameter, out intId))

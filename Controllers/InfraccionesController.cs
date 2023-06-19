@@ -179,7 +179,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
             var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
             var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
-
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
@@ -232,6 +231,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var id = _infraccionesService.CrearMotivoInfraccion(model);
             var modelList = _infraccionesService.GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+            var umas = _infraccionesService.GetUmas();
+            ViewBag.Umas = umas;
+            ViewBag.Totales = modelList.Sum(s => s.calificacion) * umas;
             return PartialView("_ListadoMotivos", modelList);
         }
 

@@ -563,6 +563,9 @@
         if (idCatGarantia == 2) { $("#divGarantiaLicencia").show(); }
         if (idCatGarantia == 3) { $("#divGarantiaTarjeta").show(); }
         if (idCatGarantia == 4) { $("#divGarantiaVehiculo").show(); }
+
+        $("#lblUmas").text('@Model.umas')
+        $("#lblTotales").text('@Model.totalInfraccion')
     }
 
     $("#ddlTipoGarantia").on("change", function () {

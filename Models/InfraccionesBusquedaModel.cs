@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -43,11 +44,13 @@ namespace GuanajuatoAdminUsuarios.Models
         /// <summary>
         /// tblInfracciones campo fechaInfraccion
         /// </summary>
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaInicio { get; set; }
 
         /// <summary>
         /// tblInfracciones campo fechaInfraccion
         /// </summary>
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaFin { get; set; }
 
         /// <summary>

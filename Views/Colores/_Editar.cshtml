@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-    <div id="EditarColorForm" class="row px-4 mb-4 align-items-end justify-content-center">
+    <form id="EditarColorForm" class="row px-4 mb-4 align-items-end justify-content-center">
 
                 <div class="row">
                     <div class="col-12">
@@ -60,10 +60,8 @@
                 @if (TempData["Error"] != null)
                         @TempData["Error"]
                     </div>
-                }
-
-                        </div>
-                    </div>
+                  </div>
+                    </form>
 
                 <div class="row my-4">
                     <div class="col-12 col-md-6 mx-md-auto">
@@ -86,10 +84,7 @@
 
                 </div>
             </section>
-            </div>
-        </div>
-    </>
-           
+                  
 
 <script>
     function editarColor() {
@@ -105,12 +100,12 @@
             data: Mydata,
             success: function (result) {
                 $("#tablaColores").html(result);
-                alert("Se ha Actualizado la Información");
+                    sitteg_success('Elemento modificado correctamente')
 
             },
             error: function (error) {
-                alert("!Sucedio um error, intente mas tarde...");
-            }
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                }
         });
     }
 

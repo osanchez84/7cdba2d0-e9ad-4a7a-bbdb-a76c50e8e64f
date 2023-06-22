@@ -7,10 +7,10 @@
                 <div class="col-auto pe-0">
                     <div class="row align-items-center justify-content-center justify-content-md-start">
                         <div class="col-auto pe-0">
-                            <i class="icon-addClasificacionAccidente h1 colorPrimary"></i>
+                            <i class="icon-addDanoVehiculo h1 colorPrimary"></i>
                         </div>
                         <div class="col-auto my-3">
-                            <h2 class="m-0 h3"><b>Editar causa de accidente</b></h2>
+                            <h2 class="m-0 h3"><b>Agregar monto de accidente</b></h2>
                         </div>
                     </div>
                 </div>
@@ -30,30 +30,18 @@
             </div>
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4"><b>Datos de causa de accidente</b></h5>
+                    <h5 class="px-4"><b>Monto del daño del vehículo</b></h5>
                     <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
                 </div>
             </div>
-            <form id="editarCausaForm" class="row justify-content-center px-4 mb-4 align-items-end">
+            <form div="montoVehiculoForm" class="row justify-content-center px-4 mb-4 align-items-end">
+
                 <div class="col-12 col-md-6">
                     <div class="controlForm my-3">
-                        <label>Causa <b>(obligatorio)</b>:</label>
-                        <span>
-                            @Html.HiddenFor(t=>t.IdAccidente)
-                            @Html.HiddenFor(t=>t.IdCausaAccidente)
-                            @(Html.Kendo().DropDownListFor(t => t.IdCausaAccidenteEdit)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una Opción")
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Causas_Drop", "CapturaAccidentes");
-                                    });
-                                }))
-                        </span>
+                        @(Html.Kendo().TextBoxFor(t=>t.montoVehiculo)
+                            .Placeholder("Ingresa monto de daño")
+                            .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                            )
                     </div>
                 </div>
             </form>
@@ -66,9 +54,9 @@
                             </button>
                         </div>
                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                            <div class="controlButton" onclick="editarCausa()">
+                            <div class="controlButton">
                                 @(Html.Kendo().Button()
-                                    .Name("EditarFactor")
+                                    .Name("AddMonto")
                                     .HtmlAttributes(new { @class = "btnPrimary px-3" })
                                     .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
                             </div>
@@ -79,32 +67,6 @@
 
             </div>
         </section>
+        </div>
     </div>
-</div>
-<script>
-    function editarCausa() {
 
-        var Mydata = $("#editarCausaForm").serialize();
-        console.log(Mydata);
-
-        $.ajax({
-            url: '@Url.Action("EditarCausa")',
-            type: 'POST',
-            data: Mydata,
-            success: function (data) {
-                console.log("Data", data)
-                $("#gridCausasA").data("kendoGrid").dataSource.data(data);
-                $('modal-body').removeClass('model-open');
-                $('.modal-backdrop').remove();
-                $('#editarCausaAccidenteModal').modal('hide');
-                sitteg_success("Se ha modificado la información");
-
-
-            },
-            error: function (error) {
-                sitteg_warning("!Sucedio un error, intente mas tarde...");
-            }
-        });
-    }
-
-</script>

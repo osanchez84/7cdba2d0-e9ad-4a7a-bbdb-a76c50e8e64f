@@ -18,7 +18,7 @@
             .Columns(columns =>
             {
                 columns.Bound(p => p.Municipio).Title("Municipio").Width(90);
-                columns.Bound(p => p.Concesionario).Title("concesionario").Width(90);
+                columns.Bound(p => p.Concesionario).Title("Concesionario").Width(90);
                 columns.Bound(p => p.fullPension).Title("Depósito").Width(90);
                 columns.Bound(c => c.noEconomico).Title("No. Económico").Width(90);
                 columns.Bound(c => c.Modelo).Title("Modelo").Width(90);
@@ -33,12 +33,19 @@
             .ServerOperation(false)
             )
             )
+
+        @(Html.Kendo().Tooltip()
+            .For("#Grid")
+            .Filter("th")
+            .Position(TooltipPosition.Top)
+            .ContentHandler("tooltipContent")
+            )
     </div>
 
 </div>
 
-@*<script>
-    $(document).ready(function () {
+<script>
+  @*  $(document).ready(function () {
         var grid = $("#Grid").data("kendoGrid");
 
         var position = "top";
@@ -47,6 +54,11 @@
                 position: position
             }
         });
-    });
+    });*@
 
-</script>*@
+    function tooltipContent(e) {
+        var titulo = e.target.context.dataset.title;
+        return titulo;
+    }
+
+</script>

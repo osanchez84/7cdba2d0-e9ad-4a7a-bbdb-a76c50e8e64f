@@ -177,6 +177,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var vehiculoInvolucrado = _capturaAccidentesService.InvolucradoSeleccionado(idAccidente, IdVehiculoInvolucrado, IdPropietarioInvolucrado);       
             return PartialView("_ModalDetalleVehiculos", vehiculoInvolucrado);
         }
+        public ActionResult ModalBorraRegistro(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado,int IdAccidente)
+        {
+            return PartialView("_ModalEliminarInvolucrado");
+        }
 
         public ActionResult MostrarModalConductor(int IdPersona)
         {
@@ -199,6 +203,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalAnexo2");
         }
 
+        public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
+        {
+            var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado,IdAccidente);
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
+
+            return Json(ListVehiculosInvolucrados);
+
+        }
 
         [HttpPost]
 
@@ -643,7 +656,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
                 _capturaAccidentesService.AgregarFechaHoraIngreso(model,idAccidente);
                 var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente); ;
-                return Json(ListInvolucrados);
+                return PartialView("_ListaInvolucradosFechaYHora",ListInvolucrados);
             }
             return PartialView("_ModalFechaHora");
         }

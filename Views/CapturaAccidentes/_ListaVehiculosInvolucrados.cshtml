@@ -17,7 +17,7 @@
             columns.Bound(c => c.TipoVehiculo).Title("Tipo de Vehículo").Width(100);
             columns.Bound(c => c.Pension).Title("Pension").Width(100);
             columns.Template("<button onclick='mostrarDetalle()' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Detalle</b></h6></button>").Width(110);
-            //columns.Template("<button data-bs-toggle=modal data-bs-target= 'class='w-100 btn'><h6 class='m-0 colorDanger'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button>").Width(110);
+            columns.Template("<button onclick='eliminarRegistro()' class='w-100 btn'><h6 class='m-0 colorDanger'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button>").Width(110);
 
 
         })
@@ -39,6 +39,15 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="ModalBodyMostrarDetalle">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modalCustom" id="mostrarEliminarModal" tabindex="-1" aria-labelledby="eliminarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodyEliminar">
             </div>
         </div>
     </div>
@@ -66,5 +75,26 @@
                 }
             });
         }
+
+    function eliminarRegistro(){
+        var grid = $("#gridVehiculosInvolucrados").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado
+        var IdPropietarioInvolucrado = dataItem.IdPropietarioInvolucrado
+        var IdAccidente = dataItem.IdAccidente
+
+        $.ajax({
+            url: '@Url.Action("ModalBorraRegistro", "CapturaAccidentes")',
+            type: 'POST',
+            data: {
+                IdVehiculoInvolucrado: IdVehiculoInvolucrado, IdPropietarioInvolucrado: IdPropietarioInvolucrado, IdAccidente : IdAccidente
+            },
+            success: (data) => {
+                $('#ModalBodyEliminar').html(data);
+                $('#mostrarEliminarModal').modal('show');
+            }
+        });
+    }
 </script>
 

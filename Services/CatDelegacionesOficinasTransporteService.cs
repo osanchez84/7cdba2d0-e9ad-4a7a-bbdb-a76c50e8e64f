@@ -80,7 +80,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             CatDelegacionesOficinasTransporteModel delegacionOficina = new CatDelegacionesOficinasTransporteModel();
                             delegacionOficina.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"].ToString());
                             delegacionOficina.Delegacion = reader["Delegacion"].ToString();
-                            delegacionOficina.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
+                            delegacionOficina.FechaActualizacion = (reader["FechaActualizacion"] as DateTime?) ?? DateTime.MinValue;
                             delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
                             delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
                             //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());

@@ -89,7 +89,6 @@
         event.preventDefault();
 
         var Mydata = $("#fechaHoraForm").serialize();
-        console.log(Mydata);
     
 
         $.ajax({
@@ -97,7 +96,6 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                console.log("Data", result)
 
                 $("#tablaConFechaYHora").html(result);
                 sitteg_success("Se ha agregado fecha y hora de ingreso");

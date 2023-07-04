@@ -32,10 +32,14 @@
         grid.dataSource.read();
         grid.refresh();
     }
+
+    function recargarGrid() {
+        actualizarGrid();
+    }
 </script>
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
-
+    <button class="btnPrimary px-5" onclick="recargarGrid()">Actualizar</button>
     @(
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
         .Name("gridInfraccionesPorVehiculo")
@@ -63,12 +67,20 @@
         .Read(read => read.Action("ObtenerInfraccionesVehiculos", "CapturaAccidentes"))
         .PageSize(5).Model(model => model.Id(p => p.IdInfraccionAccidente))
         )
-        .ToolBar(t => t.Search())
+        .ToolBar(t => t.Search())      
         .Search(s =>
         {
             s.Field(c => c.EstatusReporte);
+            s.Field(c => c.folioInfraccion);
+            s.Field(c => c.EntidadRegistro);
+                        s.Field(c => c.Placa);
+            s.Field(c => c.ConductorInvolucrado);
+
+
 
         })
+        
+        )
 
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
         .Type(GridSelectionType.Row)

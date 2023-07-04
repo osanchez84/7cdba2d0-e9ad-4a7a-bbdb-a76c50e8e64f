@@ -37,7 +37,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             carretera.Carretera = reader["Carretera"].ToString();
                             carretera.nombreOficina = reader["nombreOficina"].ToString();
                             carretera.estatusDesc = reader["estatusDesc"].ToString();
-                            carretera.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
+                           // carretera.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
                             carretera.Estatus = Convert.ToInt32(reader["estatus"].ToString());
                             carretera.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
                             ListaCarreteras.Add(carretera);

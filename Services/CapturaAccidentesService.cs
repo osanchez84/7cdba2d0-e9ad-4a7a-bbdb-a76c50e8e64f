@@ -136,8 +136,8 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             int result = 0;
             int lastInsertedId = 0;
-            string strQuery = @"INSERT INTO accidentes ([idEstatusReporte]
-                                        ,[Hora]
+            string strQuery = @"INSERT INTO accidentes( 
+                                         [Hora]
                                         ,[idMunicipio]
                                         ,[idTramo]
                                         ,[Fecha]
@@ -146,8 +146,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
-                                VALUES (@idEstatusReporte
-                                        ,@Hora
+                                VALUES (
+                                         @Hora
                                         ,@idMunicipio
                                         ,@idTramo
                                         ,@Fecha
@@ -1031,6 +1031,39 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
+        public int EliminarInvolucradoAcc(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE conductoresVehiculosAccidente SET estatus = 0 WHERE idAccidente = @IdAccidente AND idPersona = @IdPropietarioInvolucrado AND idVehiculo = @IdVehiculoInvolucrado;";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", IdAccidente);
+                    command.Parameters.AddWithValue("@IdPropietarioInvolucrado", IdPropietarioInvolucrado);
+                    command.Parameters.AddWithValue("@IdVehiculoInvolucrado", IdVehiculoInvolucrado);
+
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
         public List<CapturaAccidentesModel> VehiculosInvolucrados(int IdAccidente)
         {
             //
@@ -1061,7 +1094,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         "INNER JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
                         "INNER JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
                         "LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona " +
-                        "WHERE cva.idAccidente = @idAccidente AND cva.idAccidente > 0;", connection);
+                        "WHERE cva.idAccidente = @idAccidente AND cva.idAccidente > 0 AND cva.estatus = 1;", connection);
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", IdAccidente);
@@ -1071,15 +1104,15 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel vehiculo = new CapturaAccidentesModel();
-                            vehiculo.IdPropietarioInvolucrado = Convert.ToInt32(reader["idPersona"].ToString());
-                            vehiculo.IdAccidente = Convert.ToInt32(reader["idAccidente"].ToString());
-                            vehiculo.IdVehiculoInvolucrado = Convert.ToInt32(reader["idVehiculo"].ToString());
-                            vehiculo.IdTipoCarga = Convert.ToInt32(reader["IdTipoCarga"].ToString());
-                            vehiculo.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            vehiculo.IdFormaTrasladoInvolucrado = Convert.ToInt32(reader["idFormaTraslado"].ToString());
-                            vehiculo.idPersonaInvolucrado = Convert.ToInt32(reader["IdConductor"].ToString());
+                            vehiculo.IdPropietarioInvolucrado = Convert.IsDBNull(reader["idPersona"]) ? 0 : Convert.ToInt32(reader["idPersona"]);
+                            vehiculo.IdAccidente = Convert.IsDBNull(reader["idAccidente"]) ? 0 : Convert.ToInt32(reader["idAccidente"]);
+                            vehiculo.IdVehiculoInvolucrado = Convert.IsDBNull(reader["idVehiculo"]) ? 0 : Convert.ToInt32(reader["idVehiculo"]);
+                            vehiculo.IdTipoCarga = Convert.IsDBNull(reader["IdTipoCarga"]) ? 0 : Convert.ToInt32(reader["IdTipoCarga"]);
+                            vehiculo.IdPension = Convert.IsDBNull(reader["IdPension"]) ? 0 : Convert.ToInt32(reader["IdPension"]);
+                            vehiculo.IdFormaTrasladoInvolucrado = Convert.IsDBNull(reader["idFormaTraslado"]) ? 0 : Convert.ToInt32(reader["idFormaTraslado"]);
+                            vehiculo.idPersonaInvolucrado = Convert.IsDBNull(reader["IdConductor"]) ? 0 : Convert.ToInt32(reader["IdConductor"]);
                             vehiculo.Placa = reader["placas"].ToString();
-                            vehiculo.fechaNacimiento = Convert.ToDateTime(reader["fechaNacimiento"]);
+                            vehiculo.fechaNacimiento = Convert.IsDBNull(reader["fechaNacimiento"]) ? DateTime.MinValue : Convert.ToDateTime(reader["fechaNacimiento"]);
                             vehiculo.Tarjeta = reader["tarjeta"].ToString();
                             vehiculo.TipoCarga = reader["tipoCarga"].ToString();
                             vehiculo.Poliza = reader["poliza"].ToString();
@@ -1319,7 +1352,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("SELECT ia.idInf_Acc, ia.idAccidente, ia.idVehiculo, " +
                         "v.idMarcaVehiculo, v.idSubmarca, v.placas, v.modelo, " +
                         "a.idEstatusReporte, " +
-                        "cer.estatusReporte, " +
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
@@ -1330,7 +1362,6 @@ namespace GuanajuatoAdminUsuarios.Services
                         "JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "JOIN catEstatusReporteAccidente AS cer ON a.idEstatusReporte = cer.idEstatusReporte " +
                         "WHERE ia.idAccidente = @idAccidente;", connection);
 
 
@@ -1343,17 +1374,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel elemnto = new CapturaAccidentesModel();
-                            elemnto.IdInfAcc = Convert.ToInt32(reader["IdInf_Acc"].ToString());
-                            elemnto.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
-                            elemnto.IdVehiculoInvolucrado = Convert.ToInt32(reader["IdVehiculo"].ToString());
+                            elemnto.IdInfAcc = Convert.IsDBNull(reader["IdInf_Acc"]) ? 0 : Convert.ToInt32(reader["IdInf_Acc"]);
+                            elemnto.IdAccidente = Convert.IsDBNull(reader["IdAccidente"]) ? 0 : Convert.ToInt32(reader["IdAccidente"]);
+                            elemnto.IdVehiculoInvolucrado = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
                             elemnto.Placa = reader["placas"].ToString();
                             elemnto.EstatusInfraccion = reader["estatusInfraccion"].ToString();
                             elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
-                            elemnto.EstatusReporte = reader["estatusReporte"].ToString();
-                            elemnto.Vehiculo = reader["marcaVehiculo"].ToString() + " " +
-                                               reader["nombreSubmarca"].ToString() + " " +
-                                               reader["placas"].ToString() + " " +
-                                               reader["modelo"].ToString();
+                           // elemnto.EstatusReporte = reader["estatusReporte"].ToString();
+                            elemnto.Vehiculo = $"{reader["marcaVehiculo"]} {reader["nombreSubmarca"]} {reader["placas"]} {reader["modelo"]}";
+
+
 
 
                             ListaInfracciones.Add(elemnto);
@@ -1365,8 +1395,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
+                    Console.WriteLine("Error al ejecutar la consulta SQL: " + ex.Message);
                 }
                 finally
                 {

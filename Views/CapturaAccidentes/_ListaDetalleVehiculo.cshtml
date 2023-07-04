@@ -1,32 +1,30 @@
-﻿<script>
-        function onRowSelect(e) {
-            var selectedRow = this.select();
-            var IdVehiculo, IdPersona;
+﻿
+<script>
+    function onRowSelect(e) {
+        var selectedRow = this.select();
+        var IdVehiculo, IdPersona;
 
-            if (selectedRow.length > 0) {
-                var dataItem = this.dataItem(selectedRow);
-                IdVehiculo = dataItem.IdVehiculo;
-                IdPersona = dataItem.IdPersona;
+        if (selectedRow.length > 0) {
+            var dataItem = this.dataItem(selectedRow);
+            IdVehiculo = dataItem.IdVehiculo;
+            IdPersona = dataItem.IdPersona;
 
-                console.log(dataItem);
+            console.log(dataItem);
 
-                $.ajax({
-                    url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
-                    type: 'POST',
-                    data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona },
-                    success: function (result) {
-                        console.log("S", result)
-                        abrirModalConductor(IdPersona);
+            $.ajax({
+              url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
+                type: 'POST',
+                data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona },
+                success: function (result) {
+                    abrirModalConductor(IdPersona);
 
-                    },
-                    error: function (error) {
-                        console.log("E", error)
-                        alert("ERROR");
-                    }
-                });
-            }
+                },
+                error: function (error) {
+                    alert("ERROR");
+                }
+            });
         }
-
+    }
 
     function abrirModalConductor(IdPersona) {
         $.ajax({
@@ -35,7 +33,7 @@
             data: { IdPersona: IdPersona },
             success: function (data) {
                 console.log("SUCCESS", data);
-                $('#agregarVehiculoModal').modal('hide');
+               // $('#agregarVehiculoModal').modal('hide');
                 $('.modal-backdrop').remove();
                 $('#modalAgregarConductor').modal('show');
                 $('#ModalBodyAgregarConductor').html(data);

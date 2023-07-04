@@ -5,10 +5,10 @@
         .Name("gridInfraccionesAccidente")
         .Columns(columns =>
         {
-            columns.Bound(c => c.IdInfraccionAccidente).Title("Id Acc/Inf").Width(90);
-            columns.Bound(c => c.NumeroReporte).Title("Accidente").Width(90);
-            columns.Bound(c => c.IdInfraccion).Title("Infracción").Width(90);
-            columns.Bound(c => c.VehiculoInvolucrado).Title("Vehículo").Width(90);
+            columns.Bound(c => c.IdInfAcc).Title("Id Acc/Inf").Width(90);
+            columns.Bound(c => c.Vehiculo).Title("Vehiculo").Width(90);
+            columns.Bound(c => c.folioInfraccion).Title("Infracción").Width(90);
+            columns.Bound(c => c.EstatusInfraccion).Title("Estatus").Width(90);
            
 
         }).HtmlAttributes(new { style = "height:400px" })
@@ -18,7 +18,7 @@
         .Pageable()
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Read(read => read.Action("ObtenerInfraccionesVehiculos", "CapturaAccidentes"))
+        .Read(read => read.Action("ObtInfraccionesAccidente", "CapturaAccidentes"))
         .PageSize(5).Model(model => model.Id(p => p.IdInfraccionAccidente))
         )
         .ToolBar(t => t.Search())

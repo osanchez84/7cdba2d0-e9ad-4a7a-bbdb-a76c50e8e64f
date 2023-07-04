@@ -1,5 +1,4 @@
-﻿@model GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel
-
+﻿@model MontoModel
 <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
     <div class="modal-content">
         <section class=" bg-white rounded">
@@ -34,11 +33,14 @@
                     <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
                 </div>
             </div>
-            <form div="montoVehiculoForm" class="row justify-content-center px-4 mb-4 align-items-end">
+            <form id="montoVehiculoForm" class="row justify-content-center px-4 mb-4 align-items-end">
 
                 <div class="col-12 col-md-6">
                     <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t=>t.montoVehiculo)
+                        @Html.HiddenFor(model => model.IdAccidente)
+                        @Html.HiddenFor(model => model.IdVehiculoInvolucrado)
+
+                        @(Html.Kendo().TextBoxFor(model => model.montoVehiculo)
                             .Placeholder("Ingresa monto de daño")
                             .HtmlAttributes(new { style = "width: 100%", type = "number" })
                             )
@@ -54,7 +56,7 @@
                             </button>
                         </div>
                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                            <div class="controlButton">
+                            <div class="controlButton" onclick="agregarMonto()">
                                 @(Html.Kendo().Button()
                                     .Name("AddMonto")
                                     .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -69,4 +71,28 @@
         </section>
         </div>
     </div>
+    <script>
+ function agregarMonto() {
+        event.preventDefault();
+        var Mydata = $("#montoVehiculoForm").serialize();
+        console.log(Mydata);
+        $('#agregarMontoModal').modal('hide');
+        $('body').removeClass('model-open');
+        $('.modal-backdrop').remove();
+        $.ajax({
+            url: '@Url.Action("AgregarMontoVehiculo")',
+            type: 'POST',
+            data: Mydata,
+            success: function (result) {
+                $("#tablaConMonto").html(result);
+                sitteg_success("Se ha Actualizado la Información");
 
+            },
+            error: function (error) {
+                sitteg_warning("!Sucedio un error, intente mas tarde...");
+                console.log("EEROR",error);
+            }
+        });
+    }
+
+</script>

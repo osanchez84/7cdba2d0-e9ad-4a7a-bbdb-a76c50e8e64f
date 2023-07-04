@@ -23,7 +23,7 @@
                
         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="regresarModalVehiculo()">
                 @(Html.Kendo().Button()
                         .Name("backSearchConductor")
                         .HtmlAttributes(new { @class = "px-5" })
@@ -236,9 +236,9 @@
                     </div>
                 </div>
             </div>
-                    <form id="otroConductorForm">
-                        <div class="tab-pane tabCustomConteiner fade" id="busqueda-conductor" role="tabpanel" aria-labelledby="busqueda-conductor-tab">
-                            <div class="row px-4 mt-4 pb-4 align-items-end">
+                      <div class="tab-pane tabCustomConteiner fade" id="busqueda-conductor" role="tabpanel" aria-labelledby="busqueda-conductor-tab">
+                        <form id="otroConductorForm">
+                          <div class="row px-4 mt-4 pb-4 align-items-end">
                                 <div class="col-12 col-md-6 col-lg-3">
                                     <div class="controlForm my-3">
                                         @(Html.Kendo().TextBoxFor(t=>t.licencia)
@@ -267,8 +267,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                            </div>
+                            
                             <div class="col-12 col-md-6 col-lg-3">
                                 <div class="controlForm my-3">
                                     @(Html.Kendo().TextBoxFor(t=>t.nombre)
@@ -299,10 +298,9 @@
 
                                 </div>
                             </div>
-                          </div> 
                         </div>
-                    </form>
-                    <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
+                     </form>
+                 <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
                         <div class="controlButton my-3">
                             <div class="controlButton my-3" onclick="buscarConductor()">
                                 @(Html.Kendo().Button()
@@ -312,6 +310,10 @@
                             </div>
                         </div>
                     </div>
+              </div>
+                        <div id="ListadoCondocutores">
+                            <partial name="_ListdoConductores" model="Model" />
+                        </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="tabCustomEnd"></div>
@@ -359,9 +361,6 @@
                     </div>
                 </div>
             </div>
-          </div>
-          <div id="ListadoCondocutores">
-                <partial name="_ListdoConductores" model="Model" />
           </div>
       </section>
      </div>
@@ -465,6 +464,26 @@
             },
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
+                console.log(error);
+            }
+        });
+    }
+
+    function regresarModalVehiculo(IdPersona){
+
+        $.ajax({
+            url: '@Url.Action("RegresarModalVehiculo", "CapturaAccidentes")',
+            type: 'POST',
+            data: { IdPersona: IdPersona },
+            success: function (data) {
+                console.log("SUCCESS", data);
+                $('#modalAgregarConductor').modal('hide');
+                $('.modal-backdrop').remove();
+                $('#modalAgregarConductor').modal('show');
+                $('#ModalBodyAgregarConductor').html(data);
+            },
+            error: function (error) {
+                console.log("ERROR", error);
             }
         });
     }

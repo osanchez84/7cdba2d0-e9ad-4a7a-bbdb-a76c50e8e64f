@@ -1,4 +1,5 @@
-﻿using GuanajuatoAdminUsuarios.Models;
+﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -14,6 +15,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
 
         public int ActualizarConVehiculo(int IdVehiculo, int idAccidente);
+        public int BorrarVehiculoAccidente(int idAccidente, int idVehiculo);
         public int InsertarConductor(int IdVehiculo, int idAccidente, int IdPersona);
         public int AgregarValorClasificacion(int IdClasificacionAccidente, int idAccidente);
 
@@ -36,10 +38,20 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model);
         public int AgregarPersonaInvolucrada(int idPersonaInvolucrado, int idAccidente);
         List<CapturaAccidentesModel> VehiculosInvolucrados(int IdAccidente);
+        CapturaAccidentesModel InvolucradoSeleccionado(int idAccidente,int IdVehiculoInvolucrado,int IdPropietarioInvolucrado);
         CapturaAccidentesModel ObtenerConductorPorId(int IdPersona);
         public int GuardarComplementoVehiculo(CapturaAccidentesModel model,int IdVehiculo,int idAccidente);
+        int AgregarMontoV(MontoModel model);
+        List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente);
+        public int RelacionAccidenteInfraccion(int IdVehiculo,int idAccidente,int IdInfraccion);
+        List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente);
+       public int RelacionPersonaVehiculo(int IdPersona,int idAccidente,int IdVehiculoInvolucrado);
+        public int ActualizarInvolucrado(CapturaAccidentesModel model,int idAccidente);
+        List<CapturaAccidentesModel> InvolucradosAccidente(int idAccidente);
+        int AgregarFechaHoraIngreso(FechaHoraIngresoModel model,int idAccidente);
 
-        
+        int AgregarDatosFinales(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue, int idAccidente);
+
     }
 
 }

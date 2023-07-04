@@ -1,5 +1,6 @@
 ﻿<script>
     function modalAgregarmonto(e) {
+                event.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAccidente = dataItem.IdAccidente;
         var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado;
@@ -21,7 +22,7 @@
 
 </script>
 
-<div class="col-12 mb-4 px-4 rounded gridCustom">
+<div  class="col-12 mb-4 px-4 rounded gridCustom">
 
     @(
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()

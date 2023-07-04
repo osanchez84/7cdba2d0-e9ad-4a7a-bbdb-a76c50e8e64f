@@ -13,10 +13,9 @@
                 if (response.length === 0) {
                     alert("La búsqueda no arrojó resultados.");
                 } else {
-                    $('#ListadoInvolucrados').show();
-                    var grid = $("#gridInvolucrados").data("kendoGrid");
+                    var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
                     grid.dataSource.data(response);
-                    $('#agregarInvolucradoModal').modal('hide');
+                   // $('#agregarInvolucradoModal').modal('hide');
                 }
             },
             error: function (error) {
@@ -174,8 +173,8 @@
             </div>
             <div class="row px-4 py-5 align-items-end bg-light">
                 <div class="col-12 col-md-10 mx-md-auto text-center">
-                    <h3><b>Aún no has realizado ninguna búsqueda</b></h3>
-                    <h4 class="fw-normal">Realiza la búsqueda del conductor</h4>
+                    <partial name="_InfoPrevioInvolucrados" model="Model" />
+
                     <div class="row ">
                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                             <div class="btnOutline btnOutlinePrimary my-3">

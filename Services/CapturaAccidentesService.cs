@@ -136,8 +136,8 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             int result = 0;
             int lastInsertedId = 0;
-            string strQuery = @"INSERT INTO accidentes ([idEstatusReporte]
-                                        ,[Hora]
+            string strQuery = @"INSERT INTO accidentes (
+                                        [Hora]
                                         ,[idMunicipio]
                                         ,[idTramo]
                                         ,[Fecha]
@@ -146,8 +146,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
-                                VALUES (@idEstatusReporte
-                                        ,@Hora
+                                VALUES (
+                                        @Hora
                                         ,@idMunicipio
                                         ,@idTramo
                                         ,@Fecha

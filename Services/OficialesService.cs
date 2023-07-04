@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,54 @@ namespace GuanajuatoAdminUsuarios.Services
                             oficial.Nombre = reader["Nombre"].ToString();
                             oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
                             oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
+
+
+                            oficiales.Add(oficial);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return oficiales;
+
+
+        }
+        public List<OficialesModel> GetOficialesActivos()
+        {
+            //
+            List<OficialesModel> oficiales = new List<OficialesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT ofi.*, e.estatusDesc FROM catOficiales AS ofi INNER JOIN estatus AS e ON ofi.estatus = e.estatus WHERE ofi.estatus = 1;", connection);
+                    command.CommandType = CommandType.Text;
+                    //sqlData Reader sirve para la obtencion de datos 
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            OficialesModel oficial = new OficialesModel();
+                            oficial.IdOficial = Convert.ToInt32(reader["IdOficial"].ToString());
+                            oficial.Rango = reader["Rango"].ToString();
+                            oficial.Nombre = reader["Nombre"].ToString();
+                            oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
+                            oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
+                            oficial.estatusDesc = reader["estatusDesc"].ToString();
+                            //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
 
 
                             oficiales.Add(oficial);

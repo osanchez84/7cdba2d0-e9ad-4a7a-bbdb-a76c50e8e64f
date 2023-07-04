@@ -49,16 +49,22 @@
                             </button>
                         </div>
                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                            <div class="controlButton">
-                                @(Html.Kendo().Button()
-                                    .Name("EditFisico")
-                                    .HtmlAttributes(new { @class = "btnPrimary px-3" })
-                                    .Content("<h5 class=\"m-0 px-3\"><b>Ir Anexo 1</b></h5>"))
+                            @(Html.Kendo().Button()
+                                .Name("EditFisico")
+                                .HtmlAttributes(new { @class = "btnPrimary px-3", onclick = "redirectToVehiculos();" })
+                                .Content("<h5 class=\"m-0 px-3\"><b>Ir Anexo 1</b></h5>")
+                                )
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
     </div>
 </div>
+<script>
+    function redirectToVehiculos() {
+        window.location.href = "/Vehiculos/Index";
+
+    }
+</script>

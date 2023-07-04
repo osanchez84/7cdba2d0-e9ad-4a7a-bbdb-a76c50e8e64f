@@ -14,6 +14,9 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using GuanajuatoAdminUsuarios.Framework;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -32,15 +35,29 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         private readonly IPensionesService _pensionesService;
         private readonly ICatFormasTrasladoService _catFormasTrasladoService;
+        private readonly ICatTipoInvolucradoService _catTipoInvolucradoService;
+        private readonly ICatEstadoVictimaService _catEstadoVictimaService;
+        private readonly ICatHospitalesService _catHospitalesService;
+        private readonly ICatInstitucionesTrasladoService _catInstitucionesTraslado;
+        private readonly ICatAsientoService _catAsientoservice;
+        private readonly ICatCinturon _catCinturon;
+        private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
+        private readonly ICatAutoridadesEntregaService _catAutoridadesEntregaService;
+        private readonly IOficiales _oficialesService;
+        private readonly ICatCiudadesService _catCiudadesService;
+        private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
+        private readonly ICatDictionary _catDictionary;
 
 
 
         private int lastInsertedId = 0;
-        private int idVehiculoInsertado = 0; 
+        private int idVehiculoInsertado = 0;
 
         public CapturaAccidentesController(ICapturaAccidentesService capturaAccidentesService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
-            ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService)
+            ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
+            ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
+            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -54,6 +71,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
             _pensionesService = pensionesService;
             _catFormasTrasladoService = catFormasTrasladoService;
+            _catTipoInvolucradoService = catTipoInvolucradoService;
+            _catEstadoVictimaService = catEstadoVictimaService;
+            _catHospitalesService = catHospitalesService;
+            _catAsientoservice = catAsientoservice;
+            _catInstitucionesTraslado = catIsntitucionesTraslado;
+            _catCinturon = catCinturon;
+            _catAutoridadesDisposicionservice = catAutoridadesDisposicionservice;
+            _catAutoridadesEntregaService = catAutoridadesEntregaService;
+            _oficialesService = oficialesService;
+            _catCiudadesService = catCiudadesService;
+            _catAgenciasMinisterioService = catAgenciasMinisterioService;
+            _catDictionary = catDictionary;
+
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -133,7 +163,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult CapturaAaccidente()
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
-           var  AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente);
+            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente);
             return View("CapturaAaccidente", AccidenteSeleccionado);
         }
 
@@ -141,6 +171,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return PartialView("_ModalVehiculo");
         }
+        public ActionResult ModalDetallesVehiculo(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var vehiculoInvolucrado = _capturaAccidentesService.InvolucradoSeleccionado(idAccidente, IdVehiculoInvolucrado, IdPropietarioInvolucrado);       
+            return PartialView("_ModalDetalleVehiculos", vehiculoInvolucrado);
+        }
+
         public ActionResult MostrarModalConductor(int IdPersona)
         {
             var ListConductor = _capturaAccidentesService.ObtenerConductorPorId(IdPersona);
@@ -161,7 +198,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return PartialView("_ModalAnexo2");
         }
-        
+
 
         [HttpPost]
 
@@ -177,27 +214,35 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListVehiculosInvolucrados.ToDataSourceResult(request));
         }
+
         public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona)
         {
-            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; 
-                var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente);
-                HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
-                return Json(IdPersona);
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente);
+            HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
+            return Json(IdPersona);
+        }
+        public IActionResult RegresarModalVehiculo()
+        {
+            int IdVehiculo = HttpContext.Session.GetInt32("idVehiculoInsertado") ?? 0;
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var idVehiculoBorrado = _capturaAccidentesService.BorrarVehiculoAccidente(IdVehiculo, idAccidente);
+            return Json(idVehiculoBorrado);
         }
 
 
-       [HttpPost]
+        [HttpPost]
         public IActionResult ActualizarConConductor(int IdVehiculo, int IdPersona)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
-            var idVehiculoInsertado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente,IdPersona);
+            var idVehiculoInsertado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente, IdPersona);
 
             return Json(idVehiculoInsertado);
         }
         public IActionResult GuardarConductorVehiculo(int IdPersona)
         {
             int IdVehiculo = HttpContext.Session.GetInt32("idVehiculoInsertado") ?? 0; // Obtener el valor de idVehiculoInsertado desde la variable de sesión
-            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; 
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var RegistroSeleccionado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente, IdPersona);
 
             return Json(RegistroSeleccionado);
@@ -226,6 +271,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //lastInsertedId = 0;
             return Json(datosGrid);
         }
+        public JsonResult ObtClasificacionAccidente([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListClasificaciones = _capturaAccidentesService.ObtenerDatosGrid(idAccidente);
+
+            return Json(ListClasificaciones.ToDataSourceResult(request));
+        }
         [HttpPost]
         public IActionResult EliminaClasificacion(int IdAccidente)
         {
@@ -242,7 +294,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult CapturaBAccidente()
         {
-           
+
             return View("CapturaBAccidente");
         }
 
@@ -269,6 +321,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ModalCapturaConductor()
         {
+            var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
+            var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
+            var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+            var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
+            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+
+            ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+            ViewBag.CatGeneros = new SelectList(catGeneros.CatalogList, "Id", "Text");
+            ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
+            ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             return PartialView("_ModalCapturarConductor");
         }
         public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, int IdAccidente)
@@ -281,8 +344,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CausaAccidente = CausaAccidente;
             return PartialView("_ModalEliminarCausa");
         }
-        
+
         public ActionResult ModalAgregarInvolucrado()
+        {
+
+            return PartialView("_ModalInvolucrado-Vehiculo");
+        }
+        public ActionResult SubmodalBuscarInvolucrado()
         {
             return PartialView("_ModalAgregarInvolucrado");
         }
@@ -308,8 +376,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
         [HttpPost]
-        public IActionResult AgregarFactorNuevo(int IdFactorAccidente, int IdFactorOpcionAccidente,int IdAccidente)
-        
+        public IActionResult AgregarFactorNuevo(int IdFactorAccidente, int IdFactorOpcionAccidente, int IdAccidente)
+
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var RegistroSeleccionado = _capturaAccidentesService.AgregarValorFactorYOpcion(IdFactorAccidente, IdFactorOpcionAccidente, idAccidente);
@@ -317,6 +385,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
 
             return Json(datosGrid);
+        }
+        public JsonResult ObtFactorOpcionAccidente([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListFactores = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
+
+            return Json(ListFactores.ToDataSourceResult(request));
         }
         [HttpPost]
         public IActionResult EliminarValorFactorYOpcion()
@@ -353,6 +428,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(datosGrid);
         }
+        public JsonResult ObtCausasAccidente([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListCausas = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
+
+            return Json(ListCausas.ToDataSourceResult(request));
+        }
 
         public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
         {
@@ -373,7 +455,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
             return Json(ListVehiculosInvolucrados.ToDataSourceResult(request));
         }
-        public JsonResult Carga_Drop() 
+        public IActionResult SeleccionInvolucrado(int idPersonaInvolucrado, string nombre)
+        {
+            ViewBag.nombre = nombre;
+
+            return RedirectToAction("ModalAgregarInvolucrado");
+        }
+        public JsonResult Carga_Drop()
         {
             var result = new SelectList(_tiposCargaService.GetTiposCarga(), "IdTipoCarga", "TipoCarga");
             return Json(result);
@@ -383,30 +471,191 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
             return Json(result);
         }
-    public JsonResult Pensiones_Drop(int delegacionDDValue)
-    {
-        var result = new SelectList(_pensionesService.GetPensionesByDelegacion(delegacionDDValue), "IdPension", "Pension");
-        return Json(result);
-    }
+        public JsonResult Pensiones_Drop(int delegacionDDValue)
+        {
+            var result = new SelectList(_pensionesService.GetPensionesByDelegacion(delegacionDDValue), "IdPension", "Pension");
+            return Json(result);
+        }
         public JsonResult Traslados_Drop()
         {
             var result = new SelectList(_catFormasTrasladoService.ObtenerFormasActivas(), "idFormaTraslado", "formaTraslado");
             return Json(result);
         }
-        public ActionResult LLevaParteC(string descripcionCausa)
+
+        public JsonResult Tipos_Drop()
+        {
+            var result = new SelectList(_catTipoInvolucradoService.ObtenerTipos(), "IdTipoInvolucrado", "TipoInvolucrado");
+            return Json(result);
+        }
+
+        public JsonResult EstadoVictima_Drop()
+        {
+            var result = new SelectList(_catEstadoVictimaService.ObtenerEstados(), "IdEstadoVictima", "EstadoVictima");
+            return Json(result);
+        }
+        public JsonResult Hospitales_Drop()
+        {
+            var result = new SelectList(_catHospitalesService.GetHospitales(), "IdHospital", "NombreHospital");
+            return Json(result);
+        }
+        public JsonResult InstTraslado_Drop()
+        {
+            var result = new SelectList(_catInstitucionesTraslado.ObtenerInstitucionesActivas(), "IdInstitucionTraslado", "InstitucionTraslado");
+            return Json(result);
+        }
+        public JsonResult Asiento_Drop()
+        {
+            var result = new SelectList(_catAsientoservice.ObtenerAsientos(), "IdAsiento", "Asiento");
+            return Json(result);
+        }
+        public JsonResult Cinturon_Drop()
+        {
+            var result = new SelectList(_catCinturon.ObtenerCinturon(), "IdCinturon", "Cinturon");
+            return Json(result);
+        }
+        public JsonResult Disposicion_Drop()
+        {
+            var result = new SelectList(_catAutoridadesDisposicionservice.ObtenerAutoridadesActivas(), "IdAutoridadDisposicion", "NombreAutoridadDisposicion");
+            return Json(result);
+        }
+        public JsonResult Entrega_Drop()
+        {
+            var result = new SelectList(_catAutoridadesEntregaService.ObtenerAutoridadesActivas(), "IdAutoridadEntrega", "AutoridadEntrega");
+            return Json(result);
+        }
+
+        public JsonResult Ciudades_Drop()
+        {
+            var result = new SelectList(_catCiudadesService.ObtenerCiudadesActivas(), "IdCiudad", "Ciudad");
+            return Json(result);
+        }
+        public JsonResult AgMinisterio_Drop()
+        {
+            var result = new SelectList(_catAgenciasMinisterioService.ObtenerAgenciasActivas(), "IdAgenciaMinisterio", "NombreAgencia");
+            return Json(result);
+        }
+        public JsonResult Oficiales_Drop()
+        {
+            var oficiales = _oficialesService.GetOficialesActivos()
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = $"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}"
+                });
+            oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+          
+            return Json(result);
+        }
+
+        public ActionResult CapturaAccidenteC(string descripcionCausa)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
             return View("CapturaCAccidente");
         }
-            
-        public ActionResult CapturaAccidenteC()
-        {
-            return PartialView("CapturaCAccidente");
-        }
-     
-        
 
+        public ActionResult MostrarModalAgregarMonto(int IdAccidente, int IdVehiculoInvolucrado)
+        {
+            var modelo = new MontoModel
+            {
+                IdAccidente = IdAccidente,
+                IdVehiculoInvolucrado = IdVehiculoInvolucrado,
+            };
+
+            return PartialView("_ModalAgregarMonto", modelo);
+        }
+
+        [HttpPost]
+        public ActionResult AgregarMontoVehiculo(MontoModel model)
+        {
+            var errors = ModelState.Values.Select(s => s.Errors);
+            if (ModelState.IsValid)
+            {
+
+                _capturaAccidentesService.AgregarMontoV(model);
+                int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+                var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente); ;
+                return PartialView("_ListaVehiculosDaños", ListVehiculos);
+            }
+            return PartialView("_ModalAgregarMonto");
+
+        }
+        public JsonResult ObtenerInfraccionesVehiculos([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListVehiculosInfracciones = _capturaAccidentesService.InfraccionesVehiculosAccidete(idAccidente);
+
+            return Json(ListVehiculosInfracciones.ToDataSourceResult(request));
+        }
+        public ActionResult ModalInfraccionesVehiculos()
+        {
+            return PartialView("_ModalAsignarInfracciones");
+        }
+        public IActionResult VincularInfraccionAccidente(int IdVehiculo, int IdInfraccion)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(IdVehiculo, idAccidente, IdInfraccion);
+            return Json(InfraccionAccidente);
+        }
+        public JsonResult ObtInfraccionesAccidente([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
+
+            return Json(ListInfracciones.ToDataSourceResult(request));
+        }
+        public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado);
+            return Json(PersonaVehiculo);
+        }
+        public IActionResult ActualizarInfoInvolucrado(CapturaAccidentesModel model)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var RegistroActualizado = _capturaAccidentesService.ActualizarInvolucrado(model, idAccidente);
+            return Json(RegistroActualizado);
+        }
+        public JsonResult ObtInvolucradosAccidente([DataSourceRequest] DataSourceRequest request)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
+
+            return Json(ListInvolucrados.ToDataSourceResult(request));
+        }
+        public ActionResult MostrarModalFechaHora(int IdPersona)
+        {
+            var model = new FechaHoraIngresoModel
+            {
+                IdPersona = IdPersona,
+            };
+
+
+            return PartialView("_ModalFechaHora", model);
+        }
+        [HttpPost]
+        public ActionResult AgregarFechaHora(FechaHoraIngresoModel model)
+        {
+            var errors = ModelState.Values.Select(s => s.Errors);
+            if (ModelState.IsValid)
+            {
+                int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+                _capturaAccidentesService.AgregarFechaHoraIngreso(model,idAccidente);
+                var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente); ;
+                return Json(ListInvolucrados);
+            }
+            return PartialView("_ModalFechaHora");
+        }
+        [HttpPost]
+
+        public IActionResult InsertarDatos(DatosAccidenteModel datosAccidente,int armasValue,int drogasValue,int valoresValue,int prendasValue,int otrosValue)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            _capturaAccidentesService.AgregarDatosFinales(datosAccidente, armasValue, drogasValue, valoresValue, prendasValue, otrosValue, idAccidente);
+
+            return Json(datosAccidente);
+        }
     }
 }
 

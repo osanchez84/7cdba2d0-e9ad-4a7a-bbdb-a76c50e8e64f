@@ -162,11 +162,10 @@
 
                     sitteg_success("Se ha actualizado la información del vehículo");
                     $('#modalComplementoVehiculo').modal('hide');
+                    $('#agregarVehiculoModal').modal('hide');
                     $('.modal-backdrop').remove();
                     $('#ClasificacionAccidente').show();
-                    $("#tablaHospitales").html(result);
 
-                    // Actualizar el grid después de guardar los datos
                     actualizarGrid();
                 } else {
                     alert("Sucedio un error")

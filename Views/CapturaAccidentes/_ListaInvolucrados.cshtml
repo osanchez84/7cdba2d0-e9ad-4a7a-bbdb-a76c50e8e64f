@@ -1,34 +1,69 @@
-﻿<div class="col-12 mb-4 px-4 rounded gridCustom">
+﻿<script>
+function onRowSelect(e) {
+   var selectedRow = this.dataItem(this.select());
+        var IdVehiculoInvolucrado = selectedRow.IdVehiculoInvolucrado;
+    console.log("VEHICULO", IdVehiculoInvolucrado);
+   obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado);
+}
+    function obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado) {
 
+        var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
+                         $('#idPersonaHidden').val(idPersona); // Asigna el valor a un campo oculto
+                         $('#idVehiculoHidden').val(IdVehiculoInvolucrado); // Asigna el valor de i
+        console.log("idPersona desde el otro Kendo Grid:", idPersona, IdVehiculoInvolucrado);
+        $.ajax({
+            url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
+            type: 'POST',
+            data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
+            success: function (response) {
+                sitteg_success("Se ha actualizado la información del vehículo");
+               
+               // $("#tablaHospitales").html(result);      
+
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+
+    
+</script>
+
+<div class="col-12 mb-4 px-4 rounded gridCustom">
     @(
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
-        .Name("gridInvolucrados")
+        .Name("gridVehiculosInvolucrados")
         .Columns(columns =>
         {
-            columns.Template("<h6 class='m-0 colorPrimary'><b>Detalles</b></h6>").Width(80).Title("Detalles");
-            columns.Template("<h6 class='m-0 colorPrimary'><b>Datos Persona</b></h6>").Width(80).Title("Datos Persona");
-            columns.Template("<h6 class='m-0 colorPrimary'><b>Domicilio persona</b></h6>").Width(120).Title("Domicilio Persona");
-            columns.Template("<h6 class='m-0 colorPrimary'><b>Vehículo en que viajaba</b></h6>").Width(120).Title("Vehículo en que viajaba");
-            columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>").Width(30);
-            columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Eliminar</b></h6></button>").Width(30);
+            columns.Select().Width(50).ClientHeaderTemplate(" ");
+            columns.Bound(c => c.IdPersona).Hidden();
+            columns.Bound(c => c.IdVehiculo).Hidden();
+            columns.Bound(c => c.IdVehiculoInvolucrado).Title("Vehiculo").Width(100);
+            columns.Bound(c => c.Placa).Title("Placas").Width(100);
+            columns.Bound(c => c.ConductorInvolucrado).Title("Conductor").Width(150);
+            columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(150);
+            columns.Bound(c => c.FormaTrasladoInvolucrado).Title("Forma de traslado").Width(100);
+            columns.Bound(c => c.TipoVehiculo).Title("Tipo de Vehículo").Width(100);
+            columns.Bound(c => c.Pension).Title("Pension").Width(100);
+           
 
-
-
-
-        }).HtmlAttributes(new { style = "height:250px" })
+        })
+        .HtmlAttributes(new { style = "height:300px" })
         .Sortable()
         .Groupable()
         .Scrollable()
         .Pageable()
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Read(read => read.Action("AgregarFactorNuevo", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.IdAccidente))
+        .Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
+        .PageSize(5)
+        .Model(model => model.Id(p => p.IdMarcaVehiculo))
         )
-
-        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-        .Type(GridSelectionType.Row)
+        .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
+        .Events(events =>
+        {
+            events.Change("onRowSelect");
+        })
         )
-        )
-
 </div>

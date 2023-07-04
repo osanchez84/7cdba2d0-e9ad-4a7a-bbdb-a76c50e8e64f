@@ -7,6 +7,8 @@ namespace GuanajuatoAdminUsuarios.Models
     public class CapturaAccidentesModel
     {
         public int? IdAccidente { get; set; }
+        public int? IdInfAcc { get; set; }
+        public int? idEstatusReporte { get; set; }
         public string NumeroReporte { get; set; }
         [Required(ErrorMessage = "-El campo Fecha es obligatorio")]
         public DateTime? Fecha { get; set; }
@@ -24,7 +26,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [Required(ErrorMessage = "-El campo Kilometro es obligatorio")]
         public string Kilometro { get; set; }
-        public int EstatusReporte { get; set; }
+        public string EstatusReporte { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public int ActualizadoPor { get; set; }
         public int estatus { get; set; }
@@ -103,7 +105,7 @@ namespace GuanajuatoAdminUsuarios.Models
         ///////////
         /////////////////MODEL CLASIFICACION//////////
         ///
-        public int IdClasificacionAccidente { get; set; }
+        public int? IdClasificacionAccidente { get; set; }
 
         public string NombreClasificacion { get; set; }
 
@@ -112,17 +114,15 @@ namespace GuanajuatoAdminUsuarios.Models
         ///MODEL CAPTURA PARRTE 2
         ///
 
-        public int IdFactorAccidente { get; set; }
-        public int IdFactorOpcionAccidente { get; set; }
+        public int? IdFactorAccidente { get; set; }
+        public int? IdFactorOpcionAccidente { get; set; }
         public string FactorAccidente { get; set; }
         public string FactorOpcionAccidente { get; set; }
-        public int IdCausaAccidente { get; set; }
-        public int IdCausaAccidenteEdit { get; set; }
-        
+        public int? IdCausaAccidente { get; set; }
+        public int? IdCausaAccidenteEdit { get; set; }
         public string CausaAccidente { get; set; }
-
+        public string TipoCarga { get; set; }       
         public string DescripcionCausa { get; set; }
-
         public int idPersonaInvolucrado { get; set; }
         public string licencia { get; set; }
         public string curp { get; set; }
@@ -131,9 +131,24 @@ namespace GuanajuatoAdminUsuarios.Models
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
 
+        public string Sexo { get; set; }
+        public string Nacimiento { get; set; }
+        public string Tipo { get; set; }
+        public string Estado { get; set; }
+        public string LLevadoA { get; set; }
+        public string Traslado { get; set; }
+        public string Asiento { get; set; }
+        public string Cinturon { get; set; }
+        public string Entidad { get; set; }
+        public string Direccion { get; set; }
+        public string Telefono { get; set; }
+        public string Correo { get; set; }
+
+
         /////////////////
         ///CAPTURA PARTE 3//////////////
         ///
+        public string folioInfraccion { get; set; }
 
         public float montoCamino { get; set; }
         public float montoCarga { get; set; }
@@ -141,7 +156,54 @@ namespace GuanajuatoAdminUsuarios.Models
         public float montoOtros { get; set; }
         public int IdInfraccionAccidente { get; set; }
         public int IdInfraccion { get; set; }//Folio de infraccion
+        public string EstatusInfraccion { get; set; }
+     
         public float montoVehiculo { get; set; }
+        public int IdTipoInvolucrado { get; set; }
+        public int IdEstadoVictima { get; set; }
+        public int IdHospital { get; set; }
+        public int IdInstitucionTraslado { get; set; }
+        public int IdAsiento { get; set; }
+        public int IdCinturon { get; set; }
+        public float Latitud { get; set; }
+        public float Longitud { get; set; }
+        public int IdCiudad { get; set; }
+        public int IdCertificado { get; set; }
+        public string entregaObjetos { get; set; }
+        public string entregaOtros { get; set; }
+        public string consignacionHechos { get; set; }
+        public string numeroOficio { get; set; }
+        public int IdAgenciaMinisterio { get; set; }
+        public string RecibeMinisterio { get; set; }
+        public int IdElabora { get; set; }
+        public int IdSupervisa { get; set; }
+        public int IdAutoriza { get; set; }
+        public int IdElaboraConsignacion { get; set; }
+        public string Vehiculo { get; set; }
+        public int OtraColumna { get; set; }
+        public string EstadoVictima { get; set; }
+        public string NombreHospital { get; set; }
+        public string InstitucionTraslado { get; set; }
+        public DateTime? FechaIngreso { get; set; }
+        public TimeSpan? HoraIngreso { get; set; }
+        public int IdAutoridadEntrega { get; set; }
+        public int IdAutoridadDisposicion { get; set; }
+        public int ArmasBool { get; set; }
+        public int ArmasValue { get; set; }
+        public int DrogasValue { get; set; }
+        public int ValoresValue { get; set; }
+        public int PrendasValue { get; set; }
+        public int OtrosValue { get; set; }
+
+
+
+
+
+
+
+
+
+
 
 
 

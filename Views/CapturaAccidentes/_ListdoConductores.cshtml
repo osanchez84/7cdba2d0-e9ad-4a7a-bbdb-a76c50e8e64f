@@ -1,7 +1,7 @@
 ﻿<script>
     function onRowSelectC(e) {
         var selectedRow = this.select();
-        var IdPersona; // Declarar las variables fuera del bloque if
+        var IdPersona; 
 
         if (selectedRow.length > 0) {
             var dataItem = this.dataItem(selectedRow);
@@ -15,13 +15,13 @@
             type: 'POST',
             data: { IdPersona: IdPersona },
             success: function (result) {
-            alert("Se ha agregado un conductor")
+            sitteg_success("Se ha agregado un conductor")
                 $('#modalAgregarConductor').modal('hide');
                 $('.modal-backdrop').remove();
                 abrirModalDetalles();            
             },
             error: function (error) {
-                alert("ERROR");
+                sitteg_warning("Ocurrio un error, intente de nuevo mas tarde");
             }
         });
     }

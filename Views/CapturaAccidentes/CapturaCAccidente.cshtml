@@ -1,7 +1,7 @@
-﻿@model GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel
+﻿@model GuanajuatoAdminUsuarios.Models.DatosAccidenteModel
 
 <div class="mainContainer bg-light">
-
+    <form id="detalleAccidenteForm">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
             <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -36,7 +36,7 @@
                 <h6 class="px-4 text-muted">Da de alta los daños del accidente.</h6>
             </div>
         </div>
-
+           <div class="row px-4 mb-4 align-items-end">
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.montoCamino)
@@ -79,8 +79,604 @@
                 </div>
             </div>
 
+        </div>
+    </section>
+     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>2</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="icon-infracion h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Infracciones</b></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 pe-0">
+                <div class="bgSuccess py-1"></div>
+            </div>
+            <div class="col-4 ps-0">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+        <div class="row justify-content-between align-items-end mb-1">
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h5 class="px-4"><b>Listado de infracciones del accidente</b></h5>
+                <h6 class="px-4 text-muted">Da de alta las infracciones del accidente.</h6>
+            </div>
+            <div class="col-12 col-lg-auto text-center">
+                <div class="btnOutline btnOutlinePrimary px-4 my-3">
+                    <button onclick="mostrarModalAgregarInfraccion()">
+                        <h5 class="m-0"><i class="me-2 icon-addInfracion"></i><b>Agregar infracción</b></h5>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-12 my-4 px-4 rounded">
+                <!--TABLALISTA INFRACCIONEES-->
+                <partial name="_ListaInfraccionesAccidente" model="Model" />
 
+
+            </div>
+        </div>
     </section>
 
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>3</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="icon-infracion h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Daños materiales de los vehículos</b></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 pe-0">
+                <div class="bgSuccess py-1"></div>
+            </div>
+            <div class="col-4 ps-0">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+        <div class="row justify-content-between align-items-end mb-1">
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h5 class="px-4"><b>Listado de daños en los vehículos</b></h5>
+                <h6 class="px-4 text-muted">Da de alta los daños en los vehículos.</h6>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-12 my-4 px-4 rounded">
+            </div>
+            <!--TABLA VEHICULOS INV PARA DAÑOS-->
+            <div id="tablaConMonto">
+            <partial name="_ListaVehiculosDaños" model="Model" />
+            </div>
+        </div>
+         
+    </section>
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded pb-1">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>4</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto p-0">
+                        <i class="icon-accidentes h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Complemento de accidente</b></h2>
+                    </div>
+                </div>
+            </div>
 
+        </div>
+        <div class="row">
+            <div class="col-10 pe-0">
+                <div class="bgSuccess py-1"></div>
+            </div>
+            <div class="col-2 ps-0">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-4">
+                <h5 class="px-4"><b>Datos de complementarios del accidente</b></h5>
+                <h6 class="px-4 text-muted">
+                    Da de alta los datos complementarios del accidente
+                </h6>
+            </div>
+        </div>
+        <div class="row justify-content-between mb-1">
+            <div class="col-12 col-lg-6 mt-4 mb-2">
+                <h5 class="px-4"><b>Ubicación</b></h5>
+            </div>
+        </div>
+        <div class="row px-4 mb-4 align-items-end mb-4">
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.Latitud)
+                        .Label(l => l.Content("Latitud:"))
+                        .Placeholder("Ingresa la latitud donde ocurrió el accidente.")
+                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        )
+
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.Longitud)
+                        .Label(l => l.Content("Longitud:"))
+                        .Placeholder("Ingresa la longitud donde ocurrió el accidente.")
+                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        )
+
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label>Certificado de:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdCertificado)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Hospitales_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-4">
+                <div class="col-11">
+                    <div class="bg-light pt-1"></div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mt-4 mb-2">
+                <h5><b>Elementos</b></h5>
+            </div>
+            <div class="col-12">
+                <div class="controlForm mt-4 mb-3">
+                  <label class="label">Seleccione uno o varios elementos que se encontraron en el accidente:</label>
+                       <label>Armas</label> @(Html.Kendo().SwitchFor(t => t.ArmasBool)
+                            .Name("armasSwitch")
+                        .Checked(false)
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+
+                        <label>Drogas</label> @(Html.Kendo().SwitchFor(t => t.DrogasBool)
+                            .Name("drogasSwitch")
+                            .Checked(false)
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+
+                        <label>Valores</label> @(Html.Kendo().SwitchFor(t => t.ValoresBool)
+                            .Name("valoresSwitch")
+                            .Checked(false)
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+
+                           
+                         <label>Prendas</label> @(Html.Kendo().SwitchFor(t => t.PrendasBool)
+                            .Name("prendasSwitch")
+                            .Checked(false)
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+
+                        <label>Otros</label> @(Html.Kendo().SwitchFor(t => t.OtrosBool)
+                            .Name("otrosSwitch")
+                            .Checked(false)
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+                 </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.entregaObjetos)
+                        .Label(l => l.Content("Entrega de objetos:"))
+                        .Placeholder("Ingresa los objetos que se entregaron")
+                        .HtmlAttributes(new { style = "width: 100%" })
+                        )
+
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.entregaOtros)
+                        .Label(l => l.Content("Entrega otros:"))
+                        .Placeholder("Ingresa la entrega de otros conceptos")
+                        .HtmlAttributes(new { style = "width: 100%" })
+                        )
+
+                </div>
+            </div>
+        </div>
+</section>
+            <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded pb-1">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                    <div class="col-12 col-md-auto">
+                        <div class="row align-items-center justify-content-center justify-content-md-start">
+                            <div class="col-auto">
+                                <div class="border border-2 border-dark rounded-circle">
+                                    <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                        <b>5</b>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="col-auto p-0">
+                                <i class="icon-involucrado h1 colorPrimary"></i>
+                            </div>
+                            <div class="col-auto my-3">
+                                <h2 class="m-0 h3"><b>Involucrados</b></h2>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-8 pe-0">
+                        <div class="bgSuccess py-1"></div>
+                    </div>
+                    <div class="col-4 ps-0">
+                        <div class="bg-light py-1"></div>
+                    </div>
+                </div>
+                <div class="row justify-content-between mb-1">
+                    <div class="col-12 col-lg-6 mt-4 mb-2">
+                        <h5 class="px-4"><b>Listado de búsqueda</b></h5>
+                        <h6 class="px-4 text-muted">Selecciona un involucrado para continuar.</h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 px-4 rounded mb-4">
+                        <div id="tablaConFechaYHora">
+                            <partial name="_ListaInvolucradosFechaYHora" model="Model"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-4 my-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm mb-3">
+                            <label>A disposición de:</label>
+                            <span>
+                                @(Html.Kendo().DropDownListFor(t=>t.IdAutoridadDisposicion)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Disposicion_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    )
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm mb-3">
+                            <label>Entregado a:</label>
+                            <span>
+                                @(Html.Kendo().DropDownListFor(t=>t.IdAutoridadEntrega)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Entrega_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    )
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+        <div class="row justify-content-center mt-4">
+            <div class="col-11">
+                <div class="bg-light pt-1"></div>
+            </div>
+        </div>
+        <div class="row justify-content-between mb-1">
+            <div class="col-12 col-lg-6 mt-4 mb-2">
+                <h5 class="px-4"><b>Competencia ministerial</b></h5>
+            </div>
+        </div>
+        <div class="row px-4 mb-4 align-items-end">
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.consignacionHechos)
+                        .Label(l => l.Content("Procede la consignación de los hechos:"))
+                        .Placeholder("Ingresa el nombre de quien procede la consignación de los hechos")
+                        .HtmlAttributes(new { style = "width: 100%", })
+                        )
+
+        </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm mb-3">
+                    <label>Ciudad de:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdCiudad)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Ciudades_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-11">
+                <div class="bg-light pt-1"></div>
+            </div>
+        </div>
+        <div class="row justify-content-between mb-1">
+            <div class="col-12 col-lg-6 mt-4 mb-2">
+                <h5 class="px-4"><b>Consignación</b></h5>
+            </div>
+        </div>
+        <div class="row px-4 mb-4 align-items-end">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label>Elabora consignación:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdElaboraConsignacion)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t=>t.numeroOficio)
+                        .Label(l => l.Content("Número de oficio:"))
+                        .Placeholder("Ingresa el número de oficio")
+                        .HtmlAttributes(new { style = "width: 100%"})
+                        )
+
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label>Agencia de ministerio que recibe:</label>
+                    <span>
+                            @(Html.Kendo().DropDownListFor(t => t.IdAgenciaMinisterio)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("AgMinisterio_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label>Recibe en ministerio:</label>
+                    <span>
+                            @(Html.Kendo().TextBoxFor(t => t.RecibeMinisterio)
+                                .Placeholder("Ingresa el nombre de quien recibe en ministerio")
+                                .HtmlAttributes(new { style = "width: 100%", })
+                                )
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-11">
+                <div class="bg-light pt-1"></div>
+            </div>
+        </div>
+        <div class="row justify-content-between mb-1">
+            <div class="col-12 col-lg-6 mt-4 mb-2">
+                <h5 class="px-4"><b>Validación de partes</b></h5>
+            </div>
+        </div>
+        <div class="row px-4 mb-4 align-items-end">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm mb-3">
+                    <label>Elabora:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdElabora)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm mb-3">
+                    <label>Supervisor:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdSupervisa)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm mb-3">
+                    <label>Autoriza:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t=>t.IdAutoriza)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+        <div class="row my-3 mb-4">
+            <div class="col-12 col-md-6 mx-md-auto">
+                <div class="row justify-content-around">
+                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <div id="botnEnvio" class="controlButton" onclick="enviarDatos()" >
+                            @(Html.Kendo().Button()
+                            .Name("Finalizar")
+                                .HtmlAttributes(new { @class = "btnPrimary px-5" })
+                                .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+     <div class="modal fade modalCustom" id="agregarInfraccionModal" tabindex="-1" aria-labelledby="agregarInfraccionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="ModalBodyAgregarInfraccion">
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
+<script>
+   
+    function mostrarModalAgregarInfraccion() {
+        event.preventDefault();
+        $.ajax({
+            url: '@Url.Action("ModalInfraccionesVehiculos")',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (data) {
+                $('#ModalBodyAgregarInfraccion').html(data);
+                $('#agregarInfraccionModal').modal('show');
+            }
+        });
+    }
+
+    function enviarDatos() {
+        var datosFormulario = $("#detalleAccidenteForm").serialize();
+
+        var armasValue = $("#armasSwitch").prop("checked") ? 1 : 0;
+        var drogasValue = $("#drogasSwitch").prop("checked") ? 1 : 0;
+        var valoresValue = $("#valoresSwitch").prop("checked") ? 1 : 0;
+        var prendasValue = $("#prendasSwitch").prop("checked") ? 1 : 0;
+        var otrosValue = $("#otrosSwitch").prop("checked") ? 1 : 0;
+
+        console.log("AA", datosFormulario);
+        console.log("armaas", armasValue);
+
+        $.ajax({
+            url: '@Url.Action("InsertarDatos")',
+            type: 'POST',
+            data: datosFormulario + '&armasValue=' + armasValue + '&drogasValue=' + drogasValue + '&valoresValue=' + valoresValue + '&prendasValue=' + prendasValue + '&otrosValue=' + otrosValue,
+            success: function (result) {
+                sitteg_success("Se ha concluido el registro del accidente");
+                window.location.href = "/CapturaAccidentes/Index";
+
+            },
+            error: function (error) {
+              sitteg_warning("!Sucedio un error, intente mas tarde...");  
+            }
+        });
+    }
+
+
+
+
+
+
+</script>
+

@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -12,6 +13,12 @@ namespace Example.WebUI.Controllers
 {
     public class CatAutoridadesEntregaController : Controller
     {
+        private readonly ICatAutoridadesEntregaService _catAutoridadesEntregaService;
+
+        public CatAutoridadesEntregaController(ICatAutoridadesEntregaService catAutoridadesEntregaService)
+        {
+            _catAutoridadesEntregaService = catAutoridadesEntregaService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {

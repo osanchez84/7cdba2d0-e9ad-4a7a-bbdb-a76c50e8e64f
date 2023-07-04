@@ -119,6 +119,16 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICancelarInfraccionService, CancelarInfraccionService>();
             services.AddScoped<ICapturaAccidentesService, CapturaAccidentesService>();
             services.AddScoped<IEstadisticasService, EstadisticasService>();
+            services.AddScoped<ICatTipoInvolucradoService, CatTipoInvolucradoService>();
+            services.AddScoped<ICatEstadoVictimaService, CatEstadoVictimaService>();
+            services.AddScoped<ICatInstitucionesTrasladoService, CatInstitucionesTrasladoService>();
+            services.AddScoped<ICatAsientoService, CatAsientoService>();
+            services.AddScoped<ICatCinturon, CatCinturonService>();
+            services.AddScoped<ICatAutoridadesDisposicionService, CatAutoridadesDisposicionService>();
+            services.AddScoped<ICatAutoridadesEntregaService, CatAutoridadesEntregaService>();
+            services.AddScoped<ICatCiudadesService, CatCiudadesService>();
+            services.AddScoped<ICatAgenciasMinisterioService, CatAgenciasMinisterioService>();
+
 
             services
                .AddControllersWithViews()

@@ -1,6 +1,7 @@
 ﻿
 
 using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -9,6 +10,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
     {
         List<Oficiales> GetOficiales();
+        List<OficialesModel> GetOficialesActivos();
 
         Oficiales GetOficialById(int IdOficial);
 

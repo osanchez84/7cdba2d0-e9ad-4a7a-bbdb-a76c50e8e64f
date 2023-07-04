@@ -53,7 +53,7 @@
         <div class="col-auto">
             <div class="controlForm mb-3 mt-1">
                 <label class="text-muted">No. de reporte de accidente:</label>
-                <label>@Model.IdAccidente</label>
+                <label>@Model.NumeroReporte</label>
             </div>
         </div>
         <div class="col-auto">
@@ -105,17 +105,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
-            <div class="row">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                    @(Html.Kendo().Button()
-                        .Name("editSearchVehiculo")
-                        .HtmlAttributes(new { @class = "px-5" })
-                        .Content("<h6 class=\"m-0\"><i class=\"icon-edit me-2\"></i><b>Editar busqueda</b></h6>"))
-                </div>
-            </div>
-        </div>
-
+       
     </div>
     <div class="row">
         <div class="col-12 ps-0">
@@ -152,20 +142,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12 col-md-6 mx-md-auto">
-            <div class="row justify-content-around">
-                <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                    <div class="controlButton my-3">
-                        @(Html.Kendo().Button()
-                            .Name("FinalVehiculo")
-                            .HtmlAttributes(new { @class = "btnPrimary px-5" })
-                            .Content("<h5 class=\"m-0\"><b>Siguiente</b></h5>"))
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!--MODAL AGREGAR VEHICULO INVOLUCRADO-->
      <div class="modal fade modalCustom" id="agregarVehiculoModal" tabindex="-1" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -291,7 +268,7 @@
             </div>
         </div>
          <!--CLASIFICACION DE ACCIDENTE-->
-     <div id="ClasificacionAccidente" style="display:block;">
+     <div id="ClasificacionAccidente" style="display:none;">
                 <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
                     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                         <div class="col-12 col-md-6 col-lg-5 col-xl-auto">

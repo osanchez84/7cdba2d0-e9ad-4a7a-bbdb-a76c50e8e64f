@@ -203,16 +203,17 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (!string.IsNullOrEmpty(Serie))
                     {
                         command = new SqlCommand(
-                           "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
-                            "FROM vehiculos v " +
-                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                            "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                            "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
-                            "JOIN catColores cc ON v.idColor = cc.idColor " +
-                            "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                            "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
-                            "JOIN personas p ON v.idPersona = p.idPersona " +
-                            "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Serie%';", connection);
+                       "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
+                        "FROM vehiculos v " +
+                        "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
+                        "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                        "JOIN catColores cc ON v.idColor = cc.idColor " +
+                        "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                        "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                        "JOIN personas p ON v.idPersona = p.idPersona " +
+                        "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%';", connection);
+
                         command.Parameters.AddWithValue("@Serie", Serie);
                     }
                     else if (!string.IsNullOrEmpty(Placa))
@@ -256,26 +257,27 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel vehiculo = new CapturaAccidentesModel();
-                            vehiculo.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"].ToString());
-                            vehiculo.IdMarcaVehiculo = Convert.ToInt32(reader["IdMarcaVehiculo"].ToString());
-                            vehiculo.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"].ToString());
-                            vehiculo.IdEntidad = Convert.ToInt32(reader["IdEntidad"].ToString());
-                            vehiculo.IdColor = Convert.ToInt32(reader["IdColor"].ToString());
-                            vehiculo.IdTipoVehiculo = Convert.ToInt32(reader["IdTipoVehiculo"].ToString());
-                            vehiculo.IdCatTipoServicio = Convert.ToInt32(reader["IdCatTipoServicio"].ToString());
-                            vehiculo.IdPersona = Convert.ToInt32(reader["IdPersona"].ToString());
+                            vehiculo.IdVehiculo = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
+                            vehiculo.IdMarcaVehiculo = Convert.IsDBNull(reader["IdMarcaVehiculo"]) ? 0 : Convert.ToInt32(reader["IdMarcaVehiculo"]);
+                            vehiculo.IdSubmarca = Convert.IsDBNull(reader["IdSubmarca"]) ? 0 : Convert.ToInt32(reader["IdSubmarca"]);
+                            vehiculo.IdEntidad = Convert.IsDBNull(reader["IdEntidad"]) ? 0 : Convert.ToInt32(reader["IdEntidad"]);
+                            vehiculo.IdColor = Convert.IsDBNull(reader["IdColor"]) ? 0 : Convert.ToInt32(reader["IdColor"]);
+                            vehiculo.IdTipoVehiculo = Convert.IsDBNull(reader["IdTipoVehiculo"]) ? 0 : Convert.ToInt32(reader["IdTipoVehiculo"]);
+                            vehiculo.IdCatTipoServicio = Convert.IsDBNull(reader["IdCatTipoServicio"]) ? 0 : Convert.ToInt32(reader["IdCatTipoServicio"]);
+                            vehiculo.IdPersona = Convert.IsDBNull(reader["IdPersona"]) ? 0 : Convert.ToInt32(reader["IdPersona"]);
                             vehiculo.Marca = reader["marcaVehiculo"].ToString();
                             vehiculo.Submarca = reader["nombreSubmarca"].ToString();
                             vehiculo.Modelo = reader["Modelo"].ToString();
                             vehiculo.Placa = reader["Placas"].ToString();
                             vehiculo.Tarjeta = reader["Tarjeta"].ToString();
-                            vehiculo.VigenciaTarjeta = Convert.ToDateTime(reader["VigenciaTarjeta"].ToString());
+                            vehiculo.VigenciaTarjeta = Convert.IsDBNull(reader["VigenciaTarjeta"]) ? DateTime.MinValue : Convert.ToDateTime(reader["VigenciaTarjeta"]);
                             vehiculo.Serie = reader["serie"].ToString();
                             vehiculo.EntidadRegistro = reader["nombreEntidad"].ToString();
                             vehiculo.Color = reader["color"].ToString();
                             vehiculo.TipoServicio = reader["tipoServicio"].ToString();
                             vehiculo.TipoVehiculo = reader["tipoVehiculo"].ToString();
                             vehiculo.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
+
 
                             Vehiculo.Add(vehiculo);
                         }

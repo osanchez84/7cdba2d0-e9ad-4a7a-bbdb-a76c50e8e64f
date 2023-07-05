@@ -45,6 +45,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_DetalleRegistroDePago", ListInfraccionesModel);
 
         }
+        public ActionResult GuardarReciboPago(string ReciboPago, float Monto, DateTime FechaPago, string LugarPago, int IdInfraccion)
+        {
+            var datosGuardados = _registroReciboPagoService.GuardarRecibo(ReciboPago, Monto,FechaPago, LugarPago,IdInfraccion);
+            return PartialView("RegistroReciboDePago");
+
+        }
+        
     }
    
 }

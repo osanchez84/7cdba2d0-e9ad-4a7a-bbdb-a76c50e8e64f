@@ -13,12 +13,11 @@
 
     }
 </div>
-  <form class="row px-4 mb-4 align-items-end">
-
+  <form id ="reciboPagoForm"class="row px-4 mb-4 align-items-end">
+      @Html.HiddenFor(m=>m.IdInfraccion)
     <div class="col-12 col-md-6 col-lg-3">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBox()
-                .Name("recibo")
+            @(Html.Kendo().TextBoxFor(m=>m.ReciboPago)
                 .Label(l => l.Content("Recibo:"))
                 .Placeholder("Ingresa el número del recibo")
                 .HtmlAttributes(new { style = "width: 100%" })
@@ -28,30 +27,27 @@
     </div>
     <div class="col-12 col-md-4 col-lg-3 col-xl-2">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBox()
-                .Name("monto")
-                .Label(l => l.Content("Momto:"))
+            @(Html.Kendo().TextBoxFor(m=>m.Monto)
+                .Label(l => l.Content("Monto:"))
                 .Placeholder("monto Pagado")
                 .HtmlAttributes(new { style = "width: 100%" })
                 )
 
         </div>
     </div>
-    <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+    <div class="col-12 col-md-6 col-lg-3">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBox()
-                .Name("fechaPago")
-                .Label(l => l.Content("Fecha de Pago"))
-                .Placeholder("Fecha de Pago")
-                .HtmlAttributes(new { style = "width: 100%" })
+            <label>Fecha:</label>
+            @(Html.Kendo().DatePickerFor(t => t.FechaPago)
+                .Label(l => l.Content("Fecha de pago:"))
+                .HtmlAttributes(new { style = "width: 100%", title = "Introduce fecha de Pago" })
                 )
         </div>
     </div>
 
-    <div class="col-12 col-md-4 col-lg-3 col-xl-2">
+    <div class="col-12 col-md-6 col-lg-6">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBox()
-                .Name("lugarPago")
+            @(Html.Kendo().TextBoxFor(m=>m.LugarPago)
                 .Label(l => l.Content("Lugar de pago"))
                 .Placeholder("Lugar de pago")
                 .HtmlAttributes(new { style = "width: 100%" })
@@ -59,3 +55,39 @@
         </div>
     </div>
 </form>
+
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="controlButton my-3" onclick="guardarReciboPago()">
+            @(Html.Kendo().Button()
+                .Name("GuardarPago")
+                .HtmlAttributes(new { @class = "btnPrimary" })
+                .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
+        </div>
+
+    </div>
+<script>
+    function guardarReciboPago() {
+        $.ajax({
+            url: '/RegistroReciboPago/GuardarReciboPago',
+            type: 'POST',
+            data: {
+                IdInfraccion: $("#IdInfraccion").val(),
+                ReciboPago: $("#ReciboPago").val(),
+                Monto: $("#Monto").val(),
+                FechaPago: $("#FechaPago").val(),
+                LugarPago: $("#LugarPago").val()
+            },
+            success: function (result) {
+                sitteg_success("Información guardada correctamente ");
+                $('#modalComprobacion').modal('hide');
+
+            },
+            error: function (error) {
+                sitteg_warning("!Sucedio un error, intente mas tarde...");
+            }
+        });
+    }
+
+
+
+</script>

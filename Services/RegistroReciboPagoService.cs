@@ -114,6 +114,41 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+        public int GuardarRecibo(string ReciboPago, float Monto, DateTime FechaPago, string LugarPago, int IdInfraccion)
+        {
+            int infraccionModificada = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infracciones SET reciboPago = @reciboPago, monto = @monto, fechaPago = @fechaPago, lugarPago = @lugarPago WHERE idInfraccion = @idInfraccion";
+
+
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@reciboPago", ReciboPago);
+                    command.Parameters.AddWithValue("@monto", Monto);
+                    command.Parameters.AddWithValue("@fechaPago", FechaPago);
+                    command.Parameters.AddWithValue("@lugarPago", LugarPago);
+                    command.Parameters.AddWithValue("@idInfraccion", IdInfraccion);
+                    command.ExecuteNonQuery();
+                }
+
+
+
+                catch (SqlException ex)
+                {
+                    // Manejar la excepción
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return infraccionModificada;
+        }
 
     }
 }

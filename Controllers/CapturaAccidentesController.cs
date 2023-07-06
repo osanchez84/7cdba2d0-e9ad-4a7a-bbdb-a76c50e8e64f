@@ -228,10 +228,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(ListVehiculosInvolucrados.ToDataSourceResult(request));
         }
 
-        public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona)
+        public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente);
+            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, Placa, Serie);
             HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
             return Json(IdPersona);
         }

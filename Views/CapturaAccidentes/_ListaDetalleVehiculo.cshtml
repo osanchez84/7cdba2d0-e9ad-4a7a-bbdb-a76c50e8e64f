@@ -8,13 +8,16 @@
             var dataItem = this.dataItem(selectedRow);
             IdVehiculo = dataItem.IdVehiculo;
             IdPersona = dataItem.IdPersona;
+            Placa = dataItem.Placa;
+            Serie = dataItem.Serie;
+
 
             console.log(dataItem);
 
             $.ajax({
               url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
                 type: 'POST',
-                data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona },
+                data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona, Placa : Placa, Serie :Serie },
                 success: function (result) {
                     abrirModalConductor(IdPersona);
 

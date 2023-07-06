@@ -299,7 +299,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-        public int ActualizarConVehiculo(int idVehiculo, int idAccidente)
+        public int ActualizarConVehiculo(int idVehiculo, int idAccidente, string Placa, string Serie)
         {
             int idVehiculoInsertado = 0;
 
@@ -308,11 +308,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO vehiculosAccidente (idAccidente, idVehiculo) OUTPUT INSERTED.idVehiculo VALUES (@idAccidente, @idVehiculo)";
+                    string query = "INSERT INTO vehiculosAccidente (idAccidente, idVehiculo, placa, serie) OUTPUT INSERTED.idVehiculo VALUES (@idAccidente, @idVehiculo, @Placa ,@Serie)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idVehiculo", idVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@Placa", Placa);
+                    command.Parameters.AddWithValue("@Serie", Serie);
 
                     object insertedId = command.ExecuteScalar();
 
@@ -381,19 +383,19 @@ namespace GuanajuatoAdminUsuarios.Services
                         "p.apellidoMaterno,p.RFC,p.CURP, p.fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
                         "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
-                        "INNER JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
-                        "INNER JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
-                        "INNER JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
-                        "INNER JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                        "INNER JOIN personas AS p ON v.idPersona = p.idPersona " +
-                        "INNER JOIN catColores AS c ON v.idColor = c.idColor " +
-                        "INNER JOIN catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga " +
-                        "INNER JOIN pensiones AS pen ON cva.idPension = pen.idPension " +
-                        "INNER JOIN vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente " +
-                        "INNER JOIN catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado " +
-                        "INNER JOIN catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
-                        "INNER JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
-                        "INNER JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
+                        "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
+                        "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
+                        "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
+                        "LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                        "LEFT JOIN personas AS p ON v.idPersona = p.idPersona " +
+                        "LEFT JOIN catColores AS c ON v.idColor = c.idColor " +
+                        "LEFT JOIN catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga " +
+                        "LEFT JOIN pensiones AS pen ON cva.idPension = pen.idPension " +
+                        "LEFT JOIN vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente " +
+                        "LEFT JOIN catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado " +
+                        "LEFT JOIN catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                        "LEFT JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
+                        "LEFT JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
                         "LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona " +
                         "WHERE cva.idAccidente = @idAccidente AND cva.idPersona = @idPersona AND cva.idVehiculo = @IdVehiculoInvolucrado AND cva.idAccidente > 0;",connection);
 
@@ -504,13 +506,15 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO conductoresVehiculosAccidente (idAccidente,idVehiculo, idPersona) values(@idAccidente, @idVehiculo,@idPersona) ";
+                    string query = "INSERT INTO conductoresVehiculosAccidente (idAccidente,idVehiculo, idPersona, estatus) values(@idAccidente, @idVehiculo,@idPersona,@estatus) ";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idVehiculo", IdVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idPersona", IdPersona);
+                    command.Parameters.AddWithValue("@estatus", 1);
+
 
 
                     command.ExecuteNonQuery();
@@ -1082,19 +1086,19 @@ namespace GuanajuatoAdminUsuarios.Services
                         "p.apellidoMaterno,p.RFC,p.CURP, p.fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
                         "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
-                        "INNER JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
-                        "INNER JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
-                        "INNER JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
-                        "INNER JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                        "INNER JOIN personas AS p ON v.idPersona = p.idPersona " +
-                        "INNER JOIN catColores AS c ON v.idColor = c.idColor " +
-                        "INNER JOIN catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga " +
-                        "INNER JOIN pensiones AS pen ON cva.idPension = pen.idPension " +
-                        "INNER JOIN vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente " +
-                        "INNER JOIN catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado " +
-                        "INNER JOIN catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
-                        "INNER JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
-                        "INNER JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
+                        "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
+                        "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
+                        "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
+                        "LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                        "LEFT JOIN personas AS p ON v.idPersona = p.idPersona " +
+                        "LEFT JOIN catColores AS c ON v.idColor = c.idColor " +
+                        "LEFT JOIN catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga " +
+                        "LEFT JOIN pensiones AS pen ON cva.idPension = pen.idPension " +
+                        "LEFT JOIN vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente " +
+                        "LEFT JOIN catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado " +
+                        "LEFT JOIN catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                        "LEFT JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
+                        "LEFT JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
                         "LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona " +
                         "WHERE cva.idAccidente = @idAccidente AND cva.idAccidente > 0 AND cva.estatus = 1;", connection);
 

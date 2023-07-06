@@ -41,6 +41,7 @@
                         <span>
                             @Html.HiddenFor(model => model.IdPersona)
                             @(Html.Kendo().DatePickerFor(model => model.FechaIngreso)
+                                .Label(l => l.Content("Fecha:"))
                                 .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
                                 .DateInput()
                                 )
@@ -53,7 +54,9 @@
                         <label>Hora:</label>
                         <span>
                             @(Html.Kendo().TimePickerFor(model => model.HoraIngreso)
+                                .Label(l => l.Content("Hora:"))
                                 .Format("HH:mm")
+                                .Value("10:00 AM")
                                 .Interval(1)
                                 .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
                                 .DateInput()
@@ -89,21 +92,17 @@
         event.preventDefault();
 
         var Mydata = $("#fechaHoraForm").serialize();
-    
+        $('#agregarFechaHoraModal').modal('hide');
+        $('modal-body').removeClass('model-open');
+        $('.modal-backdrop').remove();
 
         $.ajax({
             url: '@Url.Action("AgregarFechaHora")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
-
-                $("#tablaConFechaYHora").html(result);
                 sitteg_success("Se ha agregado fecha y hora de ingreso");
-                $('#agregarFechaHoraModal').modal('hide');
-                $('modal-body').removeClass('model-open');
-                $('.modal-backdrop').remove();
-
-
+                $("#tablaConFechaYHora").html(result);
             },
             error: function (error) {
                 sitteg_warning("!Sucedio un error, intente mas tarde...");

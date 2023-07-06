@@ -1,4 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
@@ -57,5 +60,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
         #endregion
+
+        [HttpPost]
+        public ActionResult BuscarAccidente(BusquedaAccidentesModel model)
+        {
+          var resultadoBusqueda = _busquedaAccidentesService.BusquedaAccidentes(model);
+          return Json(resultadoBusqueda);
+
+            
+        }
     }
 }

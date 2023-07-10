@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Drawing;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
-using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Services
 {

@@ -1,0 +1,59 @@
+﻿@model List<EstadisticaInfraccionMotivosModel>
+
+<div class="row my-4 px-4">
+    <div class="col-md-6">
+        @(Html.Kendo().Grid(Model)
+            .Name("gridInfraccionesPersonas")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.Motivo).Title("Accidentes por municipio");
+                columns.Bound(p => p.Contador).Title("Totales").ClientFooterTemplate("Total : #=sum#");
+            }).HtmlAttributes(new { style = "height:auto" })
+            .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
+            .Sortable()
+            .Scrollable(scr => scr.Enabled(false))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            .Aggregates(aggregates =>
+            {
+                aggregates.Add(p => p.Contador).Sum();
+            })
+            )
+            )
+    </div>
+    <div class="col-md-6">
+        <div class="demo-section wide">
+            @(Html.Kendo().Chart(Model)
+                .Name("chart")
+                .Title("Accidentes")
+                .Subtitle("/Motivos Infracciones/")
+                .Legend(legend => legend
+                .Visible(true)
+                .Position(ChartLegendPosition.Top)
+                )
+                .ChartArea(chartArea => chartArea
+                .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Pie(model => model.Contador, model => model.Motivo);
+                })
+                .CategoryAxis(axis => axis
+                .Categories(c => c.Motivo)
+                .MajorGridLines(lines => lines.Visible(false))
+                )
+                .ValueAxis(axis => axis
+                .Line(line => line.Visible(false))
+                .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= series.Motivo #: #= value #")
+                )
+                )
+        </div>
+    </div>
+</div>
+
+

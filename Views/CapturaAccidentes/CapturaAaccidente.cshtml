@@ -1,5 +1,14 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel
 <script>
+    $(document).ready(function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var showClasificacionAccidente = urlParams.get('showE');
+
+        if (showClasificacionAccidente === 'true') {
+            $('#ClasificacionAccidente').show();
+        }
+    });
+
     function mostrarModalAgregarVehiculo() {
         var idAccidente = '@Model.IdAccidente'; 
 

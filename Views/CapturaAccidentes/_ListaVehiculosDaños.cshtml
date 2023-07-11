@@ -4,13 +4,15 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAccidente = dataItem.IdAccidente;
         var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado;
+        var IdPropietarioInvolucrado = dataItem.IdPropietarioInvolucrado;
         console.log("TODO", dataItem);
         $.ajax({
             url: '@Url.Action("MostrarModalAgregarMonto", "CapturaAccidentes")',
             type: 'POST',
             data: {
                 IdAccidente: IdAccidente,
-                IdVehiculoInvolucrado: IdVehiculoInvolucrado
+                IdVehiculoInvolucrado: IdVehiculoInvolucrado,
+                IdPropietarioInvolucrado: IdPropietarioInvolucrado
             },
             success: function (result) {
                 $('#ModalBodyAgregarMontoAccidente').html(result);

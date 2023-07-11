@@ -39,6 +39,7 @@
                     <div class="controlForm my-3">
                         @Html.HiddenFor(model => model.IdAccidente)
                         @Html.HiddenFor(model => model.IdVehiculoInvolucrado)
+                        @Html.HiddenFor(model => model.IdPropietarioInvolucrado)
 
                         @(Html.Kendo().TextBoxFor(model => model.montoVehiculo)
                             .Placeholder("Ingresa monto de daño")

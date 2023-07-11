@@ -6,38 +6,51 @@
                         .Name("gridBusquedaAccidentes")
                         .Columns(columns =>
                         {
-                            columns.Bound(c => c.folioBusqueda).Title("Folio").Width(30);
-                            columns.Bound(c => c.FechaInicio).Title("Fecha/Hora").Width(100);
-                            columns.Bound(c => c.Delegacion).Title("Delegación").Width(90);
-                            columns.Bound(c => c.estatusAccidente).Title("Estatus").Width(90);
-                            //columns.Command(c => c.Custom("Editar").Click("getId")).Width(50);
-                            // columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(50);
+                            columns.Bound(c => c.IdAccidente).Title("Numero").Width(60);
+                            columns.Bound(c => c.numeroReporte).Title("Folio").Width(100);
+                            columns.Bound(c => c.fecha).Title("Fecha").Width(100);
+                            columns.Bound(c => c.hora).Title("Hora").Width(70);
+                            columns.Bound(c => c.municipio).Title("Municipio").Width(100);
+                            columns.Bound(c => c.estatusReporte).Title("Estatus").Width(100);
+                            columns.Bound(p => p.IdAccidente).ClientTemplate(
+                            "<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
+                            ).Title("Exportar").Sortable(false).Width(90);
+                columns.Bound(p => p.IdAccidente).ClientTemplate(
+                "<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
+                ).Title("Editar").Sortable(false).Width(90);
 
 
             }).HtmlAttributes(new { style = "height:550px" })
+            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
             .Sortable()
-            .Groupable()
-            .Scrollable()
-            .Pageable()
+            .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("GetAgenciasM", "CatAgenciasMinisterio"))
-            .PageSize(5).Model(model => model.Id(p => p.IdTramoBusqueda))
-            )
-            .ToolBar(t => t.Search())
-            .Search(s =>
-            {
-                s.Field(c => c.folioBusqueda);
-                s.Field(c => c.Delegacion);
-
-            })
-
-            .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-            .Type(GridSelectionType.Row)
+            .ServerOperation(false)
             )
             )
 
 
     </div>
 </div>
+<script>
+    function downLoadPdf(Id) {
+        console.log("SI", Id)
+        window.location = '/BusquedaAccidentes/CreatePdfUnRegistro?IdAccidente=' + Id;
+    }
+    function editarAccidente(idAccidente) {
+        console.log("SI", idAccidente)
+        $.ajax({
+            url: '/CapturaAccidentes/SetLastInsertedIdEdit',
+            type: 'POST',
+            data: {idAccidente : idAccidente},
+            success: function (result) {
+             sitteg_success("Se ha creado un registro de accidente, continue registrando la información solicitada");
+                window.location.href = '/CapturaAccidentes/CapturaAaccidente/?showE=true'
 
+            },
+
+        });
+    }
+    
+</script>

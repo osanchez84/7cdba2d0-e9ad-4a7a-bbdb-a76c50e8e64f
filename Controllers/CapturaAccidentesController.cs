@@ -231,7 +231,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, Placa, Serie);
+            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente,IdPersona, Placa, Serie);
             HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
             return Json(IdPersona);
         }
@@ -396,7 +396,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var RegistroSeleccionado = _capturaAccidentesService.AgregarValorFactorYOpcion(IdFactorAccidente, IdFactorOpcionAccidente, idAccidente);
 
             var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
-
+            
             return Json(datosGrid);
         }
         public JsonResult ObtFactorOpcionAccidente([DataSourceRequest] DataSourceRequest request)
@@ -568,12 +568,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View("CapturaCAccidente");
         }
 
-        public ActionResult MostrarModalAgregarMonto(int IdAccidente, int IdVehiculoInvolucrado)
+        public ActionResult MostrarModalAgregarMonto(int IdAccidente, int IdVehiculoInvolucrado, int IdPropietarioInvolucrado)
         {
             var modelo = new MontoModel
             {
                 IdAccidente = IdAccidente,
                 IdVehiculoInvolucrado = IdVehiculoInvolucrado,
+                IdPropietarioInvolucrado = IdPropietarioInvolucrado,
             };
 
             return PartialView("_ModalAgregarMonto", modelo);
@@ -668,6 +669,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _capturaAccidentesService.AgregarDatosFinales(datosAccidente, armasValue, drogasValue, valoresValue, prendasValue, otrosValue, idAccidente);
 
             return Json(datosAccidente);
+        }
+
+        public ActionResult SetLastInsertedIdEdit(int idAccidente)
+        {
+            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
+            return RedirectToAction("CapturaAaccidente");
         }
     }
 }

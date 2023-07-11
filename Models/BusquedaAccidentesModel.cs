@@ -8,16 +8,18 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime FechaFin { get; set; }
 
         public int IdAccidente { get; set; }
+        public int idPropietario { get; set; }
+
         public string folioBusqueda { get; set; }
         public string Delegacion { get; set; }   
-        public int IdDelegacionBusqueda { get; set; }
-        public int IdCarreteraBusqueda { get; set; }
-        public int IdTramoBusqueda { get; set; }
+        public int? IdDelegacionBusqueda { get; set; }
+        public int? IdCarreteraBusqueda { get; set; }
+        public int? IdTramoBusqueda { get; set; }
         public string placasBusqueda { get; set; }
         public string serieBusqueda { get; set; }
         public string propietarioBusqueda { get; set; }
         public string conductorBusqueda { get; set; }
-        public int IdOficialBusqueda { get; set; }
+        public int? IdOficialBusqueda { get; set; }
         public int IdEstatusAccidente { get; set; }
         public string estatusAccidente { get; set; }
         //////
@@ -27,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idMunicipio { get; set; }
         public int idCarretera { get; set; }
         public int idTramo { get; set; }
-        public int estatusReporte { get; set; }
+        public string estatusReporte { get; set; }
         public int idPersona { get; set; }
         public int idVehiculo { get; set; }
         public int idClasificacionAccidente { get; set; }
@@ -59,6 +61,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idCertificado { get; set; }
 
         public string kilometro { get; set; }
+        public string municipio { get; set; }
+
         public string descripcionAccidente { get; set; }
         public string numeroReporte { get; set; }
         public DateTime fecha { get; set; }
@@ -97,7 +101,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreConductor { get; set; }
         public string apellidoPaternoConductor { get; set; }
         public string apellidoMaternoConductor { get; set; }
+        public string tramo { get; set; }
+        public string carretera { get; set; }
 
+        public DateTime fechaCompleta { get; set; }
+        public string nombrePropietarioCompleto { get; set; }
+        public string nombreConductorCompleto { get; set; }
 
 
 

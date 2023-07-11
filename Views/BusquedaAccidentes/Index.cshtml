@@ -21,19 +21,19 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-
         <div class="col-12 col-md-auto mt-4 mb-3">
             <h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
             <h6 class="px-4 text-muted">Filtros de búsqueda para localizar el accidente. Se pueden combinar filtros, por ejemplo se puede combinar fecha y placas.</h6>
         </div>
-        <form id="busquedaAccidenteForm" class="mb-4 px-4">
+        <div class="mb-4 px-4">
+          <form form id="busquedaAccidenteForm">
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().DateRangePickerFor(m=>m.FechaInicio, m=>m.FechaFin)
                             .Name("daterangepicker")
                             .Range(r => r.Start(DateTime.Now).End(DateTime.Now.AddDays(10)))
-                            .HtmlAttributes(new { style = "width: 100%;", title = "daterangepicker" })
+                            .HtmlAttributes(new { style = "width: 100%;", title = "daterangepicker",Id="date" })
                             .Messages(m => m
                             .StartLabel("De:")
                             .EndLabel("A:")
@@ -48,7 +48,7 @@
                         @(Html.Kendo().TextBoxFor(m=>m.folioBusqueda)
                             .Label(l => l.Content("Folio"))
                             .Placeholder("Ingresa el número de folio del accidente")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new { style = "width: 100%", Id="txtFolio"})
                             )
 
                     </div>
@@ -69,7 +69,7 @@
                                         read.Action("Delegaciones_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", Id="ddlDelegaciones" })
                                 )
                         </span>
                     </div>
@@ -90,6 +90,7 @@
                                         read.Action("Carreteras_Drop", "CapturaAccidentes");
                                     });
                                 })
+                                .HtmlAttributes(new { style = "width:100%;", Id="ddlCarreteras" })
                                 .Filter(FilterType.Contains)
                                 )
                         </span>
@@ -111,7 +112,7 @@
                                         read.Action("Tramos_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", Id="ddlTramos" })
                                 .Filter(FilterType.Contains)
                                 )
                         </span>
@@ -122,7 +123,7 @@
                         @(Html.Kendo().TextBoxFor(m=>m.placasBusqueda)
                             .Label(l => l.Content("Placas:"))
                             .Placeholder("Ingresa el número de placa del vehículo")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas"})
                             )
 
                     </div>
@@ -132,7 +133,7 @@
                         @(Html.Kendo().TextBoxFor(m=>m.serieBusqueda)
                             .Label(l => l.Content("Número de serie:"))
                             .Placeholder("Ingresa el número de serie")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new { style = "width: 100%", Id = "txtSerie" })
                             )
 
                     </div>
@@ -142,7 +143,7 @@
                         @(Html.Kendo().TextBoxFor(m=>m.propietarioBusqueda)
                             .Label(l => l.Content("Propietario:"))
                             .Placeholder("Ingresa un propietario")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new { style = "width: 100%",Id="txtPropietarios" })
                             )
 
                     </div>
@@ -152,7 +153,7 @@
                         @(Html.Kendo().TextBoxFor(m=>m.conductorBusqueda)
                             .Label(l => l.Content("Conductor:"))
                             .Placeholder("Ingresa un conductor")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new { style = "width: 100%", Id="txtConductores" })
                             )
 
                     </div>
@@ -172,14 +173,15 @@
                                         read.Action("Oficiales_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", Id="ddlOficiales" })
                                 )
                         </span>
                     </div>
                 </div>
+               </div>
                </form>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlButton my-3">
+                    <div class="controlButton my-3" onclick="buscarAccidente()">
                         @(Html.Kendo().Button()
                             .Name("BuscarEstadistica")
                             .HtmlAttributes(new { @class = "btnPrimary" })
@@ -195,7 +197,7 @@
             <div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <button>
+                        <button onclick="downLoadPdfFiltered()">
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de accidente</b></h6>
                         </button>
                     </div>
@@ -216,26 +218,42 @@
 
 </div>
  <script>
-     function guardarAccidente() {
-
+    function buscarAccidente() {
         var Mydata = $("#busquedaAccidenteForm").serialize();
         console.log(Mydata);
-          .ajax({
-            url: '/BusquedaAccidentes/BuscarAccidente',
-            type: 'POST',
+
+        $.ajax({
+            url: '/BusquedaAccidentes/ajax_BuscarAccidente',
+            type: 'GET',
             data: Mydata,
-            success: function (result) {
-                    sitteg_success("OK");
-                    console.log("aqui",result)
-            }
-            error:function(result){
-                    var errorMessages = result.errors.join("\n");
-                    sitteg_warning("Ocurrieron los siguientes errores:\n" + errorMessages);
-                }
+            success: function (data) {
+                sitteg_success("OK");
+                var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
+                grid.dataSource.data(data); // Asignar los nuevos datos al dataSource del grid
+                grid.refresh(); // Actualizar la vista del grid
             },
-           
+            error: function () {
+                sitteg_warning("Ocurrieron los siguientes errores");
+            }
         });
     }
+
+    function downLoadPdfFiltered() {
+        var data = {
+            placasBusqueda: $('#txtPlacas').val(),
+            serieBusqueda: $('#txtSerie').val(),
+            folioBusqueda: $('#txtFolio').val(),
+            IdDelegacionBusqueda: $('#ddlDelegacion').val(),
+            IdCarreteraBusqueda: $('#ddlCarreteras').val(),
+            IdTramoBusqueda: parseInt($('#ddlTramos').val()),
+            propietarioBusqueda: $('#txtPropietarios').val(),
+            conductorBusqueda: $('#txtConductores').val(),
+            IdOficialBusqueda: $('#ddlOficiales').val(),
+        };
+        var json = JSON.stringify(data);
+        window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
+    }
+
  </script>
 
 

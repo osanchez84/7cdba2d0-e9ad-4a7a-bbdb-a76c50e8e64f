@@ -299,7 +299,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-        public int ActualizarConVehiculo(int idVehiculo, int idAccidente, string Placa, string Serie)
+        public int ActualizarConVehiculo(int idVehiculo, int idAccidente,int IdPersona, string Placa, string Serie)
         {
             int idVehiculoInsertado = 0;
 
@@ -308,11 +308,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO vehiculosAccidente (idAccidente, idVehiculo, placa, serie) OUTPUT INSERTED.idVehiculo VALUES (@idAccidente, @idVehiculo, @Placa ,@Serie)";
+                    string query = "INSERT INTO vehiculosAccidente (idAccidente, idVehiculo, idPersona, placa, serie) OUTPUT INSERTED.idVehiculo VALUES (@idAccidente, @idVehiculo,@idPersona, @Placa ,@Serie)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idVehiculo", idVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idPersona", IdPersona);
                     command.Parameters.AddWithValue("@Placa", Placa);
                     command.Parameters.AddWithValue("@Serie", Serie);
 
@@ -408,34 +409,35 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            involucrado.IdPropietarioInvolucrado = Convert.ToInt32(reader["idPersona"].ToString());
-                            involucrado.IdAccidente = Convert.ToInt32(reader["idAccidente"].ToString());
-                            involucrado.IdVehiculoInvolucrado = Convert.ToInt32(reader["idVehiculo"].ToString());
-                            involucrado.IdTipoCarga = Convert.ToInt32(reader["IdTipoCarga"].ToString());
-                            involucrado.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            involucrado.IdFormaTrasladoInvolucrado = Convert.ToInt32(reader["idFormaTraslado"].ToString());
-                            involucrado.idPersonaInvolucrado = Convert.ToInt32(reader["IdConductor"].ToString());
-                            involucrado.Placa = reader["placas"].ToString();
-                            involucrado.fechaNacimiento = Convert.ToDateTime(reader["fechaNacimiento"]);
-                            involucrado.Tarjeta = reader["tarjeta"].ToString();
-                            involucrado.TipoCarga = reader["tipoCarga"].ToString();
-                            involucrado.Poliza = reader["poliza"].ToString();
-                            involucrado.Serie = reader["serie"].ToString();
-                            involucrado.Entidad = reader["nombreEntidad"].ToString();
-                            involucrado.Marca = reader["marcaVehiculo"].ToString();
-                            involucrado.Submarca = reader["nombreSubmarca"].ToString();
-                            involucrado.TipoVehiculo = reader["tipoVehiculo"].ToString();
+                            involucrado.IdPropietarioInvolucrado = reader["idPersona"] != DBNull.Value ? Convert.ToInt32(reader["idPersona"].ToString()) : 0;
+                            involucrado.IdAccidente = reader["idAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idAccidente"].ToString()) : 0;
+                            involucrado.IdVehiculoInvolucrado = reader["idVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idVehiculo"].ToString()) : 0;
+                            involucrado.IdTipoCarga = reader["IdTipoCarga"] != DBNull.Value ? Convert.ToInt32(reader["IdTipoCarga"].ToString()) : 0;
+                            involucrado.IdPension = reader["IdPension"] != DBNull.Value ? Convert.ToInt32(reader["IdPension"].ToString()) : 0;
+                            involucrado.IdFormaTrasladoInvolucrado = reader["idFormaTraslado"] != DBNull.Value ? Convert.ToInt32(reader["idFormaTraslado"].ToString()) : 0;
+                            involucrado.idPersonaInvolucrado = reader["IdConductor"] != DBNull.Value ? Convert.ToInt32(reader["IdConductor"].ToString()) : 0;
+                            involucrado.Placa = reader["placas"] != DBNull.Value ? reader["placas"].ToString() : string.Empty;
+                            involucrado.fechaNacimiento = reader["fechaNacimiento"] != DBNull.Value ? Convert.ToDateTime(reader["fechaNacimiento"]) : DateTime.MinValue;
+                            involucrado.Tarjeta = reader["tarjeta"] != DBNull.Value ? reader["tarjeta"].ToString() : string.Empty;
+                            involucrado.TipoCarga = reader["tipoCarga"] != DBNull.Value ? reader["tipoCarga"].ToString() : string.Empty;
+                            involucrado.Poliza = reader["poliza"] != DBNull.Value ? reader["poliza"].ToString() : string.Empty;
+                            involucrado.Serie = reader["serie"] != DBNull.Value ? reader["serie"].ToString() : string.Empty;
+                            involucrado.Entidad = reader["nombreEntidad"] != DBNull.Value ? reader["nombreEntidad"].ToString() : string.Empty;
+                            involucrado.Marca = reader["marcaVehiculo"] != DBNull.Value ? reader["marcaVehiculo"].ToString() : string.Empty;
+                            involucrado.Submarca = reader["nombreSubmarca"] != DBNull.Value ? reader["nombreSubmarca"].ToString() : string.Empty;
+                            involucrado.TipoVehiculo = reader["tipoVehiculo"] != DBNull.Value ? reader["tipoVehiculo"].ToString() : string.Empty;
                             involucrado.PropietarioInvolucrado = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
-                            involucrado.NumeroReporte = reader["numeroReporte"].ToString();
-                            involucrado.Modelo = reader["modelo"].ToString();
-                            involucrado.Motor = reader["motor"].ToString();
-                            involucrado.Capacidad = reader["capacidad"].ToString();
-                            involucrado.Pension = reader["pension"].ToString();
-                            involucrado.Modelo = reader["modelo"].ToString();
-                            involucrado.Color = reader["color"].ToString();
-                            involucrado.rfc = reader["RFC"].ToString();
-                            involucrado.curp = reader["CURP"].ToString();
-                            involucrado.TipoServicio = reader["tipoServicio"].ToString();
+                            involucrado.NumeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
+                            involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
+                            involucrado.Motor = reader["motor"] != DBNull.Value ? reader["motor"].ToString() : string.Empty;
+                            involucrado.Capacidad = reader["capacidad"] != DBNull.Value ? reader["capacidad"].ToString() : string.Empty;
+                            involucrado.Pension = reader["pension"] != DBNull.Value ? reader["pension"].ToString() : string.Empty;
+                            involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
+                            involucrado.Color = reader["color"] != DBNull.Value ? reader["color"].ToString() : string.Empty;
+                            involucrado.rfc = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
+                            involucrado.curp = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
+                            involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
+
 
 
                         }
@@ -1231,11 +1233,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand sqlCommand = new
-                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idvehiculo",
+                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idvehiculo AND idPersona = @idPersona",
                         connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@montoVehiculo", SqlDbType.Float)).Value = model.montoVehiculo;
                     sqlCommand.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = model.IdAccidente;
                     sqlCommand.Parameters.Add(new SqlParameter("@idVehiculo", SqlDbType.Int)).Value = model.IdVehiculoInvolucrado;
+                    sqlCommand.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = model.IdPropietarioInvolucrado;
 
                     sqlCommand.CommandType = CommandType.Text;
                     result = sqlCommand.ExecuteNonQuery();

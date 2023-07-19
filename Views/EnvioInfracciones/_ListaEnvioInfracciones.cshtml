@@ -1,15 +1,21 @@
-﻿<div class="col-12 mb-4 px-4 rounded gridCustom">
+﻿<script>
+    var idInfraccionesSeleccionados = [];
 
-    @(
-        Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.EnvioInfraccionesModel>()
+</script>
+<div class="col-12 mb-4 px-4 rounded gridCustom">
+    <button onclick="seleccionarTodos()">Seleccionar todo</button>
+    @(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.EnvioInfraccionesModel>()
         .Name("gridEnvioInfracciones")
         .Columns(columns =>
         {
-           // columns.Bound(c => c.IdPersona).Hidden();
-            
-           // columns.Template("<button onclick='abrirModalFechaHora(event)'><h6 class='m-0 colorPrimary'><i class='icon-plus me-2'></i><b>Fecha y hora</b></h6></button>").Width(120);
-
-
+            columns.Select().Width(50).ClientHeaderTemplate(" ");
+            columns.Bound(c => c.IdInfraccion).Hidden();
+            columns.Bound(p => p.folioInfraccion).Title("Folio").Width(90);
+            columns.Bound(p => p.nombreCompletoConductor).Title("Conductor").Width(90);
+            columns.Bound(p => p.nombreCompletoPropietario).Title("Propietario").Width(90);
+            columns.Bound(p => p.placas).Title("Placas").Width(90);
+            columns.Bound(p => p.fechaInfraccion).Title("Fecha").Width(90);
+            columns.Bound(p => p.DiasTranscurridos).Title("Dias transcurridos").Width(90);
 
         }).HtmlAttributes(new { style = "height:400px" })
         .Sortable()
@@ -18,55 +24,71 @@
         .Pageable()
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.FechaFin))
+        //.Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
+        .PageSize(5).Model(model => model.Id(p => p.folioInfraccion))
         )
         .ToolBar(t => t.Search())
         .Search(s =>
         {
-            s.Field(c => c.FechaFin);
-
+            s.Field(c => c.nombreCompletoPropietario);
+            s.Field(c => c.nombreCompletoConductor);
         })
-
-        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-        .Type(GridSelectionType.Row)
-        )
-
+        .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
+        .Events(events => events.Change("obtenerIdInfraccionesSeleccionadas"))
         )
 </div>
 
-<div class="modal fade modalCustom" id="agregarFechaHoraModal" tabindex="-1" aria-labelledby="agregarFechaHoraLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+
+<div class="modal fade modalCustom" id="enviarInfraccionesModal" tabindex="-1" aria-labelledby="enviarInfraccionesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="ModalBodyAgregarFechaHora">
+            <div class="modal-body" id="ModalBodyEnviarInfracciones">
             </div>
         </div>
     </div>
 </div>
 
+
+<div class="row pb-4 align-items-start justify-content-start footerGrid">
+    <div class="border bg-light text-center">
+        <section class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto p-0 d-flex justify-content-start">
+            <button type="button" onclick="enviarIdInfraccionesSeleccionados()">
+                <h6 class="m-0 d-flex align-items-center"><i class="icon-addEnviar h5 mb-0 me-2"></i><b> Enviar infracciones</b></h6>
+            </button>
+        </section>
+    </div>
+</div>
+
+
 <script>
-    function abrirModalFechaHora(event) {
-        event.preventDefault();
-        var grid = $("#gridInvolucradosFechaYHora").data("kendoGrid");
-        var row = $(event.target).closest("tr");
-        var dataItem = grid.dataItem(row);
-        var IdPersona = dataItem.IdPersona
-        console.log("nun", IdPersona)
+
+    function seleccionarTodos() {
+        var grid = $("#gridEnvioInfracciones").data("kendoGrid");
+        grid.select("tr");
+    }
+
+    function obtenerIdInfraccionesSeleccionadas(e) {
+        idInfraccionesSeleccionados = $.map(this.select(), function (item) {
+            var dataItem = $("#gridEnvioInfracciones").data("kendoGrid").dataItem(item);
+            return dataItem.IdInfraccion;
+        });
+        console.log("IDS", idInfraccionesSeleccionados)
+    }
+    function enviarIdInfraccionesSeleccionados() {
         $.ajax({
-            url: '@Url.Action("MostrarModalFechaHora", "CapturaAccidentes")',
-            type: 'POST',
-            data: {
-                IdPersona: IdPersona
+            url: "/EnvioInfracciones/MostrarModal",
+            type: "POST",
+            data: { idInfracciones: idInfraccionesSeleccionados },
+            success: function (response) {
+                $('#ModalBodyEnviarInfracciones').html(response);
+                $('#enviarInfraccionesModal').modal('show');
             },
-            success: (data) => {
-                $('#ModalBodyAgregarFechaHora').html(data);
-                $('#agregarFechaHoraModal').modal('show');
+            error: function (xhr, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
             }
         });
     }
 
 
 </script>
-
-
 

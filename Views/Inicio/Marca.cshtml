@@ -1,3 +1,5 @@
+@model GuanajuatoAdminUsuarios.Models.LoginModel
+
 @{
     Layout = null;
 }
@@ -44,6 +46,30 @@
 
 
             }
+
+        function inicioSesion() {
+            var usuario = document.getElementById('usuario').value;
+            var contrasena = document.getElementById('contrasena').value;
+
+            var data = {
+                usuario: usuario,
+                contrasena: contrasena
+            };
+
+            $.ajax({
+                url: '/servicio/consumir',
+                type: 'POST',
+                data: data,
+                success: function (content) {
+                    alert("Inicio de Sesion Correcto")
+                    window.location.href = "/Principal";
+                },
+                error: function (error) {
+                    alert("Error")
+                    console.error(error);
+                }
+            });
+        }
         </script>
 </head>
 <body class="bg-light">
@@ -107,7 +133,7 @@
                                 .Name("usuario")
                                 .Label(l => l.Content("Usuario:"))
                                 .Placeholder("Usuario")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", id="usuario" })
                                 )
 
                         </div>
@@ -119,7 +145,7 @@
                                 .Name("pass")
                                 .Label(l => l.Content("Contraseña"))
                                 .Placeholder("*****")
-                                .HtmlAttributes(new { type = "password", style = "width: 100%" })
+                                .HtmlAttributes(new { type = "password", style = "width: 100%", id = "pass" })
                                 )
 
                         </div>
@@ -134,6 +160,10 @@
                                 )
                         </div>
                     </div>
+                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                    }
 
 
 

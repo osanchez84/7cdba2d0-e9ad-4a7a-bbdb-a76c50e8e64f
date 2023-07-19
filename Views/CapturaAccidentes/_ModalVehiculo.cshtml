@@ -23,11 +23,11 @@
         </div>
         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
                     @(Html.Kendo().Button()
                         .Name("backVehiculo")
                         .HtmlAttributes(new { @class = "px-5" })
-                        .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\"></i><b>Regresar</b></h6>"))
+                                .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\" data-bs-dismiss=\"modal\" aria - label = \"Close\" ></i><b>Regresar</b></h6>"))
                 </div>
             </div>
         </div>
@@ -183,6 +183,9 @@
             }
         });
     }
+    function goBack(){
 
+        $('#agregarVehiculoModal').modal('hide');
 
+        }
 </script>

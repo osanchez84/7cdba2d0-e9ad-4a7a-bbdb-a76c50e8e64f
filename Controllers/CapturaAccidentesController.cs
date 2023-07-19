@@ -47,6 +47,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatCiudadesService _catCiudadesService;
         private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
         private readonly ICatDictionary _catDictionary;
+        private readonly IInfraccionesService _infraccionesService;
+
 
 
 
@@ -57,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
-            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary)
+            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary, IInfraccionesService infraccionesService)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -83,7 +85,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catCiudadesService = catCiudadesService;
             _catAgenciasMinisterioService = catAgenciasMinisterioService;
             _catDictionary = catDictionary;
-
+            _infraccionesService = infraccionesService;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -567,7 +569,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
             return View("CapturaCAccidente");
         }
+        public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion )
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(IdVehiculo, idAccidente, IdInfraccion);
+            return View("CapturaCAccidente");
+        }
+        public ActionResult MostrarModalCrearInfraccion(int IdAccidente, int IdVehiculo, int IdConductor, int IdPropietario, string Placa, string Tarjeta)
+        {
+            var modelo = new NuevaInfraccionModel
+            {
+                IdAccidente = IdAccidente,
+                IdPersona = IdConductor,
+                IdVehiculo = IdVehiculo,
+                IdPropietario = IdPropietario,
+                Placa = Placa,
+                Tarjeta = Tarjeta,
+                
+            };
 
+            return PartialView("_ModalCrearInfraccion", modelo);
+        }
         public ActionResult MostrarModalAgregarMonto(int IdAccidente, int IdVehiculoInvolucrado, int IdPropietarioInvolucrado)
         {
             var modelo = new MontoModel
@@ -580,6 +602,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalAgregarMonto", modelo);
         }
 
+        
+        [HttpPost]
+        public ActionResult ajax_CrearInfraccion(NuevaInfraccionModel model)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var DatosAccidente = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente);
+            model.IdMunicipio =(int) DatosAccidente.IdMunicipio;
+            model.IdCarretera = (int)DatosAccidente.IdCarretera;
+            model.IdTramo =(int) DatosAccidente.IdTramo;
+            model.Kilometro = DatosAccidente.Kilometro;
+            var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.IdPersona);
+            model.idPersonaInfraccion = idPersonaInfraccion;
+
+
+            var errors = ModelState.Values.Select(s => s.Errors);
+            if (ModelState.IsValid)
+            {
+
+               var idInfraccion= _capturaAccidentesService.RegistrarInfraccion(model);
+
+                return Json(new { id = idInfraccion });
+            }
+            return PartialView("_ModalCrearInfraccion");
+
+        }
+
         [HttpPost]
         public ActionResult AgregarMontoVehiculo(MontoModel model)
         {
@@ -589,12 +637,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 _capturaAccidentesService.AgregarMontoV(model);
                 int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-                var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente); ;
+                var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente); 
                 return PartialView("_ListaVehiculosDaños", ListVehiculos);
             }
             return PartialView("_ModalAgregarMonto");
 
         }
+
         public JsonResult ObtenerInfraccionesVehiculos([DataSourceRequest] DataSourceRequest request)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
@@ -656,7 +705,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
                 _capturaAccidentesService.AgregarFechaHoraIngreso(model,idAccidente);
-                var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente); ;
+                var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente); 
                 return PartialView("_ListaInvolucradosFechaYHora",ListInvolucrados);
             }
             return PartialView("_ModalFechaHora");

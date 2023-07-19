@@ -33,6 +33,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string color { get; set; }
         public string entidadRegistro { get; set; }
         public string tipoServicio { get; set; }
+        public string fullVehiculo => $"{marca} {submarca} {modelo}";
 
         public string motor { get; set; }
         public int? capacidad { get; set; }

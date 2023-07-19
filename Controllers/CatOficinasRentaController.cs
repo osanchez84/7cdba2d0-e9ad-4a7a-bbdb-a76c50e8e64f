@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
@@ -13,6 +14,12 @@ namespace Example.WebUI.Controllers
 {
     public class CatOficinasRentaController : Controller
     {
+        private readonly ICatOficinasRentaService _catOficinasRentaService;
+
+        public CatOficinasRentaController(ICatOficinasRentaService catOficinasRentaService)
+        {
+            _catOficinasRentaService = catOficinasRentaService;
+        }
         DBContextInssoft dbContext = new DBContextInssoft();
 
 

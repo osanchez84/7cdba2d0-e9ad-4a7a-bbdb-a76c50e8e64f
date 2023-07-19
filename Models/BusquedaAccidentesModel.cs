@@ -27,8 +27,8 @@ namespace GuanajuatoAdminUsuarios.Models
         ///
 
         public int idMunicipio { get; set; }
-        public int idCarretera { get; set; }
-        public int idTramo { get; set; }
+        public int? idCarretera { get; set; }
+        public int? idTramo { get; set; }
         public string estatusReporte { get; set; }
         public int idPersona { get; set; }
         public int idVehiculo { get; set; }
@@ -107,7 +107,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime fechaCompleta { get; set; }
         public string nombrePropietarioCompleto { get; set; }
         public string nombreConductorCompleto { get; set; }
+        public int? IdOficial { get; set; }
+        public int? idDelegacion { get; set; }
+        public string folio { get; set; }
+        public string propietario { get; set; }
 
+        public string conductor { get; set; }
 
 
 

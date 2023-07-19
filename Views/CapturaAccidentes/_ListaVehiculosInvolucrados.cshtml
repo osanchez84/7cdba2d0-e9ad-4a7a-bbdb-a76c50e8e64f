@@ -5,17 +5,11 @@
         .Name("gridVehiculosInvolucrados")
         .Columns(columns =>
         {
-
             columns.Bound(c => c.IdPersona).Hidden();
             columns.Bound(c => c.IdVehiculo).Hidden();
-            columns.Bound(c => c.IdVehiculoInvolucrado).Title("Vehiculo").Width(100);
-            columns.Bound(c => c.Placa).Title("Placas").Width(100);
-            columns.Bound(c => c.ConductorInvolucrado).Title("Conductor").Width(150);
-            columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(150);
-            columns.Bound(c => c.FormaTrasladoInvolucrado).Title("Forma de traslado").Width(100);
-            //columns.Bound(c => c.Monto).Title("Monto dl daño").Width(100);
-            columns.Bound(c => c.TipoVehiculo).Title("Tipo de Vehículo").Width(100);
-            columns.Bound(c => c.Pension).Title("Pension").Width(100);
+            columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(190);
+            columns.Bound(c => c.ConductorInvolucrado).Title("Conductor").Width(130);
+            columns.Bound(p => p.fullDetalles).Title("Detalles").Width(190);
             columns.Template("<button onclick='mostrarDetalle()' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Detalle</b></h6></button>").Width(110);
             columns.Template("<button onclick='eliminarRegistro()' class='w-100 btn'><h6 class='m-0 colorDanger'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button>").Width(110);
 

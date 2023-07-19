@@ -15,9 +15,9 @@
                             columns.Bound(p => p.IdAccidente).ClientTemplate(
                             "<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
                             ).Title("Exportar").Sortable(false).Width(90);
-                columns.Bound(p => p.IdAccidente).ClientTemplate(
-                "<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
-                ).Title("Editar").Sortable(false).Width(90);
+                            columns.Bound(p => p.IdAccidente).ClientTemplate(
+                            "<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
+                            ).Title("Editar").Sortable(false).Width(90);
 
 
             }).HtmlAttributes(new { style = "height:550px" })
@@ -45,7 +45,7 @@
             type: 'POST',
             data: {idAccidente : idAccidente},
             success: function (result) {
-             sitteg_success("Se ha creado un registro de accidente, continue registrando la información solicitada");
+             
                 window.location.href = '/CapturaAccidentes/CapturaAaccidente/?showE=true'
 
             },

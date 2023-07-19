@@ -11,6 +11,9 @@ using GuanajuatoAdminUsuarios.Framework;
 using System.Linq;
 using System;
 using iTextSharp.text;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -191,6 +194,29 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View(model);
         }
 
+        public ActionResult EditarA(int id)
+        {
+            int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
+            var model = _infraccionesService.GetInfraccionAccidenteById(id);
+            model.isPropietarioConductor = model.Vehiculo.idPersona == model.IdPersona;
+            var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.IdCarretera.ToString());
+            var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
+            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+            var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
+            var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+            var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
+            var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
+            ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
+            ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
+            ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
+            ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
+            ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
+            ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+
+            return View("Editar2",model);
+        }
+
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
@@ -206,7 +232,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
             }
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
-            return Json(new { id = idInfraccion });
+            return Json(new { id = model.idInfraccion });
         }
 
         [HttpPost]
@@ -309,6 +335,33 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(null);
             }
 
+        }
+        public ActionResult MostrarModalAnexar()
+        {
+            return PartialView("_ModalAnexar");
+        }
+        [HttpPost]
+        public async Task<IActionResult> SubirImagen(IFormFile file,int idInfraccion)
+        {
+            if (file != null && file.Length > 0)
+            {
+                // Obtener los datos de la imagen
+                byte[] imageData;
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.CopyTo(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+
+                // Llamar al método del servicio para guardar la imagen
+                _infraccionesService.InsertarImagenEnInfraccion(imageData,idInfraccion);
+
+                return Json(new { success = true, message = "Imagen subida exitosamente" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "No se seleccionó ninguna imagen" });
+            }
         }
 
     }

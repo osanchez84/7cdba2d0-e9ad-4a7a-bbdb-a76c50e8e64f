@@ -30,15 +30,18 @@
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
-                        @(Html.Kendo().DateRangePickerFor(m=>m.FechaInicio, m=>m.FechaFin)
-                            .Name("daterangepicker")
-                            .Range(r => r.Start(DateTime.Now).End(DateTime.Now.AddDays(10)))
-                            .HtmlAttributes(new { style = "width: 100%;", title = "daterangepicker",Id="date" })
-                            .Messages(m => m
-                            .StartLabel("De:")
-                            .EndLabel("A:")
-                            )
-                            )
+                            <label>Fecha Inicio:</label>
+                            @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
+                                .Label(l => l.Content("Fecha Inicio:"))
+                                .Value(DateTime.Today) 
+                                .HtmlAttributes(new { style = "width: 40%", id="dateInicio" })
+                                )
+                            <label>Fecha Fin:</label>
+                            @(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
+                                .Label(l => l.Content("Fecha Fin:"))
+                                .Value(DateTime.Today) 
+                                .HtmlAttributes(new { style = "width: 40%",id="dateFinal" })
+                                )
                     </div>
                 </div>
             </div>
@@ -227,10 +230,9 @@
             type: 'GET',
             data: Mydata,
             success: function (data) {
-                sitteg_success("OK");
                 var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
-                grid.dataSource.data(data); // Asignar los nuevos datos al dataSource del grid
-                grid.refresh(); // Actualizar la vista del grid
+                grid.dataSource.data(data); 
+                grid.refresh(); 
             },
             error: function () {
                 sitteg_warning("Ocurrieron los siguientes errores");
@@ -240,15 +242,17 @@
 
     function downLoadPdfFiltered() {
         var data = {
-            placasBusqueda: $('#txtPlacas').val(),
-            serieBusqueda: $('#txtSerie').val(),
-            folioBusqueda: $('#txtFolio').val(),
-            IdDelegacionBusqueda: $('#ddlDelegacion').val(),
-            IdCarreteraBusqueda: $('#ddlCarreteras').val(),
-            IdTramoBusqueda: parseInt($('#ddlTramos').val()),
-            propietarioBusqueda: $('#txtPropietarios').val(),
-            conductorBusqueda: $('#txtConductores').val(),
-            IdOficialBusqueda: $('#ddlOficiales').val(),
+            FechaInicio: $('#dateInicio').val(),
+            FechaFin: $('#dateFinal').val(),
+            placa: $('#txtPlacas').val(),
+            serie: $('#txtSerie').val(),
+            folio: $('#txtFolio').val(),
+            idDelegacion: $('#ddlDelegacion').val(),
+            idCarretera: $('#ddlCarreteras').val(),
+            idTramo: parseInt($('#ddlTramos').val()),
+            propietario: $('#txtPropietarios').val(),
+            conductor: $('#txtConductores').val(),
+            IdOficial: $('#ddlOficiales').val(),
         };
         var json = JSON.stringify(data);
         window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;

@@ -19,10 +19,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int CrearMotivoInfraccion(MotivoInfraccionModel model);
         public int EliminarMotivoInfraccion(int idMotivoInfraccion);
         public InfraccionesModel GetInfraccion2ById(int idInfraccion);
+        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion);
         public int CrearInfraccion(InfraccionesModel model);
         public int ModificarInfraccion(InfraccionesModel model);
         int ModificarInfraccionPorCortesia(InfraccionesModel model);
 
-
+        public int InsertarImagenEnInfraccion( byte[] imageData, int idInfraccion);
     }
 }

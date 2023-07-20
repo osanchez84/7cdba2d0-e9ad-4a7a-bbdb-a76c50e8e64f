@@ -3,8 +3,11 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -22,9 +25,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            var ListTramosModel = _catTramosService.ObtenerTramos();
-            return View(ListTramosModel);
+            int IdModulo = 10;
+            // Obtener la cadena JSON de la variable de sesión
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+
+            // Deserializar la cadena JSON a una lista de enteros
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+
+            // Verificar si el IdModulo está contenido en la lista de Ids permitidos
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                // Si el IdModulo está contenido en la lista de Ids permitidos,
+                // continuar con la lógica actual
+
+                var ListTramosModel = _catTramosService.ObtenerTramos();
+                return View(ListTramosModel);
+            }
+            else
+            {
+                // Si el IdModulo no está contenido en la lista de Ids permitidos,
+                // redireccionar al usuario a la vista "Marca"
+                return View("Marca");
+            }
         }
+
         public JsonResult Carreteras_Drop()
         {
             var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");

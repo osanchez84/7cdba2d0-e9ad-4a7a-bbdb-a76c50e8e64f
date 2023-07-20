@@ -37,10 +37,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            LiberacionVehiculoBusquedaModel searchModel = new LiberacionVehiculoBusquedaModel();
-            List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos();
-            searchModel.ListDepositosLiberacion = ListDepositos;
-            return View(searchModel);
+            int IdModulo = 30;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                LiberacionVehiculoBusquedaModel searchModel = new LiberacionVehiculoBusquedaModel();
+                List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos();
+                searchModel.ListDepositosLiberacion = ListDepositos;
+                return View(searchModel);
+            }
+            else
+            {
+                return View("Marca");
+            }
         }
 
 

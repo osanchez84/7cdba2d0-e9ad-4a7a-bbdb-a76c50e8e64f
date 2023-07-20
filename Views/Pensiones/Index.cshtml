@@ -32,19 +32,19 @@
             </div>
         </div>
         <div class="col-12 col-md-auto mt-4 mb-2">
-            <h5 class="px-4"><b>Búsqueda de Pensiones</b></h5>
-            <h6 class="px-4 text-muted">Realiza una búsqueda personalizada de Pensiones.</h6>
+            <h5 class="px-4"><b>Búsqueda de pensiones</b></h5>
+            <h6 class="px-4 text-muted">Realiza una búsqueda personalizada de pensiones.</h6>
         </div>
         <div class="row row-height">
             <div class="controlForm col-md-6">
                 @(Html.Kendo().TextBox()
                     .Name("pension")
-                    .Label(l => l.Content("Placas:"))
-                    .Placeholder("Ingresa las placas validas")
+                    .Label(l => l.Content("Pensión:"))
+                    .Placeholder("Ingresa un nombre de pensión")
                     .HtmlAttributes(new { style = "width: 100%", id = "txtPension" }))
             </div>
             <div class="controlForm col-md-6">
-                <label>Tipo Grúa:</label>
+                <label>Delegación:</label>
                 @(Html.Kendo().DropDownList()
                     .Name("ddlIdDelegacion")
                     .BindTo((SelectList)ViewBag.CatDelegaciones)
@@ -159,9 +159,10 @@
     });
     function btnBuscarPension() {
         var pension = $("#txtPension").val();
-        var idDelegacion = $("#ddlIdDelegacion")
+        var idDelegacion = $("#ddlIdDelegacion").val();
+
         $.ajax({
-            url: '@Url.Action("ajax_ModalCrear")',
+            url: '@Url.Action("ajax_BuscarPensiones")',
             type: 'GET',
             data: {
                 "pension": pension,
@@ -183,6 +184,7 @@
             dataType: "html",
             success: function (data) {
                 $('#modalBodyCrearPension').html(data);
+                $('#modalCrearPension').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPension').modal('show');
             }
         });

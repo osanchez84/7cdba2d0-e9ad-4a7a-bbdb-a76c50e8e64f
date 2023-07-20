@@ -29,6 +29,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
+
+                        //command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = model.FechaIngreso == DateTime.MinValue ? new DateTime(1800, 01, 01) : (object)model.FechaIngreso;
                         while (reader.Read())
                         {
                             CatCarreterasModel carretera = new CatCarreterasModel();

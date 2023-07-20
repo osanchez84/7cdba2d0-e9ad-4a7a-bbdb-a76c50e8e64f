@@ -957,6 +957,109 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList.FirstOrDefault();
         }
 
+        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion)
+        {
+            List<NuevaInfraccionModel> modelList = new List<NuevaInfraccionModel>();
+            string strQuery = @"SELECT idInfraccion
+                                      ,idOficial
+                                      ,idDependencia
+                                      ,idDelegacion
+                                      ,idVehiculo
+                                      ,idAplicacion
+                                      ,idGarantia
+                                      ,idEstatusInfraccion
+                                      ,idMunicipio
+                                      ,idTramo
+                                      ,idCarretera
+                                      ,idPersona
+                                      ,idPersonaInfraccion
+                                      ,placasVehiculo
+                                      ,folioInfraccion
+                                      ,fechaInfraccion
+                                      ,kmCarretera
+                                      ,observaciones
+                                      ,lugarCalle
+                                      ,lugarNumero
+                                      ,lugarColonia
+                                      ,lugarEntreCalle
+                                      ,infraccionCortesia
+                                      ,NumTarjetaCirculacion
+                                      ,fechaActualizacion
+                                      ,actualizadoPor
+                                      ,estatus
+                               FROM infracciones
+                               WHERE estatus = 1
+                               AND idInfraccion = @idInfraccion"
+            ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            NuevaInfraccionModel model = new NuevaInfraccionModel();
+                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+                            model.IdVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+                            model.IdMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+                            model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+                            model.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+                            model.Placa = reader["placasVehiculo"].ToString();
+                            model.folioInfraccion = reader["folioInfraccion"].ToString();
+                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+                            model.Kilometro = reader["kmCarretera"].ToString();
+                            model.observaciones = reader["observaciones"].ToString();
+                            model.lugarCalle = reader["lugarCalle"].ToString();
+                            model.lugarNumero = reader["lugarNumero"].ToString();
+                            model.lugarColonia = reader["lugarColonia"].ToString();
+                            model.lugarEntreCalle = reader["lugarEntreCalle"].ToString();
+                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+                            model.Tarjeta = reader["NumTarjetaCirculacion"].ToString();
+                            model.Persona = _personasService.GetPersonaById((int)model.IdPersona);
+                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.IdVehiculo);
+                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+                            model.umas = GetUmas();
+                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+                            {
+                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+                            }
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+
+            return modelList.FirstOrDefault();
+        }
+
+
         public decimal GetUmas()
         {
             decimal umas = 0M;
@@ -1304,5 +1407,35 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
+        public int InsertarImagenEnInfraccion(byte[] imageData, int idInfraccion)
+        {
+            int result = 0;
+            string strQuery = @"UPDATE infracciones
+                       SET inventario = @inventario
+                       WHERE idInfraccion = @idInfraccion";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = idInfraccion;
+                    command.Parameters.Add(new SqlParameter("@inventario", SqlDbType.VarBinary)).Value = imageData;
+
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
     }
 }

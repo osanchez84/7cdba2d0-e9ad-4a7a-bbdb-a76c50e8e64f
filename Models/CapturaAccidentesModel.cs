@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GuanajuatoAdminUsuarios.Entity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -180,6 +181,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdAutoriza { get; set; }
         public int IdElaboraConsignacion { get; set; }
         public string Vehiculo { get; set; }
+        public string Grua { get; set; }
+
         public int OtraColumna { get; set; }
         public string EstadoVictima { get; set; }
         public string NombreHospital { get; set; }
@@ -194,7 +197,33 @@ namespace GuanajuatoAdminUsuarios.Models
         public int ValoresValue { get; set; }
         public int PrendasValue { get; set; }
         public int OtrosValue { get; set; }
+        public int idOficial { get; set; }
+        public string fullVehiculo
+        {
+            get
+            {
+                return "Vehiculo: " + Marca + " " + Submarca + " " + Modelo + Environment.NewLine +
+                       "Placas: " + Placa + Environment.NewLine +
+                       "Tarjeta: " + Tarjeta + Environment.NewLine +
+                       "Numero Vehículo: " + IdVehiculoInvolucrado + Environment.NewLine +
+                       "Tipo de Carga: " + TipoCarga + Environment.NewLine +
+                       "Poliza de Carga: " + Poliza;
+            }
+        }
 
+
+        public string fullDetalles
+        {
+            get
+            {
+                return @"Pension: " + Pension + "\r\n\n " +
+                "Grua: " + Grua + "\r\n\n " +
+                "Forma de Traslado: " + FormaTrasladoInvolucrado + "\r\n\n " +
+                "Tipo Vehiculo: " + TipoVehiculo;
+               
+
+            }
+        }
 
 
 

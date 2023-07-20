@@ -48,6 +48,10 @@ namespace GuanajuatoAdminUsuarios
                         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                         options.SlidingExpiration = true;
                     });
+           
+
+                services.AddHttpClient();
+
 
             services.AddRouting(setupAction =>
             {
@@ -130,6 +134,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatAgenciasMinisterioService, CatAgenciasMinisterioService>();
             services.AddScoped<IBusquedaAccidentesService, BusquedaAccidentesService>();
             services.AddScoped<IEnvioInfraccionesService, EnvioInfraccionesService>();
+            services.AddScoped<ICatOficinasRentaService, CatOficinasRentaService>();
+
 
 
             services
@@ -172,6 +178,11 @@ namespace GuanajuatoAdminUsuarios
                 endpoints.MapControllerRoute(
                     name: "area",
                     pattern: "{area:exists}/{controller=Inicio}/{action=Inicio}/{id?}");
+
+                endpoints.MapControllerRoute(
+           name: "servicio",
+           pattern: "servicio/consumir",
+           defaults: new { controller = "Login", action = "ConsumirServicio" });
             });
             //app.UseEndpoints(endpoints =>
             //{

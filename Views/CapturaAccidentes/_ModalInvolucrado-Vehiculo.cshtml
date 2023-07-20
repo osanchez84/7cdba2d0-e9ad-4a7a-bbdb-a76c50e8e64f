@@ -131,18 +131,11 @@
 <div class="tab-pane tabCustomConteiner fade" id="noneVehiculo-involucrado" role="tabpanel" aria-labelledby="noneVehiculo-involucrado-tab">
     <div class="row px-4 my-4 py-5 align-items-end">
         <div class="col-12 col-md-10 mx-md-auto text-center">
-            <h3><b>Se utiliza cuando se tiene una infracción o accidente</b></h3>
-            <h4 class="fw-normal">y se desconoce el vehículo donde iba el involucrado</h4>
-            <div class="row ">
-                <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                    <div class="controlButton my-3" onclick="involucardoNoVehiculo()">
-                        @(Html.Kendo().Button()
-                            .Name("involucrafoNoneCar")
-                            .HtmlAttributes(new { @class = "btnPrimary" })
-                            .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
-                    </div>
-                </div>
-            </div>
+            <h3><b>Se utiliza para  registrar un accidente</b></h3>
+            <h4 class="fw-normal">en el que se desconoce el vehículo donde iba el involucrado o no iba en un vehiculo</h4>
+                        <h6 class="fw-normal">Si este es el caso debes dar click en el botón</h6>
+
+            
         </div>
     </div>
     <div class="row">
@@ -157,7 +150,7 @@
                         <div class="controlForm my-3">
                             <label>Tipo <b>(obligatorio)</b>:</label>
                             <span>
-                                @Html.HiddenFor(model => model.IdPersona, new { id = "idPersonaHidden" })
+                                <input type="hidden" id="idPersonaInput" name="idPersona" />
                                 @Html.HiddenFor(model => model.IdVehiculo, new { id = "idVehiculoHidden" })
                                 @(Html.Kendo().DropDownListFor(t => t.IdTipoInvolucrado)
                                     .DataTextField("Text")
@@ -284,6 +277,7 @@
     <div class="col-12 col-md-6 mx-md-auto">
         <div class="row justify-content-around">
             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+
                 <div class="controlButton" onclick="agregarComplementos()">
                     @(Html.Kendo().Button()
                         .Name("saveVehiculo")
@@ -346,8 +340,22 @@
         grid.dataSource.read();
         grid.refresh();
     }
-    function involucardoNoVehiculo(){
+    function involucardoNoVehiculo() {
+        var idPersona = $("#idPersonaInput").val();
+        var IdVehiculoInvolucrado = 0;
 
+        $.ajax({
+            url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
+            type: 'POST',
+            data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
+            success: function (response) {
+                sitteg_success("Se ha actualizado la información");
+                // Resto del código
+            },
+            error: function (xhr, status, error) {
+                // Manejo del error
+            }
+        });
     }
 
 </script>

@@ -2,11 +2,14 @@
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Utils;
+using Kendo.Mvc.Infrastructure.Implementation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -101,15 +104,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<BusquedaAccidentesModel>(data,
-               new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
+            var model = JsonConvert.DeserializeObject<BusquedaAccidentesModel>(data);
 
-            model.placasBusqueda = model.placasBusqueda == string.Empty ? null : model.placasBusqueda;
-            model.serieBusqueda = model.serieBusqueda == string.Empty ? null : model.serieBusqueda;
-            model.folioBusqueda = model.folioBusqueda == string.Empty ? null : model.folioBusqueda;
-            model.propietarioBusqueda = model.propietarioBusqueda == string.Empty ? null : model.propietarioBusqueda;
-            model.conductorBusqueda = model.conductorBusqueda == string.Empty ? null : model.conductorBusqueda;
-            model.IdDelegacionBusqueda = model.IdDelegacionBusqueda == 0 ? null : model.IdDelegacionBusqueda;
+            model.FechaInicio = model.FechaInicio;
+            model.FechaFin = model.FechaFin;
+
+            model.placa = model.placa == string.Empty ? null : model.placa;
+            model.serie = model.serie == string.Empty ? null : model.serie;
+            model.folio = model.folio == string.Empty ? null : model.folio;
+            model.propietario = model.propietario == string.Empty ? null : model.propietario;
+            model.conductor = model.conductor == string.Empty ? null : model.conductor;
+            model.idDelegacion = model.idDelegacion == 0 ? null : model.idDelegacion;
+            model.idCarretera = model.idCarretera == 0 ? null : model.idCarretera;
+            model.idTramo = model.idTramo == 0 ? null : model.idTramo;
+            model.IdOficial = model.IdOficial == 0 ? null : model.IdOficial;
 
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
@@ -121,7 +129,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"hora","Hora" },
            
             };
-            var ListTransitoModel = _busquedaAccidentesService.ObtenerAccidentes(model);
+            var ListTransitoModel = _busquedaAccidentesService.BusquedaAccidentes(model);
             var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }

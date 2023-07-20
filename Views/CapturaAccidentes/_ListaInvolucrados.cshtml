@@ -2,14 +2,13 @@
 function onRowSelect(e) {
    var selectedRow = this.dataItem(this.select());
         var IdVehiculoInvolucrado = selectedRow.IdVehiculoInvolucrado;
-    console.log("VEHICULO", IdVehiculoInvolucrado);
    obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado);
 }
     function obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado) {
 
         var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
-                         $('#idPersonaHidden').val(idPersona); // Asigna el valor a un campo oculto
-                         $('#idVehiculoHidden').val(IdVehiculoInvolucrado); // Asigna el valor de i
+                         $('#idPersonaHidden').val(idPersona); 
+                         $('#idVehiculoHidden').val(IdVehiculoInvolucrado); 
         console.log("idPersona desde el otro Kendo Grid:", idPersona, IdVehiculoInvolucrado);
         $.ajax({
             url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',

@@ -1455,45 +1455,77 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 try
                 {
-                    string consulta = @"UPDATE InvolucradosAccidente
-                       SET idTipoInvolucrado = @idTipoInvolucrado,
-                           idEstadoVictima = @idEstadoVictima,
-                           idHospital = @idHospital,
-                           idInstitucionTraslado = @idInstitucionTraslado,
-                           idAsiento = @idAsiento,
-                           idCinturon = @idCinturon
-                       WHERE idAccidente = @idAccidente
-                         AND idPersona = @idPersona
-                         AND idVehiculo = @idVehiculo";
+                    string consultaExistencia = @"SELECT COUNT(*) FROM InvolucradosAccidente
+                                     WHERE idAccidente = @idAccidente
+                                     AND idPersona = @idPersona
+                                     AND idVehiculo = @idVehiculo";
 
+                    string consultaUpdate = @"UPDATE InvolucradosAccidente
+                                  SET idTipoInvolucrado = @idTipoInvolucrado,
+                                      idEstadoVictima = @idEstadoVictima,
+                                      idHospital = @idHospital,
+                                      idInstitucionTraslado = @idInstitucionTraslado,
+                                      idAsiento = @idAsiento,
+                                      idCinturon = @idCinturon
+                                  WHERE idAccidente = @idAccidente
+                                    AND idPersona = @idPersona
+                                    AND idVehiculo = @idVehiculo";
+
+                    string consultaInsert = @"INSERT INTO InvolucradosAccidente
+                                  (idAccidente, idPersona, idVehiculo, idTipoInvolucrado, idEstadoVictima, idHospital, idInstitucionTraslado, idAsiento, idCinturon)
+                                  VALUES
+                                  (@idAccidente, @idPersona, @idVehiculo, @idTipoInvolucrado, @idEstadoVictima, @idHospital, @idInstitucionTraslado, @idAsiento, @idCinturon)";
+
+                    SqlCommand comandoExistencia = new SqlCommand(consultaExistencia, connection);
+                    comandoExistencia.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    comandoExistencia.Parameters.AddWithValue("@idPersona", model.IdPersona);
+                    comandoExistencia.Parameters.AddWithValue("@idVehiculo", model.IdVehiculo);
+
+                    connection.Open();
+                    int existencia = (int)comandoExistencia.ExecuteScalar();
+
+                    if (existencia > 0)
                     {
-                        SqlCommand comando = new SqlCommand(consulta, connection);
-                        comando.Parameters.AddWithValue("@idTipoInvolucrado", model.IdTipoInvolucrado);
-                        comando.Parameters.AddWithValue("@idEstadoVictima", model.IdEstadoVictima);
-                        comando.Parameters.AddWithValue("@idHospital", model.IdHospital);
-                        comando.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
-                        comando.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
-                        comando.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
-                        comando.Parameters.AddWithValue("@idAccidente",idAccidente);
-                        comando.Parameters.AddWithValue("@idPersona", model.IdPersona);
-                        comando.Parameters.AddWithValue("@idVehiculo", model.IdVehiculo);
+                        // Ejecutar la consulta de actualización
+                        SqlCommand comandoUpdate = new SqlCommand(consultaUpdate, connection);
+                        comandoUpdate.Parameters.AddWithValue("@idAccidente", idAccidente);
+                        comandoUpdate.Parameters.AddWithValue("@idPersona", model.IdPersona);
+                        comandoUpdate.Parameters.AddWithValue("@idVehiculo", model.IdVehiculo != null ? model.IdVehiculo : 0);
+                        comandoUpdate.Parameters.AddWithValue("@idTipoInvolucrado", model.IdTipoInvolucrado);
+                        comandoUpdate.Parameters.AddWithValue("@idEstadoVictima", model.IdEstadoVictima);
+                        comandoUpdate.Parameters.AddWithValue("@idHospital", model.IdHospital);
+                        comandoUpdate.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
+                        comandoUpdate.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
+                        comandoUpdate.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
 
-                        connection.Open();
-                        comando.ExecuteNonQuery();
+                        result = comandoUpdate.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        // Ejecutar la consulta de inserción
+                        SqlCommand comandoInsert = new SqlCommand(consultaInsert, connection);
+                        comandoInsert.Parameters.AddWithValue("@idAccidente", idAccidente);
+                        comandoInsert.Parameters.AddWithValue("@idPersona", model.IdPersona);
+                        comandoInsert.Parameters.AddWithValue("@idVehiculo", model.IdVehiculo != null ? model.IdVehiculo : 0);
+                        comandoInsert.Parameters.AddWithValue("@idTipoInvolucrado", model.IdTipoInvolucrado);
+                        comandoInsert.Parameters.AddWithValue("@idEstadoVictima", model.IdEstadoVictima);
+                        comandoInsert.Parameters.AddWithValue("@idHospital", model.IdHospital);
+                        comandoInsert.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
+                        comandoInsert.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
+                        comandoInsert.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
+
+                        result = comandoInsert.ExecuteNonQuery();
                     }
                 }
-                catch (SqlException ex)
+                catch (Exception ex)
                 {
-                    return result;
+                    // Manejar excepciones
                 }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return result;
             }
-        }
+
+            return result;
+        
+       }
         public List<CapturaAccidentesModel> InvolucradosAccidente(int idAccidente)
         {
             //
@@ -1572,6 +1604,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.EstadoVictima = reader["estadoVictima"].ToString();
                             involucrado.NombreHospital = reader["nombreHospital"].ToString();
                             involucrado.Asiento = reader["asiento"].ToString();
+                            involucrado.InstitucionTraslado = reader["institucionTraslado"].ToString();
+
                             involucrado.Cinturon = reader["cinturon"].ToString();
                             involucrado.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             if (reader["fechaIngreso"] != System.DBNull.Value)
@@ -1699,6 +1733,84 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+        public int RegistrarInfraccion(NuevaInfraccionModel model)
+        {
+            int result = 0;
+            string strQuery = @"INSERT INTO infracciones
+                                            (fechaInfraccion
+                                            ,folioInfraccion
+                                            ,idOficial
+                                            ,idMunicipio
+                                            ,idCarretera
+                                            ,idTramo
+                                            ,kmCarretera
+                                            ,idVehiculo
+                                            ,idPersona
+                                            ,idPersonaInfraccion
+                                            ,placasVehiculo
+                                            ,NumTarjetaCirculacion
+                                            ,idEstatusInfraccion
+                                            ,fechaActualizacion
+                                            ,actualizadoPor
+                                            ,estatus)
+                                     VALUES (@fechaInfraccion
+                                            ,@folioInfraccion
+                                            ,@idOficial
+                                            ,@idMunicipio
+                                            ,@idCarretera
+                                            ,@idTramo
+                                            ,@kmCarretera
+                                            ,@idVehiculo
+                                            ,@idPersona
+                                            ,@idPersonaInfraccion
+                                            ,@placasVehiculo
+                                            ,@NumTarjetaCirculacion
+                                            ,1
+                                            ,@fechaActualizacion
+                                            ,@actualizadoPor
+                                            ,@estatus);SELECT SCOPE_IDENTITY()";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
+                    command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
+                    command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio;
+
+                    command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera;
+                    command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.IdTramo;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.Kilometro;
+                    
+                    command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo;
+                    command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona;
+                    command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion;
+                    command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa;
+                    command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta;
+                 
+
+                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
+
+
+                    result = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
 
     }
 }

@@ -137,7 +137,6 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatOficinasRentaService, CatOficinasRentaService>();
 
 
-
             services
                .AddControllersWithViews()
                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());

@@ -1099,35 +1099,38 @@ namespace GuanajuatoAdminUsuarios.Services
         public List<InfraccionesModel> GetAllInfracciones2()
         {
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT idInfraccion
-                                      ,idOficial
-                                      ,idDependencia
-                                      ,idDelegacion
-                                      ,idVehiculo
-                                      ,idAplicacion
-                                      ,idGarantia
-                                      ,idEstatusInfraccion
-                                      ,idMunicipio
-                                      ,idTramo
-                                      ,idCarretera
-                                      ,idPersona
-                                      ,idPersonaInfraccion
-                                      ,placasVehiculo
-                                      ,folioInfraccion
-                                      ,fechaInfraccion
-                                      ,kmCarretera
-                                      ,observaciones
-                                      ,lugarCalle
-                                      ,lugarNumero
-                                      ,lugarColonia
-                                      ,lugarEntreCalle
-                                      ,infraccionCortesia
-                                      ,NumTarjetaCirculacion
-                                      ,fechaActualizacion
-                                      ,actualizadoPor
-                                      ,estatus
-                               FROM infracciones
-                               WHERE estatus = 1"
+            string strQuery = @"SELECT inf.idInfraccion
+                                      ,inf.idOficial
+                                      ,inf.idDependencia
+                                      ,inf.idDelegacion
+                                      ,inf.idVehiculo
+                                      ,inf.idAplicacion
+                                      ,inf.idGarantia
+                                      ,inf.idEstatusInfraccion
+                                      ,inf.idMunicipio
+                                      ,mun.municipio
+                                      ,inf.idTramo
+                                      ,inf.idCarretera
+                                      ,inf.idPersona
+                                      ,inf.idPersonaInfraccion
+                                      ,inf.placasVehiculo
+                                      ,inf.folioInfraccion
+                                      ,inf.fechaInfraccion
+                                      ,inf.kmCarretera
+                                      ,inf.observaciones
+                                      ,inf.lugarCalle
+                                      ,inf.lugarNumero
+                                      ,inf.lugarColonia
+                                      ,inf.lugarEntreCalle
+                                      ,inf.infraccionCortesia
+                                      ,inf.NumTarjetaCirculacion
+                                      ,inf.fechaActualizacion
+                                      ,inf.actualizadoPor
+                                      ,inf.estatus
+                               FROM infracciones inf
+                               LEFT JOIN catMunicipios mun
+                               ON inf.idMunicipio = mun.idMunicipio
+                               WHERE inf.estatus = 1"
             ;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1151,6 +1154,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
                             model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
                             model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.municipio = reader["municipio"].ToString();
                             model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
                             model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
                             model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
@@ -1195,6 +1199,65 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return modelList;
         }
+
+        public List<InfraccionesModel> GetAllAccidentes2()
+        {
+            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+            string strQuery = @"SELECT inf.idAccidente
+                                      ,inf.idMunicipio
+                                      ,mun.municipio
+                                      ,inf.idCarretera
+                                      ,inf.idTramo
+                                      ,inf.kilometro
+                                      ,inf.fecha
+                                      ,inf.fechaActualizacion
+                                      ,inf.actualizadoPor
+                                      ,inf.estatus
+                               FROM accidentes inf
+                               LEFT JOIN catMunicipios mun
+                               ON inf.idMunicipio = mun.idMunicipio
+                               WHERE inf.estatus = 1"
+            ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            InfraccionesModel model = new InfraccionesModel();
+                            model.idInfraccion = reader["idAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAccidente"].ToString());
+                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.municipio = reader["municipio"].ToString();
+                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+                            model.kmCarretera = reader["kilometro"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kilometro"].ToString());
+                            model.fechaInfraccion = reader["fecha"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fecha"].ToString());
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+
+            return modelList;
+        }
+
 
         public int CrearInfraccion(InfraccionesModel model)
         {

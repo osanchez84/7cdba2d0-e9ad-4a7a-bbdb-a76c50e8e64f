@@ -7,6 +7,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
+        public List<InfraccionesModel> GetAllAccidentes2();
         List<InfraccionesModel> GetAllInfracciones();
         List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model);
         InfraccionesModel GetInfraccionById(int IdInfraccion);

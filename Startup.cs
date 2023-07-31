@@ -130,7 +130,6 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatAgenciasMinisterioService, CatAgenciasMinisterioService>();
             services.AddScoped<IBusquedaAccidentesService, BusquedaAccidentesService>();
 
-
             services
                .AddControllersWithViews()
                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());

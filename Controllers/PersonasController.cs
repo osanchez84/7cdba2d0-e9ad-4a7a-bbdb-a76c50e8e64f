@@ -3,7 +3,12 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -11,20 +16,86 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IPersonasService _personasService;
-
-        public PersonasController(ICatDictionary catDictionary, IPersonasService personasService)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public PersonasController(ICatDictionary catDictionary, IPersonasService personasService, IHttpClientFactory httpClientFactory)
         {
             _catDictionary = catDictionary;
             _personasService = personasService;
+            _httpClientFactory = httpClientFactory;
         }
         public IActionResult Index()
         {
             var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
-            var personasList = _personasService.GetAllPersonas();
 
             ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
-            return View(personasList);
+            return View();
         }
+        public IActionResult DetallesLicencia()
+        {
+
+            return View("_DetallesLicencia");
+        }
+        public async Task<ActionResult> BuscarPorParametroAsync(PersonaModel model)
+        {
+            if (!string.IsNullOrEmpty(model.numeroLicenciaBusqueda))
+            {
+                // Verificar si el número de licencia no está en la base de datos
+                bool licenciaNoSITTEG = _personasService.VerificarLicenciaSitteg(model.numeroLicenciaBusqueda);
+
+                if (licenciaNoSITTEG) {
+                    try
+                    {
+                        var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={model.numeroLicenciaBusqueda}";
+
+                        var httpClient = _httpClientFactory.CreateClient();
+                        var response = await httpClient.GetAsync(url);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            
+                            List<ResultadoLicenciaModel> licencias = JsonConvert.DeserializeObject<List<ResultadoLicenciaModel>>(content);
+                            LicenciaViewModel licenciaViewModel = new LicenciaViewModel
+                            {
+                                Nombre = licencias[0].Nombre, // Asignar el nombre (suponiendo que es el mismo en todas las licencias)
+                                TiposLicencia = licencias.Select(l => l.TipoLicencia).ToList(),
+                                Licencias = licencias.Select(l => new LicenciaInfo
+                                {
+                                    TipoLicencia = l.TipoLicencia,
+                                    FechaExpedicion = l.FechaExpedicion,
+                                    FechaVigencia = l.FechaVigencia
+                                }).ToList()
+                            };
+
+
+                            return View("_DetalleLicencia",licenciaViewModel);
+                        }
+                        else
+                        {
+                            // En caso de respuesta no exitosa, manejar el error y devolver una vista de error o redireccionar a otra página.
+                            return View("Error");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // En caso de errores, manejar el error y devolver una vista de error o redireccionar a otra página.
+                        return View("Error");
+                    }
+                }
+            
+                else
+            {
+                    var personasList = _personasService.BusquedaPersona(model);
+
+                    return Json(personasList);
+                }
+        }else{
+            var personasList = _personasService.BusquedaPersona(model);
+
+            return Json(personasList);
+        }
+    }
+
 
         [HttpGet]
         public IActionResult ajax_ModalCrearPersona()
@@ -50,13 +121,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //var errors = ModelState.Values.Select(s => s.Errors);
             //if (ModelState.IsValid)
             //{
-                int id = _personasService.CreatePersona(model);
-                model.PersonaDireccion.idPersona = id;
-                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+            int id = _personasService.CreatePersona(model);
+            model.PersonaDireccion.idPersona = id;
+            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
-                var modelList = _personasService.GetAllPersonas();
-                //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
-                return PartialView("_ListadoPersonas", modelList);
+            var modelList = _personasService.GetAllPersonas();
+            //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
+            return PartialView("_ListadoPersonas", modelList);
             //}
             //return RedirectToAction("Index");
         }
@@ -102,6 +173,62 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_ListadoPersonas", modelList);
             }
             return RedirectToAction("Index");
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> BusquedaPorLicencia(string numeroLicencia)
+        {
+            try
+            {
+                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={numeroLicencia}";
+
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    List<ResultadoLicenciaModel> licencias = JsonConvert.DeserializeObject<List<ResultadoLicenciaModel>>(content);
+
+                    foreach (var licenciaInfo in licencias)
+                    {
+                        string nombreCompleto = licenciaInfo.Nombre;
+                        string[] partesNombre = nombreCompleto.Split(' ');
+
+                        string nombre = partesNombre[0]; 
+                        string apellidoPaterno = partesNombre.Length > 1 ? partesNombre[1] : string.Empty; 
+                        string apellidoMaterno = partesNombre.Length > 2 ? partesNombre[2] : string.Empty; 
+                        string tipoLicencia = licenciaInfo.TipoLicencia;
+                        DateTime fechaExpedicion = licenciaInfo.FechaExpedicion;
+                        DateTime fechaVigencia = licenciaInfo.FechaVigencia;
+
+                        ResultadoLicenciaModel persona = new ResultadoLicenciaModel
+                        {
+                            NumeroLicencia = numeroLicencia,
+                            Nombre = nombre,
+                            ApellidoPaterno = apellidoPaterno,
+                            ApellidoMaterno = apellidoMaterno,
+                            TipoLicencia = tipoLicencia,
+                            FechaExpedicion = fechaExpedicion,
+                            FechaVigencia = fechaVigencia,
+                        };
+
+                        _personasService.InsertarDesdeServicio(persona);
+                    }
+                    return Ok();
+
+                }
+                else
+                {
+                    // En caso de respuesta no exitosa, manejar el error y devolver una vista de error o redireccionar a otra página.
+                    return View("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                // En caso de errores, manejar el error y devolver una vista de error o redireccionar a otra página.
+                return View("Error");
+            }
         }
     }
 }

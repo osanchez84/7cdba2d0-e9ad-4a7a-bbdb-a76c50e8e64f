@@ -25,27 +25,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 10;
-            // Obtener la cadena JSON de la variable de sesión
+            int IdModulo = 904;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-
-            // Deserializar la cadena JSON a una lista de enteros
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-
-            // Verificar si el IdModulo está contenido en la lista de Ids permitidos
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                // Si el IdModulo está contenido en la lista de Ids permitidos,
-                // continuar con la lógica actual
-
                 var ListTramosModel = _catTramosService.ObtenerTramos();
                 return View(ListTramosModel);
             }
             else
             {
-                // Si el IdModulo no está contenido en la lista de Ids permitidos,
-                // redireccionar al usuario a la vista "Marca"
-                return View("Marca");
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
 
@@ -57,14 +48,35 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult MostrarModalAgregarTramo()
         {
-            //SetDDLDependencias();
-            return PartialView("_Crear");
+            int IdModulo = 905;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EditarTramoModal(int IdTramo)
         {
-            var TramosModel = _catTramosService.ObtenerTramoByID(IdTramo);
+            int IdModulo = 906;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var TramosModel = _catTramosService.ObtenerTramoByID(IdTramo);
             return PartialView("_Editar", TramosModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
 
         }
 

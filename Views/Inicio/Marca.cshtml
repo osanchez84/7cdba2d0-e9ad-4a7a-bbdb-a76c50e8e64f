@@ -31,22 +31,7 @@
     <globalization culture="es-MX" uiCulture="es" />
     <script>kendo.culture("es-ES");</script>
 
-
     <script>
-
-        function closeForm() {
-            //console.log("hola ", document.getElementById("placas").value);
-
-            if (document.getElementById("usuario").value == "admin" && document.getElementById("pass").value == "Admin123") {
-                document.getElementById("errorAlerta").style.display = "none";
-                window.location.href = "/Principal";
-            } else {
-                document.getElementById("errorAlerta").style.display = "block";
-            }
-
-
-        }
-
         function inicioSesion() {
             var usuario = document.getElementById('usuario').value;
             var contrasena = document.getElementById('contrasena').value;
@@ -60,18 +45,34 @@
                 url: '/servicio/consumir',
                 type: 'POST',
                 data: data,
-                success: function (content) {
-                //sitteg_success('Inicio de Sesión Autorizado');
-                    window.location.href = "/Principal";
-                    console.log("GGG", content);
+                success: function (listaIdsPermitidosJson) {
+                    var mensajeUsuario = document.getElementById('mensajeUsuario');
+                    if (listaIdsPermitidosJson.length > 0) {
+                        mensajeUsuario.textContent = "Inicio de Sesión Autorizado";
+                        mensajeUsuario.style.color = "green";
+                        window.location.href = "/Principal";
+                    } else {
+                        mensajeUsuario.textContent = "Usuario no Registrado";
+                        mensajeUsuario.style.color = "red";
+                    }
+
+                    mensajeUsuario.style.display = "block";
                 },
                 error: function (error) {
-                    //sitteg_warning('Usuario no Registrado');
+                   
+                        var mensajeUsuario = document.getElementById('mensajeUsuario');
+                    mensajeUsuario.textContent = "Usuario no registrado";
+                    mensajeUsuario.style.color = "red";
+                    mensajeUsuario.style.display = "block";
+
                     console.error(error);
+                    
                 }
             });
         }
     </script>
+
+
 </head>
 <body class="bg-light">
     <main class="container-fluid">
@@ -155,10 +156,7 @@
                                 )
                         </div>
                     </div>
-                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-                    {
-                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
-                    }
+                    <div id="mensajeUsuario" style="display: none;"></div>
 
 
 

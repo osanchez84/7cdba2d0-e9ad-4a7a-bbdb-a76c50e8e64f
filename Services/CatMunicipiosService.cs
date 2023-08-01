@@ -159,6 +159,52 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
+        public List<CatMunicipiosModel> GetMunicipiosPorEntidad(int entidadDDlValue)
+        {
+            //
+            List<CatMunicipiosModel> ListaMunicipios = new List<CatMunicipiosModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT m.*, ent.*, e.estatus FROM catMunicipios AS m LEFT JOIN catEntidades AS ent ON m.idEntidad = ent.idEntidad LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idEntidad = @idEntidad;\r\n", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)entidadDDlValue ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatMunicipiosModel municipio = new CatMunicipiosModel();
+                            municipio.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+                            municipio.IdEntidad = Convert.ToInt32(reader["IdEntidad"].ToString());
+                            municipio.Municipio = reader["Municipio"].ToString();
+                            municipio.estatusDesc = reader["estatus"].ToString();
+                            municipio.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
+                            municipio.Estatus = Convert.ToInt32(reader["estatus"] is DBNull ? 0 : reader["estatus"]);
+                            municipio.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+                            ListaMunicipios.Add(municipio);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaMunicipios;
+
+
+        }
 
     }
 }

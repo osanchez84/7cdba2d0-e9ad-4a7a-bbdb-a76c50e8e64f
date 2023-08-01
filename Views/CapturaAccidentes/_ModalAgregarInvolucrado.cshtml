@@ -11,7 +11,7 @@
             success: function (response) {
                 console.log("Response:", response);
                 if (response.length === 0) {
-                    alert("La búsqueda no arrojó resultados.");
+                    sitteg_success("La búsqueda no arrojó resultados.");
                 } else {
                     var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
                     grid.dataSource.data(response);
@@ -19,7 +19,7 @@
                 }
             },
             error: function (error) {
-                alert("Ocurrió un error en la búsqueda.");
+                sitteg_warning("Ocurrió un error en la búsqueda.");
             }
         });
     }

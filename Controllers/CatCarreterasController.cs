@@ -3,8 +3,11 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -22,8 +25,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            var ListCarreterassModel = _catCarreterasService.ObtenerCarreteras();
+            int IdModulo = 900;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var ListCarreterassModel = _catCarreterasService.ObtenerCarreteras();
             return View(ListCarreterassModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
         public JsonResult Delegaciones_Drop()
         {
@@ -33,16 +47,37 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult MostrarModalAgregarCarretera()
         {
-            //SetDDLDependencias();
-            return PartialView("_Crear");
+            int IdModulo = 901;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EditarCarreteraModal(int IdCarretera)
         {
-            var CarreterasModel = _catCarreterasService.ObtenerCarreteraByID(IdCarretera);
+            int IdModulo = 902;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var CarreterasModel = _catCarreterasService.ObtenerCarreteraByID(IdCarretera);
             return PartialView("_Editar", CarreterasModel);
-
         }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+    }
+
+}
 
         [HttpPost]
         public ActionResult CrearCarreteraMod(CatCarreterasModel model)

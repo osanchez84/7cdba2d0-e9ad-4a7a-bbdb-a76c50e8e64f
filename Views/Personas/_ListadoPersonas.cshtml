@@ -1,12 +1,12 @@
-﻿@model List<PersonaModel>
-
+﻿
 @*<div class="row justify-content-between my-4 mb-1 titleCustom">
     <div class="offset-1 col-12 mt-4 mb-2">
         <h5 class="px-4"><b>Listado de personas</b></h5>
     </div>
 </div>*@
 <div class="col-12 rounded gridCustom">
-    @(Html.Kendo().Grid(Model)
+    @(
+        Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.PersonaModel>()
         .Name("gridPersonas")
         .Columns(columns =>
         {

@@ -124,9 +124,12 @@
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
             data: { idGrua: idGrua }, // Datos que se enviarán al controlador
             success: function (result) {
+                if (result.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
                 $('#ModalBodyEdit').html(result);
                 $('#editGrua').modal('show');
-
+                }
             },
         })
     }

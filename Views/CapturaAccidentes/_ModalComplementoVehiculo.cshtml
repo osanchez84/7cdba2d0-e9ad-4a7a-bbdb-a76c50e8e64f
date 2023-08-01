@@ -53,7 +53,7 @@
                                     read.Action("Carga_Drop", "CapturaAccidentes");
                                 });
                             })
-                            .HtmlAttributes(new { style = "width:100%;" })
+                                        .HtmlAttributes(new { style = "width:100%;", required = "required" })
                             )
                     </span>
                 </div>
@@ -115,7 +115,7 @@
     </div>
     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
         <div class="controlForm my-3">
-            <label>Forma de traslado</label>
+                        <label>Forma de traslado <b>(obligatorio):</b></label>
             <span>
                             @(Html.Kendo().DropDownListFor(t => t.IdFormaTraslado)
                                 .Label(l => l.Content("Forma de traslado:"))
@@ -129,7 +129,7 @@
                                         read.Action("Traslados_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                 )
             </span>
         </div>
@@ -149,30 +149,41 @@
    
 <script>
     function guardarComplementoVehiculo() {
-        var Mydata = $("#complementoVehiculoForm").serialize();
-        console.log(Mydata);
+        var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
+        var isValid = validator.validate();
 
-        $.ajax({
-            url: '/CapturaAccidentes/GuardarComplementoVehiculo',
-            type: 'POST',
-            data: Mydata,
-            success: function (result) {
-                console.log("RES")
-                if (result != 0) {
+        if (isValid) {
+            var Mydata = $("#complementoVehiculoForm").serialize();
 
-                    sitteg_success("Se ha actualizado la información del vehículo");
-                    $('#modalComplementoVehiculo').modal('hide');
-                    $('#agregarVehiculoModal').modal('hide');
-                    $('.modal-backdrop').remove();
-                    $('#ClasificacionAccidente').show();
+            $.ajax({
+                url: '/CapturaAccidentes/GuardarComplementoVehiculo',
+                type: 'POST',
+                data: Mydata,
+                success: function (result) {
+                    console.log("RES")
+                    if (result != 0) {
+                        sitteg_success("Se ha actualizado la información del vehículo");
+                        $('#modalComplementoVehiculo').modal('hide');
+                        $('#agregarVehiculoModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                        $('#ClasificacionAccidente').show();
 
-                    actualizarGrid();
-                } else {
-                    alert("Sucedio un error")
+                        actualizarGrid();
+                    } else {
+                        alert("Sucedio un error")
+                    }
+                },
+                error: function (error) {
+                    console.error("Error en la solicitud AJAX:", error);
+                    // Aquí puedes manejar el error adecuadamente, ya sea mostrando un mensaje de error o tomando otras acciones.
                 }
-            },
-        });
+            });
+        } else {
+            sitteg_info('Debe llenar los campos requeridos');
+            return;
+        }
     }
+
 
     function actualizarGrid() {
         var grid = $("#gridVehiculosInvolucrados").data("kendoGrid");

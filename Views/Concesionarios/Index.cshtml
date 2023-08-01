@@ -148,9 +148,13 @@
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             dataType: "html",
-            success: function (data) {
-                $('#modalBodyCrearConcesionario').html(data);
+            success: function (response) {
+                if (response.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
+                    $('#modalBodyCrearConcesionario').html(response);
                 $('#modalCrearConcesionario').modal('show');
+                }
             }
         });
     }
@@ -161,9 +165,18 @@
             data: { idConcesionario: idConcesionario },
             contentType: "application/json; charset=utf-8",
             dataType: "html",
-            success: function (value) {
-                $('#modalBodyEditarConcesionario').html(value);
-                $('#modalEditarConcesionario').modal('show');
+            success: function (response) {
+                if (response.includes("ErrorPartial")) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
+                    // Si no hay error, abre el modal con la vista modal devuelta por el controlador
+                    $('#modalBodyEditarConcesionario').html(response);
+                    $('#modalEditarConcesionario').modal('show');
+                }
+            },
+            error: function () {
+                // Manejo de errores de la solicitud AJAX
+                alert('Ocurrió un error en la solicitud AJAX.');
             }
         });
     }

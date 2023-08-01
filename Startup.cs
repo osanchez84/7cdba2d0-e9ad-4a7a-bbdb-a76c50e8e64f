@@ -20,6 +20,7 @@ using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Utils;
 using GuanajuatoAdminUsuarios.Framework;
+using GuanajuatoAdminUsuarios.Models;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -135,6 +136,13 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IBusquedaAccidentesService, BusquedaAccidentesService>();
             services.AddScoped<IEnvioInfraccionesService, EnvioInfraccionesService>();
             services.AddScoped<ICatOficinasRentaService, CatOficinasRentaService>();
+            services.AddScoped<ICatTiposVehiculosService, CatTiposVehiculosService>();
+            services.AddScoped<ICatResponsablesPensiones, CatResponsablesPensionesService>();
+            services.AddScoped<ICatDescripcionesEventoService, DescripcionEvetosService>();
+            services.AddScoped<ICatTipoMotivoAsignacionService, CatTipoMotivoAsignacionService>();
+            services.AddScoped<ICatTipoUsuarioService, CatTipoUsuarioService>();
+            services.AddScoped<IDepositosService, DepositosService>();
+
 
 
 

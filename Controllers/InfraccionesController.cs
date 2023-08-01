@@ -53,11 +53,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-
-            InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
-            List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones();
-            searchModel.ListInfracciones = listInfracciones;
-            return View(searchModel);
+            int IdModulo = 700;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
+                List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones();
+                searchModel.ListInfracciones = listInfracciones;
+                return View(searchModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         [HttpPost]
@@ -157,6 +167,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Crear()
         {
+
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
@@ -171,8 +182,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View(new InfraccionesModel());
         }
 
+
         public ActionResult Editar(int id)
         {
+
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccion2ById(id);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
@@ -192,10 +205,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
 
             return View(model);
+
+
         }
 
         public ActionResult EditarA(int id)
         {
+
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccionAccidenteById(id);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.IdPersona;
@@ -214,8 +230,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
 
-            return View("Editar2",model);
+            return View("Editar2", model);
         }
+
 
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
@@ -341,7 +358,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalAnexar");
         }
         [HttpPost]
-        public async Task<IActionResult> SubirImagen(IFormFile file,int idInfraccion)
+        public async Task<IActionResult> SubirImagen(IFormFile file, int idInfraccion)
         {
             if (file != null && file.Length > 0)
             {
@@ -354,7 +371,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
                 // Llamar al método del servicio para guardar la imagen
-                _infraccionesService.InsertarImagenEnInfraccion(imageData,idInfraccion);
+                _infraccionesService.InsertarImagenEnInfraccion(imageData, idInfraccion);
 
                 return Json(new { success = true, message = "Imagen subida exitosamente" });
             }
@@ -363,6 +380,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(new { success = false, message = "No se seleccionó ninguna imagen" });
             }
         }
-
+      }
     }
-}
+

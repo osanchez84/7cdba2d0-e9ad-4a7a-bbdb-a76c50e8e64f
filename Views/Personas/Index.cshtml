@@ -1,4 +1,6 @@
-﻿@model List<PersonaModel>
+﻿@*model List<PersonaModel>*@
+    @model GuanajuatoAdminUsuarios.Models.PersonaModel
+
 
 @{
 }
@@ -23,9 +25,83 @@
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-addConcecionario h2 mb-0 me-2"></i><b>Agregar nueva persona</b></h6>
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
+            <form id="buscarConductorForm">
+                <div class="row px-4 mt-4 pb-4 align-items-end">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
+                                .Label(l => l.Content("No. de licencia:"))
+                                .Placeholder("Ingresa el número de licencia valido")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            @(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
+                                .Label(l => l.Content("CURP:"))
+                                .Placeholder("Ingresa el CURP del propietario")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            @(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
+                                .Label(l => l.Content("RFC:"))
+                                .Placeholder("Ingresa el RFC del propietario")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            @(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
+                                .Label(l => l.Content("Nombre(s):"))
+                                .Placeholder("Ingresa el nombre(s) del propietario")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
+                                .Label(l => l.Content("Apellido paterno:"))
+                                .Placeholder("Ingresa el apellido paterno")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
+                                .Label(l => l.Content("Apellido materno:"))
+                                .Placeholder("Ingresa el apellido materno")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
+                <div class="controlButton my-3">
+                    <div class="controlButton my-3" onclick="buscarConductor()">
+                        @(Html.Kendo().Button()
+                            .Name("buscarOtroConductor")
+                            .HtmlAttributes(new { @class = "btnPrimary" })
+                            .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+                    </div>
+                </div>
+            </div>
         <div class="row">
             <div class="col-12">
                 <div class="bg-light py-1"></div>
@@ -37,10 +113,13 @@
                 <h6 class="px-4 text-muted">Edita las personas que lo requieran.</h6>
             </div>
         </div>
+       
+       
         @*Table*@
         <div id="listadoPersonas">
             <partial name="_ListadoPersonas" model="Model" />
         </div>
+     
     </section>
 </div>
 
@@ -115,11 +194,13 @@
             </div>
         </div>
     </div>
+  
 </div>
 
 
 
 <script>
+   
     $(document).ready(function () {
         $("#modalCrearPersona").on("show.bs.modal shown.bs.modal", function (e) {
             $("body").removeClass("modal-open").find(".modal-backdrop").remove();
@@ -163,4 +244,28 @@
             }
         });
     }
+
+     function buscarConductor() {
+        var Mydata = $("#buscarConductorForm").serialize();
+        console.log(Mydata);
+        $.ajax({
+            url: '/Personas/BuscarPorParametro',
+            type: 'POST',
+            data: Mydata,
+            success: function (response) {
+                console.log("Response:", response);
+                if (response.length === 0) {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                } else {
+                    window.location.href = "/Personas/DetalleLicencia";
+
+                }
+            },
+            error: function (error) {
+                sitteg_warning('Ocurrió un error en la búsqueda.');
+                console.log(error);
+            }
+        });
+    }
+
 </script>

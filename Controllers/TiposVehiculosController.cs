@@ -1,10 +1,14 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +17,37 @@ namespace Example.WebUI.Controllers
 {
     public class TiposVehiculosController : Controller
     {
+        private readonly ICatTiposVehiculosService _catTiposVehiculoService;
+
         DBContextInssoft dbContext = new DBContextInssoft();
+        public TiposVehiculosController(ICatTiposVehiculosService catTiposVehiculoService)
+        {
+            _catTiposVehiculoService = catTiposVehiculoService;
+
+        }
         public IActionResult Index()
         {
-            //var products = dbContext.Products.ToList();
-            var ListTiposVehiculosModel = GetTiposVehiculos();
+            int IdModulo = 932;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
 
             return View(ListTiposVehiculosModel);
-
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
 
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListTiposVehiculosModel = GetTiposVehiculos();
+            var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
             //return View("IndexModal");
             return View("Index", ListTiposVehiculosModel);
         }
@@ -36,17 +56,37 @@ namespace Example.WebUI.Controllers
         public ActionResult AgregarTipoVehiculo()
         {
 
-            //SetDDLDependencias();
-            return PartialView("_Crear");
+            int IdModulo = 933;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
 
         [HttpPost]
         public ActionResult EditarTipoVehiculo(int IdTipoVehiculo)
         {
-
-            var tiposVehiculosModel = GetTipoVehiculoByID(IdTipoVehiculo);
+            int IdModulo = 934;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var tiposVehiculosModel = GetTipoVehiculoByID(IdTipoVehiculo);
             return View("_Editar", tiposVehiculosModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         [HttpPost]
@@ -73,7 +113,7 @@ namespace Example.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 CreateTipoVehiculo(model);
-                var ListTiposVehiculosModel = GetTiposVehiculos();
+                var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
                 return PartialView("_ListaTiposVehiculos", ListTiposVehiculosModel);
             }
             //SetDDLCategories();
@@ -91,7 +131,7 @@ namespace Example.WebUI.Controllers
             {
                
                 UpdateTipoVehiculo(model);
-                var ListTiposVehiculosModel = GetTiposVehiculos();
+                var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
                 return PartialView("_ListaTiposVehiculos", ListTiposVehiculosModel);
             }
 
@@ -105,7 +145,7 @@ namespace Example.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 DeleteTipoVehiculo(model);
-                var ListTiposVehiculosModel = GetTiposVehiculos();
+                var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
                 return PartialView("_ListaTiposVehiculos", ListTiposVehiculosModel);
             }
 
@@ -114,7 +154,7 @@ namespace Example.WebUI.Controllers
 
         public JsonResult GetTipos([DataSourceRequest] DataSourceRequest request)
         {
-            var ListTiposVehiculosModel = GetTiposVehiculos();
+            var ListTiposVehiculosModel = _catTiposVehiculoService.GetTiposVehiculos();
 
             return Json(ListTiposVehiculosModel.ToDataSourceResult(request));
         }
@@ -191,23 +231,7 @@ namespace Example.WebUI.Controllers
         /// para la gestion un mejor control de la info
         /// </summary>
         /// <returns></returns>
-        public List<TiposVehiculosModel> GetTiposVehiculos()
-        {
-            var ListTiposVehiculosModel = (from tiposVehiculo in dbContext.TipoVehiculos.ToList()
-                                           join Estatus in dbContext.Estatus.ToList()
-                                           on tiposVehiculo.Estatus equals Estatus.estatus
-
-
-                                           select new TiposVehiculosModel
-                                           {
-                                               IdTipoVehiculo = tiposVehiculo.IdTipoVehiculo,
-                                               TipoVehiculo = tiposVehiculo.TipoVehiculo,
-                                               Estatus = tiposVehiculo.Estatus,
-                                               estatusDesc = Estatus.estatusDesc
-
-                                           }).ToList();
-            return ListTiposVehiculosModel;
-        }
+       
         #endregion
 
 

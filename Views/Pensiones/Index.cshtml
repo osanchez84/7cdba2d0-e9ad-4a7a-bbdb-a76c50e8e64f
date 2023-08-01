@@ -183,9 +183,13 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (data) {
+                if (data.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
                 $('#modalBodyCrearPension').html(data);
                 $('#modalCrearPension').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPension').modal('show');
+                }
             }
         });
     }

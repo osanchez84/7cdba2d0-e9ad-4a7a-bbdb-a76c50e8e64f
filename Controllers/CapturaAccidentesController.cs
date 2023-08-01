@@ -17,12 +17,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using GuanajuatoAdminUsuarios.Framework;
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
 
     public class CapturaAccidentesController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICatMunicipiosService _catMunicipiosService;
         private readonly ICatCarreterasService _catCarreterasService;
         private readonly ICatTramosService _catTramosService;
@@ -59,7 +64,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
-            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary, IInfraccionesService infraccionesService)
+            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -86,6 +91,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catAgenciasMinisterioService = catAgenciasMinisterioService;
             _catDictionary = catDictionary;
             _infraccionesService = infraccionesService;
+            _httpClientFactory = httpClientFactory;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -98,15 +104,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService)
         {
-            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes();
-            if (ListAccidentesModel.Count == 0)
-            {
-                return View("AgregarAccidente");
+            int IdModulo = 801;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
 
+            {
+                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes();
+                if (ListAccidentesModel.Count == 0)
+                {
+                    return View("AgregarAccidente");
+
+                }
+                else
+                {
+                    return View("CapturaAccidentes", ListAccidentesModel);
+                }
             }
             else
             {
-                return View("CapturaAccidentes", ListAccidentesModel);
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
 
@@ -456,6 +474,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
             return Json(ListInvolucradoModel);
         }
+
 
         public IActionResult GuardarInvolucrado(int idPersonaInvolucrado)
         {

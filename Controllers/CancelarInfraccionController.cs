@@ -11,6 +11,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Security.Cryptography;
 using Kendo.Mvc.Extensions;
 using GuanajuatoAdminUsuarios.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -27,7 +29,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CancelarInfraccionModel cancelarInfraccionService)
         {
-            return View("CancelarInfraccion");
+            int IdModulo = 704;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                return View("CancelarInfraccion");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
 

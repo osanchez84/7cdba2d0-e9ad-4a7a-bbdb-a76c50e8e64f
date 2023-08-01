@@ -1,5 +1,7 @@
 using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,151 @@ namespace Example.WebUI.Controllers
 {
     public class DepositosController : Controller
     {
-        public IActionResult Depositos()
-        {
+        private readonly IDepositosService _catDepositosService;
+        private readonly ICatTiposVehiculosService _catTiposVehiculoService;
+        private readonly ICatResponsablesPensiones _catResponsablesPensiones;
+        private readonly IOficiales _oficialesService;
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly ICatDescripcionesEventoService _descripcionesEventoService;
+        private readonly ICatTipoUsuarioService _catTipoUsuarioService;
+        private readonly ICatTipoMotivoAsignacionService _catTipoMotivoAsignacionService;
+        private readonly ICatCarreterasService _catCarreterasService;
+        private readonly ICatTramosService _catTramosService;
+        private readonly IPensionesService _pensionesService;
 
-            return View();
+
+        public DepositosController(IDepositosService catDepositosService, ICatTiposVehiculosService catTiposVehiculoService, ICatResponsablesPensiones catResponsablesPensiones, IOficiales oficialesService,ICatEntidadesService catEntidadesService, ICatMunicipiosService catMunicipiosService,
+            ICatDescripcionesEventoService descripcionesEventoService, ICatTipoMotivoAsignacionService catTipoMotivoAsignacionService, ICatTipoUsuarioService catTipoUsuarioService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService, IPensionesService pensionesService)
+        {
+            _catDepositosService = catDepositosService;
+            _catTiposVehiculoService = catTiposVehiculoService;
+            _catResponsablesPensiones = catResponsablesPensiones;
+            _oficialesService = oficialesService;
+            _catEntidadesService = catEntidadesService;
+            _catMunicipiosService = catMunicipiosService;
+            _descripcionesEventoService = descripcionesEventoService;
+            _catTipoMotivoAsignacionService = catTipoMotivoAsignacionService;
+            _catTipoUsuarioService = catTipoUsuarioService;
+            _catCarreterasService = catCarreterasService;
+            _catTramosService = catTramosService;
+            _pensionesService = pensionesService;
+        }
+    
+        public IActionResult Depositos(int? Isol)
+        {
+            if (Isol.HasValue)
+            {
+               
+                var solicitud = _catDepositosService.ObtenerSolicitudPorID(Isol.Value);
+                return View(solicitud);
+            }
+            else
+            {
+                return View("Depositos");
+            }
+        }
+        public IActionResult Ubicacion(int Isol)
+        {
+            var solicitud = _catDepositosService.ObtenerSolicitudPorID(Isol);
+
+            return View(solicitud);
 
         }
+        public IActionResult Editar(int Isol)
+        {
+            var solicitud = _catDepositosService.ObtenerSolicitudPorID(Isol);
+
+            return View("Depositos",solicitud);
+
+        }
+
+        public JsonResult TiposVehiculos_Drop()
+        {
+            var result = new SelectList(_catTiposVehiculoService.GetTiposVehiculos(), "IdTipoVehiculo", "TipoVehiculo");
+            return Json(result);
+        }
+
+        public JsonResult Propietarios_Drop()
+        {
+            var result = new SelectList(_catResponsablesPensiones.ObtenerResponsables(), "IdResponsable", "Responsable");
+            return Json(result);
+        }
+        public JsonResult Oficiales_Drop()
+        {
+            var oficiales = _oficialesService.GetOficialesActivos()
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = $"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}"
+                });
+            oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+        public JsonResult Entidades_Drop()
+        {
+            var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            return Json(result);
+        }
+        public JsonResult Municipios_Drop(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+        public JsonResult Descripcion_Drop()
+        {
+            var result = new SelectList(_descripcionesEventoService.ObtenerDescripciones(), "idDescripcion", "descripcionEvento");
+            return Json(result);
+        }
+        public JsonResult TiposUsuario_Drop()
+        {
+            var result = new SelectList(_catTipoUsuarioService.ObtenerTiposUsuario(), "idTipoUsuario", "tipoUsuario");
+            return Json(result);
+        }
+        public JsonResult Motivos_Drop()
+        {
+            var result = new SelectList(_catTipoMotivoAsignacionService.ObtenerMotivos(), "idTipoAsignacion", "tipoAsignacion");
+            return Json(result);
+        }
+        public JsonResult Carreteras_Drop()
+        {
+            var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            return Json(result);
+        }
+
+        public JsonResult Tramos_Drop(int carreteraDDValue)
+        {
+            var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+            return Json(result);
+        }
+        public JsonResult Pensiones_Drop()
+        {
+            var result = new SelectList(_pensionesService.GetAllPensiones(), "IdPension", "Pension");
+            return Json(result);
+        }
+        public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, SolicitudDepositoModel model)
+        {
+            if (Isol.HasValue && Isol.Value > 0)
+            {
+                // Es una actualización, así que actualiza los datos en la base de datos
+                // utilizando el ID 'Isol' para identificar la solicitud existente
+                var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol,model);
+                return Ok(registroActualizado);
+
+            }
+            else
+            {
+                var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model);
+                return Ok(resultadoBusqueda);
+            }
+        }
+        public ActionResult ajax_EnviarComplementoSolicitud(SolicitudDepositoModel model)
+        {
+         var complemntarRegistro = _catDepositosService.CompletarSolicitud(model);
+            return Ok();
+        }
+        
     }
 }

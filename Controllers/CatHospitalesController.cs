@@ -3,9 +3,11 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +25,21 @@ namespace Example.WebUI.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
+            int IdModulo = 992;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
 
-            var ListHospitalesModel = _catHospitalesService.GetHospitales();
+                var ListHospitalesModel = _catHospitalesService.GetHospitales();
 
             return View(ListHospitalesModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
 
         }
 
@@ -43,16 +56,38 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarHospitalModal()
         {
-            Municipios_Drop();
+            int IdModulo = 993;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                Municipios_Drop();
             return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EditarHospitalModal(int IdHospital)
         {
-            Municipios_Drop();
+            int IdModulo = 994;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                Municipios_Drop();
             var hospitalesModel = GetHospitalByID(IdHospital);
             return PartialView("_Editar", hospitalesModel);
         }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+    }
+}
 
         public ActionResult EliminarHospitalModal(int IdHospital)
         {

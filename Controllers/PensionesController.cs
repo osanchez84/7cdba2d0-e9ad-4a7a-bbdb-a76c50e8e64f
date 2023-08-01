@@ -2,8 +2,10 @@
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +32,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            List<PensionModel> pensionesList = _pensionesService.GetAllPensiones();
+            int IdModulo = 400;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                List<PensionModel> pensionesList = _pensionesService.GetAllPensiones();
             var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
             return View(pensionesList);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         [HttpGet]
@@ -48,7 +61,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_ModalCrearPension()
         {
-            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            int IdModulo = 401;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             var catResponsablesPensiones = _catDictionary.GetCatalog("CatResponsablesPensiones", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
 
@@ -56,6 +74,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatResponsablesPensiones = new SelectList(catResponsablesPensiones.CatalogList, "Id", "Text");
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             return PartialView("_CrearPension", new PensionModel());
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
 
@@ -80,17 +104,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 ViewBag.ListadoGruasPensiones = gruasPensionesList;
                 return PartialView("_EditarPension", model);
+
             }
             //SetDDLCategories();
             //return View("Create");
             return RedirectToAction("Index");
+
         }
 
 
         [HttpGet]
         public ActionResult ajax_ModalEditarPension(int idPension)
         {
-            var model = _pensionesService.GetPensionById(idPension).FirstOrDefault();
+            int IdModulo = 402;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var model = _pensionesService.GetPensionById(idPension).FirstOrDefault();
             
             var gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(model.IdPension);
 
@@ -104,6 +135,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             ViewBag.ListadoGruasPensiones = gruasPensionesList;
             return PartialView("_EditarPension", model);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+
         }
 
 

@@ -3,8 +3,10 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +24,20 @@ namespace Example.WebUI.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            //var products = dbContext.Products.ToList();
-            var ListAutoridadesDisposicionModel = GetAutoridadesDisposicion();
+            int IdModulo = 964;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var ListAutoridadesDisposicionModel = GetAutoridadesDisposicion();
 
             return View(ListAutoridadesDisposicionModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
 
         }
 
@@ -101,24 +113,41 @@ namespace Example.WebUI.Controllers
 
 
         #region Modal Action
-        public ActionResult IndexModal()
-        {
-            var ListAuturidadesDisposicionsModel = GetAutoridadesDisposicion();
-            //return View("IndexModal");
-            return View("Index", ListAuturidadesDisposicionsModel);
-        }
+       
 
         [HttpPost]
         public ActionResult AgregarAutoridadDisposicionPacial()
         {
-            //SetDDLDependencias();
-            return PartialView("_Crear");
+            int IdModulo = 965;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                //SetDDLDependencias();
+                return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EditarAutoridadDisposicionParcial(int IdAutoridadDisposicion)
         {
-            var autoridadesDisposicionModel = GetAutoridadDispByID(IdAutoridadDisposicion);
+            int IdModulo = 966;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var autoridadesDisposicionModel = GetAutoridadDispByID(IdAutoridadDisposicion);
             return PartialView("_Editar", autoridadesDisposicionModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EliminarAutoridadDisposicionParcial(int IdAutoridadDisposicion)

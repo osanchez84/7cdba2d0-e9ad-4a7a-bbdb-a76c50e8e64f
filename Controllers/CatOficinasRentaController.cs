@@ -3,9 +3,11 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +32,20 @@ namespace Example.WebUI.Controllers
         #region Modal Action
         public ActionResult Index()
         {
-            var ListOficinasRentaModel = GetOficinas();
+            int IdModulo = 952;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var ListOficinasRentaModel = GetOficinas();
 
             return View("Index", ListOficinasRentaModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         public ActionResult Index2(int idDelegacion)
@@ -44,24 +57,39 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarOficinaRentaModal()
         {
-            Delegaciones_Drop();
+            int IdModulo = 953;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                Delegaciones_Drop();
             return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
-        /// <summary>
-        /// //////////////
-        /// </summary>
-        /// 
-
-        /// 
-        /// <returns></returns>
 
         public ActionResult EditarOficinaRentaModal(int IdOficinaRenta)
         {
-            Delegaciones_Drop();
+            int IdModulo = 954;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                Delegaciones_Drop();
             var oficinasRentaModel = GetOficinaRentaByID(IdOficinaRenta);
             return PartialView("_Editar", oficinasRentaModel);
         }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+    }
+}
 
         public ActionResult EliminarOficinaRentaModal(int IdOficinaRenta)
         {

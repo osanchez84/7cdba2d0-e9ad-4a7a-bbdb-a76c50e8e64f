@@ -8,6 +8,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idPersona
         { get; set; }
         public string licencia { get; set; }
+        public string tipoLicencia { get; set; }
+
         public string curp { get; set; }
         public string rfc { get; set; }
         public string nombre { get; set; }
@@ -15,6 +17,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string apellidoMaterno { get; set; }
         public string sexo { get; set; }
         public DateTime fechaNacimiento { get; set; }
+        public DateTime fechaExpedicion { get; set; }
+        public DateTime fechaVigencia { get; set; }
+        
         public string entidad { get; set; }
         public string municipio { get; set; }
         public string calle { get; set; }

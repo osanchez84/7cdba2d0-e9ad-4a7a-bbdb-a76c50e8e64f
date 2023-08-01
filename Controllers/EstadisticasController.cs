@@ -1,8 +1,11 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -42,7 +45,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            var modelList = _infraccionesService.GetAllInfracciones2()
+            int IdModulo = 707;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var modelList = _infraccionesService.GetAllInfracciones2()
                                             .SelectMany(s => s.MotivosInfraccion)
                                             .GroupBy(g => g.catMotivo)
                                             .Select(s => new EstadisticaInfraccionMotivosModel() { Motivo = s.Key, Contador = s.Count() }).ToList();
@@ -73,6 +81,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.Estadisticas = modelList;
 
             return View();
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         public IActionResult ajax_BusquedaIncidenciasInfracciones(IncidenciasBusquedaModel model)

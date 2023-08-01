@@ -6,6 +6,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IPersonasService
     {
         public IEnumerable<PersonaModel> GetAllPersonas();
+        List<PersonaModel> BusquedaPersona(PersonaModel model);
+        public bool VerificarLicenciaSitteg(string numeroLicencia);
+        public void InsertarDesdeServicio(ResultadoLicenciaModel persona);
         public PersonaDireccionModel GetPersonaDireccionByIdPersona(int idPersona);
         public PersonaModel GetPersonaById(int idPersona);
         IEnumerable<PersonaModel> GetAllPersonasMorales();

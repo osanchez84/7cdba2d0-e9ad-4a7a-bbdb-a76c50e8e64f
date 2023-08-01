@@ -77,8 +77,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (value) {
+                if (value.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
                 $('#modalBodyEditarPension').html(value);
                 $('#modalEditarPension').modal('show');
+                }
             }
         });
     }

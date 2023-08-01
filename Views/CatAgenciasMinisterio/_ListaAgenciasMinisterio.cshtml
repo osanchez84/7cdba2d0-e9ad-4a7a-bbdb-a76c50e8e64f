@@ -62,8 +62,12 @@
             type: 'POST',
             data: { IdAgenciaMinisterio: IdAgenciaMinisterio },
             success: function (result) {
+                if (result.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
                 $('#ModalBodEditarAgenciaministerio').html(result);
                 $('#editarAgenciaministerio').modal('show');
+                }
 
             },
         })

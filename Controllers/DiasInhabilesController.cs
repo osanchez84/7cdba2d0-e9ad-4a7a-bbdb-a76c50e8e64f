@@ -2,9 +2,11 @@
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +18,20 @@ namespace Example.WebUI.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            //var products = dbContext.Products.ToList();
-            var ListDiasInhabilesModel = GetDiasInhabiles();
+            int IdModulo = 948;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var ListDiasInhabilesModel = GetDiasInhabiles();
 
             return View(ListDiasInhabilesModel);
-
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         ///Crear metodo de update (post)
@@ -37,15 +48,37 @@ namespace Example.WebUI.Controllers
         [HttpPost]
         public ActionResult AgregarParcialDiaInhabil()
         {
-            Municipios_Drop();
+            int IdModulo = 949;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                Municipios_Drop();
             return PartialView("_Crear");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EditarParcial(int IdDiaInhabil)
         {
-            var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
+            int IdModulo = 950;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
             Municipios_Drop();
             return View("_Editar", diasInhabilesModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public ActionResult EliminarDiaInhabilParcial(int IdDiaInhabil)

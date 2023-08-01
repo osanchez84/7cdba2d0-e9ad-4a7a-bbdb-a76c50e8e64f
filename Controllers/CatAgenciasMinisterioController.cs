@@ -3,9 +3,11 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,37 +26,65 @@ namespace Example.WebUI.Controllers
         
             DBContextInssoft dbContext = new DBContextInssoft();
             public IActionResult Index()
+        {
+            int IdModulo = 956;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                //var products = dbContext.Products.ToList();
                 var ListAgenciasMinisterioModel = GetAgenciasministerio();
 
                 return View(ListAgenciasMinisterioModel);
-
             }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
+
+        }
 
 
 
 
             #region Modal Action
-            public ActionResult IndexModal()
-            {
-                var ListAgenciasMinisterioModel = GetAgenciasministerio();
-                return View("Index", ListAgenciasMinisterioModel);
-            }
+       
 
             [HttpPost]
             public ActionResult AgregarAgenciaMinisterioModal()
+        {
+            int IdModulo = 957;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 SetDDLDelegaciones();
                 return PartialView("_Crear");
+                    }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
             }
+          }
 
             public ActionResult EditarAgenciaMinisterioModal(int IdAgenciaMinisterio)
+            {
+            int IdModulo = 958;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 SetDDLDelegaciones();
                 var agenciasMinisterioModel = GetAgenciaMinisterioByID(IdAgenciaMinisterio);
                 return PartialView("_Editar", agenciasMinisterioModel);
             }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+        }
 
             public ActionResult EliminarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {

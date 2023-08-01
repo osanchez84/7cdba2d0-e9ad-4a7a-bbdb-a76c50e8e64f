@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Gruas2Model>
-
+@{
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
 <head>
     <script>
         
@@ -20,11 +22,13 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+               
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <button href="#" id="btnNuevaGrua" onclick="mostrarModal()">
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-addDependencia h5 mb-0 me-2"></i><b>Agregar nueva grúa</b></h6>
                         </button>
+                       
                     </div>
                 </div>
             </div>
@@ -131,8 +135,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (data) {
+                if (data.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
                 $('#ModalBodyCreate').html(data);
                 $('#addGrua').modal('show');
+                }
             }
         });
     }

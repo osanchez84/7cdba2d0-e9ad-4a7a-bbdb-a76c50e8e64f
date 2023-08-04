@@ -27,7 +27,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _personasService = personasService;
         }
 
-        public List<InfraccionesModel> GetAllInfracciones()
+        public List<InfraccionesModel> GetAllInfracciones(int idOficina)
         {
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();
             string strQuery = @"SELECT inf.idInfraccion
@@ -57,7 +57,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,inf.fechaActualizacion
                                     ,inf.actualizadoPor
                                     ,inf.estatus
-                                    ,del.idDelegacion, del.delegacion,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                     ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
                                     ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
                                     ,tipoP.idTipoPlaca, tipoP.tipoPlaca
@@ -74,7 +74,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,catConInf.idConcepto,catConInf.concepto
                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
-                                    left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
+                                    left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                     left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
                                     left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
@@ -89,15 +89,18 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idMotivoInfraccion
                                     left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                    WHERE inf.estatus = 1";
+                                    WHERE inf.estatus = 1 AND inf.idDelegacion = @idOficina";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+
             {
                 try
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     //command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -107,7 +110,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
                             model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
                             model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
                             model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
                             model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
@@ -135,7 +138,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["delegacion"] == System.DBNull.Value ? string.Empty : reader["delegacion"].ToString();
+                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
                             model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
                             model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
@@ -158,7 +161,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
         }
 
-        public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model)
+        public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model,int idOficina)
         {
             List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -168,7 +171,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     string sqlCondiciones = "";
                     sqlCondiciones += (object)model.IdGarantia == null ? "" : " gar.idGarantia=@IdGarantia AND \n";
-                    sqlCondiciones += (object)model.IdDelegacion == null ? "" : " del.idDelegacion=@IdDelegacion AND \n";
+                    sqlCondiciones += (object)model.IdDelegacion == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
                     sqlCondiciones += (object)model.IdEstatus == null ? "" : " estIn.idEstatusInfraccion=@IdEstatus AND \n";
                     sqlCondiciones += (object)model.IdDependencia == null ? "" : " dep.idDependencia=@IdDependencia AND \n";
                     sqlCondiciones += (object)model.folioInfraccion == null ? "" : " UPPER(inf.folioInfraccion)=@FolioInfraccion AND \n";
@@ -208,7 +211,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,inf.fechaActualizacion
                                     ,inf.actualizadoPor
                                     ,inf.estatus
-                                    ,del.idDelegacion, del.delegacion,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                     ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
                                     ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
                                     ,tipoP.idTipoPlaca, tipoP.tipoPlaca
@@ -225,7 +228,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,catConInf.idConcepto,catConInf.concepto
                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
-                                    left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
+                                    left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                     left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
                                     left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
@@ -241,7 +244,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
-                                    where {0}  inf.estatus=1", sqlCondiciones);
+                                    where {0}  inf.estatus=1 AND inf.idDelegacion = @idOficina", sqlCondiciones);
 
                     
                     
@@ -249,6 +252,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdGarantia", SqlDbType.Int)).Value = (object)model.IdGarantia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
@@ -268,7 +272,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
                             infraccionModel.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
                             infraccionModel.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            infraccionModel.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+                            infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
                             infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
                             infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
@@ -297,7 +301,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
                             infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
                             infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
-                            infraccionModel.delegacion = reader["delegacion"] == System.DBNull.Value ? string.Empty : reader["delegacion"].ToString();
+                            infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
                             infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
                             infraccionModel.NombrePropietario = infraccionModel.Vehiculo.Persona.nombreCompleto;
@@ -355,7 +359,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,inf.fechaActualizacion
                                                     ,inf.actualizadoPor
                                                     ,inf.estatus
-                                                    ,del.idDelegacion, del.delegacion,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                                     ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
                                                     ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
                                                     ,tipoP.idTipoPlaca, tipoP.tipoPlaca
@@ -372,7 +376,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,catConInf.idConcepto,catConInf.concepto
                                                     FROM infracciones as inf
                                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
-                                                    left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
+                                                    left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                                     left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
                                                     left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
@@ -398,7 +402,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
                             model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
                             model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
                             model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
                             model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
@@ -425,7 +429,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["delegacion"] == System.DBNull.Value ? string.Empty : reader["delegacion"].ToString();
+                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
                             model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
                             model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;

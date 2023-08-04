@@ -97,7 +97,15 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
                     idSolicitudInsert = result; // Almacena el valor en la variable idSolicitudInsert
-
+                   
+                    if (idSolicitudInsert > 0)
+                    {
+                      
+                        string strQueryOtraTabla = "INSERT INTO depositos (idSolicitud) VALUES (@idSolicitud)";
+                        SqlCommand commandOtraTabla = new SqlCommand(strQueryOtraTabla, connection);
+                        commandOtraTabla.Parameters.AddWithValue("@idSolicitud", idSolicitudInsert);
+                        commandOtraTabla.ExecuteNonQuery();
+                    }
                 }
                 catch (SqlException ex)
                 {

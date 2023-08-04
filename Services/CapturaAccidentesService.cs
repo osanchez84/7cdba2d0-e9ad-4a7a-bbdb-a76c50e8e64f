@@ -23,7 +23,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CapturaAccidentesModel> ObtenerAccidentes()
+        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina)
         {
             //
             List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
@@ -34,11 +34,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT acc.*, mun.Municipio, car.Carretera, tra.Tramo, er.estatusReporte FROM accidentes AS acc " +
-                        "INNER JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio " + 
-                        "INNER JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera " + 
-                        "INNER JOIN catTramos AS tra ON acc.idTramo = tra.idTramo " +
-                        "INNER JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte " +
-                        "WHERE acc.estatus = 1;", connection);
+                        "LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio " +
+                        "LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera " +
+                        "LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo " +
+                        "LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte " +
+                        "WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -79,7 +80,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente)
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina)
         {
             CapturaAccidentesModel accidente = new CapturaAccidentesModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -87,13 +88,15 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro,a.idClasificacionAccidente, " +
-                        "                                a.idFactorAccidente, a.IdFactorOpcionAccidente,m.municipio, c.carretera, t.tramo, e.estatusDesc " +
+                        "                                a.idFactorAccidente, a.IdFactorOpcionAccidente,a.idOficinaDelegacion,m.municipio, c.carretera, t.tramo, e.estatusDesc " +
                                                         "FROM accidentes AS a JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio " +
                                                         "JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera " +
                                                         "JOIN catTramos AS t ON a.idTramo = t.idTramo " +
                                                         "JOIN estatus AS e ON a.estatus = e.estatus " +
-                                                        "WHERE a.idAccidente = @idAccidente AND a.estatus = 1", connection);
+                                                        "WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -131,13 +134,14 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
         
         {
             int result = 0;
             int lastInsertedId = 0;
             string strQuery = @"INSERT INTO accidentes( 
                                          [Hora]
+                                        ,[idOficinaDelegacion]
                                         ,[idMunicipio]
                                         ,[idTramo]
                                         ,[Fecha]
@@ -148,6 +152,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[estatus])
                                 VALUES (
                                          @Hora
+                                        ,@idOficina
                                         ,@idMunicipio
                                         ,@idTramo
                                         ,@Fecha
@@ -165,6 +170,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@Hora", SqlDbType.Time)).Value = (object)model.Hora ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@kilometro", SqlDbType.NVarChar)).Value = (object)model.Kilometro ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatusReporte", SqlDbType.Int)).Value = 1;

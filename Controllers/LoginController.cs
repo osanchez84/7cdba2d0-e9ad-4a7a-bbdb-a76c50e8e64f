@@ -9,6 +9,7 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Runtime.ConstrainedExecution;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -20,12 +21,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
         public LoginController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-        }
-
+}
 
         [HttpPost]
         public async Task<IActionResult> ConsumirServicio(string usuario, string contrasena)
@@ -46,8 +45,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     {
                         string nombre = json[0].nombre;
                         string oficina = json[0].oficina;
-                        string id = Regex.Match(oficina, @"\d+").Value;
+                        string idOficinaStr = Regex.Match(oficina, @"\d+").Value;
                         string entidad = Regex.Match(oficina, @"\d+(.+?)\|").Groups[1].Value.Trim();
+                        if (int.TryParse(idOficinaStr, out int idOficina))
+                        {
+                            HttpContext.Session.SetInt32("IdOficina", idOficina);
+
+                        }
+                        else
+                        {
+                            // Manejar el caso en el que 'oficina' no contiene un número válido al inicio.
+                            // En este caso, idOficina mantendrá su valor predeterminado (cero).
+                        }
                         string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                         List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
@@ -61,6 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                             HttpContext.Session.SetString("Nombre", nombre);
                             HttpContext.Session.SetString("Oficina", oficina);
+
                             return Json(listaIdsPermitidosJson);
                         }
                     }

@@ -78,7 +78,7 @@
                     <label>Fecha<b>(obligatorio)</b>:</label>
                     @(Html.Kendo().DateTimePickerFor(t=>t.fechaSolicitud)
                         .Value(DateTime.Now)
-                        .HtmlAttributes(new { style = "width: 100%", title = "datepicker" })
+                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker", required = "required" })
                         .DateInput()
                     )
                 </div>
@@ -100,7 +100,7 @@
                                     read.Action("TiposVehiculos_Drop", "Depositos");
                                 });
                             })
-                            .HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegaciones" })
+                                .HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegaciones", required = "required" })
                             )
                     </span>
 
@@ -143,7 +143,7 @@
                                     read.Action("Oficiales_Drop", "Depositos");
                                 });
                             })
-                            .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
                             )
                     </span>
 
@@ -170,7 +170,7 @@
                             read.Action("Descripcion_Drop", "Depositos");
                                 });
                             })
-                            .HtmlAttributes(new { style = "width:40%;" })
+                        .HtmlAttributes(new { style = "width:40%;", required = "required" })
                             )
                     </span>
           
@@ -199,7 +199,7 @@
                             read.Action("TiposUsuario_Drop", "Depositos");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:40%;" })
+                        .HtmlAttributes(new { style = "width:40%;", required = "required" })
                     )
             </span>
            
@@ -443,20 +443,29 @@
     }
 
     function enviarSolicitud(){
-        var Mydata = $("#solicitudForm").serialize();
-        console.log(Mydata);
+        var validator = $("#solicitudForm").kendoValidator().data('kendoValidator');
+        validator.validate();
 
-        $.ajax({
-            url: '/Depositos/ajax_EnviarSolicitudDeposito',
-            type: 'GET',
-            data: Mydata,
-            success: function (data) {
-                sitteg_success("Solicitud creada correctamente");
-                window.location.href = "/Depositos/Ubicacion?Isol=" + data;
-            },
-            error: function () {
-                sitteg_warning("Ocurrioun error intente mas tarde");
-            }
-        });
-    }
+        if (validator.validate()) {
+            var Mydata = $("#solicitudForm").serialize();
+            console.log(Mydata);
+
+            $.ajax({
+                url: '/Depositos/ajax_EnviarSolicitudDeposito',
+                type: 'GET',
+                data: Mydata,
+                success: function (data) {
+                    sitteg_success("Solicitud creada correctamente");
+                    window.location.href = "/Depositos/Ubicacion?Isol=" + data;
+                },
+                error: function () {
+                    sitteg_warning("Ocurrió un error, inténtelo de nuevo más tarde");
+                }
+            });
+        } else {
+            sitteg_info('Debe llenar los campos requeridos');
+            return;
+
+        }
+     }
   </script>

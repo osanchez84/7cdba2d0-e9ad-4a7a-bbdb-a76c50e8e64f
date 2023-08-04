@@ -30,6 +30,7 @@ using System.Text;
 using System.Xml;
 using Telerik.SvgIcons;
 using System.Net.Http;
+using GuanajuatoAdminUsuarios.WebClientServices;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -51,8 +52,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("Inicio")]
         [Route("")]
         [AllowAnonymous]
-        public IActionResult Index()
+        public  async Task<IActionResult> Index()
         {
+            RequestDynamic requestDynamic = new RequestDynamic();
+            var response = await  requestDynamic.EncryptionService("POEXTSSP_USR", "fV115Kl*xGgV", "123456789012","2023-08-03").ConfigureAwait(false);
+
             //WebClient();
             //HttpClientCustome();
             //reversaDePagoRequest test = new reversaDePagoRequest();
@@ -63,7 +67,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             //RecibosPagoWSClient client = new RecibosPagoWSClient();
 
-            //var response = getResponse(client,test);
+            //var response = getResponse(client, test);
             //response.Wait();
             //client.CloseAsync();
             //await client.CloseAsync();
@@ -74,7 +78,47 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return View("Inicio");
             return View("Marca");
         }
-      
+
+        //private void CreateMessage()
+        //{
+        //    WebRequest request = WebRequest.Create("http://www.XXXX.com/Feeds");
+        //    string postData = "<airport>Heathrow</airport>";
+        //    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+        //    request.ContentType = "application/soap+xml; charset=utf-8";
+        //    request.ContentLength = byteArray.Length;
+
+        //    Stream dataStream = request.GetRequestStream();
+        //    dataStream.Write(byteArray, 0, byteArray.Length);
+        //    dataStream.Close();
+
+        //    // Get the response. 
+        //    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+        //    // Display the status. 
+        //    HttpContext.Current.Response.Write(((HttpWebResponse)response).StatusDescription);
+
+        //    // Get the stream containing content returned by the server. 
+        //    dataStream = response.GetResponseStream();
+
+        //    // Open the stream using a StreamReader for easy access. 
+        //    StreamReader reader = new StreamReader(dataStream);
+
+        //    // Read the content. 
+        //    string responseFromServer = reader.ReadToEnd();
+
+        //    // Display the content. 
+        //    HttpContext.Current.Response.Write(responseFromServer);
+
+        //    // Clean up the streams. 
+        //    reader.Close();
+        //    dataStream.Close();
+        //    response.Close();
+
+        //}
+
+
+
+
         //private void HttpClientCustome()
         //{
         //    reversaDePagoRequest test = new reversaDePagoRequest();
@@ -98,7 +142,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         //}
 
 
-        public string ToXML()
+        private string ToXML()
         {
             using (var stringwriter = new System.IO.StringWriter())
             {
@@ -125,8 +169,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             test.PasswordLog = "Password";
             test.ReciboControlInterno = "1234";
 
-            //var uri = "http://spenlinea.guanajuato.gob.mx:8080/SittegWS/RecibosPagoWS?wsdl";
-            var uri = "http://spenlinea.guanajuato.gob.mx:8080/SittegWS/RecibosPagoWS?wsdl/";
+            var uri = "http://spenlinea.guanajuato.gob.mx:8080/SittegWS/RecibosPagoWS?wsdl";
+            //var uri = "http://spenlinea.guanajuato.gob.mx:8080/SittegWS/RecibosPagoWS?wsdl/";
             WebClient proxy = new WebClient();
             string serviceURL = string.Format(uri, test);
             byte[] data = proxy.DownloadData(serviceURL);
@@ -138,9 +182,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             string myNamespace = "http://modificacion.recibos.sittegws/";
-         
 
-           
+
+
             // convert stream to string
             StreamReader reader = new StreamReader(stream);
             string text = reader.ReadToEnd();
@@ -149,19 +193,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
             stream.Position = 0;
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(respuestaObj));
             respuestaObj testObj = ((respuestaObj)xmlSerializer.Deserialize(stream));
-     
+
 
             //DataContractJsonSerializer obj = new DataContractJsonSerializer(typeof(respuestaObj));
             //respuestaObj employee = obj.ReadObject(stream) as respuestaObj;
         }
 
-        private async Task<reversaDePagoResponse> getResponse(RecibosPagoWSClient client,reversaDePagoRequest request)
+        private async Task<reversaDePagoResponse> getResponse(RecibosPagoWSClient client, reversaDePagoRequest request)
         {
             // get wallet coin list 
             await client.OpenAsync();
 
-           return await client.reversaDePagoAsync(request).ConfigureAwait(false);
-       
+            var ret = await client.reversaDePagoAsync(request).ConfigureAwait(false);
+            return ret;
+
         }
 
         [Route("/Principal")]

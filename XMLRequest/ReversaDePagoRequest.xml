@@ -1,0 +1,12 @@
+﻿<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:mod="http://modificacion.recibos.sittegws/">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<mod:reversaDePago>
+			<UsuarioLog>{0}</UsuarioLog>
+			<PasswordLog>{1}</PasswordLog>
+			<ReciboControlInterno>{2}</ReciboControlInterno>
+			<FechaReversa>{3}</FechaReversa>
+		</mod:reversaDePago>
+	</soapenv:Body>
+</soapenv:Envelope>

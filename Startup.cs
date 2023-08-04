@@ -145,7 +145,6 @@ namespace GuanajuatoAdminUsuarios
 
 
 
-
             services
                .AddControllersWithViews()
                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());

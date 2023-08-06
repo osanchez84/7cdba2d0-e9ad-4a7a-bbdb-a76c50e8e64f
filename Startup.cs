@@ -21,6 +21,7 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Utils;
 using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.WebClientServices;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -143,7 +144,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatTipoUsuarioService, CatTipoUsuarioService>();
             services.AddScoped<IDepositosService, DepositosService>();
             services.AddScoped<IServiceAppSettingsService, ServiceAppSettingsService>();
-            
+            services.AddScoped<IRequestDynamic, RequestDynamic>();
+
 
             services
                .AddControllersWithViews()

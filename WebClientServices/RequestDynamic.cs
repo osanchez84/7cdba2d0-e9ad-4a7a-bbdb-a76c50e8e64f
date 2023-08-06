@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace GuanajuatoAdminUsuarios.WebClientServices
 {
-    public  class RequestDynamic
+    public  class RequestDynamic : IRequestDynamic
     {
         private readonly IServiceAppSettingsService _serviceAppSettingsService;
         public RequestDynamic(IServiceAppSettingsService serviceAppSettingsService)
@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.WebClientServices
 
         }
 
-        public async Task<string> PostSOAPRequestAsync(string requestUri, string text)
+        private async Task<string> PostSOAPRequestAsync(string requestUri, string text)
         {
             using (HttpClient _httpClient = new HttpClient())
             {

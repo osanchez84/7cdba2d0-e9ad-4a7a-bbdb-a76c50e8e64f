@@ -38,11 +38,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ILogger<InicioController> _logger;
+        private readonly IRequestDynamic _requestDynamic;
 
-
-        public InicioController(ILogger<InicioController> logger)
+        public InicioController(ILogger<InicioController> logger, IRequestDynamic requestDynamic)
         {
             _logger = logger;
+            _requestDynamic = requestDynamic;
 
         }
 
@@ -53,8 +54,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [AllowAnonymous]
         public  async Task<IActionResult> Index()
         {
-            RequestDynamic requestDynamic = new RequestDynamic();
-            var response = await  requestDynamic.EncryptionService("POEXTSSP_USR", "fV115Kl*xGgV", "123456789012","2023-08-03").ConfigureAwait(false);
+            var response = await _requestDynamic.EncryptionService("POEXTSSP_USR", "fV115Kl*xGgV", "123456789012","2023-08-03", "RecibosPagoWS").ConfigureAwait(false);
 
             //WebClient();
             //HttpClientCustome();

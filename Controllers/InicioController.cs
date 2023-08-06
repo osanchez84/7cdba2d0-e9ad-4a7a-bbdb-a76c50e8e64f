@@ -28,7 +28,6 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Text;
 using System.Xml;
-using Telerik.SvgIcons;
 using System.Net.Http;
 using GuanajuatoAdminUsuarios.WebClientServices;
 

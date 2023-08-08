@@ -1,35 +1,48 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GuanajuatoAdminUsuarios.WebClientServices
 {
-    public  class RequestDynamic : IRequestDynamic
+    public class RequestDynamic<T> : IRequestDynamic<T> where T : class
     {
         private readonly IServiceAppSettingsService _serviceAppSettingsService;
-        public RequestDynamic(IServiceAppSettingsService serviceAppSettingsService)
+        private readonly IRequestXMLDynamic<T> _RequestXMLDynamic;
+        public RequestDynamic(IServiceAppSettingsService serviceAppSettingsService, IRequestXMLDynamic<T> requestXMLDynamic)
         {
             _serviceAppSettingsService = serviceAppSettingsService;
+            _RequestXMLDynamic = requestXMLDynamic;
         }
 
-        public async Task<string> EncryptionService(string UsuarioLog, string PasswordLog, string ReciboControlInterno, string FechaReversa,string urlName)
+        public async Task<string> EncryptionService(T model, string urlName)
         {
-            var serviceAppSettings  = _serviceAppSettingsService.GetSettingbyName(urlName);
-            XDocument myxml = XDocument.Load(@"XMLRequest\ReversaDePagoRequest.xml");
-            string XMLRequest = myxml.ToString();
+            try
+            {
+                var serviceAppSettings = _serviceAppSettingsService.GetSettingbyName(urlName);
+                XDocument myxml = XDocument.Load(@"XMLRequest\ReversaDePagoRequest.xml");
+                string XMLRequest = _RequestXMLDynamic.GetXMLRequest(model);
+            
+                //string XMLRequest = myxml.ToString();
+                //XMLRequest = string.Format(XMLRequest, UsuarioLog, PasswordLog, ReciboControlInterno, FechaReversa);
 
-            XMLRequest = string.Format(XMLRequest, UsuarioLog, PasswordLog, ReciboControlInterno, FechaReversa);
 
-
-            var getEncryptionResponse = await PostSOAPRequestAsync(serviceAppSettings.SettingValue, XMLRequest);
-            System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
-            xmlDoc.LoadXml(getEncryptionResponse);
-            string encrypt = xmlDoc.InnerText;
-            return encrypt;
+                var getEncryptionResponse = await PostSOAPRequestAsync(serviceAppSettings.SettingValue, XMLRequest);
+                System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+                xmlDoc.LoadXml(getEncryptionResponse);
+                string encrypt = xmlDoc.InnerText;
+                return encrypt;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
+
+
 
         private async Task<string> PostSOAPRequestAsync(string requestUri, string text)
         {

@@ -38,9 +38,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ILogger<InicioController> _logger;
-        private readonly IRequestDynamic _requestDynamic;
+        private readonly IRequestDynamic<Envelope> _requestDynamic;
 
-        public InicioController(ILogger<InicioController> logger, IRequestDynamic requestDynamic)
+        public InicioController(ILogger<InicioController> logger, IRequestDynamic<Envelope> requestDynamic)
         {
             _logger = logger;
             _requestDynamic = requestDynamic;
@@ -52,9 +52,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet("Inicio")]
         [Route("")]
         [AllowAnonymous]
-        public  async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            var response = await _requestDynamic.EncryptionService("POEXTSSP_USR", "fV115Kl*xGgV", "123456789012","2023-08-03", "RecibosPagoWS").ConfigureAwait(false);
+
+            RecibosPagoWSRequestModel model = new RecibosPagoWSRequestModel();
+            var fecha = DateTime.Now.ToString("yyyy-MM-dd");
+            model.FechaReversa = "2023-02-23";
+            //model.UsuarioLog = "POEXTSSP_USR";
+            //model.PasswordLog = "fV115Kl*xGgV";
+            model.UsuarioLog = "sg";
+            model.PasswordLog = "1nt3rn0";
+            model.ReciboControlInterno = "000000000001";
+
+            Envelope envelope = new Envelope();
+            envelope.Body = new Body();
+            envelope.Body.ReversaDePago = model;
+            var response = await _requestDynamic.EncryptionService(envelope, "RecibosPagoWS").ConfigureAwait(false);
 
             //WebClient();
             //HttpClientCustome();

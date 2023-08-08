@@ -25,7 +25,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT Id,SettingName,SettingValue,IsActive FROM serviceAppSettings where SettingName=@SettingName and IsActive=1", connection);
+                    SqlCommand command = new SqlCommand("SELECT Id,SettingName,SettingValue,IsActive FROM serviceAppSettings where UPPER(SettingName)=@SettingName and IsActive=1", connection);
+                    command.Parameters.Add(new SqlParameter("@SettingName", SqlDbType.NVarChar)).Value = (object)SettingName != null ? SettingName.ToUpper() : DBNull.Value;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

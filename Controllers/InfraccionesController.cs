@@ -59,7 +59,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
                 InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
                 List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
                 searchModel.ListInfracciones = listInfracciones;

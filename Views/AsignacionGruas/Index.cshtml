@@ -1,16 +1,28 @@
-﻿
+﻿@model GuanajuatoAdminUsuarios.Models.AsignacionGruaModel
+
 <head>
     <script>
         function submitSearch() {
 
             var Mydata = $("#frmSearch").serialize();
-            //console.log(Mydata);
+            console.log(Mydata);
             $.ajax({
-                url: '@Url.Action("ajax_BuscarPadron")',
-                type: 'POST',
+                url: '@Url.Action("ajax_BuscarSolicitudes")',
+                type: 'GET',
                 data: Mydata,
-                success: function (result) {
-                    $("#listadoPadron").html(result);
+                success: function (data) {
+                    console.log("FDf",data)
+                    if (data.length === 0) {
+                  sitteg_warning("La busqueda no obtuvo resultados");
+                    }
+                    else{
+                    var grid = $("#gridBusquedaSolicitudes").data("kendoGrid");
+                    grid.dataSource.data(data);
+                    grid.refresh();
+                    }
+                },
+                error: function () {
+                    sitteg_warning("Ocurrio un error intetnte mas tarde");
                 }
             });
         }
@@ -55,10 +67,10 @@
                     </div>
                 
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-6">
                  <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
+                            @(Html.Kendo().DatePickerFor(t => t.fecha)
                                 .Label(l => l.Content("Fecha:"))
                                 .Value(DateTime.Today) 
                                 .HtmlAttributes(new { style = "width: 40%", id="dateBusqueda" })
@@ -79,7 +91,10 @@
 
         </form>
 
-        
+        <div id="ListadoSolicitudes">
+            <partial name="_ListaSolicitudes" model="Model" />
+        </div>
+
     </section>
 </div>
 

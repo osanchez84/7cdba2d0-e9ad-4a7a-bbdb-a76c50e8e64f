@@ -31,6 +31,60 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
+                var usuariosPermitidos = new Dictionary<(string, string), (int, List<int>, string, string)>
+        {
+            { ("usuarioPec", "Pec123"), (1, new List<int> {     100, 101, 102, 103, 104, 105, 106, 200, 300, 301,
+                                                                        302, 303, 304, 400, 401, 402, 500, 501, 502, 600,
+                                                                        601, 601, 700, 701, 702, 703, 704, 705, 706, 707,
+                                                                        708, 709, 800, 801, 802, 900, 901, 902, 903, 904,
+                                                                        905, 906, 907, 908, 909, 910, 911, 912, 913, 914,
+                                                                        915, 916, 917, 918, 919, 920, 921, 922, 923, 924,
+                                                                        925, 926, 927, 928, 929, 930, 931, 932, 933, 934,
+                                                                        935, 936, 937, 938, 939, 940, 941, 942, 943, 944,
+                                                                        945, 946, 947, 948, 949, 950, 951, 952, 953, 954,
+                                                                        955, 956, 957, 958, 959, 960, 961, 962, 963, 964,
+                                                                        965, 966, 967, 968, 969, 970, 971, 972, 973, 974,
+                                                                        975, 976, 977, 978, 979, 980, 981, 982, 983, 984,
+                                                                        985, 986, 987, 988, 989, 990, 991, 992, 993, 994,
+                                                                        995, 996, 997, 998, 999 }, "UsuarioPEC", "PEC") },
+
+            { ("usuarioMovilidad", "Mov123"), (2, new List<int> {    100, 101, 102, 103, 104, 105, 106, 200, 300, 301,
+                                                                        302, 303, 304, 400, 401, 402, 500, 501, 502, 600,
+                                                                        601, 601, 700, 701, 702, 703, 704, 705, 706, 707,
+                                                                        708, 709, 800, 801, 802, 900, 901, 902, 903, 904,
+                                                                        905, 906, 907, 908, 909, 910, 911, 912, 913, 914,
+                                                                        915, 916, 917, 918, 919, 920, 921, 922, 923, 924,
+                                                                        925, 926, 927, 928, 929, 930, 931, 932, 933, 934,
+                                                                        935, 936, 937, 938, 939, 940, 941, 942, 943, 944,
+                                                                        945, 946, 947, 948, 949, 950, 951, 952, 953, 954,
+                                                                        955, 956, 957, 958, 959, 960, 961, 962, 963, 964,
+                                                                        965, 966, 967, 968, 969, 970, 971, 972, 973, 974,
+                                                                        975, 976, 977, 978, 979, 980, 981, 982, 983, 984,
+                                                                        985, 986, 987, 988, 989, 990, 991, 992, 993, 994,
+                                                                        995, 996, 997, 998, 999 }, "UsuarioMovilidad", "Movilidad") },
+ { ("usuarioPrueba", "Prueba123"), (3, new List<int> {    100, 101, 102, 103, 104, 105, 106, 200, 300, 301,
+                                                                        302, 303, 304, 400, 401, 402, 500, 501, 502, 600,
+                                                                        601, 601, 700, 701, 702, 703, 704, 705, 706, 707,
+                                                                        905, 906, 907, 908, 909, 910, 911, 912, 913, 914,
+                                                                        915, 916, 917, 918, 919, 920, 921, 922, 923, 924,
+                                                                        925, 926, 927, 928, 929, 930, 931, 932, 933, 934,
+                                                                        935, 936, 937, 938, 939, 940, 941, 942, 943, 944,
+                                                                        945, 946, 947, 948, 949, 950, 951, 952, 953, 954,
+                                                                        955, 956, 957, }, "PruebaPermisos", "Prueba") },       
+                };
+
+                if (usuariosPermitidos.TryGetValue((usuario, contrasena), out var valoresSesion))
+                {
+                    var (idOficina, listaIdsPermitidos, nombre, oficina) = valoresSesion;
+
+                    // Asignar valores a las variables de sesión
+                    HttpContext.Session.SetInt32("IdOficina", idOficina);
+                    HttpContext.Session.SetString("IdsPermitidos", JsonConvert.SerializeObject(listaIdsPermitidos));
+                    HttpContext.Session.SetString("Nombre", nombre);
+                    HttpContext.Session.SetString("Oficina", oficina);
+
+                    return Json(JsonConvert.SerializeObject(listaIdsPermitidos));
+                }
                 var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
 
                 var httpClient = _httpClientFactory.CreateClient();
@@ -54,8 +108,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         }
                         else
                         {
-                            // Manejar el caso en el que 'oficina' no contiene un número válido al inicio.
-                            // En este caso, idOficina mantendrá su valor predeterminado (cero).
+                 
                         }
                         string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
@@ -95,6 +148,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult GetIdsPermitidos()
         {
             var idsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            
+            
             var idsPermitidos = JsonConvert.DeserializeObject<List<int>>(idsPermitidosJson) ?? new List<int>();
             return Json(idsPermitidos);
         }

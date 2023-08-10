@@ -28,7 +28,7 @@
     
         $(document).ready(function () {
             $.ajax({
-                url: '@Url.Action("GetIdsPermitidos", "Login")', // Reemplaza "Controlador" con el nombre de tu controlador
+                url: '@Url.Action("GetIdsPermitidos", "Login")', 
                 type: 'GET',
                 success: function (data) {
                     var idsPermitidos = data;
@@ -78,6 +78,18 @@
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="@Url.Action("Index", "TransitoTransporte")">
                                             <i class="icon icon-data h6 m-0 me-2"></i>
                                             <p class="m-0 text-start">Búsqueda Transito/Transporte</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" data-id="301">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="/Depositos/Depositos">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Solicitud de depósito</p>
+                                        </a>
+                                    </li>
+                                     <li class="nav-item" data-id="302">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="/AsignacionGruas/Index">
+                                            <i class="icon icon-data h6 m-0 me-2"></i>
+                                            <p class="m-0 text-start">Captura Gruas</p>
                                         </a>
                                     </li>
                                     <li class="nav-item" data-id="500">

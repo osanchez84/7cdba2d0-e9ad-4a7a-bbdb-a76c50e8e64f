@@ -2,6 +2,7 @@ using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
@@ -58,13 +59,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         
         public JsonResult Concesionarios_Read()
         {
-            var result = new SelectList(_concesionariosService.GetConcesionarios(), "IdConcesionario", "Concesionario");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_concesionariosService.GetConcesionarios(idOficina), "IdConcesionario", "Concesionario");
             return Json(result);
         }
 
         public JsonResult Deposito_Read()
         {
-            var result = new SelectList(_padronDepositosGruasService.GetPensiones(), "IdPension", "Pension");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_padronDepositosGruasService.GetPensiones(idOficina), "IdPension", "Pension");
             return Json(result);
         }
 

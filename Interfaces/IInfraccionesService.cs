@@ -25,5 +25,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int ModificarInfraccionPorCortesia(InfraccionesModel model);
 
         public int InsertarImagenEnInfraccion( byte[] imageData, int idInfraccion);
+        public List<InfraccionesModel> GetAllAccidentes2();
+
     }
 }

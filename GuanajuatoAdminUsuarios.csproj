@@ -46,9 +46,13 @@
 
   <ItemGroup>
     <Compile Remove="Templates\**" />
+    <Compile Remove="WebClientServices\**" />
     <Content Remove="Templates\**" />
+    <Content Remove="WebClientServices\**" />
     <EmbeddedResource Remove="Templates\**" />
+    <EmbeddedResource Remove="WebClientServices\**" />
     <None Remove="Templates\**" />
+    <None Remove="WebClientServices\**" />
     <None Remove="Telerik.UI.for.AspNet.Core.Trial" />
     <None Remove="Helpers\" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />

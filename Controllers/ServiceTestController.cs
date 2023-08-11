@@ -1,8 +1,10 @@
-﻿using GuanajuatoAdminUsuarios.SOAPModels;
-using GuanajuatoAdminUsuarios.WebClientServices;
+﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Services;
+using GuanajuatoAdminUsuarios.SOAPModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReciboPago;
+using SITTEG.APIClientInfrastructure.Client;
 using System;
 using System.IO;
 using System.Net;
@@ -15,15 +17,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         private readonly IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> _requestDynamic;
         private readonly ILogger<InicioController> _logger;
+        private readonly IServiceAppSettingsService _serviceAppSettingsService;
 
-        public ServiceTestController(ILogger<InicioController> logger, IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> requestDynamic)
+        public ServiceTestController(IServiceAppSettingsService serviceAppSettingsService, ILogger<InicioController> logger, IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> requestDynamic)
         {
+            _serviceAppSettingsService = serviceAppSettingsService;
             _logger = logger;
             _requestDynamic = requestDynamic;
 
         }
         public async Task<IActionResult> Index()
         {
+            var UrlSetting = _serviceAppSettingsService.GetSettingbyName("RecibosPagoWS");
+            var XMLSetting = _serviceAppSettingsService.GetSettingbyName("ReversaDePagoXML");
             RecibosPagoWSRequestModel model = new RecibosPagoWSRequestModel();
             var fecha = DateTime.Now.ToString("yyyy-MM-dd");
             model.FechaReversa = "2023-02-23";
@@ -34,7 +40,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.ReciboControlInterno = "000000000001";
             RecibosPagoWSResponsetModel modelResponse = new RecibosPagoWSResponsetModel();
 
-            var response = await _requestDynamic.EncryptionService(model, modelResponse, "RecibosPagoWS", "ReversaDePagoXML").ConfigureAwait(false);
+            var response = await _requestDynamic.EncryptionService(model, modelResponse, UrlSetting.SettingValue, XMLSetting.SettingValue).ConfigureAwait(false);
 
             //WebClient();
             //HttpClientCustome();

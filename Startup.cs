@@ -15,13 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using GuanajuatoAdminUsuarios.Services;
-
-using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Utils;
 using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Models;
-using GuanajuatoAdminUsuarios.WebClientServices;
 using SITTEG.APIClientHelper.Client;
 using SITTEG.APIClientInfrastructure.Client;
 using System.ComponentModel;

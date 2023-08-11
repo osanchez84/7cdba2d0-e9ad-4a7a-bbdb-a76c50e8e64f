@@ -22,6 +22,10 @@ using GuanajuatoAdminUsuarios.Utils;
 using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.WebClientServices;
+using SITTEG.APIClientHelper.Client;
+using SITTEG.APIClientInfrastructure.Client;
+using System.ComponentModel;
+
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -50,9 +54,9 @@ namespace GuanajuatoAdminUsuarios
                         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                         options.SlidingExpiration = true;
                     });
-           
 
-                services.AddHttpClient();
+
+            services.AddHttpClient();
 
 
             services.AddRouting(setupAction =>
@@ -146,6 +150,10 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IServiceAppSettingsService, ServiceAppSettingsService>();
             services.AddScoped(typeof(IRequestDynamic<>), typeof(RequestDynamic<>));
             services.AddScoped(typeof(IRequestXMLDynamic<>), typeof(RequestXMLDynamic<>));
+
+            services.AddScoped(typeof(IApiClient), typeof(ApiClient));
+            services.AddScoped<IAccountClient, AccountClient>();
+            services.AddScoped<IGenericClient, GenericClient>();
 
             services
                .AddControllersWithViews()

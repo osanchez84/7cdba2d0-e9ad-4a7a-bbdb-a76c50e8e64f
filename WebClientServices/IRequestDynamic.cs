@@ -2,8 +2,8 @@
 
 namespace GuanajuatoAdminUsuarios.WebClientServices
 {
-    public interface IRequestDynamic<T> where T : class
+    public interface IRequestDynamic<T, D> where T : class where D : class
     {
-        Task<string> EncryptionService(T model, string urlName);
+        Task<D> EncryptionService(T modelRequest,D modelResponse, string urlName, string requestXMLName);
     }
 }

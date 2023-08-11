@@ -21,5 +21,21 @@ namespace GuanajuatoAdminUsuarios.WebClientServices
                 }
             }
         }
+
+        //public string GetXMLResponse(T value)
+        //{
+        //    if (value == null) return string.Empty;
+
+        //    var xmlSerializer = new XmlSerializer(typeof(T));
+
+        //    using (var stringWriter = new StringWriter())
+        //    {
+        //        using (var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Indent = true }))
+        //        {
+        //            xmlSerializer.Deserialize("s",);
+        //            return stringWriter.ToString();
+        //        }
+        //    }
+        //}
     }
 }

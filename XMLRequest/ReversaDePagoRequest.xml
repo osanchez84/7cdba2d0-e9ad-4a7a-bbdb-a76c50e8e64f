@@ -3,10 +3,7 @@
 	<soapenv:Header/>
 	<soapenv:Body>
 		<mod:reversaDePago>
-			<UsuarioLog>{0}</UsuarioLog>
-			<PasswordLog>{1}</PasswordLog>
-			<ReciboControlInterno>{2}</ReciboControlInterno>
-			<FechaReversa>{3}</FechaReversa>
+			{0}
 		</mod:reversaDePago>
 	</soapenv:Body>
 </soapenv:Envelope>

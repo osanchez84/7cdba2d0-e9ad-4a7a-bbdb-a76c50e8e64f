@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
             return View();
         }
-        public IActionResult DetallesLicencia( )
+        public IActionResult DetallesLicencia()
         {
 
             return View("_DetalleLicencia");
@@ -87,10 +87,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                     FechaVigencia = fechaVigencia,
                                 };
 
-                                _personasService.InsertarDesdeServicio(persona);
-                               
+                                // _personasService.InsertarDesdeServicio(persona);
+                                return Json(new { encontrada = true, data = persona });
+
                             }
-                           
+
                         }
 
                     }
@@ -187,76 +188,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             return RedirectToAction("Index");
         }
+
+
+
         [HttpPost]
 
-        public async Task<IActionResult> BusquedaPorLicencia(string numeroLicenciaBusqueda)
+        public ActionResult GuardaDesdeServicio(string nombre, string apellidoPaterno, string apellidoMaterno, int tipoLicencia, string numeroLicencia, DateTime fechaExpedicion, DateTime fechaVigencia)
         {
             try
             {
-                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={numeroLicenciaBusqueda}";
+                 _personasService.InsertarDesdeServicio(nombre, apellidoPaterno, apellidoMaterno, tipoLicencia, numeroLicencia, fechaExpedicion, fechaVigencia);
+                var datosTabla = _personasService.BuscarPersonaSoloLicencia( numeroLicencia);
 
-                var httpClient = _httpClientFactory.CreateClient();
-                var response = await httpClient.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    List<ResultadoLicenciaModel> licencias = JsonConvert.DeserializeObject<List<ResultadoLicenciaModel>>(content);
-
-                    foreach (var licenciaInfo in licencias)
-                    {
-                        string nombreCompleto = licenciaInfo.Nombre;
-                        string[] partesNombre = nombreCompleto.Split(' ');
-
-                        string nombre = partesNombre[0]; 
-                        string apellidoPaterno = partesNombre.Length > 1 ? partesNombre[1] : string.Empty; 
-                        string apellidoMaterno = partesNombre.Length > 2 ? partesNombre[2] : string.Empty; 
-                        string tipoLicencia = licenciaInfo.TipoLicencia;
-                        DateTime fechaExpedicion = licenciaInfo.FechaExpedicion;
-                        DateTime fechaVigencia = licenciaInfo.FechaVigencia;
-
-                        ResultadoLicenciaModel persona = new ResultadoLicenciaModel
-                        {
-                            NumeroLicencia = numeroLicenciaBusqueda,
-                            Nombre = nombre,
-                            ApellidoPaterno = apellidoPaterno,
-                            ApellidoMaterno = apellidoMaterno,
-                            TipoLicencia = tipoLicencia,
-                            FechaExpedicion = fechaExpedicion,
-                            FechaVigencia = fechaVigencia,
-                        };
-
-                        _personasService.InsertarDesdeServicio(persona);
-                    }
-                   return RedirectToAction("BuscarPorParametroAsync", numeroLicenciaBusqueda);
-                    
-
-                }
-                else
-                {
-                    // En caso de respuesta no exitosa, manejar el error y devolver una vista de error o redireccionar a otra página.
-                    return View("Error");
-                }
+                return Json(datosTabla);
             }
             catch (Exception ex)
             {
-                // En caso de errores, manejar el error y devolver una vista de error o redireccionar a otra página.
-                return View("Error");
+                // Maneja el error de manera adecuada
+                return Json(new { error = "Error al guardar en la base de datos: " + ex.Message });
             }
         }
-
-
-// Método del controlador para recibir los datos
-        [HttpPost]
-        public IActionResult RecibirLicencia(string nombre, string tipoLicencia, string fechaExpedicion, string fechaVigencia)
-        {
-            // Aquí puedes realizar las acciones necesarias con los datos recibidos.
-            // Por ejemplo, guardarlos en una base de datos, procesarlos, etc.
-
-            // Ejemplo de cómo devolver una respuesta al cliente
-            return Ok("Datos recibidos correctamente.");
-        }
     }
-
 }
+
+
 

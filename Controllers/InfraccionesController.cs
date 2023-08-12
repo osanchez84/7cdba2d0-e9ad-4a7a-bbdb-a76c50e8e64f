@@ -14,6 +14,9 @@ using iTextSharp.text;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Text;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -29,6 +32,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;
         private readonly IPersonasService _personasService;
+        private readonly HttpClient _httpClient;
 
         public InfraccionesController(
             IEstatusInfraccionService estatusInfraccionService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
@@ -36,8 +40,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             IInfraccionesService infraccionesService, IPdfGenerator<InfraccionesModel> pdfService,
             ICatDictionary catDictionary,
             IVehiculosService vehiculosService,
-            IPersonasService personasService
-           )
+            IPersonasService personasService,
+            IHttpClientFactory httpClientFactory
+            )
         {
             _catDictionary = catDictionary;
             _estatusInfraccionService = estatusInfraccionService;
@@ -49,6 +54,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _pdfService = pdfService;
             _vehiculosService = vehiculosService;
             _personasService = personasService;
+            _httpClient = httpClientFactory.CreateClient();
+            // Configurar el cliente HTTP con la URL base del servicio
+            _httpClient.BaseAddress = new Uri("https://alfasiae.guanajuato.gob.mx/RESTAdapter/");
         }
 
         public IActionResult Index()
@@ -261,10 +269,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.idPersona);
             model.idPersonaInfraccion = idPersonaInfraccion;
             var idInfraccion = _infraccionesService.CrearInfraccion(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             return Json(new { id = idInfraccion });
-        }
+            }
 
-        [HttpGet]
+        
+
+[HttpGet]
         public ActionResult ajax_ModalCrearMotivo()
         {
             var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");

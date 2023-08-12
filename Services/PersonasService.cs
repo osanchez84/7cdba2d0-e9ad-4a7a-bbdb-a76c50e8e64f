@@ -985,7 +985,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return licenciaNoSITTEG;
         }
 
-        public void InsertarDesdeServicio(ResultadoLicenciaModel persona)
+        public void InsertarDesdeServicio(string nombre, string apellidoPaterno, string apellidoMaterno, int tipoLicencia, string numeroLicencia, DateTime fechaExpedicion, DateTime fechaVigencia)
         {
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -996,12 +996,12 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@nombre", persona.Nombre);
-                    command.Parameters.AddWithValue("@apellidoPaterno", persona.ApellidoPaterno);
-                    command.Parameters.AddWithValue("@apellidoMaterno", persona.ApellidoMaterno);
-                    command.Parameters.AddWithValue("@fechaVigencia", persona.FechaVigencia);
-                    command.Parameters.AddWithValue("@NumeroLicencia", persona.NumeroLicencia);
-                    command.Parameters.AddWithValue("@tipoLicenciaVal", persona.tipoLicenciaVal);
+                    command.Parameters.AddWithValue("@nombre", nombre);
+                    command.Parameters.AddWithValue("@apellidoPaterno",apellidoPaterno);
+                    command.Parameters.AddWithValue("@apellidoMaterno", apellidoMaterno);
+                    command.Parameters.AddWithValue("@fechaVigencia",fechaVigencia);
+                    command.Parameters.AddWithValue("@NumeroLicencia", numeroLicencia);
+                    command.Parameters.AddWithValue("@tipoLicenciaVal", tipoLicencia);
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
@@ -1010,6 +1010,80 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
         }
+
+        public PersonaModel BuscarPersonaSoloLicencia(string numeroLicencia)
+        {
+            PersonaModel personaEncontrada = null;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                connection.Open();
+
+                string query = "SELECT " +
+               "p.idPersona, " +
+               "p.numeroLicencia, " +
+               "p.CURP, " +
+               "p.RFC, " + 
+               "p.nombre, " +
+               "p.apellidoPaterno, " +
+               "p.apellidoMaterno, " +
+               "p.fechaActualizacion, " +
+               "p.actualizadoPor, " +
+               "p.estatus, " +
+               "p.idCatTipoPersona, " +
+               "p.idTipoLicencia, " +
+               "p.fechaNacimiento, " +
+               "p.idGenero, " +
+               "p.vigenciaLicencia, " +
+               "ctp.tipoPersona, " +
+               "cl.tipoLicencia, " +
+               "cg.genero " +
+               "FROM personas p " +
+               "LEFT JOIN catTipoPersona ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1 " +
+               "LEFT JOIN catTipoLicencia cl ON p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1 " +
+               "LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1 " +
+               "WHERE p.estatus = 1 " +
+               "AND p.numeroLicencia = @numeroLicencia;";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@numeroLicencia", numeroLicencia);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            personaEncontrada = new PersonaModel();
+                            personaEncontrada.PersonaDireccion = new PersonaDireccionModel();
+                            personaEncontrada.idPersona = reader["idPersona"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"]);
+                            personaEncontrada.numeroLicencia = reader["numeroLicencia"].ToString();
+                            personaEncontrada.CURP = reader["CURP"].ToString();
+                            personaEncontrada.RFC = reader["RFC"].ToString();
+                            personaEncontrada.nombre = reader["nombre"].ToString();
+                            personaEncontrada.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            personaEncontrada.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                            personaEncontrada.fechaActualizacion = reader["fechaActualizacion"] == DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"]);
+                            personaEncontrada.actualizadoPor = reader["actualizadoPor"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"]);
+                            personaEncontrada.estatus = reader["estatus"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"]);
+                            personaEncontrada.idCatTipoPersona = reader["idCatTipoPersona"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"]);
+                            personaEncontrada.tipoPersona = reader["tipoPersona"].ToString();
+                            personaEncontrada.idGenero = reader["idGenero"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"]);
+                            personaEncontrada.genero = reader["genero"].ToString();
+                            personaEncontrada.idTipoLicencia = reader["idTipoLicencia"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"]);
+                            personaEncontrada.tipoLicencia = reader["tipoLicencia"].ToString();
+                            personaEncontrada.fechaNacimiento = reader["fechaNacimiento"] == DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"]);
+                            personaEncontrada.vigenciaLicencia = reader["vigenciaLicencia"] == DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"]);
+                            personaEncontrada.PersonaDireccion = GetPersonaDireccionByIdPersona((int)personaEncontrada.idPersona);
+                        }
+                    }
+                }
+            }
+
+            return personaEncontrada;
+        }
+
     }
+
 }
+
 

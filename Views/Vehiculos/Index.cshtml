@@ -22,7 +22,7 @@
             var Mydata = $("#frmSearch").serialize();
             console.log(Mydata);
             $.ajax({
-                url: '@Url.Action("ajax_BuscarVehiculo")',
+                url: '@Url.Action("ajax_BuscarVehiculos")',
                 type: 'POST',
                 data: Mydata,
                 success: function (result) {

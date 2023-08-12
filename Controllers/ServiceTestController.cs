@@ -18,13 +18,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> _requestDynamic;
         private readonly ILogger<InicioController> _logger;
         private readonly IServiceAppSettingsService _serviceAppSettingsService;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
 
-        public ServiceTestController(IServiceAppSettingsService serviceAppSettingsService, ILogger<InicioController> logger, IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> requestDynamic)
+        public ServiceTestController(IServiceAppSettingsService serviceAppSettingsService, 
+            ILogger<InicioController> logger, IRequestDynamic<RecibosPagoWSRequestModel,
+                RecibosPagoWSResponsetModel> requestDynamic, ICotejarDocumentosClientService cotejarDocumentosClientService)
         {
             _serviceAppSettingsService = serviceAppSettingsService;
             _logger = logger;
             _requestDynamic = requestDynamic;
-
+            _cotejarDocumentosClientService = cotejarDocumentosClientService;
         }
         public async Task<IActionResult> Index()
         {
@@ -57,6 +60,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //client.CloseAsync();
             //await client.CloseAsync();
 
+            return View();
+        }
+
+        public IActionResult SPService()
+        {
+            var result = _cotejarDocumentosClientService.CrearPension();
+            ViewBag.Pension = result;
             return View();
         }
 

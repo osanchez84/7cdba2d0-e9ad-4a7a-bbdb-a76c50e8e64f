@@ -1,55 +1,43 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
-using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
+using Newtonsoft.Json;
 using SITTEG.APIClientInfrastructure.Client;
 using System.Data;
 using System;
-using System.Data.SqlClient;
-using GuanajuatoAdminUsuarios.RESTModels;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using Telerik.SvgIcons;
+using System.Data.SqlClient;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class CotejarDocumentosClientService : ICotejarDocumentosClientService
+    public class ConsultarDocumentoService : IConsultarDocumentoService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
-        protected readonly IGenericClient _apiClient;
-        private const string uri = "https://alfasiae.guanajuato.gob.mx";
 
-        public CotejarDocumentosClientService(IGenericClient apiClient, ISqlClientConnectionBD sqlClientConnectionBD)
+        public ConsultarDocumentoService(ISqlClientConnectionBD sqlClientConnectionBD)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public void consumeService()
+        public RootConsultarDocumentoResponse ConsultarDocumento(RootConsultarDocumentoRequest requestModel, string endPointName)
         {
-            string url = "/RESTAdapter/CotejarDatos";
-            dynamic requestModel = new { x = 1 };
-            //var x = _apiClient.PostGenericResponse<, >(url, requestModel);
-        }
-
-        public RootCotejarDatosRes CotejarDatos(CotejarDatosRequestModel requestModel, string endPointName)
-        {
-
-            //var bodyRequest= "{\"Tp_folio\":\"4\",\"Folio\":\"E01038\",\"tp_consulta\":\"3\"}";
             var json = JsonConvert.SerializeObject(requestModel, Formatting.Indented);
             var bodyRequest = json;
             string result = string.Empty;
-            RootCotejarDatosRes responseModel = new RootCotejarDatosRes();
+            RootConsultarDocumentoResponse responseModel = new RootConsultarDocumentoResponse();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SP_WebClientConnects", connection);
+                    SqlCommand command = new SqlCommand("SP_ConsultarDocumentoRest", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@EndpointName", SqlDbType.NVarChar)).Value = endPointName;
                     command.Parameters.Add(new SqlParameter("@Body", SqlDbType.NVarChar)).Value = bodyRequest;
                     command.CommandType = CommandType.StoredProcedure;
                     result = Convert.ToString(command.ExecuteScalar());
-                    responseModel = JsonConvert.DeserializeObject<RootCotejarDatosRes>(result);
+                    responseModel = JsonConvert.DeserializeObject<RootConsultarDocumentoResponse>(result);
                 }
                 catch (SqlException ex)
                 {

@@ -147,7 +147,10 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped(typeof(IRequestDynamic<,>), typeof(RequestDynamic<,>));
             services.AddScoped(typeof(IRequestXMLDynamic<>), typeof(RequestXMLDynamic<>));
             services.AddScoped<ICotejarDocumentosClientService, CotejarDocumentosClientService>();
+            services.AddScoped<IConsultarDocumentoService, ConsultarDocumentoService>();
 
+
+            
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();

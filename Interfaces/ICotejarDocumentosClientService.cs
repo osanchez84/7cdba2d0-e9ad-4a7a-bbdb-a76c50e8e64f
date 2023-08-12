@@ -1,7 +1,10 @@
-﻿namespace GuanajuatoAdminUsuarios.Interfaces
+﻿using GuanajuatoAdminUsuarios.RESTModels;
+using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
+
+namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ICotejarDocumentosClientService
     {
-        string CrearPension();
+        RootCotejarDatosRes CotejarDatos(CotejarDatosRequestModel requestModel, string endPointName);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.SOAPModels;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -19,15 +21,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ILogger<InicioController> _logger;
         private readonly IServiceAppSettingsService _serviceAppSettingsService;
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly IConsultarDocumentoService _consultarDocumentoService;
 
-        public ServiceTestController(IServiceAppSettingsService serviceAppSettingsService, 
+        public ServiceTestController(IServiceAppSettingsService serviceAppSettingsService,
             ILogger<InicioController> logger, IRequestDynamic<RecibosPagoWSRequestModel,
-                RecibosPagoWSResponsetModel> requestDynamic, ICotejarDocumentosClientService cotejarDocumentosClientService)
+                RecibosPagoWSResponsetModel> requestDynamic, ICotejarDocumentosClientService cotejarDocumentosClientService
+            , IConsultarDocumentoService consultarDocumentoService
+            )
         {
             _serviceAppSettingsService = serviceAppSettingsService;
             _logger = logger;
             _requestDynamic = requestDynamic;
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
+            _consultarDocumentoService = consultarDocumentoService;
         }
         public async Task<IActionResult> Index()
         {
@@ -63,12 +69,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View();
         }
 
-        public IActionResult SPService()
+        public IActionResult CotejarDatosRequest()
         {
-            var result = _cotejarDocumentosClientService.CrearPension();
+            CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
+            cotejarDatosRequestModel.Tp_folio = "4";
+            cotejarDatosRequestModel.Folio = "E01038";
+            cotejarDatosRequestModel.tp_consulta = "3";
+
+
+            var endPointName = "CotejarDatosEndPoint";
+            var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
             ViewBag.Pension = result;
             return View();
         }
+
+        public IActionResult ConsultarDocumento()
+        {
+            RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
+            MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
+            mTConsultaDocumento.PROCESO = "GENERAL";
+            mTConsultaDocumento.DOCUMENTO = "006800006619";
+            mTConsultaDocumento.USUARIO = "INNSJACOB";
+            mTConsultaDocumento.PASSWORD = "123456";
+            rootRequest.MT_Consulta_documento = mTConsultaDocumento;
+
+            var endPointName = "ConsultarDocumentoEndPoint";
+            var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
+            ViewBag.Pension = result;
+            return View();
+        }
+
+
+
 
         #region ejemplos
         //private void CreateMessage()

@@ -9,12 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SITTEG.APIClientHelper", "..\SITTEG.APIClientHelper\SITTEG.APIClientHelper.csproj", "{66119500-7E6E-4CF3-BE78-3D0FE2D5550F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SITTEG.APIClientInfrastructure", "..\SITTEG.APIClientInfrastructure\SITTEG.APIClientInfrastructure.csproj", "{953EDFB4-4016-4563-95DB-288F353A4953}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SITTEG.Framework", "..\SITTEG.Framework\SITTEG.Framework.csproj", "{D00C7942-55A9-4085-972D-D4670D57890A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,24 +19,12 @@ Global
 		{D93F8E3D-413F-4A6E-A1C7-4F515C194DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D93F8E3D-413F-4A6E-A1C7-4F515C194DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D93F8E3D-413F-4A6E-A1C7-4F515C194DA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66119500-7E6E-4CF3-BE78-3D0FE2D5550F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66119500-7E6E-4CF3-BE78-3D0FE2D5550F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66119500-7E6E-4CF3-BE78-3D0FE2D5550F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66119500-7E6E-4CF3-BE78-3D0FE2D5550F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{953EDFB4-4016-4563-95DB-288F353A4953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{953EDFB4-4016-4563-95DB-288F353A4953}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{953EDFB4-4016-4563-95DB-288F353A4953}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{953EDFB4-4016-4563-95DB-288F353A4953}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D00C7942-55A9-4085-972D-D4670D57890A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D00C7942-55A9-4085-972D-D4670D57890A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D00C7942-55A9-4085-972D-D4670D57890A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D00C7942-55A9-4085-972D-D4670D57890A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {23CBC803-0D0D-49B1-B7E9-9AD50A63D0E7}
 		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {23CBC803-0D0D-49B1-B7E9-9AD50A63D0E7}
 	EndGlobalSection
 EndGlobal

@@ -39,8 +39,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                return View("RegistroReciboDePago") ;
-        }
+                return View("RegistroReciboDePago");
+            }
             else
             {
                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
@@ -50,7 +50,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ObtenerInfracciones(RegistroReciboPagoModel model,string FolioInfraccion)
+        public ActionResult ObtenerInfracciones(RegistroReciboPagoModel model, string FolioInfraccion)
         {
             var ListInfraccionesModel = _registroReciboPagoService.ObtInfracciones(FolioInfraccion);
             return Json(ListInfraccionesModel);
@@ -65,7 +65,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult GuardarReciboPago(string ReciboPago, float Monto, DateTime FechaPago, string LugarPago, int IdInfraccion)
         {
-            var datosGuardados = _registroReciboPagoService.GuardarRecibo(ReciboPago, Monto,FechaPago, LugarPago,IdInfraccion);
+            var datosGuardados = _registroReciboPagoService.GuardarRecibo(ReciboPago, Monto, FechaPago, LugarPago, IdInfraccion);
             return PartialView("RegistroReciboDePago");
 
         }
@@ -75,7 +75,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
             MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
             mTConsultaDocumento.PROCESO = "GENERAL";
-            mTConsultaDocumento.DOCUMENTO = recibo; 
+            mTConsultaDocumento.DOCUMENTO = recibo;
             mTConsultaDocumento.USUARIO = "INNSJACOB";
             mTConsultaDocumento.PASSWORD = "123456";
             rootRequest.MT_Consulta_documento = mTConsultaDocumento;

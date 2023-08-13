@@ -53,6 +53,10 @@
     <EmbeddedResource Remove="WebClientServices\**" />
     <None Remove="Templates\**" />
     <None Remove="WebClientServices\**" />
+    <Compile Remove="RESTModels\AnulacionDocumentoRequestModel.cs" />
+    <Compile Remove="RESTModels\AnulacionDocumentoResponseModel.cs" />
+    <Compile Remove="RESTModels\CrearMultasTransitoRequestModel.cs" />
+    <Compile Remove="RESTModels\CrearMultasTransitoResponseModel.cs" />
     <None Remove="Telerik.UI.for.AspNet.Core.Trial" />
     <None Remove="Helpers\" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
@@ -70,6 +74,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="RESTModels\AnulacionDocumentoRequestModel.cs" />
+    <None Include="RESTModels\AnulacionDocumentoResponseModel.cs" />
+    <None Include="RESTModels\CrearMultasTransitoRequestModel.cs" />
+    <None Include="RESTModels\CrearMultasTransitoResponseModel.cs" />
     <None Include="Views\Inicio\About.cshtml" />
     <None Include="Views\Inicio\Contact.cshtml" />
     <None Include="Views\Inicio\Inicio.cshtml" />

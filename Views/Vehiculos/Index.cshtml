@@ -22,7 +22,7 @@
             var Mydata = $("#frmSearch").serialize();
             console.log(Mydata);
             $.ajax({
-                url: '@Url.Action("ajax_BuscarVehiculos")',
+                url: '@Url.Action("ajax_BuscarVehiculo")',
                 type: 'POST',
                 data: Mydata,
                 success: function (result) {
@@ -34,6 +34,7 @@
                 }
             });
         }
+
 
         function setDataToIdSubmarca(idMarca) {
             //console.log("Update Veh IdMarc: ".value);
@@ -119,6 +120,8 @@
                 <h6 class="px-4 text-muted">Realiza una búsqueda del vehículo para conocer si ya está registrado en Registro Estatal de Infracciones y Accidentes o de lo contrario importar los datos del registro estatal.</h6>
             </div>
         </div>
+       
+
         <div class="row px-4 mb-4 align-items-end">
             <!--todo select -->
             <form id="frmSearch" class="row px-4 mb-4 align-items-end" method="post">
@@ -175,7 +178,8 @@
             </form>
         </div>
     </section>
-
+    <div id="resultadoCotejo">
+    </div>
     <div id="VehiculoLocalizado" style="display:none">
         <partial name="_Create" model="Model.Vehiculo" />
     </div>

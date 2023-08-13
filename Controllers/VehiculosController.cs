@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPersonasService _personasService;
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
-            IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration
+            IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
+           ICotejarDocumentosClientService cotejarDocumentosClientService
+
          )
         {
             _vehiculosService = vehiculosService;
@@ -33,6 +38,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _personasService = personasService;
             _httpClient = httpClientFactory;
             _configuration = configuration;
+            _cotejarDocumentosClientService = cotejarDocumentosClientService;
+
         }
 
         public IActionResult Index()
@@ -130,13 +137,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_Create", vehiculosModel);
         }
 
+  
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
         {
             var vehiculosModel = _vehiculosService.GetVehiculos(model);
-            return PartialView("_ListVehiculos", vehiculosModel); // Devolver resultados locales
+            return PartialView("_ListVehiculos", vehiculosModel);
         }
-
 
 
         [HttpPost]

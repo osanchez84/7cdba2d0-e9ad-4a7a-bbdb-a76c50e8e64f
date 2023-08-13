@@ -13,6 +13,8 @@ using Kendo.Mvc.Extensions;
 using GuanajuatoAdminUsuarios.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using GuanajuatoAdminUsuarios.Services;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -21,13 +23,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly IRegistroReciboPagoService _registroReciboPagoService;
-      
-    public  RegistroReciboPagoController(IRegistroReciboPagoService registroReciboPagoService)
+        private readonly IConsultarDocumentoService _consultarDocumentoService;
+
+
+        public RegistroReciboPagoController(IRegistroReciboPagoService registroReciboPagoService, IConsultarDocumentoService consultarDocumentoService)
         {
-            _registroReciboPagoService= registroReciboPagoService;
+            _registroReciboPagoService = registroReciboPagoService;
+            _consultarDocumentoService = consultarDocumentoService;
         }
 
-    public IActionResult Index()
+        public IActionResult Index()
         {
             int IdModulo = 705;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
@@ -48,7 +53,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ObtenerInfracciones(RegistroReciboPagoModel model,string FolioInfraccion)
         {
             var ListInfraccionesModel = _registroReciboPagoService.ObtInfracciones(FolioInfraccion);
-            return PartialView("_ListadoBusquedaInfraccion", ListInfraccionesModel);
+            return Json(ListInfraccionesModel);
 
         }
 
@@ -64,7 +69,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("RegistroReciboDePago");
 
         }
-        
+
+        public IActionResult ConsultarDocumento(string recibo)
+        {
+            RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
+            MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
+            mTConsultaDocumento.PROCESO = "GENERAL";
+            mTConsultaDocumento.DOCUMENTO = recibo; 
+            mTConsultaDocumento.USUARIO = "INNSJACOB";
+            mTConsultaDocumento.PASSWORD = "123456";
+            rootRequest.MT_Consulta_documento = mTConsultaDocumento;
+
+            var endPointName = "ConsultarDocumentoEndPoint";
+            var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
+            ViewBag.Pension = result;
+            return Json(result);
+        }
+
     }
-   
+
 }

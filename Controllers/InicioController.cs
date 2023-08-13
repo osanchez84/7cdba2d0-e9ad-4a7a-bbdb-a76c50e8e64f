@@ -16,6 +16,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using AdminUsuarios.Helpers;
+using ReciboPago;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Json;
+using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Runtime.Serialization.DataContracts;
+using Org.BouncyCastle.Crypto.IO;
+using System.Xml.Serialization;
+using System.Xml.Linq;
+using System.Text;
+using System.Xml;
+using System.Net.Http;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -25,19 +38,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private readonly ILogger<InicioController> _logger;
 
-
         public InicioController(ILogger<InicioController> logger)
         {
             _logger = logger;
-            
+
         }
+
+        //public RecibosPagoWSClient client { get; set; }
 
         [HttpGet("Inicio")]
         [Route("")]
         [AllowAnonymous]
         public IActionResult Index()
         {
-            if(User.Identity.IsAuthenticated)
+
+            if (User.Identity.IsAuthenticated)
                 return View("Inicio");
             return View("Marca");
         }
@@ -45,15 +60,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [Route("/Principal")]
         public IActionResult Principal()
         {
-                return View("Inicio");
+            return View("Inicio");
         }
-
-
-      
-        
-
-
-
 
 
         private async Task SignInUser(int idUsuario, string nombre, string perfil)
@@ -75,13 +83,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [Route("cerrar-sesion")]
         public async Task<IActionResult> CerrarSesion()
         {
-              await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete(".GtoAdminApp");   
-            HttpContext.Session.Clear();      
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Response.Cookies.Delete(".GtoAdminApp");
+            HttpContext.Session.Clear();
             return Redirect("/login");
         }
 
-        
+
 
 
         [Route("/MarcasVehiculos")]

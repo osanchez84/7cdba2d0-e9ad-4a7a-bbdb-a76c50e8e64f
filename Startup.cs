@@ -149,6 +149,9 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICotejarDocumentosClientService, CotejarDocumentosClientService>();
             services.AddScoped<IConsultarDocumentoService, ConsultarDocumentoService>();
             services.AddScoped<IAnulacionDocumentoService, AnulacionDocumentoClientService>();
+            services.AddScoped<IAsignacionGruasService, AsignacionGruasService>();
+            services.AddScoped<IEstadisticasAccidentesService, EstadisticasAccidentesService>();
+
 
 
             

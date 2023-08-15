@@ -991,8 +991,8 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 connection.Open();
 
-                string query = "INSERT INTO personas (nombre, apellidoPaterno, apellidoMaterno,vigenciaLicencia, numeroLicencia,actualizadoPor, fechaActualizacion,estatus) " +
-                               "VALUES (@nombre, @apellidoPaterno, @apellidoMaterno,@fechaVigencia,@NumeroLicencia,@actualizadoPor,@fechaActualizacion,@estatus)";
+                string query = "INSERT INTO personas (nombre, apellidoPaterno, apellidoMaterno,vigenciaLicencia, numeroLicencia,idTipoLicencia,actualizadoPor, fechaActualizacion,estatus) " +
+                               "VALUES (@nombre, @apellidoPaterno, @apellidoMaterno,@fechaVigencia,@NumeroLicencia,@tipoLicenciaVal,@actualizadoPor,@fechaActualizacion,@estatus)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -1001,6 +1001,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@apellidoMaterno", persona.ApellidoMaterno);
                     command.Parameters.AddWithValue("@fechaVigencia", persona.FechaVigencia);
                     command.Parameters.AddWithValue("@NumeroLicencia", persona.NumeroLicencia);
+                    command.Parameters.AddWithValue("@tipoLicenciaVal", persona.tipoLicenciaVal);
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;

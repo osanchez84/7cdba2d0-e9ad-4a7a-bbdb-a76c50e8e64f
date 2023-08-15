@@ -22,7 +22,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IEstatusInfraccionService _estatusInfraccionService;
         private readonly ITipoCortesiaService _tipoCortesiaService;
         private readonly IDependencias _dependeciaService;
-        private readonly IDelegacionesService _delegacionesService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         private readonly IGarantiasService _garantiasService;
         private readonly IInfraccionesService _infraccionesService;
         private readonly IPdfGenerator<InfraccionesModel> _pdfService;
@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPersonasService _personasService;
 
         public InfraccionesController(
-            IEstatusInfraccionService estatusInfraccionService, IDelegacionesService delegacionesService,
+            IEstatusInfraccionService estatusInfraccionService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
             ITipoCortesiaService tipoCortesiaService, IDependencias dependeciaService, IGarantiasService garantiasService,
             IInfraccionesService infraccionesService, IPdfGenerator<InfraccionesModel> pdfService,
             ICatDictionary catDictionary,
@@ -43,7 +43,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _estatusInfraccionService = estatusInfraccionService;
             _tipoCortesiaService = tipoCortesiaService;
             _dependeciaService = dependeciaService;
-            _delegacionesService = delegacionesService;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
             _garantiasService = garantiasService;
             _infraccionesService = infraccionesService;
             _pdfService = pdfService;
@@ -58,8 +58,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
-                List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones();
+                List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
                 searchModel.ListInfracciones = listInfracciones;
                 return View(searchModel);
             }
@@ -73,7 +74,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarInfracciones(InfraccionesBusquedaModel model)
         {
-            var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model,idOficina);
             return PartialView("_ListadoInfracciones", listReporteAsignacion);
         }
 
@@ -97,9 +99,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombrePropietario","Propietario"},
             {"fechaInfraccion","Fecha Aplicada a"},
             {"NombreGarantia","Garantía"},
-            {"delegacion","Delegación/Oficina"}
+            {"nombreOficina","Delegación/Oficina"}
             };
-            var ListTransitoModel = _infraccionesService.GetAllInfracciones(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var ListTransitoModel = _infraccionesService.GetAllInfracciones(model,idOficina);
             var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }
@@ -161,7 +164,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Delegaciones_Read()
         {
-            var result = new SelectList(_delegacionesService.GetDelegaciones(), "IdDelegacion", "Delegacion");
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
             return Json(result);
         }
 
@@ -342,7 +345,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
             if (modelInf == 1)
             {
-                var listInfracciones = _infraccionesService.GetAllInfracciones();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
                 return PartialView("_ListadoInfracciones", listInfracciones);
                 //return Json(listInfracciones);
             }

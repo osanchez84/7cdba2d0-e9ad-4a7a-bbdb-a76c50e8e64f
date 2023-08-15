@@ -3,6 +3,7 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
             return View();
         }
-        public IActionResult DetallesLicencia()
+        public IActionResult DetallesLicencia( )
         {
 
-            return View("_DetallesLicencia");
+            return View("_DetalleLicencia");
         }
-        public async Task<ActionResult> BuscarPorParametroAsync(PersonaModel model)
+        public async Task<IActionResult> BuscarPorParametro(PersonaModel model)
         {
             if (!string.IsNullOrEmpty(model.numeroLicenciaBusqueda))
             {
                 // Verificar si el número de licencia no está en la base de datos
                 bool licenciaNoSITTEG = _personasService.VerificarLicenciaSitteg(model.numeroLicenciaBusqueda);
 
-                if (licenciaNoSITTEG) {
+                if (licenciaNoSITTEG)
+                {
                     try
                     {
                         var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={model.numeroLicenciaBusqueda}";
@@ -53,48 +55,59 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             var content = await response.Content.ReadAsStringAsync();
-                            
                             List<ResultadoLicenciaModel> licencias = JsonConvert.DeserializeObject<List<ResultadoLicenciaModel>>(content);
-                            LicenciaViewModel licenciaViewModel = new LicenciaViewModel
-                            {
-                                Nombre = licencias[0].Nombre, // Asignar el nombre (suponiendo que es el mismo en todas las licencias)
-                                TiposLicencia = licencias.Select(l => l.TipoLicencia).ToList(),
-                                Licencias = licencias.Select(l => new LicenciaInfo
+                            var tipoLicenciaMap = new Dictionary<string, int>
                                 {
-                                    TipoLicencia = l.TipoLicencia,
-                                    FechaExpedicion = l.FechaExpedicion,
-                                    FechaVigencia = l.FechaVigencia
-                                }).ToList()
-                            };
+                                    { "TIPO A  CHOFER AUTOMOVILISTA", 1 },
+                                    { "TIPO B CHOFER SERVICIO PÚBLICO", 2 },
+                                    // Agrega más entradas según tus necesidades
+                                };
+                            foreach (var licenciaInfo in licencias)
+                            {
+                                string nombreCompleto = licenciaInfo.Nombre;
+                                string[] partesNombre = nombreCompleto.Split(' ');
 
+                                string nombre = partesNombre[0];
+                                string apellidoPaterno = partesNombre.Length > 1 ? partesNombre[1] : string.Empty;
+                                string apellidoMaterno = partesNombre.Length > 2 ? partesNombre[2] : string.Empty;
+                                string tipoLicencia = licenciaInfo.TipoLicencia;
+                                int tipoLicenciaVal = tipoLicenciaMap.TryGetValue(licenciaInfo.TipoLicencia, out int tipoLicenciaValue) ? tipoLicenciaValue : 0;
+                                DateTime fechaExpedicion = licenciaInfo.FechaExpedicion;
+                                DateTime fechaVigencia = licenciaInfo.FechaVigencia;
 
-                            return View("_DetalleLicencia",licenciaViewModel);
+                                ResultadoLicenciaModel persona = new ResultadoLicenciaModel
+                                {
+                                    NumeroLicencia = model.numeroLicenciaBusqueda,
+                                    Nombre = nombre,
+                                    ApellidoPaterno = apellidoPaterno,
+                                    ApellidoMaterno = apellidoMaterno,
+                                    TipoLicencia = tipoLicencia,
+                                    tipoLicenciaVal = tipoLicenciaVal,
+                                    FechaExpedicion = fechaExpedicion,
+                                    FechaVigencia = fechaVigencia,
+                                };
+
+                                _personasService.InsertarDesdeServicio(persona);
+                               
+                            }
+                           
                         }
-                        else
-                        {
-                            // En caso de respuesta no exitosa, manejar el error y devolver una vista de error o redireccionar a otra página.
-                            return View("Error");
-                        }
+
                     }
                     catch (Exception ex)
                     {
-                        // En caso de errores, manejar el error y devolver una vista de error o redireccionar a otra página.
-                        return View("Error");
+                        // En caso de errores, devolver una respuesta JSON con licencia no encontrada
+                        return Json(new { encontrada = false, message = "Ocurrió un error al obtener los datos." });
                     }
                 }
-            
-                else
-            {
-                    var personasList = _personasService.BusquedaPersona(model);
+            }
 
-                    return Json(personasList);
-                }
-        }else{
+            // Si no se cumple la condición anterior, realizar la búsqueda de personas y devolver los resultados en formato JSON
             var personasList = _personasService.BusquedaPersona(model);
-
-            return Json(personasList);
+            return Json(new { encontrada = false, data = personasList });
         }
-    }
+
+
 
 
         [HttpGet]
@@ -176,11 +189,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> BusquedaPorLicencia(string numeroLicencia)
+        public async Task<IActionResult> BusquedaPorLicencia(string numeroLicenciaBusqueda)
         {
             try
             {
-                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={numeroLicencia}";
+                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getdatoslicencia?userWS=1&claveWS=1&folioLicencia={numeroLicenciaBusqueda}";
 
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(url);
@@ -204,7 +217,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         ResultadoLicenciaModel persona = new ResultadoLicenciaModel
                         {
-                            NumeroLicencia = numeroLicencia,
+                            NumeroLicencia = numeroLicenciaBusqueda,
                             Nombre = nombre,
                             ApellidoPaterno = apellidoPaterno,
                             ApellidoMaterno = apellidoMaterno,
@@ -215,7 +228,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         _personasService.InsertarDesdeServicio(persona);
                     }
-                    return Ok();
+                   return RedirectToAction("BuscarPorParametroAsync", numeroLicenciaBusqueda);
+                    
 
                 }
                 else
@@ -230,5 +244,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return View("Error");
             }
         }
+
+
+// Método del controlador para recibir los datos
+        [HttpPost]
+        public IActionResult RecibirLicencia(string nombre, string tipoLicencia, string fechaExpedicion, string fechaVigencia)
+        {
+            // Aquí puedes realizar las acciones necesarias con los datos recibidos.
+            // Por ejemplo, guardarlos en una base de datos, procesarlos, etc.
+
+            // Ejemplo de cómo devolver una respuesta al cliente
+            return Ok("Datos recibidos correctamente.");
+        }
     }
+
 }
+

@@ -7,9 +7,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
-        public List<InfraccionesModel> GetAllAccidentes2();
-        List<InfraccionesModel> GetAllInfracciones();
-        List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model);
+        List<InfraccionesModel> GetAllInfracciones(int idOficina);
+        List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model,int idOficina);
         InfraccionesModel GetInfraccionById(int IdInfraccion);
         public List<MotivoInfraccionModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
@@ -27,5 +26,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public int InsertarImagenEnInfraccion( byte[] imageData, int idInfraccion);
         public List<InfraccionesResumen> GetInfraccionesLicencia(string numLicencia, string CURP);
+        public List<InfraccionesModel> GetAllAccidentes2();
+
     }
 }

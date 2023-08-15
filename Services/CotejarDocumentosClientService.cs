@@ -8,7 +8,6 @@ using GuanajuatoAdminUsuarios.RESTModels;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Services
 {

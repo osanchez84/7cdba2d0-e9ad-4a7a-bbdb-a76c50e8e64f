@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
+using System;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -8,7 +9,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public IEnumerable<PersonaModel> GetAllPersonas();
         List<PersonaModel> BusquedaPersona(PersonaModel model);
         public bool VerificarLicenciaSitteg(string numeroLicencia);
-        public void InsertarDesdeServicio(ResultadoLicenciaModel persona);
+        public void InsertarDesdeServicio(string nombre, string apellidoPaterno, string apellidoMaterno, int tipoLicencia, string numeroLicencia, DateTime fechaExpedicion, DateTime fechaVigencia);
         public PersonaDireccionModel GetPersonaDireccionByIdPersona(int idPersona);
         public PersonaModel GetPersonaById(int idPersona);
         IEnumerable<PersonaModel> GetAllPersonasMorales();
@@ -18,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int CreatePersonaDireccion(PersonaDireccionModel model);
         int UpdatePersonaDireccion(PersonaDireccionModel model);
         PersonaModel GetPersonaTypeById(int idPersona);
-
+        public PersonaModel BuscarPersonaSoloLicencia(string numeroLicencia);
         public int UpdatePersona(PersonaModel model);
         public int CreatePersona(PersonaModel model);
     }

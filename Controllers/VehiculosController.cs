@@ -1,13 +1,18 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -17,14 +22,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;
         private readonly IPersonasService _personasService;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
-            IPersonasService personasService
+            IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
+           ICotejarDocumentosClientService cotejarDocumentosClientService
+
          )
         {
             _vehiculosService = vehiculosService;
             _catDictionary = catDictionary;
             _personasService = personasService;
+            _httpClient = httpClientFactory;
+            _configuration = configuration;
+            _cotejarDocumentosClientService = cotejarDocumentosClientService;
+
         }
 
         public IActionResult Index()
@@ -119,8 +134,66 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
             vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            return PartialView("_Create", vehiculosModel);
+
+            if (vehiculosModel.encontradoEn == 3 && !string.IsNullOrEmpty(model.PlacasBusqueda))
+            {
+                CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
+                cotejarDatosRequestModel.Tp_folio = "4";
+                cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
+                cotejarDatosRequestModel.tp_consulta = "3";
+
+                var endPointName = "CotejarDatosEndPoint";
+                var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+
+                if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+                {
+                    var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
+                    var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
+                    var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
+                    var vehiculoEncontrado = new VehiculoModel
+                    {
+                        placas = vehiculoEncontradoData.no_placa,
+                        serie = vehiculoEncontradoData.no_serie,
+                        tarjeta = vehiculoEncontradoData.no_tarjeta,
+                        paisManufactura = vehiculoEncontradoData.no_motor,
+                        otros = vehiculoEncontradoData.otros,
+
+                        Persona = new PersonaModel
+                        {
+                            RFC = vehiculoInterlocutorData.Nro_rfc,
+                            nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+
+                            PersonaDireccion = new PersonaDireccionModel
+                            {
+                                telefono = vehiculoDireccionData.telefono,
+                                correo = vehiculoDireccionData.correo,
+                                colonia = vehiculoDireccionData.colonia,
+                                calle = vehiculoDireccionData.calle,
+                                numero = vehiculoDireccionData.nro_exterior,
+                            }
+                        },
+
+                        PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+                        {
+                            PersonasMorales = new List<PersonaModel>()
+                        }
+
+                    };
+
+                    return PartialView("_Create", vehiculoEncontrado);
+                }
+                else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
+                {
+
+                    var errorMessage = "La placa no existe.";
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+
+            return PartialView("_Create", vehiculosModel); 
         }
+
+
 
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)

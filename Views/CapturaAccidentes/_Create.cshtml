@@ -2,7 +2,6 @@
 @model VehiculoModel
 
 @{
-    var dateVigencia = Model.vigenciaTarjeta;
     var myAttributes = new { disabled = "", style = "width:100%;" };
     if (Model != null)
     {
@@ -147,22 +146,13 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Vigencia de tarjeta:</label>
-                @if (disableInput)
-                {
-                    @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
-                        .Value(dateVigencia)
-                        .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
-                        )
-                }
-                else
-                {
+           
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(DateTime.Now)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .DateInput()
                         )
-                }
+                
 
             </div>
         </div>
@@ -570,9 +560,7 @@
 </section>
 
 
-<div id="PersonaMoralLocalizada" style="display:none">
-    <partial name="_ListPersonasMorales" model="Model.PersonaMoralBusquedaModel.PersonasMorales" />
-</div>
+
 
 
 <div class="modal fade modalCustom" id="addMoral" tabindex="-1" aria-labelledby="addMoralLabel" aria-hidden="true">
@@ -849,7 +837,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t=>t.Persona.apellidoPaterno)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoPaterno)
                                 .Label(l => l.Content("Apellido paterno:"))
                                 .Placeholder("Ingresa el apellido paterno")
                                 .HtmlAttributes(new { style = "width: 100%" })
@@ -859,7 +847,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t=>t.Persona.apellidoMaterno)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoMaterno)
                                 .Label(l => l.Content("Apellido materno:"))
                                 .Placeholder("Ingresa el apellido materno")
                                 .HtmlAttributes(new { style = "width: 100%" })

@@ -33,7 +33,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int Estatus { get; set; }
 
         public string ReciboPago { get; set; }
-        public float Monto { get; set; }
+        public float? Monto { get; set; }
         public DateTime? FechaPago { get; set; }
         public string LugarPago { get; set; }
 

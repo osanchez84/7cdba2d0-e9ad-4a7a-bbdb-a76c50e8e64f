@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -20,13 +21,16 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int EliminarMotivoInfraccion(int idMotivoInfraccion);
         public InfraccionesModel GetInfraccion2ById(int idInfraccion);
         public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion);
-        public int CrearInfraccion(InfraccionesModel model);
+        public int CrearInfraccion(InfraccionesModel model,int idOficina);
         public int ModificarInfraccion(InfraccionesModel model);
         int ModificarInfraccionPorCortesia(InfraccionesModel model);
 
         public int InsertarImagenEnInfraccion( byte[] imageData, int idInfraccion);
         public List<InfraccionesResumen> GetInfraccionesLicencia(string numLicencia, string CURP);
         public List<InfraccionesModel> GetAllAccidentes2();
+
+        public int  GuardarReponse(CrearMultasTransitoChild MT_CrearMultasTransito_res, int idInfraccion);
+        
 
     }
 }

@@ -654,13 +654,15 @@
 
     function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
-        validator.validate();
-        if ($("#idVehiculo").val() == '') {
+        var idVehiculo = $("#idVehiculo").val();
+        var idPersona = $("#idPersona").val();
+
+        if (!idVehiculo) {
             sitteg_info('Debe seleccionar un vehículo');
             return;
         }
 
-        if ($("#idPersona").val() == '') {
+        if (!idPersona) {
             sitteg_info('Debe seleccionar un conductor');
             return;
         }
@@ -674,25 +676,45 @@
                 url: '@Url.Action("ajax_editarInfraccion")',
                 type: 'POST',
                 data: formData,
-                success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    window.setTimeout(function () {
-                        window.location.href = '/Infracciones/Index'
-                    }, 500);
+                success: function (response) {
+                    if (response.success) {
+        var idInfraccion = response.idInfraccion; 
+        sitteg_warning("Informacion Actualizada");
+        serviceCrearInfraccion(idInfraccion);
+                } else {
+                    sitteg_warning(response.message);
+                }
                 },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
+                error: function (error) {
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
                 }
             });
-        }
-        else {
+        } else {
             sitteg_info('Debe llenar los campos requeridos');
-            return;
         }
-
     }
+
+    function serviceCrearInfraccion(idInfraccion) {
+        $.ajax({
+            url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
+            type: 'POST',
+            data: { idInfraccion: idInfraccion },
+            success: function (response) {
+                if (response.success) {
+                    sitteg_success("Informacion actualizada correctamente.");
+                } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
+                    sitteg_info("El registro fue actualizado en SITTEG.");
+                } else {
+                    sitteg_warning("Ha ocurrido un error: " + response.message);
+                }
+            },
+            error: function (error) {
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            }
+        });
+    }
+
+
 
     function isPropietarioOnChange(e) {
         var isPropietario = e.checked;

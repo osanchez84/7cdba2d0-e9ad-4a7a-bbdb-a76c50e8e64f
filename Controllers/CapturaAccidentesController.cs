@@ -63,7 +63,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
-            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory
+            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory
              )
         {
             _capturaAccidentesService = capturaAccidentesService;
@@ -177,7 +177,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model,idOficina);
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
                 HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); // Almacenar lastInsertedId en la variable
                 return Json(new { success = true });
 
@@ -199,10 +199,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ModalDetallesVehiculo(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var vehiculoInvolucrado = _capturaAccidentesService.InvolucradoSeleccionado(idAccidente, IdVehiculoInvolucrado, IdPropietarioInvolucrado);       
+            var vehiculoInvolucrado = _capturaAccidentesService.InvolucradoSeleccionado(idAccidente, IdVehiculoInvolucrado, IdPropietarioInvolucrado);
             return PartialView("_ModalDetalleVehiculos", vehiculoInvolucrado);
         }
-        public ActionResult ModalBorraRegistro(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado,int IdAccidente)
+        public ActionResult ModalBorraRegistro(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
         {
             return PartialView("_ModalEliminarInvolucrado");
         }
@@ -230,7 +230,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
         {
-            var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado,IdAccidente);
+            var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado, IdAccidente);
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 
@@ -256,7 +256,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente,IdPersona, Placa, Serie);
+            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
             HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
             return Json(IdPersona);
         }
@@ -421,7 +421,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var RegistroSeleccionado = _capturaAccidentesService.AgregarValorFactorYOpcion(IdFactorAccidente, IdFactorOpcionAccidente, idAccidente);
 
             var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
-            
+
             return Json(datosGrid);
         }
         public JsonResult ObtFactorOpcionAccidente([DataSourceRequest] DataSourceRequest request)
@@ -583,7 +583,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 });
             oficiales = oficiales.Skip(1);
             var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
-          
+
             return Json(result);
         }
 
@@ -593,7 +593,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
             return View("CapturaCAccidente");
         }
-        public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion )
+        public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(IdVehiculo, idAccidente, IdInfraccion);
@@ -609,7 +609,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 IdPropietario = IdPropietario,
                 Placa = Placa,
                 Tarjeta = Tarjeta,
-                
+
             };
 
             return PartialView("_ModalCrearInfraccion", modelo);
@@ -626,16 +626,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalAgregarMonto", modelo);
         }
 
-        
+
         [HttpPost]
         public ActionResult ajax_CrearInfraccion(NuevaInfraccionModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var DatosAccidente = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente,idOficina);
-            model.IdMunicipio =(int) DatosAccidente.IdMunicipio;
+            var DatosAccidente = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
+            model.IdMunicipio = (int)DatosAccidente.IdMunicipio;
             model.IdCarretera = (int)DatosAccidente.IdCarretera;
-            model.IdTramo =(int) DatosAccidente.IdTramo;
+            model.IdTramo = (int)DatosAccidente.IdTramo;
             model.Kilometro = DatosAccidente.Kilometro;
             var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.IdPersona);
             model.idPersonaInfraccion = idPersonaInfraccion;
@@ -645,7 +645,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (ModelState.IsValid)
             {
 
-               var idInfraccion= _capturaAccidentesService.RegistrarInfraccion(model);
+                var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model);
 
                 return Json(new { id = idInfraccion });
             }
@@ -662,7 +662,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 _capturaAccidentesService.AgregarMontoV(model);
                 int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-                var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente); 
+                var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
                 return PartialView("_ListaVehiculosDaños", ListVehiculos);
             }
             return PartialView("_ModalAgregarMonto");
@@ -729,15 +729,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (ModelState.IsValid)
             {
                 int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-                _capturaAccidentesService.AgregarFechaHoraIngreso(model,idAccidente);
-                var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente); 
-                return PartialView("_ListaInvolucradosFechaYHora",ListInvolucrados);
+                _capturaAccidentesService.AgregarFechaHoraIngreso(model, idAccidente);
+                var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
+                return PartialView("_ListaInvolucradosFechaYHora", ListInvolucrados);
             }
             return PartialView("_ModalFechaHora");
         }
         [HttpPost]
 
-        public IActionResult InsertarDatos(DatosAccidenteModel datosAccidente,int armasValue,int drogasValue,int valoresValue,int prendasValue,int otrosValue)
+        public IActionResult InsertarDatos(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             _capturaAccidentesService.AgregarDatosFinales(datosAccidente, armasValue, drogasValue, valoresValue, prendasValue, otrosValue, idAccidente);

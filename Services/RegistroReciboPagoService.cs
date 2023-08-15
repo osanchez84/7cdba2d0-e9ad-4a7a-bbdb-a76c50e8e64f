@@ -130,7 +130,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@reciboPago", ReciboPago);
                     command.Parameters.AddWithValue("@monto", Monto);
                     command.Parameters.AddWithValue("@fechaPago", FechaPago);
-                    command.Parameters.AddWithValue("@lugarPago", LugarPago);
+                    command.Parameters.AddWithValue("@lugarPago", LugarPago != null ? LugarPago : DBNull.Value);
                     command.Parameters.AddWithValue("@idInfraccion", IdInfraccion);
                     command.ExecuteNonQuery();
                 }

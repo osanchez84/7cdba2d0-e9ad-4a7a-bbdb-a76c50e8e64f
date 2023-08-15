@@ -14,6 +14,8 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using static GuanajuatoAdminUsuarios.RESTModels.AnulacionDocumentoRequestModel;
+using GuanajuatoAdminUsuarios.RESTModels;
+using GuanajuatoAdminUsuarios.Services;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -70,11 +72,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion)
+        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion, string folioInfraccion)
         {
            
-                var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
-                return View("CancelarInfraccion");
+//var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
+          
+                AnulacionDocumentoRequestModel requestModel = new AnulacionDocumentoRequestModel();
+                 requestModel.DOCUMENTO = "TTO-PEC9999";
+                 requestModel.USUARIO = "INNSJACOB";
+                 requestModel.PASSWORD = "123456";
+
+                var result = _anularDocumentoCientService.AnularDocumento(requestModel);
+            return View("CancelarInfraccion");
+
         }
 
         public IActionResult AnulacionDocumento(string folio_infraccion)

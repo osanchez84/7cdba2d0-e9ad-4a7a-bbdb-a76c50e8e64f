@@ -151,10 +151,9 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IAnulacionDocumentoService, AnulacionDocumentoClientService>();
             services.AddScoped<IAsignacionGruasService, AsignacionGruasService>();
             services.AddScoped<IEstadisticasAccidentesService, EstadisticasAccidentesService>();
+            services.AddScoped<ICrearMultasTransitoClientService, CrearMultasTransitoClientService>();
+            services.AddScoped<IAnularDocumentoClientService, AnulacionDocumentoClientService>();
 
-
-
-            
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
 
 namespace GuanajuatoAdminUsuarios.RESTModels

@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
         {
             public string tipo_direccion { get; set; }
             public string calle { get; set; }
-            public object nro_exterior { get; set; }
+            public string nro_exterior { get; set; }
             public string entre_calle { get; set; }
             public string otra_calle { get; set; }
             public string colonia { get; set; }
@@ -43,7 +43,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string localidad { get; set; }
             public string municipio { get; set; }
             public string estado { get; set; }
-            public object telefono { get; set; }
+            public long telefono { get; set; }
             public string correo { get; set; }
             public string entidadreg { get; set; }
         }
@@ -57,7 +57,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public int uso { get; set; }
             public string categoria { get; set; }
             public string marca { get; set; }
-            public int modelo { get; set; }
+            public string modelo { get; set; }
             public string linea { get; set; }
             public string color { get; set; }
             public string no_motor { get; set; }

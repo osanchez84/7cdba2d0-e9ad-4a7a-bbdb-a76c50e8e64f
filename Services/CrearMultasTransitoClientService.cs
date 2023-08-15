@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System;
 using System.Data.SqlClient;
+using GuanajuatoAdminUsuarios.Models;
 
 namespace GuanajuatoAdminUsuarios.Services
 {

@@ -135,7 +135,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
 
-            if (vehiculosModel.encontradoEn == 3 && !string.IsNullOrEmpty(model.PlacasBusqueda))
+          /*  if (vehiculosModel.encontradoEn == 3 && !string.IsNullOrEmpty(model.PlacasBusqueda))
             {
                 CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
                 cotejarDatosRequestModel.Tp_folio = "4";
@@ -188,7 +188,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     var errorMessage = "La placa no existe.";
                     return Json(new { success = false, message = errorMessage });
                 }
-            }
+            }*/
 
             return PartialView("_Create", vehiculosModel); 
         }

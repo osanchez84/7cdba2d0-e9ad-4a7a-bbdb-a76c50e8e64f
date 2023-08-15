@@ -72,19 +72,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion, string folioInfraccion)
+        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion)
         {
-           
-//var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
-          
-                AnulacionDocumentoRequestModel requestModel = new AnulacionDocumentoRequestModel();
-                 requestModel.DOCUMENTO = "TTO-PEC9999";
-                 requestModel.USUARIO = "INNSJACOB";
-                 requestModel.PASSWORD = "123456";
 
-                var result = _anularDocumentoCientService.AnularDocumento(requestModel);
+            var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
             return View("CancelarInfraccion");
-
         }
 
         public IActionResult AnulacionDocumento(string folio_infraccion)

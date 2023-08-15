@@ -21,6 +21,8 @@ using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GuanajuatoAdminUsuarios.RESTModels;
+using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -53,6 +55,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
         private readonly ICatDictionary _catDictionary;
         private readonly IInfraccionesService _infraccionesService;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly IPersonasService _personasService;
+
+
 
 
         private int idOficina = 0;
@@ -63,8 +69,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
-            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory
-             )
+            ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory,
+            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -92,6 +98,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catDictionary = catDictionary;
             _infraccionesService = infraccionesService;
             _httpClientFactory = httpClientFactory;
+            _cotejarDocumentosClientService = cotejarDocumentosClientService;
+            _personasService = personasService;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -241,10 +249,65 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
 
         public ActionResult BuscarVehiculo(string Placa, string Serie, string folio)
+
         {
             var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+            if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+            {
+                CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
+                cotejarDatosRequestModel.Tp_folio = "4";
+                cotejarDatosRequestModel.Folio = Placa;
+                cotejarDatosRequestModel.tp_consulta = "3";
+
+                var endPointName = "CotejarDatosEndPoint";
+                var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+                if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+                {
+                    var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
+                    var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
+                    var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
+                    var vehiculoEncontrado = new VehiculoModel
+                    {
+                        placas = vehiculoEncontradoData.no_placa,
+                        serie = vehiculoEncontradoData.no_serie,
+                        tarjeta = vehiculoEncontradoData.no_tarjeta,
+                        paisManufactura = vehiculoEncontradoData.no_motor,
+                        otros = vehiculoEncontradoData.otros,
+                        encontradoEn = 3,
+                        Persona = new PersonaModel
+                        {
+                            RFC = vehiculoInterlocutorData.Nro_rfc,
+                            nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+
+                            PersonaDireccion = new PersonaDireccionModel
+                            {
+                                telefono = vehiculoDireccionData.telefono,
+                                correo = vehiculoDireccionData.correo,
+                                colonia = vehiculoDireccionData.colonia,
+                                calle = vehiculoDireccionData.calle,
+                                numero = vehiculoDireccionData.nro_exterior,
+                            }
+                        },
+
+                        PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+                        {
+                            PersonasMorales = new List<PersonaModel>()
+                        }
+
+                    };
+                    return RedirectToAction("AgregarVehiculo");
+                }
+                else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
+                {
+
+                    var errorMessage = "La placa no existe.";
+                    return Json(new { success = false, message = errorMessage });
+                }
+            }
+
             return Json(SeleccionVehiculo);
         }
+
         public JsonResult ObtVehiculosInvol([DataSourceRequest] DataSourceRequest request)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
@@ -749,6 +812,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             return RedirectToAction("CapturaAaccidente");
+        }
+
+
+        public IActionResult AgregarVehiculo()
+        {
+            var vehiculoEncontradoJson = TempData["VehiculoEncontrado"] as string;
+            var vehiculoEncontrado = JsonConvert.DeserializeObject<VehiculoModel>(vehiculoEncontradoJson);
+
+            return View("Create", vehiculoEncontrado);
+        }
+
+
+
+        [HttpPost]
+        public ActionResult ajax_BuscarPersonasFiscas()
+        {
+            var personasFisicas = _personasService.GetAllPersonas();
+            return PartialView("_PersonasFisicas", personasFisicas);
         }
     }
 }

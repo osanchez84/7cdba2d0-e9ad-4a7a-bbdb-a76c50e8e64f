@@ -128,15 +128,22 @@
             type: 'POST',
             data: data,
             success: function (result) {
-                sitteg_success('Infracciones enviadas correctamente');
-                $('#enviarInfraccionesModal').modal('hide');
+                if (result.success) {
+                    sitteg_success('Infracciones enviadas correctamente');
+                    $('#enviarInfraccionesModal').modal('hide');
 
+                    if (result.processedInfraccionIds && result.processedInfraccionIds.length > 0) {
+                        var processedIds = result.processedInfraccionIds.join(', ');
+                        alert('Las siguientes infracciones fueron procesadas exitosamente: ' + processedIds);
+                    }
+                } else {
+                    sitteg_warning('Uno o más registros no pudieron ser enviados. Inténtalo nuevamente.');
+                }
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
             }
         });
-    }
 
 
 </script>

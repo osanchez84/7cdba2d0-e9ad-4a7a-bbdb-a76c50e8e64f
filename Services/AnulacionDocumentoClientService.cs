@@ -4,17 +4,18 @@ using Newtonsoft.Json;
 using System.Data;
 using System;
 using System.Data.SqlClient;
+using static GuanajuatoAdminUsuarios.RESTModels.AnulacionDocumentoRequestModel;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class AnulacionDocumentoClientService
+    public class AnulacionDocumentoClientService : IAnularDocumentoClientService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
         public AnulacionDocumentoClientService(ISqlClientConnectionBD sqlClientConnectionBD)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public AnulacionDocumentoResponseModel CrearMultasTransitoCall(AnulacionDocumentoRequestModel requestModel)
+        public AnulacionDocumentoResponseModel AnularDocumento(AnulacionDocumentoRequestModel requestModel)
         {
             string endPointName = "AnulacionDocumento";
             var json = JsonConvert.SerializeObject(requestModel, Formatting.Indented);

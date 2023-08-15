@@ -125,6 +125,10 @@
                     $('#FechaPago').data("kendoDatePicker").value(new Date(fechaPago));
                     $('#Monto').data("kendoTextBox").value(importe);
                 }
+                else(response ==null)
+                {
+                    alert("Error de servicio,intentelo mas tarde")
+                }
             },
             error: function (response) {
                 console.error('Error en la llamada AJAX:', response);

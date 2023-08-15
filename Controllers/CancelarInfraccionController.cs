@@ -13,6 +13,8 @@ using Kendo.Mvc.Extensions;
 using GuanajuatoAdminUsuarios.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using GuanajuatoAdminUsuarios.RESTModels;
+using GuanajuatoAdminUsuarios.Services;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -21,10 +23,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
 
         private readonly ICancelarInfraccionService _cancelarInfraccionService;
+        private readonly IAnularDocumentoClientService _anularDocumentoCientService;
 
-        public CancelarInfraccionController(ICancelarInfraccionService cancelarInfraccionService)
+
+        public CancelarInfraccionController(ICancelarInfraccionService cancelarInfraccionService, IAnularDocumentoClientService anularDocumentoCientService)
         {
             _cancelarInfraccionService = cancelarInfraccionService;
+            _anularDocumentoCientService = anularDocumentoCientService;
         }
 
         public IActionResult Index(CancelarInfraccionModel cancelarInfraccionService)
@@ -67,11 +72,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion)
+        public IActionResult IniciarCancelacion(CancelarInfraccionModel model, int IdInfraccion, string OficioRevocacion, string folioInfraccion)
         {
            
-                var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
-                return View("CancelarInfraccion");
+//var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
+          
+                AnulacionDocumentoRequestModel requestModel = new AnulacionDocumentoRequestModel();
+                 requestModel.DOCUMENTO = "TTO-PEC9999";
+                 requestModel.USUARIO = "INNSJACOB";
+                 requestModel.PASSWORD = "123456";
+
+                var result = _anularDocumentoCientService.AnularDocumento(requestModel);
+            return View("CancelarInfraccion");
+
         }
     }
 

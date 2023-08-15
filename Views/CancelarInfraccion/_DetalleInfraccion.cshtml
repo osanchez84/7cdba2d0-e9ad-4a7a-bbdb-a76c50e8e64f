@@ -50,6 +50,8 @@
 
         <div class="controlForm my-3">
             @Html.HiddenFor(m=>m.IdInfraccion)
+            @Html.HiddenFor(m=>m.FolioInfraccion)
+
             @(Html.Kendo().TextBoxFor(m=>m.OficioRevocacion)
                 .Label(l => l.Content("Oficio de Revocación <b>(obligatorio)</b>:"))
                 .Placeholder("Ingresa oficio de revocación")

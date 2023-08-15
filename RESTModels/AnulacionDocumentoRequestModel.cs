@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace GuanajuatoAdminUsuarios.RESTModels
 {
     public class AnulacionDocumentoRequestModel

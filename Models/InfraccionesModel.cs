@@ -25,8 +25,20 @@ namespace GuanajuatoAdminUsuarios.Models
         public string placasVehiculo { get; set; }
         public string folioInfraccion { get; set; }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime fechaNacimiento { get; set; } = DateTime.Now;
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaInfraccion { get; set; } = DateTime.Now;
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime fechaVencimiento { get; set; } = DateTime.Now;
+
+        public void CalcularFechas()
+        {
+            // Agregar 10 días a la fecha de imposición para obtener la fecha de vencimiento
+            fechaVencimiento = fechaInfraccion.AddDays(10);
+        }
         public int kmCarretera { get; set; }
         public string observaciones { get; set; }
         public string lugarCalle { get; set; }

@@ -10,6 +10,7 @@ using GuanajuatoAdminUsuarios.Entity;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Net.NetworkInformation;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using GuanajuatoAdminUsuarios.RESTModels;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -367,6 +368,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
                                                     ,catMun.idMunicipio,catMun.municipio
                                                     ,catTra.idTramo,catTra.tramo
+                                                    ,per.RFC,per.fechaNacimiento
                                                     ,catCarre.idCarretera,catCarre.carretera
                                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
@@ -387,6 +389,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+                                                    left join personas per on inf.idPersona = per.idPersona
                                                     left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
                                                     left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idMotivoInfraccion
                                                     left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
@@ -414,6 +417,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
+                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimianto"].ToString());
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
                             model.observaciones = reader["observaciones"].ToString();
@@ -433,6 +437,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                             model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
                             model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
+                            model.fechaNacimiento = model.Vehiculo.Persona.fechaNacimiento;
+
                             model.NombreGarantia = model.Garantia.garantia;
                         }
                     }
@@ -1263,9 +1269,17 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public int CrearInfraccion(InfraccionesModel model)
+        public int CrearInfraccion(InfraccionesModel model, int idOficina)
         {
             int result = 0;
+            if (idOficina == 1)
+            {
+                model.folioInfraccion = "TTO-PEC" + model.folioInfraccion;
+            }
+            else if (idOficina == 2)
+            {
+                model.folioInfraccion = "TTE-M" + model.folioInfraccion;
+            }
             string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
@@ -1369,7 +1383,6 @@ namespace GuanajuatoAdminUsuarios.Services
                                           ,idDelegacion = @idDelegacion
                                           ,idVehiculo = @idVehiculo
                                           ,idAplicacion = @idAplicacion
-                                          ,idGarantia = @idGarantia
                                           ,idEstatusInfraccion = @idEstatusInfraccion
                                           ,idMunicipio = @idMunicipio
                                           ,idTramo = @idTramo
@@ -1403,7 +1416,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
+                    //command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo ?? DBNull.Value;
@@ -1426,6 +1439,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     result = command.ExecuteNonQuery();
+                    if (result > 0) // Si la actualización tuvo éxito
+                    {
+                        return model.idInfraccion; // Retornar el idInfraccion
+                    }
                 }
                 catch (SqlException ex)
                 {
@@ -1503,6 +1520,46 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
+        public int GuardarReponse(CrearMultasTransitoChild MT_CrearMultasTransito_res, int idInfraccion)
+        {
+            int result = 0;
+            string strQuery = @"UPDATE infracciones
+                                SET partner = @partner
+                                     cuenta = @cuenta
+                                     objeto = @objeto
+                                     documento = @documento
+                                     idEstatusInfraccion =@idEstatusInfraccion
+                                     fechaActualizacion = @fechaActualizacion
+                                     actualizadoPor = @actualizadoPor
+                                     )
+                                WHERE idInfraccion = @idInfraccion";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@partner", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.BUSINESSPARTNER;
+                    command.Parameters.Add(new SqlParameter("@cuenta", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.CUENTAnmbb;
+                    command.Parameters.Add(new SqlParameter("@objeto", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.OBJETO;
+                    command.Parameters.Add(new SqlParameter("@documento", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.DOCUMENTNUMBER;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@idEstatusInfraccion", SqlDbType.Int)).Value = (object)7;
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
 
     }
-}
+ }
+

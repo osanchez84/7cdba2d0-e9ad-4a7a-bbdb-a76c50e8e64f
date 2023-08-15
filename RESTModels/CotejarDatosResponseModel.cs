@@ -43,7 +43,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string localidad { get; set; }
             public string municipio { get; set; }
             public string estado { get; set; }
-            public string telefono { get; set; }
+            public long telefono { get; set; }
             public string correo { get; set; }
             public string entidadreg { get; set; }
         }

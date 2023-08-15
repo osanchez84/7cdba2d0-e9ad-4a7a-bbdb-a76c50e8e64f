@@ -26,7 +26,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numeroEconomico { get; set; }
         public string paisManufactura { get; set; }
         public int? idPersona { get; set; }
-
+        public DateTime fechaNacimiento { get; set; }
+        
         public string marca { get; set; }
         public string submarca { get; set; }
         public string tipoVehiculo { get; set; }
@@ -40,7 +41,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string poliza { get; set; }
         public bool? carga { get; set; }
         public string otros { get; set; }
-
+        public string RFCMoral { get; set; }
+        public string PersonaMoralNombre { get; set; }
+        
         /// <summary>
         /// Estatus para saber si se encontro en Sitteg, Registro Estatal o no 
         /// </summary>

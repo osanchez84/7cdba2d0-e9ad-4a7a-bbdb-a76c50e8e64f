@@ -406,6 +406,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ServiceCrearInfraccion(int idInfraccion)
         {
             var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion);
+            var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
 
             CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
             crearMultasRequestModel.CR1RFC = infraccionBusqueda.folioInfraccion;
@@ -417,7 +418,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             crearMultasRequestModel.CR2RAZON = "";
             crearMultasRequestModel.CR3RAZON = "";
             crearMultasRequestModel.CR4RAZON = "";
-            crearMultasRequestModel.BIRTHDT = "1957-06-01";
+            crearMultasRequestModel.BIRTHDT = "";
             crearMultasRequestModel.CR1CALLE = infraccionBusqueda.lugarCalle;
             crearMultasRequestModel.CR1NEXT = infraccionBusqueda.lugarNumero;
             crearMultasRequestModel.CR1NINT = "";
@@ -425,16 +426,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             crearMultasRequestModel.CR2ENTRE = "";
             crearMultasRequestModel.CR1COLONIA = infraccionBusqueda.lugarColonia;
             crearMultasRequestModel.CR1LOCAL = "";
-            crearMultasRequestModel.CR1MPIO = "La Barca";
+            crearMultasRequestModel.CR1MPIO = infraccionBusqueda.municipio;
             crearMultasRequestModel.CR1CP = "00000";
             crearMultasRequestModel.CR1TELE = "";
             crearMultasRequestModel.CR1EDO = "GTO";
             crearMultasRequestModel.CR1EMAIL = "";
             crearMultasRequestModel.XSEXF = "";
-            crearMultasRequestModel.XSEXM = "X";
+            crearMultasRequestModel.XSEXM = "";
             crearMultasRequestModel.LZONE = "";
             crearMultasRequestModel.L_OFN_IOFICINA = "";
-            crearMultasRequestModel.IMPORTE_MULTA = "4.00";
+            crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString();
             crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
             crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
             crearMultasRequestModel.INF_PROP = "";
@@ -446,7 +447,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             crearMultasRequestModel.DOM_RESP_SOLI = "";
             crearMultasRequestModel.FOLIO_MULTA = infraccionBusqueda.folioInfraccion;
             crearMultasRequestModel.OBS_GARANT = "";
-            crearMultasRequestModel.ZMOTIVO1 = "Conducir con excesode Velocidad";
+            crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.catMotivo;
             crearMultasRequestModel.ZMOTIVO2 = "";
             crearMultasRequestModel.ZMOTIVO3 = "";
             var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
@@ -461,8 +462,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 return Json(new { success = false, message = "Registro actualizado en SITTEG" });
             }
-            return Json(new { success = false, message = "Ha ocurrido un error rintenta mas tarde" });
 
+           return Json(new { success = false, message = "Ha ocurrido un error rintenta mas tarde" });
+
+            }
         }
 
 
@@ -485,6 +488,5 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             listInfracciones
                         });
         }
-    }
     }
 

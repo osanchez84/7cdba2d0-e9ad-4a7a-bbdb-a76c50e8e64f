@@ -138,11 +138,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
+                            model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
                             model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
                             model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
+                            model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
                             model.NombreGarantia = model.Garantia.garantia;
                             modelList.Add(model);
                         }
@@ -301,11 +301,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
                             infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
                             infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
-                            infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
+                            infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo== null? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
                             infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
                             infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
-                            infraccionModel.NombrePropietario = infraccionModel.Vehiculo.Persona.nombreCompleto;
+                            infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "": infraccionModel.Vehiculo.Persona.nombreCompleto;
                             infraccionModel.NombreGarantia = infraccionModel.Garantia.garantia;
 
                             InfraccionesList.Add(infraccionModel);

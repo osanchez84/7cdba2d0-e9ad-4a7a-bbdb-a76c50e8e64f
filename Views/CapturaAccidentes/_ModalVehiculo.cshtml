@@ -161,35 +161,85 @@
      <div id="listadoDetalleVehiculo">
         <partial name="_ListaDetalleVehiculo" model="Model" />
      </div>
-        
+            <div class="modal fade modalCustom" id="VehiculoServiceModal" tabindex="-1" aria-labelledby="VehiculoServiceLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body" id="ModalBodyVehiculoService">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal genérico para mostrar mensajes de error -->
+            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="errorMessage"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 </section>
 </div>
 </div>
 
 <script>
+    function abrirModalVehiculo(placa) {
+        $.ajax({
+            url: '/CapturaAccidentes/AbrirModalVehiculo',
+            type: 'GET',
+            data: { placa: placa },
+            success: function (data) {
+                if (data.success) {
+                    // La llamada tuvo éxito y se obtuvo contenido para mostrar
+                    $('#ModalBodyVehiculoService').html(data);
+                    $('#VehiculoServiceModal').modal('show');
+                } else {
+                    $('#errorMessage').text(data.message);
+                    $('#errorModal').modal('show');
+                }
+            },
+            error: function () {
+                // Manejar error de la llamada AJAX
+                console.log("Error en la llamada AJAX para abrir el modal.");
+            }
+        });
+    }
+
+
     function busquedaVehiculo() {
         var formData = $("#buscarVehiculoForm").serialize();
-
         $.ajax({
             url: '@Url.Action("BuscarVehiculo")',
             type: 'POST',
             data: formData,
             success: function (response) {
-                console.log("Response:", response);                     
-                 if (response.success === false) {
-
-                    $("#ErrorMessage").html('<div class="error-message">' + response.message + '</div>');
-            }else {
+                console.log("WW",response)
+                if (response.noResults) {
+                    abrirModalVehiculo(response.placaValue);
+                } else {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
-                    grid.dataSource.data(response);
+                    grid.dataSource.data(response.data);
+                    grid.refresh(); 
                 }
             },
-            error: function (error) {
-                var errorMessage = error.responseText || "Ocurrió un error, inténtelo nuevamente más tarde.";
-                sitteg_warning(errorMessage);
+            error: function () {
+                // Manejar error
             }
         });
     }
+
 
     function goBack(){
 

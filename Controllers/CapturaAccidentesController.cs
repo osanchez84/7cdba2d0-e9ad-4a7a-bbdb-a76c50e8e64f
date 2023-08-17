@@ -23,6 +23,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GuanajuatoAdminUsuarios.RESTModels;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
+using System.Web;
+using System.Numerics;
+using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -247,67 +250,76 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-
         public ActionResult BuscarVehiculo(string Placa, string Serie, string folio)
-
         {
             var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+
             if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
             {
-                CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
-                cotejarDatosRequestModel.Tp_folio = "4";
-                cotejarDatosRequestModel.Folio = Placa;
-                cotejarDatosRequestModel.tp_consulta = "3";
-
-                var endPointName = "CotejarDatosEndPoint";
-                var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
-                if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
-                {
-                    var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
-                    var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
-                    var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
-                    var vehiculoEncontrado = new VehiculoModel
-                    {
-                        placas = vehiculoEncontradoData.no_placa,
-                        serie = vehiculoEncontradoData.no_serie,
-                        tarjeta = vehiculoEncontradoData.no_tarjeta,
-                        paisManufactura = vehiculoEncontradoData.no_motor,
-                        otros = vehiculoEncontradoData.otros,
-                        encontradoEn = 3,
-                        Persona = new PersonaModel
-                        {
-                            RFC = vehiculoInterlocutorData.Nro_rfc,
-                            nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
-
-                            PersonaDireccion = new PersonaDireccionModel
-                            {
-                                telefono = vehiculoDireccionData.telefono,
-                                correo = vehiculoDireccionData.correo,
-                                colonia = vehiculoDireccionData.colonia,
-                                calle = vehiculoDireccionData.calle,
-                                numero = vehiculoDireccionData.nro_exterior,
-                            }
-                        },
-
-                        PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-                        {
-                            PersonasMorales = new List<PersonaModel>()
-                        }
-
-                    };
-                    return RedirectToAction("AgregarVehiculo");
-                }
-                else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
-                {
-
-                    var errorMessage = "La placa no existe.";
-                    return Json(new { success = false, message = errorMessage });
-                }
+                return Json(new { noResults = true, placaValue = Placa });
             }
-
-            return Json(SeleccionVehiculo);
+            return Json(new { noResults = false, data = SeleccionVehiculo });
         }
 
+
+        public ActionResult AbrirModalVehiculo(string Placa)
+
+        {
+            CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
+            cotejarDatosRequestModel.Tp_folio = "4";
+            cotejarDatosRequestModel.Folio = Placa;
+            cotejarDatosRequestModel.tp_consulta = "3";
+
+            var endPointName = "CotejarDatosEndPoint";
+            var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+
+            if (result.MT_CotejarDatos_res == null || result.MT_CotejarDatos_res.Es_mensaje == null || result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
+            {
+                var errorMessage = "La placa no está registrada en SITTEG ni en el Padrón Estatal Vehicular, " +
+                                    "revise que la placa este bien escrita.";
+                return Json(new { success = false, message = errorMessage });
+            }
+            else if (result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+            {
+                var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
+                var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
+                var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
+                var vehiculoEncontrado = new VehiculoModel
+                {
+                    placas = vehiculoEncontradoData.no_placa,
+                    serie = vehiculoEncontradoData.no_serie,
+                    tarjeta = vehiculoEncontradoData.no_tarjeta,
+                    paisManufactura = vehiculoEncontradoData.no_motor,
+                    otros = vehiculoEncontradoData.otros,
+                    encontradoEn = 3,
+                    Persona = new PersonaModel
+                    {
+                        RFC = vehiculoInterlocutorData.Nro_rfc,
+                        nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+
+                        PersonaDireccion = new PersonaDireccionModel
+                        {
+                            telefono = vehiculoDireccionData.telefono,
+                            correo = vehiculoDireccionData.correo,
+                            colonia = vehiculoDireccionData.colonia,
+                            calle = vehiculoDireccionData.calle,
+                            numero = vehiculoDireccionData.nro_exterior,
+                        }
+                    },
+
+                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+                    {
+                        PersonasMorales = new List<PersonaModel>()
+                    }
+                
+            };
+                return PartialView("_Create", vehiculoEncontrado);
+            }
+
+            return Json(new { success = false, errorerrorMessage = "Ocurrio un error intente de nuevo mas tarde" });
+        }
+        
+        
         public JsonResult ObtVehiculosInvol([DataSourceRequest] DataSourceRequest request)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
@@ -813,15 +825,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             return RedirectToAction("CapturaAaccidente");
         }
-
-
-        public IActionResult AgregarVehiculo()
+        [HttpPost]
+        public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
         {
-            var vehiculoEncontradoJson = TempData["VehiculoEncontrado"] as string;
-            var vehiculoEncontrado = JsonConvert.DeserializeObject<VehiculoModel>(vehiculoEncontradoJson);
-
-            return View("Create", vehiculoEncontrado);
+            Persona.idCatTipoPersona = (int)TipoPersona.Moral;
+            var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
+            var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            return PartialView("_ListPersonasMorales", personasMoralesModel);
         }
+
+
+
 
 
 

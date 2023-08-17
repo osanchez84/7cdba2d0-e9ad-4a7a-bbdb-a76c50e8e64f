@@ -316,6 +316,7 @@ var grid = $("#gridPersonas").data("kendoGrid");
     }
 
     function mostrarModal(jsonData) {
+        console.log("JSONDAT", jsonData)
         const modal = document.getElementById('modalLicencias');
 
         const nombre = jsonData.Nombre;
@@ -339,7 +340,7 @@ var grid = $("#gridPersonas").data("kendoGrid");
                 <p><strong>Apellido Materno:</strong> ${apellidoMaterno}</p>
                 <p><strong>Tipo de Licencia:</strong> ${tipoLicencia}</p>
                 <p><strong>Número de Licencia:</strong> ${numeroLicencia}</p>
-                <p><strong>Fecha de Expedición:</strong> ${fechaExpedicion}</p>
+                        <p><strong>Fecha de Expedición:</strong> ${fechaExpedicion}</p>
                 <p><strong>Fecha de Vigencia:</strong> ${fechaVigencia}</p>
             </div>
           <div class="modal-footer">
@@ -349,7 +350,7 @@ var grid = $("#gridPersonas").data("kendoGrid");
         `;
 
         modal.querySelector('.modal-content').innerHTML = modalContent;
-
+        console.log("mod",modalContent)
         const cerrarModalBtn = document.getElementById('cerrarModalBtn');
         cerrarModalBtn.addEventListener('click', () => {
             $('#modalLicencias').modal('hide');

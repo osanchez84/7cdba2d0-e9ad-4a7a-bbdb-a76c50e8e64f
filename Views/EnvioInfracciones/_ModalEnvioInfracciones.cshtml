@@ -101,16 +101,32 @@
                     </div>
                 </div>
              </div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Resultado del envío</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
          </section>
        </div>
   </div>
   <script>
     function enviarInfracciones() {
         var formSerialized = $("#dataEnvioInfraccionForm").serialize();
-        var selectedIds = idInfraccionesSeleccionados; // idInfraccionesSeleccionados es el array de IDs seleccionados
-        var oficioValue = $("#oficio").val(); // Obtén el valor del campo "Oficio" del formulario
-        var fechaEnvioValue = $("#fechaEnvio").val(); // Obtén el valor del campo "FechaEnvio" del formulario
-        var idLugarEnvioValue = $("#idLugarEnvio").val(); // Obtén el valor del campo "IdLugarEnvio" del formulario
+        var selectedIds = idInfraccionesSeleccionados;
+        var oficioValue = $("#oficio").val();
+        var fechaEnvioValue = $("#fechaEnvio").val();
+        var idLugarEnvioValue = $("#idLugarEnvio").val();
 
         var data = {
             model: {
@@ -118,7 +134,6 @@
                 Oficio: oficioValue,
                 FechaEnvio: fechaEnvioValue,
                 IdLugarEnvio: idLugarEnvioValue,
-                // Agrega otras propiedades del modelo según sea necesario
             },
             form: formSerialized
         };
@@ -128,14 +143,24 @@
             type: 'POST',
             data: data,
             success: function (result) {
-                if (result.success) {
-                    sitteg_success('Infracciones enviadas correctamente');
-                    $('#enviarInfraccionesModal').modal('hide');
+                console.log("uy", result);
 
-                    if (result.processedInfraccionIds && result.processedInfraccionIds.length > 0) {
-                        var processedIds = result.processedInfraccionIds.join(', ');
-                        alert('Las siguientes infracciones fueron procesadas exitosamente: ' + processedIds);
+                if (result.success) {
+                    var message = 'Resultado del envío:';
+                    message += 'Total de infracciones: ' + result.totalInfracciones + '\n';
+                  //  message += 'Enviadas con éxito: ' + result.successCount;
+
+                    if (result.successCount > 0) {
+                        var processedIdsArray = Array.from(result.processedInfraccionIds);
+                        if (processedIdsArray.length > 0) {
+                            var processedIds = processedIdsArray.join(', ');
+                            message += '\nLas siguientes infracciones fueron procesadas exitosamente: ' + processedIds;
+                        } else {
+                            message += '\nNo se encontraron infracciones procesadas.';
+                        }
                     }
+
+                    showModal(message);
                 } else {
                     sitteg_warning('Uno o más registros no pudieron ser enviados. Inténtalo nuevamente.');
                 }
@@ -144,6 +169,11 @@
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
             }
         });
+    }
 
+    function showModal(message) {
+        $('#myModal .modal-body').text(message);
+        $('#myModal').modal('show');
+    }
 
 </script>

@@ -337,6 +337,93 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+        public IEnumerable<PersonaModel> GetAllPersonasFisicas()
+        {
+            List<PersonaModel> modelList = new List<PersonaModel>();
+            string strQuery = @"SELECT
+                                p.idPersona,p.numeroLicencia,p.CURP,p.RFC,p.nombre,p.apellidoPaterno,p.apellidoMaterno
+                                ,p.fechaActualizacion,p.actualizadoPor,p.estatus,p.idCatTipoPersona,p.idTipoLicencia,p.fechaNacimiento
+                                ,p.idGenero,p.vigenciaLicencia,ctp.tipoPersona,cl.tipoLicencia,cg.genero
+                                ,pd.idPersonasDirecciones,pd.idEntidad,pd.idMunicipio,pd.codigoPostal
+                                ,pd.colonia,pd.calle,pd.numero,pd.telefono,pd.correo,pd.idPersona,pd.actualizadoPor
+                                ,pd.fechaActualizacion,pd.estatus,ce.nombreEntidad
+                                ,ce.fechaActualizacion,ce.actualizadoPor,ce.estatus
+                                ,cm.municipio,cm.fechaActualizacion,cm.actualizadoPor,cm.estatus
+                                FROM personas p
+                                LEFT JOIN catTipoPersona ctp
+                                on p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1
+                                LEFT JOIN catTipoLicencia cl
+                                on p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
+                                LEFT JOIN catGeneros cg
+                                on p.idGenero = cg.idGenero AND cg.estatus = 1
+                                LEFT JOIN personasDirecciones pd  on p.idPersona = pd.idPersona AND pd.estatus=1
+                                LEFT JOIN catEntidades ce on pd.idEntidad = ce.idEntidad  AND ce.estatus=1
+                                LEFT JOIN catMunicipios cm on pd.idMunicipio = cm.idMunicipio AND cm.estatus=1
+                                WHERE p.estatus = 1";
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            PersonaModel model = new PersonaModel();
+                            model.PersonaDireccion = new PersonaDireccionModel();
+                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.CURP = reader["CURP"].ToString();
+                            model.RFC = reader["RFC"].ToString();
+                            model.nombre = reader["nombre"].ToString();
+                            model.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            model.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                            model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
+                            model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
+                            model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                            model.tipoPersona = reader["tipoPersona"].ToString();
+                            model.idGenero = reader["idGenero"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"].ToString());
+                            model.genero = reader["genero"].ToString();
+                            model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+                            model.tipoLicencia = reader["tipoLicencia"].ToString();
+                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+
+                            model.PersonaDireccion.idPersonasDirecciones = reader["idPersonasDirecciones"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonasDirecciones"].ToString());
+                            model.PersonaDireccion.idEntidad = reader["idEntidad"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idEntidad"].ToString());
+                            model.PersonaDireccion.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.PersonaDireccion.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
+                            model.PersonaDireccion.entidad = reader["nombreEntidad"].ToString();
+                            model.PersonaDireccion.municipio = reader["municipio"].ToString();
+                            model.PersonaDireccion.codigoPostal = reader["codigoPostal"].ToString();
+                            model.PersonaDireccion.colonia = reader["colonia"].ToString();
+                            model.PersonaDireccion.calle = reader["calle"].ToString();
+                            model.PersonaDireccion.numero = reader["numero"].ToString();
+                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.correo = reader["correo"].ToString();
+
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return modelList;
+
+        }
+
         public PersonaModel GetPersonaTypeById(int idPersona)
         {
             List<PersonaModel> modelList = new List<PersonaModel>();
@@ -536,7 +623,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombre ?? DBNull.Value;

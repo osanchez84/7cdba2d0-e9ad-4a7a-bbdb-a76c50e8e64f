@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -69,7 +70,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ajax_GuardarInfraccionesEnviadas(ModalEnvioModel model)
         {
-            // var guardarDatos = _envioInfraccionesService.GuardarEnvioInfracciones(model);
+            var guardarDatos = _envioInfraccionesService.GuardarEnvioInfracciones(model);
+
             List<int> successfulInfraccionIds = new List<int>();
             List<int> processedInfraccionIds = new List<int>();
 
@@ -78,6 +80,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 try
                 {
                     var infraccionBusqueda = _infraccionesService.GetInfraccionById(infraccionId);
+                    var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
 
                     if (infraccionBusqueda != null)
                     {
@@ -91,7 +94,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         crearMultasRequestModel.CR2RAZON = "";
                         crearMultasRequestModel.CR3RAZON = "";
                         crearMultasRequestModel.CR4RAZON = "";
-                        crearMultasRequestModel.BIRTHDT = "1957-06-01";
+                        crearMultasRequestModel.BIRTHDT = "";
                         crearMultasRequestModel.CR1CALLE = infraccionBusqueda.lugarCalle;
                         crearMultasRequestModel.CR1NEXT = infraccionBusqueda.lugarNumero;
                         crearMultasRequestModel.CR1NINT = "";
@@ -99,7 +102,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         crearMultasRequestModel.CR2ENTRE = "";
                         crearMultasRequestModel.CR1COLONIA = infraccionBusqueda.lugarColonia;
                         crearMultasRequestModel.CR1LOCAL = "";
-                        crearMultasRequestModel.CR1MPIO = "La Barca";
+                        crearMultasRequestModel.CR1MPIO = infraccionBusqueda.municipio;
                         crearMultasRequestModel.CR1CP = "00000";
                         crearMultasRequestModel.CR1TELE = "";
                         crearMultasRequestModel.CR1EDO = "GTO";
@@ -108,7 +111,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         crearMultasRequestModel.XSEXM = "X";
                         crearMultasRequestModel.LZONE = "";
                         crearMultasRequestModel.L_OFN_IOFICINA = "";
-                        crearMultasRequestModel.IMPORTE_MULTA = "4.00";
+                        crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString();
                         crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
                         crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                         crearMultasRequestModel.INF_PROP = "";
@@ -120,7 +123,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         crearMultasRequestModel.DOM_RESP_SOLI = "";
                         crearMultasRequestModel.FOLIO_MULTA = infraccionBusqueda.folioInfraccion;
                         crearMultasRequestModel.OBS_GARANT = "";
-                        crearMultasRequestModel.ZMOTIVO1 = "Conducir con excesode Velocidad";
+                        crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.catMotivo;
                         crearMultasRequestModel.ZMOTIVO2 = "";
                         crearMultasRequestModel.ZMOTIVO3 = "";
                         var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);

@@ -11,18 +11,23 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string CURP { get; set; }
         public string CURPBusqueda { get; set; }
+        public string CURPFisico { get; set; }
 
         public string RFC { get; set; }
         public string RFCBusqueda { get; set; }
+        public string RFCFisico { get; set; }
 
         public string nombre { get; set; }
         public string nombreBusqueda { get; set; }
-
+        public string nombreFisico { get; set; }
+        
         public string apellidoPaterno { get; set; }
         public string apellidoPaternoBusqueda { get; set; }
+        public string apellidoPaternoFisico { get; set; }
 
         public string apellidoMaterno { get; set; }
         public string apellidoMaternoBusqueda { get; set; }
+        public string apellidoMaternoFisico { get; set; }
 
         public string nombreCompleto { get { return nombre + " " + apellidoPaterno + " " + apellidoMaterno; } }
         public int idCatTipoPersona { get; set; }
@@ -32,6 +37,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime fechaNacimiento { get; set; }
         public int idTipoLicencia { get; set; }
         public string tipoLicencia { get; set; }
+        public string telefono { get; set; }
+        public string correo { get; set; }
+        
         public DateTime vigenciaLicencia { get; set; }
         public virtual PersonaDireccionModel PersonaDireccion { get; set; }
 

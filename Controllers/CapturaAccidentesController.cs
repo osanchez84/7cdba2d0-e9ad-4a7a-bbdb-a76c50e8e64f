@@ -60,6 +60,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IInfraccionesService _infraccionesService;
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
         private readonly IPersonasService _personasService;
+        private readonly IVehiculosService _vehiculosService;
 
 
 
@@ -73,7 +74,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
             ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory,
-            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService)
+            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -103,6 +104,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _httpClientFactory = httpClientFactory;
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
             _personasService = personasService;
+            _vehiculosService = vehiculosService;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -263,7 +265,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         public ActionResult AbrirModalVehiculo(string Placa)
-
         {
             CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
             cotejarDatosRequestModel.Tp_folio = "4";
@@ -273,13 +274,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var endPointName = "CotejarDatosEndPoint";
             var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
 
-            if (result.MT_CotejarDatos_res == null || result.MT_CotejarDatos_res.Es_mensaje == null || result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
-            {
-                var errorMessage = "La placa no está registrada en SITTEG ni en el Padrón Estatal Vehicular, " +
-                                    "revise que la placa este bien escrita.";
-                return Json(new { success = false, message = errorMessage });
-            }
-            else if (result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+            if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
             {
                 var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
                 var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
@@ -311,15 +306,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     {
                         PersonasMorales = new List<PersonaModel>()
                     }
-                
-            };
+                };
+
+                return PartialView("_Create", vehiculoEncontrado);
+            }
+            else if (result.MT_CotejarDatos_res == null || result.MT_CotejarDatos_res.Es_mensaje == null || result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
+            {
+                var vehiculoEncontrado = new VehiculoModel(); 
+                vehiculoEncontrado.idSubmarcaUpdated = vehiculoEncontrado.idSubmarca;
+                vehiculoEncontrado.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+                vehiculoEncontrado.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+                vehiculoEncontrado.encontradoEn = 3;
+
                 return PartialView("_Create", vehiculoEncontrado);
             }
 
-            return Json(new { success = false, errorerrorMessage = "Ocurrio un error intente de nuevo mas tarde" });
+            return Json(new { success = false, errorerrorMessage = "Ocurrió un error, inténtelo de nuevo más tarde" });
         }
-        
-        
+
+
+
         public JsonResult ObtVehiculosInvol([DataSourceRequest] DataSourceRequest request)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
@@ -844,6 +850,63 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var personasFisicas = _personasService.GetAllPersonas();
             return PartialView("_PersonasFisicas", personasFisicas);
+        }
+
+        [HttpPost]
+        public ActionResult ajax_BuscarPersonaMoral(PersonaMoralBusquedaModel PersonaMoralBusquedaModel)
+        {
+            PersonaMoralBusquedaModel.IdTipoPersona = (int)TipoPersona.Moral;
+            var personasMoralesModel = _personasService.GetAllPersonasMorales(PersonaMoralBusquedaModel);
+            return PartialView("_ListPersonasMorales", personasMoralesModel);
+        }
+
+        [HttpPost]
+        public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)
+        {
+            Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+            var IdPersonaFisica = _personasService.CreatePersona(Persona);
+            var personasFisicasModel = _personasService.GetAllPersonasFisicas();
+            return PartialView("_PersonasFisicas", personasFisicasModel);
+        }
+        [HttpGet]
+        public ActionResult ajax_GetPersonaMoral(int id)
+        {
+            var personaModel = _personasService.GetPersonaTypeById(id);
+            return PartialView("_UpdatePersonaMoral", personaModel);
+        }
+
+        [HttpPost]
+        public ActionResult ajax_UpdatePersonaMoral(PersonaModel Persona)
+        {
+            Persona.idCatTipoPersona = (int)TipoPersona.Moral;
+            var personaModel = _personasService.UpdatePersonaMoral(Persona);
+            var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            return PartialView("_ListPersonasMorales", personasMoralesModel);
+        }
+
+
+        [HttpPost]
+        public ActionResult ajax_CrearVehiculo(VehiculoModel model)
+        {
+            int IdVehiculo = 0;
+            if (model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg)
+            {
+                model.idSubmarca = model.idSubmarcaUpdated;
+                IdVehiculo = _vehiculosService.UpdateVehiculo(model);
+            }
+            else if (model.encontradoEn == (int)EstatusBusquedaVehiculo.NoEncontrado)
+            {
+                IdVehiculo = _vehiculosService.CreateVehiculo(model);
+            }
+
+            if (IdVehiculo != 0)
+            {
+                return Json(new { id = IdVehiculo });
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

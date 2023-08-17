@@ -8,6 +8,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idPersona { get; set; }
         public string numeroLicencia { get; set; }
         public string numeroLicenciaBusqueda { get; set; }
+        public string numeroLicenciaFisico { get; set; }
 
         public string CURP { get; set; }
         public string CURPBusqueda { get; set; }
@@ -41,6 +42,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string correo { get; set; }
         
         public DateTime vigenciaLicencia { get; set; }
+        public DateTime vigenciaLicenciaFisico { get; set; }
+
         public virtual PersonaDireccionModel PersonaDireccion { get; set; }
 
     }

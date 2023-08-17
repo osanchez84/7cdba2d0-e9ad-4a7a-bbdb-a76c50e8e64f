@@ -25,11 +25,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly ICatTipoLicenciasService _catTipoLicenciasService;
 
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
             IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
-           ICotejarDocumentosClientService cotejarDocumentosClientService
+           ICotejarDocumentosClientService cotejarDocumentosClientService,ICatTipoLicenciasService catTipoLicenciasService
+
 
          )
         {
@@ -39,7 +41,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _httpClient = httpClientFactory;
             _configuration = configuration;
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
-
+            _catTipoLicenciasService = catTipoLicenciasService;
         }
 
         public IActionResult Index()
@@ -124,6 +126,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var catEntidades = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            return Json(result);
+        }
+        public JsonResult TipoLicencias_Drop()
+        {
+            var result = new SelectList(_catTipoLicenciasService.ObtenerTiposLicencia(), "idTipoLicencia", "tipoLicencia");
             return Json(result);
         }
 

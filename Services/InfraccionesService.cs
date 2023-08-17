@@ -176,7 +176,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     sqlCondiciones += (object)model.IdEstatus == null ? "" : " estIn.idEstatusInfraccion=@IdEstatus AND \n";
                     sqlCondiciones += (object)model.IdDependencia == null ? "" : " dep.idDependencia=@IdDependencia AND \n";
                     sqlCondiciones += (object)model.folioInfraccion == null ? "" : " UPPER(inf.folioInfraccion)=@FolioInfraccion AND \n";
-                    sqlCondiciones += (object)model.placas == null ? "" : " UPPER(inf.placasVehiculo)=@Placas AND \n";
+                    sqlCondiciones += (object)model.placas == null ? "" : " UPPER(veh.placas)=@Placas AND \n";
                     sqlCondiciones += (object)model.Propietario == null ? "" : " UPPER(veh.propietario)=@Propietario AND \n";
                     sqlCondiciones += (object)model.Conductor == null ? "" : "UPPER(pInf.nombre + ' ' + pInf.apellidoPaterno + ' ' + pInf.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Conductor + '%' AND \n";
 
@@ -198,7 +198,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,inf.idCarretera
                                     ,inf.idPersona
                                     ,inf.idPersonaInfraccion
-                                    ,inf.placasVehiculo
+                                    ,veh.placas placasVehiculo
                                     ,inf.folioInfraccion
                                     ,inf.fechaInfraccion
                                     ,inf.kmCarretera

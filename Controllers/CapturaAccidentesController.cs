@@ -256,10 +256,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
 
-            if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+           /* if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
             {
                 return Json(new { noResults = true, placaValue = Placa });
-            }
+            }*/
             return Json(new { noResults = false, data = SeleccionVehiculo });
         }
 

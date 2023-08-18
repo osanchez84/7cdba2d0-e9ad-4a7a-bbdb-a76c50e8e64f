@@ -71,8 +71,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_GuardarInfraccionesEnviadas(ModalEnvioModel model)
         {
             var guardarDatos = _envioInfraccionesService.GuardarEnvioInfracciones(model);
-
-            List<int> successfulInfraccionIds = new List<int>();
+            return PartialView("Index");
+        }
+          /*  List<int> successfulInfraccionIds = new List<int>();
             List<int> processedInfraccionIds = new List<int>();
 
             foreach (int infraccionId in model.SelectedIds)
@@ -161,6 +162,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 successCount = successCount,
                 processedInfraccionIds = successfulInfraccionIds
             });
-        }
+        }*/
     }
 }

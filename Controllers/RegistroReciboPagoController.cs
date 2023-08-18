@@ -70,7 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         }
 
-        public IActionResult ConsultarDocumento(string recibo)
+     /*   public IActionResult ConsultarDocumento(string recibo)
         {
             RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
             MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
@@ -84,7 +84,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
             ViewBag.Pension = result;
             return Json(result);
-        }
+        }*/
 
     }
 

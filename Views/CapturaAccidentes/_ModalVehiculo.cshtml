@@ -204,15 +204,10 @@
                 if (data.success) {
                     // La llamada tuvo éxito y se obtuvo contenido para mostrar
                     $('#ModalBodyVehiculoService').html(data);
-                    $('#VehiculoServiceModal').modal('show'); 
-                
-
-                } else {
-                    $('#ModalBodyVehiculoService').html(data);
                     $('#VehiculoServiceModal').modal('show');
-                   
-                  //  $('#errorMessage').text(data.message);
-                   // $('#errorModal').modal('show');
+                } else {
+                    $('#errorMessage').text(data.message);
+                    $('#errorModal').modal('show');
                 }
             },
             error: function () {

@@ -175,8 +175,8 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="errorModalLabel">Aviso</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <h5 class="modal-title" id="errorModalLabel">Vehículo no registrado en SITTEG</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cierraModal()">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -184,7 +184,7 @@
                             <p id="errorMessage"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cierraModal()">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -229,21 +229,25 @@
             type: 'POST',
             data: formData,
             success: function (response) {
-                console.log("WW",response)
-               /* if (response.noResults) {
-                    abrirModalVehiculo(response.placaValue);*/
-                if (response.data.length === 0) {
-                    sitteg_warning("La busqueda no ha obtenido resultados.");
+                console.log("WW", response);
 
-                
+                // Comprobar si es una respuesta de error debido a problemas de conexión
+               /* if (response.success === false) {
+                    sitteg_warning(response.errorMessage);
+                    return; 
+                }*/
+
+                if (response.data.length === 0) {
+                    sitteg_warning("La búsqueda no ha obtenido resultados.");
+
                 } else {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
                     grid.dataSource.data(response.data);
-                    grid.refresh(); 
+                    grid.refresh();
                 }
             },
             error: function () {
-                // Manejar error
+                sitteg_warning("Sucedio un error intente de nuevo mas tarde");
             }
         });
     }
@@ -254,4 +258,10 @@
         $('#agregarVehiculoModal').modal('hide');
 
         }
+
+    function cierraModal() {
+
+        $('#errorModal').modal('hide');
+
+    }
 </script>

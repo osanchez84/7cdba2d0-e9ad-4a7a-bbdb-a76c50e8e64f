@@ -271,6 +271,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult AbrirModalVehiculo(string Placa)
         {
+            try { 
             CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
             cotejarDatosRequestModel.Tp_folio = "4";
             cotejarDatosRequestModel.Folio = Placa;
@@ -328,6 +329,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             return Json(new { success = false, errorerrorMessage = "Ocurrió un error, inténtelo de nuevo más tarde" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = "No se pudo establecer conexión con el servicio. Inténtelo de nuevo más tarde." });
+            }
         }
 
 

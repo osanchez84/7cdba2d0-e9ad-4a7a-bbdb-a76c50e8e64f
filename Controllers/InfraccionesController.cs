@@ -273,8 +273,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.idPersona);
             model.idPersonaInfraccion = idPersonaInfraccion;
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-           var idInfraccion = _infraccionesService.CrearInfraccion(model,idOficina);
+           var idInfraccion = _infraccionesService.CrearInfraccion(model);
             return Json(new { id = idInfraccion });
             //return Ok();
 
@@ -406,6 +405,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion);
             var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
             crearMultasRequestModel.CR1RFC = infraccionBusqueda.folioInfraccion;
@@ -444,7 +444,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             crearMultasRequestModel.DOC_GARANTIA = "4";
             crearMultasRequestModel.NOM_RESP_SOLI = "";
             crearMultasRequestModel.DOM_RESP_SOLI = "";
-            crearMultasRequestModel.FOLIO_MULTA = infraccionBusqueda.folioInfraccion;
+            if (infraccionBusqueda != null)
+            {
+                string prefijo = (idOficina == 1) ? "TTO-PEC" : (idOficina == 2) ? "TTE-M" : "";
+                crearMultasRequestModel.FOLIO_MULTA = prefijo + infraccionBusqueda.folioInfraccion;
+            }
             crearMultasRequestModel.OBS_GARANT = "";
             crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.catMotivo;
             crearMultasRequestModel.ZMOTIVO2 = "";

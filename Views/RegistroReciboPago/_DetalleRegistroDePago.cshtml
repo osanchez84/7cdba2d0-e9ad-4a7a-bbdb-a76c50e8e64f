@@ -101,16 +101,13 @@
         });
     }
 
-    function comprobarRecibo(reciboValue) {
+  /*  function comprobarRecibo(reciboValue) {
 
         $.ajax({
             url: '/RegistroReciboPago/ConsultarDocumento', 
             type: 'POST', 
             data: { recibo: reciboValue }, 
             success: function (response) {}
-
-               /* console.log('Respuesta del servidor:', response);
-
                 var wType = response.MT_ConsultarDocumento_res.result.WTYPE;
                 var wMessage = response.MT_ConsultarDocumento_res.result.WMESSAGE;
                 if (wType === "E") {
@@ -120,22 +117,22 @@
                     $('#mensajeServicio').text(wMessage);
                     document.getElementById("botnGuardar").style.display = "block";
                     var fechaPago = response.MT_ConsultarDocumento_res.result.FECHA_PAGO;
-                    var importe = response.MT_ConsultarDocumento_res.result.IMPORTE;*/
+                    var importe = response.MT_ConsultarDocumento_res.result.IMPORTE;
 
 
-                   // $('#FechaPago').data("kendoDatePicker").value(new Date(fechaPago));
-                   // $('#Monto').data("kendoTextBox").value(importe);
-              //  }
-               /* else(response ==null)
+                    $('#FechaPago').data("kendoDatePicker").value(new Date(fechaPago));
+                    $('#Monto').data("kendoTextBox").value(importe);
+               }
+                else(response ==null)
                 {
                 }
             },
             error: function (response) {
                 console.error('Error en la llamada AJAX:', response);
             }
-        });*/
-    }
-
+        });
+    }*/
+    
 
 
 </script>

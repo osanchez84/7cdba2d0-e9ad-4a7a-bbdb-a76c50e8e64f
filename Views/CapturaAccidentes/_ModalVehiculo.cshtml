@@ -175,7 +175,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                            <h5 class="modal-title" id="errorModalLabel">Aviso</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -202,12 +202,16 @@
             data: { placa: placa },
             success: function (data) {
                 if (data.success) {
-                    // La llamada tuvo éxito y se obtuvo contenido para mostrar
+                    $('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a SITTEG");
+                    $('#errorModal').modal('show'); 
                     $('#ModalBodyVehiculoService').html(data);
                     $('#VehiculoServiceModal').modal('show');
                 } else {
-                    $('#errorMessage').text(data.message);
+                    $('#errorMessage').text("Complete o ingrese la información necesaria para agregar este vehículo a SITTEG");
                     $('#errorModal').modal('show');
+
+                    $('#ModalBodyVehiculoService').html(data);
+                    $('#VehiculoServiceModal').modal('show');
                 }
             },
             error: function () {
@@ -226,8 +230,12 @@
             data: formData,
             success: function (response) {
                 console.log("WW",response)
-                if (response.noResults) {
-                    abrirModalVehiculo(response.placaValue);
+               /* if (response.noResults) {
+                    abrirModalVehiculo(response.placaValue);*/
+                if (response.data.length === 0) {
+                    sitteg_warning("La busqueda no ha obtenido resultados.");
+
+                
                 } else {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
                     grid.dataSource.data(response.data);

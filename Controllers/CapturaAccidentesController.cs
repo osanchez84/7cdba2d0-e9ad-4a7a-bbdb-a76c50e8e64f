@@ -238,7 +238,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ModalAnexo2()
         {
-            return PartialView("_ModalAnexo2");
+            var vehiculoEncontrado = new VehiculoModel();
+            vehiculoEncontrado.idSubmarcaUpdated = vehiculoEncontrado.idSubmarca;
+            vehiculoEncontrado.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            vehiculoEncontrado.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            vehiculoEncontrado.encontradoEn = 3;
+            return PartialView("_Create",vehiculoEncontrado);
         }
 
         public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
@@ -312,11 +317,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else if (result.MT_CotejarDatos_res == null || result.MT_CotejarDatos_res.Es_mensaje == null || result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
             {
-                var vehiculoEncontrado = new VehiculoModel(); 
+                var vehiculoEncontrado = new VehiculoModel();
                 vehiculoEncontrado.idSubmarcaUpdated = vehiculoEncontrado.idSubmarca;
                 vehiculoEncontrado.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                 vehiculoEncontrado.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
                 vehiculoEncontrado.encontradoEn = 3;
+
 
                 return PartialView("_Create", vehiculoEncontrado);
             }

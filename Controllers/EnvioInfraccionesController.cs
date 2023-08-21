@@ -72,7 +72,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var guardarDatos = _envioInfraccionesService.GuardarEnvioInfracciones(model);
             return PartialView("Index");
-            /*   List<int> successfulInfraccionIds = new List<int>();
+        }
+    }
+}
+             /*  List<int> successfulInfraccionIds = new List<int>();
                List<int> processedInfraccionIds = new List<int>();
 
                foreach (int infraccionId in model.SelectedIds)
@@ -81,8 +84,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                    {
                        var infraccionBusqueda = _infraccionesService.GetInfraccionById(infraccionId);
                        var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
+                       int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                       if (infraccionBusqueda != null)
+                    if (infraccionBusqueda != null)
                        {
                            CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
                            crearMultasRequestModel.CR1RFC = infraccionBusqueda.folioInfraccion;
@@ -121,8 +125,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                            crearMultasRequestModel.DOC_GARANTIA = "4";
                            crearMultasRequestModel.NOM_RESP_SOLI = "";
                            crearMultasRequestModel.DOM_RESP_SOLI = "";
-                           crearMultasRequestModel.FOLIO_MULTA = infraccionBusqueda.folioInfraccion;
-                           crearMultasRequestModel.OBS_GARANT = "";
+                        if (infraccionBusqueda != null)
+                        {
+                            string prefijo = (idOficina == 1) ? "TTO-PEC" : (idOficina == 2) ? "TTE-M" : "";
+                            crearMultasRequestModel.FOLIO_MULTA = prefijo + infraccionBusqueda.folioInfraccion;
+                        }
+                        crearMultasRequestModel.OBS_GARANT = "";
                            crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.catMotivo;
                            crearMultasRequestModel.ZMOTIVO2 = "";
                            crearMultasRequestModel.ZMOTIVO3 = "";
@@ -160,7 +168,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                    totalInfracciones = totalInfracciones,
                    successCount = successCount,
                    processedInfraccionIds = successfulInfraccionIds
-               });*/
+               });
            }
         }
-}
+}*/

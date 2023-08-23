@@ -232,14 +232,13 @@
                 console.log("WW", response);
 
                 // Comprobar si es una respuesta de error debido a problemas de conexión
-               /* if (response.success === false) {
+                if (response.success === false) {
                     sitteg_warning(response.errorMessage);
                     return; 
-                }*/
+                }
 
-                if (response.data.length === 0) {
-                    sitteg_warning("La búsqueda no ha obtenido resultados.");
-
+                if (response.noResults) {
+                    abrirModalVehiculo(response.placaValue);
                 } else {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
                     grid.dataSource.data(response.data);

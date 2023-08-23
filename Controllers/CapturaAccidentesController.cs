@@ -26,6 +26,7 @@ using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Web;
 using System.Numerics;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+using Microsoft.Extensions.Options;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -61,6 +62,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
         private readonly IPersonasService _personasService;
         private readonly IVehiculosService _vehiculosService;
+        private readonly AppSettings _appSettings;
+
 
 
 
@@ -74,7 +77,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
             ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory,
-            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService)
+            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService, IOptions<AppSettings> appSettings)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -105,6 +108,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
             _personasService = personasService;
             _vehiculosService = vehiculosService;
+            _appSettings = appSettings.Value;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -259,13 +263,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult BuscarVehiculo(string Placa, string Serie, string folio)
         {
-            var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
-
-           /* if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+            if (_appSettings.AllowWebServices)
             {
-                return Json(new { noResults = true, placaValue = Placa });
-            }*/
-            return Json(new { noResults = false, data = SeleccionVehiculo });
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+
+                if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+                {
+                    return Json(new { noResults = true, placaValue = Placa });
+                }
+                return Json(new { noResults = false, data = SeleccionVehiculo });
+            }
+            else
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+                return Json(new { noResults = false, data = SeleccionVehiculo });
+
+            }
         }
 
 

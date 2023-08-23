@@ -48,10 +48,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_BuscarGruas(string placas, string noEconomico, int? idTipoGrua)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua,idOficina);
-            return PartialView("_ListadoGruas", listPadronGruas);
+            var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina);
 
+            return PartialView("_ListadoGruas", listPadronGruas);
         }
+
 
         /// <summary>
         /// Accion que redirige a la vista

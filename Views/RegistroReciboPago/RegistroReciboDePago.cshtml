@@ -85,14 +85,12 @@
             type: 'POST',
             data: Data,
             success: function (result) {
-                console.log("AB", result)
-
                 if (result.length === 0) {
                     $('#mensajeSinResultados').text("La búsqueda no arrojó resultados.");
-                } else {
-                    $('#mensajeSinResultados').text(""); // Limpia el mensaje si hay resultados
+                } else{
                     var grid = $("#gridRegistro").data("kendoGrid");
                     grid.dataSource.data(result);
+                    $('#mensajeSinResultados').text(" ");
                 }
             },
         })

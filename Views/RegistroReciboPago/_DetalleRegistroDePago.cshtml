@@ -70,7 +70,7 @@
 </form>
 
     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-    <div class="controlButton my-3" id="botnGuardar" style="display: none;" onclick="guardarReciboPago()">
+    <div class="controlButton my-3" id="botnGuardar" style="display: block;" onclick="guardarReciboPago()">
             @(Html.Kendo().Button()
                 .Name("GuardarPago")
             .HtmlAttributes(new { @class = "btnPrimary"}) // Establece el atributo disabled
@@ -102,39 +102,40 @@
     }
 
     function comprobarRecibo(reciboValue) {
-
         $.ajax({
-            url: '/RegistroReciboPago/ConsultarDocumento', 
-            type: 'POST', 
-            data: { recibo: reciboValue }, 
+            url: '/RegistroReciboPago/ConsultarDocumento',
+            type: 'POST',
+            data: { recibo: reciboValue },
             success: function (response) {
-                console.log('Respuesta del servidor:', response);
+                console.log("RES", response);
+                if (response.hasError) {
+                    $('#mensajeError').text(response.message);
+                } else {
+                    var wType = response.result.MT_ConsultarDocumento_res.result.WTYPE;
+                    var wMessage = response.result.MT_ConsultarDocumento_res.result.WMESSAGE;
+                    if (wType === "E") {
+                        $('#mensajeError').text(wMessage);
+                    } else if (wType === "S") {
+                        $('#mensajeError').text("");
+                        $('#mensajeServicio').text(wMessage);
+                        document.getElementById("botnGuardar").style.display = "block";
+                        var fechaPago = response.result.MT_ConsultarDocumento_res.result.FECHA_PAGO;
+                        var importe = response.result.MT_ConsultarDocumento_res.result.IMPORTE;
 
-                var wType = response.MT_ConsultarDocumento_res.result.WTYPE;
-                var wMessage = response.MT_ConsultarDocumento_res.result.WMESSAGE;
-                if (wType === "E") {
-                    $('#mensajeError').text(wMessage);
-                } else if (wType === "S") {
-                    $('#mensajeError').text("");
-                    $('#mensajeServicio').text(wMessage);
-                    document.getElementById("botnGuardar").style.display = "block";
-                    var fechaPago = response.MT_ConsultarDocumento_res.result.FECHA_PAGO;
-                    var importe = response.MT_ConsultarDocumento_res.result.IMPORTE;
-
-
-                    $('#FechaPago').data("kendoDatePicker").value(new Date(fechaPago));
-                    $('#Monto').data("kendoTextBox").value(importe);
-                }
-                else(response ==null)
-                {
+                        $('#FechaPago').data("kendoDatePicker").value(new Date(fechaPago));
+                        $('#Monto').data("kendoTextBox").value(importe);
+                    } else {
+                        // Mostrar mensaje específico cuando el servicio no responda
+                        $('#mensajeError').text("El servicio no está respondiendo en este momento. Por favor, intenta más tarde.");
+                    }
                 }
             },
             error: function (response) {
                 console.error('Error en la llamada AJAX:', response);
+                // Mostrar mensaje específico en caso de error en la llamada AJAX
+                $('#mensajeError').text("Ha ocurrido un error en la comunicación con el servidor. Por favor, verifica tu conexión y vuelve a intentar.");
             }
         });
     }
-
-
 
 </script>

@@ -678,11 +678,11 @@
                 data: formData,
                 success: function (response) {
                     if (response.success) {
-        var idInfraccion = response.idInfraccion;
+                        var idInfraccion = response.idInfraccion; 
                         sitteg_success("Informacion Actualizada");
-        //serviceCrearInfraccion(idInfraccion);
+                        serviceCrearInfraccion(idInfraccion);
                 } else {
-                    sitteg_warning(response.message);
+                        sitteg_warning(response.message);
                 }
                 },
                 error: function (error) {

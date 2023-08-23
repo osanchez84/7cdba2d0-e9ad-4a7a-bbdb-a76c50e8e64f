@@ -215,38 +215,34 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
+                            deposito.IdDeposito = reader["IdDeposito"] as int? ?? 0;
+                            deposito.IdSolicitud = reader["IdSolicitud"] as int? ?? 0;
+                            deposito.IdDelegacion = reader["IdDelegacion"] as int? ?? 0;
+                            deposito.IdMarca = reader["IdMarca"] as int? ?? 0;
+                            deposito.IdSubmarca = reader["IdSubmarca"] as int? ?? 0;
+                            deposito.IdPension = reader["IdPension"] as int? ?? 0;
+                            deposito.IdTramo = reader["IdTramo"] as int? ?? 0;
+                            deposito.IdColor = reader["IdColor"] as int? ?? 0;
+                            deposito.Serie = reader["Serie"]?.ToString();
+                            deposito.Placa = reader["Placa"]?.ToString();
+                            deposito.FechaIngreso = reader["FechaIngreso"] as DateTime? ?? DateTime.MinValue;
+                            deposito.Folio = reader["Folio"]?.ToString();
+                            deposito.Km = reader["Km"]?.ToString();
+                            deposito.Liberado = reader["Liberado"] as int? ?? 0;
+                            deposito.Autoriza = reader["Autoriza"]?.ToString();
+                            deposito.FechaActualizacion = reader["FechaActualizacion"] as DateTime? ?? DateTime.MinValue;
+                            deposito.ActualizadoPor = reader["ActualizadoPor"] as int? ?? 0;
+                            deposito.Estatus = reader["Estatus"] as int? ?? 0;
+                            deposito.marcaVehiculo = reader["marcaVehiculo"]?.ToString();
+                            deposito.nombreSubmarca = reader["nombreSubmarca"]?.ToString();
+                            deposito.delegacion = reader["delegacion"]?.ToString();
+                            deposito.solicitanteNombre = reader["solicitanteNombre"]?.ToString();
+                            deposito.solicitanteAp = reader["solicitanteAp"]?.ToString();
+                            deposito.solicitanteAm = reader["solicitanteAm"]?.ToString();
+                            deposito.Color = reader["Color"]?.ToString();
+                            deposito.pension = reader["pension"]?.ToString();
+                            deposito.tramo = reader["tramo"]?.ToString();
 
-                            deposito.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
-                            deposito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"].ToString());
-                            deposito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"].ToString());
-                            deposito.IdMarca = Convert.ToInt32(reader["IdMarca"].ToString());
-                            deposito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"].ToString());
-                            deposito.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            deposito.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-                            deposito.IdColor = Convert.ToInt32(reader["IdColor"].ToString());
-                            deposito.Serie = reader["Serie"].ToString();
-                            deposito.Placa = reader["Placa"].ToString();
-                            deposito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"].ToString());
-                            deposito.Folio = reader["Folio"].ToString();
-                            deposito.Km = reader["Km"].ToString();
-                            deposito.Liberado = Convert.ToInt32(reader["Liberado"].ToString());
-                            //deposito.AcreditacionPropiedad = reader["AcreditacionPropiedad"].ToString();
-                            //deposito.AcreditacionPersonalidad = reader["AcreditacionPersonalidad"].ToString();
-                            //deposito.ReciboPago = reader["ReciboPago"].ToString();
-                            //deposito.Observaciones = reader["Observaciones"].ToString();
-                            deposito.Autoriza = reader["Autoriza"].ToString();
-                            deposito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
-                            deposito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
-                            deposito.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
-                            deposito.marcaVehiculo = reader["marcaVehiculo"].ToString();
-                            deposito.nombreSubmarca = reader["nombreSubmarca"].ToString();
-                            deposito.delegacion = reader["delegacion"].ToString();
-                            deposito.solicitanteNombre = reader["solicitanteNombre"].ToString();
-                            deposito.solicitanteAp = reader["solicitanteAp"].ToString();
-                            deposito.solicitanteAm = reader["solicitanteAm"].ToString();
-                            deposito.Color = reader["Color"].ToString();
-                            deposito.pension = reader["pension"].ToString();
-                            deposito.tramo = reader["tramo"].ToString();
                         }
                     }
 

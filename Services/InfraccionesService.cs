@@ -1275,17 +1275,10 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public int CrearInfraccion(InfraccionesModel model, int idOficina)
+        public int CrearInfraccion(InfraccionesModel model)
         {
             int result = 0;
-            if (idOficina == 1)
-            {
-                model.folioInfraccion = "TTO-PEC" + model.folioInfraccion;
-            }
-            else if (idOficina == 2)
-            {
-                model.folioInfraccion = "TTE-M" + model.folioInfraccion;
-            }
+        
             string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion

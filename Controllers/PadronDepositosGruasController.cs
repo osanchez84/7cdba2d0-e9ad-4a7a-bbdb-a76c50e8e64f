@@ -46,6 +46,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_BuscarPadron(PadronDepositosGruasBusquedaModel model)
         {
             var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model);
+            if (ListPadronDepositosGruas.Count == 0)
+            {
+                ViewBag.NoResultsMessage = "No se encontraron grúas que cumplan con los criterios de búsqueda.";
+            }
+
             return PartialView("_ListadoPadron", ListPadronDepositosGruas);
 
         }

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using GuanajuatoAdminUsuarios.Services;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
+using Microsoft.Extensions.Options;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -24,12 +25,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private readonly IRegistroReciboPagoService _registroReciboPagoService;
         private readonly IConsultarDocumentoService _consultarDocumentoService;
+        private readonly AppSettings _appSettings;
 
 
-        public RegistroReciboPagoController(IRegistroReciboPagoService registroReciboPagoService, IConsultarDocumentoService consultarDocumentoService)
+        public RegistroReciboPagoController(IRegistroReciboPagoService registroReciboPagoService, IConsultarDocumentoService consultarDocumentoService,
+            IOptions<AppSettings> appSettings)
         {
             _registroReciboPagoService = registroReciboPagoService;
             _consultarDocumentoService = consultarDocumentoService;
+            _appSettings = appSettings.Value;
+
         }
 
         public IActionResult Index()
@@ -72,18 +77,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult ConsultarDocumento(string recibo)
         {
-            RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
-            MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
-            mTConsultaDocumento.PROCESO = "GENERAL";
-            mTConsultaDocumento.DOCUMENTO = recibo;
-            mTConsultaDocumento.USUARIO = "INNSJACOB";
-            mTConsultaDocumento.PASSWORD = "123456";
-            rootRequest.MT_Consulta_documento = mTConsultaDocumento;
+            if (_appSettings.AllowWebServices)
+            {
+                RootConsultarDocumentoRequest rootRequest = new RootConsultarDocumentoRequest();
+                MTConsultaDocumento mTConsultaDocumento = new MTConsultaDocumento();
+                mTConsultaDocumento.PROCESO = "GENERAL";
+                mTConsultaDocumento.DOCUMENTO = recibo;
+                mTConsultaDocumento.USUARIO = "INNSJACOB";
+                mTConsultaDocumento.PASSWORD = "123456";
+                rootRequest.MT_Consulta_documento = mTConsultaDocumento;
 
-            var endPointName = "ConsultarDocumentoEndPoint";
-            var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
-            ViewBag.Pension = result;
-            return Json(result);
+                var endPointName = "ConsultarDocumentoEndPoint";
+                var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
+                ViewBag.Pension = result;
+                return Json(result);
+            }
+            else
+            {
+                return Json(new { hasError = true, message = "Los servicios web no están habilitados." });
+            }
         }
 
     }

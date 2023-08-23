@@ -45,6 +45,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string otros { get; set; }
         public string RFCMoral { get; set; }
         public string PersonaMoralNombre { get; set; }
+        public string mensaje { get; set; }
         
         /// <summary>
         /// Estatus para saber si se encontro en Sitteg, Registro Estatal o no 

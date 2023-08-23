@@ -68,7 +68,7 @@ namespace GuanajuatoAdminUsuarios
 
 
             services.AddHttpClient();
-
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddRouting(setupAction =>
             {

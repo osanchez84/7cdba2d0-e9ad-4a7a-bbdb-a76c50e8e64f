@@ -175,8 +175,8 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <h5 class="modal-title" id="errorModalLabel">Vehículo no registrado en SITTEG</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cierraModal()">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -184,7 +184,7 @@
                             <p id="errorMessage"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cierraModal()">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -202,17 +202,16 @@
             data: { placa: placa },
             success: function (data) {
                 if (data.success) {
-                    // La llamada tuvo éxito y se obtuvo contenido para mostrar
-                    $('#ModalBodyVehiculoService').html(data);
-                    $('#VehiculoServiceModal').modal('show'); 
-                
-
-                } else {
+                    $('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a SITTEG");
+                    $('#errorModal').modal('show'); 
                     $('#ModalBodyVehiculoService').html(data);
                     $('#VehiculoServiceModal').modal('show');
-                   
-                  //  $('#errorMessage').text(data.message);
-                   // $('#errorModal').modal('show');
+                } else {
+                    $('#errorMessage').text("Complete o ingrese la información necesaria para agregar este vehículo a SITTEG");
+                    $('#errorModal').modal('show');
+
+                    $('#ModalBodyVehiculoService').html(data);
+                    $('#VehiculoServiceModal').modal('show');
                 }
             },
             error: function () {
@@ -230,17 +229,24 @@
             type: 'POST',
             data: formData,
             success: function (response) {
-                console.log("WW",response)
+                console.log("WW", response);
+
+                // Comprobar si es una respuesta de error debido a problemas de conexión
+                if (response.success === false) {
+                    sitteg_warning(response.errorMessage);
+                    return; 
+                }
+
                 if (response.noResults) {
                     abrirModalVehiculo(response.placaValue);
                 } else {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
                     grid.dataSource.data(response.data);
-                    grid.refresh(); 
+                    grid.refresh();
                 }
             },
             error: function () {
-                // Manejar error
+                sitteg_warning("Sucedio un error intente de nuevo mas tarde");
             }
         });
     }
@@ -251,4 +257,10 @@
         $('#agregarVehiculoModal').modal('hide');
 
         }
+
+    function cierraModal() {
+
+        $('#errorModal').modal('hide');
+
+    }
 </script>

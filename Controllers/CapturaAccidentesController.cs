@@ -26,6 +26,7 @@ using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Web;
 using System.Numerics;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+using Microsoft.Extensions.Options;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -61,6 +62,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
         private readonly IPersonasService _personasService;
         private readonly IVehiculosService _vehiculosService;
+        private readonly AppSettings _appSettings;
+
 
 
 
@@ -74,7 +77,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
             ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
             ICatAutoridadesEntregaService catAutoridadesEntregaService, IOficiales oficialesService, ICatCiudadesService catCiudadesService, ICatAgenciasMinisterioService catAgenciasMinisterioService, ICatDictionary catDictionary, IInfraccionesService infraccionesService, IHttpClientFactory httpClientFactory,
-            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService)
+            ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService, IOptions<AppSettings> appSettings)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catMunicipiosService = catMunicipiosService;
@@ -105,6 +108,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
             _personasService = personasService;
             _vehiculosService = vehiculosService;
+            _appSettings = appSettings.Value;
         }
         /// <summary>
         /// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -238,7 +242,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ModalAnexo2()
         {
-            return PartialView("_ModalAnexo2");
+            var vehiculoEncontrado = new VehiculoModel();
+            vehiculoEncontrado.idSubmarcaUpdated = vehiculoEncontrado.idSubmarca;
+            vehiculoEncontrado.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            vehiculoEncontrado.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            vehiculoEncontrado.encontradoEn = 3;
+            return PartialView("_Create",vehiculoEncontrado);
         }
 
         public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
@@ -254,18 +263,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult BuscarVehiculo(string Placa, string Serie, string folio)
         {
-            var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
-
-           /* if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+            if (_appSettings.AllowWebServices)
             {
-                return Json(new { noResults = true, placaValue = Placa });
-            }*/
-            return Json(new { noResults = false, data = SeleccionVehiculo });
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+
+                if (SeleccionVehiculo.Count == 0 && !string.IsNullOrEmpty(Placa))
+                {
+                    return Json(new { noResults = true, placaValue = Placa });
+                }
+                return Json(new { noResults = false, data = SeleccionVehiculo });
+            }
+            else
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+                return Json(new { noResults = false, data = SeleccionVehiculo });
+
+            }
         }
 
 
         public ActionResult AbrirModalVehiculo(string Placa)
         {
+            try { 
             CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
             cotejarDatosRequestModel.Tp_folio = "4";
             cotejarDatosRequestModel.Folio = Placa;
@@ -312,16 +331,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else if (result.MT_CotejarDatos_res == null || result.MT_CotejarDatos_res.Es_mensaje == null || result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
             {
-                var vehiculoEncontrado = new VehiculoModel(); 
+                var vehiculoEncontrado = new VehiculoModel();
                 vehiculoEncontrado.idSubmarcaUpdated = vehiculoEncontrado.idSubmarca;
                 vehiculoEncontrado.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                 vehiculoEncontrado.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
                 vehiculoEncontrado.encontradoEn = 3;
 
+
                 return PartialView("_Create", vehiculoEncontrado);
             }
 
             return Json(new { success = false, errorerrorMessage = "Ocurrió un error, inténtelo de nuevo más tarde" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = "No se pudo establecer conexión con el servicio. Inténtelo de nuevo más tarde." });
+            }
         }
 
 

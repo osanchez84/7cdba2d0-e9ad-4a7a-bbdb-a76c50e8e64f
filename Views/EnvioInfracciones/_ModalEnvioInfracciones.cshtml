@@ -169,6 +169,37 @@
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
             }
         });
+    }*/
+    function enviarInfracciones() {
+        var formSerialized = $("#dataEnvioInfraccionForm").serialize();
+        var selectedIds = idInfraccionesSeleccionados;
+        var oficioValue = $("#oficio").val();
+        var fechaEnvioValue = $("#fechaEnvio").val();
+        var idLugarEnvioValue = $("#idLugarEnvio").val();
+
+        var data = {
+            model: {
+                SelectedIds: selectedIds,
+                Oficio: oficioValue,
+                FechaEnvio: fechaEnvioValue,
+                IdLugarEnvio: idLugarEnvioValue,
+            },
+            form: formSerialized
+        };
+
+        $.ajax({
+            url: "/EnvioInfracciones/ajax_GuardarInfraccionesEnviadas",
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                sitteg_success('Infracciones enviadas correctamente');
+                $('#enviarInfraccionesModal').modal('hide');
+
+            },
+            error: function (error) {
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            }
+        });
     }
 
     function showModal(message) {

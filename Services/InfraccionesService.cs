@@ -125,7 +125,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            model.kmCarretera = reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"].ToString();
                             model.lugarCalle = reader["lugarCalle"].ToString();
                             model.lugarNumero = reader["lugarNumero"].ToString();
@@ -288,7 +288,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.placasVehiculo = reader["placasVehiculo"].ToString();
                             infraccionModel.folioInfraccion = reader["folioInfraccion"].ToString();
                             infraccionModel.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            infraccionModel.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            infraccionModel.kmCarretera = reader["kmCarretera"].ToString();
                             infraccionModel.observaciones = reader["observaciones"].ToString();
                             infraccionModel.lugarCalle = reader["lugarCalle"].ToString();
                             infraccionModel.lugarNumero = reader["lugarNumero"].ToString();
@@ -419,7 +419,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            model.kmCarretera = reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"].ToString();
                             model.lugarCalle = reader["lugarCalle"].ToString();
                             model.lugarNumero = reader["lugarNumero"].ToString();
@@ -938,7 +938,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            model.kmCarretera = reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"].ToString();
                             model.lugarCalle = reader["lugarCalle"].ToString();
                             model.lugarNumero = reader["lugarNumero"].ToString();
@@ -1181,7 +1181,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kmCarretera"].ToString());
+                            model.kmCarretera = reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"].ToString();
                             model.lugarCalle = reader["lugarCalle"].ToString();
                             model.lugarNumero = reader["lugarNumero"].ToString();
@@ -1255,7 +1255,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.municipio = reader["municipio"].ToString();
                             model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
                             model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.kmCarretera = reader["kilometro"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["kilometro"].ToString());
+                            model.kmCarretera = reader["kmCarretera"].ToString();
                             model.fechaInfraccion = reader["fecha"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fecha"].ToString());
                             modelList.Add(model);
                         }

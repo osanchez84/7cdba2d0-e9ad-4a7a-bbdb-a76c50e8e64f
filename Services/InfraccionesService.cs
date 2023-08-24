@@ -372,8 +372,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,catCarre.idCarretera,catCarre.carretera
                                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
-                                                    ,motInf.idMotivoInfraccion,motInf.nombre,motInf.fundamento,motInf.calificacionMinima,motInf.calificacionMaxima
-                                                    ,catMotInf.idMotivoInfraccion,catMotInf.catMotivo
+                                                    ,motInf.idMotivoInfraccion,motInf.idMotivoInfraccion
+                                                    ,ci.nombre
+                                                    ,ci.idCatMotivoInfraccion,ci.nombre
                                                     ,catSubInf.idSubConcepto,catSubInf.subConcepto
                                                     ,catConInf.idConcepto,catConInf.concepto
                                                     FROM infracciones as inf
@@ -386,13 +387,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
                                                     left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                                     left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                                                    left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+												   INNER JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
                                                     left join personas per on inf.idPersona = per.idPersona
-                                                    left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-                                                    left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idMotivoInfraccion
-                                                    left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
+                                                    left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
                                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
                                                     WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);

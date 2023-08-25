@@ -71,8 +71,7 @@ public partial class DBContextInssoft : DbContext
     public virtual DbSet<CatSubConceptoInfraccion> CatSubConceptosInfraccion { get; set; }
 
 
-
-
+     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     => optionsBuilder.UseSqlServer("Data Source=10.16.158.17;Database=sitteg;User Id=Soporte;Password=Seguritech123;Trusted_Connection=False;TrustServerCertificate=True");
     protected override void OnModelCreating(ModelBuilder modelBuilder)

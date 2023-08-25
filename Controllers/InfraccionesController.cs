@@ -466,7 +466,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.ZMOTIVO2 = "";
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
-                ViewBag.Pension = result;
+                ViewBag.ErrorMessage = result.MensajeError; 
                 if (result != null && result.MT_CrearMultasTransito_res.ZTYPE == "S")
                 {
                     _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);

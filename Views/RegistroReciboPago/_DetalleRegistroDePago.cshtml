@@ -111,8 +111,8 @@
                 if (response.hasError) {
                     $('#mensajeError').text(response.message);
                 } else {
-                    var wType = response.result.MT_ConsultarDocumento_res.result.WTYPE;
-                    var wMessage = response.result.MT_ConsultarDocumento_res.result.WMESSAGE;
+                    var wType = response.MT_ConsultarDocumento_res.result.WTYPE;
+                    var wMessage = response.MT_ConsultarDocumento_res.result.WMESSAGE;
                     if (wType === "E") {
                         $('#mensajeError').text(wMessage);
                     } else if (wType === "S") {

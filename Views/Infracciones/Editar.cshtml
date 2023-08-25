@@ -48,6 +48,12 @@
                                 <div class="col-auto radioCustom p-0">
                                     <div class="rounded-circle m-1"></div>
                                 </div>
+                                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                                {
+                                    <div class="alert alert-danger">
+                                        @ViewBag.ErrorMessage
+                                    </div>
+                                }
                                 <div class="col-auto p-0">
                                     <h6 class="m-0"><b>Información</b></h6>
                                 </div>

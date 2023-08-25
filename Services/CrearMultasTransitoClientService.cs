@@ -37,7 +37,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    return null;
+                    responseModel.MensajeError = "Hubo un problema al intentar crear la multa de tránsito. Por favor, inténtalo nuevamente más tarde.";
                 }
                 finally
                 {

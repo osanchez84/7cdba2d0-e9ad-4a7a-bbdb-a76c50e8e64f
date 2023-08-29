@@ -28,7 +28,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT i.*, p1.nombre AS nombre1, p1.apellidoPaterno AS apellidoPaterno1, p1.apellidoMaterno AS apellidoMaterno1, " +
                         "p2.nombre AS nombre2, p2.apellidoPaterno AS apellidoPaterno2, p2.apellidoMaterno AS apellidoMaterno2 " +
-                        "FROM infracciones AS i INNER JOIN personas AS p1 ON i.idPersonaInfraccion = p1.idPersona " +
+                        "FROM infracciones AS i LEFT JOIN personas AS p1 ON i.idPersonaInfraccion = p1.idPersona " +
                         "LEFT JOIN personas AS p2 ON i.idPersona = p2.idPersona  where folioInfraccion = @FolioInfraccion", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;

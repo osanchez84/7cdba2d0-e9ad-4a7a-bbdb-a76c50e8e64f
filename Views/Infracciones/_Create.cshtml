@@ -1,4 +1,4 @@
-﻿@using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+﻿﻿@using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 @model VehiculoModel
 
 @{
@@ -540,10 +540,10 @@
             </div>
 
             @*PERSONA FISICA*@
-            <div class="tab-pane tabCustomConteiner fade" id="person-fisicaAcc" role="tabpanel" aria-labelledby="person-fisicaAcc-tab">
+            <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
-                    <div id="personasFisicasAcc">
+                    <div id="personasFisicasInf">
                     </div>
 
                 </div>
@@ -1085,7 +1085,7 @@
 
 
                 </div>
-          
+
             </section>
         </div>
     </div>
@@ -1104,7 +1104,7 @@
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
-                $("#personasFisicasAcc").html(result);
+                $("#personasFisicasInf").html(result);
             }
         });
     }
@@ -1188,7 +1188,7 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
+                var grid = $("#gridPersonasFisicasInf").data("kendoGrid");
                 grid.refresh();
             }
         });
@@ -1215,8 +1215,11 @@
                 dataType: "json",
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
-                    $('#VehiculoServiceModal').modal('hide'); 
-                                    $('#anexo2Modal').modal('hide');
+                    $('#VehiculoServiceModal').modal('hide');
+                    $('#anexo2Modal').modal('hide');
+                    var grid = $("#gridPrevioVehiculo").data("kendoGrid");
+                    grid.dataSource.data(response.data);
+                    grid.refresh();
 
 
                 },

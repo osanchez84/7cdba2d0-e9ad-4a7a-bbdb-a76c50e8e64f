@@ -90,7 +90,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion
                                     left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                    WHERE inf.estatus = 1 AND inf.idDelegacion = @idOficina";
+                                    WHERE  inf.idDelegacion = @idOficina";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 

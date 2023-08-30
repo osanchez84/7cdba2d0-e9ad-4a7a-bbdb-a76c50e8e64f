@@ -305,7 +305,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ajax_BuscarVehiculoAsync(VehiculoBusquedaModel model)
+        public IActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
+
         {
             if (_appSettings.AllowWebServices)
             {
@@ -559,7 +560,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (_appSettings.AllowWebServices)
             {
                 var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion);
-                var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
+                var unicoMotivo = infraccionBusqueda.MotivosInfraccion?.FirstOrDefault();
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
                 CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
@@ -711,7 +712,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (IdVehiculo != 0)
             {
-                return Json(new { id = IdVehiculo });
+                var resultados= _vehiculosService.GetAllVehiculos();
+                return Json(new { id = IdVehiculo, data = resultados });
             }
             else
             {

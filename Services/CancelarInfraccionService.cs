@@ -28,7 +28,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT i.*, v.serie, e.estatusInfraccion, CONCAT( p.nombre,' ', p.apellidoPaterno,' ', p.apellidoMaterno)AS nombrePropietario,CONCAT(pi.nombre,' ',pi.apellidoPaterno,' ', pi.apellidoMaterno)AS nombreConductor FROM infracciones AS i INNER JOIN vehiculos AS v ON i.idVehiculo = v.idVehiculo INNER JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion INNER JOIN personas AS p ON i.IdPersona = p.IdPersona INNER JOIN personasInfracciones  AS pi ON i.idPersonaInfraccion = pi.idPersonaInfraccion WHERE i.FolioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.idEstatusInfraccion = 1;", connection);
+                    SqlCommand command = new SqlCommand("SELECT i.*, v.serie, e.estatusInfraccion, CONCAT( p.nombre,' ', p.apellidoPaterno,' ', p.apellidoMaterno)AS nombrePropietario,CONCAT(pi.nombre,' ',pi.apellidoPaterno,' ', pi.apellidoMaterno)AS nombreConductor FROM infracciones AS i LEFT JOIN vehiculos AS v ON i.idVehiculo = v.idVehiculo LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion LEFT JOIN personas AS p ON i.IdPersona = p.IdPersona LEFT JOIN personasInfracciones  AS pi ON i.idPersonaInfraccion = pi.idPersonaInfraccion WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%';", connection);
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -36,15 +36,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CancelarInfraccionModel infraccion = new CancelarInfraccionModel();
-                            infraccion.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
-                            infraccion.FolioInfraccion = reader["FolioInfraccion"].ToString();
-                            infraccion.FechaInfraccion = Convert.ToDateTime(reader["FechaInfraccion"].ToString());
-                            infraccion.Conductor = reader["nombreConductor"].ToString();
-                            infraccion.Placas = reader["placasVehiculo"].ToString();
-                            infraccion.Serie = reader["Serie"].ToString();
-                            infraccion.Propietario = reader["nombrePropietario"].ToString();
-                            infraccion.EstatusProceso = Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            infraccion.descEstatusProceso = reader["estatusInfraccion"].ToString();
+                            infraccion.IdInfraccion = reader["IdInfraccion"] is DBNull ? 0 : Convert.ToInt32(reader["IdInfraccion"]);
+                            infraccion.FolioInfraccion = reader["folioInfraccion"] is DBNull ? string.Empty : reader["folioInfraccion"].ToString();
+                            infraccion.FechaInfraccion = reader["FechaInfraccion"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaInfraccion"]);
+                            infraccion.Conductor = reader["nombreConductor"] is DBNull ? string.Empty : reader["nombreConductor"].ToString();
+                            infraccion.Placas = reader["placasVehiculo"] is DBNull ? string.Empty : reader["placasVehiculo"].ToString();
+                            infraccion.Serie = reader["Serie"] is DBNull ? string.Empty : reader["Serie"].ToString();
+                            infraccion.Propietario = reader["nombrePropietario"] is DBNull ? string.Empty : reader["nombrePropietario"].ToString();
+                            infraccion.EstatusProceso = reader["idEstatusInfraccion"] is DBNull ? 0 : Convert.ToInt32(reader["idEstatusInfraccion"]);
+                            infraccion.descEstatusProceso = reader["estatusInfraccion"] is DBNull ? string.Empty : reader["estatusInfraccion"].ToString();
+
 
 
                             ListaInfracciones.Add(infraccion);

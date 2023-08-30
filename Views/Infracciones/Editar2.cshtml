@@ -655,8 +655,8 @@
 
        function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
-        var idVehiculo = $("#idVehiculo").val();
-        var idPersona = $("#idPersona").val();
+        var idVehiculo = $("#IdVehiculo").val();
+        var idPersona = $("#IdPersona").val();
 
         if (!idVehiculo) {
             sitteg_info('Debe seleccionar un vehículo');
@@ -728,7 +728,7 @@
             getListadoPersonasInfracciones();
             $("#listadoPersonas").show();
             $("#detallePersonas").hide();
-            $("#idPersona").val('');
+            $("#IdPersona").val('');
         }
     }
     function buscarVehiculo(pidVehiculo) {
@@ -740,7 +740,7 @@
             },
             success: function (data) {
                 $("#detalleVehiculo").html(data);
-                $("#idVehiculo").val(pidVehiculo);
+                $("#IdVehiculo").val(pidVehiculo);
             }
             //,
             //error: function (xhr, status) {
@@ -759,7 +759,7 @@
             },
             success: function (data) {
                 $("#detallePersonas").html(data);
-                $("#idPersona").val(pidPersona);
+                $("#IdPersona").val(pidPersona);
                 $("#detallePersonas").show();
             }
             //,

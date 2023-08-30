@@ -1,4 +1,4 @@
-﻿@model GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel
+﻿@model GuanajuatoAdminUsuarios.Models.VehiculoBusquedaModel
 
 <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
     <div class="modal-content">
@@ -85,7 +85,7 @@
                         <div class="row px-4 mt-4 pb-4 align-items-end">
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="controlForm my-3">
-                                    @(Html.Kendo().TextBoxFor(t => t.Placa)
+                                    @(Html.Kendo().TextBoxFor(t => t.PlacasBusqueda)
                                         .Label(l => l.Content("Placa del vehículo:"))
                                         .Placeholder("Ingresa la placa del vehículo")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -104,7 +104,7 @@
                         <div class="row px-4 mt-4 pb-4 align-items-end">
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="controlForm my-3">
-                                    @(Html.Kendo().TextBoxFor(t => t.Serie)
+                                    @(Html.Kendo().TextBoxFor(t => t.SerieBusqueda)
                                         .Label(l => l.Content("Número de serie del vehículo:"))
                                         .Placeholder("Ingresa el número de serie del vehículo")
                                         .HtmlAttributes(new { style = "width: 100%" })

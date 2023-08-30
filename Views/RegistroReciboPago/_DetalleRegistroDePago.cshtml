@@ -114,7 +114,7 @@
                     var wType = response.MT_ConsultarDocumento_res.result.WTYPE;
                     var wMessage = response.MT_ConsultarDocumento_res.result.WMESSAGE;
                     if (wType === "E") {
-                        $('#mensajeError').text(wMessage);
+                        $('#mensajeError').text("No se pudo verificar el recibo de pago, revise que el número este completo y sea correcto");
                     } else if (wType === "S") {
                         $('#mensajeError').text("");
                         $('#mensajeServicio').text(wMessage);

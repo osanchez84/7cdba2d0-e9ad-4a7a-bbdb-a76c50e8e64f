@@ -71,7 +71,7 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin registro en Registro Estatal de Infracciones y Accidentes</b></h5>
-                    <h6 class="px-4 text-muted">Vehículo no registrado en la plataforma <b class="colorPrimary">Realiza o Completa</b>la captura de vehículo.</h6>
+                    <h6 class="px-4 text-muted">Vehículo no registrado en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
         }
@@ -236,6 +236,11 @@
                 {
 
                     <div id="divSubmarca">
+                         @{ if (!string.IsNullOrWhiteSpace(Model.submarca))
+                               {
+                                   <label>:@Model.submarca</label>
+                               }
+                            }
                         @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -1068,12 +1073,12 @@
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
                             <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                                <button type="button" data-bs-dismiss="modal_v" aria-label="Close">
                                     <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                                 </button>
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal" aria-label="Close">
+                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal_v" aria-label="Close">
                                     @(Html.Kendo().Button()
                                         .Name("AddFisico")
                                         .HtmlAttributes(new { @class = "btnPrimary px-3" })

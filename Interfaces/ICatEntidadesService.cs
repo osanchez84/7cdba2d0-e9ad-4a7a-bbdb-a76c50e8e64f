@@ -11,7 +11,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int CrearEntidad(CatEntidadesModel model);
         public int EditarEntidad(CatEntidadesModel model);
         public CatEntidadesModel ObtenerEntidadesByNombre(string nombre);
-
+        public int obtenerIdPorEntidad(string entidad);
+        
 
 
     }

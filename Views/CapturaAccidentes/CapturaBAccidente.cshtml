@@ -212,7 +212,7 @@
                             <label>Descripción de causas determinantes</label>
                             <span>
                                      @(Html.Kendo().TextAreaFor(t => t.DescripcionCausa)
-                                    .Rows(3)
+                            .Value(!string.IsNullOrWhiteSpace(ViewData["DescripcionCausa"] as string) ? ViewData["DescripcionCausa"] as string : "").Rows(3)
                                     .HtmlAttributes(new { id = "descripcionCausaTextArea", style = "width:100%;" })
                                     )
                             </span>

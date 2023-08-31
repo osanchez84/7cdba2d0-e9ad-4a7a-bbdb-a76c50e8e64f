@@ -87,13 +87,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro,a.idClasificacionAccidente, " +
-                        "                                a.idFactorAccidente, a.IdFactorOpcionAccidente,a.idOficinaDelegacion,m.municipio, c.carretera, t.tramo, e.estatusDesc " +
-                                                        "FROM accidentes AS a JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio " +
-                                                        "JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera " +
-                                                        "JOIN catTramos AS t ON a.idTramo = t.idTramo " +
-                                                        "JOIN estatus AS e ON a.estatus = e.estatus " +
-                                                        "WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina", connection);
+                    SqlCommand command = new SqlCommand("SELECT \r\n    a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente,\r\n    a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc,\r\n    ac.idCausaAccidente\r\nFROM \r\n    accidentes AS a\r\nJOIN \r\n    catMunicipios AS m ON a.idMunicipio = m.idMunicipio\r\nJOIN \r\n    catCarreteras AS c ON a.idCarretera = c.idCarretera\r\nJOIN \r\n    catTramos AS t ON a.idTramo = t.idTramo\r\nJOIN \r\n    estatus AS e ON a.estatus = e.estatus\r\nLEFT JOIN \r\n    accidenteCausas AS ac ON ac.idAccidente = a.idAccidente\r\nWHERE \r\n    a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina;\r\n", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
 
@@ -111,8 +105,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.IdClasificacionAccidente = reader["IdClasificacionAccidente"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["IdClasificacionAccidente"].ToString());
                             accidente.IdFactorAccidente = reader["IdFactorAccidente"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["IdFactorAccidente"].ToString());
                             accidente.IdFactorOpcionAccidente = reader["IdFactorOpcionAccidente"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["IdFactorOpcionAccidente"].ToString());
+                            accidente.IdCausaAccidente = reader["idCausaAccidente"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCausaAccidente"].ToString());
                             accidente.Municipio = reader["Municipio"].ToString();
                             accidente.Tramo = reader["Tramo"].ToString();
+                            accidente.DescripcionCausa = reader["descripcionCausas"].ToString();
                             accidente.Carretera = reader["Carretera"].ToString();
                             accidente.Kilometro = reader["Kilometro"].ToString();
                             accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
@@ -918,6 +914,7 @@ namespace GuanajuatoAdminUsuarios.Services
             }
         }
         public List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente)
+        
         {
             //
             List<CapturaAccidentesModel> ListaGridCausa = new List<CapturaAccidentesModel>();
@@ -927,7 +924,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT ac.*, c.causaAccidente FROM accidenteCausas ac JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0;", connection);
+                    SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente FROM accidenteCausas ac " +
+                                                        "JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente " +
+                                                        "LEFT JOIN accidentes AS a ON ac.idAccidente = a.idAccidente " +
+                                                        "WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0;", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -939,6 +939,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             causa.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
                             causa.IdCausaAccidente = Convert.ToInt32(reader["IdCausaAccidente"].ToString());
                             causa.CausaAccidente = reader["causaAccidente"].ToString();
+                            causa.DescripcionCausa = reader["descripcionCausas"].ToString();
+
 
                             ListaGridCausa.Add(causa);
 
@@ -1817,6 +1819,34 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
+        public string ObtenerDescripcionCausaDesdeBD(int idAccidente)
+        {
+            string descripcionCausa = null;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                string query = "SELECT descripcionCausas FROM accidentes WHERE idAccidente = @idAccidente"; // Reemplaza esto con tu consulta
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                        descripcionCausa = reader["descripcionCausas"].ToString();
+                    }
+
+                    reader.Close();
+                }
+            }
+
+            return descripcionCausa;
+        }
+    }
 
     }
 }

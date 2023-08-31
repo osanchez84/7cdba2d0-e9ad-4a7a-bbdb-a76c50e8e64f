@@ -24,6 +24,8 @@ using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Net.Http.Json;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 using GuanajuatoAdminUsuarios.Framework.Catalogs;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using System.Text.RegularExpressions;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -43,6 +45,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICrearMultasTransitoClientService _crearMultasTransitoClientService;
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly IColores _coloresService;
+        private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
+        private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
 
         private readonly AppSettings _appSettings;
 
@@ -58,7 +65,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICrearMultasTransitoClientService crearMultasTransitoClientService,
              IOptions<AppSettings> appSettings,
             ICapturaAccidentesService capturaAccidentesService,
-            ICotejarDocumentosClientService cotejarDocumentosClientService
+            ICotejarDocumentosClientService cotejarDocumentosClientService, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
+           IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
 
             )
         {
@@ -79,6 +87,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _crearMultasTransitoClientService = crearMultasTransitoClientService;
             _appSettings = appSettings.Value;
             _httpClientFactory = httpClientFactory;
+            _catMunicipiosService = catMunicipiosService;
+            _catEntidadesService = catEntidadesService;
+            _coloresService = coloresService;
+            _catMarcasVehiculosService = catMarcasVehiculosService;
+            _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
         }
 
         public IActionResult Index()
@@ -331,57 +344,102 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         cotejarDatosRequestModel.tp_consulta = "3";
 
                         var endPointName = "CotejarDatosEndPoint";
-                        using (var httpClient = _httpClientFactory.CreateClient())
+                        var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+
+                        if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                         {
-                            httpClient.BaseAddress = new Uri("https://alfasiae.guanajuato.gob.mx/RESTAdapter/");
-                            var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
 
-                            if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+                            var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
+                            var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
+                            var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
+                            var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
+                                  ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
+                                  : 0;
+
+                            var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
+                                ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
+                                : 0;
+
+                            var idColor = !string.IsNullOrEmpty(vehiculoEncontradoData.color)
+                                ? ObtenerIdColor(vehiculoEncontradoData.color)
+                                : 0;
+
+                            var idMarca = !string.IsNullOrEmpty(vehiculoEncontradoData.marca)
+                                ? ObtenerIdMarca(vehiculoEncontradoData.marca)
+                                : 0;
+
+                            var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
+                                ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
+                                : 0;
+
+                            var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
+                                ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
+                                : 0;
+
+
+                            //var idTipoVehiculo = ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria);
+
+                            var vehiculoEncontrado = new VehiculoModel
                             {
-                                var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
-                                var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
-                                var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
-                                var vehiculoEncontrado = new VehiculoModel
+                                placas = vehiculoEncontradoData.no_placa,
+                                serie = vehiculoEncontradoData.no_serie,
+                                tarjeta = vehiculoEncontradoData.no_tarjeta,
+                                motor = vehiculoEncontradoData.no_motor,
+                                otros = vehiculoEncontradoData.otros,
+                                idColor = idColor,
+                                idEntidad = idEntidad,
+                                idMarcaVehiculo = idMarca,
+                                idSubmarca = idSubmarca,
+                                submarca = vehiculoEncontradoData.linea,
+
+                                //idTipoVehiculo = idTipoVehiculo,
+                                modelo = vehiculoEncontradoData.modelo,
+
+                                Persona = new PersonaModel
                                 {
-                                    placas = vehiculoEncontradoData.no_placa,
-                                    serie = vehiculoEncontradoData.no_serie,
-                                    tarjeta = vehiculoEncontradoData.no_tarjeta,
-                                    paisManufactura = vehiculoEncontradoData.no_motor,
-                                    otros = vehiculoEncontradoData.otros,
+                                    RFC = vehiculoInterlocutorData.Nro_rfc,
+                                    RFCFisico = vehiculoInterlocutorData.Nro_rfc,
+                                    CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
+                                    nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
+                                    apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
+                                    apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
 
-                                    Persona = new PersonaModel
+                                    nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+                                    PersonaDireccion = new PersonaDireccionModel
                                     {
-                                        RFC = vehiculoInterlocutorData.Nro_rfc,
-                                        nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+                                        telefonoFisico = telefonoValido,
+                                        telefono = telefonoValido,
+                                        colonia = vehiculoDireccionData.colonia,
+                                        coloniaFisico = vehiculoDireccionData.colonia,
+                                        calleFisico = vehiculoDireccionData.calle,
+                                        calle = vehiculoDireccionData.calle,
+                                        numero = vehiculoDireccionData.nro_exterior,
+                                        numeroFisico = vehiculoDireccionData.nro_exterior,
+                                        idMunicipioFisico = idMunicipio,
+                                        idMunicipio = idMunicipio,
 
-                                        PersonaDireccion = new PersonaDireccionModel
-                                        {
-                                            telefono = vehiculoDireccionData.telefono,
-                                            correo = vehiculoDireccionData.correo,
-                                            colonia = vehiculoDireccionData.colonia,
-                                            calle = vehiculoDireccionData.calle,
-                                            numero = vehiculoDireccionData.nro_exterior,
-                                        }
-                                    },
 
-                                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-                                    {
-                                        PersonasMorales = new List<PersonaModel>()
                                     }
+                                },
 
-                                };
+                                PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+                                {
+                                    PersonasMorales = new List<PersonaModel>()
+                                }
 
-                                return PartialView("_Create", vehiculoEncontrado);
-                            }
-                            else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
-                            {
-                                //Aqui servico repuve//////
-                                //var resultSegundoServicio = await BusquedaRepuveAsync(model);
-                                return PartialView("_Create", vehiculosModel);
+                            };
 
-                            }
+                            return PartialView("_Create", vehiculoEncontrado);
+                        }
+                        else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
+                        {
+                            //Aqui servico repuve//////
+                            //var resultSegundoServicio = await BusquedaRepuveAsync(model);
+                            return PartialView("_Create", vehiculosModel);
+
                         }
                     }
+
                     catch (Exception ex)
                     {
 
@@ -400,41 +458,114 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_Create", vehiculosModel);
             }
         }
-  /*      private async Task<VehiculoModel> BusquedaRepuveAsync(VehiculoBusquedaModel model)
+        private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            try
-            {
-                // Crear una instancia de HttpClient para el segundo servicio y configurar la BaseAddress
-                using (var httpClientRepuve = _httpClientFactory.CreateClient())
-                {
-                    httpClientRepuve.BaseAddress = new Uri("http://10.16.60.71/");
+            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
+            return (idMunicipio);
+        }
+        private int ObtenerIdEntidadDesdeBD(string entidad)
+        {
+            var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);
+            return (idEntidad);
+        }
+        private int ObtenerIdColor(string color)
+        {
+            string colorLimpio = Regex.Replace(color, "[0-9-]", "").Trim();
+            var idColor = _coloresService.obtenerIdPorColor(colorLimpio);
+            return (idColor);
+        }
+        private int ObtenerIdMarca(string marca)
+        {
+            string[] partes = marca.Split(new[] { '-' }, 2);
 
-                    var parametros = new
-                    {
-                        token = "abl185B",
-                        placa = model.PlacasBusqueda,
-                        niv = "",
-                    };
-
-                    // Realizar la solicitud POST al servicio
-                    var response = await httpClientRepuve.PostAsJsonAsync("", parametros);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadFromJsonAsync<VehiculoModel>(); // Lee el contenido JSON y deserializa
-                        return result;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-            }
-            catch (Exception ex)
+            if (partes.Length > 1)
             {
-                // Manejar excepciones aquí
-                return null;
+                string marcaLimpio = partes[1].Trim();
+
+                var idMarca = _catMarcasVehiculosService.obtenerIdPorMarca(marcaLimpio);
+                return idMarca;
             }
-        }*/
+
+            return 0; // Valor predeterminado en caso de no encontrar el guión
+        }
+        private int ObtenerIdSubmarca(string submarca)
+        {
+            string[] partes = submarca.Split(new[] { '-' }, 2);
+
+            if (partes.Length > 1)
+            {
+                string submarcaLimpio = partes[1].Trim();
+
+                var idMarca = _catSubmarcasVehiculosService.obtenerIdPorSubmarca(submarcaLimpio);
+                return idMarca;
+            }
+
+            return 0; // Valor predeterminado en caso de no encontrar el guión
+        }
+        /* private int ObtenerIdTipoVehiculo(string categoria)
+         {
+             string[] partes = submarca.Split(new[] { '-' }, 2);
+
+             if (partes.Length > 1)
+             {
+                 string submarcaLimpio = partes[1].Trim();
+
+                 var idMarca = _catSubmarcasVehiculosService.obtenerIdPorSubmarca(submarcaLimpio);
+                 return idMarca;
+             }
+
+             return 0; // Valor predeterminado en caso de no encontrar el guión
+         }*/
+        private long LimpiarValorTelefono(string telefono)
+        {
+            telefono = telefono.Replace(" ", "");
+
+            long telefonoValido;
+
+            if (long.TryParse(telefono, out telefonoValido))
+            {
+                return telefonoValido;
+            }
+            else
+            {
+                return 0; // O algún otro valor que indique que no es válido
+            }
+        }
+        /*      private async Task<VehiculoModel> BusquedaRepuveAsync(VehiculoBusquedaModel model)
+              {
+                  try
+                  {
+                      // Crear una instancia de HttpClient para el segundo servicio y configurar la BaseAddress
+                      using (var httpClientRepuve = _httpClientFactory.CreateClient())
+                      {
+                          httpClientRepuve.BaseAddress = new Uri("http://10.16.60.71/");
+
+                          var parametros = new
+                          {
+                              token = "abl185B",
+                              placa = model.PlacasBusqueda,
+                              niv = "",
+                          };
+
+                          // Realizar la solicitud POST al servicio
+                          var response = await httpClientRepuve.PostAsJsonAsync("", parametros);
+                          if (response.IsSuccessStatusCode)
+                          {
+                              var result = await response.Content.ReadFromJsonAsync<VehiculoModel>(); // Lee el contenido JSON y deserializa
+                              return result;
+                          }
+                          else
+                          {
+                              return null;
+                          }
+                      }
+                  }
+                  catch (Exception ex)
+                  {
+                      // Manejar excepciones aquí
+                      return null;
+                  }
+              }*/
 
 
 
@@ -612,7 +743,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     crearMultasRequestModel.FOLIO_MULTA = prefijo + infraccionBusqueda.folioInfraccion;
                 }
                 crearMultasRequestModel.OBS_GARANT = "";
-               // crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.Motivo;
+                crearMultasRequestModel.ZMOTIVO1 = unicoMotivo.Motivo;
                 crearMultasRequestModel.ZMOTIVO2 = "";
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);

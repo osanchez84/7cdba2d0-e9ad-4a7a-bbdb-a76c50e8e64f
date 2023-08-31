@@ -46,5 +46,6 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public virtual PersonaDireccionModel PersonaDireccion { get; set; }
 
+     
     }
 }

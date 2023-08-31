@@ -23,7 +23,7 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("AgregarCausaNuevo", "CapturaAccidentes"))
+            .Read(read => read.Action("ObtCausasAccidente", "CapturaAccidentes"))
             .PageSize(5).Model(model => model.Id(p => p.FactorAccidente))
             )
             .ToolBar(t => t.Search())

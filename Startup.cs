@@ -170,6 +170,9 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICrearMultasTransitoClientService, CrearMultasTransitoClientService>(); 
             services.AddScoped<ILicenciasService, LicenciasService>(); 
             services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>(); 
+            services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
+
+            services.AddScoped<IColores, CatColoresService>();
 
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();

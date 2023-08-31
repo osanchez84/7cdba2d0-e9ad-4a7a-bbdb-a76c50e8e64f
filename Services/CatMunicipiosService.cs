@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using System;
 using System.Data.SqlClient;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -205,6 +207,39 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListaMunicipios;
 
 
+        }
+        public int obtenerIdPorNombre(string municipio)
+        { 
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new SqlCommand("SELECT idMunicipio FROM catMunicipios WHERE municipio = @municipio", connection);
+                    sqlCommand.Parameters.Add(new SqlParameter("@municipio", SqlDbType.NVarChar)).Value = municipio;
+                    sqlCommand.CommandType = CommandType.Text;
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        if (reader.Read()) // Intenta leer un registro del resultado
+                        {
+                            // Obtiene el valor de la columna "idMunicipio"
+                            result = Convert.ToInt32(reader["idMunicipio"]);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejo de errores y log
+                    return result;
+                }
+finally
+{
+    connection.Close();
+}
+            }
+            return result;
         }
 
     }

@@ -14,6 +14,16 @@ namespace GuanajuatoAdminUsuarios.RESTModels
         {
             public string name_org1 { get; set; }
         }
+        public class EsPerFisica
+        {
+            public string Nro_curp { get; set; }
+            public string Nombre { get; set; }
+            public string Ape_paterno { get; set; }
+            public string Ape_materno { get; set; }
+
+
+
+        }
 
         public class MTCotejarDatosRes
         {
@@ -21,6 +31,8 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string Nro_rfc { get; set; }
             public int tp_interlocutor { get; set; }
             public EsPerMoral es_per_moral { get; set; }
+            public EsPerFisica es_per_fisica { get; set; }
+            
             public List<TbDireccion> tb_direccion { get; set; }
             public List<TbVehiculo> tb_vehiculo { get; set; }
             public EsMensaje Es_mensaje { get; set; }
@@ -43,7 +55,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string localidad { get; set; }
             public string municipio { get; set; }
             public string estado { get; set; }
-            public long telefono { get; set; }
+            public string telefono { get; set; }
             public string correo { get; set; }
             public string entidadreg { get; set; }
         }

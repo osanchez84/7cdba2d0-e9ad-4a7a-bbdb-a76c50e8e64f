@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
@@ -28,13 +29,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
         private readonly ICatTipoLicenciasService _catTipoLicenciasService;
         private readonly AppSettings _appSettings;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly IColores _coloresService;
+        private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
+        private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
+
+
 
 
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
             IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
            ICotejarDocumentosClientService cotejarDocumentosClientService,ICatTipoLicenciasService catTipoLicenciasService,
-           IOptions<AppSettings> appSettings
+           IOptions<AppSettings> appSettings, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
+           IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
+
          )
         {
             _vehiculosService = vehiculosService;
@@ -45,7 +55,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
             _catTipoLicenciasService = catTipoLicenciasService;
             _appSettings = appSettings.Value;
-
+            _catMunicipiosService = catMunicipiosService;
+            _catEntidadesService = catEntidadesService;
+            _coloresService = coloresService;
+            _catMarcasVehiculosService = catMarcasVehiculosService;
+            _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
         }
 
         public IActionResult Index()
@@ -137,8 +151,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catTipoLicenciasService.ObtenerTiposLicencia(), "idTipoLicencia", "tipoLicencia");
             return Json(result);
         }
+    
 
-        [HttpPost]
+
+            [HttpPost]
         public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
             if (_appSettings.AllowWebServices)
@@ -162,29 +178,76 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                         {
+                            
                             var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
                             var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
                             var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
+                            var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
+                                  ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
+                                  : 0; 
+
+                            var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
+                                ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
+                                : 0; 
+
+                            var idColor = !string.IsNullOrEmpty(vehiculoEncontradoData.color)
+                                ? ObtenerIdColor(vehiculoEncontradoData.color)
+                                : 0; 
+
+                            var idMarca = !string.IsNullOrEmpty(vehiculoEncontradoData.marca)
+                                ? ObtenerIdMarca(vehiculoEncontradoData.marca)
+                                : 0; 
+
+                            var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
+                                ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
+                                : 0; 
+
+                            var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
+                                ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
+                                : 0; 
+
+
+                            //var idTipoVehiculo = ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria);
+
                             var vehiculoEncontrado = new VehiculoModel
-                            {
+                                {
                                 placas = vehiculoEncontradoData.no_placa,
                                 serie = vehiculoEncontradoData.no_serie,
                                 tarjeta = vehiculoEncontradoData.no_tarjeta,
-                                paisManufactura = vehiculoEncontradoData.no_motor,
+                                motor = vehiculoEncontradoData.no_motor,
                                 otros = vehiculoEncontradoData.otros,
+                                idColor = idColor,
+                                idEntidad = idEntidad,
+                                idMarcaVehiculo = idMarca,
+                                idSubmarca = idSubmarca,
+                                submarca = vehiculoEncontradoData.linea,
+                                //idTipoVehiculo = idTipoVehiculo,
+                                modelo = vehiculoEncontradoData.modelo,
 
                                 Persona = new PersonaModel
                                 {
                                     RFC = vehiculoInterlocutorData.Nro_rfc,
-                                    nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+                                    RFCFisico = vehiculoInterlocutorData.Nro_rfc,
+                                    CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
+                                    nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
+                                    apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
+                                    apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
 
+                                    nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                                     PersonaDireccion = new PersonaDireccionModel
                                     {
-                                        telefono = vehiculoDireccionData.telefono,
-                                        correo = vehiculoDireccionData.correo,
+                                        telefonoFisico = telefonoValido,
+                                        telefono = telefonoValido,
                                         colonia = vehiculoDireccionData.colonia,
+                                        coloniaFisico = vehiculoDireccionData.colonia,
+                                        calleFisico = vehiculoDireccionData.calle,
                                         calle = vehiculoDireccionData.calle,
                                         numero = vehiculoDireccionData.nro_exterior,
+                                        numeroFisico = vehiculoDireccionData.nro_exterior,
+                                        idMunicipioFisico = idMunicipio,
+                                        idMunicipio = idMunicipio,
+
+
                                     }
                                 },
 
@@ -222,6 +285,80 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_Create", vehiculosModel);
             }
         }
+        private int ObtenerIdMunicipioDesdeBD(string municipio)
+        {
+            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
+            return (idMunicipio);
+        }
+        private int ObtenerIdEntidadDesdeBD(string entidad)
+        {
+            var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);
+            return (idEntidad);
+        }
+        private int ObtenerIdColor(string color)
+        {
+            string colorLimpio = Regex.Replace(color, "[0-9-]", "").Trim();
+            var idColor = _coloresService.obtenerIdPorColor(colorLimpio);
+            return (idColor);
+        }
+        private int ObtenerIdMarca(string marca)
+        {
+            string[] partes = marca.Split(new[] { '-' }, 2);
+
+            if (partes.Length > 1)
+            {
+                string marcaLimpio = partes[1].Trim();
+
+                var idMarca = _catMarcasVehiculosService.obtenerIdPorMarca(marcaLimpio);
+                return idMarca;
+            }
+
+            return 0; // Valor predeterminado en caso de no encontrar el guión
+        }
+        private int ObtenerIdSubmarca(string submarca)
+        {
+            string[] partes = submarca.Split(new[] { '-' }, 2);
+
+            if (partes.Length > 1)
+            {
+                string submarcaLimpio = partes[1].Trim();
+
+                var idMarca = _catSubmarcasVehiculosService.obtenerIdPorSubmarca(submarcaLimpio);
+                return idMarca;
+            }
+
+            return 0; // Valor predeterminado en caso de no encontrar el guión
+        }
+        /* private int ObtenerIdTipoVehiculo(string categoria)
+         {
+             string[] partes = submarca.Split(new[] { '-' }, 2);
+
+             if (partes.Length > 1)
+             {
+                 string submarcaLimpio = partes[1].Trim();
+
+                 var idMarca = _catSubmarcasVehiculosService.obtenerIdPorSubmarca(submarcaLimpio);
+                 return idMarca;
+             }
+
+             return 0; // Valor predeterminado en caso de no encontrar el guión
+         }*/
+        private long LimpiarValorTelefono(string telefono)
+        {
+            telefono = telefono.Replace(" ", "");
+
+            long telefonoValido;
+
+            if (long.TryParse(telefono, out telefonoValido))
+            {
+                return telefonoValido;
+            }
+            else
+            {
+                return 0; // O algún otro valor que indique que no es válido
+            }
+        }
+
 
 
 

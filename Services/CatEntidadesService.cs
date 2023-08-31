@@ -182,7 +182,39 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
+        public int obtenerIdPorEntidad(string entidad)
+        {
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new SqlCommand("SELECT idEntidad FROM catEntidades WHERE nombreEntidad = @entidad", connection);
+                    sqlCommand.Parameters.Add(new SqlParameter("@entidad", SqlDbType.NVarChar)).Value = entidad;
+                    sqlCommand.CommandType = CommandType.Text;
 
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        if (reader.Read()) // Intenta leer un registro del resultado
+                        {
+                            // Obtiene el valor de la columna "idMunicipio"
+                            result = Convert.ToInt32(reader["idEntidad"]);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejo de errores y log
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
     }
 }
 

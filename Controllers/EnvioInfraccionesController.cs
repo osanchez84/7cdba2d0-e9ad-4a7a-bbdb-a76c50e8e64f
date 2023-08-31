@@ -94,9 +94,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
                             crearMultasRequestModel.CR1RFC = infraccionBusqueda.folioInfraccion;
-                            crearMultasRequestModel.CR1APAT = infraccionBusqueda.Persona.apellidoPaterno;
-                            crearMultasRequestModel.CR1AMAT = infraccionBusqueda.Persona.apellidoMaterno;
-                            crearMultasRequestModel.CR1NAME = infraccionBusqueda.Persona.nombre;
+                            //crearMultasRequestModel.CR1APAT = infraccionBusqueda.Persona.apellidoPaterno;
+                            //crearMultasRequestModel.CR1AMAT = infraccionBusqueda.Persona.apellidoMaterno;
+                            //crearMultasRequestModel.CR1NAME = infraccionBusqueda.Persona.nombre;
                             crearMultasRequestModel.CR2NAME = "";
                             crearMultasRequestModel.CR1RAZON = "";
                             crearMultasRequestModel.CR2RAZON = "";
@@ -123,7 +123,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
                             crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                             crearMultasRequestModel.INF_PROP = "";
-                            crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion.nombreCompleto;
+                            //crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion.nombreCompleto;
                             crearMultasRequestModel.DOM_INFRACTOR = "";
                             crearMultasRequestModel.NUM_PLACA = infraccionBusqueda.placasVehiculo;
                             crearMultasRequestModel.DOC_GARANTIA = "4";

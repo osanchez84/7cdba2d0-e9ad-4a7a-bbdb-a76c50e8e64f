@@ -1195,6 +1195,7 @@
             success: function (result) {
                 var grid = $("#gridPersonasFisicasInf").data("kendoGrid");
                 grid.refresh();
+                $('#addFisico').modal('hide');
             }
         });
     }
@@ -1214,7 +1215,7 @@
             console.log("Id vehiculo: ", idVeh)
             console.log(formData);
             $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo")',
+                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
                 data: formData,
                 dataType: "json",

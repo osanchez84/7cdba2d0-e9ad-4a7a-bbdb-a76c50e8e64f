@@ -26,6 +26,7 @@ using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 using GuanajuatoAdminUsuarios.Framework.Catalogs;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -296,7 +297,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else
             {
-                
+
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
             }
 
@@ -732,7 +733,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                 crearMultasRequestModel.INF_PROP = "";
                 crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion.nombreCompleto;
-                crearMultasRequestModel.DOM_INFRACTOR = infraccionBusqueda.Persona.PersonaDireccion.calle +" "+ infraccionBusqueda.Persona.PersonaDireccion.numero+", "+ infraccionBusqueda.Persona.PersonaDireccion.colonia;
+                crearMultasRequestModel.DOM_INFRACTOR = infraccionBusqueda.Persona.PersonaDireccion.calle + " " + infraccionBusqueda.Persona.PersonaDireccion.numero + ", " + infraccionBusqueda.Persona.PersonaDireccion.colonia;
                 crearMultasRequestModel.NUM_PLACA = infraccionBusqueda.placasVehiculo;
                 crearMultasRequestModel.DOC_GARANTIA = "4";
                 crearMultasRequestModel.NOM_RESP_SOLI = "";
@@ -775,7 +776,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return View("_ModalBusquedaPersonas");
         }
-    
+
 
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
@@ -814,6 +815,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
             var IdPersonaFisica = _personasService.CreatePersona(Persona);
+            if (IdPersonaFisica == 0)
+            {
+                throw new Exception("Ocurrio un error al dar de alta la persona");
+            }
             var personasFisicasModel = _personasService.GetAllPersonasFisicas();
             return PartialView("_PersonasFisicas", personasFisicasModel);
         }
@@ -833,6 +838,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListPersonasMorales", personasMoralesModel);
         }
 
+        //TODO: ejemplo crear vehiculo por service de guanajuato
+        [HttpPost]
+        public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)
+        {
+            var IdVehiculo = _vehiculosService.CreateVehiculo(model);
+
+            if (IdVehiculo != 0)
+            {
+                var resultados = _vehiculosService.GetAllVehiculos();
+                return Json(new { id = IdVehiculo, data = resultados });
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
         [HttpPost]
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
@@ -850,7 +872,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (IdVehiculo != 0)
             {
-                var resultados= _vehiculosService.GetAllVehiculos();
+                var resultados = _vehiculosService.GetAllVehiculos();
                 return Json(new { id = IdVehiculo, data = resultados });
             }
             else

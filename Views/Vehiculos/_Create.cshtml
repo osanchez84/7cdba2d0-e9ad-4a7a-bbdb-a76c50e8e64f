@@ -158,9 +158,9 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
-                        .Value(DateTime.Now)
+                        
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
+                      
                         )
                 }
 
@@ -221,6 +221,7 @@
 
                 </div>*@
                     @Html.HiddenFor(m=> m.idSubmarcaUpdated, new { @id = "hdnIdSubmarca" })
+                                        @Html.HiddenFor(m=> m.idSubmarca)
 
                     @(Html.Kendo().DropDownListFor(d => d.idSubmarca)
                         .DataTextField("Text")
@@ -241,14 +242,12 @@
                 {
 
                     <div id="divSubmarca">
-                        @{ if (!string.IsNullOrWhiteSpace(Model.submarca))
-                               {
-                                   <label>@Model.submarca</label>
-                               }
-                            }
-                        @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
-                            .OptionLabel("-- Seleccione --")
-                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                      
+                         @Html.HiddenFor(m=> m.idSubmarca)
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlIdSub")
+                            .OptionLabel(@Model.submarca)
+                            .HtmlAttributes(new { style = "width:100%;"})
                             )
 
                     </div>
@@ -372,6 +371,7 @@
                 <label>Carga:</label>
                 @(Html.Kendo().SwitchFor(m => m.carga)
                     .Messages(c => c.Checked("SI").Unchecked("NO"))
+                    .HtmlAttributes(new { style = "transform: scale(1.2);" })
 
                     )
             </div>
@@ -897,27 +897,23 @@
                         <div class="controlForm mb-3">
                             <label>Fecha de nacimiento <b>(obligatorio)</b></label>
                             <span>
-                                @(Html.Kendo().DatePickerFor(t=>t.Persona.fechaNacimiento)
-                                    .DateInput()
-                                    )
+                               @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
+                  .Format("yyyy-MM-dd")
+    )
+
                             </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm">
-                            <label>Sexo <b>(obligatorio)</b></label>
-                        </div>
-                        <div class="btnToggle mb-3">
+                        
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="controlForm my-3">
+                                <label>Sexo:</label>
+                                @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
+                                    .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
+                                    .HtmlAttributes(new { style = "transform: scale(1.6);" })
 
-
-                            <div style="z-index:0" class="position-relative d-flex align-items-center">
-                                <input class="toggle toggle-left" id="hombre" name="toggle-sexo" value="false"
-                                       type="radio" checked="" />
-                                <label class="btn" for="hombre">Hombre</label>
-                                <input class="toggle toggle-right" id="mujer" name="toggle-sexo" value="true"
-                                       type="radio" />
-                                <label class="btn" for="mujer">&nbsp;&nbsp;Mujer&nbsp;&nbsp;</label>
-
+                                    )
                             </div>
                         </div>
                     </div>
@@ -1068,15 +1064,17 @@
                         <div class="controlForm my-3">
                             <label>Fecha de vencimiento:</label>
                             <span>
-                                @(Html.Kendo().DatePickerFor(t=>t.Persona.vigenciaLicenciaFisico)
-                                    .DateInput()
-                                    )
+                              @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicenciaFisico)
+                                          .Format("yyyy-MM-dd")
+                               )
+
 
                             </span>
                         </div>
                     </div>
 
                 </form>
+
                 <div class="row my-4">
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
@@ -1124,7 +1122,7 @@
     }
 
     $("#ddlMarcas").on("change", function () {
-        var value = $(this).val();
+    var value = $(this).val() || model.idMarcaVehiculo;
         _set_combo_catalog("CatSubmarcasByFilter", value, "idSubmarca", "false", "divSubmarca", "");
         $('#idSubmarca').kendoDropDownList();
 
@@ -1143,6 +1141,16 @@
         $('#hdnIdCatTipoPersona').val(value);
 
     });
+ 
+    $(document).ready(function() {
+        var datePicker = $("#Persona_vigenciaLicenciaFisico").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+     $(document).ready(function() {
+        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+
 
     function submitCreateMoral() {
         var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
@@ -1209,6 +1217,7 @@
     }
 
     function submitCreateVehiculo() {
+        
         var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
         validator.validate();
 
@@ -1218,7 +1227,7 @@
         }
 
         if (validator.validate()) {
-            var formData = $("#frmCreateVehiculo").serialize();
+             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
             console.log(formData);
@@ -1248,5 +1257,6 @@
         }
 
     }
+ 
 
 </script>

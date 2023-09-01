@@ -54,6 +54,13 @@
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opcion")
                                 .HtmlAttributes(new { style = "max-width: 340px;width: 100%", required = "required" })
+                                .DataSource(source =>
+                                {
+                                source.Read(read =>
+                                {
+                                    read.Action("Gruas_Drop", "AsignacionGruas");
+                                });
+                                })
                                 )
                         </div>
                     </div>

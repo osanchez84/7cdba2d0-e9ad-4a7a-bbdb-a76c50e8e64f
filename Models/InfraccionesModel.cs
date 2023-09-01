@@ -26,7 +26,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string folioInfraccion { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime fechaNacimiento { get; set; } = DateTime.Now;
+        public DateTime ?fechaNacimiento { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaInfraccion { get; set; } = DateTime.Now;

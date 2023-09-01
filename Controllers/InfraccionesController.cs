@@ -372,13 +372,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
                                 ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
                                 : 0;
-
+                            var submarcaLimpio = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
+                                ? ObtenerSubmarca(vehiculoEncontradoData.linea)
+                                : "NA";
                             var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
                                 ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
                                 : 0;
+                            var cargaBool = ConvertirBool(vehiculoEncontradoData.carga);
+                            var generoBool = ConvertirGeneroBool(vehiculoInterlocutorData.es_per_fisica?.sexo);
 
-
-                            //var idTipoVehiculo = ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria);
+                            var idTipo = !string.IsNullOrEmpty(vehiculoEncontradoData.categoria)
+                             ? ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria)
+                             : 0;
 
                             var vehiculoEncontrado = new VehiculoModel
                             {
@@ -391,10 +396,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 idEntidad = idEntidad,
                                 idMarcaVehiculo = idMarca,
                                 idSubmarca = idSubmarca,
-                                submarca = vehiculoEncontradoData.linea,
-
-                                //idTipoVehiculo = idTipoVehiculo,
+                                submarca = submarcaLimpio,
+                                idTipoVehiculo = idTipo,
                                 modelo = vehiculoEncontradoData.modelo,
+                                capacidad = vehiculoEncontradoData.numpersona,
+                                carga = cargaBool,
 
                                 Persona = new PersonaModel
                                 {
@@ -404,6 +410,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                     nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
                                     apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
                                     apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
+                                    fechaNacimiento = vehiculoInterlocutorData.es_per_fisica?.Fecha_nacimiento,
+                                    generoBool = generoBool,
 
                                     nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                                     PersonaDireccion = new PersonaDireccionModel
@@ -418,8 +426,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                         numeroFisico = vehiculoDireccionData.nro_exterior,
                                         idMunicipioFisico = idMunicipio,
                                         idMunicipio = idMunicipio,
-
-
                                     }
                                 },
 
@@ -427,9 +433,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 {
                                     PersonasMorales = new List<PersonaModel>()
                                 }
-
                             };
-
                             return PartialView("_Create", vehiculoEncontrado);
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
@@ -469,7 +473,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);
             return (idEntidad);
         }
-        private int ObtenerIdColor(string color)
+        private string ObtenerSubmarca(string submarca)
+        {
+            string[] partes = submarca.Split(new[] { '-' }, 2);
+
+            if (partes.Length > 1)
+            {
+                string submarcaLimpio = partes[1].Trim();
+
+                return submarcaLimpio;
+            }
+
+            return "NA"; // Valor predeterminado en caso de no encontrar el guión
+        }
+        private bool ConvertirBool(string carga)
+        {
+            bool cargaBool = false;
+
+            if (carga == "1.00")
+            {
+                cargaBool = true;
+            }
+            else if (carga == "0.00")
+            {
+                cargaBool = false;
+            }
+
+
+            return (cargaBool);
+        }
+    
+
+private int ObtenerIdColor(string color)
         {
             string colorLimpio = Regex.Replace(color, "[0-9-]", "").Trim();
             var idColor = _coloresService.obtenerIdPorColor(colorLimpio);
@@ -503,20 +538,52 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return 0; // Valor predeterminado en caso de no encontrar el guión
         }
-        /* private int ObtenerIdTipoVehiculo(string categoria)
-         {
-             string[] partes = submarca.Split(new[] { '-' }, 2);
+        private int ObtenerIdTipoVehiculo(string categoria)
+        {
+            int idTipo = 0;
 
-             if (partes.Length > 1)
-             {
-                 string submarcaLimpio = partes[1].Trim();
+            if (!string.IsNullOrEmpty(categoria))
+            {
+                string lowerTexto = categoria.ToLower();
 
-                 var idMarca = _catSubmarcasVehiculosService.obtenerIdPorSubmarca(submarcaLimpio);
-                 return idMarca;
-             }
+                if (lowerTexto.Contains("sedan"))
+                {
+                    idTipo = 1;
+                }
+                else if (lowerTexto.Contains("coupe"))
+                {
+                    idTipo = 37;
+                }
+                else if (lowerTexto.Contains("hatchback"))
+                {
+                    idTipo = 57;
+                }
+                else if (lowerTexto.Contains("minivan"))
+                {
+                    idTipo = 31;
+                }
 
-             return 0; // Valor predeterminado en caso de no encontrar el guión
-         }*/
+            }
+            return (idTipo);
+
+        }
+        private bool ConvertirGeneroBool(string sexo)
+        {
+            if (sexo == "2")
+            {
+                return true;
+            }
+            else if (sexo == "1")
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         private long LimpiarValorTelefono(string telefono)
         {
             telefono = telefono.Replace(" ", "");

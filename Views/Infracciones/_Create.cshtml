@@ -236,14 +236,11 @@
                 {
 
                     <div id="divSubmarca">
-                         @{ if (!string.IsNullOrWhiteSpace(Model.submarca))
-                               {
-                                   <label>:@Model.submarca</label>
-                               }
-                            }
-                        @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
-                            .OptionLabel("-- Seleccione --")
-                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                          @Html.HiddenFor(m=> m.idSubmarca)
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlIdSubIn")
+                            .OptionLabel(@Model.submarca)
+                            .HtmlAttributes(new { style = "width:100%;"})
                             )
 
                     </div>
@@ -365,6 +362,7 @@
                 <label>Carga:</label>
                 @(Html.Kendo().SwitchFor(m => m.carga)
                     .Messages(c => c.Checked("SI").Unchecked("NO"))
+                    .HtmlAttributes(new { style = "transform: scale(1.2);" })
 
                     )
             </div>
@@ -896,20 +894,14 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm">
-                            <label>Sexo <b>(obligatorio)</b></label>
-                        </div>
-                        <div class="btnToggle mb-3">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="controlForm my-3">
+                                <label>Sexo:</label>
+                                @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
+                                    .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
+                                    .HtmlAttributes(new { style = "transform: scale(1.6);" })
 
-
-                            <div style="z-index:0" class="position-relative d-flex align-items-center">
-                                <input class="toggle toggle-left" id="hombre" name="toggle-sexo" value="false"
-                                       type="radio" checked="" />
-                                <label class="btn" for="hombre">Hombre</label>
-                                <input class="toggle toggle-right" id="mujer" name="toggle-sexo" value="true"
-                                       type="radio" />
-                                <label class="btn" for="mujer">&nbsp;&nbsp;Mujer&nbsp;&nbsp;</label>
-
+                                    )
                             </div>
                         </div>
                     </div>

@@ -35,7 +35,14 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Fecha nacimiento:</label>
-            <p>@Model.fechaNacimiento.ToString("yyyy-MM-dd")</p>
+            @if (Model.fechaNacimiento.HasValue)
+            {
+                <p>@Model.fechaNacimiento.Value.ToString("yyyy-MM-dd")</p>
+            }
+            else
+            {
+                <p>-</p>
+            }
         </div>
     </div>
 </div>

@@ -464,7 +464,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             }
                             model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
                             model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
-                            model.fechaNacimiento = model.Vehiculo.Persona.fechaNacimiento;
+                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+                            model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
+
+                            if (model.Vehiculo.Persona.fechaNacimiento.HasValue)
+                            {
+                                model.fechaNacimiento = model.Vehiculo.Persona.fechaNacimiento.Value;
+                            }
+                            else
+                            {
+                                model.fechaNacimiento = DateTime.MinValue;
+                            }
+
 
                             model.NombreGarantia = model.Garantia.garantia;
                         }

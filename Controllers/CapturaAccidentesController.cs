@@ -1090,6 +1090,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
             var IdPersonaFisica = _personasService.CreatePersona(Persona);
+            if (IdPersonaFisica == 0)
+            {
+                throw new Exception("Ocurrio un error al dar de alta la persona");
+            }
             var personasFisicasModel = _personasService.GetAllPersonasFisicas();
             return PartialView("_PersonasFisicas", personasFisicasModel);
         }
@@ -1109,6 +1113,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListPersonasMorales", personasMoralesModel);
         }
 
+        //TODO: ejemplo crear vehiculo por service de guanajuato
+        [HttpPost]
+        public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)
+        {
+            var IdVehiculo = _vehiculosService.CreateVehiculo(model);
+
+            if (IdVehiculo != 0)
+            {
+                var resultados = _vehiculosService.GetAllVehiculos();
+                return PartialView("_ListadoVehiculos", resultados);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
         [HttpPost]
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
@@ -1126,7 +1147,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (IdVehiculo != 0)
             {
-                return Json(new { id = IdVehiculo });
+                var resultados = _vehiculosService.GetAllVehiculos();
+                return Json(new { id = IdVehiculo, data = resultados });
             }
             else
             {

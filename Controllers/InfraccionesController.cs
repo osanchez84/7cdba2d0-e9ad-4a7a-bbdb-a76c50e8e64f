@@ -27,6 +27,7 @@ using GuanajuatoAdminUsuarios.Framework.Catalogs;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -349,7 +350,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                         {
-
                             var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
                             var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
                             var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
@@ -433,8 +433,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 {
                                     PersonasMorales = new List<PersonaModel>()
                                 }
-                            };
-                            return PartialView("_Create", vehiculoEncontrado);
+                            }; return PartialView("_Create", vehiculoEncontrado);
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
@@ -490,21 +489,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             bool cargaBool = false;
 
-            if (carga == "1.00")
+            if (carga.Trim() == "1.00")
             {
                 cargaBool = true;
             }
-            else if (carga == "0.00")
+            else if (carga.Trim() == "0.00")
             {
                 cargaBool = false;
             }
-
-
             return (cargaBool);
         }
-    
 
-private int ObtenerIdColor(string color)
+
+        private int ObtenerIdColor(string color)
         {
             string colorLimpio = Regex.Replace(color, "[0-9-]", "").Trim();
             var idColor = _coloresService.obtenerIdPorColor(colorLimpio);
@@ -778,7 +775,7 @@ private int ObtenerIdColor(string color)
                 crearMultasRequestModel.CR2RAZON = "";
                 crearMultasRequestModel.CR3RAZON = "";
                 crearMultasRequestModel.CR4RAZON = "";
-                crearMultasRequestModel.BIRTHDT = infraccionBusqueda.Persona.fechaNacimiento.ToString("yyyy-MM-dd");
+                crearMultasRequestModel.BIRTHDT = "";
                 crearMultasRequestModel.CR1CALLE = infraccionBusqueda.lugarCalle;
                 crearMultasRequestModel.CR1NEXT = infraccionBusqueda.lugarNumero;
                 crearMultasRequestModel.CR1NINT = "";
@@ -816,28 +813,26 @@ private int ObtenerIdColor(string color)
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
                 ViewBag.Pension = result;
-                if (result != null && result.MT_CrearMultasTransito_res.ZTYPE == "S")
+
+                if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
                     _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
                     _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);
 
                     return Json(new { success = true });
                 }
-                else if (result != null && result.MT_CrearMultasTransito_res.ZTYPE == "E")
+                else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
-
                     return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
                 }
-
-                return Json(new { success = false, message = "Ha ocurrido un error intenta mas tarde" });
+                else
+                {
+                    return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
+                }
             }
-            else
-            {
-                return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
-            }
+            return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
 
         }
-
 
         public ActionResult ModalAgregarConductor()
         {
@@ -914,7 +909,7 @@ private int ObtenerIdColor(string color)
             if (IdVehiculo != 0)
             {
                 var resultados = _vehiculosService.GetAllVehiculos();
-                return Json(new { id = IdVehiculo, data = resultados });
+                return PartialView( "_ListadoVehiculos", resultados );
             }
             else
             {

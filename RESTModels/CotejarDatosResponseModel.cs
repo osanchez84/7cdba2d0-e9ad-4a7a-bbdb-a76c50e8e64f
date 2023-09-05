@@ -24,6 +24,10 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string Ape_paterno { get; set; }
             public string Ape_materno { get; set; }
             public DateTime? Fecha_nacimiento { get; set; }
+            public string sexo;
+
+
+
 
 
         }
@@ -80,7 +84,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string no_serie { get; set; }
             public string carga { get; set; }
             public string combustible { get; set; }
-            public int ? numpersona { get; set; }
+            public int? numpersona { get; set; }
             public string otros { get; set; }
             public string pesobruto { get; set; }
         }

@@ -236,15 +236,14 @@
                 {
 
                     <div id="divSubmarca">
-                          @Html.HiddenFor(m=> m.idSubmarca)
+                        @Html.HiddenFor(m=> m.idSubmarca)
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
-                            .HtmlAttributes(new { style = "width:100%;"})
+                            .HtmlAttributes(new { style = "width:100%;" })
                             )
 
                     </div>
-
                 }
 
             </div>
@@ -360,7 +359,7 @@
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Carga:</label>
-                @(Html.Kendo().SwitchFor(m => m.carga)
+               @(Html.Kendo().SwitchFor(m => m.carga)
                     .Messages(c => c.Checked("SI").Unchecked("NO"))
                     .HtmlAttributes(new { style = "transform: scale(1.2);" })
 
@@ -888,22 +887,20 @@
                             <label>Fecha de nacimiento <b>(obligatorio)</b></label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
-                                    .DateInput()
+                                    .Format("dd-MM-yyyy")
                                     )
                             </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="controlForm my-3">
-                                <label>Sexo:</label>
-                                @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
-                                    .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
-                                    .HtmlAttributes(new { style = "transform: scale(1.6);" })
-
-                                    )
-                            </div>
+                        <div class="controlForm">
+                            <label>Sexo <b>(obligatorio)</b></label>
                         </div>
+                        @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
+                            .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
+                            .HtmlAttributes(new { style = "transform: scale(1.6);" })
+
+                            )
                     </div>
 
 
@@ -1186,8 +1183,8 @@
             data: Mydata,
             success: function (result) {
                 console.log(result);
-                var grid = $("#gridPersonasFisicasInf").data("kendoGrid");
-                grid.refresh();
+                var grid = $("#personasFisicasInf").html(result);
+              
                 $('#addFisico').modal('hide');
             }
         });
@@ -1211,16 +1208,11 @@
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
                 data: formData,
-                dataType: "json",
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
                     $('#VehiculoServiceModal').modal('hide');
                     $('#agregarVehiculoModal').modal('hide');
-                    var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
-                    grid.dataSource.data(result.data);
-                    grid.refresh();
-
-
+                    var gridVehiculos = $("#listadoVehiculos").html(result);
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
@@ -1235,5 +1227,14 @@
         }
 
     }
+       $(document).ready(function() {
+        var datePicker = $("#Persona_vigenciaLicenciaFisico").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+     $(document).ready(function() {
+        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+
 
 </script>

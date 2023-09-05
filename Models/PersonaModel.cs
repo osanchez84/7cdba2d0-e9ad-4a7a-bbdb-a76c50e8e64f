@@ -35,13 +35,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string tipoPersona { get; set; }
         public int idGenero { get; set; }
         public string genero { get; set; }
-        public bool generoBool { get; set; }
-        
-        public DateTime ?fechaNacimiento { get; set; }
+        public DateTime? fechaNacimiento { get; set; }
         public int idTipoLicencia { get; set; }
         public string tipoLicencia { get; set; }
         public string telefono { get; set; }
         public string correo { get; set; }
+        public bool generoBool { get; set; }
         
         public DateTime vigenciaLicencia { get; set; }
         public DateTime vigenciaLicenciaFisico { get; set; }

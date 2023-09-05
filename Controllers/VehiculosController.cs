@@ -177,25 +177,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                         {
-                            
+
                             var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
                             var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
                             var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
                             var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
                                   ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
-                                  : 0; 
+                                  : 0;
 
                             var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
                                 ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
-                                : 0; 
+                                : 0;
 
                             var idColor = !string.IsNullOrEmpty(vehiculoEncontradoData.color)
                                 ? ObtenerIdColor(vehiculoEncontradoData.color)
-                                : 0; 
+                                : 0;
 
                             var idMarca = !string.IsNullOrEmpty(vehiculoEncontradoData.marca)
                                 ? ObtenerIdMarca(vehiculoEncontradoData.marca)
-                                : 0; 
+                                : 0;
 
                             var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
                                 ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
@@ -203,7 +203,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             var submarcaLimpio = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
                                 ? ObtenerSubmarca(vehiculoEncontradoData.linea)
                                 : "NA";
-
                             var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
                                 ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
                                 : 0;
@@ -215,7 +214,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                              : 0;
 
                             var vehiculoEncontrado = new VehiculoModel
-                                {
+                            {
                                 placas = vehiculoEncontradoData.no_placa,
                                 serie = vehiculoEncontradoData.no_serie,
                                 tarjeta = vehiculoEncontradoData.no_tarjeta,
@@ -263,7 +262,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                     PersonasMorales = new List<PersonaModel>()
                                 }
                             };
-
                             return PartialView("_Create", vehiculoEncontrado);
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
@@ -301,6 +299,35 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);
             return (idEntidad);
         }
+        private string ObtenerSubmarca(string submarca)
+        {
+            string[] partes = submarca.Split(new[] { '-' }, 2);
+
+            if (partes.Length > 1)
+            {
+                string submarcaLimpio = partes[1].Trim();
+
+                return submarcaLimpio;
+            }
+
+            return "NA"; // Valor predeterminado en caso de no encontrar el guión
+        }
+        private bool ConvertirBool(string carga)
+        {
+            bool cargaBool = false;
+
+            if (carga.Trim() == "1.00")
+            {
+                cargaBool = true;
+            }
+            else if (carga.Trim() == "0.00")
+            {
+                cargaBool = false;
+            }
+            return (cargaBool);
+        }
+
+
         private int ObtenerIdColor(string color)
         {
             string colorLimpio = Regex.Replace(color, "[0-9-]", "").Trim();
@@ -351,21 +378,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return 0; // Valor predeterminado en caso de no encontrar el guión
         }
-        private string ObtenerSubmarca(string submarca)
-        {
-            string[] partes = submarca.Split(new[] { '-' }, 2);
-
-            if (partes.Length > 1)
-            {
-                string submarcaLimpio = partes[1].Trim();
-
-                return submarcaLimpio;
-            }
-
-            return "NA"; // Valor predeterminado en caso de no encontrar el guión
-        }
         private int ObtenerIdTipoVehiculo(string categoria)
-         {
+        {
             int idTipo = 0;
 
             if (!string.IsNullOrEmpty(categoria))
@@ -393,7 +407,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return (idTipo);
 
         }
-         
+        private bool ConvertirGeneroBool(string sexo)
+        {
+            if (sexo == "2")
+            {
+                return true;
+            }
+            else if (sexo == "1")
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         private long LimpiarValorTelefono(string telefono)
         {
             telefono = telefono.Replace(" ", "");
@@ -409,25 +439,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return 0; // O algún otro valor que indique que no es válido
             }
         }
-
-        private bool ConvertirGeneroBool(string sexo)
-        {
-            if (sexo == "2")
-            {
-                return true;
-            }
-            else if (sexo == "1")
-            {
-                return false;
-            }
-            else
-            {
-                return false; 
-            }
-
-        }
-
-
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
         {

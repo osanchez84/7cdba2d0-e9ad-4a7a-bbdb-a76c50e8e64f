@@ -1183,8 +1183,8 @@
             data: Mydata,
             success: function (result) {
                 console.log(result);
-                var grid = $("#gridPersonasFisicasInf").data("kendoGrid");
-                grid.refresh();
+                var grid = $("#personasFisicasInf").html(result);
+              
                 $('#addFisico').modal('hide');
             }
         });
@@ -1208,16 +1208,11 @@
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
                 data: formData,
-                dataType: "json",
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
                     $('#VehiculoServiceModal').modal('hide');
                     $('#agregarVehiculoModal').modal('hide');
-                    var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
-                    grid.dataSource.data(result.data);
-                    grid.refresh();
-
-
+                    var gridVehiculos = $("#listadoVehiculos").html(result);
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;

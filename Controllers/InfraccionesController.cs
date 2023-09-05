@@ -27,6 +27,7 @@ using GuanajuatoAdminUsuarios.Framework.Catalogs;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -812,28 +813,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
                 ViewBag.Pension = result;
-                if (result != null && result.MT_CrearMultasTransito_res.ZTYPE == "S")
+
+                if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
                     _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
                     _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);
 
                     return Json(new { success = true });
                 }
-                else if (result != null && result.MT_CrearMultasTransito_res.ZTYPE == "E")
+                else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
-
                     return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
                 }
-
-                return Json(new { success = false, message = "Ha ocurrido un error intenta mas tarde" });
+                else
+                {
+                    return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
+                }
             }
-            else
-            {
-                return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
-            }
+            return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
 
         }
-
 
         public ActionResult ModalAgregarConductor()
         {
@@ -910,7 +909,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (IdVehiculo != 0)
             {
                 var resultados = _vehiculosService.GetAllVehiculos();
-                return Json(new { id = IdVehiculo, data = resultados });
+                return PartialView( "_ListadoVehiculos", resultados );
             }
             else
             {

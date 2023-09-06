@@ -23,7 +23,7 @@ namespace GuanajuatoAdminUsuarios.RESTModels
             public string Nombre { get; set; }
             public string Ape_paterno { get; set; }
             public string Ape_materno { get; set; }
-            public DateTime? Fecha_nacimiento { get; set; }
+            public DateTime? Fecha_nacimiento { get; set; } 
 
 
 

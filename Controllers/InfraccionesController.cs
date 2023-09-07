@@ -757,7 +757,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
         }
 
-        public IActionResult ServiceCrearInfraccion(int idInfraccion)
+      /*  public IActionResult ServiceCrearInfraccion(int idInfraccion)
         {
             if (_appSettings.AllowWebServices)
             {
@@ -832,7 +832,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
 
-        }
+        } */
 
         public ActionResult ModalAgregarConductor()
         {

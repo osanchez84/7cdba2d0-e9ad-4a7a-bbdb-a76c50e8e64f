@@ -164,7 +164,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Persona = _personasService.GetPersonaById((int)model.idPersona);
                             model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            //model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
                             model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
@@ -599,7 +599,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catTipoLicencia ctl
                                 on g.idTipoLicencia = ctl.idTipoLicencia
                                 AND ctl.estatus = 1
-                                AND g.idGarantia = @idGarantia";
+                                WHERE g.idGarantia = @idGarantia";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -758,8 +758,10 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = (object)model.idTipoPlaca ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
+                    int? idTipoPlaca = (model.idTipoPlaca != null) ? model.idTipoPlaca : 0;
+                    command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = idTipoPlaca;
+                    int? idTipoLicencia = (model.idTipoLicencia != null) ? model.idTipoLicencia : 0;
+                    command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = idTipoLicencia;
                     command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
@@ -1372,7 +1374,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera;
                     command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.kmCarretera;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera;
                     command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle == null ? "" : (object)model.lugarCalle;
                     command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero == null ? "" : (object)model.lugarNumero;
                     command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia == null ? "" : (object)model.lugarColonia;
@@ -1389,7 +1391,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     //command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
                     //command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
                     //command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion;
-                    //command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia;
+                    command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia;
                     //command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones;
                     //command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Bit)).Value = (object)model.infraccionCortesia;
 
@@ -1419,6 +1421,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                        SET idOficial = @idOficial
                                           ,idDependencia = @idDependencia
                                           ,idDelegacion = @idDelegacion
+                                          ,idGarantia = @idGarantia
                                           ,idVehiculo = @idVehiculo
                                           ,idAplicacion = @idAplicacion
                                           ,idEstatusInfraccion = @idEstatusInfraccion
@@ -1454,7 +1457,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion ?? DBNull.Value;
-                    //command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
                     model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.Capturada;
                     command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
@@ -1465,7 +1468,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.kmCarretera ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero ?? DBNull.Value;

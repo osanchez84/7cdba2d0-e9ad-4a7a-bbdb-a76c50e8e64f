@@ -199,8 +199,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
                     string sqlCondiciones = "";
-                    sqlCondiciones += (object)model.IdGarantia == null ? "" : " gar.idGarantia=@IdGarantia AND \n";
-                    sqlCondiciones += (object)model.IdGarantia == null ? "" : " gar.idGarantia=@IdGarantia AND \n";
+                    sqlCondiciones += (object)model.IdGarantia == null ? "" : " inf.idGarantia=@IdGarantia AND \n";
+                    sqlCondiciones += (object)model.IdTipoCortesia == null ? "" : " inf.infraccionCortesia=@IdTipoCortesia AND \n";
                     sqlCondiciones += (object)model.IdDelegacion == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
                     sqlCondiciones += (object)model.IdEstatus == null ? "" : " estIn.idEstatusInfraccion=@IdEstatus AND \n";
                     sqlCondiciones += (object)model.IdDependencia == null ? "" : " dep.idDependencia=@IdDependencia AND \n";
@@ -216,7 +216,7 @@ namespace GuanajuatoAdminUsuarios.Services
                      
 
                     string SqlTransact =
-                            string.Format(@"SELECT inf.idInfraccion
+                            string.Format(@"SELECT DISTINCT inf.idInfraccion
                                     ,inf.idOficial
                                     ,inf.idDependencia
                                     ,inf.idDelegacion
@@ -270,16 +270,51 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
-                                    where {0}  inf.estatus=1", sqlCondiciones);
-
-                    
-                    
-
-
+                                    where {0}  inf.estatus=1
+									GROUP BY inf.idInfraccion
+                                    ,inf.idOficial
+                                    ,inf.idDependencia
+                                    ,inf.idDelegacion
+                                    ,inf.idVehiculo
+                                    ,inf.idAplicacion
+                                    ,inf.idGarantia
+                                    ,inf.idEstatusInfraccion
+                                    ,inf.idMunicipio
+                                    ,inf.idTramo
+                                    ,inf.idCarretera
+                                    ,inf.idPersona
+                                    ,inf.idPersonaInfraccion
+                                    ,veh.placas 
+                                    ,inf.folioInfraccion
+                                    ,inf.fechaInfraccion
+                                    ,inf.kmCarretera
+                                    ,inf.observaciones
+                                    ,inf.lugarCalle
+                                    ,inf.lugarNumero
+                                    ,inf.lugarColonia
+                                    ,inf.lugarEntreCalle
+                                    ,inf.infraccionCortesia
+                                    ,inf.NumTarjetaCirculacion
+                                    ,inf.fechaActualizacion
+                                    ,inf.actualizadoPor
+                                    ,inf.estatus
+                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                    ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
+                                    ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
+                                    ,tipoP.idTipoPlaca, tipoP.tipoPlaca
+                                    ,tipoL.idTipoLicencia, tipoL.tipoLicencia
+                                    ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
+                                    ,catMun.idMunicipio,catMun.municipio
+                                    ,catTra.idTramo,catTra.tramo
+                                    ,catCarre.idCarretera,catCarre.carretera
+                                    ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
+                                    ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico,
+                                     per.nombre,per.apellidoPaterno,per.apellidoMaterno", sqlCondiciones);
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdGarantia", SqlDbType.Int)).Value = (object)model.IdGarantia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@IdTipoCortesia", SqlDbType.Int)).Value = (object)model.IdTipoCortesia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependencia", SqlDbType.Int)).Value = (object)model.IdDependencia ?? DBNull.Value;
@@ -306,7 +341,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
                             infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
                             infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
-
                             infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
                             infraccionModel.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
                             infraccionModel.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
@@ -327,7 +361,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
                             infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
                             //infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
+                            
                             infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+                            infraccionModel.Garantia.garantia = reader["garantia"].ToString();
                             infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo== null? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
                             infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 

@@ -65,7 +65,7 @@
         <div class="col-12 col-md-3">
             <div class="controlForm my-3">
                 @(Html.Kendo().TextBoxFor(t => t.CalificacionMinima)
-                    .Label(l => l.Content("Calificación mínima <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Calificación mínima:"))
                     .Placeholder("Mínima")
                     .HtmlAttributes(new { style = "width: 100%", type = "number" })
                     )
@@ -75,7 +75,7 @@
         <div class="col-12 col-md-3">
             <div class="controlForm my-3">
                 @(Html.Kendo().TextBoxFor(t => t.CalificacionMaxima)
-                    .Label(l => l.Content("Calificación máxima <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Calificación máxima:"))
                     .HtmlAttributes(new { style = "width: 100%", type = "number" })
                     )
 

@@ -60,7 +60,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,inf.fechaActualizacion
                                     ,inf.actualizadoPor
                                     ,inf.estatus
-                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,MAX(catGar.idGarantia) AS idGarantia,catGar.garantia
                                     , estIn.estatusInfraccion
                                     ,gar.numLicencia,gar.vehiculoDocumento
                                     ,tipoL.idTipoLicencia, tipoL.tipoLicencia

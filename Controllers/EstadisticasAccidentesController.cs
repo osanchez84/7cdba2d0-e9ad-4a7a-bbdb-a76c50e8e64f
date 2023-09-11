@@ -4,6 +4,7 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -99,8 +100,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                     && w.idTipoLicencia == (model.idTipoLicencia > 0 ? model.idTipoLicencia : w.idTipoLicencia)
                                                     && w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
                                                     && w.idFactorAccidente == (model.idFactorAccidente > 0 ? model.idFactorAccidente : w.idFactorAccidente)
+                                                    && w.IdTipoVehiculo == (model.IdTipoVehiculo > 0 ? model.IdTipoVehiculo : w.IdTipoVehiculo)
+                                                    && w.IdTipoServicio == (model.IdTipoServicio > 0 ? model.IdTipoServicio : w.IdTipoServicio)
+                                                    && w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
                                                     && w.idFactorOpcionAccidente == (model.idFactorOpcionAccidente > 0 ? model.idFactorOpcionAccidente : w.idFactorOpcionAccidente)
-                                                    && (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin)
+                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
 
             var lista = modelList.GroupBy(g =>g.municipio).ToList();

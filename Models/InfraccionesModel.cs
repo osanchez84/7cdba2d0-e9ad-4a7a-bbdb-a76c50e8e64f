@@ -22,6 +22,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idCarretera { get; set; }
         public int? idPersona { get; set; }
         public int? idPersonaInfraccion { get; set; }
+        public int? idCortesia { get; set; }
+        
         public string placasVehiculo { get; set; }
         public string folioInfraccion { get; set; }
 

@@ -247,37 +247,37 @@ namespace GuanajuatoAdminUsuarios.Services
 									,MAX(del.nombreOficina) AS nombreOficina
 									,MAX(dep.idDependencia) AS idDependencia
 									,MAX(dep.nombreDependencia) as max_nombreDependencia,
-				MAX(catGar.garantia) as garantia,
-				MAX(estIn.estatusInfraccion) as estatusInfraccion,
-				MAX(gar.numPlaca) as numPlaca,
-				MAX(gar.numLicencia) as numLicencia,
-				MAX(gar.vehiculoDocumento) as vehiculoDocumento,
-				MAX(tipoP.idTipoPlaca) as idTipoPlaca,
-				MAX(tipoP.tipoPlaca) as tipoPlaca,
-				MAX(tipoL.idTipoLicencia) as idTipoLicencia,
-				MAX(tipoL.tipoLicencia) as tipoLicencia,
-				MAX(catOfi.nombre) as nombre,
-				MAX(catOfi.apellidoPaterno) as apellidoPaterno,
-				MAX(catOfi.apellidoMaterno) as apellidoMaterno,
-				MAX(catOfi.rango) as rango,
-				MAX(catMun.municipio) as municipio,
-				MAX(catTra.tramo) as tramo,
-				MAX(catCarre.carretera) as carretera,
-				MAX(veh.idMarcaVehiculo) as idMarcaVehiculo,
-				MAX(veh.idMarcaVehiculo) as idMarcaVehiculo,
-				MAX(veh.serie) as serie,
-				MAX(veh.tarjeta) as tarjeta,
-				MAX(veh.vigenciaTarjeta) as vigenciaTarjeta,
-				MAX(veh.idTipoVehiculo) as idTipoVehiculo,
-				MAX(veh.modelo) as modelo,
-				MAX(veh.idColor) as idColor,
-				MAX(veh.idEntidad) as idEntidad,
-				MAX(veh.idCatTipoServicio) as idCatTipoServicio,
-				MAX(veh.propietario) as propietario,
-				MAX(veh.numeroEconomico) as numeroEconomico,
-				MAX(per.nombre) as nombre,
-				MAX(per.apellidoPaterno) as apellidoPaterno,
-				MAX(per.apellidoMaterno) as apellidoMaterno
+				                    MAX(catGar.garantia) as garantia,
+				                    MAX(estIn.estatusInfraccion) as estatusInfraccion,
+				                    MAX(gar.numPlaca) as numPlaca,
+				                    MAX(gar.numLicencia) as numLicencia,
+				                    MAX(gar.vehiculoDocumento) as vehiculoDocumento,
+				                    MAX(tipoP.idTipoPlaca) as idTipoPlaca,
+				                    MAX(tipoP.tipoPlaca) as tipoPlaca,
+				                    MAX(tipoL.idTipoLicencia) as idTipoLicencia,
+				                    MAX(tipoL.tipoLicencia) as tipoLicencia,
+				                    MAX(catOfi.nombre) as nombre,
+				                    MAX(catOfi.apellidoPaterno) as apellidoPaterno,
+				                    MAX(catOfi.apellidoMaterno) as apellidoMaterno,
+				                    MAX(catOfi.rango) as rango,
+				                    MAX(catMun.municipio) as municipio,
+				                    MAX(catTra.tramo) as tramo,
+				                    MAX(catCarre.carretera) as carretera,
+				                    MAX(veh.idMarcaVehiculo) as idMarcaVehiculo,
+				                    MAX(veh.idMarcaVehiculo) as idMarcaVehiculo,
+				                    MAX(veh.serie) as serie,
+				                    MAX(veh.tarjeta) as tarjeta,
+				                    MAX(veh.vigenciaTarjeta) as vigenciaTarjeta,
+				                    MAX(veh.idTipoVehiculo) as idTipoVehiculo,
+				                    MAX(veh.modelo) as modelo,
+				                    MAX(veh.idColor) as idColor,
+				                    MAX(veh.idEntidad) as idEntidad,
+				                    MAX(veh.idCatTipoServicio) as idCatTipoServicio,
+				                    MAX(veh.propietario) as propietario,
+				                    MAX(veh.numeroEconomico) as numeroEconomico,
+				                    MAX(per.nombre) as nombre,
+				                    MAX(per.apellidoPaterno) as apellidoPaterno,
+				                    MAX(per.apellidoMaterno) as apellidoMaterno
 
                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
@@ -295,8 +295,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
                                     where {0} inf.estatus=1
-									GROUP BY inf.idInfraccion, inf.infraccionCortesia
-                                  ", sqlCondiciones);
+									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;

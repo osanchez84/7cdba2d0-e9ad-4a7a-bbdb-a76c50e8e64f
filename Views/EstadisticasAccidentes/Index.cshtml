@@ -1,9 +1,6 @@
 ﻿@model BusquedaAccidentesModel
 
-@{
-    DateTime endDate = DateTime.Now;
-    endDate = endDate.AddDays(1);
-}
+
 
 <div class="mainContainer bg-light">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -172,9 +169,8 @@
                     <div class="controlForm">
                         <label>Inicio:</label>
                         @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
-                            .Value(DateTime.Now)
-                            .Events(e => e.Change("startChange"))
-                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
+                            .Format("dd-MM-yyyy")
+                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker"})
                             )
                     </div>
                 </div>
@@ -182,9 +178,8 @@
                     <div class="controlForm">
                         <label>Fin:</label>
                         @(Html.Kendo().DatePickerFor(t => t.FechaFin)
-                            .Value(endDate)
-                            .Events(e => e.Change("endChange"))
-                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
+                            .Format("dd-MM-yyyy")
+                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker"})
                             )
                     </div>
                 </div>
@@ -246,5 +241,13 @@
         $('#idFactorAccidente').kendoDropDownList();
 
     });
+    $(document).ready(function () {
+        var datePicker = $("#FechaFin").data("kendoDatePicker");
+        datePicker.value(null);
+    });
 
+    $(document).ready(function () {
+        var datePicker = $("#FechaInicio").data("kendoDatePicker");
+        datePicker.value(null);
+    });
 </script>

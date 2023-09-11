@@ -204,31 +204,54 @@ namespace GuanajuatoAdminUsuarios.Services
                 try 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@" SELECT acc.idAccidente, 
-	                                                        acc.idMunicipio, 
-                                                            mun.municipio,
-	                                                        acc.idOficinaDelegacion ,
-	                                                        acc.idElabora,
-	                                                        acc.idCarretera, 
-	                                                        acc.idTramo, 
-	                                                        acc.idClasificacionAccidente,
-	                                                        MAX(cond.idTipoLicencia) AS idTipoLicencia,
-	                                                        acc.idCausaAccidente ,
-	                                                        acc.idFactorAccidente ,
-	                                                        acc.idFactorOpcionAccidente,
-	                                                        acc.estatus,acc.numeroReporte,
-	                                                        acc.fecha,acc.hora
-                                                        FROM accidentes AS acc
-                                                        LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
-                                                        LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera 
-                                                        LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo 
-                                                        LEFT JOIN conductoresVehiculosAccidente AS cva ON acc.idAccidente = cva.idAccidente  
-                                                        LEFT JOIN personas AS cond ON cond.idPersona = cva.idPersona   
-                                                        WHERE acc.estatus = 1
-                                                        GROUP BY acc.idAccidente, acc.idMunicipio, mun.municipio, acc.idOficinaDelegacion ,
-                                                        acc.idElabora,acc.idCarretera, acc.idTramo, acc.idClasificacionAccidente,
-                                                        acc.idCausaAccidente,acc.idFactorAccidente ,acc.idFactorOpcionAccidente,
-                                                        acc.estatus,acc.numeroReporte,acc.fecha,acc.hora  ", connection);
+                    SqlCommand command = new SqlCommand(@" SELECT 
+                                                                acc.idAccidente, 
+                                                                acc.idMunicipio, 
+                                                                mun.municipio,
+                                                                acc.idOficinaDelegacion,
+                                                                acc.idElabora,
+                                                                acc.idCarretera, 
+                                                                acc.idTramo, 
+                                                                acc.idClasificacionAccidente,
+                                                                MAX(cond.idTipoLicencia) AS idTipoLicencia,
+                                                                acc.idFactorAccidente,
+                                                                acc.idFactorOpcionAccidente,
+                                                                acc.estatus,
+                                                                acc.numeroReporte,
+                                                                acc.fecha,
+                                                                acc.hora,
+                                                                veh.idVehiculo,
+                                                                veh.idTipoVehiculo,
+                                                                veh.idCatTipoServicio,
+	                                                            MAX(accau.idAccidenteCausa) AS idAccidenteCausa
+                                                            FROM accidentes AS acc
+                                                            LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
+                                                            LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera 
+                                                            LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo 
+                                                            LEFT JOIN conductoresVehiculosAccidente AS cva ON acc.idAccidente = cva.idAccidente  
+                                                            LEFT JOIN personas AS cond ON cond.idPersona = cva.idPersona
+                                                            LEFT JOIN vehiculos AS veh ON cva.idVehiculo = veh.idVehiculo
+                                                            LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
+
+                                                            WHERE acc.estatus = 1
+                                                            GROUP BY 
+                                                                acc.idAccidente, 
+                                                                acc.idMunicipio, 
+                                                                mun.municipio, 
+                                                                acc.idOficinaDelegacion,
+                                                                acc.idElabora,
+                                                                acc.idCarretera, 
+                                                                acc.idTramo, 
+                                                                acc.idClasificacionAccidente,
+                                                                acc.idFactorAccidente,
+                                                                acc.idFactorOpcionAccidente,
+                                                                acc.estatus,
+                                                                acc.numeroReporte,
+                                                                acc.fecha,
+                                                                acc.hora,
+                                                                veh.idVehiculo,
+                                                                veh.idCatTipoServicio,
+                                                                veh.idTipoVehiculo", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -245,9 +268,12 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.idTramo = reader["IdTramo"] != DBNull.Value ? Convert.ToInt32(reader["IdTramo"]) : 0;
                             accidente.idClasificacionAccidente = reader["idClasificacionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idClasificacionAccidente"]) : 0;
                             accidente.idTipoLicencia = reader["idTipoLicencia"] != DBNull.Value ? Convert.ToInt32(reader["idTipoLicencia"]) : 0;
-                            accidente.idCausaAccidente = reader["idCausaAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idCausaAccidente"]) : 0;
+                            accidente.idCausaAccidente = reader["idAccidenteCausa"] != DBNull.Value ? Convert.ToInt32(reader["idAccidenteCausa"]) : 0;
                             accidente.idFactorAccidente = reader["idFactorAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorAccidente"]) : 0;
                             accidente.idFactorOpcionAccidente = reader["idFactorOpcionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorOpcionAccidente"]) : 0;
+                            accidente.IdTipoVehiculo = reader["idTipoVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idTipoVehiculo"]) : 0;
+                            accidente.IdTipoServicio = reader["idCatTipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idCatTipoServicio"]) : 0;
+                            accidente.idCausaAccidente = reader["idAccidenteCausa"] != DBNull.Value ? Convert.ToInt32(reader["idAccidenteCausa"]) : 0;
 
                             accidente.numeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
                             accidente.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;

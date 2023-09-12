@@ -711,9 +711,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_UpdateCortesiaInfraccion(InfraccionesModel model)
         {
-            var result = new SelectList(_estatusInfraccionService.GetEstatusInfracciones(), "idEstatusInfraccion", "estatusInfraccion");
-            var Cortesia = result.Where(x => x.Text.ToUpper() == "Cortesia".ToUpper()).FirstOrDefault();
-            model.idEstatusInfraccion = Convert.ToInt32(Cortesia.Value);
+          
             var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
             if (modelInf == 1)
             {
@@ -792,7 +790,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.XSEXM = "";
                 crearMultasRequestModel.LZONE = "";
                 crearMultasRequestModel.L_OFN_IOFICINA = "";
-                crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString();
+                crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString("F2");
                 crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
                 crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                 crearMultasRequestModel.INF_PROP = "";

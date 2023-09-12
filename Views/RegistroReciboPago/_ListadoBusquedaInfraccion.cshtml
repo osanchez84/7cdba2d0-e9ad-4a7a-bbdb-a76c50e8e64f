@@ -57,8 +57,8 @@
         console.log(Id);
 
         $.ajax({
-            url: '@Url.Action("Detalleinfraccion", "RegistroReciboPago")', // URL de la acción del controlador
-            type: 'POST', // Tipo de solicitud HTTP (POST o GET)
+            url: '@Url.Action("Detalleinfraccion", "RegistroReciboPago")', 
+            type: 'POST', 
             data: { Id: Id }, // Datos que se enviarán al controlador
             success: function (result) {
                 $('#BodyComprobacion').html(result);
@@ -68,8 +68,4 @@
         })
     }
 
-    function tooltipContent(e) {
-        var titulo = e.target.context.dataset.title;
-        return titulo;
-    }
     </script>

@@ -930,9 +930,6 @@ h3 b, h4 b, h5 b, h6 b, label b {
     width: 100%;
 }
 
-    .navPrincipal .k-drawer {
-    }
-
 .mainContainer {
     width: 100%
 }
@@ -1605,4 +1602,66 @@ input[type="radio"].toggle {
 
 .hidden-column {
     display: none;
+}
+
+.navbar-nav{
+    gap: 4px;
+    line-height: 1;
+}
+
+.iconMenu {
+    background-color: #fff;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    height: 50px;
+    width: 50px;
+    display:none;
+}
+
+    .iconMenu:focus {
+        outline: 0;
+    }
+
+    .iconMenu .line {
+        background-color: #5290f9;
+        height: 4px;
+        width: 80%;
+        position: absolute;
+        top: 35%;
+        left: 10%;
+    }
+
+    .iconMenu .line2 {
+        top: auto;
+        bottom: 35%;
+    }
+
+#nav.active .iconMenu .line1 {
+    transform: rotate(-765deg) translateY(6px) translateX(-2px);
+    left: auto;
+    margin-left: 1px;
+}
+
+#nav.active .iconMenu .line2 {
+    transform: rotate(765deg) translateY(-6px) translateX(0px);
+    left: auto;
+    margin-left: 1px;
+}
+
+
+
+@media(max-width: 768px){
+    .iconMenu {
+        display: flex !important;
+    }
+
+    #nav #nav-tab, #nav #nav-tabContent {
+        display: none !important;
+    }
+
+    #nav.active #nav-tab, #nav.active #nav-tabContent {
+        display: flex !important;
+    }
 }

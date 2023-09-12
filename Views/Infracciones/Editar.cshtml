@@ -183,7 +183,9 @@
                                 <div class="form-group col-md-4">
                                     <div class="checkbox">
                                         <label>Infracción de cortesía: </label>&nbsp;&nbsp;
+                                        @Html.HiddenFor(m => m.cortesiaInt, new { id = "idCortesia" })
                                         @(Html.Kendo().SwitchFor(m => m.infraccionCortesia)
+                                          .HtmlAttributes(new { style = "transform: scale(1.2);",  id = "cortesiaSwitch" })
                                             .Messages(c => c.Checked("SI").Unchecked("NO"))
                                             )
                                     </div>
@@ -663,7 +665,8 @@
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         var idVehiculo = $("#idVehiculo").val();
         var idPersona = $("#idPersona").val();
-
+         var cortesia = $("#cortesiaSwitch").prop("checked");
+        $("#idCortesia").val(cortesia ? 1 : 0);
         if (!idVehiculo) {
             sitteg_info('Debe seleccionar un vehículo');
             return;
@@ -676,6 +679,7 @@
 
         if (validator.validate()) {
             var formData = $("#frmEditarInfraccion").serialize();
+
             //var formData = new FormData();
             //formData.delete('idDelegacion');
             //alert(json);
@@ -708,7 +712,7 @@
             data: { idInfraccion: idInfraccion },
             success: function (response) {
                 if (response.success) {
-                    sitteg_success("Informacion actualizada correctamente.");
+                    sitteg_success("Infraccion actualizada en secretaria de finanzas.");
                 } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                     sitteg_info("El registro fue actualizado en SITTEG.");
                 } else {

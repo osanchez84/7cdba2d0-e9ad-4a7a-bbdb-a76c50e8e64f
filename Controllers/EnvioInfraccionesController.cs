@@ -119,11 +119,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             crearMultasRequestModel.XSEXM = "X";
                             crearMultasRequestModel.LZONE = "";
                             crearMultasRequestModel.L_OFN_IOFICINA = "";
-                            crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString();
+                            crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString("F2");
                             crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
                             crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                             crearMultasRequestModel.INF_PROP = "";
-                            //crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion.nombreCompleto;
+                            crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion.nombreCompleto;
                             crearMultasRequestModel.DOM_INFRACTOR = "";
                             crearMultasRequestModel.NUM_PLACA = infraccionBusqueda.placasVehiculo;
                             crearMultasRequestModel.DOC_GARANTIA = "4";

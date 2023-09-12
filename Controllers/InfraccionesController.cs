@@ -792,7 +792,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.XSEXM = "";
                 crearMultasRequestModel.LZONE = "";
                 crearMultasRequestModel.L_OFN_IOFICINA = "";
-                crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString();
+                crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString("F2");
                 crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
                 crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
                 crearMultasRequestModel.INF_PROP = "";

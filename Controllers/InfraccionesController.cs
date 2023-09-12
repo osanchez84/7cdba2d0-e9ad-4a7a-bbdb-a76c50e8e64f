@@ -711,9 +711,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_UpdateCortesiaInfraccion(InfraccionesModel model)
         {
-            var result = new SelectList(_estatusInfraccionService.GetEstatusInfracciones(), "idEstatusInfraccion", "estatusInfraccion");
-            var Cortesia = result.Where(x => x.Text.ToUpper() == "Cortesia".ToUpper()).FirstOrDefault();
-            model.idEstatusInfraccion = Convert.ToInt32(Cortesia.Value);
+          
             var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
             if (modelInf == 1)
             {

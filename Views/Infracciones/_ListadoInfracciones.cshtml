@@ -57,7 +57,7 @@
 
                 columns.Bound(p => p.idInfraccion)
             .ClientTemplate(
-            "# if (idEstatusInfraccion == 5) { #" +
+            "# if (infraccionCortesia == 1) { #" +
             "<button disabled onclick=\"ShowCortesia('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorWarning'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>" +
             "# } else { #" +
             "<button onclick=\"ShowCortesia('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>" +

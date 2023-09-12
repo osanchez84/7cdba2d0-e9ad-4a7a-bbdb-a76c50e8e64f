@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -13,8 +14,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdDelegacion { get; set; }
         public string Oficial { get; set; }
         public string Municipio { get; set; }
-
-        public DateTime? FechaInfraccion { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime FechaInfraccion { get; set; }
         public string Carretera { get; set; }
         public string Tramo { get; set; }
         public string KmCarretera { get; set; }

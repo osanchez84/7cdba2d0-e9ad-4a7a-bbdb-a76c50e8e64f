@@ -306,29 +306,40 @@
 
     function mostrarModal(jsonData) {
         const modal = document.getElementById('modalLicencias');
+        const mostrarFecha = (fechaCompleta) => {
+            if (fechaCompleta) {
+                const fecha = new Date(fechaCompleta);
+                if (!isNaN(fecha.getTime())) {
+                    const dia = fecha.getDate().toString().padStart(2, '0');
+                    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); 
+                    const anio = fecha.getFullYear();
+                    return `${dia}-${mes}-${anio}`;
+                }
+            }
+            return ''; 
+        };
 
         const modalContent = `
-                    <div class="modal-header">
-                        <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                        <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                        <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
-                        <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                        <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
-                        <p><strong>Fecha de Expedición:</strong> ${jsonData.fecha_inicio_vigencia}</p>
-                        <p><strong>Fecha de Vigencia:</strong> ${jsonData.fecha_termino_vigencia}</p>
-                    </div>
-                  <div class="modal-footer">
-                    <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
-                    <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
-                  </div>
-                `;
-
+        <div class="modal-header">
+            <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
+            <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
+            <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+            <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
+            <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+            <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
+            <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
+            <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
+        </div>
+    `;
         modal.querySelector('.modal-content').innerHTML = modalContent;
         const cerrarModalBtn = document.getElementById('cerrarModalBtn');
         cerrarModalBtn.addEventListener('click', () => {
@@ -365,7 +376,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/Personas/guardaDesdeServicio', // Reemplaza con la URL correcta
+                url: '/Personas/guardaDesdeServicio', 
                 data: jsonData,
                 success: function (response) {
                     $('#modalLicencias').modal('hide');

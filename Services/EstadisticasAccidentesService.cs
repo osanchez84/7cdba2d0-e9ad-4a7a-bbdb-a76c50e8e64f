@@ -205,53 +205,36 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(@" SELECT 
-                                                                acc.idAccidente, 
-                                                                acc.idMunicipio, 
-                                                                mun.municipio,
-                                                                acc.idOficinaDelegacion,
-                                                                acc.idElabora,
-                                                                acc.idCarretera, 
-                                                                acc.idTramo, 
-                                                                acc.idClasificacionAccidente,
-                                                                MAX(cond.idTipoLicencia) AS idTipoLicencia,
-                                                                acc.idFactorAccidente,
-                                                                acc.idFactorOpcionAccidente,
-                                                                acc.estatus,
-                                                                acc.numeroReporte,
-                                                                acc.fecha,
-                                                                acc.hora,
-                                                                veh.idVehiculo,
-                                                                veh.idTipoVehiculo,
-                                                                veh.idCatTipoServicio,
-	                                                            MAX(accau.idAccidenteCausa) AS idAccidenteCausa
-                                                            FROM accidentes AS acc
-                                                            LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
-                                                            LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera 
-                                                            LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo 
-                                                            LEFT JOIN conductoresVehiculosAccidente AS cva ON acc.idAccidente = cva.idAccidente  
-                                                            LEFT JOIN personas AS cond ON cond.idPersona = cva.idPersona
-                                                            LEFT JOIN vehiculos AS veh ON cva.idVehiculo = veh.idVehiculo
-                                                            LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
-
-                                                            WHERE acc.estatus = 1
-                                                            GROUP BY 
-                                                                acc.idAccidente, 
-                                                                acc.idMunicipio, 
-                                                                mun.municipio, 
-                                                                acc.idOficinaDelegacion,
-                                                                acc.idElabora,
-                                                                acc.idCarretera, 
-                                                                acc.idTramo, 
-                                                                acc.idClasificacionAccidente,
-                                                                acc.idFactorAccidente,
-                                                                acc.idFactorOpcionAccidente,
-                                                                acc.estatus,
-                                                                acc.numeroReporte,
-                                                                acc.fecha,
-                                                                acc.hora,
-                                                                veh.idVehiculo,
-                                                                veh.idCatTipoServicio,
-                                                                veh.idTipoVehiculo", connection);
+    acc.idAccidente, 
+    MAX(acc.idMunicipio) AS idMunicipio,
+    MAX(mun.municipio) AS municipio,
+    MAX(acc.idOficinaDelegacion) AS idOficinaDelegacion,
+    MAX(acc.idElabora) AS idElabora,
+    MAX(acc.idCarretera) AS idCarretera, 
+    MAX(acc.idTramo) AS idTramo, 
+    MAX(acc.idClasificacionAccidente) AS idClasificacionAccidente,
+    MAX(cond.idTipoLicencia) AS idTipoLicencia,
+    MAX(acc.idFactorAccidente) AS idFactorAccidente,
+    MAX(acc.idFactorOpcionAccidente) AS idFactorOpcionAccidente,
+    MAX(acc.estatus) AS estatus,
+    MAX(acc.numeroReporte) AS numeroReporte,
+    MAX(acc.fecha) AS fecha,
+    MAX(acc.hora) AS hora,
+    MAX(veh.idVehiculo) AS idVehiculo,
+    MAX(veh.idCatTipoServicio) AS idCatTipoServicio,
+    MAX(veh.idTipoVehiculo) AS idTipoVehiculo,
+    MAX(accau.idAccidenteCausa) AS idAccidenteCausa
+FROM accidentes AS acc
+LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
+LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera 
+LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo 
+LEFT JOIN conductoresVehiculosAccidente AS cva ON acc.idAccidente = cva.idAccidente  
+LEFT JOIN personas AS cond ON cond.idPersona = cva.idPersona
+LEFT JOIN vehiculos AS veh ON cva.idVehiculo = veh.idVehiculo
+LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
+WHERE acc.estatus = 1
+GROUP BY acc.idAccidente;
+", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

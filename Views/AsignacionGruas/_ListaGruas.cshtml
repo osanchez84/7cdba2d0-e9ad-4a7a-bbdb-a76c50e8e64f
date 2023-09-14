@@ -42,7 +42,7 @@
                 columns.Bound(c => c.idAsignacion).Hidden();
                 columns.Bound(c => c.fullGrua).Title("Grúa").Width(100);
                 columns.Bound(c => c.servicios).Title("Servicios").Width(100);
-                columns.Bound(c => c.tiempoServicio).Title("Tiempode servicio").Width(100);
+                columns.Bound(c => c.tiempoServicio).Title("Tiempo de servicio").Width(100);
                 columns.Bound(p => p.idAsignacion).ClientTemplate(
             "<button onclick=\"editarGrua('#= idAsignacion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
             ).Title("").Sortable(false).Width(90);

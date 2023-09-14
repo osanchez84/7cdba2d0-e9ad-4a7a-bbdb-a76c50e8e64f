@@ -54,7 +54,7 @@
         <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="controlForm my-3">
-                    <label>Fecha<b>(obligatorio)</b>:</label>
+                    <label>Fecha <b>(obligatorio)</b>:</label>
                     @(Html.Kendo().DateTimePickerFor(t=>t.fechaSolicitud)
                         .Value(DateTime.Now)
                             .HtmlAttributes(new { style = "width: 100%", title = "datepicker", required = "required" })
@@ -109,7 +109,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                 <div class="controlForm my-3">
-                    <label>Oficial / Inspector <b>(obligatorio)</b>:</label>
+                    <label>Oficial/Inspector <b>(obligatorio)</b>:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(m => m.idOficial)
                             .DataTextField("Text")
@@ -154,7 +154,7 @@
              </div>                   
             <div class="col-6">
                 <div class="controlForm my-3">
-                    <label>Tipo de usuario <b>(obligatorio)</b></label>
+                    <label>Tipo de usuario <b>(obligatorio):</b></label>
                         <span>
                             @(Html.Kendo().DropDownListFor(m => m.idTipoUsuario)
                                 .DataTextField("Text")

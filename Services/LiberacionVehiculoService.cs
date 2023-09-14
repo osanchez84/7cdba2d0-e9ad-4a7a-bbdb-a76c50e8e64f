@@ -103,33 +103,33 @@ namespace GuanajuatoAdminUsuarios.Services
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {
-                    string condicionFecha = model.FechaIngreso == DateTime.MinValue ? @"d.FechaIngreso >= @FechaIngreso " : @"d.FechaIngreso = @FechaIngreso ";
+                   // string condicionFecha = model.FechaIngreso == DateTime.MinValue ? @"d.FechaIngreso >= @FechaIngreso " : @"d.FechaIngreso = @FechaIngreso ";
 
                     connection.Open();
-                    string SqlTransact = string.Format(@"select top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
+                    string SqlTransact = @"select top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
                                 d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
                                 d.ActualizadoPor, d.estatus, sol.solicitanteNombre,
-                                sol.solicitanteAp,sol.solicitanteAm,pen.pension	,del.delegacion,col.color,
-                                cTra.tramo, m.marcaVehiculo	,subm.nombreSubmarca
+                                sol.solicitanteAp,sol.solicitanteAm,pen.pension,del.delegacion,col.color,
+                                cTra.tramo, m.marcaVehiculo,subm.nombreSubmarca
                                 from depositos d 
-                                inner join solicitudes sol on d.idSolicitud = sol.idSolicitud
-                                inner join pensiones pen on d.idPension	= pen.idPension
-                                inner join catDelegaciones del on d.idDelegacion= del.idDelegacion
-                                inner join catColores col on d.idColor = col.idColor
-                                inner join catTramos cTra  on d.Idtramo=cTra.idTramo
-                                inner join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
-                                inner join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
-                                where d.liberado=0 and d.estatus=1	and
-		                        (d.IdDeposito=@IdDeposito  OR d.IdMarca=@IdMarca 
-		                        OR d.Serie LIKE '%' + @Serie + '%' OR  {0} 
-		                        OR d.Folio LIKE '%' + @Folio + '%')", condicionFecha);
+                                left join solicitudes sol on d.idSolicitud = sol.idSolicitud
+                                left join pensiones pen on d.idPension = pen.idPension
+                                left join catDelegaciones del on d.idDelegacion = del.idDelegacion
+                                left join catColores col on d.idColor = col.idColor
+                                left join catTramos cTra  on d.Idtramo = cTra.idTramo
+                                left join catMarcasVehiculos m on d.idMarca = m.idMarcaVehiculo
+                                left join catSubmarcasVehiculos  subm on d.idSubmarca = subm.idSubmarca
+                                where d.liberado = 0 and d.estatus = 1
+                                and (d.IdDeposito = @IdDeposito OR d.IdMarca = @IdMarca 
+                                   OR CAST(d.FechaIngreso AS DATE) = @FechaIngreso OR d.Serie LIKE '%' + @Serie + '%' OR d.Folio LIKE '%' + @Folio + '%')";
+
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)model.IdDeposito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdMarca", SqlDbType.Int)).Value = (object)model.IdMarcaVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)model.Serie ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = model.FechaIngreso == DateTime.MinValue ? new DateTime(1800,01,01) : (object)model.FechaIngreso;
+                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.Date)).Value = model.FechaIngreso == DateTime.MinValue ? new DateTime(1800, 01, 01).Date : (object)model.FechaIngreso.Date;
                     command.Parameters.Add(new SqlParameter("@Folio", SqlDbType.NVarChar)).Value = (object)model.Folio ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
@@ -138,38 +138,34 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             LiberacionVehiculoModel deposito = new LiberacionVehiculoModel();
-                            deposito.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
-                            deposito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"].ToString());
-                            deposito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"].ToString());
-                            deposito.IdMarca = Convert.ToInt32(reader["IdMarca"].ToString());
-                            deposito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"].ToString());
-                            deposito.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            deposito.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-                            deposito.IdColor = Convert.ToInt32(reader["IdColor"].ToString());
-                            deposito.Serie = reader["Serie"].ToString();
-                            deposito.Placa = reader["Placa"].ToString();
-                            deposito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"].ToString());
-                            deposito.Folio = reader["Folio"].ToString();
-                            deposito.Km = reader["Km"].ToString();
-                            deposito.Liberado = Convert.ToInt32(reader["Liberado"].ToString());
-                            //deposito.AcreditacionPropiedad = reader["AcreditacionPropiedad"].ToString();
-                            //deposito.AcreditacionPersonalidad = reader["AcreditacionPersonalidad"].ToString();
-                            //deposito.ReciboPago = reader["ReciboPago"].ToString();
-                            //deposito.Observaciones = reader["Observaciones"].ToString();
-                            deposito.Autoriza = reader["Autoriza"].ToString();
-                            deposito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
-                            deposito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
-                            deposito.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
+                            deposito.IdDeposito = reader["IdDeposito"] is DBNull ? 0 : Convert.ToInt32(reader["IdDeposito"]);
+                            deposito.IdSolicitud = reader["IdSolicitud"] is DBNull ? 0 : Convert.ToInt32(reader["IdSolicitud"]);
+                            deposito.IdDelegacion = reader["IdDelegacion"] is DBNull ? 0 : Convert.ToInt32(reader["IdDelegacion"]);
+                            deposito.IdMarca = reader["IdMarca"] is DBNull ? 0 : Convert.ToInt32(reader["IdMarca"]);
+                            deposito.IdSubmarca = reader["IdSubmarca"] is DBNull ? 0 : Convert.ToInt32(reader["IdSubmarca"]);
+                            deposito.IdPension = reader["IdPension"] is DBNull ? 0 : Convert.ToInt32(reader["IdPension"]);
+                            deposito.IdTramo = reader["IdTramo"] is DBNull ? 0 : Convert.ToInt32(reader["IdTramo"]);
+                            deposito.IdColor = reader["IdColor"] is DBNull ? 0 : Convert.ToInt32(reader["IdColor"]);
+                            deposito.Serie = reader["Serie"] is DBNull ? string.Empty : reader["Serie"].ToString();
+                            deposito.Placa = reader["Placa"] is DBNull ? string.Empty : reader["Placa"].ToString();
+                            deposito.FechaIngreso = reader["FechaIngreso"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaIngreso"]);
+                            deposito.Folio = reader["Folio"] is DBNull ? string.Empty : reader["Folio"].ToString();
+                            deposito.Km = reader["Km"] is DBNull ? string.Empty : reader["Km"].ToString();
+                            deposito.Liberado = reader["Liberado"] is DBNull ? 0 : Convert.ToInt32(reader["Liberado"]);
+                            deposito.Autoriza = reader["Autoriza"] is DBNull ? string.Empty : reader["Autoriza"].ToString();
+                            deposito.FechaActualizacion = reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaActualizacion"]);
+                            deposito.ActualizadoPor = reader["ActualizadoPor"] is DBNull ? 0 : Convert.ToInt32(reader["ActualizadoPor"]);
+                            deposito.Estatus = reader["Estatus"] is DBNull ? 0 : Convert.ToInt32(reader["Estatus"]);
+                            deposito.marcaVehiculo = reader["marcaVehiculo"] is DBNull ? string.Empty : reader["marcaVehiculo"].ToString();
+                            deposito.nombreSubmarca = reader["nombreSubmarca"] is DBNull ? string.Empty : reader["nombreSubmarca"].ToString();
+                            deposito.delegacion = reader["delegacion"] is DBNull ? string.Empty : reader["delegacion"].ToString();
+                            deposito.solicitanteNombre = reader["solicitanteNombre"] is DBNull ? string.Empty : reader["solicitanteNombre"].ToString();
+                            deposito.solicitanteAp = reader["solicitanteAp"] is DBNull ? string.Empty : reader["solicitanteAp"].ToString();
+                            deposito.solicitanteAm = reader["solicitanteAm"] is DBNull ? string.Empty : reader["solicitanteAm"].ToString();
+                            deposito.Color = reader["Color"] is DBNull ? string.Empty : reader["Color"].ToString();
+                            deposito.pension = reader["pension"] is DBNull ? string.Empty : reader["pension"].ToString();
+                            deposito.tramo = reader["tramo"] is DBNull ? string.Empty : reader["tramo"].ToString();
 
-                            deposito.marcaVehiculo = reader["marcaVehiculo"].ToString();
-                            deposito.nombreSubmarca = reader["nombreSubmarca"].ToString();
-                            deposito.delegacion = reader["delegacion"].ToString();
-                            deposito.solicitanteNombre = reader["solicitanteNombre"].ToString();
-                            deposito.solicitanteAp = reader["solicitanteAp"].ToString();
-                            deposito.solicitanteAm = reader["solicitanteAm"].ToString();
-                            deposito.Color = reader["Color"].ToString();
-                            deposito.pension = reader["pension"].ToString();
-                            deposito.tramo = reader["tramo"].ToString();
                             depositosList.Add(deposito);
                         }
 

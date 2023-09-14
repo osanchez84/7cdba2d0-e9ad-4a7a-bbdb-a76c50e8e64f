@@ -44,8 +44,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             HttpContext.Session.SetInt32("iSo", iSo);
             HttpContext.Session.SetInt32("iPg", iPg);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo);
+            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo, idOficina);
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
 
             return View("capturaGruas", solicitud);

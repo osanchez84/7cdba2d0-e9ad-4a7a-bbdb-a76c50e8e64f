@@ -255,7 +255,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return Vehiculo;
         }
 
-        public AsignacionGruaModel BuscarSolicitudPord(int iSo)
+        public AsignacionGruaModel BuscarSolicitudPord(int iSo, int idOficina)
         {
             AsignacionGruaModel solicitud = new AsignacionGruaModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -281,7 +281,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     // Continuar con la consulta y la inserción
-                    SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.folio,sol.idPropietarioGrua,sol.idPension,sol.idTramoUbicacion, " +
+                    SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.fechaSolicitud,sol.folio,sol.idPropietarioGrua,sol.idPension,sol.idTramoUbicacion, " +
                                                         "sol.vehiculoKm " +
                                                         "FROM solicitudes AS sol " +
                                                         "WHERE idSolicitud = @idSolicitud", connection);
@@ -298,6 +298,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.idPension = reader["idPension"] != DBNull.Value ? Convert.ToInt32(reader["idPension"]) : 0;
                             solicitud.idTramoUbicacion = reader["idTramoUbicacion"] != DBNull.Value ? Convert.ToInt32(reader["idTramoUbicacion"]) : 0;
                             solicitud.kilometro = reader["vehiculoKm"].ToString();
+                            solicitud.fechaSolicitud = reader["fechaSolicitud"] != DBNull.Value ? Convert.ToDateTime(reader["fechaSolicitud"]) : DateTime.MinValue;
+
                         }
                     }
 
@@ -306,10 +308,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         insertConnection.Open();
                         SqlCommand insertCommand = new SqlCommand("INSERT INTO depositos " +
-                                                                "(idSolicitud,folio,idTramo,idPension,km,liberado,IdConcesionario,estatus) " +
-                                                                "VALUES (@idSolicitud,@folio,@idTramo,@idPension,@km,@liberado,@idPropietarioGruas,@estatus);" +
+                                                                "(idSolicitud,folio,idTramo,idPension,km,liberado,IdConcesionario,idDelegacion,FechaIngreso,estatus) " +
+                                                                "VALUES (@idSolicitud,@folio,@idTramo,@idPension,@km,@liberado,@idPropietarioGruas,@idDelegacion,@fechaSolicitud,@estatus);" +
                                                                 "SELECT SCOPE_IDENTITY()", insertConnection);
                         insertCommand.Parameters.Add(new SqlParameter("@idSolicitud", SqlDbType.Int)).Value = solicitud.idSolicitud;
+                        insertCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
                         insertCommand.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar, 50)).Value = solicitud.FolioSolicitud;
                         insertCommand.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = solicitud.idTramoUbicacion;
                         insertCommand.Parameters.Add(new SqlParameter("@idPropietarioGruas", SqlDbType.Int)).Value = solicitud.idPropietarioGrua;
@@ -317,6 +320,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         insertCommand.Parameters.Add(new SqlParameter("@km", SqlDbType.NVarChar)).Value = solicitud.kilometro;
                         insertCommand.Parameters.Add(new SqlParameter("@liberado", SqlDbType.Int)).Value = 0;
                         insertCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                        insertCommand.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = solicitud.fechaSolicitud;
+
                         idDeposito = Convert.ToInt32(insertCommand.ExecuteScalar());
                         solicitud.IdDeposito = idDeposito;
 

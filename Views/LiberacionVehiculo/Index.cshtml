@@ -16,7 +16,7 @@
                     }               
             });
         }
-
+      
     </script>
 </head>
 <div class="mainContainer bg-light">
@@ -97,8 +97,8 @@
                 <div class="controlForm my-3">
                     <label>Fecha ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
-                        .Value(DateTime.Now)
-                        .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" }) 
+                        .Format("dd-MM-yyyy")
+                        .HtmlAttributes(new { style = "width: 100%"})
                         ) 
 
                 </div>
@@ -140,6 +140,11 @@
     </section>
 </div>
 
-
+<script>
+    $(document).ready(function () {
+        var datePicker = $("#FechaIngreso").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+</script>
 
 

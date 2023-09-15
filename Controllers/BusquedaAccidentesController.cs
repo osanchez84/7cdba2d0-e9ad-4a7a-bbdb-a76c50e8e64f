@@ -23,13 +23,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         private readonly IOficiales _oficialesService;
         private readonly ICapturaAccidentesService _capturaAccidentesService;
-        private readonly IPdfGenerator<BusquedaAccidentesModel> _pdfService;
+        private readonly IPdfGenerator<BusquedaAccidentesPDFModel> _pdfService;
         private readonly ICatDictionary _catDictionary;
 
         private int idOficina = 0;
 
         public BusquedaAccidentesController(IBusquedaAccidentesService busquedaAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
-            ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService, IPdfGenerator<BusquedaAccidentesModel> pdfService,
+            ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService, IPdfGenerator<BusquedaAccidentesPDFModel> pdfService,
             ICapturaAccidentesService capturaAccidentesService,ICatDictionary catDictionary)
         {
             _busquedaAccidentesService = busquedaAccidentesService;
@@ -118,7 +118,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<BusquedaAccidentesModel>(data);
+            var model = JsonConvert.DeserializeObject<BusquedaAccidentesPDFModel>(data);
 
             model.FechaInicio = model.FechaInicio;
             model.FechaFin = model.FechaFin;

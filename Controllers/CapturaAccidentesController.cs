@@ -29,6 +29,7 @@ using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http.Extensions;
+using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -889,7 +890,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 .Select(o => new
                 {
                     IdOficial = o.IdOficial,
-                    NombreCompleto = $"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}"
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
                 });
             oficiales = oficiales.Skip(1);
             var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");

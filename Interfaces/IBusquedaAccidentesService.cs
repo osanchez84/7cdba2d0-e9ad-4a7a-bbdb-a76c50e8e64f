@@ -6,7 +6,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IBusquedaAccidentesService
     {
         List<BusquedaAccidentesModel> BusquedaAccidentes(BusquedaAccidentesModel model, int idOficina);
-        public BusquedaAccidentesModel ObtenerAccidentePorId(int idAccidente);
+        List<BusquedaAccidentesPDFModel> BusquedaAccidentes(BusquedaAccidentesPDFModel model, int idOficina);
+        public BusquedaAccidentesPDFModel ObtenerAccidentePorId(int idAccidente);
         List<BusquedaAccidentesModel> ObtenerAccidentes(BusquedaAccidentesModel model);
 
 

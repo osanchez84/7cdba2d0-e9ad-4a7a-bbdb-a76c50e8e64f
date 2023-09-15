@@ -62,7 +62,7 @@ namespace GuanajuatoAdminUsuarios
                         // Specify the name of the auth cookie.
                         // ASP.NET picks a dumb name by default.
                         options.Cookie.Name = "gto_admin_auth_cookie";
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                         options.SlidingExpiration = true;
                     });
 

@@ -1,8 +1,5 @@
 ﻿@model TransitoTransporteBusquedaModel
-@{
-    DateTime endDate = DateTime.Now;
-    endDate = endDate.AddDays(1);
-}
+
 
 <head>
     <script>
@@ -276,8 +273,7 @@
                 <div class="controlForm my-3">
                     <label>Fecha Ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
-                        .Value(DateTime.Now)
-                        .Events(e => e.Change("startChange"))
+                        .Format("dd-MM-yyyy")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
                         )
 
@@ -296,8 +292,7 @@
                     <label>Fecha Hasta:</label>
 
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngresoFin)
-                        .Value(endDate)
-                        .Events(e => e.Change("endChange"))
+                        .Format("dd-MM-yyyy")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
                         )
 
@@ -339,3 +334,14 @@
         </div>
     </section>
 </div>
+<script>
+    $(document).ready(function () {
+        var datePicker = $("#end").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+
+    $(document).ready(function () {
+        var datePicker = $("#start").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+</script>

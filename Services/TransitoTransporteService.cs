@@ -53,27 +53,64 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                        @"select d.iddeposito,d.idsolicitud,d.idDelegacion,d.idmarca,d.idsubmarca,d.idpension,d.idtramo,
-                                        d.idcolor,d.serie,d.placa,d.fechaingreso,d.folio,d.km,d.liberado,d.autoriza,d.fechaactualizacion,
-                                        del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo,subm.nombresubmarca,sol.solicitantenombre,
-                                        sol.solicitanteap,sol.solicitanteam, col.color,pen.pension,ctra.tramo,                       
-                                        sol.fechasolicitud, sol.folio as FolioSolicitud, inf.idinfraccion,inf.folioinfraccion,
-                                        veh.idvehiculo,veh.propietario,veh.numeroeconomico,veh.modelo,
-                                        con.IdConcesionario, con.concesionario,d.FechaLiberacion
-                                        ,d.IdDependenciaGenera,d.IdDependenciaTransito,d.IdDependenciaNoTransito
-                                        ,dep.idDependencia,dep.nombreDependencia
-                                        from depositos d inner join catDelegaciones del on d.idDelegacion= del.idDelegacion
-                                        inner join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
-                                        inner join catColores col on d.idcolor = col.idcolor
-                                        inner join pensiones pen on d.idpension	= pen.idpension
-                                        inner join catTramos ctra  on d.idtramo=ctra.idtramo
-                                        inner join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
-                                        inner join solicitudes sol on d.idsolicitud = sol.idsolicitud
-                                        inner join infracciones inf on sol.idinfraccion = inf.idinfraccion
-                                        inner join vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
-                                        inner join concesionarios con on con.IdConcesionario =d.IdConcesionario
-                                        left join dependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
-                                        where  sol.estatus !=0 and d.estatus!=0";
+                                        @"SELECT 
+                                            d.iddeposito,
+                                            MAX(d.idsolicitud) as idsolicitud,
+                                            MAX(d.idDelegacion) as idDelegacion,
+                                            MAX(d.idmarca) as idmarca,
+                                            MAX(d.idsubmarca) as idsubmarca,
+                                            MAX(d.idpension) as idpension,
+                                            MAX(d.idtramo) as idtramo,
+                                            MAX(d.idcolor) as idcolor,
+                                            MAX(d.serie) as serie,
+                                            MAX(d.placa) as placa,
+                                            MAX(d.fechaingreso) as fechaingreso,
+                                            MAX(d.folio) as folio,
+                                            MAX(d.km) as km,
+                                            MAX(d.liberado) as liberado,
+                                            MAX(d.autoriza) as autoriza,
+                                            MAX(d.fechaactualizacion) as fechaactualizacion,
+                                            MAX(del.delegacion) as delegacion,
+                                            MAX(d.actualizadopor) as actualizadopor,
+                                            MAX(d.estatus) as estatus,
+                                            MAX(m.marcavehiculo) as marcavehiculo,
+                                            MAX(subm.nombresubmarca) as nombresubmarca,
+                                            MAX(sol.solicitantenombre) as solicitantenombre,
+                                            MAX(sol.solicitanteap) as solicitanteap,
+                                            MAX(sol.solicitanteam) as solicitanteam,
+                                            MAX(col.color) as color,
+                                            MAX(pen.pension) as pension,
+                                            MAX(ctra.tramo) as tramo,
+                                            MAX(sol.fechasolicitud) as fechasolicitud,
+                                            MAX(sol.folio) as FolioSolicitud,
+                                            MAX(inf.idinfraccion) as idinfraccion,
+                                            MAX(inf.folioinfraccion) as folioinfraccion,
+                                            MAX(veh.idvehiculo) as idvehiculo,
+                                            MAX(veh.propietario) as propietario,
+                                            MAX(veh.numeroeconomico) as numeroeconomico,
+                                            MAX(veh.modelo) as modelo,
+                                            MAX(con.IdConcesionario) as IdConcesionario,
+                                            MAX(con.concesionario) as concesionario,
+                                            MAX(d.FechaLiberacion) as FechaLiberacion,
+                                            MAX(d.IdDependenciaGenera) as IdDependenciaGenera,
+                                            MAX(d.IdDependenciaTransito) as IdDependenciaTransito,
+                                            MAX(d.IdDependenciaNoTransito) as IdDependenciaNoTransito,
+                                            MAX(dep.idDependencia) as idDependencia,
+                                            MAX(dep.nombreDependencia) as nombreDependencia
+
+                                        from depositos d left join catDelegaciones del on d.idDelegacion= del.idDelegacion
+                                        left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
+                                        left join catColores col on d.idcolor = col.idcolor
+                                        left join pensiones pen on d.idpension	= pen.idpension
+                                        left join catTramos ctra  on d.idtramo=ctra.idtramo
+                                        left join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
+                                        left join solicitudes sol on d.idsolicitud = sol.idsolicitud
+                                        left join infracciones inf on sol.idinfraccion = inf.idinfraccion
+                                        left join vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
+                                        left join concesionarios con on con.IdConcesionario =d.IdConcesionario
+                                        left join catDependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
+                                        where  sol.estatus !=0 and d.estatus!=0
+                                        GROUP BY d.iddeposito";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
@@ -82,25 +119,25 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             TransitoTransporteModel transito = new TransitoTransporteModel();
-                            transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
-                            transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"].ToString());
-                            transito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"].ToString());
-                            transito.IdMarca = Convert.ToInt32(reader["IdMarca"].ToString());
-                            transito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"].ToString());
-                            transito.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            transito.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-                            transito.IdColor = Convert.ToInt32(reader["IdColor"].ToString());
+                            transito.IdDeposito = Convert.IsDBNull(reader["IdDeposito"]) ? 0 : Convert.ToInt32(reader["IdDeposito"]);
+                            transito.IdSolicitud = Convert.IsDBNull(reader["IdSolicitud"]) ? 0 : Convert.ToInt32(reader["IdSolicitud"]);
+                            transito.IdDelegacion = Convert.IsDBNull(reader["IdDelegacion"]) ? 0 : Convert.ToInt32(reader["IdDelegacion"]);
+                            transito.IdMarca = Convert.IsDBNull(reader["IdMarca"]) ? 0 : Convert.ToInt32(reader["IdMarca"]);
+                            transito.IdSubmarca = Convert.IsDBNull(reader["IdSubmarca"]) ? 0 : Convert.ToInt32(reader["IdSubmarca"]);
+                            transito.IdPension = Convert.IsDBNull(reader["IdPension"]) ? 0 : Convert.ToInt32(reader["IdPension"]);
+                            transito.IdTramo = Convert.IsDBNull(reader["IdTramo"]) ? 0 : Convert.ToInt32(reader["IdTramo"]);
+                            transito.IdColor = Convert.IsDBNull(reader["IdColor"]) ? 0 : Convert.ToInt32(reader["IdColor"]);
                             transito.Serie = reader["Serie"].ToString();
                             transito.Placa = reader["Placa"].ToString();
-                            transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"].ToString());
-                            transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"].ToString());
+                            transito.FechaIngreso = Convert.IsDBNull(reader["FechaIngreso"]) ? DateTime.MinValue : Convert.ToDateTime(reader["FechaIngreso"]);
+                            transito.FechaLiberacion = Convert.IsDBNull(reader["FechaLiberacion"]) ? DateTime.MinValue : Convert.ToDateTime(reader["FechaLiberacion"]);
                             transito.Folio = reader["Folio"].ToString();
                             transito.Km = reader["Km"].ToString();
-                            transito.Liberado = Convert.ToInt32(reader["Liberado"].ToString());
+                            transito.Liberado = Convert.IsDBNull(reader["Liberado"]) ? 0 : Convert.ToInt32(reader["Liberado"]);
                             transito.Autoriza = reader["Autoriza"].ToString();
-                            transito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
-                            transito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
-                            transito.DepositoEstatus = Convert.ToInt32(reader["Estatus"].ToString());
+                            transito.FechaActualizacion = Convert.IsDBNull(reader["FechaActualizacion"]) ? DateTime.MinValue : Convert.ToDateTime(reader["FechaActualizacion"]);
+                            transito.ActualizadoPor = Convert.IsDBNull(reader["ActualizadoPor"]) ? 0 : Convert.ToInt32(reader["ActualizadoPor"]);
+                            transito.DepositoEstatus = Convert.IsDBNull(reader["Estatus"]) ? 0 : Convert.ToInt32(reader["Estatus"]);
                             transito.marcaVehiculo = reader["marcaVehiculo"].ToString();
                             transito.nombreSubmarca = reader["nombreSubmarca"].ToString();
                             transito.delegacion = reader["delegacion"].ToString();
@@ -113,23 +150,20 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.tramo = reader["tramo"].ToString();
 
                             //nuevos
-                            transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"].ToString());
-                            transito.IdDependencia = Convert.ToInt32(reader["IdDependencia"].ToString());
+                            transito.FechaSolicitud = Convert.IsDBNull(reader["FechaSolicitud"]) ? DateTime.MinValue : Convert.ToDateTime(reader["FechaSolicitud"]);
+                            transito.IdDependencia = Convert.IsDBNull(reader["IdDependencia"]) ? 0 : Convert.ToInt32(reader["IdDependencia"]);
                             transito.NombreDependencia = reader["NombreDependencia"].ToString();
-                            transito.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
+                            transito.IdInfraccion = Convert.IsDBNull(reader["IdInfraccion"]) ? 0 : Convert.ToInt32(reader["IdInfraccion"]);
                             transito.FolioInfraccion = reader["folioInfraccion"].ToString();
-                            transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"].ToString());
+                            transito.IdVehiculo = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
                             transito.propietario = reader["propietario"].ToString();
-                            transito.numeroEconomico = reader["propietario"].ToString();
+                            transito.numeroEconomico = reader["numeroEconomico"].ToString();
                             transito.FolioSolicitud = reader["FolioSolicitud"].ToString();
-                            transito.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"].ToString());
+                            transito.IdConcesionario = Convert.IsDBNull(reader["IdConcesionario"]) ? 0 : Convert.ToInt32(reader["IdConcesionario"]);
                             transito.Concesionario = reader["concesionario"].ToString();
-                            transito.IdDependenciaGenera = reader["IdDependenciaGenera"] as int? ?? default(int);
-                            //transito.IdDependenciaTransito = Convert.ToInt32(reader["IdDependenciaTransito"].ToString());
-                            transito.IdDependenciaTransito = reader["IdDependenciaTransito"] as int? ?? default(int);
-
-                            //transito.IdDependenciaNoTransito = Convert.ToInt32(reader["IdDependenciaNoTransito"].ToString());
-                            transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] as int? ?? default(int);
+                            transito.IdDependenciaGenera = Convert.IsDBNull(reader["IdDependenciaGenera"]) ? 0 : (int)reader["IdDependenciaGenera"];
+                            transito.IdDependenciaTransito = Convert.IsDBNull(reader["IdDependenciaTransito"]) ? 0 : (int)reader["IdDependenciaTransito"];
+                            transito.IdDependenciaNoTransito = Convert.IsDBNull(reader["IdDependenciaNoTransito"]) ? 0 : (int)reader["IdDependenciaNoTransito"];
                             //sqlreader[indexAge] as int? ?? default(int)
                             transitoList.Add(transito);
 
@@ -189,39 +223,41 @@ namespace GuanajuatoAdminUsuarios.Services
                     #endregion
 
                     const string SqlTransact =
-                        @"select d.iddeposito,d.idsolicitud,d.idDelegacion,d.idmarca,d.idsubmarca,d.idpension,d.idtramo,
-                            d.idcolor,d.serie,d.placa,d.fechaingreso,d.folio,d.km,d.liberado,d.autoriza,d.fechaactualizacion,
-                            del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo,subm.nombresubmarca,sol.solicitantenombre,
-                            sol.solicitanteap,sol.solicitanteam, col.color,pen.pension,ctra.tramo,                       
-                            sol.fechasolicitud, sol.folio as FolioSolicitud, inf.idinfraccion,inf.folioinfraccion,
-                            veh.idvehiculo,veh.propietario,veh.numeroeconomico,veh.modelo,
-                            con.IdConcesionario, con.concesionario,d.FechaLiberacion
-                            ,d.IdDependenciaGenera,d.IdDependenciaTransito,d.IdDependenciaNoTransito
-                            ,dep.idDependencia,dep.nombreDependencia
-                            from depositos d inner join catDelegaciones del on d.idDelegacion= del.idDelegacion
-                            inner join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
-                            inner join catColores col on d.idcolor = col.idcolor
-                            inner join pensiones pen on d.idpension	= pen.idpension
-                            inner join catTramos ctra  on d.idtramo=ctra.idtramo
-                            inner join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
-                            inner join solicitudes sol on d.idsolicitud = sol.idsolicitud
-                            inner join infracciones inf on sol.idinfraccion = inf.idinfraccion
-                            inner join	vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
-                            inner join concesionarios con on con.IdConcesionario =d.IdConcesionario
-                            left join dependencias dep on ((dep.idDependencia=d.IdDependenciaTransito) OR (dep.idDependencia=d.IdDependenciaNoTransito))
-                            where  sol.estatus !=0 and d.estatus!=0
-                            and
-                            (d.placa LIKE '%' + @Placa + '%'  OR sol.folio LIKE '%' + @FolioSolicitud + '%'  
-                            OR inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' OR veh.propietario LIKE '%' + @Propietario + '%'
-                            OR veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' OR del.idDelegacion=@IdDelegacion
-                            OR pen.idpension=@IdPension	OR d.IdDependenciaGenera=@IdDependenciaGenera OR d.IdDependenciaTransito=@IdDependenciaTransito 
-                            OR  d.IdDependenciaNoTransito=@IdDependenciaNoTransito 
-                            OR 1 = CASE WHEN  @Estatus=2  THEN CASE WHEN d.liberado=0  THEN 1 END
-                                            WHEN  @Estatus=3 THEN CASE WHEN  d.liberado=1 THEN 1 END
-                                        END
-                            OR  d.fechaIngreso between @FechaIngreso and  @FechaIngresoFin)";
+                                @"SELECT d.iddeposito, d.idsolicitud, d.idDelegacion, d.idmarca, d.idsubmarca, d.idpension, d.idtramo,
+                                         d.idcolor, d.serie, d.placa, d.fechaingreso, d.folio, d.km, d.liberado, d.autoriza, d.fechaactualizacion,
+                                         del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
+                                         sol.solicitanteap, sol.solicitanteam, col.color, pen.pension, ctra.tramo,                       
+                                         sol.fechasolicitud, sol.folio AS FolioSolicitud, inf.idinfraccion, inf.folioinfraccion,
+                                         veh.idvehiculo, veh.propietario, veh.numeroeconomico, veh.modelo,
+                                         con.IdConcesionario, con.concesionario, d.FechaLiberacion,
+                                         d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
+                                         dep.idDependencia, dep.nombreDependencia
+                                FROM depositos d
+                                LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
+                                LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
+                                LEFT JOIN catColores col ON d.idcolor = col.idcolor
+                                LEFT JOIN pensiones pen ON d.idpension = pen.idpension
+                                LEFT JOIN catTramos ctra ON d.idtramo = ctra.idtramo
+                                LEFT JOIN catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
+                                LEFT JOIN solicitudes sol ON d.idsolicitud = sol.idsolicitud
+                                LEFT JOIN infracciones inf ON sol.idinfraccion = inf.idinfraccion
+                                LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
+                                LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
+                                LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
+                                WHERE d.estatus != 0
+                                AND (d.placa LIKE '%' + @Placa + '%' OR sol.folio LIKE '%' + @FolioSolicitud + '%'  
+                                OR inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' OR veh.propietario LIKE '%' + @Propietario + '%'
+                                OR veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' OR del.idDelegacion = @IdDelegacion
+                                OR pen.idpension = @IdPension OR d.IdDependenciaGenera = @IdDependenciaGenera 
+                                OR d.IdDependenciaTransito = @IdDependenciaTransito OR d.IdDependenciaNoTransito = @IdDependenciaNoTransito 
+                                OR (d.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin)
+                                OR 1 = CASE 
+                                            WHEN @Estatus = 2 AND d.liberado = 0 THEN 1
+                                            WHEN @Estatus = 3 AND d.liberado = 1 THEN 1
+                                        END)";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+
                     command.Parameters.Add(new SqlParameter("@Placa", SqlDbType.NVarChar)).Value = (object)model.Placas ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = (object)model.FolioSolicitud ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.FolioInfraccion ?? DBNull.Value;
@@ -230,14 +266,12 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;
-
                     command.Parameters.Add(new SqlParameter("@IdDependenciaGenera", SqlDbType.Int)).Value = (object)model.IdDependenciaGenera ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Estatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (object)model.FechaIngreso ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
-
+                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (model.FechaIngreso == DateTime.MinValue) ? DBNull.Value : (object)model.FechaIngreso;
+                    command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (model.FechaIngresoFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaIngresoFin;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -245,25 +279,25 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             TransitoTransporteModel transito = new TransitoTransporteModel();
-                            transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
-                            transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"].ToString());
-                            transito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"].ToString());
-                            transito.IdMarca = Convert.ToInt32(reader["IdMarca"].ToString());
-                            transito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"].ToString());
-                            transito.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
-                            transito.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-                            transito.IdColor = Convert.ToInt32(reader["IdColor"].ToString());
+                            transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"] is DBNull ? 0 : reader["IdDeposito"]);
+                            transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"] is DBNull ? 0 : reader["IdSolicitud"]);
+                            transito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"] is DBNull ? 0 : reader["IdDelegacion"]);
+                            transito.IdMarca = Convert.ToInt32(reader["IdMarca"] is DBNull ? 0 : reader["IdMarca"]);
+                            transito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"] is DBNull ? 0 : reader["IdSubmarca"]);
+                            transito.IdPension = Convert.ToInt32(reader["IdPension"] is DBNull ? 0 : reader["IdPension"]);
+                            transito.IdTramo = Convert.ToInt32(reader["IdTramo"] is DBNull ? 0 : reader["IdTramo"]);
+                            transito.IdColor = Convert.ToInt32(reader["IdColor"] is DBNull ? 0 : reader["IdColor"]);
                             transito.Serie = reader["Serie"].ToString();
                             transito.Placa = reader["Placa"].ToString();
-                            transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"].ToString());
-                            transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"].ToString());
+                            transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"] is DBNull ? DateTime.MinValue : reader["FechaIngreso"]);
+                            transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"] is DBNull ? DateTime.MinValue : reader["FechaLiberacion"]);
                             transito.Folio = reader["Folio"].ToString();
                             transito.Km = reader["Km"].ToString();
-                            transito.Liberado = Convert.ToInt32(reader["Liberado"].ToString());
+                            transito.Liberado = Convert.ToInt32(reader["Liberado"] is DBNull ? 0 : reader["Liberado"]);
                             transito.Autoriza = reader["Autoriza"].ToString();
-                            transito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
-                            transito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
-                            transito.DepositoEstatus = Convert.ToInt32(reader["Estatus"].ToString());
+                            transito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
+                            transito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+                            transito.DepositoEstatus = Convert.ToInt32(reader["Estatus"] is DBNull ? 0 : reader["Estatus"]);
                             transito.marcaVehiculo = reader["marcaVehiculo"].ToString();
                             transito.nombreSubmarca = reader["nombreSubmarca"].ToString();
                             transito.delegacion = reader["delegacion"].ToString();
@@ -275,25 +309,22 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.pension = reader["pension"].ToString();
                             transito.tramo = reader["tramo"].ToString();
 
-                            //nuevos
-                            transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"].ToString());
-                            transito.IdDependencia = Convert.ToInt32(reader["IdDependencia"].ToString());
+                            // Nuevos
+                            transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"] is DBNull ? DateTime.MinValue : reader["FechaSolicitud"]);
+                            transito.IdDependencia = Convert.ToInt32(reader["IdDependencia"] is DBNull ? 0 : reader["IdDependencia"]);
                             transito.NombreDependencia = reader["NombreDependencia"].ToString();
-                            transito.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
+                            transito.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"] is DBNull ? 0 : reader["IdInfraccion"]);
                             transito.FolioInfraccion = reader["folioInfraccion"].ToString();
-                            transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"].ToString());
+                            transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"] is DBNull ? 0 : reader["IdVehiculo"]);
                             transito.propietario = reader["propietario"].ToString();
-                            transito.numeroEconomico = reader["propietario"].ToString();
+                            transito.numeroEconomico = reader["numeroEconomico"].ToString();
                             transito.FolioSolicitud = reader["FolioSolicitud"].ToString();
-                            transito.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"].ToString());
+                            transito.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"] is DBNull ? 0 : reader["IdConcesionario"]);
                             transito.Concesionario = reader["concesionario"].ToString();
-                            transito.IdDependenciaGenera = reader["IdDependenciaGenera"] as int? ?? default(int);
-                            //transito.IdDependenciaTransito = Convert.ToInt32(reader["IdDependenciaTransito"].ToString());
-                            transito.IdDependenciaTransito = reader["IdDependenciaTransito"] as int? ?? default(int);
+                            transito.IdDependenciaGenera = reader["IdDependenciaGenera"] is DBNull ? 0 : (int)reader["IdDependenciaGenera"];
+                            transito.IdDependenciaTransito = reader["IdDependenciaTransito"] is DBNull ? 0 : (int)reader["IdDependenciaTransito"];
+                            transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] is DBNull ? 0 : (int)reader["IdDependenciaNoTransito"];
 
-                            //transito.IdDependenciaNoTransito = Convert.ToInt32(reader["IdDependenciaNoTransito"].ToString());
-                            transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] as int? ?? default(int);
-                            //sqlreader[indexAge] as int? ?? default(int)
                             transitoList.Add(transito);
 
                         }

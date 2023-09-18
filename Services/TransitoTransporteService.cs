@@ -53,15 +53,51 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                        @"select d.iddeposito,d.idsolicitud,d.idDelegacion,d.idmarca,d.idsubmarca,d.idpension,d.idtramo,
-                                        d.idcolor,d.serie,d.placa,d.fechaingreso,d.folio,d.km,d.liberado,d.autoriza,d.fechaactualizacion,
-                                        del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo,subm.nombresubmarca,sol.solicitantenombre,
-                                        sol.solicitanteap,sol.solicitanteam, col.color,pen.pension,ctra.tramo,                       
-                                        sol.fechasolicitud, sol.folio as FolioSolicitud, inf.idinfraccion,inf.folioinfraccion,
-                                        veh.idvehiculo,veh.propietario,veh.numeroeconomico,veh.modelo,
-                                        con.IdConcesionario, con.concesionario,d.FechaLiberacion
-                                        ,d.IdDependenciaGenera,d.IdDependenciaTransito,d.IdDependenciaNoTransito
-                                        ,dep.idDependencia,dep.nombreDependencia
+                                        @"SELECT 
+                                            d.iddeposito,
+                                            MAX(d.idsolicitud) as idsolicitud,
+                                            MAX(d.idDelegacion) as idDelegacion,
+                                            MAX(d.idmarca) as idmarca,
+                                            MAX(d.idsubmarca) as idsubmarca,
+                                            MAX(d.idpension) as idpension,
+                                            MAX(d.idtramo) as idtramo,
+                                            MAX(d.idcolor) as idcolor,
+                                            MAX(d.serie) as serie,
+                                            MAX(d.placa) as placa,
+                                            MAX(d.fechaingreso) as fechaingreso,
+                                            MAX(d.folio) as folio,
+                                            MAX(d.km) as km,
+                                            MAX(d.liberado) as liberado,
+                                            MAX(d.autoriza) as autoriza,
+                                            MAX(d.fechaactualizacion) as fechaactualizacion,
+                                            MAX(del.delegacion) as delegacion,
+                                            MAX(d.actualizadopor) as actualizadopor,
+                                            MAX(d.estatus) as estatus,
+                                            MAX(m.marcavehiculo) as marcavehiculo,
+                                            MAX(subm.nombresubmarca) as nombresubmarca,
+                                            MAX(sol.solicitantenombre) as solicitantenombre,
+                                            MAX(sol.solicitanteap) as solicitanteap,
+                                            MAX(sol.solicitanteam) as solicitanteam,
+                                            MAX(col.color) as color,
+                                            MAX(pen.pension) as pension,
+                                            MAX(ctra.tramo) as tramo,
+                                            MAX(sol.fechasolicitud) as fechasolicitud,
+                                            MAX(sol.folio) as FolioSolicitud,
+                                            MAX(inf.idinfraccion) as idinfraccion,
+                                            MAX(inf.folioinfraccion) as folioinfraccion,
+                                            MAX(veh.idvehiculo) as idvehiculo,
+                                            MAX(veh.propietario) as propietario,
+                                            MAX(veh.numeroeconomico) as numeroeconomico,
+                                            MAX(veh.modelo) as modelo,
+                                            MAX(con.IdConcesionario) as IdConcesionario,
+                                            MAX(con.concesionario) as concesionario,
+                                            MAX(d.FechaLiberacion) as FechaLiberacion,
+                                            MAX(d.IdDependenciaGenera) as IdDependenciaGenera,
+                                            MAX(d.IdDependenciaTransito) as IdDependenciaTransito,
+                                            MAX(d.IdDependenciaNoTransito) as IdDependenciaNoTransito,
+                                            MAX(dep.idDependencia) as idDependencia,
+                                            MAX(dep.nombreDependencia) as nombreDependencia
+
                                         from depositos d left join catDelegaciones del on d.idDelegacion= del.idDelegacion
                                         left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
                                         left join catColores col on d.idcolor = col.idcolor
@@ -73,7 +109,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         left join vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
                                         left join concesionarios con on con.IdConcesionario =d.IdConcesionario
                                         left join catDependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
-                                        where  sol.estatus !=0 and d.estatus!=0";
+                                        where  sol.estatus !=0 and d.estatus!=0
+                                        GROUP BY d.iddeposito";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
@@ -213,7 +250,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 OR veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' OR del.idDelegacion = @IdDelegacion
                                 OR pen.idpension = @IdPension OR d.IdDependenciaGenera = @IdDependenciaGenera 
                                 OR d.IdDependenciaTransito = @IdDependenciaTransito OR d.IdDependenciaNoTransito = @IdDependenciaNoTransito 
-                                OR (@FechaIngreso IS NULL OR d.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin)
+                                OR (d.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin)
                                 OR 1 = CASE 
                                             WHEN @Estatus = 2 AND d.liberado = 0 THEN 1
                                             WHEN @Estatus = 3 AND d.liberado = 1 THEN 1

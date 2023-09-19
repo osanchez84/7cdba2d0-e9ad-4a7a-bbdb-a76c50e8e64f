@@ -373,7 +373,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         inner join infracciones inf on sol.idinfraccion = inf.idinfraccion
                                         inner join	vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
                                         inner join concesionarios con on con.IdConcesionario =d.IdConcesionario
-                                        left join dependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
+                                        left join catDependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
                                         where  sol.estatus !=0 and d.estatus!=0 and	d.idDeposito=@idDeposito ";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);

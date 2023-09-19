@@ -36,7 +36,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult Index()
-        {
+        { 
             TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
             List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte();
             searchModel.ListTransitoTransporte = listTransitoTransporte;

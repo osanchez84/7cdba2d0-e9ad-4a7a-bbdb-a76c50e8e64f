@@ -1,7 +1,6 @@
 ﻿@model TransitoTransporteBusquedaModel
 
 
-<head>
     <script>
         function submitSearch() {
             var Mydata = $("#frmSearch").serialize();
@@ -17,27 +16,7 @@
             });
         }
 
-        function startChange() {
-            var endPicker = $("#end").data("kendoDatePicker"),
-                startDate = this.value();
-
-            if (startDate) {
-                startDate = new Date(startDate);
-                startDate.setDate(startDate.getDate() + 1);
-                endPicker.min(startDate);
-            }
-        }
-
-        function endChange() {
-            var startPicker = $("#start").data("kendoDatePicker"),
-                endDate = this.value();
-
-            if (endDate) {
-                endDate = new Date(endDate);
-                endDate.setDate(endDate.getDate() - 1);
-                startPicker.max(endDate);
-            }
-        }
+        
 
 
         function downLoadPdfFiltered() {
@@ -61,7 +40,6 @@
         }
 
     </script>
-</head>
 
 
 <div class="mainContainer bg-light">

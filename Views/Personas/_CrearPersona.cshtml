@@ -252,6 +252,14 @@ function completarConLicencia() {
         alert("El número de licencia es obligatorio.");
     }
 }
-
+    $(document).ready(function () {
+        var datePicker = $("#fechaNacimiento").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+    $(document).ready(function () {
+        var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+    
 
 </script>

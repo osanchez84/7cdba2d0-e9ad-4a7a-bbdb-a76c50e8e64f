@@ -23,7 +23,7 @@ namespace GuanajuatoAdminUsuarios.Models
         /// tbl Depositos
         /// </summary>
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime fechaLiberacion { get; set; }
+        public DateTime? fechaLiberacion { get; set; }
 
         /// <summary>
         /// Filtro por textfield no por id sobre mismo solicitudes

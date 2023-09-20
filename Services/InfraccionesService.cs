@@ -222,7 +222,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,MAX(inf.idDelegacion) AS idDelegacion
                                     ,MAX(inf.idVehiculo)  AS idVehiculo
                                     ,MAX(inf.idAplicacion) AS idAplicacion
-                                    ,MAX(inf.idGarantia) AS vvvv
+                                    ,MAX(inf.idGarantia) AS idGarantia
                                     ,MAX (inf.idEstatusInfraccion) AS idEstatusInfraccion
                                     ,MAX(inf.idMunicipio) AS idMunicipio
                                     ,MAX (inf.idTramo) AS idTramo
@@ -324,7 +324,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
                             infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            infraccionModel.idGarantia = reader["vvvv"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["vvvv"].ToString());
+                            infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
                             infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
                             infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
                             infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
@@ -361,7 +361,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 infraccionModel.NombreConductor = null; // O cualquier otro valor predeterminado que desees
                             }
                             infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "": infraccionModel.Vehiculo.Persona.nombreCompleto;
-                            infraccionModel.NombreGarantia = infraccionModel.Garantia.garantia;
+                           // infraccionModel.NombreGarantia = infraccionModel.garantia;
+                            infraccionModel.NombreGarantia = reader["garantia"] == System.DBNull.Value ? string.Empty : reader["garantia"].ToString();
 
                             InfraccionesList.Add(infraccionModel);
                         }

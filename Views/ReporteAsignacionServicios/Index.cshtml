@@ -1,8 +1,5 @@
 ﻿@model ReporteAsignacionBusquedaModel
-@{
-    DateTime endDate = DateTime.Now;
-    endDate = endDate.AddDays(1);
-}
+
 
 <head>
     <script>
@@ -138,8 +135,6 @@
                 <div class="controlForm my-3">
                     <label>Inicio:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
-                        .Value(DateTime.Now)
-                        .Events(e => e.Change("startChange"))
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
                         )
 
@@ -196,8 +191,6 @@
                 <div class="controlForm my-3">
                     <label>Fin:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaFin)
-                        .Value(endDate)
-                        .Events(e => e.Change("endChange"))
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
                         )
 
@@ -226,3 +219,14 @@
         </div>
     </section>
 </div>
+<script>
+    $(document).ready(function () {
+        var datePicker = $("#end").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+
+    $(document).ready(function () {
+        var datePicker = $("#start").data("kendoDatePicker");
+        datePicker.value(null);
+    });
+</script>

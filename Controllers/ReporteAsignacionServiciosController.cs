@@ -105,7 +105,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Grua_Read()
         {
-            var result = new SelectList(_gruasService.GetGruas(), "IdGrua", "Placas");
+            var result = new SelectList(_gruasService.GetGruas(), "IdGrua", "noEconomico");
             return Json(result);
         }
     }

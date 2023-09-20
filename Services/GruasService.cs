@@ -120,9 +120,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            GruasModel gruaModel = new GruasModel();
+                            GruasModel gruaModel = new GruasModel(); 
                             gruaModel.IdGrua = Convert.ToInt32(reader["IdGrua"].ToString());
                             gruaModel.Placas = reader["Placas"].ToString();
+                            gruaModel.noEconomico = reader["noEconomico"].ToString();
+
                             ListGruas.Add(gruaModel);
 
                         }

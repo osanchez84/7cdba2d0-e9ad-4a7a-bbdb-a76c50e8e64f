@@ -9,7 +9,7 @@
                 columns.Bound(c => c.idSolicitud).Hidden();
                 columns.Bound(c => c.idPropietarioGrua).Hidden();
                 columns.Bound(c => c.FolioSolicitud).Title("Folio").Width(100);
-                columns.Bound(c => c.fechaSolicitud).Title("Fecha Solicitud").Width(100);
+                columns.Bound(c => c.fechaSolicitud).Title("Fecha Solicitud").Format("{0:dd/MM/yyyy}").Width(100);
                 columns.Bound(c => c.Ubicacion).Title("Ubicación").Width(100);
                 columns.Bound(c => c.Grua).Title("Grúa").Width(100);
                 columns.Bound(c => c.Oficial).Title("Oficial").Width(100);

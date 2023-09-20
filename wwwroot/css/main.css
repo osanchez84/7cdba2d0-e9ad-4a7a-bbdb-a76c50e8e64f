@@ -1620,6 +1620,36 @@ input[type="radio"].toggle {
     display:none;
 }
 
+.fontMenu {
+    margin-top: 0.5em;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    animation: fadeIn-fadeOut ease 2s;
+}
+
+.menuButton:hover > .fontMenu {
+    display: block;
+    visibility: visible;
+}
+
+@keyframes fadeIn-fadeOut {
+    10% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
     .iconMenu:focus {
         outline: 0;
     }

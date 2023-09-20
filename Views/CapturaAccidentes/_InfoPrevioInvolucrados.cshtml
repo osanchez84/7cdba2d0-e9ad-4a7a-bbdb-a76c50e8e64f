@@ -10,7 +10,9 @@
             var apellidoPaterno = dataItem.apellidoPaterno
             var apellidoMaterno = dataItem.apellidoMaterno
             var curp = dataItem.curp
-            var fechaNacimiento = dataItem.fechaNacimiento
+            var fechaNacimiento = dataItem.fechaNacimiento.split('T')[0]
+            var dat = fechaNacimiento.split("-")
+            fechaNacimiento = dat[2] + "/" + dat[1]+ "/" + dat[0]
             var rfc = dataItem.rfc
 
             var nombreCompleto = nombre+" "+apellidoPaterno+" "+apellidoMaterno;

@@ -19,7 +19,7 @@
             <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <button href="#" id="btnNueaOf" onclick="mostrarModal()">
+                        <button  onclick="mostrarModal()">
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-addOficina h5 mb-0 me-2"></i><b>Agregar nueva oficina rentas</b></h6>
                         </button>
                     </div>
@@ -69,19 +69,6 @@
                         <div class="col-12 mb-4 px-4 rounded gridCustom">
                             <div id="tablaOficinasRenta">
                                 <partial name="_ListaOficinasRenta" model="Model" />
-
-
-                                <div class="modal fade modalCustom" id="agregarOficinasRenta" tabindex="-1" aria-labelledby="agregarOficinasRentaLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body" id="ModalBodyaAgregarOficinasRenta">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
                                 <!-----------------------------------------------------------UPDATE--------------------------------------------------------------------------------------------->
                                 <div class="modal fade modalCustom" id="editarOficinasRenta" tabindex="-1" aria-labelledby="editarOficinasRenta" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">
@@ -108,36 +95,6 @@
    
 
 </div>
-
-
-<script>
-    function mostrarModal() {
-        $.ajax({
-            url: '@Url.Action("AgregarOficinaRentaModal")',
-            type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            dataType: "html",
-            success: function (data) {
-                $('#ModalBodyaAgregarOficinasRenta').html(data);
-                $('#agregarOficinasRenta').modal('show');
-            }
-        });
-    }
-
-    function valor(id) {
-        var idDelegacion = id
-        console.log("SI", idDelegacion);
-        $.ajax({
-            url: '@Url.Action("Index2", "CatOficinasRenta")',
-            type: 'POST',
-            data: { idDelegacion: idDelegacion },
-            
-        })
-    }
-
-             
-
-</script>
 
 
 <div class="tab-pane tabCustomConteiner fade" id="filter-delegacion" role="tabpanel" aria-labelledby="filter-delegacion-tab">
@@ -187,13 +144,45 @@
 
     </div>
 
-<div class="row">
-    <div class="col-12">
-        <div class="tabCustomEnd"></div>
-    </div>
-</div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="tabCustomEnd"></div>
                 </div>
             </div>
-        </div>
+
+                <div class="modal fade modalCustom" id="agregarOficinasRenta" tabindex="-1" aria-labelledby="agregarOficinasRentaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body" id="ModalBodyaAgregarOficinasRenta">
+                            </div>
+                        </div>
+                    </div>
+                </div>
     </section>
+ </div>
+    <script>
+    function mostrarModal() {
+        $.ajax({
+            url: '@Url.Action("AgregarOficinaRentaModal")',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (data) {
+                $('#ModalBodyaAgregarOficinasRenta').html(data);
+                $('#agregarOficinasRenta').modal('show');
+            }
+        });
+    }
+
+    function valor(id) {
+        var idDelegacion = id
+        console.log("SI", idDelegacion);
+        $.ajax({
+            url: '@Url.Action("Index2", "CatOficinasRenta")',
+            type: 'POST',
+            data: { idDelegacion: idDelegacion },
+
+        })
+    }
+    </script>
             

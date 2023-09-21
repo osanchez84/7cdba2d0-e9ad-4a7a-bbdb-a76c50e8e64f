@@ -7,7 +7,7 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.Motivo).Title("Accidentes por municipio");
-                columns.Bound(p => p.Contador).Title("Totales").ClientFooterTemplate("Total : #=sum#");
+                columns.Bound(p => p.Contador).Title("Totales").Format("{0:n0}").ClientFooterTemplate("Total : #= kendo.toString(sum, \"n0\")#");
             }).HtmlAttributes(new { style = "height:auto" })
             .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
             .Sortable()

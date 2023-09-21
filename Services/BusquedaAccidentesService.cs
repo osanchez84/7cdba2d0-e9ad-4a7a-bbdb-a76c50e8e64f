@@ -261,7 +261,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             accidente.IdAccidente = reader["idAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idAccidente"]) : 0;
                             accidente.numeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
-                            accidente.fecha = reader["fecha"] != DBNull.Value ? reader["fecha"].ToString() : string.Empty;
+                            accidente.fecha = reader["fecha"] != DBNull.Value ? reader["fecha"].ToString().Split(" ")[0] : string.Empty;
                             accidente.hora = reader["hora"] != DBNull.Value ? reader.GetTimeSpan(reader.GetOrdinal("hora")) : TimeSpan.MinValue;
                             accidente.idMunicipio = reader["idMunicipio"] != DBNull.Value ? Convert.ToInt32(reader["idMunicipio"]) : 0;
                             accidente.idCarretera = reader["idCarretera"] != DBNull.Value ? Convert.ToInt32(reader["idCarretera"]) : 0;

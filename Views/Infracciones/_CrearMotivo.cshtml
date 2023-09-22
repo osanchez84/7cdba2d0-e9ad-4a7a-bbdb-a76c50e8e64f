@@ -36,7 +36,7 @@
     <div class="row my-4">
         <div class="form-group col-md-4">
             <div class="controlForm">
-                @(Html.Kendo().IntegerTextBoxFor(t => t.calificacionMinima)
+                @(Html.Kendo().TextBoxFor(t => t.calificacionMinima)
                     .Label(l => l.Content("Calificación mínima:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMinima", required = "required", disabled="disabled" })
                     )
@@ -44,7 +44,7 @@
         </div>
         <div class="form-group col-md-4">
             <div class="controlForm">
-                @(Html.Kendo().IntegerTextBoxFor(t => t.calificacionMaxima)
+                @(Html.Kendo().TextBoxFor(t => t.calificacionMaxima)
                     .Label(l => l.Content("Calificación máxima:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMaxima", required = "required", disabled = "disabled" })
                     )
@@ -149,8 +149,8 @@
         var min = 0;
         var max = 0;
         var value = $("#idCatMotivoInfraccion").val();
-        var txtMin = $("#calificacionMinima").data("kendoNumericTextBox");
-        var txtMax = $("#calificacionMaxima").data("kendoNumericTextBox");
+        var txtMin = $("#calificacionMinima").data("kendoTextBox");
+        var txtMax = $("#calificacionMaxima").data("kendoTextBox");
          
         $.ajax({
             url: '@Url.Action("BuscarMotivoByID","MotivosInfraccion")',

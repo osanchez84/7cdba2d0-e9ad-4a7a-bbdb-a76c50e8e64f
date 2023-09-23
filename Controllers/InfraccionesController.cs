@@ -823,6 +823,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
                 }
+                else if (result != null && result.MT_CrearMultasTransito_res != null && "A".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = false, message = "Infraccion anteriormente registrada en finanzas", id = idInfraccion });
+                }
                 else
                 {
                     return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });

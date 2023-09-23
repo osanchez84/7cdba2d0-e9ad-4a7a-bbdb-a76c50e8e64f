@@ -44,9 +44,7 @@
                 <div class="controlForm my-3">
                     <label>Inicio:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
-                        .Format("dd-MM-yyyy")
                         .HtmlAttributes(new { style = "width: 100%", title = "startDate" })
-                        .DateInput()
                         )
                 </div>
             </div>
@@ -54,9 +52,7 @@
                 <div class="controlForm my-3">
                     <label>Fin:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaFin)
-                        .Format("dd-MM-yyyy")
                         .HtmlAttributes(new { style = "width: 100%", title = "endDate" })
-                        .DateInput()
                         )
                 </div>
             </div>

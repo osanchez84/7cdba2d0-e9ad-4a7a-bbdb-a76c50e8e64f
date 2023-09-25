@@ -132,7 +132,7 @@
                             <div class="row my-4 px-4">
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
-                                        <label>Folio: <b>(obligatorio):</b></label>
+                                        <label>Folio <b>(obligatorio):</b></label>
                                         @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
                                             .Placeholder("Ingresa folio")
                                             .HtmlAttributes(new { style = "width: 100%", required = "required" })
@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
-                                        <label>Oficial:</label>
+                                        <label>Oficial <b>(obligatorio):</b></label>
                                         @(Html.Kendo().DropDownList()
                                             .Name("idOficial")
                                             .BindTo((SelectList)ViewBag.CatOficiales)
@@ -152,7 +152,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
-                                        <label>Municipio:</label>
+                                        <label>Municipio <b>(obligatorio):</b></label>
                                         @(Html.Kendo().DropDownList()
                                             .Name("idMunicipio")
                                             .BindTo((SelectList)ViewBag.CatMunicipios)
@@ -184,7 +184,7 @@
                             <div class="row my-4 px-4">
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
-                                        <label>Carretera:</label>
+                                        <label>Carretera <b>(obligatorio):</b></label>
                                         @(Html.Kendo().DropDownList()
                                             .Name("idCarretera")
                                             .BindTo((SelectList)ViewBag.CatCarreteras)
@@ -195,7 +195,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
-                                        <label>Tramo:</label>
+                                        <label>Tramo <b>(obligatorio):</b></label>
                                         <div id="divTramo">
                                             @(Html.Kendo().DropDownListFor(f => f.idTramo)
                                                 .OptionLabel("-- Seleccione --")

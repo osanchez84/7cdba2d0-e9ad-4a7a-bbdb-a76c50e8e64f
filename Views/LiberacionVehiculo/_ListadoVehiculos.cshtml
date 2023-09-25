@@ -78,9 +78,18 @@
                 columns.Bound(p => p.IdDeposito).Title("Id").Width(90);
                 columns.Bound(p => p.marcaVehiculo).Title("Marca").Width(90);
                 columns.Bound(p => p.Serie).Title("Serie").Width(90);
-                columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Width(90);
+                columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
                 columns.Bound(c => c.Folio).Title("Folio").Width(90);
-                columns.Bound(c => c.nombreSubmarca).Title("Submarca").Width(90);
+
+                columns.Bound(c => c.Placa).Title("Placas").Width(90);
+                columns.Bound(c => c.Color).Title("Color").Width(90);
+                columns.Bound(c => c.pension).Title("Pension").Width(90);
+                columns.Bound(c => c.carretera).Title("Carretera").Width(90);
+                columns.Bound(c => c.tramo).Title("Tramo").Width(90);
+                columns.Bound(c => c.Km).Title("Kilometro").Width(90);
+                columns.Bound(c => c.fullName).Title("Solicitante").Width(90);
+
+                columns.Bound(c => c.nombreSubmarca).Title("SubMarca").Width(90);
                 columns.Bound(c => c.delegacion).Title("Delegación").Width(90);
                 columns.Bound(p => p.IdDeposito).ClientTemplate(
                 "<button onclick=\"ShowDetailPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Detalle</b></h6></button>"

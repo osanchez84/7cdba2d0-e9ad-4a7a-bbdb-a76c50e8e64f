@@ -133,7 +133,7 @@
      <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-6">
                 <div class="controlForm">
-                    <label>Descripción del evento <b>(obligatorio)</b></label>
+                    <label>Descripción del evento <b>(obligatorio)</b>:</label>
                         <span>
                             @(Html.Kendo().DropDownListFor(t => t.idDescripcionEvento)
                                 .DataTextField("Text")
@@ -154,7 +154,7 @@
              </div>                   
             <div class="col-6">
                 <div class="controlForm my-3">
-                    <label>Tipo de usuario <b>(obligatorio):</b></label>
+                    <label>Tipo de usuario <b>(obligatorio)</b>:</label>
                         <span>
                             @(Html.Kendo().DropDownListFor(m => m.idTipoUsuario)
                                 .DataTextField("Text")
@@ -243,7 +243,7 @@
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="controlForm my-3">
                                         @(Html.Kendo().TextBoxFor(t=>t.coloniaUsuario)
-                                                        .Label(l => l.Content("Colonia / Localidad:"))
+                                                        .Label(l => l.Content("Colonia/Localidad:"))
                                                         .Placeholder("Ingresa la colonia / localidad del solicitante")
                                                         .HtmlAttributes(new { style = "width: 100%" })
                                                     )

@@ -148,7 +148,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,inf.estatus
                                 ,del.idDelegacion, del.delegacion,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                 ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
-                                ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
+                                ,gar.idGarantia,gar.numPlaca,gar.numLicencia
                                 ,tipoP.idTipoPlaca, tipoP.tipoPlaca
                                 ,tipoL.idTipoLicencia, tipoL.tipoLicencia
                                 ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
@@ -178,7 +178,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
                                 left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                 left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                WHERE inf.estatus = 1 " + condiciones  ;
+                                WHERE inf.estatus = 1 " + condiciones;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {

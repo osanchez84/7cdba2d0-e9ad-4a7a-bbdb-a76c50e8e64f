@@ -83,8 +83,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.FolioSolicitud)
-                        .Label(l => l.Content("Folio Solicitud:"))
-                        .Placeholder("Ingresa folio solicitud")
+                        .Label(l => l.Content("Folio de Solicitud:"))
+                        .Placeholder("Ingresa folio de solicitud")
                         .HtmlAttributes(new { style = "width: 100%", Id = "txtFolioSolicitud" })
                         )
 
@@ -94,8 +94,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.FolioInfraccion)
-                        .Label(l => l.Content("Folio Infracción"))
-                        .Placeholder("Ingresa folio infracción")
+                        .Label(l => l.Content("Folio de Infracción:"))
+                        .Placeholder("Ingresa folio de infracción:")
                         .HtmlAttributes(new { style = "width: 100%", Id = "txtFolioInfraccion" })
                         )
                 </div>
@@ -104,8 +104,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.Propietario)
-                        .Label(l => l.Content("Propietario Vehículo"))
-                        .Placeholder("Ingresa propietario del vehículo")
+                        .Label(l => l.Content("Propietario del Vehículo:"))
+                        .Placeholder("Ingresa propietario del vehículo:")
                         .HtmlAttributes(new { style = "width: 100%", Id = "txtPropietario" })
                         )
                 </div>
@@ -114,8 +114,8 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.NumeroEconomico)
-                        .Label(l => l.Content("No Económico"))
-                        .Placeholder("Ingresa No Económico")
+                        .Label(l => l.Content("No. Económico:"))
+                        .Placeholder("Ingresa No. Económico")
                         .HtmlAttributes(new { style = "width: 100%", Id = "txtNumeroEconomico" })
                         )
                 </div>
@@ -249,7 +249,7 @@
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    <label>Fecha Ingreso:</label>
+                    <label>Fecha de Ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
                         .Format("dd-MM-yyyy")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })

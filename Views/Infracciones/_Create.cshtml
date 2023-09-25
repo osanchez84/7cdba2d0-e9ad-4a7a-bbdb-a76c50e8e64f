@@ -150,15 +150,13 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
                         )
                 }
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
-                        .Value(DateTime.Now)
+                        .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
                         )
                 }
 
@@ -1223,7 +1221,7 @@
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                 }
             });
         }
@@ -1237,10 +1235,17 @@
         var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
     });
-     $(document).ready(function() {
-        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+ 
+    $(document).ready(function() {
+    var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+    var dateVigencia = datePicker.value();
+
+    // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
+    if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
         datePicker.value(null);
-    });
+    }
+});
+
 
 
 </script>

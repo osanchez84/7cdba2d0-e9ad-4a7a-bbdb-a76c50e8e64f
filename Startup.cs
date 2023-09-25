@@ -174,6 +174,12 @@ namespace GuanajuatoAdminUsuarios
 
             services.AddScoped<IColores, CatColoresService>();
 
+            services.AddScoped<IAppSettingsService, AppSettingService>();
+            services.AddScoped<IRepuveService, RepuveService>();
+            services.AddScoped<IApiClientDatabaseService, ApiClientDatabaseService>();
+
+            services.AddScoped<IColores, CatColoresService>();
+
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();

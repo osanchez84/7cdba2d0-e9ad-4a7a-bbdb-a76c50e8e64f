@@ -26,7 +26,7 @@
     <div class="col-12 mb-4 px-4 rounded gridCustom">
         @(
             Html.Kendo().Grid(Model)
-            .Name("Grid")
+            .Name("GridP")
             .Columns(columns =>
             {
                 columns.Bound(c => c.IdPension).Width(20).Hidden();
@@ -63,7 +63,7 @@
             ))
 
         @(Html.Kendo().Tooltip()
-            .For("#Grid")
+            .For("#GridP")
             .Filter("th")
             .Position(TooltipPosition.Top)
             .ContentHandler("tooltipContent")
@@ -74,7 +74,7 @@
 
 <script>
     function editarPensionByGrid() {
-        var grid = $("#Grid").data("kendoGrid");
+        var grid = $("#GridP").data("kendoGrid");
         var dataItem = grid.dataItem($(event.srcElement).closest("tr").next());
         $.ajax({
             url: '@Url.Action("ajax_ModalEditarPension")',

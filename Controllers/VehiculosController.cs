@@ -126,8 +126,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Marcas_Read()
         {
             var catEntidades = _catDictionary.GetCatalog("CatMarcasVehiculos", "0");
-            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
-            return Json(result);
+            var orderedList = catEntidades.CatalogList.OrderBy(item => item.Text);
+            var result = new SelectList(orderedList, "Id", "Text"); return Json(result);
         }
 
         public JsonResult SubMarcas_Read()

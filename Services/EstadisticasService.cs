@@ -109,13 +109,13 @@ namespace GuanajuatoAdminUsuarios.Services
             string condicionFecha = "";
 
             if (modelBusqueda.fechaInicio != DateTime.MinValue && modelBusqueda.fechaFin != DateTime.MinValue)
-                condicionFecha = " AND inf.fechaInfraccion >= @fechaInicio AND inf.fechaInfraccion  <= @fechaFin ";
+                condiciones += " AND inf.fechaInfraccion >= @fechaInicio AND inf.fechaInfraccion  <= @fechaFin ";
             else if (modelBusqueda.fechaInicio != DateTime.MinValue && modelBusqueda.fechaFin == DateTime.MinValue)
-                condicionFecha = " AND inf.fechaInfraccion >= @fechaInicio ";
+                condiciones += " AND inf.fechaInfraccion >= @fechaInicio ";
             else if (modelBusqueda.fechaInicio == DateTime.MinValue && modelBusqueda.fechaFin != DateTime.MinValue)
-                condicionFecha = " AND inf.fechaInfraccion <= @fechaFin ";
+                condiciones += " AND inf.fechaInfraccion <= @fechaFin ";
             else
-                condicionFecha = "";
+                condiciones += "";
              
               
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();
@@ -189,34 +189,34 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.CommandType = CommandType.Text;
 
                     if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
-                        command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idDelegacion ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)modelBusqueda.idDelegacion ?? DBNull.Value;
 
                     if (!modelBusqueda.idOficial.Equals(null) && modelBusqueda.idOficial != 0)
-                        command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idOficial ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = (object)modelBusqueda.idOficial ?? DBNull.Value;
 
                     if (!modelBusqueda.idCarretera.Equals(null) && modelBusqueda.idCarretera != 0)
-                        command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idCarretera ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.Int)).Value = (object)modelBusqueda.idCarretera ?? DBNull.Value;
 
                     if (!modelBusqueda.idTramo.Equals(null) && modelBusqueda.idTramo != 0)
-                        command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idTramo ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)modelBusqueda.idTramo ?? DBNull.Value;
 
                     if (!modelBusqueda.idTipoVehiculo.Equals(null) && modelBusqueda.idTipoVehiculo != 0)
-                        command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idTipoVehiculo ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoVehiculo ?? DBNull.Value;
                     
                     if (!modelBusqueda.idTipoServicio.Equals(null) && modelBusqueda.idTipoServicio != 0)
-                        command.Parameters.Add(new SqlParameter("@idCatTipoServicio", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idTipoServicio ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idCatTipoServicio", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoServicio ?? DBNull.Value;
 
                     if (!modelBusqueda.idTipoLicencia.Equals(null) && modelBusqueda.idTipoLicencia != 0)
-                        command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idTipoVehiculo ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoVehiculo ?? DBNull.Value;
 
                     if (!modelBusqueda.idMunicipio.Equals(null) && modelBusqueda.idMunicipio != 0)
-                        command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.NVarChar)).Value = (object)modelBusqueda.idMunicipio ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)modelBusqueda.idMunicipio ?? DBNull.Value;
 
                     if (modelBusqueda.fechaInicio != DateTime.MinValue)
-                        command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.NVarChar)).Value = (object)modelBusqueda.fechaInicio ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaInicio ?? DBNull.Value;
 
                     if (modelBusqueda.fechaFin != DateTime.MinValue)
-                        command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.NVarChar)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
+                        command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

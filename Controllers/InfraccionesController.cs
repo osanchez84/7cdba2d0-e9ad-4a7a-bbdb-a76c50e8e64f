@@ -237,11 +237,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        public ActionResult Editar(int id)
+        public ActionResult Editar(int idInfraccion, int id)
         {
+            int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(id);
+            var model = _infraccionesService.GetInfraccion2ById(ids);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");

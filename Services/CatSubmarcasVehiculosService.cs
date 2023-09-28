@@ -30,7 +30,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     {
                         connection.Open();
-                        SqlCommand command = new SqlCommand("SELECT catSubmarcasVehiculos.*, estatus.estatusdesc, catMarcasVehiculos.marcaVehiculo FROM catSubmarcasVehiculos JOIN estatus ON catSubmarcasVehiculos.estatus = estatus.estatus JOIN catMarcasVehiculos ON catSubmarcasVehiculos.idMarcaVehiculo = catMarcasVehiculos.idMarcaVehiculo", connection);
+                        SqlCommand command = new SqlCommand("SELECT catSubmarcasVehiculos.*, estatus.estatusdesc, catMarcasVehiculos.marcaVehiculo FROM catSubmarcasVehiculos JOIN estatus ON catSubmarcasVehiculos.estatus = estatus.estatus" +
+                            " JOIN catMarcasVehiculos ON catSubmarcasVehiculos.idMarcaVehiculo = catMarcasVehiculos.idMarcaVehiculo ORDER BY NombreSubmarca ASC", connection);
                         command.CommandType = CommandType.Text;
                         //sqlData Reader sirve para la obtencion de datos 
                         using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

@@ -24,7 +24,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT op.*, f.*, e.estatus FROM catFactoresOpcionesAccidentes AS op INNER JOIN catFactoresAccidentes AS f ON op.IdFactorAccidente = f.IdFactorAccidente INNER JOIN estatus AS e ON op.estatus = e.estatus WHERE op.IdFactorAccidente = @IdFactor and op.estatus = 1;", connection);
+                    SqlCommand command = new SqlCommand("SELECT op.*, f.*, e.estatus FROM catFactoresOpcionesAccidentes AS op INNER JOIN catFactoresAccidentes AS f ON op.IdFactorAccidente = f.IdFactorAccidente INNER JOIN estatus AS e ON op.estatus = e.estatus" +
+                        " WHERE op.IdFactorAccidente = @IdFactor and op.estatus = 1 ORDER BY FactorOpcionAccidente ASC;", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@IdFactor", SqlDbType.Int)).Value = (object)factorDDValue ?? DBNull.Value;
 

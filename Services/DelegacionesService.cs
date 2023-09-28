@@ -24,7 +24,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from catDelegaciones where estatus=1", connection);
+                    SqlCommand command = new SqlCommand("Select * from catDelegaciones where estatus=1 ORDER BY delegacion ASC", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

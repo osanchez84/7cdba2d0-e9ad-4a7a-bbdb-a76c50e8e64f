@@ -25,7 +25,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT t.*, c.*, e.estatus FROM catTramos AS t INNER JOIN catCarreteras AS c ON t.idCarretera = c.idCarretera INNER JOIN estatus AS e ON t.estatus = e.estatus WHERE t.idCarretera = @IdCarretera;\r\n", connection);
+                    SqlCommand command = new SqlCommand("SELECT t.*, c.*, e.estatus FROM catTramos AS t INNER JOIN catCarreteras AS c ON t.idCarretera = c.idCarretera" +
+                        " INNER JOIN estatus AS e ON t.estatus = e.estatus WHERE t.idCarretera = @IdCarretera ORDER BY Tramo ASC;", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@IdCarretera", SqlDbType.Int)).Value = (object)carreteraDDValue ?? DBNull.Value;
 

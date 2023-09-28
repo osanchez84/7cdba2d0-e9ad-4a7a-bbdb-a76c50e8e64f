@@ -25,7 +25,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatus FROM catCausasAccidentes AS c INNER JOIN estatus AS e ON c.estatus = e.estatus WHERE c.estatus = 1;", connection);
+                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatus FROM catCausasAccidentes AS c INNER JOIN estatus AS e ON c.estatus = e.estatus" +
+                                                        " WHERE c.estatus = 1 ORDER BY CausaAccidente ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

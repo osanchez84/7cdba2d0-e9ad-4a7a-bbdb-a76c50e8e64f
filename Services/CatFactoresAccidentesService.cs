@@ -25,7 +25,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT f.*, e.estatus FROM catFactoresAccidentes AS f INNER JOIN estatus AS e ON c.estatus = e.estatus;", connection);
+                    SqlCommand command = new SqlCommand("SELECT f.*, e.estatus FROM catFactoresAccidentes AS f INNER JOIN estatus AS e ON c.estatus = e.estatus ORDER BY FactorAccidente ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -69,7 +69,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT f.*, e.estatus FROM catFactoresAccidentes AS f INNER JOIN estatus AS e ON f.estatus = e.estatus WHERE f.estatus = 1;", connection);
+                    SqlCommand command = new SqlCommand("SELECT f.*, e.estatus FROM catFactoresAccidentes AS f INNER JOIN estatus AS e ON f.estatus = e.estatus WHERE f.estatus = 1 ORDER BY FactorAccidente ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

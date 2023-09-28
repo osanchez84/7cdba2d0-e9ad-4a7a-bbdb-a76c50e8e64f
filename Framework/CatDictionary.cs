@@ -84,7 +84,10 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["salario"]),
                                 Text = Convert.ToString(s["area"])
-                            }).ToList();
+
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTipoServicio":
                     catalogModel.CatalogName = catalog;
@@ -94,7 +97,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idCatTipoServicio"]),
                                 Text = Convert.ToString(s["tipoServicio"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTiposVehiculo":
                     catalogModel.CatalogName = catalog;
@@ -104,7 +109,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idTipoVehiculo"]),
                                 Text = Convert.ToString(s["tipoVehiculo"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatGeneros":
                     catalogModel.CatalogName = catalog;
@@ -114,7 +121,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idGenero"]),
                                 Text = Convert.ToString(s["genero"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTipoLicencia":
                     catalogModel.CatalogName = catalog;
@@ -124,7 +133,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idTipoLicencia"]),
                                 Text = Convert.ToString(s["tipoLicencia"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTipoPlaca":
                     catalogModel.CatalogName = catalog;
@@ -134,7 +145,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idTipoPlaca"]),
                                 Text = Convert.ToString(s["tipoPlaca"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatGarantias":
                     catalogModel.CatalogName = catalog;
@@ -144,7 +157,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idGarantia"]),
                                 Text = Convert.ToString(s["garantia"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTramosByFilter":
                     if (int.TryParse(parameter, out intId))
@@ -167,7 +182,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idTramo"]),
                                 Text = Convert.ToString(s["tramo"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatCarreterasByFilter":
                     if (int.TryParse(parameter, out intId))
@@ -179,7 +196,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idCarretera"]),
                                     Text = Convert.ToString(s["carretera"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
                 case "CatCarreteras":
@@ -190,7 +209,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idCarretera"]),
                                 Text = Convert.ToString(s["carretera"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatOficiales":
                     catalogModel.CatalogName = catalog;
@@ -200,7 +221,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idOficial"]),
                                 Text = string.Concat(Convert.ToString(s["nombre"]), " ", Convert.ToString(s["apellidoPaterno"]), " ", Convert.ToString(s["apellidoMaterno"]))
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatAllMotivosInfraccion":
                     if (int.TryParse(parameter, out intId))
@@ -212,7 +235,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idCatMotivoInfraccion"]),
                                     Text = Convert.ToString(s["nombre"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
                 case "CatMotivosInfraccion":
@@ -225,7 +250,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idCatMotivoInfraccion"]),
                                     Text = Convert.ToString(s["nombre"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
                 case "CatConceptoInfraccion":
@@ -236,7 +263,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idConcepto"]),
                                 Text = Convert.ToString(s["concepto"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatSubConceptoInfraccion":
                     if (int.TryParse(parameter, out intId))
@@ -248,7 +277,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idSubConcepto"]),
                                     Text = Convert.ToString(s["subConcepto"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break; 
                 case "CatConcesionariosByIdDelegacion":
@@ -260,7 +291,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = s.idConcesionario,
                                     Text = s.nombre
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
                 case "CatTiposGrua":
@@ -270,7 +303,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = s.IdTipoGrua,
                                 Text = s.TipoGrua
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatMunicipios":
                     catalogModel.CatalogName = catalog;
@@ -281,7 +316,8 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idMunicipio"]),
                                 Text = Convert.ToString(s["municipio"])
-                            }).ToList();
+                            }).OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatDelegaciones":
                     catalogModel.CatalogName = catalog;
@@ -292,7 +328,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idDelegacion"]),
                                 Text = Convert.ToString(s["delegacion"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatResponsablesPensiones":
                     catalogModel.CatalogName = catalog;
@@ -303,7 +341,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idResponsable"]),
                                 Text = Convert.ToString(s["responsable"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatClasificacionGruas":
                     catalogModel.CatalogName = catalog;
@@ -314,7 +354,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idClasificacionGrua"]),
                                 Text = Convert.ToString(s["clasificacion"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatSituacionGruas":
                     catalogModel.CatalogName = catalog;
@@ -325,7 +367,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idSituacion"]),
                                 Text = Convert.ToString(s["situacion"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatTipoPersona":
                     catalogModel.CatalogName = catalog;
@@ -336,7 +380,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idCatTipoPersona"]),
                                 Text = Convert.ToString(s["tipoPersona"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatMarcasVehiculos":
                     catalogModel.CatalogName = catalog;
@@ -347,7 +393,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idMarcaVehiculo"]),
                                 Text = Convert.ToString(s["marcaVehiculo"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatSubmarcasByFilter":
                     if (int.TryParse(parameter, out intId))
@@ -359,7 +407,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idSubmarca"]),
                                     Text = Convert.ToString(s["nombreSubmarca"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
                 case "CatSubmarcasVehiculos":
@@ -371,7 +421,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idSubmarca"]),
                                 Text = Convert.ToString(s["nombreSubmarca"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatColores":
                     catalogModel.CatalogName = catalog;
@@ -382,7 +434,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idColor"]),
                                 Text = Convert.ToString(s["color"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatEntidades":
                     catalogModel.CatalogName = catalog;
@@ -393,7 +447,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idEntidad"]),
                                 Text = Convert.ToString(s["nombreEntidad"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatEstatusInfraccion":
                     catalogModel.CatalogName = catalog;
@@ -404,7 +460,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idEstatusInfraccion"]),
                                 Text = Convert.ToString(s["estatusInfraccion"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatDependencias":
                     catalogModel.CatalogName = catalog;
@@ -415,7 +473,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idDependencia"]),
                                 Text = Convert.ToString(s["nombreDependencia"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatClasificacionAccidentes":
                     catalogModel.CatalogName = catalog;
@@ -426,7 +486,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idClasificacionAccidente"]),
                                 Text = Convert.ToString(s["nombreClasificacion"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatCausasAccidentes":
                     catalogModel.CatalogName = catalog;  
@@ -437,7 +499,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idCausaAccidente"]),
                                 Text = Convert.ToString(s["causaAccidente"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
                 case "CatFactoresAccidentes":
                     catalogModel.CatalogName = catalog;  
@@ -448,7 +512,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                             {
                                 Id = Convert.ToInt32(s["idFactorAccidente"]),
                                 Text = Convert.ToString(s["factorAccidente"])
-                            }).ToList();
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
                     break;
 
                 case "CatFactoresOpcionesAccidentesByFilter":
@@ -461,7 +527,9 @@ namespace GuanajuatoAdminUsuarios.Framework
                                 {
                                     Id = Convert.ToInt32(s["idFactorOpcionAccidente"]),
                                     Text = Convert.ToString(s["factorOpcionAccidente"])
-                                }).ToList();
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
                     }
                     break;
 

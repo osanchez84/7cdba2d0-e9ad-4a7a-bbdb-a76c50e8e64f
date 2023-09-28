@@ -25,7 +25,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT catResponsablePensiones.*, estatus.estatusdesc FROM catResponsablePensiones JOIN estatus ON catResponsablePensiones.estatus = estatus.estatus WHERE catResponsablePensiones.estatus = 1", connection);
+                    SqlCommand command = new SqlCommand("SELECT catResponsablePensiones.*, estatus.estatusdesc FROM catResponsablePensiones JOIN estatus ON catResponsablePensiones.estatus = estatus.estatus" +
+                        " WHERE catResponsablePensiones.estatus = 1 ORDR BY responsable ASC", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

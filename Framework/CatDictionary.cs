@@ -34,6 +34,19 @@ namespace GuanajuatoAdminUsuarios.Framework
         /// </summary>
         /// <typeparam name="TEnum">Nombre de catálogo</typeparam>
         /// <returns></returns>
+        public string GetCatalogSystem<TEnum>(int id)
+        {
+            Type enumType = typeof(TEnum);
+            return (from int e in Enum.GetValues(typeof(TEnum))
+                    where e == id
+                    select ((Enum)Enum.ToObject(enumType, e)).GetDescription()).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Obtiene la información de los catálogos internos (no se guarda en la base de datos)
+        /// </summary>
+        /// <typeparam name="TEnum">Nombre de catálogo</typeparam>
+        /// <returns></returns>
         public Dictionary<int, string> GetCatalogSystem<TEnum>()
         {
             Type enumType = typeof(TEnum);

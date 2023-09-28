@@ -52,6 +52,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IColores _coloresService;
         private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
+        private readonly IRepuveService _repuveService;
 
         private readonly AppSettings _appSettings;
 
@@ -69,7 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICapturaAccidentesService capturaAccidentesService,
             ICotejarDocumentosClientService cotejarDocumentosClientService, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-
+            , IRepuveService repuveService
             )
         {
             _catDictionary = catDictionary;
@@ -94,6 +95,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _coloresService = coloresService;
             _catMarcasVehiculosService = catMarcasVehiculosService;
             _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
+            _repuveService = repuveService;
         }
 
         public IActionResult Index()
@@ -235,11 +237,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        public ActionResult Editar(int id)
+        public ActionResult Editar(int idInfraccion, int id)
         {
+            int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(id);
+            var model = _infraccionesService.GetInfraccion2ById(ids);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -433,13 +436,43 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 {
                                     PersonasMorales = new List<PersonaModel>()
                                 }
-                            }; return PartialView("_Create", vehiculoEncontrado);
+                            }; 
+                            return PartialView("_Create", vehiculoEncontrado);
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
                             //Aqui servico repuve//////
                             //var resultSegundoServicio = await BusquedaRepuveAsync(model);
-                            return PartialView("_Create", vehiculosModel);
+                            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+                            {
+                                placa = model.PlacasBusqueda,
+                                niv = model.SerieBusqueda
+                            };
+                            var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+
+
+                            var vehiculoEncontrado = new VehiculoModel
+                            {
+                                placas = repuveConsGralResponse.placa,
+                                serie = repuveConsGralResponse.niv_padron,
+                                //tarjeta = repuveConsGralResponse.ta,
+                                motor = repuveConsGralResponse.motor,
+                                //otros = repuveConsGralResponse.
+                                color = repuveConsGralResponse.color,
+                                //idEntidad = idEntidad,
+                                //idMarcaVehiculo = idMarca,
+                                //idSubmarca = idSubmarca,
+                                submarca = repuveConsGralResponse.submarca,
+                                //idTipoVehiculo = idTipo,
+                                modelo = repuveConsGralResponse.modelo,
+                                //capacidad = repuveConsGralResponse.c,
+                                //carga = repuveConsGralResponse.ca,
+
+                                Persona = new PersonaModel(),
+
+                                PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                            };
+                            return PartialView("_Create", vehiculoEncontrado);
 
                         }
                     }

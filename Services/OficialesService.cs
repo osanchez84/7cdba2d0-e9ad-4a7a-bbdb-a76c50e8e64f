@@ -75,7 +75,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT ofi.*, e.estatusDesc FROM catOficiales AS ofi INNER JOIN estatus AS e ON ofi.estatus = e.estatus WHERE ofi.estatus = 1 ORDR BY Nombre ASC;", connection);
+                    SqlCommand command = new SqlCommand("SELECT ofi.*, e.estatusDesc FROM catOficiales AS ofi INNER JOIN estatus AS e ON ofi.estatus = e.estatus WHERE ofi.estatus = 1 ORDER BY Nombre ASC;", connection);
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

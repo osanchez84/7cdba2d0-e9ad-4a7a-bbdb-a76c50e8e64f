@@ -159,7 +159,7 @@
                 <div class="col-auto">
                     <div class="row">
                         <div class="col-auto my-3">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" onclick="cerrarModalP()" aria-label="Close">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -227,6 +227,23 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -254,7 +271,6 @@
             dataType: "html",
             success: function (data) {
                 $('#modalBodyCrearPersona').html(data);
-                $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPersona').modal('show');
             }
         });
@@ -392,5 +408,13 @@
 
         $('#modalLicencias').modal('show');
     }
+    function cerrarModalP() {
+        $('#confirmacionModal').modal('show');
 
+        // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
+        $('#confirmarCerrar').on('click', function () {
+            $('#confirmacionModal').modal('hide');
+            window.close(); // Cierra la ventana
+        });
+    }
 </script>

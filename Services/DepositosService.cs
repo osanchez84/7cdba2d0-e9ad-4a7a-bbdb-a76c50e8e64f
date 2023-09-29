@@ -16,11 +16,12 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public int GuardarSolicitud(SolicitudDepositoModel model)
+        public string GuardarSolicitud(SolicitudDepositoModel model)
 
         {
             int result = 0;
             int idSolicitudInsert = 0;
+            string folioSolicitud = "";
 
 
 
@@ -41,6 +42,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idEntidad]
                                         ,[idMunicipio]
                                         ,[idMotivoAsignacion]
+                                        ,[vehiculoNumero] 
+                                        ,[vehiculoCalle] 
+                                        ,[vehiculoColonia] 
+                                        ,[vehiculoKm]  
+                                        ,[idCarreteraUbicacion]  
+                                        ,[idTramoUbicacion] 
+                                        ,[idEntidadUbicacion]
+                                        ,[idMunicipioUbicacion]
+                                        ,[idPension]
+                                        ,[vehiculoInterseccion]  
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
@@ -61,6 +72,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@idEntidad
                                         ,@idMunicipio
                                         ,@idMotivoAsignacion
+                                        ,@numeroUbicacion
+                                        ,@calleUbicacion
+                                        ,@coloniaUbicacion
+                                        ,@kilometroUbicacion
+                                        ,@idCarretera
+                                        ,@idTramo
+                                        ,@idEntidadUbicacion
+                                        ,@idMunicipioUbicacion
+                                        ,@idPensionUbicacion
+                                        ,@interseccion
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus);
@@ -91,22 +112,53 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@kilometroUbicacion", SqlDbType.NVarChar)).Value = (object)model.kilometroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@interseccion", SqlDbType.NVarChar)).Value = (object)model.interseccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEntidadUbicacion", SqlDbType.Int)).Value = (object)model.idEntidadUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
                     idSolicitudInsert = result; // Almacena el valor en la variable idSolicitudInsert
-               
+                    folioSolicitud = ObtenerFolioSolicitud(connection, idSolicitudInsert);
                 }
+
                 catch (SqlException ex)
                 {
-                    return idSolicitudInsert;
+                    return folioSolicitud;
                 }
+
                 finally
                 {
                     connection.Close();
                 }
             }
-            return idSolicitudInsert;
+            return folioSolicitud;
         }
+        private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
+        {
+            string folioSolicitud = "";
+            string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
 
+            using (SqlCommand cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        folioSolicitud = reader["folio"].ToString();
+                    }
+                }
+            }
+
+            return folioSolicitud;
+        }
 
         public int ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
 

@@ -510,6 +510,7 @@
             dataType: "html",
             success: function (data) {
                 $('#ModalBodyAgregarConductor').html(data);
+                $('#agregarConductorModal').modal({ backdrop: 'static', keyboard: false });
                 $('#agregarConductorModal').modal('show');
                 }
         });

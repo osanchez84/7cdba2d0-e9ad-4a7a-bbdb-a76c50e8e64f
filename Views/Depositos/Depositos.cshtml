@@ -48,8 +48,30 @@
                     <label>-</label>
                 </div>
             </div>
-          <!--Inf-->
-            </div>
+<div class="col border bg-light rounded">
+                <div class="row align-items-end justify-content-center">
+                    <div class="col-12 col-md-12 col-lg-12 col-xl-4 align-self-center mt-4 mb-1">
+                        <h5><b>Importa datos iniciales desde una infracción ya existente</b></h5>
+                    </div>
+                        <div class="col-12 col-md-6 col-lg-6 col-xl-4">
+                        <form id="busquedaInfForm">
+                            <div class="controlForm my-3">
+                                @(Html.Kendo().TextBoxFor(t=> t.folioBusquedaInfraccion)
+                                .Label(l => l.Content("Folio de infracción:"))
+                                .Placeholder("Ingrese el folio de la infracción")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
+                            </div>
+                        </form>
+                        </div>
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-4 btnOutline btnOutlinePrimary my-3 text-center">
+                        <button  data-bs-toggle="modal" data-bs-target="#"onclick="buscarInfraccion()">
+                            <h6 class="m-0"><i class="icon-infracion me-2"></i><b>Importar datos de infración</b></h6>
+                        </button>
+                    </div>
+                </div>
+                
+            </div>            </div>
       <form id="solicitudForm">
         <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-12 col-md-6 col-lg-6 col-xl-3">
@@ -719,5 +741,45 @@
             }
         });
     }
+
+    function buscarInfraccion() {
+        var folioBusquedaInfraccion = $("#folioBusquedaInfraccion").val(); 
+        console.log(folioBusquedaInfraccion);
+
+        $.ajax({
+            url: '/Depositos/ajax_ImportarInfoInfraccion',
+            type: 'POST',
+            data: {
+                folioBusquedaInfraccion: folioBusquedaInfraccion 
+            },
+            success: function (data) {
+                console.log("JJ", data)
+                var selectedValueCar = data.IdCarretera;
+                var selectedValueTramo = data.IdTramo;
+                var selectedValueMun = data.idMunicipioUbicacion;
+
+                $("#numeroUbicacion").val(data.numeroUbicacion); 
+                $("#calleUbicacion").val(data.calleUbicacion);
+                $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion
+                $("#kilometroUbicacion").val(data.kilometroUbicacion);
+
+                $("#IdCarretera").data("kendoDropDownList").value(selectedValueCar);
+                $("#IdCarretera").data("kendoDropDownList").trigger("change");
+
+                $("#IdTramo").data("kendoDropDownList").value(selectedValueTramo);
+                $("#IdTramo").data("kendoDropDownList").trigger("change");
+
+                $("#idMunicipioUbicacion").data("kendoDropDownList").value(selectedValueMun);
+                $("#idMunicipioUbicacion").data("kendoDropDownList").trigger("change");
+
+                $("#interseccion").val(data.interseccion);
+            },
+            error: function () {
+                sitteg_warning("Ocurrió un error, inténtelo más tarde");
+            }
+        });
+    }
+
+
 
   </script>

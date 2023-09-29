@@ -10,6 +10,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         SolicitudDepositoModel ObtenerSolicitudPorID(int Isol);
         int ActualizarSolicitud(int? Isol,SolicitudDepositoModel model);
         int CompletarSolicitud(SolicitudDepositoModel model);
-        
+        SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion);
+
+
     }
 }

@@ -107,12 +107,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
 
                 ViewBag.ListadoGruasPensiones = gruasPensionesList;
-                return PartialView("_EditarPension", model);
+                return Json (gruasPensionesList);
 
             }
             //SetDDLCategories();
             //return View("Create");
-            return RedirectToAction("Index");
+            return View(model);
 
         }
 

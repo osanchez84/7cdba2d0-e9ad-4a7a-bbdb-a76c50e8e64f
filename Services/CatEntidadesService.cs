@@ -26,7 +26,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT ent.*, e.estatusDesc FROM catEntidades AS ent LEFT JOIN estatus AS e ON ent.estatus = e.estatus;", connection);
+                    SqlCommand command = new SqlCommand("SELECT ent.*, e.estatusDesc FROM catEntidades AS ent LEFT JOIN estatus AS e ON ent.estatus = e.estatus ORDER BY nombreEntidad ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

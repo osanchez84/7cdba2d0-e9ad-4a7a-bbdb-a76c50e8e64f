@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -13,6 +14,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdMunicipio { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
+
+        [EmailAddress(ErrorMessage = "Ingresa un correo electrónico válido.")]
+        [RegularExpression(@"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$", ErrorMessage = "Ingresa un correo electrónico válido.")]
         public string Correo { get; set; }
         public DateTime FechaActualizacion { get; set; }
         public int ActualizadoPor { get; set; }

@@ -37,11 +37,11 @@
         </div>
         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="finalizar()">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="cerrarModalV()">
                     @(Html.Kendo().Button()
                         .Name("editBusqueda")
                         .HtmlAttributes(new { @class = "btnPrimary" })
-                        .Content("<h6 class=\"m-0\"><i class=\"icon-research me-2\"></i><b>Editar búsqueda</b></h6>"))
+                        .Content("<h6 class=\"m-0\"><b>Cerrar</b></h6>"))
                 </div>
             </div>
         </div>
@@ -1084,6 +1084,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 
@@ -1231,6 +1248,16 @@
         }
 
     }
+     function cerrarModalV() {
+        $('#confirmacionModal').modal('show');
+
+        // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
+        $('#confirmarCerrar').on('click', function () {
+            $('#confirmacionModal').modal('hide');
+            window.close(); // Cierra la ventana
+        });
+    }
+
        $(document).ready(function() {
         var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);

@@ -54,7 +54,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idPensionUbicacion { get; set; }
         public string interseccion { get; set; }
 
-
+        public int idInfraccion { get; set; }
 
 
 

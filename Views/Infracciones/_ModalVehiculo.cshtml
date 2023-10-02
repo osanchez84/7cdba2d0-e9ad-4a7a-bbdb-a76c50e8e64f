@@ -216,11 +216,13 @@
                     $('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a SITTEG");
                     $('#errorModal').modal('show');
                     $('#ModalBodyVehiculoService').html(response);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
                 } else {
                     $('#errorMessage').text(" Por favor complete o corrija para importar los datos a SITTEG");
                     $('#errorModal').modal('show');
                     $('#ModalBodyVehiculoService').html(response);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
                 }
             },

@@ -92,6 +92,20 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdCarretera { get; set; }
 
         public string carretera { get; set; }
+        public string nombrePropietario { get; set; }
+        public string apPaternoPropietario { get; set; }
+        public string apMaternoPropietario { get; set; }
+        public string fullPropietario
+        {
+            get
+            {
+                return nombrePropietario.ToString() + " " +
+                apPaternoPropietario + " " +
+                apMaternoPropietario;
+            }
+        }
+        public int idInfraccion { get; set; }
+
         #endregion
 
 

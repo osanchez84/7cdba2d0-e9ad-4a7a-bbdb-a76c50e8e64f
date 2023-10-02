@@ -74,11 +74,11 @@
             .Name("Grid")
             .Columns(columns =>
             {
-                columns.Bound(p => p.IdDeposito).Title("Num.").Width(70);
-                columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(150).HtmlAttributes(new { @class = "label-control" });
+                columns.Bound(p => p.IdDeposito).Title("Numero.").Width(90);
+                columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190).HtmlAttributes(new { @class = "label-control" });
                 columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
                 columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
-                columns.Bound(c => c.FechaLiberacion).Format("{0:dd/MM/yyyy}").Width(90);
+                columns.Bound(c => c.FechaLiberacion).Format("{0:dd/MM/yyyy}").Title("Fecha de salida").Width(90);
                 columns.Bound(c => c.pension).Title("Pension").Width(100);
                 columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                 columns.Bound(p => p.IdConcesionario).ClientTemplate(
@@ -94,10 +94,16 @@
                 columns.Bound(p => p.IdDeposito).ClientTemplate(
                 "<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
                 ).Title("Eliminar").Sortable(false).Width(70);
+columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
+    "<div class='turno-captura'>" +
+        "<div class='tto-marked'>TTO:</div>" +
+                "#= IdDependenciaGenera === 1 ? '✓' : '' #" +
+        "<div class='dep-marked'>Dep:</div>" +
+                "#= IdDependenciaGenera === 2 ? '✓' : '' #" +
+    "</div>"
+).Title("Turno Captura").Width(200);
 
-                columns.Bound(p => p.IdDeposito).ClientTemplate(
-                "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-data me-2'></i></h6></button>"
-                ).Title("Exportar").Sortable(false).Width(70);
+
 
             }).HtmlAttributes(new { style = "height:350" })
             @*.Pageable(pager => pager.Input(true).Position(GridPagerPosition.Top))*@

@@ -166,6 +166,11 @@ namespace Example.WebUI.Controllers
          var complemntarRegistro = _catDepositosService.CompletarSolicitud(model);
             return Ok();
         }
+        public ActionResult ajax_ImportarInfoInfraccion(string folioBusquedaInfraccion)
+        {
+            var complemntarRegistro = _catDepositosService.ImportarInfraccion(folioBusquedaInfraccion);
+            return Json(complemntarRegistro);
+        }
         
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Data.SqlClient;
 using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.Identity.Client;
+using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -16,11 +17,12 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public int GuardarSolicitud(SolicitudDepositoModel model)
+        public string GuardarSolicitud(SolicitudDepositoModel model)
 
         {
             int result = 0;
             int idSolicitudInsert = 0;
+            string folioSolicitud = "";
 
 
 
@@ -41,6 +43,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idEntidad]
                                         ,[idMunicipio]
                                         ,[idMotivoAsignacion]
+                                        ,[vehiculoNumero] 
+                                        ,[vehiculoCalle] 
+                                        ,[vehiculoColonia] 
+                                        ,[vehiculoKm]  
+                                        ,[idCarreteraUbicacion]  
+                                        ,[idTramoUbicacion] 
+                                        ,[idEntidadUbicacion]
+                                        ,[idMunicipioUbicacion]
+                                        ,[idPension]
+                                        ,[vehiculoInterseccion]  
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
@@ -61,6 +73,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@idEntidad
                                         ,@idMunicipio
                                         ,@idMotivoAsignacion
+                                        ,@numeroUbicacion
+                                        ,@calleUbicacion
+                                        ,@coloniaUbicacion
+                                        ,@kilometroUbicacion
+                                        ,@idCarretera
+                                        ,@idTramo
+                                        ,@idEntidadUbicacion
+                                        ,@idMunicipioUbicacion
+                                        ,@idPensionUbicacion
+                                        ,@interseccion
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus);
@@ -91,22 +113,53 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@kilometroUbicacion", SqlDbType.NVarChar)).Value = (object)model.kilometroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@interseccion", SqlDbType.NVarChar)).Value = (object)model.interseccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEntidadUbicacion", SqlDbType.Int)).Value = (object)model.idEntidadUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
                     idSolicitudInsert = result; // Almacena el valor en la variable idSolicitudInsert
-               
+                    folioSolicitud = ObtenerFolioSolicitud(connection, idSolicitudInsert);
                 }
+
                 catch (SqlException ex)
                 {
-                    return idSolicitudInsert;
+                    return folioSolicitud;
                 }
+
                 finally
                 {
                     connection.Close();
                 }
             }
-            return idSolicitudInsert;
+            return folioSolicitud;
         }
+        private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
+        {
+            string folioSolicitud = "";
+            string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
 
+            using (SqlCommand cmd = new SqlCommand(query, connection))
+            {
+                cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        folioSolicitud = reader["folio"].ToString();
+                    }
+                }
+            }
+
+            return folioSolicitud;
+        }
 
         public int ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
 
@@ -308,6 +361,112 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return resultado;
         }
+
+       public SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion)
+         {
+            SolicitudDepositoModel model = new SolicitudDepositoModel();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact =
+                                            @"SELECT inf.idInfraccion
+                                                    ,inf.idOficial
+                                                    ,inf.idDependencia
+                                                    ,inf.idDelegacion
+                                                    ,inf.idVehiculo
+                                                    ,inf.idAplicacion
+                                                    ,inf.idGarantia
+                                                    ,inf.idEstatusInfraccion
+                                                    ,inf.idMunicipio
+                                                    ,inf.idTramo
+                                                    ,inf.idCarretera
+                                                    ,inf.idPersona
+                                                    ,inf.idPersonaInfraccion
+                                                    ,inf.placasVehiculo
+                                                    ,inf.folioInfraccion
+                                                    ,inf.fechaInfraccion
+                                                    ,inf.kmCarretera
+                                                    ,inf.observaciones
+                                                    ,inf.lugarCalle
+                                                    ,inf.lugarNumero
+                                                    ,inf.lugarColonia
+                                                    ,inf.lugarEntreCalle
+                                                    ,inf.infraccionCortesia
+                                                    ,inf.NumTarjetaCirculacion
+                                                    ,inf.fechaActualizacion
+                                                    ,inf.actualizadoPor
+                                                    ,inf.estatus
+                                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                                    ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
+                                                    ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
+                                                    ,tipoP.idTipoPlaca, tipoP.tipoPlaca
+                                                    ,tipoL.idTipoLicencia, tipoL.tipoLicencia
+                                                    ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
+                                                    ,catMun.idMunicipio,catMun.municipio
+                                                    ,catTra.idTramo,catTra.tramo
+                                                    ,per.RFC,per.fechaNacimiento
+                                                    ,catCarre.idCarretera,catCarre.carretera
+                                                    ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
+                                                    ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
+                                                    ,motInf.idMotivoInfraccion,motInf.idMotivoInfraccion
+                                                    ,ci.nombre
+                                                    ,ci.idCatMotivoInfraccion,ci.nombre
+                                                    ,catSubInf.idSubConcepto,catSubInf.subConcepto
+                                                    ,catConInf.idConcepto,catConInf.concepto
+                                                    FROM infracciones as inf
+                                                    left join catDependencias dep on inf.idDependencia= dep.idDependencia
+                                                    left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
+                                                    left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
+                                                    left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
+                                                    left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
+                                                    left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
+                                                    left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
+                                                    left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
+                                                    left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                                                    left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+												   INNER JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
+                                                    left join catTramos catTra on inf.idTramo = catTra.idTramo
+                                                    left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
+                                                    left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+                                                    left join personas per on inf.idPersona = per.idPersona
+                                                    left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
+                                                    left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
+                                                    WHERE inf.folioInfraccion=@folioInfraccion";
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioBusquedaInfraccion;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+                            model.idMunicipioUbicacion = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+                            model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+                            model.kilometroUbicacion = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+                            model.calleUbicacion = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+                            model.numeroUbicacion = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+                            model.coloniaUbicacion = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+                            model.interseccion = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+                            model.folio = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
+                            model.municipio = reader["municipio"].ToString();
+                          }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return model;
+        }
+
+
 
     }
 }

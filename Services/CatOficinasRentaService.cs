@@ -24,7 +24,8 @@ using System.Data;
 
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand("SELECT catOficinasRenta.*, estatus.estatusdesc FROM catOficinasRenta JOIN estatus ON catOficinasRenta.estatus = estatus.estatus WHERE catOficinasRenta.estatus = 1", connection);
+                SqlCommand command = new SqlCommand("SELECT catOficinasRenta.*, estatus.estatusdesc FROM catOficinasRenta JOIN estatus ON catOficinasRenta.estatus = estatus.estatus" +
+                    " WHERE catOficinasRenta.estatus = 1 ORDER BY NombreOficina ASC", connection);
                 command.CommandType = CommandType.Text;
                 using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                 {

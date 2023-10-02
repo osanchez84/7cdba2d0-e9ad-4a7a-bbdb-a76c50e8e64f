@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from catDependencias where estatus=1", connection);
+                    SqlCommand command = new SqlCommand("Select * from catDependencias where estatus=1 ORDER BY NombreDependencia ASC", connection);
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

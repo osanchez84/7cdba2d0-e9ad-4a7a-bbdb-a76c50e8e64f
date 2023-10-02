@@ -205,12 +205,15 @@
                     $('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a SITTEG");
                     $('#errorModal').modal('show'); 
                     $('#ModalBodyVehiculoService').html(data);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
+
                 } else {
                     $('#errorMessage').text("Complete o ingrese la información necesaria para agregar este vehículo a SITTEG");
                     $('#errorModal').modal('show');
 
                     $('#ModalBodyVehiculoService').html(data);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
                 }
             },

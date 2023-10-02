@@ -29,8 +29,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         @"select   top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
                             d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
                             d.ActualizadoPor, d.estatus, sol.solicitanteNombre,
-                            sol.solicitanteAp,sol.solicitanteAm,pen.pension	,del.delegacion,col.color,
-                            cTra.tramo, m.marcaVehiculo	,subm.nombreSubmarca
+                            sol.solicitanteAp,sol.solicitanteAm,pen.pension,del.delegacion,col.color,
+                            cTra.tramo, m.marcaVehiculo	,subm.nombreSubmarca,v.idPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno
                             from depositos d 
                             left join solicitudes sol on d.idSolicitud = sol.idSolicitud
                             left join pensiones pen on d.idPension	= pen.idPension
@@ -39,6 +39,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             left join catTramos cTra  on d.Idtramo=cTra.idTramo
                             left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
                             left join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
+                            left join vehiculos v ON v.placas = d.Placa
+                            left join personas p ON p.idPersona = v.idPersona
                             where d.liberado=0 and d.estatus=1";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
@@ -76,6 +78,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Color = reader["Color"]?.ToString();
                             deposito.pension = reader["pension"]?.ToString();
                             deposito.tramo = reader["tramo"]?.ToString();
+                            deposito.nombrePropietario = reader["nombre"]?.ToString();
+                            deposito.apPaternoPropietario = reader["apellidoPaterno"]?.ToString();
+                            deposito.apMaternoPropietario = reader["apellidoMaterno"]?.ToString();
 
                             depositosList.Add(deposito);
                            

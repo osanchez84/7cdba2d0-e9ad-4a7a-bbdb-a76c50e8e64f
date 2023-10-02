@@ -71,7 +71,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT del.*, e.estatusDesc FROM catDelegacionesOficinasTransporte AS del INNER JOIN estatus AS e ON del.estatus = e.estatus WHERE del.estatus = 1;", connection);
+                    SqlCommand command = new SqlCommand("SELECT del.*, e.estatusDesc FROM catDelegacionesOficinasTransporte AS del INNER JOIN estatus AS e ON del.estatus = e.estatus" +
+                        " WHERE del.estatus = 1 ORDER BY nombreOficina ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

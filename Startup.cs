@@ -180,9 +180,13 @@ namespace GuanajuatoAdminUsuarios
 
             services.AddScoped<IColores, CatColoresService>();
 
+            services.AddScoped<IComparativoInfraccionesService, ComparativoInfraccionesService>();
+
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();
+
+            
 
             services
                .AddControllersWithViews()

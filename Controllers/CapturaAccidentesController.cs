@@ -909,8 +909,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
         {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(IdVehiculo, idAccidente, IdInfraccion);
+            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
+
             return View("CapturaCAccidente");
         }
         public ActionResult MostrarModalCrearInfraccion(int IdAccidente, int IdVehiculo, int IdConductor, int IdPropietario, string Placa, string Tarjeta)
@@ -1004,7 +1007,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
-
+            
             return Json(ListInfracciones.ToDataSourceResult(request));
         }
         public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado)

@@ -23,7 +23,7 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
                 <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
                     @(Html.Kendo().Button()
@@ -120,7 +120,7 @@
                     @Html.HiddenFor(m=> m.Tarjeta)
                     @Html.HiddenFor(m=> m.idGarantia)
                     @Html.HiddenFor(m=> m.IdPersona)
-                    @Html.HiddenFor(m=> m.IdPropietario)
+                    @Html.HiddenFor(m=> m.idPersonaInfraccion)
                     @Html.HiddenFor(m=> m.IdVehiculo)
                     @*Contenidos de cada tab*@
                     <div class="tab-content" id="nav-tabContent">
@@ -142,9 +142,9 @@
                                     <div class="controlForm">
                                         <label>Fecha infracción:</label>
                                         @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
-                                                .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                             </div>
@@ -152,20 +152,20 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
-                                                .Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
-                                                .Placeholder("Ingresa folio")
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
+                                            .Placeholder("Ingresa folio")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Oficial:</label>
                                         @(Html.Kendo().DropDownListFor(m => m.idOficial)
-                                                .BindTo((SelectList)ViewBag.CatOficiales)
-                                                .OptionLabel("-- Seleccione --")
-                                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
-                                                )
+                                            .BindTo((SelectList)ViewBag.CatOficiales)
+                                            .OptionLabel("-- Seleccione --")
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                            )
                                         @Html.ValidationMessageFor(x => x.idOficial)
                                     </div>
                                 </div>
@@ -173,10 +173,10 @@
                                     <div class="controlForm">
                                         <label>Municipio:</label>
                                         @(Html.Kendo().DropDownListFor(m => m.IdMunicipio)
-                                                .BindTo((SelectList)ViewBag.CatMunicipios)
-                                                .OptionLabel("-- Seleccione --")
-                                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
-                                                )
+                                            .BindTo((SelectList)ViewBag.CatMunicipios)
+                                            .OptionLabel("-- Seleccione --")
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                            )
                                     </div>
                                 </div>
                             </div>
@@ -185,19 +185,19 @@
                                     <div class="checkbox">
                                         <label>Infracción de cortesía: </label>&nbsp;&nbsp;
                                         @(Html.Kendo().SwitchFor(m => m.infraccionCortesia)
-                                                .Messages(c => c.Checked("SI").Unchecked("NO"))
-                                                )
+                                            .Messages(c => c.Checked("SI").Unchecked("NO"))
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-8">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextAreaFor(t => t.observaciones)
-                                                .Resizable("none")
-                                                .Rows(4)
-                                                .Label(l => l.Content("Observaciones generales:"))
-                                                .Placeholder("Ingresa observaciones")
-                                                .HtmlAttributes(new { style = "width: 100%" })
-                                                )
+                                            .Resizable("none")
+                                            .Rows(4)
+                                            .Label(l => l.Content("Observaciones generales:"))
+                                            .Placeholder("Ingresa observaciones")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
                                     </div>
                                 </div>
                             </div>
@@ -225,10 +225,10 @@
                                     <div class="controlForm">
                                         <label>Carretera:</label>
                                         @(Html.Kendo().DropDownListFor(m => m.IdCarretera)
-                                                .BindTo((SelectList)ViewBag.CatCarreteras)
-                                                .OptionLabel("-- Seleccione --")
-                                                .HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
-                                                )
+                                            .BindTo((SelectList)ViewBag.CatCarreteras)
+                                            .OptionLabel("-- Seleccione --")
+                                            .HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
@@ -236,19 +236,19 @@
                                         <label>Tramo:</label>
                                         <div id="divTramo">
                                             @(Html.Kendo().DropDownListFor(f => f.IdTramo)
-                                                    .BindTo((SelectList)ViewBag.CatTramos)
-                                                    .OptionLabel("-- Seleccione --")
-                                                    .HtmlAttributes(new { style = "width:100%;", required = "required" })
-                                                    )
+                                                .BindTo((SelectList)ViewBag.CatTramos)
+                                                .OptionLabel("-- Seleccione --")
+                                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                                )
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.Kilometro)
-                                                .Label(l => l.Content("Kilometro: <b>(obligatorio)</b>:"))
-                                                .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Kilometro: <b>(obligatorio)</b>:"))
+                                            .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                                            )
                                     </div>
                                 </div>
                             </div>
@@ -256,37 +256,37 @@
                                 <div class="form-group col-md-3">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.lugarCalle)
-                                                .Label(l => l.Content("Calle: <b>(obligatorio)</b>:"))
-                                                .Placeholder("Ingresa calle")
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Calle: <b>(obligatorio)</b>:"))
+                                            .Placeholder("Ingresa calle")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.lugarNumero)
-                                                .Label(l => l.Content("Número: <b>(obligatorio)</b>:"))
-                                                .Placeholder("Ingresa número")
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Número: <b>(obligatorio)</b>:"))
+                                            .Placeholder("Ingresa número")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.lugarColonia)
-                                                .Label(l => l.Content("Colonia: <b>(obligatorio)</b>:"))
-                                                .Placeholder("Ingresa colonia")
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Colonia: <b>(obligatorio)</b>:"))
+                                            .Placeholder("Ingresa colonia")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <div class="controlForm">
                                         @(Html.Kendo().TextBoxFor(t => t.lugarEntreCalle)
-                                                .Label(l => l.Content("Entre calle: <b>(obligatorio)</b>:"))
-                                                .Placeholder("Ingresa entre calle")
-                                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                                )
+                                            .Label(l => l.Content("Entre calle: <b>(obligatorio)</b>:"))
+                                            .Placeholder("Ingresa entre calle")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
                                     </div>
                                 </div>
                             </div>
@@ -448,9 +448,9 @@
                                     <div class="controlForm">
                                         <label>Concepto:</label>
                                         @(Html.Kendo().DropDownListFor(m => m.Garantia.idCatGarantia)
-                                                .BindTo((SelectList)ViewBag.CatGarantias)
-                                                .OptionLabel("-- Seleccione --")
-                                                .HtmlAttributes(new { style = "width:100%;", id = "ddlTipoGarantia", required = "required" }))
+                                            .BindTo((SelectList)ViewBag.CatGarantias)
+                                            .OptionLabel("-- Seleccione --")
+                                            .HtmlAttributes(new { style = "width:100%;", id = "ddlTipoGarantia", required = "required" }))
                                     </div>
                                 </div>
                             </div>
@@ -500,9 +500,9 @@
                                             <div class="controlForm">
                                                 <label>Tipo placa:</label>
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoPlaca)
-                                                        .BindTo((SelectList)ViewBag.CatTipoPlaca)
-                                                        .OptionLabel("-- Seleccione --")
-                                                        .HtmlAttributes(new { style = "width:100%;" }))
+                                                    .BindTo((SelectList)ViewBag.CatTipoPlaca)
+                                                    .OptionLabel("-- Seleccione --")
+                                                    .HtmlAttributes(new { style = "width:100%;" }))
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
@@ -529,18 +529,18 @@
                                             <div class="controlForm">
                                                 <label>Licencia:</label>
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia)
-                                                        .BindTo((SelectList)ViewBag.CatTipoLicencia)
-                                                        .OptionLabel("-- Seleccione --")
-                                                        .HtmlAttributes(new { style = "width:100%;" }))
+                                                    .BindTo((SelectList)ViewBag.CatTipoLicencia)
+                                                    .OptionLabel("-- Seleccione --")
+                                                    .HtmlAttributes(new { style = "width:100%;" }))
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 @(Html.Kendo().TextBoxFor(t => t.Garantia.numLicencia)
-                                                        .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
-                                                        .Placeholder("Ingresa licencia")
-                                                        .HtmlAttributes(new { style = "width: 100%" })
-                                                        )
+                                                    .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
+                                                    .Placeholder("Ingresa licencia")
+                                                    .HtmlAttributes(new { style = "width: 100%" })
+                                                    )
                                             </div>
                                         </div>
                                     </div>
@@ -653,10 +653,12 @@
         }
     });
 
-       function btnEditarInfraccion() {
+    function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         var idVehiculo = $("#IdVehiculo").val();
         var idPersona = $("#IdPersona").val();
+        var idPersonaInfraccion = $("#idPersonaInfraccion").val();
+
 
         if (!idVehiculo) {
             sitteg_info('Debe seleccionar un vehículo');
@@ -679,12 +681,15 @@
                 data: formData,
                 success: function (response) {
                     if (response.success) {
-        var idInfraccion = response.idInfraccion; 
-        sitteg_success("Informacion Actualizada");
-        serviceCrearInfraccion(idInfraccion);
-                } else {
-                    sitteg_warning(response.message);
-                }
+                        console.log("RES", response)
+                        var idInfraccion = response.idInfraccion;
+                        var idVehiculo = response.idVehiculo;
+
+                        sitteg_success("Informacion Actualizada");
+                        serviceCrearInfraccion(idInfraccion,idVehiculo);
+                    } else {
+                        sitteg_warning(response.message);
+                    }
                 },
                 error: function (error) {
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
@@ -694,19 +699,31 @@
             sitteg_info('Debe llenar los campos requeridos');
         }
     }
+    
 
-    function serviceCrearInfraccion(idInfraccion) {
+
+
+
+    function serviceCrearInfraccion(idInfraccion,idVehiculo) {
         $.ajax({
             url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
             type: 'POST',
             data: { idInfraccion: idInfraccion },
             success: function (response) {
-                if (response.success) {
-                    sitteg_success("Informacion actualizada correctamente.");
+                console.log("WEW",response)
+             if (response.success) {
+                sitteg_success("Informacion actualizada correctamente.");
+                    window.location.href = '/CapturaAccidentes/CapturaCr/?IdVehiculo=' + idVehiculo + '&idInfraccion=' + idInfraccion;
+
+
                 } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                     sitteg_info("El registro fue actualizado en SITTEG.");
+                    window.location.href = '/CapturaAccidentes/CapturaCr/?IdVehiculo=' + idVehiculo + '&idInfraccion=' + idInfraccion;
+
                 } else {
                     sitteg_warning("Ha ocurrido un error: " + response.message);
+                    window.location.href = '/CapturaAccidentes/CapturaCr/?IdVehiculo=' + idVehiculo + '&idInfraccion=' + idInfraccion;
+
                 }
             },
             error: function (error) {
@@ -784,7 +801,7 @@
             //}
         });
     }
-    function goBack(){
+    function goBack() {
         window.location.href = '/CapturaAccidentes/CapturaAccidenteC/'
 
     }

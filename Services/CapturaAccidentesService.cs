@@ -1297,11 +1297,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("(SELECT v.idVehiculo, v.placas, propietario.idPersona AS propietario, i.folioInfraccion, i.fechaInfraccion,i.idInfraccion,i.idPersona,i.idPersonaInfraccion, conductor.idPersona AS conductor, ent.nombreEntidad, " +
                         "propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
                         "FROM conductoresVehiculosAccidente AS cva " +
-                        "JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
-                        "JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
-                        "JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
-                        "JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
-                        "JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
+                        "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
+                        "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
+                        "LEFT JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
+                        "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
+                        "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
                         "WHERE cva.idAccidente = @idAccidente " +
                         "AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
 
@@ -1857,9 +1857,10 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo;
                     command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona;
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion;
-                    command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa;
-                    command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta;
-                 
+                    command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta ?? DBNull.Value;
+
+
 
                     command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                     command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;

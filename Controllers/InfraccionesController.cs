@@ -236,6 +236,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View(new InfraccionesModel());
         }
 
+    
+
+
+
+
+
+
 
         public ActionResult Editar(int idInfraccion, int id)
         {

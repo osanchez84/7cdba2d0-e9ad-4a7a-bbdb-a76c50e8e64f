@@ -1,0 +1,215 @@
+﻿@model ComparativoInfraccionesResumenModel
+
+<div class="row my-4 px-4">
+    <div class="col-md-12">        
+        <div>
+            <nav class="tabCustom">
+                @*navegador tabs*@
+                <div class="nav nav-tabs row mx-0" id="nav-tab" role="tablist">
+                    <button class="nav-link active col" id="resultadosGenerales-tab" data-bs-toggle="tab" data-bs-target="#resultadosGenerales-container" type="button" role="tab" aria-controls="resultadosGenerales-container" aria-selected="true">
+                        <div class="row justify-content-center align-items-center px-2 py-1">
+                            <div class="col-auto radioCustom p-0">
+                                <div class="rounded-circle m-1"></div>
+                            </div>
+                            <div class="col-auto p-0">
+                                <h6 class="m-0"><b>Resultados generales</b></h6>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="nav-link col" id="detallesPorCausa-tab" data-bs-toggle="tab" data-bs-target="#detallesPorCausa-container" type="button" role="tab" aria-controls="detallesPorCausa-container" aria-selected="false">
+                        <div class="row justify-content-center align-items-center px-2 py-1">
+                            <div class="col-auto radioCustom p-0">
+                                <div class="rounded-circle m-1"></div>
+                            </div>
+                            <div class="col-auto p-0">
+                                <h6 class="m-0"><b>Detalle por causa</b></h6>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="nav-link col" id="desgloseTotalDeInfracciones-tab" data-bs-toggle="tab" data-bs-target="#desgloseTotalDeInfracciones-container" type="button" role="tab" aria-controls="desgloseTotalDeInfracciones-container" aria-selected="false">
+                        <div class="row justify-content-center align-items-center px-2 py-1">
+                            <div class="col-auto radioCustom p-0">
+                                <div class="rounded-circle m-1"></div>
+                            </div>
+                            <div class="col-auto p-0">
+                                <h6 class="m-0"><b>Desglose total de infracciones</b></h6>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </nav>            
+            @*Contenidos de cada tab*@
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane tabCustomConteiner fade show active" id="resultadosGenerales-container" role="tabpanel" aria-labelledby="resultadosGenerales-tab">
+                    <div class="row my-4 px-4">
+                        <div class="col-md-6">
+                            @(Html.Kendo().Grid(Model.resultadosGenerales)
+                                .Name("gridResultadosGenerales")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound(c => c.año).Title("Año");
+                                    columns.Bound(p => p.total).Title("Total").ClientFooterTemplate("total : #=sum#");
+                                }).HtmlAttributes(new { style = "height:auto" })
+                                .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
+                                .Sortable()
+                                .Scrollable(scr => scr.Enabled(false))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .ServerOperation(false)
+                                .Aggregates(aggregates =>
+                                {
+                                    aggregates.Add(p => p.total).Sum();
+                                })
+                                )
+                                )
+                        </div>
+                        <div class="col-md-6">
+                            @(Html.Kendo().Chart(Model.resultadosGenerales)
+                                .Name("chartResultadosGenerales")
+                                .Title("Resultados Generales")
+                                .Subtitle("/Resultados Generales/")
+                                .Legend(legend => legend
+                                .Visible(true)
+                                .Position(ChartLegendPosition.Top)
+                                )
+                                .ChartArea(chartArea => chartArea
+                                .Background("transparent")
+                                )
+                                .Series(series =>
+                                {
+                                    series.Bar(model => model.total);
+                                })
+                                .CategoryAxis(axis => axis
+                                .Categories(c => c.año)
+                                .MajorGridLines(lines => lines.Visible(false))
+                                )
+                                .ValueAxis(axis => axis
+                                .Line(line => line.Visible(false))
+                                .MajorGridLines(lines => lines.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= dataItem.total #: #= value #")
+                                )
+                                )
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane tabCustomConteiner fade active" id="detallesPorCausa-container" role="tabpanel" aria-labelledby="detallesPorCausa-tab">
+                    <div class="row my-4 px-4">
+                        <div class="col-md-6">
+                            @(Html.Kendo().Grid(Model.detallesPorCausa)
+                                .Name("gridDetallesPorCausa")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound(c => c.causa).Title("Causa");
+                                    columns.Bound(p => p.cantidad).Title("Cantidad").ClientFooterTemplate("Total : #=sum#");
+                                    columns.Bound(c => c.año).Title("Año");
+                                }).HtmlAttributes(new { style = "height:auto" })
+                                .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
+                                .Sortable()
+                                .Scrollable(scr => scr.Enabled(false))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .ServerOperation(false)
+                                .Aggregates(aggregates =>
+                                {
+                                    aggregates.Add(p => p.cantidad).Sum();
+                                })
+                                )
+                                )
+                        </div>
+                        <div class="col-md-6">
+                            @(Html.Kendo().Chart(Model.detallesPorCausa)
+                                .Name("chartDetallesPorCausa")
+                                .Title("Detalles Por Causa")
+                                .Subtitle("/Resultados Generales/")
+                                .Legend(legend => legend
+                                .Visible(true)
+                                .Position(ChartLegendPosition.Top)
+                                )
+                                .ChartArea(chartArea => chartArea
+                                .Background("transparent")
+                                )
+                                .Series(series =>
+                                {
+                                    series.Bar(model => model.cantidad);
+                                })
+                                .CategoryAxis(axis => axis
+                                .Categories(c => c.causa)
+                                .MajorGridLines(lines => lines.Visible(false))
+                                )
+                                .ValueAxis(axis => axis
+                                .Line(line => line.Visible(false))
+                                .MajorGridLines(lines => lines.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= dataItem.total #: #= value #")
+                                )
+                                )
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane tabCustomConteiner fade active" id="desgloseTotalDeInfracciones-container" role="tabpanel" aria-labelledby="desgloseTotalDeInfracciones-tab">
+                    <div class="row my-4 px-4">
+                        <div class="col-md-6">
+                            @(Html.Kendo().Grid(Model.desgloseTotalDeInfracciones)
+                                .Name("gridDesgloseTotalDeInfracciones")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound(c => c.numeroMotivo).Title("Año");
+                                    columns.Bound(p => p.totalInfracciones).Title("Total Infracciones").ClientFooterTemplate("Total : #=sum#");
+                                    columns.Bound(c => c.año).Title("Año");
+                                }).HtmlAttributes(new { style = "height:auto" })
+                                .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
+                                .Sortable()
+                                .Scrollable(scr => scr.Enabled(false))
+                                .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .ServerOperation(false)
+                                .Aggregates(aggregates =>
+                                {
+                                    aggregates.Add(p => p.totalInfracciones).Sum();
+                                })
+                                )
+                                )
+                        </div>
+                        <div class="col-md-6">
+                            @(Html.Kendo().Chart(Model.desgloseTotalDeInfracciones)
+                                .Name("chartDesgloseTotalDeInfracciones")
+                                .Title("Desglose Total De Infracciones")
+                                .Subtitle("/Resultados Generales/")
+                                .Legend(legend => legend
+                                .Visible(true)
+                                .Position(ChartLegendPosition.Top)
+                                )
+                                .ChartArea(chartArea => chartArea
+                                .Background("transparent")
+                                )
+                                .Series(series =>
+                                {
+                                    series.Bar(model => model.totalInfracciones);
+                                })
+                                .CategoryAxis(axis => axis
+                                .Categories(c => c.numeroMotivo)
+                                .MajorGridLines(lines => lines.Visible(false))
+                                )
+                                .ValueAxis(axis => axis
+                                .Line(line => line.Visible(false))
+                                .MajorGridLines(lines => lines.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= dataItem.total #: #= value #")
+                                )
+                                )
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+

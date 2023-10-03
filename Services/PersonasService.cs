@@ -666,6 +666,36 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CreatePersona(PersonaModel model)
         {
             int result = 0;
+
+            // Primero, verifica si ya existe un registro con la misma CURP
+            string checkQuery = "SELECT COUNT(*) FROM personas WHERE CURP = @CURP";
+
+            using (SqlConnection checkConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    checkConnection.Open();
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, checkConnection);
+                    checkCommand.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURPFisico ?? DBNull.Value;
+
+                    int existingRecordsCount = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                    if (existingRecordsCount > 0)
+                    {
+                        // Ya existe un registro con la misma CURP, muestra un mensaje o lanza una excepción
+                        return -1; 
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejo de errores
+                    return result;
+                }
+                finally
+                {
+                    checkConnection.Close();
+                }
+            }
             string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
                               ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
                               ,idTipoLicencia

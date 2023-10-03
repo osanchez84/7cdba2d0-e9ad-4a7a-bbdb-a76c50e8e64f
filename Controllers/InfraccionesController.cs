@@ -926,19 +926,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
-            //var model = json.ToObject<Gruas2Model>();
-            //var errors = ModelState.Values.Select(s => s.Errors);
-            //if (ModelState.IsValid)
-            //{
             int id = _personasService.CreatePersona(model);
-            model.PersonaDireccion.idPersona = id;
-            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
-            var modelList = _personasService.GetAllPersonas();
-            return PartialView("_ListadoPersonas", modelList);
-            //}
-            //return RedirectToAction("Index");
+            if (id == -1)
+            {
+                // El registro ya existe, muestra un mensaje de error al usuario
+                return Json(new { success = false, message = "El registro yaexiste, revise los datos ingresados." });
+            }
+            else
+            {
+                // La inserción se realizó correctamente
+                model.PersonaDireccion.idPersona = id;
+                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+
+                var modelList = _personasService.GetAllPersonas();
+                return PartialView("_ListadoPersonas", modelList);
+            }
         }
+
 
         [HttpPost]
         public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)

@@ -129,7 +129,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							   LEFT JOIN catTipoLicencia cl
 							   on p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
 							   LEFT JOIN catGeneros cg
-							   on p.idGenero = cg.idGenero AND cg.estatus = 1
+							   on p.idGenero = cg.idGenero
                                WHERE p.estatus = 1
                                AND p.idPersona = @idPersona";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

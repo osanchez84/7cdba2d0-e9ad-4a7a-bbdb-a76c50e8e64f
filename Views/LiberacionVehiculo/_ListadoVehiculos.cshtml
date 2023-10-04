@@ -80,7 +80,6 @@
                 columns.Bound(p => p.Serie).Title("Serie").Width(90);
                 columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
                 columns.Bound(c => c.Folio).Title("Folio").Width(90);
-
                 columns.Bound(c => c.Placa).Title("Placas").Width(90);
                 columns.Bound(c => c.Color).Title("Color").Width(90);
                 columns.Bound(c => c.fullPropietario).Title("Propietario").Width(90);
@@ -88,8 +87,6 @@
                 columns.Bound(c => c.carretera).Title("Carretera").Width(90);
                 columns.Bound(c => c.tramo).Title("Tramo").Width(90);
                 columns.Bound(c => c.Km).Title("Kilometro").Width(90);
-                columns.Bound(c => c.fullName).Title("Solicitante").Width(90);
-
                 columns.Bound(c => c.nombreSubmarca).Title("SubMarca").Width(90);
                 columns.Bound(c => c.delegacion).Title("Delegación").Width(90);
                 columns.Bound(p => p.IdDeposito).ClientTemplate(

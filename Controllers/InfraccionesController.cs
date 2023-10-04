@@ -271,8 +271,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         }
 
-        public ActionResult EditarA(int id)
+        public ActionResult EditarA(int idInfraccion, int id)
         {
+            int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccionAccidenteById(id);
@@ -314,8 +315,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
-
-            return Json(new { success = true, idInfraccion = idInfraccion });
+            var idVehiculo = model.idVehiculo; 
+            return Json(new { success = true, idInfraccion = idInfraccion,idVehiculo = idVehiculo });
         }
 
         [HttpPost]
@@ -933,19 +934,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
-            //var model = json.ToObject<Gruas2Model>();
-            //var errors = ModelState.Values.Select(s => s.Errors);
-            //if (ModelState.IsValid)
-            //{
             int id = _personasService.CreatePersona(model);
-            model.PersonaDireccion.idPersona = id;
-            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
-            var modelList = _personasService.GetAllPersonas();
-            return PartialView("_ListadoPersonas", modelList);
-            //}
-            //return RedirectToAction("Index");
+            if (id == -1)
+            {
+                // El registro ya existe, muestra un mensaje de error al usuario
+                return Json(new { success = false, message = "El registro yaexiste, revise los datos ingresados." });
+            }
+            else
+            {
+                // La inserción se realizó correctamente
+                model.PersonaDireccion.idPersona = id;
+                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+
+                var modelList = _personasService.GetAllPersonas();
+                return PartialView("_ListadoPersonas", modelList);
+            }
         }
+
 
         [HttpPost]
         public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)

@@ -4,12 +4,13 @@
 <div class="row my-4 px-4">
     <div class="form-group col-md-6">
         <div class="controlForm">
-            <label>Nombre:</label>&nbsp;@Model.nombreCompleto
+            <label>Nombre:</label>&nbsp;@(Model.nombreCompleto != null ? Model.nombreCompleto : "-")
+
         </div>
     </div>
     <div class="form-group col-md-6">
         <div class="controlForm">
-            <label>Tipo de persona:</label>&nbsp;@Model.tipoPersona
+            <label>Tipo de persona:</label>&nbsp;@(Model.tipoPersona != null ? Model.tipoPersona : "-")
         </div>
     </div>
 </div>
@@ -18,18 +19,18 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>CURP:</label>
-            <p>@Model.CURP</p>
+            <p>@(Model.CURP != null ? Model.CURP : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>RFC:</label>
-            <p>@Model.RFC</p>
+            <p>@(Model.RFC != null ? Model.RFC : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
-            <label>SEXO:</label>&nbsp;@Model.genero
+            <label>SEXO:</label>&nbsp;@(Model.genero != null ? Model.genero : "-")
         </div>
     </div>
     <div class="form-group col-md-3">
@@ -51,25 +52,25 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Municipio:</label>
-            <p>@Model.PersonaDireccion.municipio</p>
+            <p>@(Model.PersonaDireccion.municipio != null ? Model.PersonaDireccion.municipio : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Entidad:</label>
-            <p>@Model.PersonaDireccion.entidad</p>
+            <p>@(Model.PersonaDireccion.entidad != null ? Model.PersonaDireccion.entidad : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Calle:</label>
-            <p>@Model.PersonaDireccion.calle</p>
+            <p>@(Model.PersonaDireccion.calle != null ? Model.PersonaDireccion.calle : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Número:</label>
-            <p>@Model.PersonaDireccion.numero</p>
+            <p>@(Model.PersonaDireccion.numero != null ? Model.PersonaDireccion.numero : "-")</p>
         </div>
     </div>
 </div>
@@ -77,19 +78,19 @@
     <div class="form-group col-md-4">
         <div class="controlForm">
             <label>Colonia:</label>
-            <p>@Model.PersonaDireccion.colonia</p>
+            <p>@(Model.PersonaDireccion.colonia != null ? Model.PersonaDireccion.colonia : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-4">
         <div class="controlForm">
             <label>Teléfono:</label>
-            <p>@Model.PersonaDireccion.telefono</p>
+            <p>@(Model.PersonaDireccion.telefono != null ? Model.PersonaDireccion.telefono : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-4">
         <div class="controlForm">
             <label>Correo:</label>
-            <p>@Model.PersonaDireccion.correo</p>
+            <p>@(Model.PersonaDireccion.correo != null ? Model.PersonaDireccion.correo : "-")</p>
         </div>
     </div>
 </div>
@@ -97,13 +98,14 @@
     <div class="form-group col-md-4">
         <div class="controlForm">
             <label>Tipo licencia:</label>
-            <p>@Model.tipoLicencia</p>
+             <p>@(Model.tipoLicencia != null ? Model.tipoLicencia : "-")</p>
+
         </div>
     </div>
     <div class="form-group col-md-4">
         <div class="controlForm">
             <label>Licencia:</label>
-            <p>@Model.numeroLicencia</p>
+            <p>@(Model.numeroLicencia != null ? Model.numeroLicencia : "-")</p>
         </div>
     </div>
     <div class="form-group col-md-4">

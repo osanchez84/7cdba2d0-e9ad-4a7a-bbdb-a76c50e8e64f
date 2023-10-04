@@ -93,16 +93,16 @@
 
                 // Puedes agregar más mapeos aquí si es necesario
             };
-            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; // 0 o valor predeterminado si no hay coincidencia
+            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; 
             jsonData.id_tipo_licencia = tipoLicenciaNumero;
             var idVehiculo = $("#IdVehiculoH").val();
             $.ajax({
                 type: 'POST',
-                url: '/CapturaAccidentes/guardaDesdeServicio', // Reemplaza con la URL correcta
+                url: '/CapturaAccidentes/guardaDesdeServicio', 
                 data: jsonData,
                 success: function (response) {
                     $('#modalLicencias').modal('hide');
-                    var personasList = [response]; // Convierte el objeto en un arreglo
+                    var personasList = [response];
                     var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
                     grid.dataSource.data(personasList);
 

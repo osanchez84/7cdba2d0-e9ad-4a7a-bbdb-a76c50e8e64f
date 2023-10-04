@@ -108,7 +108,7 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                sitteg_success("Se ha creado unanueva infracción, proporcione los datos requeridos");
+                sitteg_success("Se ha creado una nueva infracción, proporcione los datos requeridos");
                 $('#crearInfraccionModal').modal('hide');
                 window.setTimeout(function () {
                     window.location.href = '/Infracciones/EditarA/' + result.id

@@ -303,7 +303,7 @@
 <script>
     function busquedaPersona(){
         $.ajax({
-            url: '@Url.Action("SubmodalBuscarInvolucrado")',
+            url: '/CapturaAccidentes/SubmodalBuscarInvolucrado',
             type: 'POST',
             contentType: "application/json; charset=utf-8",
             dataType: "html",
@@ -317,9 +317,9 @@
     function agregarComplementos() {
 
         var Mydata = $("#complementoInvolucradoForm").serialize();
-       
+        
         $.ajax({
-            url: '@Url.Action("ActualizarInfoInvolucrado")',
+            url: '/CapturaAccidentes/ActualizarInfoInvolucrado',
             type: 'POST',
             data: Mydata,
             success: function (result) {

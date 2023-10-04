@@ -6,7 +6,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.nombreFisico)
-                    .Label(l => l.Content("Nombre: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -14,7 +14,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoFisico)
-                    .Label(l => l.Content("Apellido paterno: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Apellido paterno <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -22,7 +22,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoFisico)
-                    .Label(l => l.Content("Apellido materno: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Apellido materno <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -41,7 +41,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.CURPFisico)
-                    .Label(l => l.Content("CURP: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("CURP <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -49,7 +49,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.RFCFisico)
-                    .Label(l => l.Content("RFC: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -79,7 +79,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaFisico)
-                    .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Número licencia <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -124,7 +124,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .Label(l => l.Content("Código postal: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Código postal <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -134,7 +134,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.coloniaFisico)
-                    .Label(l => l.Content("Colonia: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -142,7 +142,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calleFisico)
-                    .Label(l => l.Content("Calle: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -150,7 +150,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numeroFisico)
-                    .Label(l => l.Content("Número: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -160,7 +160,7 @@
         <div class="col-md-6">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefonoFisico)
-                    .Label(l => l.Content("Teléfono: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Teléfono <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -168,7 +168,7 @@
         <div class="col-md-6">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correoFisico)
-                    .Label(l => l.Content("Correo: <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Correo <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -206,11 +206,16 @@
                 type: 'POST',
                 data: formData,
                 success: function (result) {
+                    if (result.success === false){
+                        sitteg_warning('Informacióm registrada anteriormente, revise la informacion proporcionada.');
+                    }
+                    else{
                     console.log("FGG",result)
                     $("#listadoPersonas").html(result);
                     $('#modalCrearPersona').modal('hide');
                     $('#agregarConductorModal').modal('hide');
                     sitteg_success('Elemento guardado correctamente')
+                    }
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;

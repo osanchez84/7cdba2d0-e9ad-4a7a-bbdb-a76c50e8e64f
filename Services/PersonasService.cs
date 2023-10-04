@@ -129,7 +129,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							   LEFT JOIN catTipoLicencia cl
 							   on p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
 							   LEFT JOIN catGeneros cg
-							   on p.idGenero = cg.idGenero AND cg.estatus = 1
+							   on p.idGenero = cg.idGenero
                                WHERE p.estatus = 1
                                AND p.idPersona = @idPersona";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -666,6 +666,36 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CreatePersona(PersonaModel model)
         {
             int result = 0;
+
+            // Primero, verifica si ya existe un registro con la misma CURP
+            string checkQuery = "SELECT COUNT(*) FROM personas WHERE CURP = @CURP";
+
+            using (SqlConnection checkConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    checkConnection.Open();
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, checkConnection);
+                    checkCommand.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURPFisico ?? DBNull.Value;
+
+                    int existingRecordsCount = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                    if (existingRecordsCount > 0)
+                    {
+                        // Ya existe un registro con la misma CURP, muestra un mensaje o lanza una excepción
+                        return -1; 
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejo de errores
+                    return result;
+                }
+                finally
+                {
+                    checkConnection.Close();
+                }
+            }
             string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
                               ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
                               ,idTipoLicencia

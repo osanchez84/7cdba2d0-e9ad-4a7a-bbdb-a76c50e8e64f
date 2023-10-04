@@ -711,7 +711,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             PersonaInfraccionModel model = new PersonaInfraccionModel();
                             model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.CURP = reader["numeroLicencia"].ToString();
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.CURP = reader["CURP"].ToString();
                             model.RFC = reader["RFC"].ToString();
                             model.nombre = reader["nombre"].ToString();
@@ -720,7 +720,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
-                            model.idCatTipoPersona = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                            model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
                             modelList.Add(model);
                         }
                     }

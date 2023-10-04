@@ -16,7 +16,7 @@
                 success: function (result) {
                     sitteg_success("Se ha agragado la infracion al registro de accidente")
                     $('#agregarInfraccionModal').modal('hide');
-                    actualizarGrid()
+                    actualizarGridPrincipal()
                 },
 
 
@@ -27,6 +27,11 @@
         }
     }
     function actualizarGrid() {
+        var grid = $("#gridInfraccionesPorVehiculo").data("kendoGrid");
+        grid.dataSource.read();
+        grid.refresh();
+    }
+      function actualizarGridPrincipal() {
         var grid = $("#gridInfraccionesAccidente").data("kendoGrid");
         grid.dataSource.read();
         grid.refresh();

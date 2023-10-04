@@ -17,6 +17,7 @@
                 type: 'POST',
                 data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona, Placa : Placa, Serie :Serie },
                 success: function (result) { 
+                    console.log("FER",result)
                     abrirModalConductor(IdPersona, result.IdVehiculoH);
 
                 },

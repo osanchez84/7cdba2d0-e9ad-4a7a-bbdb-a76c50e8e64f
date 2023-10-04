@@ -111,22 +111,28 @@ namespace GuanajuatoAdminUsuarios.Services
                    // string condicionFecha = model.FechaIngreso == DateTime.MinValue ? @"d.FechaIngreso >= @FechaIngreso " : @"d.FechaIngreso = @FechaIngreso ";
 
                     connection.Open();
-                    string SqlTransact = @"select top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
-                                d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
-                                d.ActualizadoPor, d.estatus, sol.solicitanteNombre,
-                                sol.solicitanteAp,sol.solicitanteAm,pen.pension,del.delegacion,col.color,
-                                cTra.tramo, m.marcaVehiculo,subm.nombreSubmarca
-                                from depositos d 
-                                left join solicitudes sol on d.idSolicitud = sol.idSolicitud
-                                left join pensiones pen on d.idPension = pen.idPension
-                                left join catDelegaciones del on d.idDelegacion = del.idDelegacion
-                                left join catColores col on d.idColor = col.idColor
-                                left join catTramos cTra  on d.Idtramo = cTra.idTramo
-                                left join catMarcasVehiculos m on d.idMarca = m.idMarcaVehiculo
-                                left join catSubmarcasVehiculos  subm on d.idSubmarca = subm.idSubmarca
-                                where d.liberado = 0 and d.estatus = 1
-                                and (d.IdDeposito = @IdDeposito OR d.IdMarca = @IdMarca 
-                                   OR CAST(d.FechaIngreso AS DATE) = @FechaIngreso OR d.Serie LIKE '%' + @Serie + '%' OR d.Folio LIKE '%' + @Folio + '%')";
+                    string SqlTransact = @"SELECT d.IdDeposito, MAX(d.IdSolicitud) AS IdSolicitud, MAX(d.idDelegacion) AS idDelegacion, MAX(d.IdMarca) AS IdMarca,
+       MAX(d.IdSubmarca) AS IdSubmarca, MAX(d.IdPension) AS IdPension, MAX(d.IdTramo) AS IdTramo,
+       MAX(d.IdColor) AS IdColor, MAX(d.Serie) AS Serie, MAX(d.Placa) AS Placa, MAX(d.FechaIngreso) AS FechaIngreso,
+       MAX(d.Folio) AS Folio, MAX(d.Km) AS Km, MAX(d.Liberado) AS Liberado, MAX(d.Autoriza) AS Autoriza,
+       MAX(d.FechaActualizacion) AS FechaActualizacion, MAX(d.ActualizadoPor) AS ActualizadoPor, MAX(d.estatus) AS estatus,
+       sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, pen.pension, del.delegacion, col.color,
+               cTra.tramo, m.marcaVehiculo, subm.nombreSubmarca, v.idPersona, p.nombre, p.apellidoPaterno, p.apellidoMaterno
+        FROM depositos d 
+        LEFT JOIN solicitudes sol ON d.idSolicitud = sol.idSolicitud
+        LEFT JOIN pensiones pen ON d.idPension = pen.idPension
+        LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
+        LEFT JOIN catColores col ON d.idColor = col.idColor
+        LEFT JOIN catTramos cTra ON d.Idtramo = cTra.idTramo
+        LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
+        LEFT JOIN catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
+        LEFT JOIN vehiculos v ON v.placas = d.Placa
+        LEFT JOIN personas p ON p.idPersona = v.idPersona
+        WHERE d.liberado = 0 AND d.estatus = 1
+          AND (d.IdDeposito = @IdDeposito OR d.IdMarca = @IdMarca 
+               OR CAST(d.FechaIngreso AS DATE) = @FechaIngreso OR d.Serie LIKE '%' + @Serie + '%' OR d.Folio LIKE '%' + @Folio + '%')
+        GROUP BY d.IdDeposito, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, pen.pension, del.delegacion, col.color,
+                 cTra.tramo, m.marcaVehiculo, subm.nombreSubmarca, v.idPersona, p.nombre, p.apellidoPaterno, p.apellidoMaterno";
 
 
 
@@ -170,7 +176,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Color = reader["Color"] is DBNull ? string.Empty : reader["Color"].ToString();
                             deposito.pension = reader["pension"] is DBNull ? string.Empty : reader["pension"].ToString();
                             deposito.tramo = reader["tramo"] is DBNull ? string.Empty : reader["tramo"].ToString();
-
+                            deposito.nombrePropietario = reader["nombre"]?.ToString();
+                            deposito.apPaternoPropietario = reader["apellidoPaterno"]?.ToString();
+                            deposito.apMaternoPropietario = reader["apellidoMaterno"]?.ToString();
                             depositosList.Add(deposito);
                         }
 

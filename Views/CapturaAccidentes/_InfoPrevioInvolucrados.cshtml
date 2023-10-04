@@ -59,7 +59,7 @@
         .Pageable()
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Read(read => read.Action("BuscarInvolucrado", "CapturaAccidentes"))
+        .Read(read => read.Action("BuscarInvolucrado", "CapturaAccidentes").Type(HttpVerbs.Get))
         .PageSize(5).Model(model => model.Id(p => p.nombre))
         )
         .ToolBar(t => t.Search())

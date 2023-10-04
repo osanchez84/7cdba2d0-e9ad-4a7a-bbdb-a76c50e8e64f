@@ -303,7 +303,7 @@
 <script>
     function busquedaPersona(){
         $.ajax({
-            url: '/CapturaAccidentes/SubmodalBuscarInvolucrado',
+            url: '@Url.Action("SubmodalBuscarInvolucrado", "CapturaAccidentes")',
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             dataType: "html",
@@ -319,7 +319,7 @@
         var Mydata = $("#complementoInvolucradoForm").serialize();
         
         $.ajax({
-            url: '/CapturaAccidentes/ActualizarInfoInvolucrado',
+            url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
@@ -344,7 +344,7 @@
         var IdVehiculoInvolucrado = $("#idVehiculoHidden").val();
 
         $.ajax({
-            url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
+            url: '@Url.Action("GuardarRelacionPersonaVehiculo", "CapturaAccidentes")',
             type: 'POST',
             data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
             success: function (response) {

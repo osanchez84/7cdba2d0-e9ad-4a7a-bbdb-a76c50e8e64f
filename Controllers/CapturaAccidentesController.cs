@@ -699,9 +699,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalInvolucrado-Vehiculo");
         }
-
-        [HttpPost]
-        public ActionResult SubmodalBuscarInvolucrado()
+        [HttpGet]
+        public IActionResult SubmodalBuscarInvolucrado()
         {
             return PartialView("_ModalAgregarInvolucrado");
         }
@@ -786,7 +785,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListCausas.ToDataSourceResult(request));
         }
-
+        [HttpGet]
         public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
         {
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);

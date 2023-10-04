@@ -786,8 +786,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(ListCausas.ToDataSourceResult(request));
         }
         [HttpGet]
-        public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
+        public ActionResult BuscarInvolucrado()
         {
+            BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
             return Json(ListInvolucradoModel);
         }

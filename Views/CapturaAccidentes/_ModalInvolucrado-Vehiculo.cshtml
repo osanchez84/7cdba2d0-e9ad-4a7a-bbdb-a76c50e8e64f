@@ -307,6 +307,7 @@
             type: 'GET',
             contentType: "application/json; charset=utf-8",
             dataType: "html",
+            async: false,
             success: function (data) {
                 $('#ModalBodyBuscarInvolucrado').html(data);
                 $('#buscarInvolucradoModal').modal('show');

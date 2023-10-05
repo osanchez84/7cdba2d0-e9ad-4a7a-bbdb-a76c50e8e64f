@@ -304,7 +304,7 @@
 								.BindTo((List<CapturaAccidentesModel>)ViewBag.ModeInvolucrado)
 								.Columns(columns =>
 								{
-									columns.Bound(c => c.idPersonaInvolucrado).Hidden();
+									columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
 									columns.Select().Width(50).ClientHeaderTemplate(" ");
 									columns.Bound(c => c.nombre).Title("Nombre").Width(80);
 									columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);

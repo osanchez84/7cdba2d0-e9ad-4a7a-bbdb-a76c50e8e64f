@@ -285,11 +285,8 @@
                 </div>
                 <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0 ">
                     <div class="controlButton my-3">
-                        <div class="controlButton my-3" onclick="buscarInvolucrado()">
-                            @(Html.Kendo().Button()
-                                .Name("buscarInvolucrado")
-                                .HtmlAttributes(new { @class = "btnPrimary" })
-                                .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+                        <div class="controlButton my-3">
+                            <button onclick="buscarInvolucrado()" class="btnPrimary" id="buscarInvolucrado" type="button"><h5 class="m-0"><b>Buscar</b></h5></button>
                         </div>
                     </div>
                 </div>
@@ -301,9 +298,11 @@
                     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
                         @(Html.Kendo().Grid((List<CapturaAccidentesModel>)ViewBag.ModeInvolucrado)
+                            .Name("gridInvolucradosPrevio")
                             .Columns(columns =>
                             {
-                                columns.Bound(c => c.idPersonaInvolucrado).Hidden();
+                                columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
+                                columns.Select().Width(50).ClientHeaderTemplate(" ");
                                 columns.Bound(c => c.nombre).Title("Nombre").Width(80);
                                 columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
                                 columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
@@ -341,10 +340,7 @@
                     <div class="row ">
                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                             <div class="controlButton my-3">
-                                @(Html.Kendo().Button()
-                                    .Name("conductorNone")
-                                    .HtmlAttributes(new { @class = "btnPrimary" })
-                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                                <button class="btnPrimary" name="conductorNone" id="conductorNone" type="button"><h5 class="m-0"><b>Finalizar captura</b></h5></button>
                             </div>
                         </div>
                     </div>

@@ -301,11 +301,9 @@
                     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
                         @(Html.Kendo().Grid((List<CapturaAccidentesModel>)ViewBag.ModeInvolucrado)
-                            .Name("gridInvolucradosPrevio")
                             .Columns(columns =>
                             {
-                                columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
-                                columns.Select().Width(50).ClientHeaderTemplate(" ");
+                                columns.Bound(c => c.idPersonaInvolucrado).Hidden()
                                 columns.Bound(c => c.nombre).Title("Nombre").Width(80);
                                 columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
                                 columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);

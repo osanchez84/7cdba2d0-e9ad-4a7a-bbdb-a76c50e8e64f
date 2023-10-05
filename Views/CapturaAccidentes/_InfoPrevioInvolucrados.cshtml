@@ -38,7 +38,6 @@
     @(
         Html.Kendo().Grid(Model)
         .Name("gridInvolucradosPrevio")
-        .Events(events => events.Change("onRowSelect"))
         .Columns(columns =>
         {
             columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
@@ -57,17 +56,6 @@
         .Sortable()
         .Scrollable(scr => scr.Enabled(true))
         .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .ServerOperation(false)
-        .PageSize(5).Model(model => model.Id(p => p.nombre))
-        )
-        .ToolBar(t => t.Search())
-        .Search(s =>
-        {
-            s.Field(c => c.nombre);
-
-        })
         )
 </div>
 

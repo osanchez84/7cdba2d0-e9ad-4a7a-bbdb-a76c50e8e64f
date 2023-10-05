@@ -1,4 +1,5 @@
-﻿
+﻿@model List<CapturaAccidentesModel>
+
  <script>
         function onRowSelect(e) {
             var selectedRow = this.select();
@@ -35,7 +36,7 @@
 <div class="col-12 mb-4 px-4 rounded gridCustom">
 
     @(
-        Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
+        Html.Kendo().Grid(Model)
         .Name("gridInvolucradosPrevio")
         .Events(events => events.Change("onRowSelect"))
         .Columns(columns =>
@@ -59,7 +60,6 @@
         .Pageable()
         .DataSource(dataSource => dataSource
         .Ajax()
-        .Read(read => read.Action("BuscarInvolucrado", "CapturaAccidentes").Type(HttpVerbs.Get))
         .PageSize(5).Model(model => model.Id(p => p.nombre))
         )
         .ToolBar(t => t.Search())

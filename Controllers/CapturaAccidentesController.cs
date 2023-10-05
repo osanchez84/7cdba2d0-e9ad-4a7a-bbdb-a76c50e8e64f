@@ -406,7 +406,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 vehiculoEncontrado.encontradoEn = 3;
 
 
-                return PartialView("_Create", vehiculoEncontrado);
+                    //RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+                    //{
+                    //    placa = model.PlacasBusqueda,
+                    //    niv = model.SerieBusqueda
+                    //};
+                    //var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+
+
+                    //var vehiculoEncontrado = new VehiculoModel
+                    //{
+                    //    placas = repuveConsGralResponse.placa,
+                    //    serie = repuveConsGralResponse.niv_padron,
+                    //    //tarjeta = repuveConsGralResponse.ta,
+                    //    motor = repuveConsGralResponse.motor,
+                    //    //otros = repuveConsGralResponse.
+                    //    color = repuveConsGralResponse.color,
+                    //    //idEntidad = idEntidad,
+                    //    //idMarcaVehiculo = idMarca,
+                    //    //idSubmarca = idSubmarca,
+                    //    submarca = repuveConsGralResponse.submarca,
+                    //    //idTipoVehiculo = idTipo,
+                    //    modelo = repuveConsGralResponse.modelo,
+                    //    //capacidad = repuveConsGralResponse.c,
+                    //    //carga = repuveConsGralResponse.ca,
+
+                    //    Persona = new PersonaModel(),
+
+                    //    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                    //};
+
+
+                    return PartialView("_Create", vehiculoEncontrado);
             }
 
             return Json(new { success = false, errorerrorMessage = "Ocurrió un error, inténtelo de nuevo más tarde" });
@@ -702,6 +733,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()
         {
+            BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            ViewBag.ModeInvolucrado = ListInvolucradoModel;
             return PartialView("_ModalAgregarInvolucrado");
         }
         public ActionResult ModalAgregarComplemeto()

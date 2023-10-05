@@ -35,13 +35,10 @@
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
 
-    @(
-        Html.Kendo().Grid(Model)
-        .Name("gridInvolucradosPrevio")
+    @(Html.Kendo().Grid(Model)
         .Columns(columns =>
         {
             columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
-            columns.Select().Width(50).ClientHeaderTemplate(" ");
             columns.Bound(c => c.nombre).Title("Nombre").Width(80);
             columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
             columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
@@ -52,7 +49,7 @@
             //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 
 
-        }).HtmlAttributes(new { style = "height:400px" })
+        }).HtmlAttributes(new { style = "height:auto" })
         .Sortable()
         .Scrollable(scr => scr.Enabled(true))
         .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))

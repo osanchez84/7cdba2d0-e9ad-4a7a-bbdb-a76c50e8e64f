@@ -55,11 +55,11 @@
 
         }).HtmlAttributes(new { style = "height:400px" })
         .Sortable()
-        .Groupable()
-        .Scrollable()
-        .Pageable()
+        .Scrollable(scr => scr.Enabled(true))
+        .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
         .DataSource(dataSource => dataSource
         .Ajax()
+        .ServerOperation(false)
         .PageSize(5).Model(model => model.Id(p => p.nombre))
         )
         .ToolBar(t => t.Search())
@@ -68,11 +68,6 @@
             s.Field(c => c.nombre);
 
         })
-
-        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-        .Type(GridSelectionType.Row)
-        )
-
         )
 </div>
 

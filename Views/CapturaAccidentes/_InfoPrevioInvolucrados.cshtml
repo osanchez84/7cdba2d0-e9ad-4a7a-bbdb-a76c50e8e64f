@@ -35,8 +35,7 @@
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
 
-    @(
-        Html.Kendo().Grid(Model)
+    @(Html.Kendo().Grid(Model)
         .Name("gridInvolucradosPrevio")
         .Events(events => events.Change("onRowSelect"))
         .Columns(columns =>
@@ -53,7 +52,7 @@
             //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 
 
-        }).HtmlAttributes(new { style = "height:400px" })
+        })
         .Sortable()
         .Scrollable(scr => scr.Enabled(true))
         .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))

@@ -39,11 +39,14 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT acc.*, mun.Municipio, car.Carretera, tra.Tramo, er.estatusReporte FROM accidentes AS acc  
+                    SqlCommand command = new SqlCommand(@"SELECT acc.IdAccidente,acc.NumeroReporte,acc.Fecha,acc.Hora,acc.IdMunicipio,acc.IdCarretera,
+                        acc.IdTramo,acc.idEstatusReporte,
+                        mun.Municipio, car.Carretera, tra.Tramo, er.estatusReporte,er.idEstatusReporte
+                        FROM accidentes AS acc  
                         LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
                         LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera  
                         LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo  
-                        LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte 
+                        LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte
                         WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
                     command.CommandType = CommandType.Text;
@@ -149,6 +152,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[Fecha]
                                         ,[idCarretera]
                                         ,[kilometro]
+                                        ,[idEstatusReporte]
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
@@ -160,6 +164,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@Fecha
                                         ,@idCarretera
                                         ,@kilometro
+                                        ,@idEstatusReporte
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus);
@@ -901,7 +906,14 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue("@DescripcionCausa", descripcionCausa);
+                    if (descripcionCausa != null)
+                    {
+                        command.Parameters.AddWithValue("@DescripcionCausa", descripcionCausa);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@DescripcionCausa", DBNull.Value);
+                    }
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idEstatusReporte", 2);
 
@@ -1260,7 +1272,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand sqlCommand = new
-                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idvehiculo AND idPersona = @idPersona",
+                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idVehiculo",
                         connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@montoVehiculo", SqlDbType.Float)).Value = model.montoVehiculo;
                     sqlCommand.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = model.IdAccidente;
@@ -1963,8 +1975,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             datosFinales.RecibeMinisterio = reader["recibeMinisterio"] == DBNull.Value ? "" : reader["recibeMinisterio"].ToString();
                             datosFinales.IdElabora = reader["idElabora"] == DBNull.Value ? 0 : int.Parse(reader["idElabora"].ToString());
                             datosFinales.IdAutoriza = reader["idAutoriza"] == DBNull.Value ? 0 : int.Parse(reader["idAutoriza"].ToString());
-                            datosFinales.IdSupervisa = reader["idSupervisa"] == DBNull.Value ? 0 : int.Parse(reader["idSupervisa"].ToString()); 
+                            datosFinales.IdSupervisa = reader["idSupervisa"] == DBNull.Value ? 0 : int.Parse(reader["idSupervisa"].ToString());
+                            datosFinales.IdEstatusReporte = reader["idEstatusReporte"] == DBNull.Value ? 0 : int.Parse(reader["idEstatusReporte"].ToString());
+
                         }
+
 
                         reader.Close();
                     }

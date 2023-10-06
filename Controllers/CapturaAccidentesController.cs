@@ -733,21 +733,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()
         {
-            //BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-            //var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
-            CapturaAccidentesModel model = new CapturaAccidentesModel() {
-                idPersonaInvolucrado=1,
-                nombre = "Nombre",
-                apellidoPaterno = "Apellidopaterno",
-                apellidoMaterno ="ApellidoMaterno",
-                rfc = "RFC",
-                curp = "curp",
-                fechaNacimiento = DateTime.Now,
-                licencia = "licencia"
-            };
-            var modelList = new List<CapturaAccidentesModel>();
-            modelList.Add(model);
-            ViewBag.ModeInvolucrado = modelList;
+            BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            ViewBag.ModeInvolucrado = ListInvolucradoModel;
 
             return PartialView("_ModalAgregarInvolucrado");
         }
@@ -835,7 +823,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
         {
-            //BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
             return Json(ListInvolucradoModel);
         }

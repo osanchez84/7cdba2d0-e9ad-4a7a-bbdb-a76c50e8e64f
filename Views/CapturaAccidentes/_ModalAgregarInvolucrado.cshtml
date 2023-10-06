@@ -292,55 +292,20 @@
 				</div>
 			</div>
 			<div class="row px-4 py-5 align-items-end bg-light">
-				<div class="col-12 col-md-10 mx-md-auto text-center">
-					@*<partial name="_InfoPrevioInvolucrados" model="ViewBag.ModeInvolucrado" />*@
+                <div class="col-12 col-md-10 mx-md-auto text-center">
+                    <partial name="_InfoPrevioInvolucrados" model="ViewBag.ModeInvolucrado" />
 
-					<div class="col-12 mb-4 px-4 rounded gridCustom">
-						@{
-							try
-							{
-								@(Html.Kendo().Grid<CapturaAccidentesModel>()
-								.Name("gridInvolucradosPrevio")
-								.BindTo((List<CapturaAccidentesModel>)ViewBag.ModeInvolucrado)
-								.Columns(columns =>
-								{
-									columns.Bound(c => c.idPersonaInvolucrado).Hidden();
-									columns.Select().Width(50).ClientHeaderTemplate(" ");
-									columns.Bound(c => c.nombre).Title("Nombre").Width(80);
-									columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
-									columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-									columns.Bound(c => c.rfc).Title("RFC").Width(80);
-									columns.Bound(c => c.curp).Title("CURP").Width(100);
-									columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Width(100);
-									columns.Bound(c => c.licencia).Title("No Licencia").Width(100);
-									//columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-
-
-								})
-								.Sortable()
-								.Scrollable(scr => scr.Enabled(true))
-								.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true)))
-
-
-																}
-							catch (Exception ex)
-							{
-								<div><h1>@ex.Message</h1> </div>
-							}
-						}
-					</div>
-
-					<div class="row ">
-						<div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-							<div class="btnOutline btnOutlinePrimary my-3">
-								<button data-bs-toggle="modal" data-bs-target="#addConductor">
-									<h5 class="m-0"><i class="me-2 icon-addInvolucrado"></i><b>Agregar un nuevo involucrado</b></h5>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+                    <div class="row ">
+                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                            <div class="btnOutline btnOutlinePrimary my-3">
+                                <button data-bs-toggle="modal" data-bs-target="#addConductor">
+                                    <h5 class="m-0"><i class="me-2 icon-addInvolucrado"></i><b>Agregar un nuevo involucrado</b></h5>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</div>
 
 		<div class="tab-pane tabCustomConteiner fade" id="none-involucrado" role="tabpanel" aria-labelledby="none-involucrado-tab">

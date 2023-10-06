@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -367,7 +368,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             context.RouteData.Values.TryGetValue("controller", out controller);
             context.RouteData.Values.TryGetValue("action", out action);
 
-            string modulo = Menu.Find(x => x.Controller == controller.ToString() && x.Action == action.ToString())?.Modulo;
+            string modulo = Menu.Where(x => x.Controller == controller.ToString()).FirstOrDefault()?.Modulo;
 
             HttpContext.Session.SetString("SelectedModulo", modulo.IsNullOrEmpty()? "Depósitos" : modulo);
             HttpContext.Session.SetString("SelectedSubModulo", "SubModuloTest");

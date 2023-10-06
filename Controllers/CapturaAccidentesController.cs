@@ -700,7 +700,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalInvolucrado-Vehiculo");
         }
 
-        [HttpPost]
         public ActionResult SubmodalBuscarInvolucrado()
         {
             return PartialView("_ModalAgregarInvolucrado");

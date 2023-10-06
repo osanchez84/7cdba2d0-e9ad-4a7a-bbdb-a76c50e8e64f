@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class PensionesController : Controller
+    public class PensionesController : BaseController
     {
         #region DPIServices
 

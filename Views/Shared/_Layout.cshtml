@@ -1,3 +1,4 @@
+@inject IHttpContextAccessor Accessor
 
 <!DOCTYPE html>
 <html>
@@ -62,7 +63,7 @@
                             <div class="line line2"></div>
                         </button>
                         <div class="nav nav-tabs border-0 col-auto d-flex flex-column mt-5" id="nav-tab" role="tablist">
-                            <button class="position-relative nav-link active d-flex justify-content-center align-items-center" id="nav-vehiculo-tab" data-bs-toggle="tab" data-bs-target="#nav-vehiculo" type="button" role="tab" aria-controls="nav-vehiculo" aria-selected="true">
+                            <button class="position-relative nav-link @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Depósitos") ? "active" : "") d-flex justify-content-center align-items-center" id="nav-vehiculo-tab" data-bs-toggle="tab" data-bs-target="#nav-vehiculo" type="button" role="tab" aria-controls="nav-vehiculo" aria-selected="true">
                                 <i class="icon icon-car h5 m-0"></i>
                                 <div class="tooltipNav rounded-pill position-absolute">
                                     <p class="m-0">
@@ -70,7 +71,7 @@
                                     </p>
                                 </div>
                             </button>
-                            <button class="position-relative nav-link d-flex justify-content-center align-items-center" id="nav-infraccion-tab" data-bs-toggle="tab" data-bs-target="#nav-infraccion" type="button" role="tab" aria-controls="nav-infraccion" aria-selected="false">
+                            <button class="position-relative nav-link @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Infracciones") ? "active" : "") d-flex justify-content-center align-items-center" id="nav-infraccion-tab" data-bs-toggle="tab" data-bs-target="#nav-infraccion" type="button" role="tab" aria-controls="nav-infraccion" aria-selected="false">
                                 <i class="icon icon-infracion h3 m-0"></i>
                                 <div class="tooltipNav rounded-pill position-absolute">
                                     <p class="m-0">
@@ -78,7 +79,7 @@
                                     </p>
                                 </div>
                             </button>
-                            <button class="position-relative nav-link d-flex justify-content-center align-items-center" id="nav-accidentes-tab" data-bs-toggle="tab" data-bs-target="#nav-accidentes" type="button" role="tab" aria-controls="nav-accidentes" aria-selected="false">
+                            <button class="position-relative nav-link @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Accidentes") ? "active" : "") d-flex justify-content-center align-items-center" id="nav-accidentes-tab" data-bs-toggle="tab" data-bs-target="#nav-accidentes" type="button" role="tab" aria-controls="nav-accidentes" aria-selected="false">
                                 <i class="icon icon-accidente h4 m-0"></i>
                                 <div class="tooltipNav rounded-pill position-absolute">
                                     <p class="m-0">
@@ -86,7 +87,7 @@
                                     </p>
                                 </div>
                             </button>
-                            <button class="position-relative nav-link d-flex justify-content-center align-items-center" id="nav-catalogo-tab" data-bs-toggle="tab" data-bs-target="#nav-catalogo" type="button" role="tab" aria-controls="nav-catalogo" aria-selected="false">
+                            <button class="position-relative nav-link @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Catálogos") ? "active" : "") d-flex justify-content-center align-items-center" id="nav-catalogo-tab" data-bs-toggle="tab" data-bs-target="#nav-catalogo" type="button" role="tab" aria-controls="nav-catalogo" aria-selected="false">
                                 <i class="icon icon-data h4 m-0"></i>
                                 <div class="tooltipNav rounded-pill position-absolute">
                                     <p class="m-0">
@@ -94,7 +95,7 @@
                                     </p>
                                 </div>
                             </button>
-                            <button class="position-relative nav-link d-flex justify-content-center align-items-center" id="nav-admin-tab" data-bs-toggle="tab" data-bs-target="#nav-admin" type="button" role="tab" aria-controls="nav-admin" aria-selected="false">
+                            <button class="position-relative nav-link @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Configuraciones") ? "active" : "") d-flex justify-content-center align-items-center" id="nav-admin-tab" data-bs-toggle="tab" data-bs-target="#nav-admin" type="button" role="tab" aria-controls="nav-admin" aria-selected="false">
                                 <i class="icon icon-fisica h4 m-0"></i>
                                 <div class="tooltipNav rounded-pill position-absolute">
                                     <p class="m-0">
@@ -109,7 +110,7 @@
                         <img width="90%" src="~/img/logo-gto.png" />
                         <div class="tab-content col" id="nav-tabContent">
                             <!-- ***************** -->
-                            <div class="tab-pane fade show active" id="nav-vehiculo" role="tabpanel" aria-labelledby="nav-vehiculo-tab">
+                            <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Depósitos") ? "show active" : "")" id="nav-vehiculo" role="tabpanel" aria-labelledby="nav-vehiculo-tab">
                                 <ul class="navbar-nav mt-4">
                                     
                                     <li class="nav-item" data-id="303">
@@ -196,9 +197,8 @@
                                     
                                 </ul>
                             </div>
-
                             <!-- ***************** -->
-                            <div class="tab-pane fade " id="nav-infraccion" role="tabpanel" aria-labelledby="nav-infraccion-tab">
+                            <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Infracciones") ? "show active" : "")" id="nav-infraccion" role="tabpanel" aria-labelledby="nav-infraccion-tab">
                                 <ul class="navbar-nav mt-4">
 
                                     <li class="nav-item active" data-id="700">
@@ -244,7 +244,7 @@
                             </div>
                             
                             <!-- ***************** -->
-                            <div class="tab-pane fade " id="nav-accidentes" role="tabpanel" aria-labelledby="nav-accidentes-tab">
+                            <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Accidentes") ? "show active" : "")" id="nav-accidentes" role="tabpanel" aria-labelledby="nav-accidentes-tab">
                                 <ul class="navbar-nav mt-4">
                                     <li class="nav-item active" data-id="801">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/CapturaAccidentes/Index">
@@ -271,7 +271,7 @@
                             </div>
 
                             <!-- ***************** -->
-                            <div class="tab-pane fade" id="nav-catalogo" role="tabpanel" aria-labelledby="nav-catalogo-tab">
+                            <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Catálogos") ? "show active" : "")" id="nav-catalogo" role="tabpanel" aria-labelledby="nav-catalogo-tab">
                                 <ul class="navbar-nav mt-4">
                                     <li class="nav-item active" data-id="956">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/CatAgenciasMinisterio/Index">
@@ -437,7 +437,7 @@
                             </div>
 
                             <!-- ***************** -->
-                            <div class="tab-pane fade " id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
+                            <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Configuraciones") ? "show active" : "")" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
                                 <ul class="navbar-nav mt-4">
 
                                     <li class="nav-item active" data-id="303">

@@ -15,7 +15,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class PersonasController : Controller
+    public class PersonasController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IPersonasService _personasService;

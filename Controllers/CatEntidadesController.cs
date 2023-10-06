@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatEntidadesController : Controller
+    public class CatEntidadesController : BaseController
     {
 
         private readonly ICatEntidadesService _catEntidadesService;

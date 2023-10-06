@@ -18,7 +18,7 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
     [Authorize]
     [Area("Administracion")]
     [Route("[area]/usuarios/[action]")]
-    public class UsuarioController : Controller
+    public class UsuarioController : BaseController
     {
 
         private readonly ILogger<InicioController> _logger;

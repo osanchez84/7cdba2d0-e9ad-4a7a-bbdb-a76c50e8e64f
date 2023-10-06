@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatResponsablesPensionesController : Controller
+    public class CatResponsablesPensionesController : BaseController
     {
         private readonly ICatResponsablesPensiones _catResponsablesPensiones;
         public CatResponsablesPensionesController(ICatResponsablesPensiones catResponsablesPensiones)

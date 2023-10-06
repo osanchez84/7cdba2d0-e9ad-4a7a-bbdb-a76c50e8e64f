@@ -15,7 +15,7 @@ using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoRequestModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ServiceTestController : Controller
+    public class ServiceTestController : BaseController
     {
         private readonly IRequestDynamic<RecibosPagoWSRequestModel, RecibosPagoWSResponsetModel> _requestDynamic;
         private readonly ILogger<InicioController> _logger;

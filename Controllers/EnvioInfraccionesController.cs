@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class EnvioInfraccionesController : Controller
+    public class EnvioInfraccionesController : BaseController
     {
         private readonly IEnvioInfraccionesService _envioInfraccionesService;
         private readonly ICatOficinasRentaService _catOficinasRentaService;

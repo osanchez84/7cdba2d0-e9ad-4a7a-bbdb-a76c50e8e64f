@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class MotivosInfraccionController : Controller
+    public class MotivosInfraccionController : BaseController
     {
         //DBContextInssoft dbContext = new DBContextInssoft();
         private readonly ICatDictionary _catDictionary;

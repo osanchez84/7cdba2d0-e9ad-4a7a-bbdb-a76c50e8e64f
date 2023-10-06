@@ -11,7 +11,7 @@ using static GuanajuatoAdminUsuarios.Models.PadronDepositosGruasModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class PadronDepositosGruasController : Controller
+    public class PadronDepositosGruasController : BaseController
     {
 
 

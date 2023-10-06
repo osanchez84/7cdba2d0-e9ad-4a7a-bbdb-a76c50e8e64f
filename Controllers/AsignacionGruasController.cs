@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class AsignacionGruasController : Controller
+    public class AsignacionGruasController : BaseController
     {
         private readonly IAsignacionGruasService _asignacionGruasService;
         private readonly IGruasService _gruasService;

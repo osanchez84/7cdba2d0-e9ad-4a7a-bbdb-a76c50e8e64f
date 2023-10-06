@@ -12,9 +12,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ColoresController : Controller
+    public class ColoresController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()

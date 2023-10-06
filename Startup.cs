@@ -193,7 +193,7 @@ namespace GuanajuatoAdminUsuarios
                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddKendo();
-
+            services.AddHttpContextAccessor();
 
 
         }

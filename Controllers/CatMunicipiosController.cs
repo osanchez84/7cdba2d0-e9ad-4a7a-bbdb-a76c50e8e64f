@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatMunicipiosController : Controller
+    public class CatMunicipiosController : BaseController
     {
         private readonly ICatMunicipiosService _catMunicipiosService;
         private readonly ICatEntidadesService _catEntidadesService;

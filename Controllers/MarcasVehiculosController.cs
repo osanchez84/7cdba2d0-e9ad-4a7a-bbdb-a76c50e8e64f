@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class MarcasVehiculosController : Controller
+    public class MarcasVehiculosController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()

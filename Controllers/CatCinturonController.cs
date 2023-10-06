@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatCinturonController : Controller
+    public class CatCinturonController : BaseController
     {
         private readonly ICatCinturon _catCinturon;
 

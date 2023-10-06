@@ -33,8 +33,7 @@ using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-
-    public class CapturaAccidentesController : Controller
+    public class CapturaAccidentesController : BaseController
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICatMunicipiosService _catMunicipiosService;

@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class BusquedaAccidentesController : Controller
+    public class BusquedaAccidentesController : BaseController
     {
         private readonly IBusquedaAccidentesService _busquedaAccidentesService;
         private readonly ICatCarreterasService _catCarreterasService;

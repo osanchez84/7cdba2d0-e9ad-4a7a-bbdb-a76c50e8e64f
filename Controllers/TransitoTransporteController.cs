@@ -15,7 +15,7 @@ using Newtonsoft.Json.Converters;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class TransitoTransporteController : Controller
+    public class TransitoTransporteController : BaseController
     {
         private readonly ITransitoTransporteService _transitoTransporteService;
         private readonly IDependencias _dependeciaService;

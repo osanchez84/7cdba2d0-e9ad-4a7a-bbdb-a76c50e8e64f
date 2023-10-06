@@ -15,7 +15,7 @@ namespace GuanajuatoAdminUsuarios.Areas.Administracion.Controllers
     [Authorize]
     [Area("Administracion")]
     [Route("[area]/oficinas/[action]")]
-    public class OficinaController : Controller
+    public class OficinaController : BaseController
     {
         private OficinaService _oficinaService;
         private EntidadService _entidadService;

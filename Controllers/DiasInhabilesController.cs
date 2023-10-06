@@ -11,9 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class DiasInhabilesController : Controller
+    public class DiasInhabilesController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()

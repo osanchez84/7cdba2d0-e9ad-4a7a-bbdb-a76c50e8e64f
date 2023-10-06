@@ -12,9 +12,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ModificacionVehiculosController : Controller
+    public class ModificacionVehiculosController : BaseController
     {
         public IActionResult ModificacionVehiculos()
         {

@@ -1388,9 +1388,9 @@ input[type="radio"].toggle {
     background-color: transparent;
 }
 
-.gridCustom .k-grid {
+/*.gridCustom .k-grid {
     max-height: 450px;
-}
+}*/
 
 .gridCustom .k-grid-toolbar .k-grid-search {
     height: 58px;

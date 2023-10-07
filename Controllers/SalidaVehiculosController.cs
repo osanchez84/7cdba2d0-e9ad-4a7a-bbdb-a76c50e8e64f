@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class SalidaVehiculosController : Controller
+    public class SalidaVehiculosController : BaseController
     {
         private readonly ISalidaVehiculosService _salidaVehiculosService;
         public SalidaVehiculosController(ISalidaVehiculosService salidaVehiculosService)

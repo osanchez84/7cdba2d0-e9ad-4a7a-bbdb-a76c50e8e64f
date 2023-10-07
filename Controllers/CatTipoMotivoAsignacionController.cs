@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatTipoMotivoAsignacionController : Controller
+    public class CatTipoMotivoAsignacionController : BaseController
     {
         private readonly ICatTipoMotivoAsignacionService _catTipoMotivoAsignacionService;
 

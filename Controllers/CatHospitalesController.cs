@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatHospitalesController : Controller
+    public class CatHospitalesController : BaseController
     {
         private readonly ICatHospitalesService _catHospitalesService;
 

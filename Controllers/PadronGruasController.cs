@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class PadronGruasController : Controller
+    public class PadronGruasController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IGruasService _gruasService;

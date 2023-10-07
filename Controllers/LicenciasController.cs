@@ -8,7 +8,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LicenciasController : ControllerBase
+    public class LicenciasController : BaseController
     {
         private ILicenciasService licenciasService;
 

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ConcesionariosController : Controller
+    public class ConcesionariosController : BaseController
     {
         private readonly IConcesionariosService _concesionariosService;
         private readonly ICatDictionary _catDictionary;

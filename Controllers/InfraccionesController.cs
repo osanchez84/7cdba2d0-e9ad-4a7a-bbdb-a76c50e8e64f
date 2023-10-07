@@ -31,7 +31,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class InfraccionesController : Controller
+    public class InfraccionesController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
         private readonly ITipoCortesiaService _tipoCortesiaService;

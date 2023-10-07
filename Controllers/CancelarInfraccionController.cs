@@ -20,7 +20,7 @@ using GuanajuatoAdminUsuarios.Services;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
 
-    public class CancelarInfraccionController : Controller
+    public class CancelarInfraccionController : BaseController
     {
 
         private readonly ICancelarInfraccionService _cancelarInfraccionService;

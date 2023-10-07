@@ -18,7 +18,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
         private readonly IHttpClientFactory _httpClientFactory;
         public LoginController(IHttpClientFactory httpClientFactory)
@@ -82,10 +82,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     HttpContext.Session.SetString("IdsPermitidos", JsonConvert.SerializeObject(listaIdsPermitidos));
                     HttpContext.Session.SetString("Nombre", nombre);
                     HttpContext.Session.SetString("Oficina", oficina);
+                    HttpContext.Session.SetString("SelectedModulo", "Depósitos");
+                    HttpContext.Session.SetString("SelectedSubModulo", "");
 
                     return Json(JsonConvert.SerializeObject(listaIdsPermitidos));
                 }
-                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
+            
+                var url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
 
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(url);
@@ -104,7 +107,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         if (int.TryParse(idOficinaStr, out int idOficina))
                         {
                             HttpContext.Session.SetInt32("IdOficina", idOficina);
-
+                            HttpContext.Session.SetString("SelectedMenu", "Depósitos");
+                            HttpContext.Session.SetString("SelectedSubMenu", "");
                         }
                         else
                         {
@@ -123,6 +127,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                             HttpContext.Session.SetString("Nombre", nombre);
                             HttpContext.Session.SetString("Oficina", oficina);
+                            HttpContext.Session.SetString("SelectedMenu", "Depósitos");
+                            HttpContext.Session.SetString("SelectedSubMenu", "");
 
                             return Json(listaIdsPermitidosJson);
                         }
@@ -133,6 +139,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 HttpContext.Session.Remove("IdsPermitidos");
                 HttpContext.Session.Remove("Nombre");
                 HttpContext.Session.Remove("Oficina");
+                HttpContext.Session.Remove("SelectedMenu");
+                HttpContext.Session.Remove("SelectedSubMenu");
 
                 return BadRequest("Error en la respuesta del servicio");
             }

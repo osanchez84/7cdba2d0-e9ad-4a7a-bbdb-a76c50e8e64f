@@ -16,7 +16,7 @@ using System.Net;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class LiberacionVehiculoController : Controller
+    public class LiberacionVehiculoController : BaseController
     {
         #region DPIServices
 

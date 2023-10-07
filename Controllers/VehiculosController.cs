@@ -19,7 +19,7 @@ using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class VehiculosController : Controller
+    public class VehiculosController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;
@@ -35,6 +35,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly ICatTiposVehiculosService _catTiposVehiculosService;
+        private readonly IRepuveService _repuveService;
 
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
@@ -43,7 +44,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
            IOptions<AppSettings> appSettings, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService,
             ICatTiposVehiculosService catTiposVehiculosService
-         )
+        , IRepuveService repuveService
+            )
         {
             _vehiculosService = vehiculosService;
             _catDictionary = catDictionary;
@@ -59,6 +61,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catMarcasVehiculosService = catMarcasVehiculosService;
             _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
             _catTiposVehiculosService = catTiposVehiculosService;
+            _repuveService = repuveService;
         }
 
         public IActionResult Index()
@@ -266,8 +269,36 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
+                            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+                            {
+                                placa = model.PlacasBusqueda,
+                                niv = model.SerieBusqueda
+                            };
+                            var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
-                            return PartialView("_Create", vehiculosModel);
+
+                            var vehiculoEncontrado = new VehiculoModel
+                            {
+                                placas = repuveConsGralResponse.placa,
+                                serie = repuveConsGralResponse.niv_padron,
+                                //tarjeta = repuveConsGralResponse.ta,
+                                motor = repuveConsGralResponse.motor,
+                                //otros = repuveConsGralResponse.
+                                color = repuveConsGralResponse.color,
+                                //idEntidad = idEntidad,
+                                //idMarcaVehiculo = idMarca,
+                                //idSubmarca = idSubmarca,
+                                submarca = repuveConsGralResponse.submarca,
+                                //idTipoVehiculo = idTipo,
+                                modelo = repuveConsGralResponse.modelo,
+                                //capacidad = repuveConsGralResponse.c,
+                                //carga = repuveConsGralResponse.ca,
+
+                                Persona = new PersonaModel(),
+
+                                PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                            };
+                            return PartialView("_Create", vehiculoEncontrado);
 
                         }
                     }

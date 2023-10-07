@@ -33,8 +33,7 @@ using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-
-    public class CapturaAccidentesController : Controller
+    public class CapturaAccidentesController : BaseController
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICatMunicipiosService _catMunicipiosService;
@@ -406,7 +405,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 vehiculoEncontrado.encontradoEn = 3;
 
 
-                return PartialView("_Create", vehiculoEncontrado);
+                    //RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+                    //{
+                    //    placa = model.PlacasBusqueda,
+                    //    niv = model.SerieBusqueda
+                    //};
+                    //var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+
+
+                    //var vehiculoEncontrado = new VehiculoModel
+                    //{
+                    //    placas = repuveConsGralResponse.placa,
+                    //    serie = repuveConsGralResponse.niv_padron,
+                    //    //tarjeta = repuveConsGralResponse.ta,
+                    //    motor = repuveConsGralResponse.motor,
+                    //    //otros = repuveConsGralResponse.
+                    //    color = repuveConsGralResponse.color,
+                    //    //idEntidad = idEntidad,
+                    //    //idMarcaVehiculo = idMarca,
+                    //    //idSubmarca = idSubmarca,
+                    //    submarca = repuveConsGralResponse.submarca,
+                    //    //idTipoVehiculo = idTipo,
+                    //    modelo = repuveConsGralResponse.modelo,
+                    //    //capacidad = repuveConsGralResponse.c,
+                    //    //carga = repuveConsGralResponse.ca,
+
+                    //    Persona = new PersonaModel(),
+
+                    //    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                    //};
+
+
+                    return PartialView("_Create", vehiculoEncontrado);
             }
 
             return Json(new { success = false, errorerrorMessage = "Ocurrió un error, inténtelo de nuevo más tarde" });
@@ -699,9 +729,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalInvolucrado-Vehiculo");
         }
-
-        public ActionResult SubmodalBuscarInvolucrado()
+        [HttpGet]
+        public IActionResult SubmodalBuscarInvolucrado()
         {
+            BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            ViewBag.ModeInvolucrado = ListInvolucradoModel;
+
             return PartialView("_ModalAgregarInvolucrado");
         }
         public ActionResult ModalAgregarComplemeto()
@@ -785,7 +819,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListCausas.ToDataSourceResult(request));
         }
-
+        [HttpGet]
         public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
         {
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
@@ -1267,6 +1301,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 // Maneja el error de manera adecuada
                 return Json(new { error = "Error al guardar en la base de datos: " + ex.Message });
             }
+        }
+
+
+        [HttpPost]
+        public IActionResult ajax_CrearPersona(PersonaModel model)
+        {
+            //var model = json.ToObject<Gruas2Model>();
+            //var errors = ModelState.Values.Select(s => s.Errors);
+            //if (ModelState.IsValid)
+            //{
+            int id = _personasService.CreatePersona(model);
+            model.PersonaDireccion.idPersona = id;
+            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+            var modelList = _capturaAccidentesService.ObtenerConductorPorId(id);
+            return Json(modelList); 
+            //return RedirectToAction("Index");
         }
     }
 }

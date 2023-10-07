@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatFormastrasladoController : Controller
+    public class CatFormastrasladoController : BaseController
     {
         private readonly ICatFormasTrasladoService _catFormasTrasladoService;
 

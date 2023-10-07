@@ -69,53 +69,62 @@
     <!-- Aquí continúa el contenido del listado de tránsito y transporte -->
     @*<column template="<button data-bs-toggle=modal data-bs-target=\#editVehiculo class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>" width="100" />*@
     <div class="col-12 mb-4 px-4 rounded gridCustom">
-        @(
-            Html.Kendo().Grid(Model)
-            .Name("Grid")
-            .Columns(columns =>
+    @{
+	    try
+		{
+                @(Html.Kendo().Grid(Model)
+                .Name("Grid")
+                .Columns(columns =>
+                {
+                    columns.Bound(p => p.IdDeposito).Title("Numero.").Width(90);
+                    columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190);
+                    columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
+                    columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
+                    columns.Bound(c => c.FechaLiberacion).Format("{0:dd/MM/yyyy}").Title("Fecha de salida").Width(90);
+                    columns.Bound(c => c.pension).Title("Pension").Width(100);
+                    columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
+                    columns.Bound(p => p.IdConcesionario).ClientTemplate(
+                    "<button onclick=\"ShowGruaPopUp('#= IdConcesionario #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
+                    ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
+
+                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(90);
+
+                    columns.Bound(p => p.IdGrua).ClientTemplate(
+                    "<button onclick=\"ShowUpdatePopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
+                    ).Title("Editar").Sortable(false).Width(70);
+
+                    columns.Bound(p => p.IdDeposito).ClientTemplate(
+                    "<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
+                    ).Title("Eliminar").Sortable(false).Width(70);
+    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
+        "<div class='turno-captura'>" +
+            "<div class='tto-marked'>TTO:</div>" +
+                    "#= IdDependenciaGenera === 1 ? '✓' : '' #" +
+            "<div class='dep-marked'>Dep:</div>" +
+                    "#= IdDependenciaGenera === 2 ? '✓' : '' #" +
+        "</div>"
+    ).Title("Turno Captura").Width(200);
+
+
+
+                }).HtmlAttributes(new { style = "height:350" })
+                @*.Pageable(pager => pager.Input(true).Position(GridPagerPosition.Top))*@
+                @*.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))*@
+                .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+                .Sortable()
+                .Scrollable(scr => scr.Height(350))
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .ServerOperation(false)
+                )
+                )
+
+            }
+            catch (Exception ex)
             {
-                columns.Bound(p => p.IdDeposito).Title("Numero.").Width(90);
-                columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190).HtmlAttributes(new { @class = "label-control" });
-                columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
-                columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
-                columns.Bound(c => c.FechaLiberacion).Format("{0:dd/MM/yyyy}").Title("Fecha de salida").Width(90);
-                columns.Bound(c => c.pension).Title("Pension").Width(100);
-                columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
-                columns.Bound(p => p.IdConcesionario).ClientTemplate(
-                "<button onclick=\"ShowGruaPopUp('#= IdConcesionario #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
-
-                columns.Bound(c => c.fullDependencia).Title("Estatus").Width(90);
-
-                columns.Bound(p => p.IdGrua).ClientTemplate(
-                "<button onclick=\"ShowUpdatePopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                ).Title("Editar").Sortable(false).Width(70);
-
-                columns.Bound(p => p.IdDeposito).ClientTemplate(
-                "<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
-                ).Title("Eliminar").Sortable(false).Width(70);
-columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
-    "<div class='turno-captura'>" +
-        "<div class='tto-marked'>TTO:</div>" +
-                "#= IdDependenciaGenera === 1 ? '✓' : '' #" +
-        "<div class='dep-marked'>Dep:</div>" +
-                "#= IdDependenciaGenera === 2 ? '✓' : '' #" +
-    "</div>"
-).Title("Turno Captura").Width(200);
-
-
-
-            }).HtmlAttributes(new { style = "height:350" })
-            @*.Pageable(pager => pager.Input(true).Position(GridPagerPosition.Top))*@
-            @*.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))*@
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
-            .Sortable()
-            .Scrollable(scr => scr.Height(350))
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            .ServerOperation(false)
-            )
-            )
+                < div >< h1 > @ex.Message </ h1 > </ div >
+            }
+        }
 
         @(Html.Kendo().Tooltip()
             .For("#Grid")

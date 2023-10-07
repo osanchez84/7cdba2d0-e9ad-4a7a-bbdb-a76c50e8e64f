@@ -11,9 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatAutoridadesDisposicionController : Controller
+    public class CatAutoridadesDisposicionController : BaseController
     {
         private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
 

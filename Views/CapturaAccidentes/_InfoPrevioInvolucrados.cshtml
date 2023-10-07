@@ -1,4 +1,5 @@
-﻿
+﻿@model List<CapturaAccidentesModel>
+
  <script>
         function onRowSelect(e) {
             var selectedRow = this.select();
@@ -34,45 +35,51 @@
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
 
-    @(
-        Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
-        .Name("gridInvolucradosPrevio")
-        .Events(events => events.Change("onRowSelect"))
-        .Columns(columns =>
+    @{
+	    try
+		{
+             @(Html.Kendo().Grid(Model)
+            .Name("gridInvolucradosPrevio")
+            .Events(events => events.Change("onRowSelect"))
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.idPersonaInvolucrado).Hidden();
+                columns.Select().Width(50).ClientHeaderTemplate(" ");
+                columns.Bound(c => c.nombre).Title("Nombre").Width(80);
+                columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
+                columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
+                columns.Bound(c => c.rfc).Title("RFC").Width(80);
+                columns.Bound(c => c.curp).Title("CURP").Width(100);
+                columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Width(100);
+                columns.Bound(c => c.licencia).Title("No Licencia").Width(100);
+                //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
+
+
+            })
+            .Sortable()
+            .Groupable()
+            .Scrollable(scr => scr.Enabled(true))
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            .PageSize(5).Model(model => model.Id(p => p.nombre))
+            )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.nombre);
+
+            }).Selectable(selectable => selectable.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row)
+            )
+            )
+
+        }
+        catch (Exception ex)
         {
-            columns.Bound(c => c.idPersonaInvolucrado).Hidden().HtmlAttributes(new { @class = "idPersonaColumn" });
-            columns.Select().Width(50).ClientHeaderTemplate(" ");
-            columns.Bound(c => c.nombre).Title("Nombre").Width(80);
-            columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
-            columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-            columns.Bound(c => c.rfc).Title("RFC").Width(80);
-            columns.Bound(c => c.curp).Title("CURP").Width(100);
-            columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Width(100);
-            columns.Bound(c => c.licencia).Title("No Licencia").Width(100);
-            //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-
-
-        }).HtmlAttributes(new { style = "height:400px" })
-        .Sortable()
-        .Groupable()
-        .Scrollable()
-        .Pageable()
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("BuscarInvolucrado", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.nombre))
-        )
-        .ToolBar(t => t.Search())
-        .Search(s =>
-        {
-            s.Field(c => c.nombre);
-
-        })
-
-        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-        .Type(GridSelectionType.Row)
-        )
-
-        )
+        < div >< h1 > @ex.Message </ h1 > </ div >
+        } 
+    }
+        
 </div>
 

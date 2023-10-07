@@ -33,7 +33,7 @@ using System.Net.Http;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Route("")]
-    public class InicioController : Controller
+    public class InicioController : BaseController
     {
 
         private readonly ILogger<InicioController> _logger;

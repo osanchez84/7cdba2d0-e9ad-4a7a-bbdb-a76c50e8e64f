@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
 
-    public class RegistroReciboPagoController : Controller
+    public class RegistroReciboPagoController : BaseController
     {
 
         private readonly IRegistroReciboPagoService _registroReciboPagoService;

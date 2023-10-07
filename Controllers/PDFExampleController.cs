@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class PDFExampleController : Controller
+    public class PDFExampleController : BaseController
     {
         public IActionResult Index()
         {

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class EstadisticasController : Controller
+    public class EstadisticasController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
         private readonly ITipoCortesiaService _tipoCortesiaService;

@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatCarreterasController : Controller
+    public class CatCarreterasController : BaseController
     {
         private readonly ICatCarreterasService _catCarreterasService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;

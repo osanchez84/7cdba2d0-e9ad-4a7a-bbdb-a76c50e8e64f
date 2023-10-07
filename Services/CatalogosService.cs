@@ -20,7 +20,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             List<Dictionary<string, string>> modelList = new List<Dictionary<string, string>>();
             string strParams = string.Join(",", campos);
-            string strQuery = @"SELECT
+            string strQuery = @"SELECT 
                                 {0}
                                 FROM {1}
                                 WHERE estatus = 1";

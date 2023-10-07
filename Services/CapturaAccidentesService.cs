@@ -476,10 +476,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                            @"SELECT p.*, ctp.tipoPersona,v.idVehiculo
+                                            @"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
+                                            p.rfc,p.curp,p.fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,ctp.tipoPersona,v.idVehiculo
                                             FROM personas AS p                                           
-                                            INNER JOIN catTipoPersona AS ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona
-                                            INNER JOIN vehiculos AS v ON p.idPersona = v.idPersona
+                                            LEFT JOIN catTipoPersona AS ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona
+                                            LEFT JOIN vehiculos AS v ON p.idPersona = v.idPersona
                                             WHERE p.idPersona = @IdPersona AND p.estatus = 1";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdPersona", SqlDbType.Int)).Value = (object)IdPersona ?? DBNull.Value;
@@ -491,9 +492,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
                             model.IdVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             model.IdCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                            model.nombre = reader["nombre"].ToString();
+                            model.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            model.apellidoMaterno = reader["apellidoMaterno"].ToString();
                             model.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
                             model.rfc = reader["rfc"].ToString();
                             model.curp = reader["curp"].ToString();
+                            model.licencia = reader["numeroLicencia"].ToString();
+
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -902,20 +908,23 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET descripcionCausas = @DescripcionCausa, idEstatusReporte = @idEstatusReporte WHERE idAccidente = @idAccidente";
+                    string query = "UPDATE accidentes SET idEstatusReporte = @idEstatusReporte";
+
+                    if (descripcionCausa != null)
+                    {
+                        query += ", descripcionCausas = @DescripcionCausa";
+                    }
+
+                    query += " WHERE idAccidente = @idAccidente";
 
                     SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idEstatusReporte", 2);
 
                     if (descripcionCausa != null)
                     {
                         command.Parameters.AddWithValue("@DescripcionCausa", descripcionCausa);
                     }
-                    else
-                    {
-                        command.Parameters.AddWithValue("@DescripcionCausa", DBNull.Value);
-                    }
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@idEstatusReporte", 2);
 
                     command.ExecuteNonQuery();
                 }
@@ -931,6 +940,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
         public List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente)
         
         {
@@ -1899,7 +1909,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
-                string query = "SELECT descripcionCausas FROM accidentes WHERE idAccidente = @idAccidente"; // Reemplaza esto con tu consulta
+                string query = "SELECT descripcionCausas FROM accidentes WHERE idAccidente = @idAccidente"; 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.CommandType = CommandType.Text;

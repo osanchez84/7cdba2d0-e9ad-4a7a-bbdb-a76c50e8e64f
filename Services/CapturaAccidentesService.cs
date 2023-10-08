@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GuanajuatoAdminUsuarios.Controllers;
 using System.Windows.Input;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1019,8 +1020,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.rfc = reader["rfc"].ToString();
                             involucrado.curp = reader["curp"].ToString();
                             involucrado.licencia = reader["numeroLicencia"].ToString();
+                            string fechaNac = reader["fechaNacimiento"].ToString();
+                            if (!fechaNac.IsNullOrEmpty())
+                                involucrado.fechaNacimiento = Convert.ToDateTime(fechaNac);
 
-                            ListaInvolucrados.Add(involucrado); 
+							ListaInvolucrados.Add(involucrado); 
                         } 
                     } 
                 }

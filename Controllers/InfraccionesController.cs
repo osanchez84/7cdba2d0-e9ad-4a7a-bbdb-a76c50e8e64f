@@ -150,7 +150,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombrePropietario","Propietario"},
             {"fechaInfraccion","Fecha Aplicada a"},
             {"NombreGarantia","Garantía"},
-            {"nombreOficina","Delegación/Oficina"}
+            {"delegacion","Delegación/Oficina"}
             };
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var ListTransitoModel = _infraccionesService.GetAllInfracciones(model, idOficina);

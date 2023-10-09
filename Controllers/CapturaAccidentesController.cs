@@ -1231,7 +1231,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				foreach (PersonaModel p in personasList)
 				{
 					CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-					involucrado.idPersonaInvolucrado = (int)p.idPersona;
+					involucrado.IdPersona = (int)p.idPersona;
 					involucrado.nombre = p.nombre;
 					involucrado.apellidoPaterno = p.apellidoPaterno;
 					involucrado.apellidoMaterno = p.apellidoMaterno;
@@ -1284,7 +1284,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
 
                 CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-                involucrado.idPersonaInvolucrado = (int)datosTabla.idPersona;
+                involucrado.IdPersona = (int)datosTabla.idPersona;
                 involucrado.nombre = datosTabla.nombre;
                 involucrado.apellidoPaterno = datosTabla.apellidoPaterno;
                 involucrado.apellidoMaterno = datosTabla.apellidoMaterno;

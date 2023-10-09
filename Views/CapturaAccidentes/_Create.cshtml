@@ -1225,6 +1225,8 @@
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
+               console.log("dtaa: ", formData)
+
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',

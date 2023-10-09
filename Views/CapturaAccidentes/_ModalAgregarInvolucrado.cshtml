@@ -119,7 +119,7 @@
 	function onRowSelect(e) {
 		var selectedRow = this.select();
 		var dataItem = this.dataItem(selectedRow);
-		var idPersona = selectedRow.find(".idPersonaColumn").text();
+		var idPersona = dataItem.idPersonaInvolucrado;
 		$('#idPersonaInput').val(idPersona);
 
 		var nombre = dataItem.nombre
@@ -147,6 +147,34 @@
 
 	}
 
+	function involucardoNoVehiculo() {
+		var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
+		var selectedItem = grid.dataItem(grid.select());
+		var idPersona = selectedItem.idPersonaInvolucrado;
+		$('#idPersonaInput').val(idPersona);
+
+		var nombre = dataItem.nombre
+		var apellidoPaterno = dataItem.apellidoPaterno
+		var apellidoMaterno = dataItem.apellidoMaterno
+		var curp = dataItem.curp
+		var fechaNacimiento = convertDate(dataItem.fechaNacimiento);
+		var rfc = dataItem.rfc
+
+		var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+		$('#gridVehiculosInvolucrados').data('idPersona', idPersona);
+
+		document.getElementById("nombreModal").innerText = nombreCompleto;
+		document.getElementById("curpModal").innerText = curp;
+		document.getElementById("fechaNacimientoModal").innerText = fechaNacimiento;
+		document.getElementById("rfcModal").innerText = rfc;
+
+		$('#buscarInvolucradoModal').modal('hide');
+		$('body').removeClass('model-open');
+		$('.modal-backdrop').remove();
+		$('#sinBuqueda').hide();
+		$('#involucradoSeleccionado').show();
+
+	}
 </script>
 <!--SECCION INVOLUCRADOS-->
 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -298,7 +326,7 @@
                     <div class="row ">
                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                             <div class="btnOutline btnOutlinePrimary my-3">
-                                <button data-bs-toggle="modal" data-bs-target="#addConductor">
+								<button data-bs-toggle="modal" data-bs-target="#addConductor" onclick="involucardoNoVehiculo()">
                                     <h5 class="m-0"><i class="me-2 icon-addInvolucrado"></i><b>Agregar un nuevo involucrado</b></h5>
                                 </button>
                             </div>

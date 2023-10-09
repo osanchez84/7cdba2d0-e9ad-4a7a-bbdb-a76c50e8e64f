@@ -4,16 +4,14 @@
         function onRowSelect(e) {
             var selectedRow = this.select();
             var dataItem = this.dataItem(selectedRow);
-            var idPersona = selectedRow.find(".idPersonaColumn").text();
-        $('#idPersonaInput').val(idPersona);
+            var idPersona = dataItem.idPersonaInvolucrado;
+            $('#idPersonaInput').val(idPersona);
 
             var nombre = dataItem.nombre
             var apellidoPaterno = dataItem.apellidoPaterno
             var apellidoMaterno = dataItem.apellidoMaterno
             var curp = dataItem.curp
-            var fechaNacimiento = dataItem.fechaNacimiento.split('T')[0]
-            var dat = fechaNacimiento.split("-")
-            fechaNacimiento = dat[2] + "/" + dat[1]+ "/" + dat[0]
+            var fechaNacimiento = convertDate(dataItem.fechaNacimiento);
             var rfc = dataItem.rfc
 
             var nombreCompleto = nombre+" "+apellidoPaterno+" "+apellidoMaterno;
@@ -50,7 +48,7 @@
                 columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
                 columns.Bound(c => c.rfc).Title("RFC").Width(80);
                 columns.Bound(c => c.curp).Title("CURP").Width(100);
-                columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Width(100);
+                columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Format("{0:dd/MM/yyyy}").Width(100);
                 columns.Bound(c => c.licencia).Title("No Licencia").Width(100);
                 //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 

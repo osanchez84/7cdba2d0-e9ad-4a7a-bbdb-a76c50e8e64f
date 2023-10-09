@@ -211,13 +211,10 @@
                             $('#capturarConductorModal').modal('hide');
                             var grid = $("#gridConductores").data("kendoGrid");
 
-                            // Verifica si result es un objeto y no un array
                             if (typeof result === "object") {
                                 // Limpia el DataSource del grid
                                 grid.dataSource.data([]);
-                                // Agrega el objeto result al DataSource del grid
                                 grid.dataSource.add(result);
-                                // Refresca el grid para que muestre los datos actualizados
                                 grid.refresh();
                             } else {
                                 console.error("El resultado no es un objeto válido:", result);

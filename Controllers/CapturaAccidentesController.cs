@@ -1233,7 +1233,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 foreach (PersonaModel p in personasList)
                 {
                     CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-                    involucrado.idPersonaInvolucrado = (int)p.idPersona;
+                    involucrado.IdPersona = (int)p.idPersona;
                     involucrado.nombre = p.nombre;
                     involucrado.apellidoPaterno = p.apellidoPaterno;
                     involucrado.apellidoMaterno = p.apellidoMaterno;

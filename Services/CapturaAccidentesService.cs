@@ -1034,7 +1034,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-                            involucrado.idPersonaInvolucrado = Convert.ToInt32(reader["idPersona"].ToString());
+                            involucrado.IdPersona = Convert.ToInt32(reader["idPersona"].ToString());
                             involucrado.nombre = reader["nombre"].ToString();
                             involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();

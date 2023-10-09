@@ -1232,10 +1232,13 @@
                 type: 'POST',
                 data: formData,
                 success: function (result) {
+                    console.log("hd", result)
                     sitteg_success('Elemento guardado correctamente')
                     $('#VehiculoServiceModal').modal('hide');
-                    $('#agregarVehiculoModal').modal('hide');
-                    var gridVehiculos = $("#listadoVehiculos").html(result);
+                    //$('#agregarVehiculoModal').modal('hide');
+                    var grid = $("#gridPrevioVehiculo").data("kendoGrid");
+                    grid.dataSource.data(result.data);
+                    grid.refresh();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;

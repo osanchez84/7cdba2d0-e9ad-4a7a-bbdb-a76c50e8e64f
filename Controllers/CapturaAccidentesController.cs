@@ -1165,9 +1165,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			if (IdVehiculo != 0)
 			{
-				var resultados = _vehiculosService.GetAllVehiculos();
-				return PartialView("_ListadoVehiculos", resultados);
-			}
+				var Placa = model.placas;
+				var Serie = model.serie;
+				var folio = "";
+				var resultados = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+
+                return Json (new {data = resultados});
+            }
 			else
 			{
 				return null;
@@ -1192,9 +1196,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			if (IdVehiculo != 0)
 			{
 				var resultados = _vehiculosService.GetAllVehiculos();
-				return Json(new { id = IdVehiculo, data = resultados });
-			}
-			else
+                return Json(resultados); 
+            }
+            else
 			{
 				return null;
 			}

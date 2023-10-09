@@ -52,13 +52,14 @@
             }
         });
     }
-    function buscarInvolucrado() {
+    function buscarInvolucrado() {        
         var Mydata = $("#buscarInvolucradoForm").serialize();
         $.ajax({
             url: '/CapturaAccidentes/BuscarPorParametro',
             type: 'POST',
             data: Mydata,
             success: function (response) {
+                console.log(response);
                 if (response.tipo == "success") {
                     // Crear instancia del modelo con los datos recibidos
                     mostrarModal(response.datos);
@@ -70,7 +71,13 @@
                     } else {
                         if (response.data != null || response.data != undefined) {
                             var personasList = response.data;
-                            var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
+                            var grid = $("#gridInvolucradosPrevio").data("kendoGrid"); 
+                            console.log(personasList);
+
+                            [].forEach.call(personasList, function (persona) {
+                                persona.fechaNacimiento = convertDate(persona.fechaNacimiento);
+                            });
+
                             grid.dataSource.data(personasList);
 
                             if (personasList.length === 0) {

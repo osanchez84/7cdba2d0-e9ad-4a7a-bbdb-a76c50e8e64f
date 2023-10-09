@@ -9,7 +9,7 @@
             columns.Bound(c => c.nombre).Title("Nombre").Width(100);
             columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
             columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-            columns.Bound(c => c.FechaIngreso).Title("Fecha de ingreso:").Width(100);
+            columns.Bound(c => c.FechaIngreso).Title("Fecha de ingreso:").Format("{0:dd/MM/yyyy}").Width(100);
             columns.Bound(c => c.HoraIngreso).Title("Hora de ingreso:").Width(100);
             columns.Template("<button onclick='abrirModalFechaHora(event)'><h6 class='m-0 colorPrimary'><i class='icon-plus me-2'></i><b>Fecha y hora</b></h6></button>").Width(120);
 

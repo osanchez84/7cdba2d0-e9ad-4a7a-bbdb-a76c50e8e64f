@@ -7,27 +7,24 @@
             <div class="row my-2">
                 <div class="col-md-4">
                     <div class="controlForm">
-                    <label>Nombre: <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().TextBoxFor(t => t.nombre)
-                            .Label(l => l.Content("Nombre: <b>(obligatorio)</b>:"))
+                        @(Html.Kendo().TextBoxFor(t => t.nombreFisico)
+                            .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                    <label>Apellido paterno: <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().TextBoxFor(t => t.apellidoPaterno)
-                            .Label(l => l.Content("Apellido paterno: <b>(obligatorio)</b>:"))
+                        @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoFisico)
+                            .Label(l => l.Content("Apellido paterno <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                    <label>Apellido materno: <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().TextBoxFor(t => t.apellidoMaterno)
-                            .Label(l => l.Content("Apellido materno: <b>(obligatorio)</b>:"))
+                        @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoFisico)
+                            .Label(l => l.Content("Apellido materno <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
                     </div>
@@ -45,7 +42,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.CURP)
+                        @(Html.Kendo().TextBoxFor(t => t.CURPFisico)
                             .Label(l => l.Content("CURP: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -53,7 +50,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.RFC)
+                        @(Html.Kendo().TextBoxFor(t => t.RFCFisico)
                             .Label(l => l.Content("RFC: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -83,7 +80,7 @@
             <div class="row my-2">
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
+                        @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaFisico)
                             .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -111,7 +108,7 @@
                 <div class="col-md-4">
                     <div class="controlForm">
                         <label>Entidad:</label>
-                        @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad)
+                        @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidadFisico)
                             .BindTo((SelectList)ViewBag.CatEntidades)
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
@@ -120,7 +117,7 @@
                 <div class="col-md-4">
                     <div class="controlForm">
                         <label>Municipio:</label>
-                        @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio)
+                        @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipioFisico)
                             .BindTo((SelectList)ViewBag.CatMunicipios)
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
@@ -138,7 +135,7 @@
             <div class="row my-2">
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
+                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.coloniaFisico)
                             .Label(l => l.Content("Colonia: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -146,7 +143,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
+                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calleFisico)
                             .Label(l => l.Content("Calle: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -154,7 +151,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
+                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numeroFisico)
                             .Label(l => l.Content("Número: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -164,7 +161,7 @@
             <div class="row my-2">
                 <div class="col-md-6">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefono)
+                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefonoFisico)
                             .Label(l => l.Content("Teléfono: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -172,7 +169,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="controlForm">
-                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correo)
+                        @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correoFisico)
                             .Label(l => l.Content("Correo: <b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
@@ -206,12 +203,22 @@
                 if (validator.validate()) {
                     var formData = $("#frmCrearPersonaV").serialize();
                     $.ajax({
-                        url: '@Url.Action("ajax_CrearPersona","Personas")',
+                        url: '@Url.Action("ajax_CrearPersona","CapturaAccidentes")',
                         type: 'POST',
                         data: formData,
                         success: function (result) {
-                            $('#modalAgregarConductor').modal('hide');
-                            sitteg_success('Elemento guardado correctamente')
+                            console.log("JJD", result)
+                            $('#capturarConductorModal').modal('hide');
+                            var grid = $("#gridConductores").data("kendoGrid");
+
+                            if (typeof result === "object") {
+                                // Limpia el DataSource del grid
+                                grid.dataSource.data([]);
+                                grid.dataSource.add(result);
+                                grid.refresh();
+                            } else {
+                                console.error("El resultado no es un objeto válido:", result);
+                            }
                         },
                         error: function (xhr, status) {
                             var errmsg = xhr.responseText;

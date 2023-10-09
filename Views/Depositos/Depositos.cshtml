@@ -528,7 +528,7 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
-                                .Events(e => e.Change("EntidadDropDownChange"))
+                                .Events(e => e.Change("EntidadDropDownChange2"))
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -701,7 +701,7 @@
         });
     }
 
-    function EntidadDropDownChange() {
+    function EntidadDropDownChange2() {
         var entidadDDlValue = $("#idEntidadUbicacion").data("kendoDropDownList").value();
 
 

@@ -87,7 +87,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     return Json(JsonConvert.SerializeObject(listaIdsPermitidos));
                 }
-                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
+            
+                var url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
 
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(url);

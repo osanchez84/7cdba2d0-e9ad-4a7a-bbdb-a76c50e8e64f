@@ -308,7 +308,36 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         return Json(new { success = false, message = "Ha ocurrido un error al comunicarse con el servicio web." });
                     }
                 }
-                return PartialView("_Create", vehiculosModel);
+                RepuveConsgralRequestModel repuveGralModel1 = new RepuveConsgralRequestModel()
+                {
+                    placa = model.PlacasBusqueda,
+                    niv = model.SerieBusqueda
+                };
+                var repuveConsGralResponse1 = _repuveService.ConsultaGeneral(repuveGralModel1).FirstOrDefault();
+
+
+                var vehiculoEncontrado1 = new VehiculoModel
+                {
+                    placas = repuveConsGralResponse1.placa,
+                    serie = repuveConsGralResponse1.niv_padron,
+                    //tarjeta = repuveConsGralResponse.ta,
+                    motor = repuveConsGralResponse1.motor,
+                    //otros = repuveConsGralResponse.
+                    color = repuveConsGralResponse1.color,
+                    //idEntidad = idEntidad,
+                    //idMarcaVehiculo = idMarca,
+                    //idSubmarca = idSubmarca,
+                    submarca = repuveConsGralResponse1.submarca,
+                    //idTipoVehiculo = idTipo,
+                    modelo = repuveConsGralResponse1.modelo,
+                    //capacidad = repuveConsGralResponse.c,
+                    //carga = repuveConsGralResponse.ca,
+
+                    Persona = new PersonaModel(),
+
+                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                };
+                return PartialView("_Create", vehiculoEncontrado1);
 
             }
             else

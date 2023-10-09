@@ -32,5 +32,7 @@
         public bool ValoresBool => EstadoValores == 1;
         public bool PrendasBool => EstadoPrendas == 1;
         public bool OtrosBool => EstadoOtros == 1;
+
+        public int IdEstatusReporte { get; set; }
     }
 }

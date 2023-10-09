@@ -1,4 +1,4 @@
-﻿@using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+﻿﻿@using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 @model VehiculoModel
 
 @{
@@ -150,15 +150,13 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
                         )
                 }
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
-                        .Value(DateTime.Now)
+                        .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .DateInput()
                         )
                 }
 
@@ -234,15 +232,18 @@
                 }
                 else
                 {
+
                     <div id="divSubmarca">
                         @Html.HiddenFor(m=> m.idSubmarca)
                         @(Html.Kendo().DropDownList()
-                            .Name("ddlIdSubAc")
+                            .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
+
                     </div>
                 }
+
             </div>
         </div>
 
@@ -356,9 +357,10 @@
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Carga:</label>
+                @Html.HiddenFor(m => m.cargaInt, new { id = "idCarga" })
                 @(Html.Kendo().SwitchFor(m => m.carga)
                     .Messages(c => c.Checked("SI").Unchecked("NO"))
-                    .HtmlAttributes(new { style = "transform: scale(1.2);" })
+                    .HtmlAttributes(new { style = "transform: scale(1.2);", id = "cargaSwitch" })
 
                     )
             </div>
@@ -539,10 +541,10 @@
             </div>
 
             @*PERSONA FISICA*@
-            <div class="tab-pane tabCustomConteiner fade" id="person-fisicaAcc" role="tabpanel" aria-labelledby="person-fisicaAcc-tab">
+            <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
-                    <div id="personasFisicasAcc">
+                    <div id="personasFisicasInf">
                     </div>
 
                 </div>
@@ -700,7 +702,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa calle")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
 
                         </div>
@@ -711,7 +713,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa número")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -883,7 +885,7 @@
                         <div class="controlForm mb-3">
                             <label>Fecha de nacimiento <b>(obligatorio)</b></label>
                             <span>
-                            @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
+                                @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd-MM-yyyy")
                                     )
                             </span>
@@ -893,10 +895,10 @@
                         <div class="controlForm">
                             <label>Sexo <b>(obligatorio)</b></label>
                         </div>
+                        @Html.HiddenFor(m => m.Persona.idGenero, new { id = "idGenero" })
                         @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
                             .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
-                            .HtmlAttributes(new { style = "transform: scale(1.6);" })
-
+                            .HtmlAttributes(new { style = "transform: scale(1.6);", id = "generoSwitch" })
                             )
                     </div>
 
@@ -1059,12 +1061,12 @@
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
                             <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                                <button type="button" data-bs-dismiss="modal_v" aria-label="Close">
                                     <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                                 </button>
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal" aria-label="Close">
+                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal_v" aria-label="Close">
                                     @(Html.Kendo().Button()
                                         .Name("AddFisico")
                                         .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -1073,11 +1075,15 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
+
             </section>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1108,7 +1114,7 @@
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
-                $("#personasFisicasAcc").html(result);
+                $("#personasFisicasInf").html(result);
             }
         });
     }
@@ -1129,6 +1135,7 @@
 
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
+        console.log(value);
         $('#hdnIdCatTipoPersona').val(value);
 
     });
@@ -1155,6 +1162,7 @@
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
+                    console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
                 }
             });
@@ -1167,6 +1175,7 @@
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
+        console.log(Mydata);
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
             type: 'POST',
@@ -1182,19 +1191,27 @@
     }
 
     function submitCreatePersonaFisica() {
+        var generoBool = $("#generoSwitch").prop("checked");
+        $("#idGenero").val(generoBool ? 1 : 0);
         var Mydata = $("#personaFisicaForm").serialize();
+        console.log("SS", Mydata)
         $.ajax({
             url: '@Url.Action("ajax_CrearPersonaFisica")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                var grid = $("#personasFisicasAcc").html(result);
+                console.log(result);
+                var grid = $("#personasFisicasInf").html(result);
 
+                $('#addFisico').modal('hide');
             }
         });
     }
 
     function submitCreateVehiculo() {
+        var carga = $("#cargaSwitch").prop("checked");
+        $("#idCarga").val(carga ? 1 : 0);
+
         var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
         validator.validate();
 
@@ -1204,22 +1221,24 @@
         }
 
         if (validator.validate()) {
+
             var formData = $("#frmCreateVehiculo").serialize();
+            var idVeh = $('#hdnIdVehiculo').val();
+            console.log("Id vehiculo: ", idVeh)
             $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo")',
+                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
                 data: formData,
-                dataType: "json",
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
-                    $('#VehiculoServiceModal').modal('hide'); 
-                    $('#anexo2Modal').modal('hide');
-
-
+                    $('#VehiculoServiceModal').modal('hide');
+                    $('#agregarVehiculoModal').modal('hide');
+                    var gridVehiculos = $("#listadoVehiculos").html(result);
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    console.log(errmsg)
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                 }
             });
         }
@@ -1239,14 +1258,21 @@
         });
     }
 
-
-
     $(document).ready(function () {
-        var datePicker1 = $("#Persona.vigenciaLicencia").data("kendoDatePicker");
-        datePicker1.value(null);
-    });
-    $(document).ready(function () {
-        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+        var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
     });
+
+    $(document).ready(function () {
+        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+        var dateVigencia = datePicker.value();
+
+        // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
+        if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
+            datePicker.value(null);
+        }
+    });
+
+
+
 </script>

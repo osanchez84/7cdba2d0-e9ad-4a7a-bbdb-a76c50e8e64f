@@ -480,13 +480,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-8 mx-md-auto col-lg-5">
-                <div class="controlButton my-3" onclick="enviarImagen()">
-                    @(Html.Kendo().Button()
-                    .Name("vehiculoBtn")
-                    .HtmlAttributes(new { @class = "btnPrimary" })
-                    .Content("<h5 class=\"m-0\"><b>Subir Inventario</b></h5>"))
-                </div>
+         <div class="col-12 col-md-8 mx-md-auto col-lg-5 btnOutline btnOutlinePrimary">
+                                            <button type="button" class="btnPrimary px-3" id="btnNuevoMotivo" onclick="enviarImagen()">
+                                                <h5><b>Subir Inventario</b></h5>
+                                            </button>
             </div>
         </div>
     </div>

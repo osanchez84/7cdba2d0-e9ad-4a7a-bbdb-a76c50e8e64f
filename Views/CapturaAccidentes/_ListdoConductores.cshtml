@@ -6,7 +6,8 @@
         
         if (selectedRow.length > 0) {
             var dataItem = this.dataItem(selectedRow); 
-            IdPersona = dataItem.idPersonaInvolucrado;
+            console.log("DTI",dataItem)
+            IdPersona = dataItem.IdPersona;
         }
 
         $.ajax({
@@ -44,7 +45,7 @@
         .Events(events => events.Change("onRowSelectC"))
         .Columns(columns =>
         {
-            columns.Bound(c => c.idPersonaInvolucrado).Hidden();
+            columns.Bound(c => c.IdPersona).Hidden();
             columns.Bound(c => c.IdVehiculo).Hidden();
             columns.Select().Width(50).ClientHeaderTemplate(" ");
             columns.Bound(c => c.nombre).Title("Nombre").Width(100);

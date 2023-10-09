@@ -311,7 +311,7 @@
                         </div>
                     </div>
               </div>
-                        <div id="ListadoCondocutores">
+                        <div id="ListadoConducutores">
                             <partial name="_ListdoConductores" model="Model" />
                         </div>
                     <div class="row">
@@ -593,10 +593,9 @@
                 data:  jsonData ,
                 success: function (response) { 
                     $('#modalLicencias').modal('hide');
-                    var personasList = [response]; // Convierte el objeto en un arreglo
+                    var personasList = [response];
                     var grid = $("#gridConductores").data("kendoGrid");
-                    grid.dataSource.data(personasList);
-
+                    grid.dataSource.data(result);
                 },
                 error: function (error) {
                     sitteg_warning('Error al guardar en la base de datos:');

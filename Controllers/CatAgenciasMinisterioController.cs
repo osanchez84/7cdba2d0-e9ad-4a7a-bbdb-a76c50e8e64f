@@ -1,4 +1,5 @@
-﻿using GuanajuatoAdminUsuarios.Entity;
+﻿using GuanajuatoAdminUsuarios.Controllers;
+using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
@@ -13,9 +14,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class CatAgenciasMinisterioController : Controller
+    public class CatAgenciasMinisterioController : BaseController
     {
         private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
 

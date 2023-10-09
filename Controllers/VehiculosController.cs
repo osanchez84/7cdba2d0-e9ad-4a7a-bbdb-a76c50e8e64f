@@ -19,7 +19,7 @@ using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class VehiculosController : Controller
+    public class VehiculosController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;

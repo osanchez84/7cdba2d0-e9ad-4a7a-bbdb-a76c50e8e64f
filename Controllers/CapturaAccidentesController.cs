@@ -34,49 +34,47 @@ using GuanajuatoAdminUsuarios.Helpers;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-
-	public class CapturaAccidentesController : Controller
-	{
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly ICatMunicipiosService _catMunicipiosService;
-		private readonly ICatCarreterasService _catCarreterasService;
-		private readonly ICatTramosService _catTramosService;
-		private readonly ICapturaAccidentesService _capturaAccidentesService;
-		private readonly ICatClasificacionAccidentes _clasificacionAccidentesService;
-		private readonly ICatFactoresAccidentesService _catFactoresAccidentesService;
-		private readonly ICatFactoresOpcionesAccidentesService _catFactoresOpcionesAccidentesService;
-		private readonly ICatCausasAccidentesService _catCausasAccidentesService;
-		private readonly ITiposCarga _tiposCargaService;
-		private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
-		private readonly IPensionesService _pensionesService;
-		private readonly ICatFormasTrasladoService _catFormasTrasladoService;
-		private readonly ICatTipoInvolucradoService _catTipoInvolucradoService;
-		private readonly ICatEstadoVictimaService _catEstadoVictimaService;
-		private readonly ICatHospitalesService _catHospitalesService;
-		private readonly ICatInstitucionesTrasladoService _catInstitucionesTraslado;
-		private readonly ICatAsientoService _catAsientoservice;
-		private readonly ICatCinturon _catCinturon;
-		private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
-		private readonly ICatAutoridadesEntregaService _catAutoridadesEntregaService;
-		private readonly IOficiales _oficialesService;
-		private readonly ICatCiudadesService _catCiudadesService;
-		private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
-		private readonly ICatDictionary _catDictionary;
-		private readonly IInfraccionesService _infraccionesService;
-		private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
-		private readonly IPersonasService _personasService;
-		private readonly IVehiculosService _vehiculosService;
-		private readonly AppSettings _appSettings;
-		private readonly ICatEntidadesService _catEntidadesService;
-		private readonly IColores _coloresService;
-		private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
-		private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
-		private readonly IRepuveService _repuveService;
-
+    public class CapturaAccidentesController : BaseController
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly ICatCarreterasService _catCarreterasService;
+        private readonly ICatTramosService _catTramosService;
+        private readonly ICapturaAccidentesService _capturaAccidentesService;
+        private readonly ICatClasificacionAccidentes _clasificacionAccidentesService;
+        private readonly ICatFactoresAccidentesService _catFactoresAccidentesService;
+        private readonly ICatFactoresOpcionesAccidentesService _catFactoresOpcionesAccidentesService;
+        private readonly ICatCausasAccidentesService _catCausasAccidentesService;
+        private readonly ITiposCarga _tiposCargaService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+        private readonly IPensionesService _pensionesService;
+        private readonly ICatFormasTrasladoService _catFormasTrasladoService;
+        private readonly ICatTipoInvolucradoService _catTipoInvolucradoService;
+        private readonly ICatEstadoVictimaService _catEstadoVictimaService;
+        private readonly ICatHospitalesService _catHospitalesService;
+        private readonly ICatInstitucionesTrasladoService _catInstitucionesTraslado;
+        private readonly ICatAsientoService _catAsientoservice;
+        private readonly ICatCinturon _catCinturon;
+        private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
+        private readonly ICatAutoridadesEntregaService _catAutoridadesEntregaService;
+        private readonly IOficiales _oficialesService;
+        private readonly ICatCiudadesService _catCiudadesService;
+        private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
+        private readonly ICatDictionary _catDictionary;
+        private readonly IInfraccionesService _infraccionesService;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly IPersonasService _personasService;
+        private readonly IVehiculosService _vehiculosService;
+        private readonly AppSettings _appSettings;
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly IColores _coloresService;
+        private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
+        private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
+        private readonly IRepuveService _repuveService;
 
 
 
-		private int idOficina = 0;
+        private int idOficina = 0;
 		private int lastInsertedId = 0;
 		private int idVehiculoInsertado = 0;
 
@@ -727,27 +725,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult ModalAgregarInvolucrado()
 		{
 
-			return PartialView("_ModalInvolucrado-Vehiculo");
-		}
-		[HttpGet]
-		public IActionResult SubmodalBuscarInvolucrado()
-		{
-			//BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-			//var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
-			CapturaAccidentesModel model = new CapturaAccidentesModel()
-			{
-				idPersonaInvolucrado = 1,
-				nombre = "Nombre",
-				apellidoPaterno = "Apellidopaterno",
-				apellidoMaterno = "ApellidoMaterno",
-				rfc = "RFC",
-				curp = "curp",
-				fechaNacimiento = DateTime.Now,
-				licencia = "licencia"
-			};
-			var modelList = new List<CapturaAccidentesModel>();
-			modelList.Add(model);
-			ViewBag.ModeInvolucrado = modelList;
+            return PartialView("_ModalInvolucrado-Vehiculo");
+        }
+        [HttpGet]
+        public IActionResult SubmodalBuscarInvolucrado()
+        {
+            BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            ViewBag.ModeInvolucrado = ListInvolucradoModel;
 
 			return PartialView("_ModalAgregarInvolucrado");
 		}
@@ -830,15 +815,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var ListCausas = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
-			return Json(ListCausas.ToDataSourceResult(request));
-		}
-		[HttpGet]
-		public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
-		{
-			//BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-			var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
-			return Json(ListInvolucradoModel);
-		}
+            return Json(ListCausas.ToDataSourceResult(request));
+        }
+        [HttpGet]
+        public ActionResult BuscarInvolucrado(BusquedaInvolucradoModel model)
+        {
+            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            return Json(ListInvolucradoModel);
+        }
 
 
 		public IActionResult GuardarInvolucrado(int idPersonaInvolucrado)
@@ -1299,23 +1283,40 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				_personasService.InsertarDesdeServicio(personaDatos);
 				var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
 
-				CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-				involucrado.idPersonaInvolucrado = (int)datosTabla.idPersona;
-				involucrado.nombre = datosTabla.nombre;
-				involucrado.apellidoPaterno = datosTabla.apellidoPaterno;
-				involucrado.apellidoMaterno = datosTabla.apellidoMaterno;
-				involucrado.rfc = datosTabla.RFC;
-				involucrado.curp = datosTabla.CURP;
-				involucrado.licencia = datosTabla.numeroLicencia;
+                CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
+                involucrado.idPersonaInvolucrado = (int)datosTabla.idPersona;
+                involucrado.nombre = datosTabla.nombre;
+                involucrado.apellidoPaterno = datosTabla.apellidoPaterno;
+                involucrado.apellidoMaterno = datosTabla.apellidoMaterno;
+                involucrado.rfc = datosTabla.RFC;
+                involucrado.curp = datosTabla.CURP;
+                involucrado.licencia = datosTabla.numeroLicencia; 
+                
+                return Json(involucrado);
+            }
+            catch (Exception ex)
+            {
+                // Maneja el error de manera adecuada
+                return Json(new { error = "Error al guardar en la base de datos: " + ex.Message });
+            }
+        }
 
-				return Json(involucrado);
-			}
-			catch (Exception ex)
-			{
-				// Maneja el error de manera adecuada
-				return Json(new { error = "Error al guardar en la base de datos: " + ex.Message });
-			}
-		}
-	}
+
+        [HttpPost]
+        public IActionResult ajax_CrearPersona(PersonaModel model)
+        {
+            //var model = json.ToObject<Gruas2Model>();
+            //var errors = ModelState.Values.Select(s => s.Errors);
+            //if (ModelState.IsValid)
+            //{
+            int id = _personasService.CreatePersona(model);
+            model.PersonaDireccion.idPersona = id;
+            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+            var modelList = _capturaAccidentesService.ObtenerConductorPorId(id);
+            return Json(modelList); 
+            //return RedirectToAction("Index");
+        }
+    }
 }
 

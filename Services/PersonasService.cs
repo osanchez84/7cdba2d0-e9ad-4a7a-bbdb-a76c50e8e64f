@@ -872,7 +872,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Close();
                 }
             }
-
+            
             return result;
         }
         public int CreatePersonaFisicaDireccion(PersonaDireccionModel model)

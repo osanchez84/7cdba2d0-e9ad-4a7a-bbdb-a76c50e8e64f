@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class DescripcionesEventoController : Controller
+    public class DescripcionesEventoController : BaseController
     {
         private readonly ICatDescripcionesEventoService _catDescripcionesEventoService;
 

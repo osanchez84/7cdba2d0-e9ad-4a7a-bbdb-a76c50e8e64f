@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ComparativoInfraccionesController : Controller
+    public class ComparativoInfraccionesController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IComparativoInfraccionesService _comparativoInfracciones;

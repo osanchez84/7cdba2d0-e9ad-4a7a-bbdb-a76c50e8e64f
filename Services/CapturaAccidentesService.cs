@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using GuanajuatoAdminUsuarios.Controllers;
 using System.Windows.Input;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -39,11 +40,14 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT acc.*, mun.Municipio, car.Carretera, tra.Tramo, er.estatusReporte FROM accidentes AS acc  
+                    SqlCommand command = new SqlCommand(@"SELECT acc.IdAccidente,acc.NumeroReporte,acc.Fecha,acc.Hora,acc.IdMunicipio,acc.IdCarretera,
+                        acc.IdTramo,acc.idEstatusReporte,
+                        mun.Municipio, car.Carretera, tra.Tramo, er.estatusReporte,er.idEstatusReporte
+                        FROM accidentes AS acc  
                         LEFT JOIN catMunicipios AS mun ON acc.idMunicipio = mun.idMunicipio 
                         LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera  
                         LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo  
-                        LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte 
+                        LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte
                         WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
                     command.CommandType = CommandType.Text;
@@ -149,6 +153,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[Fecha]
                                         ,[idCarretera]
                                         ,[kilometro]
+                                        ,[idEstatusReporte]
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus])
@@ -160,6 +165,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@Fecha
                                         ,@idCarretera
                                         ,@kilometro
+                                        ,@idEstatusReporte
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus);
@@ -471,10 +477,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                            @"SELECT p.*, ctp.tipoPersona,v.idVehiculo
+                                            @"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
+                                            p.rfc,p.curp,p.fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,ctp.tipoPersona,v.idVehiculo
                                             FROM personas AS p                                           
-                                            INNER JOIN catTipoPersona AS ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona
-                                            INNER JOIN vehiculos AS v ON p.idPersona = v.idPersona
+                                            LEFT JOIN catTipoPersona AS ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona
+                                            LEFT JOIN vehiculos AS v ON p.idPersona = v.idPersona
                                             WHERE p.idPersona = @IdPersona AND p.estatus = 1";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdPersona", SqlDbType.Int)).Value = (object)IdPersona ?? DBNull.Value;
@@ -486,9 +493,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
                             model.IdVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
                             model.IdCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                            model.nombre = reader["nombre"].ToString();
+                            model.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            model.apellidoMaterno = reader["apellidoMaterno"].ToString();
                             model.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
                             model.rfc = reader["rfc"].ToString();
                             model.curp = reader["curp"].ToString();
+                            model.licencia = reader["numeroLicencia"].ToString();
+
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -897,13 +909,23 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET descripcionCausas = @DescripcionCausa, idEstatusReporte = @idEstatusReporte WHERE idAccidente = @idAccidente";
+                    string query = "UPDATE accidentes SET idEstatusReporte = @idEstatusReporte";
+
+                    if (descripcionCausa != null)
+                    {
+                        query += ", descripcionCausas = @DescripcionCausa";
+                    }
+
+                    query += " WHERE idAccidente = @idAccidente";
 
                     SqlCommand command = new SqlCommand(query, connection);
-
-                    command.Parameters.AddWithValue("@DescripcionCausa", descripcionCausa);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idEstatusReporte", 2);
+
+                    if (descripcionCausa != null)
+                    {
+                        command.Parameters.AddWithValue("@DescripcionCausa", descripcionCausa);
+                    }
 
                     command.ExecuteNonQuery();
                 }
@@ -919,6 +941,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
         public List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente)
         
         {
@@ -1019,8 +1042,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.rfc = reader["rfc"].ToString();
                             involucrado.curp = reader["curp"].ToString();
                             involucrado.licencia = reader["numeroLicencia"].ToString();
+                            string fechaNac = reader["fechaNacimiento"].ToString();
+                            if (!fechaNac.IsNullOrEmpty())
+                                involucrado.fechaNacimiento = Convert.ToDateTime(fechaNac);
 
-                            ListaInvolucrados.Add(involucrado); 
+							ListaInvolucrados.Add(involucrado); 
                         } 
                     } 
                 }
@@ -1260,7 +1286,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand sqlCommand = new
-                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idvehiculo AND idPersona = @idPersona",
+                        SqlCommand("Update vehiculosAccidente set montoVehiculo = @montoVehiculo where idAccidente=@idAccidente AND idvehiculo = @idVehiculo",
                         connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@montoVehiculo", SqlDbType.Float)).Value = model.montoVehiculo;
                     sqlCommand.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = model.IdAccidente;
@@ -1887,7 +1913,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
-                string query = "SELECT descripcionCausas FROM accidentes WHERE idAccidente = @idAccidente"; // Reemplaza esto con tu consulta
+                string query = "SELECT descripcionCausas FROM accidentes WHERE idAccidente = @idAccidente"; 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -1963,8 +1989,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             datosFinales.RecibeMinisterio = reader["recibeMinisterio"] == DBNull.Value ? "" : reader["recibeMinisterio"].ToString();
                             datosFinales.IdElabora = reader["idElabora"] == DBNull.Value ? 0 : int.Parse(reader["idElabora"].ToString());
                             datosFinales.IdAutoriza = reader["idAutoriza"] == DBNull.Value ? 0 : int.Parse(reader["idAutoriza"].ToString());
-                            datosFinales.IdSupervisa = reader["idSupervisa"] == DBNull.Value ? 0 : int.Parse(reader["idSupervisa"].ToString()); 
+                            datosFinales.IdSupervisa = reader["idSupervisa"] == DBNull.Value ? 0 : int.Parse(reader["idSupervisa"].ToString());
+                            datosFinales.IdEstatusReporte = reader["idEstatusReporte"] == DBNull.Value ? 0 : int.Parse(reader["idEstatusReporte"].ToString());
+
                         }
+
 
                         reader.Close();
                     }

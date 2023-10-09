@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class ReporteAsignacionServiciosController : Controller
+    public class ReporteAsignacionServiciosController : BaseController
     {
         private readonly IPadronDepositosGruasService _padronDepositosGruasService;
         private readonly IGruasService _gruasService;

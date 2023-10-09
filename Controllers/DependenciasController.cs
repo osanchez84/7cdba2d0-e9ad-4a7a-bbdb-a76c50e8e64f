@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class DependenciasController : Controller
+    public class DependenciasController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()

@@ -1,3 +1,4 @@
+using GuanajuatoAdminUsuarios.Controllers;
 using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Models;
 using Kendo.Mvc.Extensions;
@@ -10,9 +11,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Example.WebUI.Controllers
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class AnexoController : Controller
+    public class AnexoController : BaseController
     {
         public IActionResult Anexo()
         {

@@ -1165,6 +1165,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			if (IdVehiculo != 0)
 			{
+
 				var Placa = model.placas;
 				var Serie = model.serie;
 				var folio = "";

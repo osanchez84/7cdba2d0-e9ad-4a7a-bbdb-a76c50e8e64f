@@ -11,5 +11,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Serie { get; set; }
         public DateTime FechaIngreso { get; set; }
         public string Folio { get; set; }
-    }
+		public string Placas { get; set; }
+
+	}
 }

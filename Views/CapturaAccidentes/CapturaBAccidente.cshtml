@@ -59,7 +59,6 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
-                console.log(response);
                 if (response.tipo == "success") {
                     // Crear instancia del modelo con los datos recibidos
                     mostrarModal(response.datos);
@@ -72,11 +71,10 @@
                         if (response.data != null || response.data != undefined) {
                             var personasList = response.data;
                             var grid = $("#gridInvolucradosPrevio").data("kendoGrid"); 
-                            console.log(personasList);
 
                             [].forEach.call(personasList, function (persona) {
                                 persona.fechaNacimiento = convertDate(persona.fechaNacimiento);
-                                persona.fechaNacimiento = persona.fechaNacimiento == "01/01/0001" ? "" : fechaNacimiento;
+                                persona.fechaNacimiento = persona.fechaNacimiento == "01/01/0001" ? "" : persona.fechaNacimiento;
                             });
 
                             grid.dataSource.data(personasList);

@@ -1245,6 +1245,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					involucrado.rfc = p.RFC;
 					involucrado.curp = p.CURP;
 					involucrado.licencia = p.numeroLicencia;
+					involucrado.fechaNacimiento = p.fechaNacimiento.Value;
 					ListaInvolucrados.Add(involucrado);
 				}
 				return Json(new { encontrada = true, data = ListaInvolucrados });

@@ -19,7 +19,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
-                    <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                    <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
                         @(Html.Kendo().Button()
                           .Name("back")
                           .HtmlAttributes(new { @class = "px-5" })
@@ -154,3 +154,9 @@
         </div>
     </div>
 </section>
+<script>
+    function goBack() {
+    $('#agregarInfraccionModal').modal('hide');
+
+    }
+</script>

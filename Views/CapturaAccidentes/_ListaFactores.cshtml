@@ -8,9 +8,10 @@
             {
                 columns.Bound(c => c.FactorAccidente).Width(80);
                 columns.Bound(c => c.FactorOpcionAccidente).Width(100);
-                columns.Command(c => c.Custom("Editar").Click("editarFactorA")).Width(100);
-                columns.Command(c => c.Custom("Eliminar").Click("eliminarFactorA")).Width(100);
-
+                //columns.Command(c => c.Custom("Editar").Click("editarFactorA")).Width(100);
+                //columns.Command(c => c.Custom("Eliminar").Click("eliminarFactorA")).Width(100);
+                columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarFactorA(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(150);
+                columns.Template("<button class='w-100 btn'><h6 class='m-0 colorDanger' onclick='eliminarFactorA(event)'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button>").Width(150);
 
             }).HtmlAttributes(new { style = "height:550px" })
             .Sortable()
@@ -58,6 +59,7 @@
 <script>
     function factoresChangeEdit() {
         var factorDDValue = $("#IdFactorAccidente").data("kendoDropDownList").value();
+
         $.ajax({
             url: "/CapturaAccidentes/FactoresOpciones_Drop",
             type: "POST",
@@ -70,11 +72,12 @@
             }
         });
     }
-    function editarFactorA(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    function editarFactorA(event) {
+        var grid = $("#gridFactoresA").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
         var IdFactorAccidente = dataItem.IdFactorAccidente;
         var IdFactorOpcionAccidente = dataItem.IdFactorOpcionAccidente;
-
 
 
         $.ajax({
@@ -88,8 +91,10 @@
             },
         })
     }
-    function eliminarFactorA(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    function eliminarFactorA(event) {
+        var grid = $("#gridFactoresA").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
         var FactorAccidente = dataItem.FactorAccidente;
         var FactorOpcionAccidente = dataItem.FactorOpcionAccidente;
 

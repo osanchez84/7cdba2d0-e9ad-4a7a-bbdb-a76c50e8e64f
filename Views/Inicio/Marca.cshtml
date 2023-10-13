@@ -28,11 +28,9 @@
     <script src="https://cdn.kendostatic.com/2021.3.914/js/kendo.all.min.js"></script>
     <script src="https://cdn.kendostatic.com/2021.3.914/js/kendo.aspnetmvc.min.js"></script>
     <script src="https://cdn.kendostatic.com/VERSION/js/messages/kendo.messages.es-ES.min.js"></script>
-
     <script src="~/js/toastr.min.js"></script>
     <globalization culture="es-MX" uiCulture="es" />
     <script>kendo.culture("es-ES");</script>
-
     <script>
         function inicioSesion() {
             var usuario = document.getElementById('usuario').value;
@@ -44,7 +42,7 @@
             };
 
             $.ajax({
-                url: '/servicio/consumir',
+                url: '/Login/ConsumirServicio',
                 type: 'POST',
                 data: data,
                 success: function (listaIdsPermitidosJson) {
@@ -61,8 +59,7 @@
                     mensajeUsuario.style.display = "block";
                 },
                 error: function (error) {
-                   
-                        var mensajeUsuario = document.getElementById('mensajeUsuario');
+                    var mensajeUsuario = document.getElementById('mensajeUsuario');
                     mensajeUsuario.textContent = "Usuario no registrado";
                     mensajeUsuario.style.color = "red";
                     mensajeUsuario.style.display = "block";

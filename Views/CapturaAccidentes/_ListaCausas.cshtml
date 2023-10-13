@@ -1,22 +1,22 @@
-﻿
-<div class="row">
+﻿<div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @(
             Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
             .Name("gridCausasA")
             .Columns(columns =>
-            {   
+            {
                 columns.Bound(c => c.IdAccidente).Hidden();
                 columns.Bound(c => c.CausaAccidente).Title("Causa").Width(100);
-                //columns.Bound(c => c.IdCausaAccidente).Title("Orden").Width(30);
-                columns.Command(c => c.Custom("Editar").Click("editarCausa")).Width(100);
-                columns.Command(c => c.Custom("Eliminar").Click("eliminarCausa")).Width(100);
+               // columns.Command(c => c.Custom("Editar").Click("editarCausa")).Width(100);
+               // columns.Command(c => c.Custom("Eliminar").Click("eliminarCausa")).Width(100);
+                columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarCausa(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(150);
+                columns.Template("<button class='w-100 btn'><h6 class='m-0 colorDanger' onclick='eliminarCausa(event)'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button>").Width(150);
+                columns.Template("<span class='orden-column'></span>").Title("Orden").Width(30);
                 columns.Command(command => command.Custom("Arriba").Text("").Click("arriba")).Width(60);
                 columns.Command(command => command.Custom("Abajo").Text("").Click("abajo")).Width(60);
-
-
             }).HtmlAttributes(new { style = "height:400px" })
+
             .Sortable()
             .Groupable()
             .Scrollable()
@@ -24,12 +24,12 @@
             .DataSource(dataSource => dataSource
             .Ajax()
             .Read(read => read.Action("ObtCausasAccidente", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.FactorAccidente))
+            .PageSize(5).Model(model => model.Id(p => p.CausaAccidente))
             )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
-                s.Field(c => c.Municipio);
+                s.Field(c => c.CausaAccidente);
 
             })
 
@@ -49,52 +49,51 @@
     </div>
 </div>
 
-<div class="modal fade modalCustom" id="eliminarClasificacionModal" tabindex="-1" aria-labelledby="eliminarCausaAccidenteLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="eliminarCausaModal" tabindex="-1" aria-labelledby="eliminarCausaAccidenteLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-            <div class="modal-body" id="ModalBodyEliminarClasificacion">
+            <div class="modal-body" id="ModalBodyEliminarCausa">
         </div>
     </div>
 </div>
 </div>
 <script>
+    function editarCausa(event) {
+        var grid = $("#gridCausasA").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+            var CausaAccidente = dataItem.CausaAccidente;
+            var IdCausaAccidente = dataItem.IdCausaAccidente;
 
-  
+            $.ajax({
+                url: '@Url.Action("ModalEditarCausaAccidente", "CapturaAccidentes")',
+                type: 'POST',
+            data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente: CausaAccidente },
+                success: function (result) {
+                    $('#ModalBodyEditarCausaAccidente').html(result);
+                    $('#editarCausaAccidenteModal').modal('show');
+                },
+            });
+        }
+    
 
-    function editarCausa(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var IdAccidente = dataItem.IdAccidente;
-        var IdCausaAccidente = dataItem.IdCausaAccidente;
-                var IdCausaAccidente = dataItem.IdCausaAccidente;
-
-
-        $.ajax({
-            url: '@Url.Action("ModalEditarCausaAccidente", "CapturaAccidentes")',
-            type: 'POST',
-            data: { IdCausaAccidente: IdCausaAccidente, IdAccidente : IdAccidente },
-            success: function (result) {
-                $('#ModalBodyEditarCausaAccidente').html(result);
-                $('#editarCausaAccidenteModal').modal('show');
-
-            },
-        })
-    }
-
-    function eliminarCausa(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var IdCausaAccidente = dataItem.IdCausaAccidente;
-        var CausaAccidente = dataItem.CausaAccidente
-        $.ajax({
+    function eliminarCausa(event) {
+    var grid = $("#gridCausasA").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+    var dataItem = grid.dataItem(row);
+    var CausaAccidente = dataItem.CausaAccidente
+    var IdCausaAccidente = dataItem.IdCausaAccidente
+    $.ajax({
             url: '@Url.Action("ModalEliminarCausas", "CapturaAccidentes")',
             type: 'POST',
             data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente : CausaAccidente },
             success: function (result) {
-                $('#ModalBodyEliminarClasificacion').html(result);
-                $('#eliminarClasificacionModal').modal('show');
+                $('#ModalBodyEliminarCausa').html(result);
+                $('#eliminarCausaModal').modal('show');
             }
         });
     }
-
+ 
     function arriba(e) {
         e.preventDefault();
         var grid = $("#gridCausasA").data("kendoGrid");

@@ -48,9 +48,9 @@
                 <div class="controlForm mb-3">
                     <label>Placas:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdDeposito)
+                        @(Html.Kendo().DropDownListFor(d => d.Placas)
                             .DataTextField("Text")
-                            .DataValueField("Value")
+                            .DataValueField("Text")
                             .OptionLabel("Seleccione Placa...")
                             .HtmlAttributes(new { style = "width:100%;" })
                             .Filter(FilterType.Contains)

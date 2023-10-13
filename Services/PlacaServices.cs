@@ -22,7 +22,7 @@ namespace GuanajuatoAdminUsuarios.Services
         /// </summary>
         /// <param name="DelegacionId"></param>
         /// <returns></returns>
-        public List<PlacaModel> GetPlacasByDelegacionId(int DelegacionId)
+        public List<PlacaModel> GetPlacasByDelegacionId(int idOficina)
         {
             List<PlacaModel> placas = new List<PlacaModel>();
 
@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("Select * from depositos where idDelegacion=@idDelegacion ", connection);
-                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = DelegacionId;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

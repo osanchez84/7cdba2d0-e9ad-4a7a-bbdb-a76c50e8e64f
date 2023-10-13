@@ -70,7 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel>(data,
+           var model = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel>(data,
                  new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
 
             model.Evento = model.Evento == string.Empty ? null : model.Evento;

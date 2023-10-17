@@ -79,8 +79,8 @@
                     columns.Bound(p => p.IdDeposito).Title("Número").Width(90);
                     columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190);
                     columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
-                    columns.Bound(c => c.FechaIngreso).Format("{0:dd/MM/yyyy}").Title("Fecha de ingreso").Width(90);
-                    columns.Bound(c => c.FechaLiberacion).Format("{0:dd/MM/yyyy}").Title("Fecha de salida").Width(90);
+                    columns.Bound(c => c.FechaIngreso).ClientTemplate("#= convertDate(FechaIngreso) #").Title("Fecha de ingreso").Width(90);
+                    columns.Bound(c => c.FechaLiberacion).ClientTemplate("#= convertDate(FechaLiberacion) #").Title("Fecha de salida").Width(90);
                     columns.Bound(c => c.pension).Title("Pension").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(

@@ -54,6 +54,8 @@ function set_toastr_options(timeout) {
 function convertDate(inputFormat) {
     function pad(s) { return (s < 10) ? '0' + s : s; }
     var d = new Date(inputFormat)
-    
-    return [pad(d.getDate()), pad(d.getMonth() + 1), (d.getFullYear() == '1' ? '0001' : d.getFullYear())].join('/')
+
+    var date = [pad(d.getDate()), pad(d.getMonth() + 1), (d.getFullYear() == '1' ? '0001' : d.getFullYear())].join('/')
+        
+    return date == "01/01/0001" ? '' : date; 
 }

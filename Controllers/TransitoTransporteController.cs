@@ -47,9 +47,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<TransitoTransporteBusquedaModel>(data,
-               new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
+            var model = JsonConvert.DeserializeObject<TransitoTransporteBusquedaModel>(data);
+            if (model.FechaIngreso == null)
+            {
+                model.FechaIngreso = DateTime.MinValue;
+            }
 
+            if (model.FechaIngresoFin == null)
+            {
+                model.FechaIngresoFin = DateTime.MinValue;
+            }
             model.FolioInfraccion = model.FolioInfraccion == string.Empty ? null : model.FolioInfraccion;
             model.FolioSolicitud = model.FolioSolicitud == string.Empty ? null : model.FolioSolicitud;
             model.NumeroEconomico = model.NumeroEconomico == string.Empty ? null : model.NumeroEconomico;

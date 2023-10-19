@@ -33,13 +33,11 @@
                             <label>Fecha Inicio:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
                                 .Label(l => l.Content("Fecha Inicio:"))
-                                .Value(DateTime.Today) 
                                 .HtmlAttributes(new { style = "width: 40%", id="dateInicio" })
                                 )
                             <label>Fecha Fin:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
                                 .Label(l => l.Content("Fecha Fin:"))
-                                .Value(DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59))
                                 .HtmlAttributes(new { style = "width: 40%",id="dateFinal" })
                                 )
                     </div>

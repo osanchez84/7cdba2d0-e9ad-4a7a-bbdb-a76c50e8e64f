@@ -158,7 +158,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else
             {
-                var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model);
+				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+				var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina);
                 return Ok(resultadoBusqueda);
             }
         }

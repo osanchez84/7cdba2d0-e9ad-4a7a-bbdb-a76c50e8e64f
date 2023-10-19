@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using GuanajuatoAdminUsuarios.Controllers;
 using System.Windows.Input;
 using Microsoft.IdentityModel.Tokens;
+using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -477,11 +478,24 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                            @"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
-                                            p.rfc,p.curp,p.fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,ctp.tipoPersona,v.idVehiculo
+											@"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
+                                            p.rfc,p.curp,p.fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,p.idGenero
+                                            ,ctp.tipoPersona,v.idVehiculo,v.modelo
+                                            ,pd.telefono
+                                            ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
+							                ,tl.tipoLicencia,tv.tipoVehiculo
+                                            ,mun.Municipio,cent.nombreEntidad
+
+
                                             FROM personas AS p                                           
                                             LEFT JOIN catTipoPersona AS ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona
                                             LEFT JOIN vehiculos AS v ON p.idPersona = v.idPersona
+                                            LEFT JOIN personasDirecciones AS pd ON p.idPersona = pd.idPersona
+                                            LEFT JOIN catGeneros cg on p.idGenero = cg.idGenero
+                                            LEFT JOIN catTipoLicencia tl ON p.idTipoLicencia = tl.idTipoLicencia
+                                            LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo
+                                            LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio 
+                                            LEFT JOIN catEntidades AS cent ON pd.idEntidad = cent.idEntidad 
                                             WHERE p.idPersona = @IdPersona AND p.estatus = 1";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdPersona", SqlDbType.Int)).Value = (object)IdPersona ?? DBNull.Value;
@@ -500,13 +514,26 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.rfc = reader["rfc"].ToString();
                             model.curp = reader["curp"].ToString();
                             model.licencia = reader["numeroLicencia"].ToString();
-
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+                            model.idGenero = reader["idGenero"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"]);
+							model.Telefono = reader["telefono"].ToString();
+							model.Correo = reader["correo"].ToString();
+							model.Modelo= reader["modelo"].ToString();
+							model.Colonia = reader["colonia"].ToString();
+							model.Numero = reader["numero"].ToString();
+							model.Calle = reader["calle"].ToString();
+							model.IdEntidad= reader["IdEntidad"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdEntidad"].ToString());
+							model.IdMunicipio = reader["IdMunicipio"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdMunicipio"].ToString());
+							model.TipoLicencia = reader["tipoLicencia"].ToString();
+							model.TipoVehiculo = reader["tipoVehiculo"].ToString();
+							model.Entidad = reader["nombreEntidad"].ToString();
+							model.Municipio = reader["Municipio"].ToString();
 
-                        }
-                    }
+
+						}
+					}
                 }
                 catch (SqlException ex)
                 {

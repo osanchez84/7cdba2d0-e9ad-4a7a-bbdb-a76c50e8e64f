@@ -56,8 +56,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         public JsonResult Placas_Read()
-        {
-            var result = new SelectList(_placaServices.GetPlacasByDelegacionId(1), "IdDepositos", "Placa");
+		{
+			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+			var result = new SelectList(_placaServices.GetPlacasByDelegacionId(idOficina), "IdDepositos", "Placa");
             return Json(result);
         }
 

@@ -27,7 +27,7 @@ function onRowSelect(e) {
 
     
 </script>
-
+<div class="row">
 <div class="col-12 mb-4 px-4 rounded gridCustom">
     @(
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
@@ -37,13 +37,13 @@ function onRowSelect(e) {
             columns.Select().Width(50).ClientHeaderTemplate(" ");
             columns.Bound(c => c.IdPersona).Hidden();
             columns.Bound(c => c.IdVehiculo).Hidden();
-            columns.Bound(c => c.IdVehiculoInvolucrado).Title("Vehiculo").Width(100);
+            columns.Bound(c => c.IdVehiculoInvolucrado).Title("Vehículo").Width(100);
             columns.Bound(c => c.Placa).Title("Placas").Width(100);
             columns.Bound(c => c.ConductorInvolucrado).Title("Conductor").Width(150);
             columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(150);
             columns.Bound(c => c.FormaTrasladoInvolucrado).Title("Forma de traslado").Width(100);
             columns.Bound(c => c.TipoVehiculo).Title("Tipo de Vehículo").Width(100);
-            columns.Bound(c => c.Pension).Title("Pension").Width(100);
+            columns.Bound(c => c.Pension).Title("Pensión").Width(100);
            
 
         })
@@ -64,4 +64,5 @@ function onRowSelect(e) {
             events.Change("onRowSelect");
         })
         )
+</div>
 </div>

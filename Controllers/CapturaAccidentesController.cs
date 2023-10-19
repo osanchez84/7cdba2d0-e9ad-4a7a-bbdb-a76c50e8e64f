@@ -711,9 +711,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
 			return PartialView("_ModalCapturarConductor");
 		}
-		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, int IdAccidente)
+		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, string CausaAccidente)
 		{
-			return PartialView("_ModalEditarCausa");
+            ViewBag.IdCausaAccidente = IdCausaAccidente;
+            ViewBag.CausaAccidente = CausaAccidente;
+            return PartialView("_ModalEditarCausa");
 		}
 		public ActionResult ModalEliminarCausas(int IdCausaAccidente, string CausaAccidente)
 		{
@@ -1165,6 +1167,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			if (IdVehiculo != 0)
 			{
+
 				var Placa = model.placas;
 				var Serie = model.serie;
 				var folio = "";
@@ -1242,6 +1245,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					involucrado.rfc = p.RFC;
 					involucrado.curp = p.CURP;
 					involucrado.licencia = p.numeroLicencia;
+					involucrado.fechaNacimiento = p.fechaNacimiento.Value;
 					ListaInvolucrados.Add(involucrado);
 				}
 				return Json(new { encontrada = true, data = ListaInvolucrados });

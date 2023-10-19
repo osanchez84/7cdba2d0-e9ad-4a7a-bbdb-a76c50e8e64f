@@ -17,7 +17,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public string GuardarSolicitud(SolicitudDepositoModel model)
+        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina)
 
         {
             int result = 0;
@@ -43,6 +43,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idEntidad]
                                         ,[idMunicipio]
                                         ,[idMotivoAsignacion]
+                                        ,[idDelegacion]
                                         ,[vehiculoNumero] 
                                         ,[vehiculoCalle] 
                                         ,[vehiculoColonia] 
@@ -73,6 +74,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@idEntidad
                                         ,@idMunicipio
                                         ,@idMotivoAsignacion
+                                        ,@idOficina
                                         ,@numeroUbicacion
                                         ,@calleUbicacion
                                         ,@coloniaUbicacion
@@ -110,7 +112,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@telefonoUsuario", SqlDbType.NVarChar)).Value = (object)model.telefonoUsuario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMotivoAsignacion", SqlDbType.Int)).Value = (object)model.idMotivoAsignacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;

@@ -89,6 +89,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
+                        
+                        
                         {
                             BusquedaAccidentesModel accidente = new BusquedaAccidentesModel();
                             accidente.IdAccidente = Convert.IsDBNull(reader["idAccidente"]) ? 0 : Convert.ToInt32(reader["idAccidente"]);
@@ -99,6 +101,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.idEstatusReporte = Convert.IsDBNull(reader["idEstatusReporte"]) ? 0 : Convert.ToInt32(reader["idEstatusReporte"]);
                             accidente.estatusReporte = reader["estatusReporte"].ToString();
                             accidente.municipio = reader["municipio"].ToString();
+                            accidente.carretera = reader["carretera"].ToString();
+                            accidente.tramo = reader["tramo"].ToString();
                             accidente.idElabora = Convert.IsDBNull(reader["idElabora"]) ? 0 : Convert.ToInt32(reader["idElabora"]);
                             accidente.idSupervisa = Convert.IsDBNull(reader["idSupervisa"]) ? 0 : Convert.ToInt32(reader["idSupervisa"]);
                             accidente.idAutoriza = Convert.IsDBNull(reader["idAutoriza"]) ? 0 : Convert.ToInt32(reader["idAutoriza"]);

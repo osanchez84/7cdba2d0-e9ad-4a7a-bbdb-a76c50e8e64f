@@ -84,11 +84,12 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Carretera")
+                                .Events(e => e.Change("carreteraDropDownChange"))
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Carreteras_Drop", "CapturaAccidentes");
+                                        read.Action("Carreteras_Drop", "BusquedaAccidentes");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;", Id="ddlCarreteras" })
@@ -110,7 +111,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Tramos_Drop", "CapturaAccidentes");
+                                        read.Action("Tramos_Drop", "BusquedaAccidentes");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;", Id="ddlTramos" })
@@ -255,7 +256,23 @@
         var json = JSON.stringify(data);
         window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
     }
+    function carreteraDropDownChange() {
+        var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
+        console.log("IDK", carreteraDDValue)
 
+        $.ajax({
+            url: "/BusquedaAccidentes/Tramos_Drop",
+            type: "POST",
+            data: { carreteraDDValue: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+                console.log("EE",error)
+            }
+        });
+    }
  </script>
 
 

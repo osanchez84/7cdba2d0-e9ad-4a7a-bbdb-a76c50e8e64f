@@ -157,15 +157,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
              oReply = await Consumer.Execute<List<Post>>(url, methodHttp.GET, null);
 
-             /*if (oReply.StatusCode == "OK")
+             if (oReply.StatusCode == "OK")
              {
                  List<Post> listPost = (List<Post>)oReply.Data;
 
-                 // Procesa la respuesta exitosa, por ejemplo, devuelve una vista
                  return View("NombreDeVista", listPost);
              }
 
-             // Manejo de errores, devuelve una vista o mensaje de error
              return View("ErrorView", oReply);
          }
              */

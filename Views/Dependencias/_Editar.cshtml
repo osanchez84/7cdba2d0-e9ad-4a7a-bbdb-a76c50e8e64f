@@ -50,7 +50,7 @@
         </div>
                     <div class="col-12 col-md-6">
                         <div class="controlForm my-3">
-                @Html.HiddenFor(m=>m.IdDependencia);
+                @Html.HiddenFor(m=>m.IdDependencia)
                             @(Html.Kendo().TextBoxFor(t=>t.NombreDependencia)
                                 .Label(l => l.Content("Dependencia <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una dependencia")

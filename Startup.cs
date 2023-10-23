@@ -151,6 +151,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatCiudadesService, CatCiudadesService>();
             services.AddScoped<ICatAgenciasMinisterioService, CatAgenciasMinisterioService>();
             services.AddScoped<IBusquedaAccidentesService, BusquedaAccidentesService>();
+            services.AddScoped<IBusquedaEspecialAccidentesService, BusquedaEspecialAccidentesService>();
             services.AddScoped<IEnvioInfraccionesService, EnvioInfraccionesService>();
             services.AddScoped<ICatOficinasRentaService, CatOficinasRentaService>();
             services.AddScoped<ICatTiposVehiculosService, CatTiposVehiculosService>();

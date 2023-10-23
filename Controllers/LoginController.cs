@@ -89,7 +89,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     return Json(JsonConvert.SerializeObject(listaIdsPermitidos));
                 }
-                var url = $"https://virtual.zeitek.net:9094/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
+                var url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
 
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(url);
@@ -148,15 +148,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
         }
 
+       /* protected void Page_Load(object sender, EventArgs e)
+        {
 
-        /* public async Task<IActionResult> Button1_Click(string usuario, string contrasena)
+        }
+        public async Task<IActionResult> Button1_Click(string usuario, string contrasena)
          {
              Reply oReply = new Reply();
-             string baseUrl = "https://10.16.157.142:9096/serviciosinfracciones/getlogin";
-             string url = $"{baseUrl}?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
-
-             oReply = await Consumer.Execute<List<Post>>(url, methodHttp.GET, null);
-
+            oReply = await Consumer.Execute<List<Post>>(
+                "https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario="+usuario+"&contraseña="+contrasena,
+                methodHttp.GET, 
+                null);
              if (oReply.StatusCode == "OK")
              {
                  List<Post> listPost = (List<Post>)oReply.Data;
@@ -165,8 +167,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
              }
 
              return View("ErrorView", oReply);
-         }
-             */
+         }*/
+             
 
         [HttpGet]
         public IActionResult GetIdsPermitidos()

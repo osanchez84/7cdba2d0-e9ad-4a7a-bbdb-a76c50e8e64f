@@ -11,9 +11,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? IdEvento { get; set; }
         public string Evento { get; set; } = null!;
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime FechaInicio { get; set; }
+        public DateTime? FechaInicio { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime FechaFin { get; set; }
+        public DateTime? FechaFin { get; set; }
         public List<ReporteAsignacionModel> ListReporteAsignacion { get; set; }
     }
 }

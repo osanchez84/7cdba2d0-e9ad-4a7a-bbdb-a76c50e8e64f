@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
-    public class BusquedaAccidentesPDFModel
+    public class BusquedaEspecialAccidentesModel
     {
-        public DateTime? FechaInicio { get; set; }
-        public DateTime? FechaFin { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFin { get; set; }
 
         public int IdAccidente { get; set; }
         public int idPropietario { get; set; }
@@ -66,7 +65,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string descripcionAccidente { get; set; }
         public string numeroReporte { get; set; }
-        public string fecha { get; set; }
+        public DateTime fecha { get; set; }
         public TimeSpan hora { get; set; }
         public string entregaOtros { get; set; }
         public string entregaObjetos { get; set; }
@@ -118,9 +117,6 @@ namespace GuanajuatoAdminUsuarios.Models
         public string conductor { get; set; }
         public int? IdTipoVehiculo { get; set; }
         public int? IdTipoServicio { get; set; }
-
-
-
 
     }
 }

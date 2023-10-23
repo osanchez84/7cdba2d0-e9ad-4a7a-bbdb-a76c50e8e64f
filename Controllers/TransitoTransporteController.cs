@@ -12,6 +12,7 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -46,9 +47,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<TransitoTransporteBusquedaModel>(data,
-               new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
+            var model = JsonConvert.DeserializeObject<TransitoTransporteBusquedaModel>(data);
+            if (model.FechaIngreso == null)
+            {
+                model.FechaIngreso = DateTime.MinValue;
+            }
 
+            if (model.FechaIngresoFin == null)
+            {
+                model.FechaIngresoFin = DateTime.MinValue;
+            }
             model.FolioInfraccion = model.FolioInfraccion == string.Empty ? null : model.FolioInfraccion;
             model.FolioSolicitud = model.FolioSolicitud == string.Empty ? null : model.FolioSolicitud;
             model.NumeroEconomico = model.NumeroEconomico == string.Empty ? null : model.NumeroEconomico;
@@ -139,6 +147,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_DeleteTransito(string ids)
         {
+            if (ids.IsNullOrEmpty())
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return null;
+            }                
+
             string[] idsList = ids.Split(",");
             var result = _transitoTransporteService.DeleteTransitoTransporte(Convert.ToInt32(idsList[0]), Convert.ToInt32(idsList[1]));
             if (result > 0)

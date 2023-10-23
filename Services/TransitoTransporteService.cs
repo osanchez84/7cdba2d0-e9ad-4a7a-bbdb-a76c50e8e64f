@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -222,7 +223,28 @@ namespace GuanajuatoAdminUsuarios.Services
                     //        OR  d.IdDependenciaNoTransito=@IdDependenciaNoTransito OR d.fechaIngreso between @FechaIngreso and  @FechaIngresoFin)";
                     #endregion
 
-                    const string SqlTransact =
+                    string condiciones = "";
+
+                    condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.placa LIKE '%' + @Placa + '%' ";
+                    condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND sol.folio LIKE '%' + @FolioSolicitud + '%' ";
+                    condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
+                    condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND veh.propietario LIKE '%' + @Propietario + '%' ";
+                    condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
+                    condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND del.idDelegacion = @IdDelegacion ";
+                    condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND pen.idpension = @IdPension ";
+                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND CASE WHEN @Estatus = 2 AND d.liberado = 0 THEN 1 WHEN @Estatus = 3 AND d.liberado = 1 THEN 1 ELSE 1 END ";
+                    condiciones += model.IdDependenciaGenera.Equals(null) || model.IdDependenciaGenera == 0 ? "" : " AND d.IdDependenciaGenera = @IdDependenciaGenera ";
+                    condiciones += model.IdDependenciaTransito.Equals(null) || model.IdDependenciaTransito == 0 ? "" : " AND d.IdDependenciaTransito = @IdDependenciaTransito ";
+                    condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito == 0 ? "" : " AND d.IdDependenciaNoTransito = @IdDependenciaNoTransito ";
+
+                    if (model.FechaIngreso != DateTime.MinValue && model.FechaIngresoFin != DateTime.MinValue)
+                        condiciones += " AND inf.fechaInfraccion >= @fechaInicio AND inf.fechaInfraccion  <= @fechaFin ";
+                    else if (model.FechaIngreso != DateTime.MinValue && model.FechaIngresoFin == DateTime.MinValue)
+                        condiciones += " AND inf.fechaInfraccion >= @fechaInicio ";
+                    else if (model.FechaIngreso == DateTime.MinValue && model.FechaIngresoFin != DateTime.MinValue)
+                        condiciones += " AND inf.fechaInfraccion <= @fechaFin ";
+
+                    string SqlTransact =
                                 @"SELECT d.iddeposito, d.idsolicitud, d.idDelegacion, d.idmarca, d.idsubmarca, d.idpension, d.idtramo,
                                          d.idcolor, d.serie, d.placa, d.fechaingreso, d.folio, d.km, d.liberado, d.autoriza, d.fechaactualizacion,
                                          del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
@@ -244,17 +266,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-                                WHERE d.estatus != 0
-                                AND (d.placa LIKE '%' + @Placa + '%' OR sol.folio LIKE '%' + @FolioSolicitud + '%'  
-                                OR inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' OR veh.propietario LIKE '%' + @Propietario + '%'
-                                OR veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' OR del.idDelegacion = @IdDelegacion
-                                OR pen.idpension = @IdPension OR d.IdDependenciaGenera = @IdDependenciaGenera 
-                                OR d.IdDependenciaTransito = @IdDependenciaTransito OR d.IdDependenciaNoTransito = @IdDependenciaNoTransito 
-                                OR (d.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin)
-                                OR 1 = CASE 
-                                            WHEN @Estatus = 2 AND d.liberado = 0 THEN 1
-                                            WHEN @Estatus = 3 AND d.liberado = 1 THEN 1
-                                        END)";
+                                WHERE d.estatus != 0 " + condiciones;
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
 

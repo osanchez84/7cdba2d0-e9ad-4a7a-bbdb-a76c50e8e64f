@@ -15,9 +15,9 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
-    public class BusquedaAccidentesController : BaseController
+    public class BusquedaEspecialAccidentesController : BaseController
     {
-        private readonly IBusquedaAccidentesService _busquedaAccidentesService;
+        private readonly IBusquedaEspecialAccidentesService _busquedaEspecialAccidentesService;
         private readonly ICatCarreterasService _catCarreterasService;
         private readonly ICatTramosService _catTramosService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
@@ -28,11 +28,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private int idOficina = 0;
 
-        public BusquedaAccidentesController(IBusquedaAccidentesService busquedaAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
+        public BusquedaEspecialAccidentesController(IBusquedaEspecialAccidentesService busquedaEspecialAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService, IPdfGenerator<BusquedaAccidentesPDFModel> pdfService,
-            ICapturaAccidentesService capturaAccidentesService,ICatDictionary catDictionary)
+            ICapturaAccidentesService capturaAccidentesService, ICatDictionary catDictionary)
         {
-            _busquedaAccidentesService = busquedaAccidentesService;
+            _busquedaEspecialAccidentesService = busquedaEspecialAccidentesService;
             _catCarreterasService = catCarreterasService;
             _catTramosService = catTramosService;
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
@@ -88,7 +88,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         #endregion
 
-        public ActionResult ajax_BuscarAccidente(BusquedaAccidentesModel model)
+        public ActionResult ajax_BuscarAccidente(BusquedaEspecialAccidentesModel model)
         {
             if (model.FechaInicio == null)
             {
@@ -101,10 +101,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var resultadoBusqueda = _busquedaAccidentesService.BusquedaAccidentes(model,idOficina);
-          return Json(resultadoBusqueda);
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
+            return Json(resultadoBusqueda);
 
-            
+
         }
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdAccidente)
@@ -120,7 +120,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             };
-            var AccidenteModel = _busquedaAccidentesService.ObtenerAccidentePorId(IdAccidente);
+            var AccidenteModel = _busquedaEspecialAccidentesService.ObtenerAccidentePorId(IdAccidente);
             var result = _pdfService.CreatePdf("ReporteAccidente", "Accidentes", 6, ColumnsNames, AccidenteModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }
@@ -139,7 +139,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 model.FechaFin = DateTime.MinValue;
             }
-      
+
 
             model.placa = model.placa == string.Empty ? null : model.placa;
             model.serie = model.serie == string.Empty ? null : model.serie;
@@ -159,10 +159,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"kilometro","Kilometro"},
             {"fecha","Fecha" },
             {"hora","Hora" },
-           
+
             };
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var ListTransitoModel = _busquedaAccidentesService.BusquedaAccidentes(model, idOficina);
+            var ListTransitoModel = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
             var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }

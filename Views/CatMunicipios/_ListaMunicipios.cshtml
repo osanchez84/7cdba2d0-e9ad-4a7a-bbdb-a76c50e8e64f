@@ -12,7 +12,9 @@
                 columns.Bound(c => c.nombreOficina).Title("Delegación").Width(100);
 
                 columns.Bound(c => c.estatusDesc).Title("Estatus en sistema").Width(100);
-                columns.Command(c => c.Custom("Editar").Click("editarMunicipio")).Width(100);
+               // columns.Command(c => c.Custom("Editar").Click("editarMunicipio")).Width(100);
+                columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarMunicipio(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(100);
+
 
 
             }).HtmlAttributes(new { style = "height:550px" })
@@ -48,10 +50,12 @@
 </div>
 
 <script>
-    function editarMunicipio(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    function editarMunicipio(event) {
+        var grid = $("#gridMunicipios").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
         var IdMunicipio = dataItem.IdMunicipio;
-        console.log(IdMunicipio);
+        console.log("UJ",dataItem);
 
         $.ajax({
             url: '@Url.Action("EditarMunicipioModal", "CatMunicipios")',
@@ -64,6 +68,7 @@
             },
         })
     }
+
     function tooltipContent(e) {
         var titulo = e.target.context.dataset.title;
         return titulo;

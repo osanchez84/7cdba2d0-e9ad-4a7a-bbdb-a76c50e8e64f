@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -59,6 +60,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarReporte(ReporteAsignacionBusquedaModel model)
         {
+            // Verifica si las fechas son nulas y asigna DateTime.MinValue si es el caso
+            if (model.FechaInicio == null)
+            {
+                model.FechaInicio = DateTime.MinValue;
+            }
+
+            if (model.FechaFin == null)
+            {
+                model.FechaFin = DateTime.MinValue;
+            }
+
             var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model);
             if (listReporteAsignacion.Count == 0)
             {
@@ -67,12 +79,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListadoReporteAsignacion", listReporteAsignacion);
         }
 
-        [HttpGet]
+    
+
+    [HttpGet]
         public FileResult CreatePdf(string data)
         {
-            var model = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel>(data,
-                 new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
+           var model = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel>(data);
 
+            if (model.FechaInicio == null)
+            {
+                model.FechaInicio = DateTime.MinValue;
+            }
+
+            if (model.FechaFin == null)
+            {
+                model.FechaFin = DateTime.MinValue;
+            }
             model.Evento = model.Evento == string.Empty ? null : model.Evento;
 
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()

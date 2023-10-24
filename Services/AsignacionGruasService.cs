@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -265,16 +266,40 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
                     // Consulta para buscar si el idSolicitud ya existe en la tabla depositos
-                    SqlCommand searchCommand = new SqlCommand("SELECT idSolicitud,folio FROM depositos WHERE idSolicitud = @idSolicitud", connection);
+                    SqlCommand searchCommand = new SqlCommand("SELECT idSolicitud,folio,observaciones,numeroInventario,inventario FROM depositos WHERE idSolicitud = @idSolicitud", connection);
                     searchCommand.Parameters.Add(new SqlParameter("@idSolicitud", SqlDbType.Int)).Value = iSo;
 
                     // Ejecutar la consulta de búsqueda
                     using (SqlDataReader searchReader = searchCommand.ExecuteReader())
                     {
-                        if (searchReader.Read())  // Si hay resultado, el idSolicitud ya existe, no es necesario hacer la inserción
+                        // ...
+                        if (searchReader.Read())
                         {
                             solicitud.idSolicitud = iSo;
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
+                            solicitud.observaciones = searchReader["observaciones"].ToString();
+                            solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
+
+                            string filePath = searchReader["inventario"].ToString(); // Supongo que esta columna contiene la ruta del archivo.
+
+                            // Ahora, puedes asignar la ruta de archivo a MyFile como un archivo IFormFile simulado.
+                            if (!string.IsNullOrEmpty(filePath))
+                            {
+                                var file = new FormFile(Stream.Null, 0, 0, "MyFile", Path.GetFileName(filePath))
+                                {
+                                    Headers = new HeaderDictionary(),
+                                    ContentType = "application/octet-stream"
+                                };
+
+                                solicitud.MyFile = file;
+                            }
+                            else
+                            {
+                                // Handle el caso en el que no haya una ruta de archivo válida en la base de datos.
+                                solicitud.MyFile = null; // O maneja de otra manera según tu lógica de negocio.
+                            }
+
+                            solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.IdDeposito = -1;
                             return solicitud;
                         }

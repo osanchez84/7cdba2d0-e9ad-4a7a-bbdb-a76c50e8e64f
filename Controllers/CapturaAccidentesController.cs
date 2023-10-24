@@ -520,31 +520,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 		private int ObtenerIdTipoVehiculo(string categoria)
 		{
-			int idTipo = 0;
 
-			if (!string.IsNullOrEmpty(categoria))
-			{
-				string lowerTexto = categoria.ToLower();
+            int idTipo = 0;
 
-				if (lowerTexto.Contains("sedan"))
-				{
-					idTipo = 1;
-				}
-				else if (lowerTexto.Contains("coupe"))
-				{
-					idTipo = 37;
-				}
-				else if (lowerTexto.Contains("hatchback"))
-				{
-					idTipo = 57;
-				}
-				else if (lowerTexto.Contains("minivan"))
-				{
-					idTipo = 31;
-				}
+            var tipoVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
 
-			}
-			return (idTipo);
+            idTipo = tipoVehiculo.CatalogList.Where(w => categoria.ToLower().Contains(w.Text.ToLower())).Select(s => s.Id).FirstOrDefault();
+
+            return (idTipo);
 
 		}
 		private bool ConvertirGeneroBool(string sexo)
@@ -711,9 +694,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
 			return PartialView("_ModalCapturarConductor");
 		}
-		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, int IdAccidente)
+		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, string CausaAccidente)
 		{
-			return PartialView("_ModalEditarCausa");
+            ViewBag.IdCausaAccidente = IdCausaAccidente;
+            ViewBag.CausaAccidente = CausaAccidente;
+            return PartialView("_ModalEditarCausa");
 		}
 		public ActionResult ModalEliminarCausas(int IdCausaAccidente, string CausaAccidente)
 		{
@@ -1165,6 +1150,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			if (IdVehiculo != 0)
 			{
+
 				var Placa = model.placas;
 				var Serie = model.serie;
 				var folio = "";

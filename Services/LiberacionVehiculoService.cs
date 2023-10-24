@@ -26,16 +26,18 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                        @"select   top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
+						@"select   top(100) d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
                             d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
-                            d.ActualizadoPor, d.estatus, sol.solicitanteNombre,
-                            sol.solicitanteAp,sol.solicitanteAm,pen.pension,del.delegacion,col.color,
+                            d.ActualizadoPor, d.estatus,sol.idCarreteraUbicacion, sol.solicitanteNombre,
+                            sol.solicitanteAp,sol.solicitanteAm,pen.pension,del.delegacion,col.color,car.carretera,
                             cTra.tramo, m.marcaVehiculo	,subm.nombreSubmarca,v.idPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno
                             from depositos d 
                             left join solicitudes sol on d.idSolicitud = sol.idSolicitud
                             left join pensiones pen on d.idPension	= pen.idPension
                             left join catDelegaciones del on d.idDelegacion= del.idDelegacion
                             left join catColores col on d.idColor = col.idColor
+                            left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
+
                             left join catTramos cTra  on d.Idtramo=cTra.idTramo
                             left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
                             left join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
@@ -61,7 +63,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Serie = reader["Serie"]?.ToString();
                             deposito.Placa = reader["Placa"]?.ToString();
                             deposito.Km = reader["Km"]?.ToString();
-                            deposito.Liberado = reader["Liberado"] is int liberado ? liberado : 0;
+							deposito.carretera = reader["carretera"]?.ToString();
+
+							deposito.Liberado = reader["Liberado"] is int liberado ? liberado : 0;
 
                             deposito.FechaIngreso = reader["FechaIngreso"] is DateTime fechaIngreso ? fechaIngreso : DateTime.MinValue;
                             deposito.Folio = reader["Folio"]?.ToString();
@@ -81,8 +85,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.nombrePropietario = reader["nombre"]?.ToString();
                             deposito.apPaternoPropietario = reader["apellidoPaterno"]?.ToString();
                             deposito.apMaternoPropietario = reader["apellidoMaterno"]?.ToString();
+							deposito.carretera = reader["carretera"]?.ToString();
 
-                            depositosList.Add(deposito);
+							depositosList.Add(deposito);
                            
                         }
 
@@ -113,8 +118,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     string SqlTransact = @"SELECT d.IdDeposito, MAX(d.IdSolicitud) AS IdSolicitud, MAX(d.idDelegacion) AS idDelegacion, MAX(d.IdMarca) AS IdMarca,
        MAX(d.IdSubmarca) AS IdSubmarca, MAX(d.IdPension) AS IdPension, MAX(d.IdTramo) AS IdTramo,
-       MAX(d.IdColor) AS IdColor, MAX(d.Serie) AS Serie, MAX(d.Placa) AS Placa, MAX(d.FechaIngreso) AS FechaIngreso,
-       MAX(d.Folio) AS Folio, MAX(d.Km) AS Km, MAX(d.Liberado) AS Liberado, MAX(d.Autoriza) AS Autoriza,
+       MAX(d.IdColor) AS IdColor, MAX(d.Serie) AS Serie,d.Placa, MAX(d.FechaIngreso) AS FechaIngreso,MAX(sol.idCarreteraUbicacion) AS idCarreteraUbicacion,
+       MAX(d.Folio) AS Folio, MAX(d.Km) AS Km, MAX(d.Liberado) AS Liberado, MAX(d.Autoriza) AS Autoriza,MAX(car.carretera) AS carretera,
        MAX(d.FechaActualizacion) AS FechaActualizacion, MAX(d.ActualizadoPor) AS ActualizadoPor, MAX(d.estatus) AS estatus,
        sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, pen.pension, del.delegacion, col.color,
                cTra.tramo, m.marcaVehiculo, subm.nombreSubmarca, v.idPersona, p.nombre, p.apellidoPaterno, p.apellidoMaterno
@@ -128,16 +133,18 @@ namespace GuanajuatoAdminUsuarios.Services
         LEFT JOIN catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
         LEFT JOIN vehiculos v ON v.placas = d.Placa
         LEFT JOIN personas p ON p.idPersona = v.idPersona
+        left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
+
         WHERE d.liberado = 0 AND d.estatus = 1
-          AND (d.IdDeposito = @IdDeposito OR d.IdMarca = @IdMarca 
+          AND (d.Placa = @Placa OR d.IdMarca = @IdMarca 
                OR CAST(d.FechaIngreso AS DATE) = @FechaIngreso OR d.Serie LIKE '%' + @Serie + '%' OR d.Folio LIKE '%' + @Folio + '%')
         GROUP BY d.IdDeposito, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, pen.pension, del.delegacion, col.color,
-                 cTra.tramo, m.marcaVehiculo, subm.nombreSubmarca, v.idPersona, p.nombre, p.apellidoPaterno, p.apellidoMaterno";
+                 cTra.tramo, m.marcaVehiculo, subm.nombreSubmarca, v.idPersona, p.nombre, p.apellidoPaterno, p.apellidoMaterno,d.Placa";
 
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
-                    command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)model.IdDeposito ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Placa", SqlDbType.NVarChar)).Value = (object)model.Placas ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdMarca", SqlDbType.Int)).Value = (object)model.IdMarcaVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)model.Serie ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.Date)).Value = model.FechaIngreso == DateTime.MinValue ? new DateTime(1800, 01, 01).Date : (object)model.FechaIngreso.Date;
@@ -208,7 +215,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         @"select d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
 		                d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
 		                del.delegacion, d.ActualizadoPor, d.estatus, m.marcaVehiculo,subm.nombreSubmarca, sol.solicitanteNombre,
-						sol.solicitanteAp,sol.solicitanteAm,col.color,pen.pension, cTra.tramo
+						sol.solicitanteAp,sol.solicitanteAm,sol.idCarreteraUbicacion,car.carretera,col.color,pen.pension, cTra.tramo
 		                from depositos d left join catDelegaciones del on d.idDelegacion= del.idDelegacion
 		                left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
 		                left join catSubmarcasVehiculos  subm on m.idMarcaVehiculo=subm.idMarcaVehiculo
@@ -216,6 +223,7 @@ namespace GuanajuatoAdminUsuarios.Services
 						left join catColores col on d.idColor = col.idColor
 	                    left join pensiones pen on d.idPension	= pen.idPension
                         left join catTramos cTra  on d.Idtramo=cTra.idTramo
+                        left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
 		                where d.liberado=0 and d.estatus=1 and d.IdDeposito=@IdDeposito";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)Id ?? DBNull.Value;
@@ -251,6 +259,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Color = reader["Color"]?.ToString();
                             deposito.pension = reader["pension"]?.ToString();
                             deposito.tramo = reader["tramo"]?.ToString();
+                            deposito.carretera = reader["carretera"]?.ToString();
 
                         }
                     }

@@ -1,6 +1,10 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.WSRest;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,6 +18,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -24,8 +29,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public LoginController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-}
-
+        }
         [HttpPost]
         public async Task<IActionResult> ConsumirServicio(string usuario, string contrasena)
         {
@@ -46,7 +50,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                                         965, 966, 967, 968, 969, 970, 971, 972, 973, 974,
                                                                         975, 976, 977, 978, 979, 980, 981, 982, 983, 984,
                                                                         985, 986, 987, 988, 989, 990, 991, 992, 993, 994,
-                                                                        995, 996, 997, 998, 999, 1000 }, "UsuarioPEC", "PEC") },
+                                                                        995, 996, 997, 998, 999 }, "UsuarioPEC", "PEC") },
 
             { ("usuarioMovilidad", "Mov123"), (2, new List<int> {    100, 101, 102, 103, 104, 105, 106, 200, 300, 301,
                                                                         302, 303, 304, 400, 401, 402, 500, 501, 502, 600,
@@ -61,7 +65,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                                         965, 966, 967, 968, 969, 970, 971, 972, 973, 974,
                                                                         975, 976, 977, 978, 979, 980, 981, 982, 983, 984,
                                                                         985, 986, 987, 988, 989, 990, 991, 992, 993, 994,
-                                                                        995, 996, 997, 998, 999, 1000 }, "UsuarioMovilidad", "Movilidad") },
+                                                                        995, 996, 997, 998, 999 }, "UsuarioMovilidad", "Movilidad") },
  { ("usuarioPrueba", "Prueba123"), (3, new List<int> {    100, 101, 102, 103, 104, 105, 106, 200, 300, 301,
                                                                         302, 303, 304, 400, 401, 402, 500, 501, 502, 600,
                                                                         601, 601, 700, 701, 702, 703, 704, 705, 706, 707,
@@ -70,7 +74,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                                         925, 926, 927, 928, 929, 930, 931, 932, 933, 934,
                                                                         935, 936, 937, 938, 939, 940, 941, 942, 943, 944,
                                                                         945, 946, 947, 948, 949, 950, 951, 952, 953, 954,
-                                                                        955, 956, 957, }, "PruebaPermisos", "Prueba") },       
+                                                                        955, 956, 957, }, "PruebaPermisos", "Prueba") },
                 };
 
                 if (usuariosPermitidos.TryGetValue((usuario, contrasena), out var valoresSesion))
@@ -82,13 +86,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     HttpContext.Session.SetString("IdsPermitidos", JsonConvert.SerializeObject(listaIdsPermitidos));
                     HttpContext.Session.SetString("Nombre", nombre);
                     HttpContext.Session.SetString("Oficina", oficina);
-                    HttpContext.Session.SetString("SelectedModulo", "Depósitos");
-                    HttpContext.Session.SetString("SelectedSubModulo", "");
 
                     return Json(JsonConvert.SerializeObject(listaIdsPermitidos));
                 }
-            
-                var url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=1&usuario={usuario}&contraseña={contrasena}";
+                var url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
 
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(url);
@@ -107,19 +108,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         if (int.TryParse(idOficinaStr, out int idOficina))
                         {
                             HttpContext.Session.SetInt32("IdOficina", idOficina);
-                            HttpContext.Session.SetString("SelectedMenu", "Depósitos");
-                            HttpContext.Session.SetString("SelectedSubMenu", "");
+
                         }
                         else
                         {
-                 
+
                         }
                         string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                         List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
                         string vectorString = listaRespuestas.FirstOrDefault()?.Vector;
-                    if (!string.IsNullOrEmpty(vectorString))
-                    {
+                        if (!string.IsNullOrEmpty(vectorString))
+                        {
                             List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                             string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
 
@@ -127,8 +127,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                             HttpContext.Session.SetString("Nombre", nombre);
                             HttpContext.Session.SetString("Oficina", oficina);
-                            HttpContext.Session.SetString("SelectedMenu", "Depósitos");
-                            HttpContext.Session.SetString("SelectedSubMenu", "");
 
                             return Json(listaIdsPermitidosJson);
                         }
@@ -139,8 +137,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 HttpContext.Session.Remove("IdsPermitidos");
                 HttpContext.Session.Remove("Nombre");
                 HttpContext.Session.Remove("Oficina");
-                HttpContext.Session.Remove("SelectedMenu");
-                HttpContext.Session.Remove("SelectedSubMenu");
 
                 return BadRequest("Error en la respuesta del servicio");
             }
@@ -151,6 +147,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return StatusCode(500, $"Error en el servidor: {ex.Message}");
             }
         }
+
+       /* protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+        public async Task<IActionResult> Button1_Click(string usuario, string contrasena)
+         {
+             Reply oReply = new Reply();
+            oReply = await Consumer.Execute<List<Post>>(
+                "https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario="+usuario+"&contraseña="+contrasena,
+                methodHttp.GET, 
+                null);
+             if (oReply.StatusCode == "OK")
+             {
+                 List<Post> listPost = (List<Post>)oReply.Data;
+
+                 return View("NombreDeVista", listPost);
+             }
+
+             return View("ErrorView", oReply);
+         }*/
+             
 
         [HttpGet]
         public IActionResult GetIdsPermitidos()

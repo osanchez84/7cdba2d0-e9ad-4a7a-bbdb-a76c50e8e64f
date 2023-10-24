@@ -48,7 +48,7 @@
     </div>
         <div class="col-12 col-md-4">
             <div class="controlForm my-3">
-                <label>Entidad<b>(obligatorio)</b>:</label>
+                <label>Entidad <b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdMunicipio)
                     @(Html.Kendo().DropDownListFor(t=>t.IdEntidad)
@@ -70,7 +70,7 @@
         </div>
         <div class="col-12 col-md-4">
             <div class="controlForm my-3">
-                <label>Delegación<b>(obligatorio)</b>:</label>
+                <label>Delegación <b>(obligatorio)</b>:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t=>t.IdOficinaTransporte)
                         .DataTextField("Text")

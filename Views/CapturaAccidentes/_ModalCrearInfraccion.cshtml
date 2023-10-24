@@ -44,7 +44,7 @@
                         @Html.HiddenFor(m=>m.IdAccidente)
                         @Html.HiddenFor(m=>m.Tarjeta)
                         @(Html.Kendo().TextBoxFor(m=>m.folioInfraccion)
-                            .Label(l => l.Content("Folio de infracción:<b>(obligatorio)</b>"))
+                            .Label(l => l.Content("Folio de infracción <b>(obligatorio):</b>"))
                             .Placeholder("Ingresa folio de infracción")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )

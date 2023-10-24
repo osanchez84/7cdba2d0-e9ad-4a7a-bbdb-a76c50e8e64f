@@ -100,6 +100,13 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-auto text-center">
+                <div class="btnOutline btnOutlinePrimary px-4 my-3">
+                    <button onclick="mostrarModalAgregarInfraccion()">
+                        <h6 class="m-0"><i class="me-2 icon-addInfracion"></i><b>Agregar infracción</b></h6>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-8 pe-0">
@@ -109,27 +116,14 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        <div class="row justify-content-between align-items-end mb-1">
+        <div class="row justify-content-between align-items-end mb-1 titleCustom">
             <div class="col-12 col-md-auto mt-4 mb-2">
                 <h5 class="px-4"><b>Listado de infracciones del accidente</b></h5>
                 <h6 class="px-4 text-muted">Da de alta las infracciones del accidente.</h6>
             </div>
-            <div class="col-12 col-lg-auto text-center">
-                <div class="btnOutline btnOutlinePrimary px-4 my-3">
-                    <button onclick="mostrarModalAgregarInfraccion()">
-                        <h5 class="m-0"><i class="me-2 icon-addInfracion"></i><b>Agregar infracción</b></h5>
-                    </button>
-                </div>
-            </div>
+            
         </div>
-        <div class="row ">
-            <div class="col-12 my-4 px-4 rounded">
-                <!--TABLALISTA INFRACCIONEES-->
-                <partial name="_ListaInfraccionesAccidente" model="Model" />
-
-
-            </div>
-        </div>
+        <partial name="_ListaInfraccionesAccidente" model="Model" />
     </section>
 
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -160,19 +154,14 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        <div class="row justify-content-between align-items-end mb-1">
+        <div class="row justify-content-between align-items-end mb-1 titleCustom">
             <div class="col-12 col-md-auto mt-4 mb-2">
                 <h5 class="px-4"><b>Listado de daños en los vehículos</b></h5>
                 <h6 class="px-4 text-muted">Da de alta los daños en los vehículos.</h6>
             </div>
         </div>
-        <div class="row ">
-            <div class="col-12 my-4 px-4 rounded">
-            </div>
-            <!--TABLA VEHICULOS INV PARA DAÑOS-->
-            <div id="tablaConMonto">
+        <div id="tablaConMonto">
             <partial name="_ListaVehiculosDaños" model="Model" />
-            </div>
         </div>
          
     </section>
@@ -220,7 +209,7 @@
         </div>
         <div class="row px-4 mb-4 align-items-end mb-4">
 
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t=>t.Latitud)
                         .Label(l => l.Content("Latitud:"))
@@ -230,7 +219,7 @@
 
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t=>t.Longitud)
                         .Label(l => l.Content("Longitud:"))
@@ -240,7 +229,7 @@
 
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
                     <label>Certificado de:</label>
                     <span>
@@ -261,42 +250,47 @@
                 </div>
             </div>
             <div class="row justify-content-center mt-4">
-                <div class="col-11">
+                <div class="col-12">
                     <div class="bg-light pt-1"></div>
                 </div>
             </div>
             <div class="col-12 col-lg-6 mt-4 mb-2">
                 <h5><b>Elementos</b></h5>
+                <h6>Seleccione uno o varios elementos que se encontraron en el accidente</h6>
             </div>
             <div class="col-12">
-                <div class="controlForm mt-4 mb-3">
-                  <label class="label">Seleccione uno o varios elementos que se encontraron en el accidente:</label>
-                       <label>Armas</label> @(Html.Kendo().SwitchFor(t => t.ArmasBool)
+                <div class="row btnToggleActive">
+                    <div class="col-12 col-md-4 col-lg-3 btnToggle controlForm mb-3">
+                        <label>Armas</label> @(Html.Kendo().SwitchFor(t => t.ArmasBool)
                             .Name("armasSwitch") 
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
-
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3 btnToggle controlForm mb-3">
                         <label>Drogas</label> @(Html.Kendo().SwitchFor(t => t.DrogasBool)
                             .Name("drogasSwitch") 
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
-
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3 btnToggle controlForm mb-3">
                         <label>Valores</label> @(Html.Kendo().SwitchFor(t => t.ValoresBool)
                             .Name("valoresSwitch") 
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
-
-                           
-                         <label>Prendas</label> @(Html.Kendo().SwitchFor(t => t.PrendasBool)
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3 btnToggle controlForm mb-3">
+                        <label>Prendas</label> @(Html.Kendo().SwitchFor(t => t.PrendasBool)
                             .Name("prendasSwitch") 
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
-
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-3 btnToggle controlForm mb-3">
                         <label>Otros</label> @(Html.Kendo().SwitchFor(t => t.OtrosBool)
                             .Name("otrosSwitch") 
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
-                 </div>
+                    </div>
+                </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
@@ -350,18 +344,14 @@
                         <div class="bg-light py-1"></div>
                     </div>
                 </div>
-                <div class="row justify-content-between mb-1">
-                    <div class="col-12 col-lg-6 mt-4 mb-2">
+                <div class="row justify-content-between mb-1 titleCustom">
+                    <div class="col-12 col-md-auto mt-4 mb-2">
                         <h5 class="px-4"><b>Listado de búsqueda</b></h5>
                         <h6 class="px-4 text-muted">Selecciona un involucrado para continuar.</h6>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 px-4 rounded mb-4">
-                        <div id="tablaConFechaYHora">
-                            <partial name="_ListaInvolucradosFechaYHora" model="Model"/>
-                        </div>
-                    </div>
+                <div id="tablaConFechaYHora">
+                    <partial name="_ListaInvolucradosFechaYHora" model="Model"/>
                 </div>
                 <div class="row px-4 my-4">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -407,20 +397,19 @@
                 </div>
 
 
-            </section>
-        <div class="row justify-content-center mt-4">
-            <div class="col-11">
+        <div class="row justify-content-center">
+            <div class="col-11 mb-3">
                 <div class="bg-light pt-1"></div>
             </div>
-        </div>
+        </div>     
         <div class="row justify-content-between mb-1">
-            <div class="col-12 col-lg-6 mt-4 mb-2">
+            <div class="col-12 col-lg-6 mt-4">
                 <h5 class="px-4"><b>Competencia ministerial</b></h5>
             </div>
         </div>
         <div class="row px-4 mb-4 align-items-end">
 
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-5">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t=>t.consignacionHechos)
                         .Label(l => l.Content("Procede la consignación de los hechos:"))
@@ -428,9 +417,9 @@
                         .HtmlAttributes(new { style = "width: 100%", })
                         )
 
-        </div>
+                </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-5">
                 <div class="controlForm mb-3">
                     <label>Ciudad de:</label>
                     <span>
@@ -452,12 +441,12 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-11">
+            <div class="col-11 mb-3">
                 <div class="bg-light pt-1"></div>
             </div>
         </div>
         <div class="row justify-content-between mb-1">
-            <div class="col-12 col-lg-6 mt-4 mb-2">
+            <div class="col-12 col-lg-6 mt-4">
                 <h5 class="px-4"><b>Consignación</b></h5>
             </div>
         </div>
@@ -526,7 +515,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-11">
+            <div class="col-11 mb-3">
                 <div class="bg-light pt-1"></div>
             </div>
         </div>
@@ -615,7 +604,7 @@
             </div>
         </div>
 
-
+</section> 
      <div class="modal fade modalCustom" id="agregarInfraccionModal" tabindex="-1" aria-labelledby="agregarInfraccionLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">

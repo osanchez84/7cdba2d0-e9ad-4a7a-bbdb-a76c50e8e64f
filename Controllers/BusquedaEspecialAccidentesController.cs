@@ -44,18 +44,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            int IdModulo = 800;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
-                return View();
-            }
-            else
+            // int IdModulo = 800;
+            //string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            // List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            // if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            // {
+            return View();
+           // }
+           /* else
             {
                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
+            }*/
         }
         public JsonResult Delegaciones_Drop()
         {
@@ -165,6 +165,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var ListTransitoModel = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
             var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
+        }
+        public ActionResult EliminarAccidente(int idAccidente)
+        {
+            var accidenteEliminado = _busquedaEspecialAccidentesService.EliminarSeleccionado(idAccidente);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina);
+            return Json(resultadoBusqueda);
+        }
+        public IActionResult ModalEditarFolio(int idAccidente, string numeroReporte)
+        {
+
+            var viewModel = new EditarFolioModel
+            {
+                IdAccidente = idAccidente,
+                NumeroReporte = numeroReporte
+            };
+
+            return PartialView("_ModalEditarFolio", viewModel);
         }
 
     }

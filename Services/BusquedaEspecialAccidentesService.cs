@@ -65,7 +65,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             "OR UPPER(cond.apellidoPaterno) = @conductorBusqueda " +
                             "OR UPPER(cond.apellidoMaterno) = @conductorBusqueda " +
                             "OR vea.serie = @serieBusqueda)" +
-                            "AND a.idOficinaDelegacion = @idOficina AND a.idAccidente != 0 " +
+                            "AND a.idOficinaDelegacion = @idOficina AND a.estatus != 0 " +
                             "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                             "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,er.idEstatusReporte, ela.idOficial, sup.idOficial, aut.idOficial; ", connection);
 

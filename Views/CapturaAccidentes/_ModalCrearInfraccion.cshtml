@@ -25,7 +25,6 @@
             <div class="bg-light py-1"></div>
         </div>
 
-<<<<<<< HEAD
     </div>
     <div class="row">
         <div class="col-12 my-4">
@@ -44,17 +43,6 @@
                 @Html.HiddenFor(m => m.Tarjeta)
                 @(Html.Kendo().TextBoxFor(m=>m.folioInfraccion)
                             .Label(l => l.Content("Folio de infracción:<b>(obligatorio)</b>"))
-=======
-                <div class="col-12 col-md-6">
-                    <div class="controlForm my-3">
-                        @Html.HiddenFor(m=>m.IdVehiculo)
-                        @Html.HiddenFor(m=>m.IdPersona)
-                      @Html.HiddenFor(m=>m.Placa)
-                        @Html.HiddenFor(m=>m.IdAccidente)
-                        @Html.HiddenFor(m=>m.Tarjeta)
-                        @(Html.Kendo().TextBoxFor(m=>m.folioInfraccion)
-                            .Label(l => l.Content("Folio de infracción <b>(obligatorio):</b>"))
->>>>>>> origin/main
                             .Placeholder("Ingresa folio de infracción")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )

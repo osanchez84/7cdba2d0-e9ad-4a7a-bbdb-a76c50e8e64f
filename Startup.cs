@@ -23,6 +23,7 @@ using SITTEG.APIClientInfrastructure.Client;
 using System.ComponentModel;
 using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -35,13 +36,18 @@ namespace GuanajuatoAdminUsuarios
 
         public IConfiguration Configuration { get; }
 
-        
+
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
+            var mvcBuilder = services.AddControllersWithViews();
+
+#if DEBUG
+            mvcBuilder.AddRazorRuntimeCompilation();
+#endif
             //Connection Strings
             string connStringLicencias = Configuration.GetConnectionString("GUANAJUATO_ADMIN_USUARIOS_DEV");
             string connStringIncidencias = Configuration.GetConnectionString("GUANAJUATO_INCIDENCIAS_MIG_DEV");
@@ -168,9 +174,9 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IAnulacionDocumentoService, AnulacionDocumentoClientService>();
             services.AddScoped<IAsignacionGruasService, AsignacionGruasService>();
             services.AddScoped<IEstadisticasAccidentesService, EstadisticasAccidentesService>();
-            services.AddScoped<ICrearMultasTransitoClientService, CrearMultasTransitoClientService>(); 
-            services.AddScoped<ILicenciasService, LicenciasService>(); 
-            services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>(); 
+            services.AddScoped<ICrearMultasTransitoClientService, CrearMultasTransitoClientService>();
+            services.AddScoped<ILicenciasService, LicenciasService>();
+            services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>();
             services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
 
             services.AddScoped<IColores, CatColoresService>();
@@ -187,7 +193,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();
 
-            
+
 
             services
                .AddControllersWithViews()

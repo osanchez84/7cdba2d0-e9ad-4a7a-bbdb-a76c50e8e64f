@@ -49,7 +49,6 @@
                             </span>
                         </div>
                     </div>
-<<<<<<< HEAD
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
                             <label>Hora <b>(obligatorio)</b>:</label>
@@ -65,22 +64,6 @@
                                     )
                             </span>
                         </div>
-=======
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <div class="controlForm my-3">
-                        <label>Hora <b>(obligatorio)</b>:</label>
-                        <span>
-                            @(Html.Kendo().TimePickerFor(t => t.Hora)
-                                .Format("HH:mm")
-                                .Interval(1)
-                                .Label(l => l.Content("Hora <b>(obligatorio)</b>:"))
-                                .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
-                                .Value((DateTime?)null)
-                                .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
-                                )
-                        </span>
->>>>>>> origin/main
                     </div>
                 </div>
             </div>

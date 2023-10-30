@@ -26,6 +26,7 @@
                 columns.Bound(c => c.estatusReporte).Title("Estatus").Width(100);
                 columns.Bound(p => p.IdAccidente).ClientTemplate(
                 "<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
+                "<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
                 ).Title("Mostrar").Sortable(false).Width(90);
                 columns.Bound(p => p.IdAccidente).ClientTemplate(
                 "<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"

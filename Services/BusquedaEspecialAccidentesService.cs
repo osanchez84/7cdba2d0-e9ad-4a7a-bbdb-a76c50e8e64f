@@ -383,12 +383,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET estatus = 0 WHERE idAccidente = @idAccidente";
+                    string query = "UPDATE accidentes SET estatus = 0,actualizadoPor = @ActualizadoPor, FechaActualizacion = @FechaActualizacion WHERE idAccidente = @idAccidente";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
-
+                    command.Parameters.Add(new SqlParameter("@ActualizadoPor", 1));
+                    command.Parameters.Add(new SqlParameter("@FechaActualizacion", DateTime.Now));
                     command.ExecuteNonQuery();
                 }
                 catch (SqlException ex)

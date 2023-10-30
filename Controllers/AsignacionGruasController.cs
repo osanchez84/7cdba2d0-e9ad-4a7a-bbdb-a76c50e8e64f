@@ -44,9 +44,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             HttpContext.Session.SetInt32("iSo", iSo);
             HttpContext.Session.SetInt32("iPg", iPg);
+
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo, idOficina);
+            HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito);
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
 
             return View("capturaGruas", solicitud);
@@ -85,8 +87,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             try
             {
-                int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-                _asignacionGruasService.ActualizarDatos(selectedRowData, iSo);
+                int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+                _asignacionGruasService.ActualizarDatos(selectedRowData, iDep);
                 return Ok(selectedRowData);
             }
             catch (Exception ex)
@@ -114,8 +116,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             //int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
             var DatosGruas = _asignacionGruasService.EditarDatosGrua(formData, abanderamiento, arrastre, salvamento);
-            int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
             return Json(DatosTabla);
         }
         
@@ -124,15 +126,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult InsertarDatos(IFormCollection formData, int abanderamiento, int arrastre, int salvamento)
         {
             int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-            var DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iSo);
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            var DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             return Json(DatosTabla);
         }
         public IActionResult AgregarObservaciones(AsignacionGruaModel formData)
         {
-            int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-            var DatosTabla = _asignacionGruasService.AgregarObs(formData,iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            var DatosTabla = _asignacionGruasService.AgregarObs(formData,iDep);
 
             return Json(DatosTabla);
         }
@@ -150,8 +153,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         imageData = memoryStream.ToArray();
                     }
 
-                    int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-                    _asignacionGruasService.InsertarInventario(imageData, iSo, model.numeroInventario);
+                    int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+                    _asignacionGruasService.InsertarInventario(imageData, iDep, model.numeroInventario);
 
                     return Json(new { success = true, message = "Imagen e información guardadas exitosamente" });
                 }
@@ -183,8 +186,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult EliminarGrua(int idAsignacion)
         {
             var eliminarGrua = _asignacionGruasService.EliminarGrua(idAsignacion);
-            int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             return Json(DatosTabla);
         }

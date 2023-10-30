@@ -19,14 +19,15 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        <div class="col-12 col-md-auto mt-4 mb-2">
-            <h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
-            <h6 class="px-4 text-muted">Filtrar por fecha para localizar la infracción no pagada.</h6>
-        </div>
-        <form id="busquedaInfraccionForm" class="row px-4 mb-4 align-items-end">
-            <div class="col-12 col-md-auto">
-                <div class="controlForm my-3">
-                    @(Html.Kendo().DateRangePickerFor(m => m.FechaInicio, m => m.FechaFin)
+        <div class="row px-4 mb-4 align-items-end">
+            <div class="col-12 mt-4 mb-2">
+                <h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
+                <h6 class="px-4 text-muted">Filtrar por fecha para localizar la infracción no pagada.</h6>
+            </div>
+            <form id="busquedaInfraccionForm" class="col-12 col-md-auto">
+                
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().DateRangePickerFor(m => m.FechaInicio, m => m.FechaFin)
                         .Name("FechaBusqueda")
                         .Range(r => r.Start(DateTime.Now).End(DateTime.Now.AddDays(10)))
                         .HtmlAttributes(new { style = "width: 100%", title = "daterangepicker", placeholder = "Selecciona la Fecha" })
@@ -37,9 +38,8 @@
                         .Format("dd-MM-yyyy")
                         )
 
-                </div>
-            </div>
-          </form>
+                    </div>
+            </form>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3" onclick="busquedaInfracciones()">
                     @(Html.Kendo().Button()
@@ -48,12 +48,10 @@
                         .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
                 </div>
             </div>
-        <div class="row justify-content-between align-items-end mb-1">
-            <div class="col-12 col-md-auto mt-4 mb-2">
-                <h5 class="px-4"><b>Listado de infracción</b></h5>
-                <h6 class="px-4 text-muted">Edita los datos de infracción.</h6>
-            </div>
+
         </div>
+            
+        
         <div class="row">
             <div class="col-12 mb-4 px-4 rounded gridEnvio">
                 <div id="tablaEnvioInfracciones">

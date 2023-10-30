@@ -2,8 +2,14 @@
     var idInfraccionesSeleccionados = [];
 
 </script>
-<div class="col-12 mb-4 px-4 rounded gridCustom">
-    <button onclick="seleccionarTodos()">Seleccionar todo</button>
+<div class="col-12 mb-4 rounded gridCustom">
+    <div class="row justify-content-between align-items-end mb-1 titleCustom">
+        <div class="col-12 col-md-auto mt-4 mb-2">
+            <h5 class="px-4"><b>Listado de infracción</b></h5>
+            <h6 class="px-4 text-muted">Edita los datos de infracción.</h6>
+        </div>
+    </div>
+    
     @(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.EnvioInfraccionesModel>()
         .Name("gridEnvioInfracciones")
         .Columns(columns =>
@@ -19,7 +25,6 @@
 
         }).HtmlAttributes(new { style = "height:400px" })
         .Sortable()
-        .Groupable()
         .Scrollable()
         .Pageable()
         .DataSource(dataSource => dataSource
@@ -47,11 +52,14 @@
         </div>
     </div>
 </div>
-
-
 <div class="row pb-4 align-items-start justify-content-start footerGrid">
-    <div class="border bg-light text-center">
-        <section class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto p-0 d-flex justify-content-start">
+    <div class="border bg-light text-center row justify-content-between">
+        <section class="col-auto btnOutline btnOutlinePrimary my-2 mx-1 p-0 d-flex justify-content-start">
+            <button onclick="seleccionarTodos()">
+                <h6 class="m-0 d-flex align-items-center"><b> Seleccionar todo</b></h6>
+            </button>
+        </section>
+        <section class="col-auto btnOutline btnOutlinePrimary my-2 mx-1 p-0 d-flex justify-content-start">
             <button type="button" onclick="enviarIdInfraccionesSeleccionados()">
                 <h6 class="m-0 d-flex align-items-center"><i class="icon-addEnviar h5 mb-0 me-2"></i><b> Enviar infracciones</b></h6>
             </button>

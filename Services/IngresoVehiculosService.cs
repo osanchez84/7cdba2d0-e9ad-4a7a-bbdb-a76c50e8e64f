@@ -165,11 +165,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso WHERE idDeposito = @idDeposito";
+                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso, idDependenciaGenera = @idDependenciaGenera WHERE idDeposito = @idDeposito";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@fechaIngreso", datos.fechaIngreso);
                     command.Parameters.AddWithValue("@idDeposito", datos.IdDeposito);
+                    command.Parameters.AddWithValue("@idDependenciaGenera", 1);
+
                     command.ExecuteScalar();
                 }
 

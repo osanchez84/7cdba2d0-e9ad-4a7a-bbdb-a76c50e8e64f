@@ -172,6 +172,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ILicenciasService, LicenciasService>(); 
             services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>(); 
             services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
+            services.AddScoped<IIngresarVehiculosService, IngresoVehiculosService>();
 
             services.AddScoped<IColores, CatColoresService>();
 

@@ -5,7 +5,7 @@
         <div class="col-auto pe-0">
             <div class="row align-items-center justify-content-center justify-content-md-start">
                 <div class="col-auto my-3">
-                    <h2 class="m-0 h3"><b>Editar número de reporte</b></h2>
+                    <h2 class="m-0 h3"><b>Eliminar registro de accidente</b></h2>
                 </div>
             </div>
         </div>
@@ -23,33 +23,15 @@
         </div>
 
     </div>
-    <form id="editarCarreteraForm" class="row px-4 mb-4 align-items-end">
+    <form id="eliminarAccidenteForm" class="row px-4 mb-4 align-items-end">
         <div class="row">
             <div class="col-12 my-4">
-                <h6 class="px-4 text-muted">Permite cambiar el número de reporte. Si el nuevo número ya existe, puedes colocar TMP al final.</h6>
+                <h5>¿Estás seguro de que deseas eliminar el registro de accidente con el número de reporte: <strong>@Model.NumeroReporte</strong>?</h5>
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="controlForm my-3">
-                <span>
-                    @Html.HiddenFor(m=>m.IdAccidente)
-                    @(Html.Kendo().TextBoxFor(t => t.NumeroReporte)
-                        .Label(l => l.Content("Número de reporte actual"))
-                        .Placeholder("nmumero reporte actual")
-                        .HtmlAttributes(new { style = "width: 100%" })
-                        )
-                </span>
-            </div>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="controlForm my-3">
-                @(Html.Kendo().TextBoxFor(t => t.NumeroReporteNuevo)
-                    .Label(l => l.Content("Nuevo número de reporte <b>(obligatorio)</b>:"))
-                    .Placeholder("Ingresa el nuevo número de reporte")
-                    .HtmlAttributes(new { style = "width: 100%" })
-                    )
+            @Html.HiddenFor(m=>m.IdAccidente)
 
-            </div>
         </div>
 
     </form>
@@ -62,11 +44,11 @@
                     </button>
                 </div>
                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                    <div class="controlButton" onclick="editarCarretera()">
+                    <div class="controlButton" onclick="eliminarAccidente()">
                         @(Html.Kendo().Button()
-                            .Name("EditFolio")
+                            .Name("EditCarretera")
                             .HtmlAttributes(new { @class = "btnPrimary px-3" })
-                            .Content("<h5 class=\"m-0\"><b>Guardar ajustes</b></h5>"))
+                            .Content("<h5 class=\"m-0\"><b>Eliminar</b></h5>"))
                     </div>
                 </div>
             </div>
@@ -75,3 +57,21 @@
 
     </div>
 </section>
+<script>
+    function eliminarAccidente(idAccidente) {
+        var Mydata = $("#eliminarAccidenteForm").serialize();
+        $.ajax({
+            url: '/BusquedaEspecialAccidentes/EliminarAccidente',
+            type: 'POST',
+            data: Mydata,
+            success: function (result) {
+                $('#eliminarAccidenteModal').modal('hide');;
+                sitteg_success("Se ha eliminado el registro de accidente")
+                var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
+                grid.dataSource.data(result);
+                grid.refresh();
+            },
+
+        });
+    }
+</script>

@@ -55,6 +55,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(sol.vehiculoCarretera) AS vehiculoCarretera,
                                    MAX(sol.vehiculoTramo) AS vehiculoTramo,
                                    MAX(sol.vehiculoKm) AS vehiculoKm,
+                                   MAX(sol.idMotivoAsignacion) AS idMotivoAsignacion,
+                                   MAX(ta.tipoAsignacion) AS tipoAsignacion,
                                    MAX(sol.fechasolicitud) AS fechasolicitud,
                                    MAX(sol.folio) AS FolioSolicitud,
                                    MAX(sol.evento) AS evento,
@@ -69,14 +71,15 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(g.noEconomico) AS noEconomico,
                                    MAX(con.IdConcesionario) AS IdConcesionario,
                                    MAX(con.concesionario) AS concesionario
-                            FROM depositos dep
-                            LEFT JOIN catDelegaciones del ON dep.idDelegacion = del.idDelegacion
-                            LEFT JOIN pensiones pen ON dep.idpension = pen.idpension
-                            LEFT JOIN solicitudes sol ON dep.idsolicitud = sol.idsolicitud
-                            LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
-                            LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
-                            GROUP BY dep.iddeposito;
-                            ";
+                                    FROM depositos dep
+                                    LEFT JOIN catDelegaciones del ON dep.idDelegacion = del.idDelegacion
+                                    LEFT JOIN pensiones pen ON dep.idpension = pen.idpension
+                                    LEFT JOIN solicitudes sol ON dep.idsolicitud = sol.idsolicitud
+                                    LEFT JOIN tipoMotivoAsignacion ta ON ta.idTipoAsignacion = sol.idMotivoAsignacion
+                                    LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
+                                    LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
+                                    GROUP BY dep.iddeposito;
+                                    ";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
@@ -98,6 +101,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             ReporteAsignacion.solicitanteCalle = reader["solicitanteCalle"] != DBNull.Value ? reader["solicitanteCalle"].ToString() : string.Empty;
                             ReporteAsignacion.solicitanteNumero = reader["solicitanteNumero"] != DBNull.Value ? reader["solicitanteNumero"].ToString() : string.Empty;
                             ReporteAsignacion.tipoVehiculo = reader["tipoVehiculo"] != DBNull.Value ? reader["tipoVehiculo"].ToString() : string.Empty;
+                            ReporteAsignacion.idMotivo = reader["idMotivoAsignacion"] != DBNull.Value ? Convert.ToInt32(reader["idMotivoAsignacion"].ToString()) : 0;
+                            ReporteAsignacion.motivoAsignacion = reader["tipoAsignacion"] != DBNull.Value ? reader["tipoAsignacion"].ToString() : string.Empty;
+
                             ReporteAsignacion.propietarioGrua = reader["propietarioGrua"] != DBNull.Value ? reader["propietarioGrua"].ToString() : string.Empty;
                             ReporteAsignacion.oficial = reader["oficial"] != DBNull.Value ? reader["oficial"].ToString() : string.Empty;
                             ReporteAsignacion.folio = reader["folio"] != DBNull.Value ? reader["folio"].ToString() : string.Empty;

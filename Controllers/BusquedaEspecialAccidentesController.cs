@@ -173,6 +173,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina);
             return Json(resultadoBusqueda);
         }
+
+        public IActionResult ModalEliminarAccidente(int idAccidente, string numeroReporte)
+        {
+
+            var viewModel = new EditarFolioModel
+            {
+                IdAccidente = idAccidente,
+                NumeroReporte = numeroReporte
+            };
+
+            return PartialView("_ModalEliminarAccidente", viewModel);
+        }
+        
         public IActionResult ModalEditarFolio(int idAccidente, string numeroReporte)
         {
 

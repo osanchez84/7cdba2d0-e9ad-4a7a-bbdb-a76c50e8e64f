@@ -154,7 +154,7 @@
         </div>
      <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-6">
-                <div class="controlForm">
+                <div class="controlForm my-3">
                     <label>Descripción del evento <b>(obligatorio)</b>:</label>
                         <span>
                             @(Html.Kendo().DropDownListFor(t => t.idDescripcionEvento)
@@ -168,7 +168,7 @@
                             read.Action("Descripcion_Drop", "Depositos");
                                 });
                             })
-                        .HtmlAttributes(new { style = "width:40%;", required = "required" })
+                        .HtmlAttributes(new { style = "width:100%;", required = "required" })
                             )
                         </span>
 
@@ -189,7 +189,7 @@
                                         read.Action("TiposUsuario_Drop", "Depositos");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:40%;", required = "required" })
+                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                 )
                         </span>
                 </div>   
@@ -483,6 +483,7 @@
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Carretera")
                                 .Events(e => e.Change("carreteraDropDownChange"))
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>

@@ -1,0 +1,28 @@
+﻿<div class="row">
+    <div class="col-12 mb-4 px-4 rounded gridCustom">
+
+        @(
+            Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.SalidaVehiculosModel>()
+            .Name("gridGruasServicio")
+            //.Events(events => events.Change("onRowSelect"))
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.idDeposito).Hidden();
+                columns.Select().Width(50).ClientHeaderTemplate(" ");
+                columns.Bound(c => c.folioInventario).Title("Folio de inventario").Width(150);
+                columns.Bound(c => c.marca).Title("Marca").Width(100);
+          
+
+            }).HtmlAttributes(new { style = "height:550px" })
+            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+            .Sortable()
+            .Scrollable(scr => scr.Height(350))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            )
+            )
+
+
+    </div>
+</div>

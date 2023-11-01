@@ -28,17 +28,24 @@
         <div class="mb-4 px-4">
           <form form id="busquedaAccidenteForm">
             <div class="row">
-                <div class="col-12 col-md-7">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Inicio:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
                                 .Label(l => l.Content("Fecha Inicio:"))
-                                .HtmlAttributes(new { style = "width: 40%", id="dateInicio" })
+                                .Value(DateTime.Today) 
+                                .HtmlAttributes(new { style = "width: 100%", id="dateInicio" })
                                 )
-                            <label>Fecha Fin:</label>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+
+                    <div class="controlForm my-3 selecciondeFecha">
+                        <label>Fecha Fin:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
                                 .Label(l => l.Content("Fecha Fin:"))
-                                .HtmlAttributes(new { style = "width: 40%",id="dateFinal" })
+                                .Value(DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59))
+                                .HtmlAttributes(new { style = "width: 100%",id="dateFinal" })
                                 )
                     </div>
                 </div>

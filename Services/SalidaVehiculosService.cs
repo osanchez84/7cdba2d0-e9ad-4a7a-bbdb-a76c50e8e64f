@@ -173,5 +173,192 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return model;
         }
+        public List<GruasSalidaVehiculosModel> ObtenerDatosGridGruas(int iDp)
+        {
+            //
+            List<GruasSalidaVehiculosModel> ListaGruas = new List<GruasSalidaVehiculosModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT ga.idDeposito,ga.idGrua,ga.abanderamiento,ga.arrastre, " +
+                                                        "ga.salvamento,ga.costoTotal,g.noEconomico,tg.TipoGrua " +
+                                                        "From gruasAsignadas AS ga " +
+                                                        "LEFT JOIN gruas AS g ON g.idGrua = ga.idGrua " +
+                                                        "LEFT JOIN catTipoGrua AS tg ON tg.IdTipoGrua = g.idTipoGrua " +
+                                                        "WHERE ga.idDeposito = @idDeposito", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDp;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            GruasSalidaVehiculosModel grua = new GruasSalidaVehiculosModel();
+                            grua.idDeposito = Convert.ToInt32(reader["idDeposito"]?.ToString() ?? "0");
+                            grua.idGrua = Convert.ToInt32(reader["idGrua"]?.ToString() ?? "0");
+                            grua.grua = reader["noEconomico"]?.ToString();
+                            grua.costoTotalPorGrua = float.TryParse(reader["costoTotal"]?.ToString(), out float costoTotal) ? costoTotal : 0.0f;
+                            grua.abanderamiento = Convert.ToInt32(reader["abanderamiento"]?.ToString() ?? "0");
+                            grua.salvamento = Convert.ToInt32(reader["salvamento"]?.ToString() ?? "0");
+                            grua.arrastre = Convert.ToInt32(reader["arrastre"]?.ToString() ?? "0");
+                            grua.tipoGrua = reader["TipoGrua"]?.ToString();
+
+
+
+                            ListaGruas.Add(grua);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaGruas;
+
+
+        }
+        public CostosServicioModel CostosServicio(int idDeposito)
+        {
+            CostosServicioModel model = new CostosServicioModel();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact =
+                                            @"SELECT ga.idDeposito,ga.idGrua,ga.abanderamiento,ga.arrastre,  
+                                                                ga.salvamento,ga.costoTotal,ga.costoAbanderamiento,ga.costoArrastre,ga.costoBanderazo,ga.costoSalvamento
+                                                                From gruasAsignadas AS ga  
+                                                                WHERE ga.idDeposito = @idDeposito";
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = idDeposito;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            model.idDeposito = Convert.ToInt32(reader["idDeposito"]?.ToString() ?? "0");
+                            model.costoArrastre = float.TryParse(reader["costoArrastre"]?.ToString(), out float costoArrastre) ? costoArrastre : 0.0f;
+                            model.costoSalvamento = float.TryParse(reader["costoSalvamento"]?.ToString(), out float costoSalvamento) ? costoSalvamento : 0.0f;
+                            model.costoBanderazo = float.TryParse(reader["costoBanderazo"]?.ToString(), out float costoBanderazo) ? costoBanderazo : 0.0f;
+
+                            model.costoAbanderamiento = float.TryParse(reader["costoAbanderamiento"]?.ToString(), out float costoAbanderamiento) ? costoAbanderamiento : 0.0f;
+                            model.costoTotalPorGrua = float.TryParse(reader["costoTotal"]?.ToString(), out float costoTotal) ? costoTotal : 0.0f;
+                            model.abanderamiento = Convert.ToInt32(reader["abanderamiento"]?.ToString() ?? "0");
+                            model.salvamento = Convert.ToInt32(reader["salvamento"]?.ToString() ?? "0");
+                            model.arrastre = Convert.ToInt32(reader["arrastre"]?.ToString() ?? "0");
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return model;
+        }
+        public int ActualizarCostos(CostosServicioModel model)
+
+        {
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new
+                        SqlCommand("Update gruasAsignadas set " +
+                                   "costoAbanderamiento = @costoAbanderamiento, " +
+                                   "costoArrastre = @costoArrastre, " +
+                                   "costoBanderazo = @costoBanderazo, " +
+                                   "costoSalvamento = @costoSalvamento, " +
+                                   "costoTotal = @costoTotal " +
+                                   "where idDeposito=@idDeposito",
+                        connection);
+                    
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@costoAbanderamiento", SqlDbType.Float)).Value = model.costoAbanderamiento;
+                    sqlCommand.Parameters.Add(new SqlParameter("@costoArrastre", SqlDbType.Float)).Value = model.costoArrastre;
+                    sqlCommand.Parameters.Add(new SqlParameter("@costoBanderazo", SqlDbType.Float)).Value = model.costoBanderazo;
+                    sqlCommand.Parameters.Add(new SqlParameter("@costoSalvamento", SqlDbType.Float)).Value = model.costoSalvamento;
+                    sqlCommand.Parameters.Add(new SqlParameter("@costoTotal", SqlDbType.Float)).Value = model.costoTotalPorGrua;
+
+
+                    sqlCommand.CommandType = CommandType.Text;
+                    result = sqlCommand.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    //---Log
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+
+
+        }
+        public int GuardarInforSalida(SalidaVehiculosModel model)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "INSERT INTO serviciosDepositos" +
+                        "(idDeposito,fechaIngreso,fechaSalida,diasResguardo,costoDeposito,costoTotalGruas,nombreRecibe,nombreEntrega,estatus,actualizadoPor,fechaActualizacion) " +
+                        "values(@idDeposito,@fechaIngreso,@fechaSalida,@diasResguardo,@costoDeposito,@costoTotalGruas,@nombreRecibe,@nombreEntrega,@estatus,@actualizadoPor,@fechaActualizacion)";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@idDeposito", model.idDeposito);
+
+                    command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);
+                    command.Parameters.AddWithValue("@fechaSalida", model.fechaSalida);
+                    command.Parameters.AddWithValue("@diasResguardo", model.diasResguardo);
+                    command.Parameters.AddWithValue("@costoDeposito", model.costoDeposito);
+                    command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalPorGrua);
+                    command.Parameters.AddWithValue("@nombreRecibe", model.recibe);
+                    command.Parameters.AddWithValue("@nombreEntrega", model.entrega);
+                    command.Parameters.AddWithValue("@estatus", 1);
+                    command.Parameters.AddWithValue("@actualizadoPor", 1);
+                    command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
+
+
+
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+
+        }
     }
 }

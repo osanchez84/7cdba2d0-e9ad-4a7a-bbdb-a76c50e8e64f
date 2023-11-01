@@ -47,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string recibe { get; set; }
         public string entrega { get; set; }
         public string observaciones { get; set; }
-
+        public string costoTotalPorGrua{ get; set; }
 
 
     }

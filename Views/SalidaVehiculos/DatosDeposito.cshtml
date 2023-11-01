@@ -37,9 +37,8 @@
                             @(Html.Kendo().DateTimePickerFor(t => t.fechaIngreso)
                                 .Label(l => l.Content("Fecha Ingreso:"))
                                 .Format("dd:MM:yyyy HH:mm")
-                                .HtmlAttributes(new { style = "width: 80%", id = "fechaIngreso" })
                                 .Value(Model.fechaIngreso)
-                                .Enable(false) 
+                                .HtmlAttributes(new { style = "width: 80%", id = "fechaIngreso", @readonly = "readonly" })
                                 )
                         </div>
                     </div>
@@ -63,7 +62,7 @@
                                     .Label(l => l.Content("Días de  resguardo:"))
                                     .Placeholder("")
                                     .HtmlAttributes(new { style = "width: 100%",id = "diasResguardo" })
-                                    .Enable(false)
+                                    .HtmlAttributes(new { @readonly = "readonly" })
 
                                     )
                             </div>
@@ -190,8 +189,19 @@
     function guardarDatos() {
         var Mydata = $("#dataSalidaForm").serialize();
         console.log(Mydata);
+        $.ajax({
+            url: '@Url.Action("GuardarDatosSalida")',
+            type: 'POST',
+            data: Mydata,
+            success: function (data) {
+                sitteg_success('Se ha actualizado la información');
+               
+            },
+            error: function (error) {
+                sitteg_warning('Sucedió un error, intente mas tarde...');
+            }
+        });
     }
-
-    
+      
 </script>
 

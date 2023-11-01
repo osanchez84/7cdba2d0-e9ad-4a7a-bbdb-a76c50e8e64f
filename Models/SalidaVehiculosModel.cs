@@ -7,7 +7,17 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idDeposito { get; set; }
         public int idVehiculo { get; set; }
 
+        public int idDeposito { get; set; }
+        public int idVehiculo { get; set; }
+
         public string serie { get; set; }
+        public string tipoVehiculo { get; set; }
+        public string modelo { get; set; }
+        public string solicitante { get; set; }
+        public string evento { get; set; }
+        public string propietarioGrua { get; set; }
+
+
         public string tipoVehiculo { get; set; }
         public string modelo { get; set; }
         public string solicitante { get; set; }
@@ -18,6 +28,18 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime fechaIngreso { get; set; }
         public string folioInventario { get; set; }
         public int idMarca { get; set; }
+        public int idSubMarca { get; set; }
+        public int idColor { get; set; }
+        public int idPropietario { get; set; }
+        public int idPension { get; set; }
+        public int diasResguardo { get; set; }
+        public float costoDeposito { get; set; }
+
+        public string marca { get; set; }
+        public string submarca { get; set; }
+        public string color { get; set; }
+        public string propietario { get; set; }
+        public string pension { get; set; }
         public int idSubMarca { get; set; }
         public int idColor { get; set; }
         public int idPropietario { get; set; }

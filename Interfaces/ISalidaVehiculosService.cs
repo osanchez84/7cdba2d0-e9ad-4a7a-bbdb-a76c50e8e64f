@@ -1,6 +1,9 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 
+using GuanajuatoAdminUsuarios.Models;
+using System.Collections.Generic;
+
 namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ISalidaVehiculosService

@@ -1,0 +1,69 @@
+﻿@using GuanajuatoAdminUsuarios.Entity;
+@model List<InfoInfraccion>
+
+<div class="row my-4 px-4">
+    <div class="col-md-6">
+        @(
+            Html.Kendo().Grid(Model)
+            .Name("gridInfraccionesInfo")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.Folio).Title("Folio");
+                columns.Bound(c => c.FolioTxt).Title("Folio-Txt");
+                columns.Bound(c => c.TTOTTE).Title("TTO/TTE");
+                columns.Bound(c => c.Estatus).Title("Estatus");
+                columns.Bound(c => c.TipoCortesia).Title("Tipo Cortesía");
+                columns.Bound(c => c.Delegacion).Title("Delegación");
+                columns.Bound(c => c.Municipio).Title("Municipio");
+                columns.Bound(c => c.FechaInfraccion).Title("Fecha de Infracción");
+                columns.Bound(c => c.HoraInfraccion).Title("Hora de Infracción");
+                columns.Bound(c => c.FechaVencimiento).Title("Fecha Vencimiento");
+                columns.Bound(c => c.Carretera).Title("Carretera");
+                columns.Bound(c => c.Tramo).Title("Tramo");
+                columns.Bound(c => c.Kilometraje).Title("Kilómetro");
+                columns.Bound(c => c.NombreConductor).Title("Nombre Conductor");
+                columns.Bound(c => c.CURPConductor).Title("CURP Conductor");
+                columns.Bound(c => c.FechadeNacimiento).Title("Fecha de Nacimiento");
+                columns.Bound(c => c.DomicilioConductor).Title("Domicilio Conductor");
+                columns.Bound(c => c.LicenciaConductor).Title("Licencia Conductor");
+                columns.Bound(c => c.TipoPersFisica).Title("Prop. Pers. Fisica");
+                columns.Bound(c => c.TipoPersMoral).Title("Prop. Pers Moral");
+                columns.Bound(c => c.Propietario).Title("Propietario");
+                columns.Bound(c => c.OficialInfraccion).Title("Oficial Infracción");
+                columns.Bound(c => c.CalifSalarios).Title("Calif. Salarios");
+                columns.Bound(c => c.MontoCalif).Title("Monto Calif.");
+                columns.Bound(c => c.MontoPago).Title("Monto Pago");
+                columns.Bound(c => c.ReciboPago).Title("Recibo Pago");
+                columns.Bound(c => c.FechaPago).Title("Fecha Pago");
+                columns.Bound(c => c.Placas).Title("Placas");
+                columns.Bound(c => c.SerieVeh).Title("Serie Veh.");
+                columns.Bound(c => c.TarjetadeCirculacion).Title("Tarjeta de Circulación");
+                columns.Bound(c => c.Marca).Title("Marca");
+                columns.Bound(c => c.Submarca).Title("Submarca");
+                columns.Bound(c => c.Modelo).Title("Modelo");
+                columns.Bound(c => c.Color).Title("Color");
+                columns.Bound(c => c.EntidaddeReg).Title("Entidad de Reg.");
+                columns.Bound(c => c.TipodeVehículo).Title("Tipo de Vehículo");
+                columns.Bound(c => c.TipodeServicio).Title("Tipo de Servicio");
+                columns.Bound(c => c.SubtipodeServicio).Title("Subtipo de Servicio");
+                columns.Bound(c => c.TipoGarantia).Title("Tipo Garantía");
+                columns.Bound(c => c.TipoAplicacion).Title("Tipo Aplicación");
+                columns.Bound(c => c.Motivo).Title("Motivos");
+                columns.Bound(c => c.MotivoDesc).Title("Motivos (descripcion texto abierto)");
+
+            }).HtmlAttributes(new { style = "height:auto" })
+            .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
+            .Sortable()
+            .Scrollable(scr => scr.Enabled(false))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            @*.Aggregates(aggregates =>
+            {
+                aggregates.Add(p => p.Contador).Sum();
+            } *@
+            )
+            )
+        )
+    </div>
+</div>

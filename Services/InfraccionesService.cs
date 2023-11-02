@@ -1289,6 +1289,151 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
         }
 
+        public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid()
+        {
+            List<InfoInfraccion> modelList = new List<InfoInfraccion>();
+            string strQuery = @"SELECT inf.folioInfraccion as Folio
+                        ,inf.folioInfraccion FolioTXT
+                        ,'' AS TTOTTE
+                        ,inf.infraccionCortesia TipoCortesia
+                        ,del.nombreOficina Delegacion
+                        ,catMun.municipio as Municipio
+                        ,Convert(DATE, inf.fechaInfraccion) FechaInfracción
+                        ,Convert(TIME, inf.fechaInfraccion) HoraInfracción
+                        ,'' as FechaVencimiento
+                        ,catCarre.carretera as Carretera
+                        ,catTra.tramo as Tramo
+                        ,inf.kmCarretera AS Kilometraje
+                        ,CONCAT(pers.nombre, ' ', pers.apellidoPaterno, ' ', pers.apellidoMaterno) as NombreCondcutor
+                        ,pers.CURP as CURPConductor
+                        ,pers.fechaNacimiento as FechadeNacimientoConductor
+                        ,pers.numeroLicencia as LicenciaConductor
+                        ,CASE WHEN pers.idCatTipoPersona = 1 THEN 'x' ELSE '' END AS TipoPersFisica
+                        ,CASE WHEN pers.idCatTipoPersona = 2 THEN 'x' ELSE '' END AS TipoPersMoral
+                        ,CONCAT(persProp.nombre, ' ', persProp.apellidoPaterno, ' ', persProp.apellidoMaterno) as Propietario
+                        ,CONCAT(persOfi.nombre, ' ', persOfi.apellidoPaterno, ' ', persOfi.apellidoMaterno) as OficialInfraccion
+                        ,'' as CalifSalarios
+                        ,'' AS MontoCalif
+                        ,COALESCE(inf.monto,'0') AS MontoPago
+                        ,COALESCE(inf.reciboPago,'') AS ReciboPago
+                        ,COALESCE(inf.fechaPago,'') AS FechaPago
+                        ,veh.placas AS Placas
+                        ,veh.serie AS SerieVeh
+                        ,veh.tarjeta AS TarjetadeCirculacion
+                        ,mv.marcaVehiculo AS Marca
+                        ,sm.nombreSubmarca AS Submarca
+                        ,veh.modelo AS Modelo
+                        ,cc.color AS Color
+                        ,e.nombreEntidad AS EntidaddeReg
+                        ,tv.tipoVehiculo AS TipodeVehículo
+                        ,ts.tipoServicio AS TipodeServicio
+                        ,'' AS SubtipodeServicio
+                        ,catGar.garantia AS TipoGarantia
+                        ,'' AS TipoAplicacion
+                        ,catMotInf.nombre AS Motivo
+                        ,'' AS MotivoDesc
+                        FROM infracciones as inf
+                        left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+                        left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
+                        left join personas pers on pers.idPersona = inf.idPersona
+                        left join catOficiales persOfi on persOfi.idOficial = inf.idOficial
+                        left join catDependencias dep on inf.idDependencia= dep.idDependencia
+                        left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
+                        left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
+                        left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
+                        left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
+                        left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
+                        left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
+                        left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
+                        left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                        left join catTramos catTra on inf.idTramo = catTra.idTramo
+                        left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
+                        left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
+                        left join personas persProp on pers.idPersona = veh.propietario
+                        left join catMarcasVehiculos mv ON mv.idMarcaVehiculo = veh.idMarcaVehiculo
+                        left join catSubmarcasVehiculos sm ON sm.idSubmarca = veh.idSubmarca
+                        left join catEntidades e ON e.idEntidad = veh.idEntidad
+                        left join catColores cc ON cc.idColor = veh.idColor
+                        left join catTiposVehiculo tv ON tv.idTipoVehiculo = tv.idTipoVehiculo
+                        left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
+                        WHERE 
+                        inf.estatus= 1"
+            ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            InfoInfraccion model = new InfoInfraccion();
+                            model.Folio                = reader["Folio"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();   
+                            model.FolioTxt             = reader["FolioTXT"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TTOTTE               = reader["TTOTTE"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Estatus              = reader["Estatus"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipoCortesia         = reader["TipoCortesia"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Delegacion           = reader["Delegacion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Municipio            = reader["Municipio"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.FechaInfraccion      = reader["FechaInfraccion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.HoraInfraccion       = reader["HoraInfraccion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.FechaVencimiento     = reader["FechaVencimiento"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Carretera            = reader["Carretera"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Tramo                = reader["Tramo"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Kilometraje          = reader["Kilometraje"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.NombreConductor      = reader["NombreConductor"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.CURPConductor        = reader["CURPConductor"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.FechadeNacimiento    = reader["FechadeNacimiento"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.DomicilioConductor   = reader["DomicilioConductor"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.LicenciaConductor    = reader["LicenciaConductor"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipoPersFisica       = reader["TipoPersFisica"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipoPersMoral        = reader["TipoPersMoral"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Propietario          = reader["Propietario"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.OficialInfraccion    = reader["OficialInfraccion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.CalifSalarios        = reader["CalifSalarios"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.MontoCalif           = reader["MontoCalif"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.MontoPago            = reader["MontoPago"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.ReciboPago           = reader["ReciboPago"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.FechaPago            = reader["FechaPago"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Placas               = reader["Placas"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.SerieVeh             = reader["SerieVeh"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TarjetadeCirculacion = reader["TarjetadeCirculacion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Marca                = reader["Marca"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Submarca             = reader["Submarca"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Modelo               = reader["Modelo"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Color                = reader["Color"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.EntidaddeReg         = reader["EntidaddeReg"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipodeVehículo       = reader["TipodeVehículo"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipodeServicio       = reader["TipodeServicio"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.SubtipodeServicio    = reader["SubtipodeServicio"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipoGarantia         = reader["TipoGarantia"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.TipoAplicacion       = reader["TipoAplicacion"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.Motivo               = reader["Motivo"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            model.MotivoDesc           = reader["MotivoDesc"] == System.DBNull.Value ? default(string) : reader["idAccidente"].ToString();
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+
+            return modelList;
+        }
+
         public List<InfraccionesModel> GetAllAccidentes2()
         {
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();

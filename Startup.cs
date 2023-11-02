@@ -23,6 +23,9 @@ using SITTEG.APIClientInfrastructure.Client;
 using System.ComponentModel;
 using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.EntityFrameworkCore;
+using GuanajuatoAdminUsuarios.Extensions;
+using GuanajuatoAdminUsuarios.Utils.Interfaces;
+using GuanajuatoAdminUsuarios.Utils.Services;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -187,8 +190,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();
+            services.AddScoped<ILogService, LogService>();
 
-            
 
             services
                .AddControllersWithViews()
@@ -223,6 +226,8 @@ namespace GuanajuatoAdminUsuarios
             //Autorizacion y autenticacion de usuario
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.ConfigureExceptionHandler();
 
             app.UseEndpoints(endpoints =>
             {

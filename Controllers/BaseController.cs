@@ -1,4 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Utils.Interfaces;
+using GuanajuatoAdminUsuarios.Utils.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -373,7 +375,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             HttpContext.Session.SetString("SelectedModulo", modulo.IsNullOrEmpty()? "Depósitos" : modulo);
             HttpContext.Session.SetString("SelectedSubModulo", "SubModuloTest");
 
+            new LogService().Trace($"User {HttpContext.Session.GetString("Nombre")} In {controller}/{action}");
+
             await base.OnActionExecutionAsync(context, next);
+                       
         }
     }
 

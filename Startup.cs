@@ -178,6 +178,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ILicenciasService, LicenciasService>();
             services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>();
             services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
+            services.AddScoped<IIngresarVehiculosService, IngresoVehiculosService>();
 
             services.AddScoped<IColores, CatColoresService>();
 
@@ -192,7 +193,6 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();
-
 
 
             services

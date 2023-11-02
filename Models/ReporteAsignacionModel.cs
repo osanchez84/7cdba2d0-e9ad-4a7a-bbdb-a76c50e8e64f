@@ -109,6 +109,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string actualizadoPor { get; set; }
         public string estatus { get; set; }
         //public int IdDependencia { get; set; }
-
+        public int idMotivo { get; set; }
+        public string motivoAsignacion { get; set; }
+        
     }
 }

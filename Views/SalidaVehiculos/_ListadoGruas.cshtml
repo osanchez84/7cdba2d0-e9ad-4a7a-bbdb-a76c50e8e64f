@@ -63,7 +63,6 @@
             type: 'POST',
             data: { idDeposito: idDeposito },
             success: function (result) {
-                console.log("RES",result)
                 $('#ModalBodyCostosGrua').html(result);
                 $('#editarCostosModal').modal('show');
 

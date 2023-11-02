@@ -132,7 +132,6 @@
  <script>
     function buscarIngreso() {
         var Mydata = $("#busquedaSalidaForm").serialize();
-        console.log(Mydata);
         $.ajax({
             url: '@Url.Action("ajax_BusquedaIngresos", "SalidaVehiculos")',
             type: 'POST',

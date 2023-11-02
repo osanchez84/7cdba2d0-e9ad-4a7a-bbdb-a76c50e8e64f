@@ -34,9 +34,8 @@
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
                             <label>Fecha Ingreso:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.fechaIngreso)
+                            @(Html.Kendo().DatePickerFor(t => t.fechaIngreso)
                                 .Label(l => l.Content("Fecha Ingreso:"))
-                                .Format("dd:MM:yyyy HH:mm")
                                 .Value(Model.fechaIngreso)
                                 .HtmlAttributes(new { style = "width: 80%", id = "fechaIngreso", @readonly = "readonly" })
                                 )
@@ -44,10 +43,9 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
-                        <label>Fecha Salida:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.fechaSalida)
+                        <label>Fecha Salida <b>(obligatorio):</b></label>
+                            @(Html.Kendo().DatePickerFor(t => t.fechaSalida)
                                 .Label(l => l.Content("Fecha salida:"))
-                                .Format("dd:MM:yyyy HH:mm")
                                 .HtmlAttributes(new { style = "width: 80%", id = "fechaSalida" })
                                 .Value(DateTime.Now)
                                 .Events(e => e.Change("calcularDiferenciaDias"))
@@ -73,7 +71,7 @@
                             <div class="controlForm my-3">
                                 @(Html.Kendo().NumericTextBoxFor(t => t.costoDeposito)
                                     .HtmlAttributes(new { style = "width: 80%" })
-                                    .Label(l => l.Content("Costo depósito:"))
+                                    .Label(l => l.Content("Costo depósito <b>(obligatorio:)</b>"))
                                     .Format("n2")
                                     .Spinners(false) // Deshabilita las flechas de incremento y disminución
                                     )
@@ -90,7 +88,7 @@
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().TextBoxFor(t => t.recibe)
                             .HtmlAttributes(new { style = "width: 80%" })
-                            .Label(l => l.Content("Recibe:"))
+                            .Label(l => l.Content("Recibe <b>(obligatorio:)"))
                             .Placeholder("Nombre de quien recibe")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
@@ -102,7 +100,7 @@
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().TextBoxFor(t => t.entrega)
                             .HtmlAttributes(new { style = "width: 80%" })
-                            .Label(l => l.Content("Entrega:"))
+                            .Label(l => l.Content("Entrega <b>(obligatorio:)"))
                             .Placeholder("Nombre de quien entrega")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
@@ -176,8 +174,8 @@
 </div>
 <script>
     function calcularDiferenciaDias() {
-        var fechaIngreso = $("#fechaIngreso").data("kendoDateTimePicker").value();
-        var fechaSalida = $("#fechaSalida").data("kendoDateTimePicker").value();
+        var fechaIngreso = $("#fechaIngreso").data("kendoDatePicker").value();
+        var fechaSalida = $("#fechaSalida").data("kendoDatePicker").value();
 
         if (fechaIngreso && fechaSalida) {
             var diffTime = fechaSalida - fechaIngreso;

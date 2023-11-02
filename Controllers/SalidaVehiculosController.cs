@@ -20,14 +20,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public SalidaVehiculosController(ISalidaVehiculosService salidaVehiculosService, ICatMarcasVehiculosService catMarcasVehiculosService,
             IMarcasVehiculos marcaServices, IPlacaServices placaServices)
-        private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
-        private readonly IMarcasVehiculos _marcaServices;
-        private readonly IPlacaServices _placaServices;
-
-
-
-        public SalidaVehiculosController(ISalidaVehiculosService salidaVehiculosService, ICatMarcasVehiculosService catMarcasVehiculosService,
-            IMarcasVehiculos marcaServices, IPlacaServices placaServices)
         {
             _salidaVehiculosService = salidaVehiculosService;
             _catMarcasVehiculosService = catMarcasVehiculosService;
@@ -82,10 +74,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult GuardarDatosSalida(SalidaVehiculosModel model)
         {
+
             var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalida(model);
 
             return PartialView("_ListadoGruas");
-
         }
 
     }

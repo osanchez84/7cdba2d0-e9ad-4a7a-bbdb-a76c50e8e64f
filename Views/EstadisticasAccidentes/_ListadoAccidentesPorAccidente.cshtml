@@ -1,0 +1,43 @@
+﻿@model List<ListadoAccidentesPorAccidenteModel>
+
+<div class="row my-2 px-2">
+    <div class="col-md-12">
+        <div class="col-12 mb-4 px-4 rounded gridCustom">
+            @(Html.Kendo().Grid(Model)
+                .Name("gridInfraccionesPersonas")
+                .Columns(columns =>
+                {
+                    columns.Bound(p => p.Numreporteaccidente).Title("Numreporteaccidente").Width(90);
+                    columns.Bound(p => p.Fecha).Title("Fecha").Width(90);
+                    columns.Bound(p => p.Hora).Title("Hora").Width(90);
+                    columns.Bound(p => p.Delegacion).Title("Delegacion").Width(90);
+                    columns.Bound(p => p.municipio).Title("municipio").Width(90);
+                    columns.Bound(p => p.tramo).Title("tramo").Width(90);
+                    columns.Bound(p => p.kilometro).Title("kilometro").Width(90);
+                    columns.Bound(p => p.latitud).Title("latitud").Width(90);
+                    columns.Bound(p => p.longitud).Title("longitud").Width(90);
+                    columns.Bound(p => p.Vehiculo).Title("Vehiculo").Width(90);
+                    columns.Bound(p => p.NombredelOficial).Title("NombredelOficial").Width(90);
+                    columns.Bound(p => p.Dañosalcamino).Title("Dañosalcamino").Width(90);
+                    columns.Bound(p => p.Dañosacarga).Title("Dañosacarga").Width(90);
+                    columns.Bound(p => p.Dañosapropietario).Title("Dañosapropietario").Width(90);
+                    columns.Bound(p => p.Otrosdaños).Title("Otrosdaños").Width(90);
+                    columns.Bound(p => p.Lesionados).Title("Lesionados").Width(90);
+                    columns.Bound(p => p.Muertos).Title("Muertos").Width(90);
+                    columns.Bound(p => p.FactoresOpciones).Title("FactoresOpciones").Width(90);
+                    columns.Bound(p => p.Causas).Title("Causas").Width(90);
+                    columns.Bound(p => p.CausasDescripcion).Title("CausasDescripcion").Width(90);
+                }).HtmlAttributes(new { style = "height:auto" })
+                .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+                .Sortable()
+                .Scrollable(scr => scr.Enabled(true))
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .ServerOperation(false)
+                .PageSize(5)
+                )
+                .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
+                )
+        </div>
+    </div>
+</div>

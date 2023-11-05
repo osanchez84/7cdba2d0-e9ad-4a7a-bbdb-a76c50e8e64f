@@ -192,8 +192,22 @@
                 </div>
             </div>
         </form>
-        <div id="estadisticasInfracciones">
+        <div class="row" id="estadisticasInfracciones">
             <partial name="_EstadisticasAccidentes" model="@ViewBag.Estadisticas" />
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h6 class="px-4 text-muted">Listado de accidentes (un renglón por accidente)</h6>
+            </div>
+            <div id="GridAccidentesPorAccidente">
+                <partial name="_ListadoAccidentesPorAccidente" model="@ViewBag.ListadoAccidentesPorAccidente" />
+            </div>
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h6 class="px-4 text-muted">Listado de accidentes (un renglón por Vehículo)</h6>
+            </div>
+            <div id="GridAccidentesPorVehiculo">
+                <partial name="_ListadoAccidentesPorVehiculo" model="@ViewBag.ListadoAccidentesPorVehiculo" />
+            </div>
         </div>
 
     </section>

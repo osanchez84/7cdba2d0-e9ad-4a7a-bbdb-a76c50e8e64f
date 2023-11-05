@@ -1,0 +1,53 @@
+﻿@model List<ListadoAccidentesPorVehiculoModel>
+
+<div class="row my-3 px-3">
+    <div class="col-md-12">
+        <div class="col-12 mb-4 px-4 rounded gridCustom">
+            @(
+                Html.Kendo().Grid(Model)
+                    .Name("gridListadoAccidentesPorVehiculo")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(p => p.Numreporteaccidente).Title("Numreporteaccidente").Width(90);
+                        columns.Bound(p => p.NumVeh).Title("NumVeh").Width(90);
+                        columns.Bound(p => p.PlacasVeh).Title("PlacasVeh").Width(90);
+                        columns.Bound(p => p.SerieVeh).Title("SerieVeh").Width(90);
+                        columns.Bound(p => p.PropietarioVeh).Title("PropietarioVeh").Width(90);
+                        columns.Bound(p => p.TipoVeh).Title("TipoVeh").Width(90);
+                        columns.Bound(p => p.ServicioVeh).Title("ServicioVeh").Width(90);
+                        columns.Bound(p => p.Marca).Title("Marca").Width(90);
+                        columns.Bound(p => p.Submarca).Title("Submarca").Width(90);
+                        columns.Bound(p => p.Modelo).Title("Modelo").Width(90);
+                        columns.Bound(p => p.ConductorVeh).Title("ConductorVeh").Width(90);
+                        columns.Bound(p => p.DepositoVehículo).Title("DepositoVehículo").Width(90);
+                        columns.Bound(p => p.Delegacion).Title("Delegacion").Width(90);
+                        columns.Bound(p => p.Municipio).Title("Municipio").Width(90);
+                        columns.Bound(p => p.Carretera).Title("Carretera").Width(90);
+                        columns.Bound(p => p.Tramo).Title("Tramo").Width(90);
+                        columns.Bound(p => p.Kilómetro).Title("Kilómetro").Width(90);
+                        columns.Bound(p => p.Latitud).Title("Latitud").Width(90);
+                        columns.Bound(p => p.Longitud).Title("Longitud").Width(90);
+                        columns.Bound(p => p.NombredelOficial).Title("NombredelOficial").Width(90);
+                        columns.Bound(p => p.Dañosalcamino).Title("Dañosalcamino").Width(90);
+                        columns.Bound(p => p.DañosaCarga).Title("DañosaCarga").Width(90);
+                        columns.Bound(p => p.Dañosapropietario).Title("Dañosapropietari").Width(90);
+                        columns.Bound(p => p.Otrosdaños).Title("Otrosdaños").Width(90);
+                        columns.Bound(p => p.Lesionados).Title("Lesionados").Width(90);
+                        columns.Bound(p => p.Muertos).Title("Muertos").Width(90);
+                        columns.Bound(p => p.Causas).Title("Causas").Width(90);
+                        columns.Bound(p => p.CausasDescripcion).Title("CausasDescripcion").Width(90);
+
+                }).HtmlAttributes(new { style = "height:auto" })
+                .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+                .Sortable()
+                .Scrollable(scr => scr.Enabled(true))
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .ServerOperation(false)
+                .PageSize(5)
+                )
+                .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
+                )
+        </div>
+    </div>
+</div>

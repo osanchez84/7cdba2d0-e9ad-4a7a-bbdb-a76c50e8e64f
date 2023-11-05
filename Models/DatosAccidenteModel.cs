@@ -27,11 +27,22 @@
         public int EstadoValores { get; set; }
         public int EstadoPrendas { get; set; }
         public int EstadoOtros { get; set; }
+        public int EstadoConvenio { get; set; }
+
         public bool ArmasBool =>EstadoArmas == 1;
         public bool DrogasBool => EstadoDrogas == 1;
         public bool ValoresBool => EstadoValores == 1;
         public bool PrendasBool => EstadoPrendas == 1;
         public bool OtrosBool => EstadoOtros == 1;
+        public bool convenioBool => EstadoConvenio == 1;
+
+        
+        public string ArmasTexto { get; set; }
+        public string DrogasTexto { get; set; }
+        public string ValoresTexto { get; set; }
+        public string PrendasTexto { get; set; }
+        public string OtrosTexto { get; set; }
+        public string observacionesConvenio { get; set; }
 
         public int IdEstatusReporte { get; set; }
     }

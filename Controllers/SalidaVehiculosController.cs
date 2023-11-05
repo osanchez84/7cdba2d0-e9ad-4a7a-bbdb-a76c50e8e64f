@@ -1,6 +1,8 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -46,11 +48,37 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult DatosDeposito(int iDp)
         {
+            HttpContext.Session.SetInt32("idDeposito", iDp);
             var infoDeposito = _salidaVehiculosService.DetallesDeposito(iDp);
 
             return View(infoDeposito);
         }
+        public JsonResult GetGruasAsignadas([DataSourceRequest] DataSourceRequest request)
+        {
+            int iDp = HttpContext.Session.GetInt32("idDeposito") ?? 0; 
+            var ListFactores = _salidaVehiculosService.ObtenerDatosGridGruas(iDp);
 
+            return Json(ListFactores.ToDataSourceResult(request));
+        }
+        public ActionResult ModalCostosGrua(int idDeposito)
+        {
+            var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito);
+
+            return PartialView("_ModalCostosServicio", DatosGruaSeleccionada);
+        }
+        public ActionResult GuardarCostos(CostosServicioModel model)
+        {
+            var DatosGruaSeleccionada = _salidaVehiculosService.ActualizarCostos(model);
+         
+            return PartialView ("_ListadoGruas");
+        }
+        public ActionResult GuardarDatosSalida(SalidaVehiculosModel model)
+        {
+
+            var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalida(model);
+
+            return PartialView("_ListadoGruas");
+        }
 
     }
 }

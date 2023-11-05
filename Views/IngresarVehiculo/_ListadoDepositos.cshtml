@@ -67,9 +67,11 @@
                 columns.Bound(c => c.modelo).Title("Modelo").Width(70);
                 columns.Bound(c => c.serie).Title("Serie").Width(100);
                 columns.Bound(c => c.motor).Title("Motor").Width(100);
+                columns.Bound(c => c.numeroEconomicoVehiculo).Title("No. Económico(vehículo)").Width(100);
                 columns.Bound(c => c.tipoVehiculo).Title("Tipo de vehículo").Width(100);
                 columns.Bound(c => c.color).Title("Color").Width(100);
-                columns.Bound(c => c.fechaServicio).Title("Fecha de servicio").Width(100);              
+                columns.Bound(c => c.FechaServicioFormateada).Title("Fecha de servicio").Width(120).Format("{0:dd/MM/yyyy}"); ;
+                columns.Bound(c => c.HoraServicioFormateada).Title("Hora de servicio").Width(90).Format("{0:HH:mm}"); ;
 
             }).HtmlAttributes(new { style = "height:550px" })
             .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))

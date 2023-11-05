@@ -31,12 +31,15 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numero { get; set; }
         public string interseccion { get; set; }
         public string municipio { get; set; }
+        public string numeroEconomicoVehiculo { get; set; }
 
+        
         public DateTime fechaSolicitud { get; set; }
         public DateTime fechaFinal { get; set; }
 
 
-
+        public string FechaServicioFormateada => fechaServicio.ToString("dd/MM/yyyy");
+        public string HoraServicioFormateada => fechaServicio.ToString("HH:mm");
 
 
 

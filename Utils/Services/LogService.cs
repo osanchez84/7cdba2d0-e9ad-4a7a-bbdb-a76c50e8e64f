@@ -7,6 +7,7 @@ using System;
 using GuanajuatoAdminUsuarios.Models;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace GuanajuatoAdminUsuarios.Utils.Services
 {
@@ -107,7 +108,7 @@ namespace GuanajuatoAdminUsuarios.Utils.Services
 
         }
 
-        private void Save()
+     /*   private void Save()
         {
             string strQuery = @"INSERT INTO accidentes( 
                                          [Hora]
@@ -165,7 +166,7 @@ namespace GuanajuatoAdminUsuarios.Utils.Services
                 }
             }
             return lastInsertedId;
-        }
+        }*/
 
     }
 }

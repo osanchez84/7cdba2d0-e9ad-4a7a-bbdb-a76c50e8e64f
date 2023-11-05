@@ -4,8 +4,12 @@ using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -88,13 +92,53 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var infoDeposito = _ingresarVehiculosService.DetallesDeposito(idDeposito);
             return Json(infoDeposito);
         }
-        [HttpPost]
-        [HttpPost]
+       /* [HttpPost]
         public IActionResult ajax_GuardarDatos(DatosIngresoModel datos)
         {
          var depositoModificado = _ingresarVehiculosService.GuardarFechaIngreso(datos);
             return Ok();
 
         }
+       */
+
+        [HttpPost]
+        public ActionResult ajax_GuardarDatos(IFormFile AnexarImagen1, string data)
+        {
+            int result = 0;
+            try
+            {
+
+                var model = JsonConvert.DeserializeObject<DatosIngresoModel>(data);
+                if (AnexarImagen1 != null)
+                {
+                    using (var ms1 = new MemoryStream())
+                    {
+                        AnexarImagen1.CopyTo(ms1);
+                        model.AnexarImagen1 = ms1.ToArray();
+                    }
+                }
+
+                ////Prueba de que allmacena bien la imagen  
+                ////var imgByte = model.AcreditacionPropiedad;
+                ////return new FileContentResult(imgByte, "image/jpeg");
+                result = _ingresarVehiculosService.GuardarFechaIngreso(model);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            if (result > 0)
+            {
+               // List<LiberacionVehiculoModel> ListProuctModel = _liberacionVehiculoService.GetAllTopDepositos();
+                return Ok();
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+
     }
 }

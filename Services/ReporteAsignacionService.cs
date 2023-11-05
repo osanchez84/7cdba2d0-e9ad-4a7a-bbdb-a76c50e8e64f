@@ -37,6 +37,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(dep.placa) AS placa,
                                    MAX(dep.fechaingreso) AS fechaingreso,
                                    MAX(dep.folio) AS folio,
+                                   MAX(dep.numeroInventario) AS numeroInventario,
                                    MAX(dep.km) AS km,
                                    MAX(dep.liberado) AS liberado,
                                    MAX(dep.autoriza) AS autoriza,
@@ -52,6 +53,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(sol.solicitanteap) AS solicitanteap,
                                    MAX(sol.solicitanteam) AS solicitanteam,
                                    MAX(pen.pension) AS pension,
+                                   MAX(pen.estatus) AS pensionEstatus
+                                   MAX(e.estatusDesc) AS descripcionEstatus
                                    MAX(sol.vehiculoCarretera) AS vehiculoCarretera,
                                    MAX(sol.vehiculoTramo) AS vehiculoTramo,
                                    MAX(sol.vehiculoKm) AS vehiculoKm,
@@ -78,6 +81,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN tipoMotivoAsignacion ta ON ta.idTipoAsignacion = sol.idMotivoAsignacion
                                     LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
                                     LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
+                                    LEFT JOIN estatus e ON e.estatus = pen.estatus
+
                                     GROUP BY dep.iddeposito;
                                     ";
 
@@ -89,6 +94,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             ReporteAsignacionModel ReporteAsignacion = new ReporteAsignacionModel();
                             ReporteAsignacion.idSolicitud = reader["idSolicitud"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"].ToString()) : 0;
+                            ReporteAsignacion.pensionEstatus = reader["pensionEstatus"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"].ToString()) : 0;
                             ReporteAsignacion.vehiculoCarretera = reader["vehiculoCarretera"] != DBNull.Value ? reader["vehiculoCarretera"].ToString() : string.Empty;
                             ReporteAsignacion.vehiculoTramo = reader["vehiculoTramo"] != DBNull.Value ? reader["vehiculoTramo"].ToString() : string.Empty;
                             ReporteAsignacion.vehiculoKm = reader["vehiculoKm"] != DBNull.Value ? reader["vehiculoKm"].ToString() : string.Empty;
@@ -113,6 +119,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             ReporteAsignacion.noEconomico = reader["noEconomico"] != DBNull.Value ? reader["noEconomico"].ToString() : string.Empty;
                             ReporteAsignacion.Delegacion = reader["Delegacion"] != DBNull.Value ? reader["Delegacion"].ToString() : string.Empty;
                             ReporteAsignacion.Alias = reader["concesionario"] != DBNull.Value ? reader["concesionario"].ToString() : string.Empty;
+                            ReporteAsignacion.numeroIventario = reader["numeroInventario"] != DBNull.Value ? reader["numeroInventario"].ToString() : string.Empty;
+
                             ReporteAsignacionesList.Add(ReporteAsignacion);
 
                         }

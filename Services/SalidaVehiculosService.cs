@@ -329,8 +329,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string query = "INSERT INTO serviciosDepositos" +
-                        "(idDeposito,fechaIngreso,fechaSalida,diasResguardo,costoDeposito,costoTotalGruas,nombreRecibe,nombreEntrega,estatus,actualizadoPor,fechaActualizacion) " +
-                        "values(@idDeposito,@fechaIngreso,@fechaSalida,@diasResguardo,@costoDeposito,@costoTotalGruas,@nombreRecibe,@nombreEntrega,@estatus,@actualizadoPor,@fechaActualizacion)";
+                        "(idDeposito,fechaIngreso,fechaSalida,diasResguardo,costoDeposito,nombreRecibe,nombreEntrega,observaciones,estatus,actualizadoPor,fechaActualizacion) " +
+                        "values(@idDeposito,@fechaIngreso,@fechaSalida,@diasResguardo,@costoDeposito,@nombreRecibe,@nombreEntrega,@observaciones,@estatus,@actualizadoPor,@fechaActualizacion)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idDeposito", model.idDeposito);
@@ -339,9 +339,10 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@fechaSalida", model.fechaSalida);
                     command.Parameters.AddWithValue("@diasResguardo", model.diasResguardo);
                     command.Parameters.AddWithValue("@costoDeposito", model.costoDeposito);
-                    command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalPorGrua);
+                   // command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalPorGrua);
                     command.Parameters.AddWithValue("@nombreRecibe", model.recibe);
                     command.Parameters.AddWithValue("@nombreEntrega", model.entrega);
+                    command.Parameters.AddWithValue("@observaciones", model.observaciones);
                     command.Parameters.AddWithValue("@estatus", 1);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);

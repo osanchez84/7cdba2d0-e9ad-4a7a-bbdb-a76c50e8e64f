@@ -46,6 +46,7 @@
        
         window.location = '/TransitoTransporte/CreatePdfUnRegistro?IdDeposito=' + Id;
     }
+  
 </script>
 
 @*<div class="row justify-content-between mb-1 titleCustom">*@
@@ -86,7 +87,9 @@
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
                     "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
                     ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
-
+                    columns.Bound(p => p.IdDependencia).ClientTemplate(
+                    "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
+                    ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
                     columns.Bound(c => c.fullDependencia).Title("Estatus").Width(90);
 
                     columns.Bound(p => p.IdGrua).ClientTemplate(

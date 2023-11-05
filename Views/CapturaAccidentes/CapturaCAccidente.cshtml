@@ -939,7 +939,56 @@
         }
     });
 
+            switchElementD.bind("change", function () {
+                if (switchElementD.check()) {
+                    campoDrogasTexto.show();
+                } else {
+                campoDrogasTexto.hide();
+                }
+            });
+        });
+
+       $(document).ready(function () {
+            var switchElementV = $("#valoresSwitch").data("kendoSwitch");
+            var campoValoresTexto = $("#campoValoresTexto");
+
+            switchElementV.bind("change", function () {
+                if (switchElementV.check()) {
+                    campoValoresTexto.show();
+                } else {
+                campoValoresTexto.hide();
+                }
+            });
+        });
+
+     $(document).ready(function () {
+            var switchElementP = $("#prendasSwitch").data("kendoSwitch");
+            var campoPrendasTexto = $("#campoPrendasTexto");
+
+            switchElementP.bind("change", function () {
+                if (switchElementP.check()) {
+                    campoPrendasTexto.show();
+                } else {
+                    campoPrendasTexto.hide();
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var switchElementO = $("#otrosSwitch").data("kendoSwitch");
+            var campoTexto = $("#campoTexto");
+
+            switchElementO.bind("change", function () {
+                if (switchElementO.check()) {
+                    campoTexto.show();
+                } else {
+                    campoTexto.hide();
+                }
+            });
+        });
 </script>
+
+
 
 
 

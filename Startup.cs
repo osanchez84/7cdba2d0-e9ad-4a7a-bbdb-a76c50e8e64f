@@ -190,6 +190,9 @@ namespace GuanajuatoAdminUsuarios
 
             services.AddScoped<IComparativoInfraccionesService, ComparativoInfraccionesService>();
 
+            services.AddScoped<IPagosInfraccionesService, PagosInfraccionesService>();
+            services.AddScoped<IPagosInfraccionesService, PagosInfraccionesService>();
+
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();

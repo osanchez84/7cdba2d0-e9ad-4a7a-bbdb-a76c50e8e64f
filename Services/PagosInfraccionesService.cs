@@ -195,6 +195,7 @@ namespace GuanajuatoAdminUsuarios.Services
             int result = 0;
             string strQuery = @"UPDATE infracciones
                                 SET idEstatusInfraccion=@idEstatusInfraccion
+                                    ,reciboPago = @reciboPago
                                 WHERE folioInfraccion=@folioInfraccion ";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -205,8 +206,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
-                    //command.Parameters.AddWithValue("@montoPagado", montoPagado);
-                    //command.Parameters.AddWithValue("@fechaPago", fechaPago);
+                    command.Parameters.AddWithValue("@reciboPago", reciboPago);
                     command.Parameters.AddWithValue("@idEstatusInfraccion", 3);//Pagada
 
                     result = command.ExecuteNonQuery();

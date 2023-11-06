@@ -6,6 +6,5 @@
         public string PasswordLog { get; set; }
         public string ReciboControlInterno { get; set; }
         public string FechaReversa { get; set; }
-        //public string FolioInfraccion { get; set; }
     }
 }

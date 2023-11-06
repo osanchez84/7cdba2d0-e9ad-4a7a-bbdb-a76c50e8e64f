@@ -1504,6 +1504,62 @@ namespace GuanajuatoAdminUsuarios.Services
             return umas;
         }
 
+        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones()
+        {
+            List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
+            string strQuery = @"SELECT ci.nombre Motivo, COUNT(m.idMotivoInfraccion) Contador
+                               FROM infracciones inf
+                                INNER JOIN motivosInfraccion m
+                                ON m.idInfraccion = inf.idInfraccion
+                                INNER JOIN catMotivosInfraccion ci
+                                on m.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
+                                AND ci.estatus = 1
+                                LEFT JOIN catSubConceptoInfraccion csi
+                                on ci.IdSubConcepto = csi.idSubConcepto
+                                AND csi.estatus = 1
+                                LEFT JOIN catConceptoInfraccion cci
+                                on csi.idConcepto = cci.idConcepto
+                                AND cci.estatus = 1
+                               LEFT JOIN catMunicipios mun
+                               ON inf.idMunicipio = mun.idMunicipio
+                                WHERE m.estatus = 1
+                               AND inf.estatus = 1
+							   group by ci.nombre"
+           ;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
+                            model.Contador = reader["Contador"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["Contador"].ToString());
+                            model.Motivo = reader["Motivo"].ToString();
+                           
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return modelList;
+        }
+
+        //TODO: Borrar esta consulta ya no sirve para estadisticas
         public List<InfraccionesModel> GetAllInfracciones2()
         {
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();

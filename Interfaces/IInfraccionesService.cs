@@ -9,6 +9,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
+
+        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones();
         public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid();
         List<InfraccionesModel> GetAllInfracciones(int idOficina);
         public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion);

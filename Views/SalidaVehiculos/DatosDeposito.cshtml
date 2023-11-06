@@ -33,6 +33,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
+                            @Html.HiddenFor(t=>t.idDeposito)
                             <label>Fecha Ingreso:</label>
                             @(Html.Kendo().DatePickerFor(t => t.fechaIngreso)
                                 .Label(l => l.Content("Fecha Ingreso:"))
@@ -47,7 +48,6 @@
                             @(Html.Kendo().DatePickerFor(t => t.fechaSalida)
                                 .Label(l => l.Content("Fecha salida:"))
                                 .HtmlAttributes(new { style = "width: 80%", id = "fechaSalida" })
-                                .Value(DateTime.Now)
                                 .Events(e => e.Change("calcularDiferenciaDias"))
                                 )
                         </div>
@@ -139,8 +139,38 @@
                     <h4 class="colorPrimary"><b>Evento</b></h4>
                     <p><b>Servicio:</b> <span id="evento">@{ if (Model.evento != null) { @Model.evento; } else { @("-"); } }</span></p>
                     <p><b>Propietario Grua:</b> <span id="propietarioGrua">@{ if (Model.propietarioGrua != null) { @Model.propietarioGrua; } else { @("-"); } }</span></p>
-                    <p><b>Hora Solicitud:</b> <span id="horaSolicitud">@{ if (Model.fechaSolicitud != null) { @Model.fechaSolicitud; } else { @("-"); } }</span></p>
-                    <p><b>Hora de término:</b> <span id="horaTermino">@{ if (Model.fechaFinal != null) { @Model.fechaFinal; } else { @("-"); } }</span></p>
+                    <p>
+                        <b>Hora Solicitud:</b> <span id="horaSolicitud">
+                            @{
+                                if (Model.fechaSolicitud != null)
+                                {
+                                    @Model.fechaSolicitud.ToString("HH:mm")
+                                    ; // HH:mm muestra solo la hora y minutos
+                                }
+                                else
+                                {
+                                    @("-")
+                                    ;
+                                }
+                            }
+                        </span>
+                    </p>
+                    <p>
+                        <b>Hora de Término:</b> <span id="horaTermino">
+                            @{
+                                if (Model.fechaFinal != null)
+                                {
+                                    @Model.fechaFinal.ToString("HH:mm")
+                                    ; // HH:mm muestra solo la hora y minutos
+                                }
+                                else
+                                {
+                                    @("-")
+                                    ;
+                                }
+                            }
+                        </span>
+                    </p>
                 </div>
                 <div style="width: 50%; float: left;">
                     <h4 class="colorPrimary"><b>Ubicación</b></h4>

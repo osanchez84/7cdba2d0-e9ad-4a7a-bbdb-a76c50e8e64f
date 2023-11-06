@@ -1,7 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Drawing;
-using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Entity
 {

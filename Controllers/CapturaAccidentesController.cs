@@ -168,8 +168,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			return View("AgregarAccidente");
 		}
-
-		public JsonResult Municipios_Drop()
+        public JsonResult Entidades_Drop()
+        {
+            var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            return Json(result);
+        }
+        public JsonResult Municipios_Drop()
 		{
 			var result = new SelectList(_catMunicipiosService.GetMunicipios(), "IdMunicipio", "Municipio");
 			return Json(result);

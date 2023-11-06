@@ -56,7 +56,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.modelo = reader["modelo"].ToString();
                             deposito.serie = reader["serie"].ToString();
                             deposito.motor = reader["motor"].ToString();
-                            deposito.numeroEconomico = reader["numeroEconomico"].ToString();
+                            deposito.numeroEconomicoVehiculo = reader["numeroEconomico"].ToString();
                             deposito.tipoVehiculo = reader["tipoVehiculo"].ToString();
                             deposito.color = reader["color"].ToString();
                             deposito.fechaServicio = reader["fechaSolicitud"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaSolicitud"].ToString());
@@ -156,7 +156,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return model;
         }
-        public int GuardarFechaIngreso(DatosIngresoModel datos)
+        public int GuardarFechaIngreso(DatosIngresoModel model)
         {
             int depositoModificado = 0;
 
@@ -165,12 +165,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso, idDependenciaGenera = @idDependenciaGenera WHERE idDeposito = @idDeposito";
+                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso, idDependenciaGenera = @idDependenciaGenera, imagenDeposito = @imagenDeposito WHERE idDeposito = @idDeposito";
 
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@fechaIngreso", datos.fechaIngreso);
-                    command.Parameters.AddWithValue("@idDeposito", datos.IdDeposito);
+                    command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);
+                    command.Parameters.AddWithValue("@idDeposito", model.IdDeposito);
                     command.Parameters.AddWithValue("@idDependenciaGenera", 1);
+                    command.Parameters.Add(new SqlParameter("@imagenDeposito", SqlDbType.Image)).Value = (object)model.AnexarImagen1 ?? DBNull.Value;
 
                     command.ExecuteScalar();
                 }

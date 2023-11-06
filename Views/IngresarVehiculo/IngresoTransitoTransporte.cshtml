@@ -110,8 +110,9 @@
         <partial name="_ListadoDepositos" model="Model" />
 
     </section>
+    <form id="fechaForm">
+
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
-        <form id="fechaForm">
         <div class="row">
             <div class="col-12 col-md-7">
                 <div class="controlForm my-3 selecciondeFecha">
@@ -124,7 +125,6 @@
                 </div>
             </div>
         </div>
-        </form>
     </section>
     <section>
         <div id="datosContainer">
@@ -165,15 +165,17 @@
         <div id="idDepositoContainer" style="display:none"></div>
 
     </section>
-    <section>
         <div class="col-12 col-md-6 col-lg-4">
             <div class="controlForm mb-3">
                 <label>Anexar Imagenes:</label>
                 <span>
-                    <input type="file" name="AnexarImagenes" id="AnexarImages" required>
+                    <input type="file" name="AnexarImagen1" id="AnexarImagen1" required>
                 </span>
             </div>
         </div>
+    </form>
+    <section>
+
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlButton my-3" onclick="guardarDatos()">
                 @(Html.Kendo().Button()
@@ -201,35 +203,45 @@
         });
     }
 
-   function guardarDatos() {
-    var fechaIngresoPicker = $("#ingreso").data("kendoDateTimePicker");
-    var fechaIngreso = fechaIngresoPicker.value();
-    if (!fechaIngreso) {
-        alert("Por favor, seleccione una fecha y hora válida.");
-        return; 
-    }
-    var fechaIngresoISO = fechaIngreso.toISOString();
+    function guardarDatos() {
+        var fechaIngresoPicker = $("#ingreso").data("kendoDateTimePicker");
+        var fechaIngreso = fechaIngresoPicker.value();
 
-    var idDepositoText = $("#idDepositoContainer").text();
-    var idDeposito = parseInt(idDepositoText, 10);
+        if (!fechaIngreso) {
+            alert("Por favor, seleccione una fecha y hora válida.");
+            return;
+        }
 
-    var datos = {
-        idDeposito: idDeposito,
-        fechaIngreso: fechaIngresoISO, 
-    };
+        var idDepositoText = $("#idDepositoContainer").text();
+        var idDeposito = parseInt(idDepositoText, 10);
 
-    $.ajax({
-        url: '/IngresarVehiculo/ajax_GuardarDatos',
-        method: 'POST',
-        data: datos,
-        success: function (response) {
-          sitteg_success("Ingreso del vehículo agregado satisfactoriamente");
+        var data = {
+            idDeposito: idDeposito,
+            fechaIngreso: fechaIngreso.toISOString(),
+        };
+
+        var formData = new FormData();
+        formData.append("data", JSON.stringify(data));  // Aquí se agrega "data" como nombre del campo
+
+        // Obtiene el archivo seleccionado por el usuario
+        var fileInput = document.getElementById("AnexarImagen1");
+        var file = fileInput.files[0];
+
+        formData.append("AnexarImagen1", file);
+
+        $.ajax({
+            url: '/IngresarVehiculo/ajax_GuardarDatos',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                sitteg_success("Se ha guardado la información correctamente");
             },
-        error: function (error) {
-           sitteg_warning("Ha sucedido un error intente mas tarde");
+            error: function (error) {
+                sitteg_error("Lo sentimos, ha sucedido un error");
             }
-    });
-}
-
+        });
+    }
 
 </script>

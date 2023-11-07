@@ -1,0 +1,61 @@
+﻿@model List<InfraccionesModel>
+
+
+<div class="row justify-content-between align-items-end mb-1">
+    <div class="col-12 col-md-auto mt-4 mb-2">
+        <h5 class="px-4"><b>Listado de infracción</b></h5>
+        <h6 class="px-4 text-muted">Edita los datos de infracción.</h6>
+    </div>
+    <div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
+        <div class="row">
+            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                @* <button>
+                <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de infracción</b></h6>
+                </button>*@
+                <button type="button" onclick="downLoadPdfFiltered()">
+                    <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de infracción</b></h6>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12 mb-4 px-4 rounded">
+
+  
+        @(
+            Html.Kendo().Grid(Model)
+            .Name("GridInf")
+            .Columns(columns =>
+            {
+                columns.Bound(p => p.folioInfraccion).Title("Folio").Width(90);
+                columns.Bound(p => p.PersonaInfraccion.nombreCompleto).Title("Conductor").Width(90);
+                columns.Bound(p => p.Vehiculo.Persona.nombreCompleto).Title("Propietario").Width(90);
+                columns.Bound(c => c.Vehiculo.placas).Title("Placas").Width(90);
+                columns.Bound(c => c.fechaInfraccion).Title("Fecha Aplicada a").Width(100);
+                columns.Bound(c => c.estatusInfraccion).Title("Estatus").Width(90);
+                columns.Bound(c => c.delegacion).Title("Delegación/Oficina").Width(90);
+                columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateCortecia(data) #").Title("Cortesía").Sortable(false).Width(90);
+                columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateEditar(data) #").Title("Ver Registro").Sortable(false).Width(90);
+                columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateMostrar(data)  #").Title("Mostrar").Sortable(false).Width(90);
+                columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateExportar(data)  #").Title("Eliminar").Sortable(false).Width(90);
+
+            }).HtmlAttributes(new { style = "height:450" })
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(ev => ev.Action("test", "Infracciones").Data("DataRequestFilter"))
+            )
+
+            .Sortable()
+            .Scrollable(scr => scr.Height(350))
+            
+            )
+        @*</div>*@
+    </div>
+</div>
+
+

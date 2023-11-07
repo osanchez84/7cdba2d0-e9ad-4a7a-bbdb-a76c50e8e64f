@@ -1,0 +1,248 @@
+﻿@model InfraccionesModel;
+
+<div class="mainContainer bg-light h-100" style="overflow-y:scroll; max-height:100vh;">
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Detalle de infracción</b></h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mx-2 my-2 row ">
+            <div class="row">
+                <h2><i class="icon-infracion h1 colorPrimary"></i> Información </h2>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-4 col-md-4   col-sm-6 ">
+                        <label class="form-label">Fecha Infraccion</label>
+                        <input type="text" class="form-control" value="@Model.fechaInfraccion.ToString("dd/MM/yyyy")" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Folio</label>
+                    <input type="text" class="form-control" value="@Model.folioInfraccion" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Oficial</label>
+                    <input type="text" class="form-control" value="@Model.idOficial" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Municipio</label>
+                    <input type="text" class="form-control" value="@Model.municipio" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">infracciones</label>
+                    <input type="text" class="form-control" value="@Model.infraccionCortesia" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Observaciones</label>
+                    <input type="text" class="form-control" value="@Model.observaciones" />
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mx-2 my-2 row ">
+            <div class="row">
+                <h2><i class="icon-carretera h1 colorPrimary"></i> Lugar</h2>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Carretera</label>
+                    <input type="text" class="form-control" value="@Model.idCarretera" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Tramo</label>
+                    <input type="text" class="form-control" value="@Model.idTramo" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Kilometro</label>
+                    <input type="text" class="form-control" value="@Model.kmCarretera" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Calle</label>
+                    <input type="text" class="form-control" value="@Model.lugarCalle" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Numero</label>
+                    <input type="text" class="form-control" value="@Model.lugarNumero" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">colonia</label>
+                    <input type="text" class="form-control" value="@Model.lugarColonia" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Entre calle</label>
+                    <input type="text" class="form-control" value="@Model.lugarEntreCalle" />
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="mx-2 my-2 row ">
+            <div class="row">
+                <h2><i class="icon-edit-car h1 colorPrimary"></i> Vehículo</h2>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Placas</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.placas" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Serie</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.serie" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">No Tarjeta</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.vigenciaTarjeta" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Entidad registro</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.idEntidad" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Marca</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.marca" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">submarca</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.submarca" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Tipo vehiculo</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.tipoVehiculo" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Modelo</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.modelo" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Color</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.color" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Capacidad</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.capacidad" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Poliza</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.poliza" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Carga</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.cargaInt" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Otros</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.otros" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Numero econimico</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.numeroEconomico" />
+                </div>
+                <div class="col-4 col-md-4 col-sm-6 ">
+                    <label class="form-label">Propietario</label>
+                    <input type="text" class="form-control" value="@Model.Vehiculo.propietario" />
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+        <div class="mx-2 my-2 row ">
+            <div class="row">
+                <h2><i class="icon-conductor h1 colorPrimary"></i> Conductor</h2>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" value="@Model.Persona.nombreCompleto" />
+                </div>
+
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Tipo de persona</label>
+                    <input type="text" class="form-control" value="@Model.Persona.tipoPersona" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">CURP</label>
+                    <input type="text" class="form-control" value="@Model.Persona.CURP" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">RFC</label>
+                    <input type="text" class="form-control" value="@Model.Persona.RFC" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">SEXO</label>
+                    <input type="text" class="form-control" value="@Model.Persona.genero" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Fecha nacimiento</label>
+                    <input type="text" class="form-control" value="@Model.Persona.fechaNacimiento.Value.ToString("dd/MM/yyyy")" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Municipio</label>
+                    <input type="text" class="form-control" value="@Model.Persona.PersonaDireccion.municipio" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Entidad</label>
+                    <input type="text" class="form-control" value="@Model.Persona.PersonaDireccion.entidad" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Calle</label>
+                    <input type="text" class="form-control" value="@Model.Persona.PersonaDireccion.calle" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Numero</label>
+                    <input type="text" class="form-control" value="@Model.Persona.PersonaDireccion.numero" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Colonia</label>
+                    <input type="text" class="form-control" value="@Model.Persona.PersonaDireccion.colonia" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Telefeno</label>
+                    <input type="text" class="form-control" value="@Model.Persona.telefono" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Correo</label>
+                    <input type="text" class="form-control" value="@Model.Persona.correo" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Tipo Licencia</label>
+                    <input type="text" class="form-control" value="@Model.Persona.tipoLicencia" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Licencia</label>
+                    <input type="text" class="form-control" value="@Model.Persona.numeroLicencia" />
+                </div>
+                <div class="col-4 col-md-4   col-sm-6 ">
+                    <label class="form-label">Vigencia Licencia</label>
+                    <input type="text" class="form-control" value="@Model.Persona.vigenciaLicencia.ToString("dd/MM/yyyy")" />
+                </div>
+
+                
+
+            </div>
+
+        </div>
+
+
+</section>
+</div>

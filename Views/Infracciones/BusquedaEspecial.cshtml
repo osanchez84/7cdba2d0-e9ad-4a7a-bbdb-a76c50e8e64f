@@ -1,0 +1,185 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div class="mainContainer bg-light">
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <i class="icon-research h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Búsqueda especial de infracción</b></h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-auto mt-4 mb-2">
+            <h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
+            <h6 class="px-4 text-muted">Filtros de búsqueda para localizar la infracción. Se pueden combinar filtros, por ejemplo se puede combinar fecha y garantía.</h6>
+        </div>
+
+         <form class="row px-4 mb-4 align-items-end" id="frmSearch" >
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Folio:</label>
+                    @(Html.Kendo().TextBox()
+                        .Name("folio")
+                        .Placeholder("Ingresa el número de folio de infracción")
+                        .HtmlAttributes(new{style="width:100%;"})
+                        )
+                </div>
+            </div>
+
+
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Placas:</label>
+                    @(Html.Kendo().TextBox()
+                        .Name("placas")
+                        .Placeholder("Ingresa el número de placa del vehículo")
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Delegación/Oficina:</label>
+                    @(Html.Kendo().DropDownList()
+                        .Name("oficinas")
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Delegaciones_Read", "Infracciones");
+                            });
+                        })
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Propietario:</label>
+                    @(Html.Kendo().TextBox()
+                        .Name("propietario")
+                        .Placeholder("Ingresa un propietario")
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Conductor:</label>
+                    @(Html.Kendo().TextBox()
+                        .Name("conductor")
+                        .Placeholder("Ingresa el conductor")
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm my-3">
+                    <label>Estatus:</label>
+                    @(Html.Kendo().DropDownList()
+                        .Name("estatus")
+                        .DataTextField("text")
+                        .DataValueField("value")
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Overview_GetTerritories", "Infracciones");
+                            });
+                        })
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </div>
+            </div>
+
+
+            <div class="col-12 col-md-6 col-lg-6 ">
+                <div class="row">
+                    <div class="col-6 col-lg-6">
+                        <div class="controlForm my-3">
+                            <label>Inicio:</label>
+                            @(Html.Kendo().DatePicker()
+                                .Name("FechaInicio")
+                                .Value(DateTime.Now)
+                                .HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+                                )
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-6">
+                        <div class="controlForm my-3">
+                            <label>Fin:</label>
+                            @(Html.Kendo().DatePicker()
+                                .Name("FechaFin")
+                                .Value(DateTime.Now)
+                                .HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+                                )
+                        </div>
+                    </div>
+                   
+                </div>
+                
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="controlForm my-3">
+                    <label>No. Licencia:</label>
+                    @(Html.Kendo().TextBox()
+                        .Name("noLicencia")
+                        .Placeholder("Ingresa el Numero de licencia")
+                        .HtmlAttributes(new { style = "width:100%;" })
+
+                        )
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlButton my-3">
+                    <button class="btnPrimary" type="submit">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                </div>
+            </div>
+        </form>
+
+        <div id="listadoInfracciones">
+            
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+@section Scripts{
+
+    <script src="~/js/Infracciones/BusquedaEspecial/BusquedaEspecial.js" type="module"></script>
+
+}
+
+
+
+

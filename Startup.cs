@@ -179,6 +179,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IMotivoInfraccionService, MotivoInfraccionService>();
             services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
             services.AddScoped<IIngresarVehiculosService, IngresoVehiculosService>();
+            services.AddScoped<IBusquedaDepositoService, BusquedaDepositoService>();
+
 
             services.AddScoped<IColores, CatColoresService>();
 
@@ -189,6 +191,9 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IColores, CatColoresService>();
 
             services.AddScoped<IComparativoInfraccionesService, ComparativoInfraccionesService>();
+
+            services.AddScoped<IPagosInfraccionesService, PagosInfraccionesService>();
+            services.AddScoped<ILogTraficoService, LogTraficoService>();
 
             services.AddScoped(typeof(IApiClient), typeof(ApiClient));
             services.AddScoped<IAccountClient, AccountClient>();

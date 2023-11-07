@@ -8,7 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public List<IngresoVehiculosModel> ObtenerDepositos(IngresoVehiculosModel model);
         // public int GuardarDeposito(int idDeposito);
         public IngresoVehiculosModel DetallesDeposito(int idDeposito);
-        public int GuardarFechaIngreso(DatosIngresoModel datos);
+        public int GuardarFechaIngreso(DatosIngresoModel model);
 
         
     }

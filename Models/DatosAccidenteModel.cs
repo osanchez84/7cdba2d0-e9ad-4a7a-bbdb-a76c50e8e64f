@@ -9,6 +9,9 @@
         public float Latitud { get; set; }
         public float Longitud { get; set; }
         public int IdCiudad { get; set; }
+        public int IdEntidadCompetencia { get; set; }
+
+        
         public int IdCertificado { get; set; }
         public string entregaObjetos { get; set; }
         public string entregaOtros { get; set; }

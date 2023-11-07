@@ -49,14 +49,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo, idOficina);
             HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito);
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             return View("capturaGruas", solicitud);
         }
         public IActionResult GruasAsignadasTabla([DataSourceRequest] DataSourceRequest request)
         {
-            int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iSo);
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
             return Json(DatosTabla.ToDataSourceResult(request));
         }
 

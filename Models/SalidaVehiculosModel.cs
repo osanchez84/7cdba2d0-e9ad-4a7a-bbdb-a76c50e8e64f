@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -14,6 +15,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string evento { get; set; }
         public string propietarioGrua { get; set; }
         public DateTime fechaIngreso { get; set; }
+        public string fechaIngresoFormateada => fechaIngreso.ToString("dd/MM/yyyy");
+
         public string folioInventario { get; set; }
         public int idMarca { get; set; }
         public int idSubMarca { get; set; }
@@ -33,7 +36,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime fechaSolicitud { get; set; }
         public DateTime fechaFinal { get; set; }
         [Required(ErrorMessage = "El campo es obligatorio.")]
-        public DateTime fechaSalida { get; set; } 
+        public DateTime? fechaSalida { get; set; } 
         public string tramo { get; set; }
         public string carretera { get; set; }
         public string kilometro { get; set; }
@@ -51,7 +54,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string entrega { get; set; }
         public string observaciones { get; set; }
-        public string costoTotalPorGrua{ get; set; }
+        public float costoTotalPorGrua{ get; set; }
+        public float costoTotalTodasGruas { get; set; }
+
+        
+
 
     }
 

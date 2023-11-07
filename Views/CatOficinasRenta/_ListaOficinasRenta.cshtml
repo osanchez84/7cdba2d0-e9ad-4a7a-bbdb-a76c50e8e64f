@@ -1,4 +1,10 @@
 ﻿<div class="row">
+    <div class="row justify-content-between mb-1 titleCustom">
+        <div class="col-12 col-md-auto mt-4 mb-2">
+            <h5 class="px-4"><b>Listado de oficinas en renta</b></h5>
+            <h6 class="px-4 text-muted">Edita o elimina los municipios.</h6>
+        </div>
+    </div>
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @(
@@ -6,7 +12,7 @@
             .Name("grid")
             .Columns(columns =>
             {
-                columns.Bound(c => c.IdOficinaRenta).Title("Número Oficina").Width(30);
+                columns.Bound(c => c.IdOficinaRenta).Title("Id").Width(30);
                 columns.Bound(c => c.NombreOficina).Title("Oficina").Width(100);
                 columns.Bound(c => c.DelegacionDesc).Title("Delegación").Width(90);
                 columns.Bound(c => c.estatusDesc).Title("Estatus en sistema").Width(90);

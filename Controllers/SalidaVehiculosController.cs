@@ -6,6 +6,9 @@ using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -56,10 +59,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult GetGruasAsignadas([DataSourceRequest] DataSourceRequest request)
         {
             int iDp = HttpContext.Session.GetInt32("idDeposito") ?? 0; 
-            var ListFactores = _salidaVehiculosService.ObtenerDatosGridGruas(iDp);
-
+            var ListFactores = _salidaVehiculosService.ObtenerDatosGridGruas(iDp);        
             return Json(ListFactores.ToDataSourceResult(request));
         }
+      
+
         public ActionResult ModalCostosGrua(int idDeposito)
         {
             var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito);
@@ -68,10 +72,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult GuardarCostos(CostosServicioModel model)
         {
+            int iDp = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+
             var DatosGruaSeleccionada = _salidaVehiculosService.ActualizarCostos(model);
-         
-            return PartialView ("_ListadoGruas");
-        }
+            List<SalidaVehiculosModel> gruas = _salidaVehiculosService.ObtenerTotal(iDp);
+            float sumaCostoTotal = gruas.Sum(grua => grua.costoTotalPorGrua);
+
+            var modelo = new SalidaVehiculosModel
+            {
+                costoTotalPorGrua = sumaCostoTotal
+            };
+
+            return Json(modelo);
+        }    
+
         public ActionResult GuardarDatosSalida(SalidaVehiculosModel model)
         {
 

@@ -53,10 +53,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var modelList = _infraccionesService.GetAllInfracciones2()
-                                            .SelectMany(s => s.MotivosInfraccion)
-                                            .GroupBy(g => g.Nombre)
-                                            .Select(s => new EstadisticaInfraccionMotivosModel() { Motivo = s.Key, Contador = s.Count() }).ToList();
+                var modelList = _infraccionesService.GetAllEstadisticasInfracciones();
 
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
@@ -66,7 +63,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
                 var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
                 var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-                var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+                var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0"); 
                 var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
                 var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
 

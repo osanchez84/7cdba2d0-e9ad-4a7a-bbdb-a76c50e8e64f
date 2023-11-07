@@ -14,7 +14,7 @@
 			{
 				columns.Bound(c => c.Motivo).Title("Accidentes por municipio");
 				columns.Bound(p => p.Contador).Title("Totales").Format("{0:n0}").ClientFooterTemplate("Total : #= kendo.toString(sum, \"n0\")#");
-			}).HtmlAttributes(new { style = "height:auto" })
+			})
 			.Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
 			.Sortable()
 			.Scrollable(scr => scr.Enabled(false))
@@ -24,44 +24,37 @@
 			.Aggregates(aggregates =>
 			{
 				aggregates.Add(p => p.Contador).Sum();
-			})
-			)
-			)
+			})))
 	</div>
 	<div class="col-md-6">
-		<div class="demo-section wide">
-			@(Html.Kendo().Chart(Model)
-				.Name("chart")
-				.Title("Accidentes")
-				.Subtitle("/Motivos Infracciones/")
-				.Legend(legend => legend
-				.Visible(true)
-				.Position(ChartLegendPosition.Top)
-				)
-				.ChartArea(chartArea => chartArea
-				.Background("transparent")
-				)
-				.Series(series =>
-				{
-					series.Pie(model => model.Contador, model => model.Motivo);
-				})
-				.CategoryAxis(axis => axis
-				.Categories(c => c.Motivo)
-				.MajorGridLines(lines => lines.Visible(false))
-				)
-				.ValueAxis(axis => axis
-				.Line(line => line.Visible(false))
-				.MajorGridLines(lines => lines.Visible(true))
-				)
-				.Tooltip(tooltip => tooltip
-				.Visible(true)
-				.Template("#= dataItem.Motivo #: #= value #")
-				)
-				)
-		</div>
+		@(Html.Kendo().Chart(Model)
+			.Name("chart")
+			.Title("Accidentes")
+			.Subtitle("/Motivos Infracciones/")
+			.Legend(legend => legend
+			.Visible(true)
+			.Position(ChartLegendPosition.Top)
+			)
+			.ChartArea(chartArea => chartArea
+			.Background("transparent")
+			)
+			.Series(series =>
+			{
+				series.Pie(model => model.Contador, model => model.Motivo);
+			})
+			.CategoryAxis(axis => axis
+			.Categories(c => c.Motivo)
+			.MajorGridLines(lines => lines.Visible(false))
+			)
+			.ValueAxis(axis => axis
+			.Line(line => line.Visible(false))
+			.MajorGridLines(lines => lines.Visible(true))
+			)
+			.Tooltip(tooltip => tooltip
+			.Visible(true)
+			.Template("#= dataItem.Motivo #: #= value #")))
 	</div>
 </div>
-
 <script>
 	function generateExcel() {
 		var grid = $("#gridInfraccionesPersonas").data("kendoGrid");

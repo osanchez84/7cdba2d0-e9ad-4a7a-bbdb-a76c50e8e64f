@@ -52,7 +52,7 @@ window.TemplateEditar = (d) => {
 
 
 window.TemplateExportar = (d) => {
-    return `<button onclick="CancelTramite(${d.idInfraccion})" class='w-100 btn'><h6 class='m-0 colorPrimary'><b>Cancelar</b></h6></button>`
+    return `<button onclick="CancelTramite(${d.idInfraccion})" class='w-100 btn'><h6 class='m-0 colorPrimary'><b>Eliminar</b></h6></button>`
 }
 
 

@@ -233,7 +233,6 @@
 		xhr.responseType = "arraybuffer";
 		xhr.send();
 	}
-	// Use Promises to sync the exports.
 	var promises = [
 		$.Deferred(),
 		$.Deferred(),
@@ -300,7 +299,7 @@
 		//	});
 		//}
 		e.preventDefault();
-		promises[0].resolve(workbook);
+		promises[0].resolve(e.workbook);
 	}
 	function Causa_excelExport(e) { 
 		e.preventDefault();
@@ -311,15 +310,11 @@
 		promises[2].resolve(e.workbook);
 	}
 	function generateExcel() {
-		// Trigger export of the "products" Grid.
 		$("#gridResultadosGenerales").data("kendoGrid").saveAsExcel();
-		// Trigger export of the "orders" Grid.
 		$("#gridDetallesPorCausa").data("kendoGrid").saveAsExcel();
 		$("#gridDesgloseTotalDeInfracciones").data("kendoGrid").saveAsExcel();
-		// Wait for both exports to finish.
 		$.when.apply(null, promises)
 			.then(function (generalesWorkbook, causaWorkbook, totalesWorkbook) {
-				// Create a new workbook using the sheets of the "products" and "orders" workbooks.
 				var sheets = [
 					generalesWorkbook.sheets[0],
 					causaWorkbook.sheets[0],
@@ -331,7 +326,6 @@
 				var workbook = new kendo.ooxml.Workbook({
 					sheets: sheets
 				});
-				// Save the new workbook.
 				kendo.saveAs({
 					dataURI: workbook.toDataURL(),
 					fileName: "ComparativoInfracciones.xlsx"

@@ -16,7 +16,7 @@
                 columns.Bound(c => c.Serie).Width(100);
                 columns.Bound(c => c.EstatusInfraccion).Title("Estatus infracción").Width(90);
                 columns.Bound(c => c.Propietario).Width(90);
-                columns.Bound(c => c.Delegacion).Width(100);
+                columns.Bound(c => c.Delegacion).Width(100).Title("Delegación/oficina");
                 columns.Command(c => c.Custom("Seleccionar").Click("modalComprobacion")).Width(80);
 
 

@@ -280,9 +280,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
 
-                            string filePath = searchReader["inventario"].ToString(); // Supongo que esta columna contiene la ruta del archivo.
+                            string filePath = searchReader["inventario"].ToString(); 
 
-                            // Ahora, puedes asignar la ruta de archivo a MyFile como un archivo IFormFile simulado.
                             if (!string.IsNullOrEmpty(filePath))
                             {
                                 var file = new FormFile(Stream.Null, 0, 0, "MyFile", Path.GetFileName(filePath))
@@ -295,8 +294,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             }
                             else
                             {
-                                // Handle el caso en el que no haya una ruta de archivo válida en la base de datos.
-                                solicitud.MyFile = null; // O maneja de otra manera según tu lógica de negocio.
+                                solicitud.MyFile = null; 
                             }
 
                             solicitud.observaciones = searchReader["observaciones"].ToString();

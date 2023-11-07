@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(@"SELECT i.*, v.serie, pveh.nombre AS nombre1, pveh.apellidoPaterno AS apellidoPaterno1,
                                                             pveh.apellidoMaterno AS apellidoMaterno1, pinf.nombre AS nombre2, 
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
-                                                            e.estatusInfraccion, cde.delegacion
+                                                            e.estatusInfraccion, cde.delegacion,v.serie
                                                         FROM infracciones AS i 
                                                         JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
                                                         JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo

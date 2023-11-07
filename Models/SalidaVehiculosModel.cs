@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -53,7 +54,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string entrega { get; set; }
         public string observaciones { get; set; }
-        public string costoTotalPorGrua{ get; set; }
+        public float costoTotalPorGrua{ get; set; }
+        public float costoTotalTodasGruas { get; set; }
+
+        
+
 
     }
 

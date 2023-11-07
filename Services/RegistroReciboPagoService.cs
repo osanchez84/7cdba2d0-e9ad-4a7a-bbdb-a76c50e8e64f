@@ -50,7 +50,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             RegistroReciboPagoModel infraccion = new RegistroReciboPagoModel();
                             infraccion.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
                             infraccion.FolioInfraccion = reader["folioInfraccion"].ToString();
-                            infraccion.Delegacion = reader["delegacion"].ToString();
                             infraccion.Placas = reader["placasVehiculo"].ToString();
                             infraccion.FechaInfraccion = Convert.ToDateTime(reader["FechaInfraccion"].ToString());
                             infraccion.Propietario = $"{reader["nombre1"]} {reader["apellidoPaterno1"]} {reader["apellidoMaterno1"]}";

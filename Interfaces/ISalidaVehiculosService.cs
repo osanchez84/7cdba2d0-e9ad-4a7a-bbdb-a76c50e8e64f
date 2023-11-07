@@ -14,7 +14,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public CostosServicioModel CostosServicio(int idDeposito);
         public int ActualizarCostos(CostosServicioModel model);
         public int GuardarInforSalida(SalidaVehiculosModel model);
-
+        public List<SalidaVehiculosModel> ObtenerTotal(int iDp);
 
     }
 }

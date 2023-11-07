@@ -32,12 +32,13 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(@"SELECT i.*, pveh.nombre AS nombre1, pveh.apellidoPaterno AS apellidoPaterno1,
                                                             pveh.apellidoMaterno AS apellidoMaterno1, pinf.nombre AS nombre2, 
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
-                                                            e.estatusInfraccion
+                                                            e.estatusInfraccion,v.serie,del.delegacion
                                                         FROM infracciones AS i 
                                                         JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
                                                         JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
                                                         LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
                                                         LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona  
+                                                        LEFT JOIN catDelegaciones AS del ON i.idDelegacion = del.idDelegacion  
                                                         WHERE folioInfraccion = @FolioInfraccion", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
@@ -49,10 +50,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             RegistroReciboPagoModel infraccion = new RegistroReciboPagoModel();
                             infraccion.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
                             infraccion.FolioInfraccion = reader["folioInfraccion"].ToString();
+                            infraccion.Delegacion = reader["delegacion"].ToString();
                             infraccion.Placas = reader["placasVehiculo"].ToString();
                             infraccion.FechaInfraccion = Convert.ToDateTime(reader["FechaInfraccion"].ToString());
                             infraccion.Propietario = $"{reader["nombre1"]} {reader["apellidoPaterno1"]} {reader["apellidoMaterno1"]}";
-                            //infraccion.Serie = reader["Serie"].ToString();
+                            infraccion.Serie = reader["serie"].ToString();
                             infraccion.Conductor = $"{reader["nombre2"]} {reader["apellidoPaterno2"]} {reader["apellidoMaterno2"]}";
                             infraccion.EstatusInfraccion = reader["estatusInfraccion"].ToString();
 

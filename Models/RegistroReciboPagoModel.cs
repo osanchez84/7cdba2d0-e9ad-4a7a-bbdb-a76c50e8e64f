@@ -16,6 +16,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Municipio { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaInfraccion { get; set; }
+        public string FechaInfraccioFormateada => FechaInfraccion.ToString("dd/MM/yyyy");
+
         public string Carretera { get; set; }
         public string Tramo { get; set; }
         public string KmCarretera { get; set; }
@@ -24,6 +26,10 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string Conductor { get; set; }
         public string Propietario { get; set; }
+        public string Serie { get; set; }
+        public string Delegacion { get; set; }
+
+
         public int IdAplicacion { get; set; }
         public int InfraccionCortesia { get; set; }
         public int IdGarantia { get; set; }

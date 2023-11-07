@@ -83,6 +83,21 @@
             <div>
                 <partial name="_ListadoGruas" model="Model" />
             </div>
+
+            <div>
+                <div class="col-12 col-md-7">
+                    <div class="controlForm my-3 selecciondeFecha">
+                        @(Html.Kendo().NumericTextBoxFor(t => t.costoTotalTodasGruas)
+                            .Label(l => l.Content("Costo totoal grúa(s)"))
+                            .Placeholder("Nombre de quien recibe")
+                            .HtmlAttributes(new { style = "width: 100%", id = "costoTotalTodasGruas" })
+                            .Spinners(false)
+                            .HtmlAttributes(new { @readonly = "readonly" })
+
+                            )
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
@@ -230,6 +245,6 @@
             }
         });
     }
-      
+
 </script>
 

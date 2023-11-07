@@ -39,8 +39,10 @@
 
 	function ShowUpdatePopUp(Id) {
 		$('#hdnIdDeposito').val(Id);
-		$('#myUpdateModal').modal('show');
+	    $('#myUpdateModal').modal('show');
 	}
+
+	
 
     function downLoadPdf(Id) {
        
@@ -77,6 +79,7 @@
                 .Name("Grid")
                 .Columns(columns =>
                 {
+					columns.Bound(c => c.IdSolicitud).Hidden();
                     columns.Bound(p => p.IdDeposito).Title("Número").Width(90);
                     columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190);
                     columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
@@ -93,7 +96,7 @@
                     columns.Bound(c => c.fullDependencia).Title("Estatus").Width(90);
 
 						columns.Bound(p => p.IdGrua).ClientTemplate(
-						"<button onclick=\"ShowUpdatePopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
+					"<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
 						).Title("Editar").Sortable(false).Width(70);
 
 						columns.Bound(p => p.IdDeposito).ClientTemplate(
@@ -191,7 +194,7 @@
 									<i class="icon-delete h1 colorPrimary"></i>
 								</div>
 								<div class="col-auto my-3">
-									<h2 class="m-0 h3"><b>Cofirmación</b></h2>
+									<h2 class="m-0 h3"><b>Confirmación</b></h2>
 								</div>
 							</div>
 						</div>
@@ -276,34 +279,41 @@
 
 					</div>
 
-					<div class="modal-body" id="ModalBodyUpdate">
-						<input type="hidden" id="hdnIdDeposito" />
-						<p class="success-message">Datos de Registro de Solicitud</p>
-						<p class="success-message">Datos de las Grúas Asignadas</p>
-					</div>
-
-					<div class="row my-4">
-						<div class="col-12 col-md-6 mx-md-auto">
-							<div class="row justify-content-around">
-								<div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-									<button type="button" data-bs-dismiss="modal" aria-label="Close">
-										<h6 class="m-0 v"><b>Cancelar</b></h6>
-									</button>
-								</div>
-								<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-									<div class="controlButton">
-
-										<button type="button" class="btnPrimary px-3" onclick="ConfirmDelete()">
-											<h6 class="m-0 px-3"><b>Aceptar</b></h6>
-										</button>
-
-									</div>
-								</div>
-							</div>
+				<div class="modal-body" id="ModalBodyUpdate">
+					<input type="hidden" id="hdnIdDeposito" />
+					<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+						<div class="controlButton">
+							<button type="button" class="btnPrimary px-3" data-id="solicitud" onclick="datosSolicitud()">
+								<h6 class="m-0 px-3"><b>Datos de Registro de Solicitud</b></h6>
+							</button>
 						</div>
-
 					</div>
-
+					<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+						<div class="controlButton">
+							<button type="button" class="btnPrimary px-3" data-id="gruas" onclick="datosGruas()">
+								<h6 class="m-0 px-3"><b>Datos de las Grúas Asignadas</b></h6>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="row my-4">
+    <div class="col-12 col-md-6 mx-md-auto">
+        <div class="row justify-content-around">
+            <div class="col-6 btnOutline my-2 mx-auto mx-xl-2 p-0">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" style="width: 50%; height: auto;">
+                    <h6 class="m-0"><b>Cancelar</b></h6>
+                </button>
+            </div>
+            <div class="col-6 btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                <div class="controlButton">
+                    <button type="button" class="btnPrimary px-3" onclick="ConfirmDelete()" style="width: 50%; height: auto;">
+                        <h6 class="m-0 px-3"><b>Aceptar</b></h6>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 				</section>
 			</div>
@@ -326,4 +336,14 @@
 				grid.dataSource.pageSize(pageSize);
 			}, 300);
 		}
+
+		function datosSolicitud(){
+		var idSolicitud = document.getElementById('hdnIdDeposito').value;
+
+        window.location.href = "/Depositos/Depositos?Isol=" + idSolicitud;
+	}
+		function datosGruas(){
+		var idSolicitud = document.getElementById('hdnIdDeposito').value;
+			 window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?iSo=' + idSolicitud;
+			}
 	</script>

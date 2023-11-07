@@ -1,4 +1,6 @@
-﻿namespace GuanajuatoAdminUsuarios.Models
+﻿using System.Collections.Generic;
+
+namespace GuanajuatoAdminUsuarios.Models
 {
     public class GruasSalidaVehiculosModel
     {
@@ -13,6 +15,14 @@
         public string tipoGrua { get; set; }
 
         public float costoTotalPorGrua { get; set; }
-
+        public static float CalcularCostoTotalTodasGruas(IEnumerable<GruasSalidaVehiculosModel> modelos)
+        {
+            float costoTotal = 0;
+            foreach (var modelo in modelos)
+            {
+                costoTotal += modelo.costoTotalPorGrua;
+            }
+            return costoTotal;
+        }
     }
 }

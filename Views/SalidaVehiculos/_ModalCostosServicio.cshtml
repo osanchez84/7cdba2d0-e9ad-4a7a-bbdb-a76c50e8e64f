@@ -144,6 +144,8 @@
                 sitteg_success('Se ha actualizado la información');
                 var grid = $("#GruasAsignadasGrid").data("kendoGrid");
                 grid.dataSource.read();
+                var numericTextBox = $("#costoTotalTodasGruas").data("kendoNumericTextBox");
+                numericTextBox.value(data.costoTotalPorGrua);
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');

@@ -161,6 +161,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.grua = reader["noEconomico"].ToString();
                             model.tipoGrua = reader["TipoGrua"].ToString();
                             model.interseccion = reader["vehiculoInterseccion"].ToString();
+                            model.costoTotalPorGrua = reader["costoTotal"] == DBNull.Value ? 0.0f : Convert.ToSingle(reader["costoTotal"]);
 
 
 
@@ -328,27 +329,42 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO serviciosDepositos" +
-                        "(idDeposito,fechaIngreso,fechaSalida,diasResguardo,costoDeposito,nombreRecibe,nombreEntrega,observaciones,estatus,actualizadoPor,fechaActualizacion) " +
-                        "values(@idDeposito,@fechaIngreso,@fechaSalida,@diasResguardo,@costoDeposito,@nombreRecibe,@nombreEntrega,@observaciones,@estatus,@actualizadoPor,@fechaActualizacion)";
+                    string mergeQuery =
+                        @"MERGE INTO serviciosDepositos AS target
+                USING (SELECT @idDeposito AS idDeposito) AS source
+                ON target.idDeposito = source.idDeposito
+                WHEN MATCHED THEN
+                    UPDATE SET
+                        fechaIngreso = @fechaIngreso,
+                        fechaSalida = @fechaSalida,
+                        diasResguardo = @diasResguardo,
+                        costoDeposito = @costoDeposito,
+                        costoTotalGruas = @costoTotalGruas,
+                        nombreRecibe = @nombreRecibe,
+                        nombreEntrega = @nombreEntrega,
+                        observaciones = @observaciones,
+                        estatus = @estatus,
+                        actualizadoPor = @actualizadoPor,
+                        fechaActualizacion = @fechaActualizacion
+                WHEN NOT MATCHED THEN
+                    INSERT (idDeposito, fechaIngreso, fechaSalida, diasResguardo, costoDeposito, costoTotalGruas, nombreRecibe, nombreEntrega, observaciones, estatus, actualizadoPor, fechaActualizacion)
+                    VALUES (@idDeposito, @fechaIngreso, @fechaSalida, @diasResguardo, @costoDeposito, @costoTotalGruas, @nombreRecibe, @nombreEntrega, @observaciones, @estatus, @actualizadoPor, @fechaActualizacion);";
 
-                    SqlCommand command = new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(mergeQuery, connection);
+
+                    // Asigna los parámetros como lo hacías en tu consulta original
                     command.Parameters.AddWithValue("@idDeposito", model.idDeposito);
-
                     command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);
                     command.Parameters.AddWithValue("@fechaSalida", model.fechaSalida);
                     command.Parameters.AddWithValue("@diasResguardo", model.diasResguardo);
                     command.Parameters.AddWithValue("@costoDeposito", model.costoDeposito);
-                   // command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalPorGrua);
+                    command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalTodasGruas);
                     command.Parameters.AddWithValue("@nombreRecibe", model.recibe);
                     command.Parameters.AddWithValue("@nombreEntrega", model.entrega);
                     command.Parameters.AddWithValue("@observaciones", model.observaciones);
                     command.Parameters.AddWithValue("@estatus", 1);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
-
-
-
 
                     command.ExecuteNonQuery();
                 }
@@ -363,8 +379,49 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 return result;
             }
-
-
         }
+
+
+        public List<SalidaVehiculosModel> ObtenerTotal(int iDp)
+        {
+            List<SalidaVehiculosModel> resultados = new List<SalidaVehiculosModel>();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact =
+                        @"SELECT ga.idDeposito, ga.costoTotal
+                FROM gruasAsignadas AS ga
+                WHERE ga.idDeposito = @idDeposito";
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDp;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            SalidaVehiculosModel resultado = new SalidaVehiculosModel
+                            {
+                                idDeposito = reader["idDeposito"] == DBNull.Value ? 0 : Convert.ToInt32(reader["idDeposito"]),
+                                costoTotalPorGrua = reader["costoTotal"] == DBNull.Value ? 0 : Convert.ToInt32(reader["costoTotal"])
+                            };
+                            resultados.Add(resultado);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejar la excepción, por ejemplo, guardarla en un log de errores
+                    // ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return resultados;
+        }
+
     }
 }

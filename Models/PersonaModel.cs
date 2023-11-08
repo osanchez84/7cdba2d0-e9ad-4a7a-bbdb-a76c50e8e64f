@@ -30,7 +30,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string apellidoMaternoBusqueda { get; set; }
         public string apellidoMaternoFisico { get; set; }
 
-        public string nombreCompleto { get { return nombre + " " + apellidoPaterno + " " + apellidoMaterno; } }
+        public string nombreCompleto { get {
+                
+                return (nombre??"-") + " " + (apellidoPaterno??"-") + " " + (apellidoMaterno ?? "-"); } }
         public int idCatTipoPersona { get; set; }
         public string tipoPersona { get; set; }
         public int idGenero { get; set; }

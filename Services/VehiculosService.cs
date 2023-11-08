@@ -79,7 +79,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					int numeroSecuencial = 1; 
+
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
@@ -119,9 +121,13 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.entidadRegistro = reader["nombreEntidad"].ToString();
                             model.color = reader["color"].ToString();
                             model.propietario = model.Persona.nombre + " " + model.Persona.apellidoPaterno + " " + model.Persona.apellidoMaterno;
-                            modelList.Add(model);
-                        }
-                    }
+							model.NumeroSecuencial = numeroSecuencial;
+
+							modelList.Add(model);
+							numeroSecuencial++;
+
+						}
+					}
                 }
                 catch (SqlException ex)
                 {

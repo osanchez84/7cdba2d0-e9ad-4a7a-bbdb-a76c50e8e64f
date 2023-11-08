@@ -1700,6 +1700,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         ,mv.marcaVehiculo AS Marca
                         ,sm.nombreSubmarca AS Submarca
                         ,veh.modelo AS Modelo
+                        ,veh.numeroEconomico
                         ,cc.color AS Color
                         ,e.nombreEntidad AS EntidaddeReg
                         ,tv.tipoVehiculo AS TipodeVehículo
@@ -1747,6 +1748,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
+                    int numeroSecuencial = 1;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
@@ -1781,6 +1784,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.FechaPago            = reader["FechaPago"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
                             model.Placas               = reader["Placas"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
                             model.SerieVeh             = reader["SerieVeh"] == System.DBNull.Value ? default(string) : reader["SerieVeh"].ToString();
+                            model.numeroEconomicoVeh = reader["numeroEconomico"] == System.DBNull.Value ? default(string) : reader["numeroEconomico"].ToString();
                             model.TarjetadeCirculacion = reader["TarjetadeCirculacion"] == System.DBNull.Value ? default(string) : reader["TarjetadeCirculacion"].ToString();
                             model.Marca                = reader["Marca"] == System.DBNull.Value ? default(string) : reader["Marca"].ToString();
                             model.Submarca             = reader["Submarca"] == System.DBNull.Value ? default(string) : reader["Submarca"].ToString();
@@ -1794,7 +1798,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.TipoAplicacion       = reader["TipoAplicacion"] == System.DBNull.Value ? default(string) : reader["TipoAplicacion"].ToString();
                             model.Motivo               = reader["Motivo"] == System.DBNull.Value ? default(string) : reader["Motivo"].ToString();
                             model.MotivoDesc           = reader["MotivoDesc"] == System.DBNull.Value ? default(string) : reader["MotivoDesc"].ToString();
+                            model.NumeroSecuencial = numeroSecuencial;
                             modelList.Add(model);
+                            numeroSecuencial++;
+
                         }
                     }
                 }

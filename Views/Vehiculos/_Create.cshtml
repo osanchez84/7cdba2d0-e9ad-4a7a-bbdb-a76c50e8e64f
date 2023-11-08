@@ -37,11 +37,11 @@
         </div>
         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="finalizar()">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBackModificar()">
                     @(Html.Kendo().Button()
                         .Name("editBusqueda")
                         .HtmlAttributes(new { @class = "btnPrimary" })
-                        .Content("<h6 class=\"m-0\"><i class=\"icon-research me-2\"></i><b>Editar búsqueda</b></h6>"))
+                        .Content("<h6 class=\"m-0\"><b>Regresar</b></h6>"))
                 </div>
             </div>
         </div>
@@ -1262,5 +1262,9 @@
             datePicker.value(null);
         }
     });
+
+    function goBackModificar(){
+     window.location.href = '@Url.Action("Editar", "Vehiculos")';
+    }
 
 </script>

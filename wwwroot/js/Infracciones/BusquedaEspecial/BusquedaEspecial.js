@@ -1,9 +1,9 @@
-﻿import { AddLoading, GetDataGrid,RemoveTramite } from './Funcionality/ConexxionPeticiones.js'
+﻿import { AddLoading, GetDataGrid, RemoveTramite } from './Funcionality/ConexxionPeticiones.js'
 
 $(document).ready(() => {
 
     var t = document.getElementById("frmSearch")
-    t.method="POST"
+    t.method = "POST"
     t.addEventListener("submit", Submmit)
 
 })
@@ -24,10 +24,10 @@ const Submmit = (e) => {
 
 
 
-window.DataRequestFilter=()=> {
+window.DataRequestFilter = () => {
     var Mydata = $("#frmSearch").serializeArray();
-    var obj = Mydata.reduce((acc, it) => { acc[it.name] = it.value;return acc }, {})  
-    console.log(obj)    
+    var obj = Mydata.reduce((acc, it) => { acc[it.name] = it.value; return acc }, {})
+    console.log(obj)
     return obj
 
 }
@@ -38,16 +38,16 @@ window.TemplateCortecia = (d) => {
     console.log(d)
     //infraccionCortesia
     console.log("entro")
-    if (d.infraccionCortesia) { 
-      return  `<button disabled onclick="ShowCortesia('idInfraccion')" class='w-100 btn'><h6 class='m-0 colorWarning'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>`
-         } else { 
+    if (d.infraccionCortesia) {
         return `<button disabled onclick="ShowCortesia('idInfraccion')" class='w-100 btn'><h6 class='m-0 colorWarning'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>`
-         }
+    } else {
+        return `<button disabled onclick="ShowCortesia('idInfraccion')" class='w-100 btn'><h6 class='m-0 colorWarning'><i class='icon-edit me-2'></i><b> Cortesía</b></h6></button>`
+    }
 }
 
 
 window.TemplateEditar = (d) => {
-     return   `<button onclick="ShowUpdate('idInfraccion ')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>`
+    return `<button onclick="ShowUpdate('idInfraccion ')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>`
 }
 
 
@@ -70,15 +70,14 @@ function finishCancel(d) {
 
 
     var grd = $("#GridInf").data("kendoGrid")
-
     grd.dataSource.read()
 
 }
 
 window.CancelTramite = (d) => {
 
-    var data =  {id:d }
+    var data = { id: d }
 
-    RemoveTramite(data,finishCancel)
+    RemoveTramite(data, finishCancel)
 
 }

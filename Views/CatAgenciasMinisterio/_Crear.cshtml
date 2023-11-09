@@ -37,6 +37,7 @@
                 <label>Delegación <b>(obligatorio)</b>:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                    .Name("prueba")
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Delegación")

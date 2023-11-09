@@ -37,7 +37,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
             PadronDepositosGruasBusquedaModel searchModel = new PadronDepositosGruasBusquedaModel();
-            List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas();
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
             searchModel.ListPadronDepositosGruas = listPadronDepositosGruas;
             return View(searchModel);
         }
@@ -45,7 +47,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarPadron(PadronDepositosGruasBusquedaModel model)
         {
-            var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model,idOficina);
             if (ListPadronDepositosGruas.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron grúas que cumplan con los criterios de búsqueda.";
@@ -84,9 +88,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-        public List<PadronDepositosGruasModel> GetDepositos()
+        public List<PadronDepositosGruasModel> GetDepositos(int idOficina)
         {
-            var modelList = _padronDepositosGruasService.GetAllPadronDepositosGruas();
+            var modelList = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
 
             var indices = modelList
                          .Select((s, i) => new { index = i, item = s })

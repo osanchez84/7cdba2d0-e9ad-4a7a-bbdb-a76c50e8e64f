@@ -18,7 +18,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<LiberacionVehiculoModel> GetAllTopDepositos()
+        public List<LiberacionVehiculoModel> GetAllTopDepositos(int idOficina)
         {
             List<LiberacionVehiculoModel> depositosList = new List<LiberacionVehiculoModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -43,8 +43,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             left join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
                             left join vehiculos v ON v.placas = d.Placa
                             left join personas p ON p.idPersona = v.idPersona
-                            where d.liberado=0 and d.estatus=1";
+                            where d.liberado=0 and d.estatus=1 and d.idDelegacion = @idOficina";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -106,7 +108,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return depositosList;
         }
 
-        public List<LiberacionVehiculoModel> GetDepositos(LiberacionVehiculoBusquedaModel model)
+        public List<LiberacionVehiculoModel> GetDepositos(LiberacionVehiculoBusquedaModel model,int idOficina)
         {
             List<LiberacionVehiculoModel> depositosList = new List<LiberacionVehiculoModel>();
 
@@ -135,7 +137,7 @@ namespace GuanajuatoAdminUsuarios.Services
         LEFT JOIN personas p ON p.idPersona = v.idPersona
         left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
 
-        WHERE d.liberado = 0 AND d.estatus = 1
+        WHERE d.liberado = 0 AND d.estatus = 1 AND d.idDelegacion = @idOficina
           AND (d.Placa = @Placa OR d.IdMarca = @IdMarca 
                OR CAST(d.FechaIngreso AS DATE) = @FechaIngreso OR d.Serie LIKE '%' + @Serie + '%' OR d.Folio LIKE '%' + @Folio + '%')
         GROUP BY d.IdDeposito, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, pen.pension, del.delegacion, col.color,
@@ -149,6 +151,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)model.Serie ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.Date)).Value = model.FechaIngreso == DateTime.MinValue ? new DateTime(1800, 01, 01).Date : (object)model.FechaIngreso.Date;
                     command.Parameters.Add(new SqlParameter("@Folio", SqlDbType.NVarChar)).Value = (object)model.Folio ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -204,7 +207,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return depositosList;
         }
 
-        public LiberacionVehiculoModel GetDepositoByID(int Id)
+        public LiberacionVehiculoModel GetDepositoByID(int Id, int idOficina)
         {
             LiberacionVehiculoModel deposito = new LiberacionVehiculoModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -224,9 +227,11 @@ namespace GuanajuatoAdminUsuarios.Services
 	                    left join pensiones pen on d.idPension	= pen.idPension
                         left join catTramos cTra  on d.Idtramo=cTra.idTramo
                         left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
-		                where d.liberado=0 and d.estatus=1 and d.IdDeposito=@IdDeposito";
+		                where d.liberado=0 and d.estatus=1 and d.IdDeposito=@IdDeposito and d.idDelegacion = @idOficina";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)Id ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

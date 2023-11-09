@@ -1,4 +1,6 @@
-﻿namespace GuanajuatoAdminUsuarios.Models
+﻿using System;
+
+namespace GuanajuatoAdminUsuarios.Models
 {
     public class EstadisticaAccidentesModel
     {
@@ -14,7 +16,8 @@
         public string Hora { get; set; }
         public string Delegacion { get; set; }
         public string municipio { get; set; }
-        public string tramo { get; set; }
+		public string carretera { get; set; }	
+		public string tramo { get; set; }
         public string kilometro { get; set; }
         public string latitud { get; set; }
         public string longitud { get; set; }
@@ -29,7 +32,10 @@
         public string FactoresOpciones { get; set; }
         public string Causas { get; set; }
         public string CausasDescripcion { get; set; }
-    }
+		public int NumeroSecuencial { get; set; }
+
+		
+	}
 
     public class ListadoAccidentesPorVehiculoModel
     {
@@ -61,5 +67,8 @@
         public string Muertos { get; set; }
         public string Causas { get; set; }
         public string CausasDescripcion { get; set; }
-    }
+		public int NumeroContinuo { get; set; }	
+		public DateTime fecha { get; set; }
+		public TimeSpan hora { get; set; }
+	}
 }

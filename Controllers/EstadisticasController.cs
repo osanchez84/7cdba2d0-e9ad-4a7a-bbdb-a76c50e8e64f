@@ -53,7 +53,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var modelList = _infraccionesService.GetAllEstadisticasInfracciones();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina);
 
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");

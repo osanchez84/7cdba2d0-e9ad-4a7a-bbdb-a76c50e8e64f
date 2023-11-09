@@ -408,5 +408,20 @@ function buscarConductor() {
         $('#modalLicencias').modal('show');
     }
 
-  
+    function EntidadDropDownChange() {
+        var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Personas/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
 </script>

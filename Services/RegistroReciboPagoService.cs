@@ -34,8 +34,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
                                                             e.estatusInfraccion, cde.delegacion,v.serie
                                                         FROM infracciones AS i 
-                                                        JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
-                                                        JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
+                                                        LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
+                                                        LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
                                                         LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
                                                         LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
                                                         LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
@@ -93,8 +93,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
                                                             e.estatusInfraccion, sum(mi.calificacion ) calificacion 
                                                         FROM infracciones AS i 
-                                                        JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
-                                                        JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
+                                                        LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
+                                                        LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
                                                         LEFT JOIN motivosInfraccion mi ON mi.idInfraccion = i.idInfraccion
                                                         LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
                                                         LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona  

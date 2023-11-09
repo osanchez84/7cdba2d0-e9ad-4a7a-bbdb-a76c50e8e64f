@@ -70,7 +70,6 @@ function finishCancel(d) {
 
 
     var grd = $("#GridInf").data("kendoGrid")
-
     grd.dataSource.read()
 
 }

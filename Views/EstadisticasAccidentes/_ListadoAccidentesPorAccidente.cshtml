@@ -12,11 +12,13 @@
 		.Name("gridListadoAccidentesPorAccidente")
 		.Columns(columns =>
 		{
+			columns.Bound(p => p.NumeroSecuencial).Title("No.").Width(90);
 			columns.Bound(p => p.Numreporteaccidente).Title("Numreporteaccidente").Width(90);
 			columns.Bound(p => p.Fecha).Title("Fecha").Width(90);
 			columns.Bound(p => p.Hora).Title("Hora").Width(90);
 			columns.Bound(p => p.Delegacion).Title("Delegacion").Width(90);
 			columns.Bound(p => p.municipio).Title("municipio").Width(90);
+			columns.Bound(p => p.carretera).Title("carretera").Width(90);
 			columns.Bound(p => p.tramo).Title("tramo").Width(90);
 			columns.Bound(p => p.kilometro).Title("kilometro").Width(90);
 			columns.Bound(p => p.latitud).Title("latitud").Width(90);

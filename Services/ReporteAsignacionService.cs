@@ -17,7 +17,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<ReporteAsignacionModel> GetAllReporteAsignaciones()
+        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(int idOficina)
         {
             List<ReporteAsignacionModel> ReporteAsignacionesList = new List<ReporteAsignacionModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -53,8 +53,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(sol.solicitanteap) AS solicitanteap,
                                    MAX(sol.solicitanteam) AS solicitanteam,
                                    MAX(pen.pension) AS pension,
-                                   MAX(pen.estatus) AS pensionEstatus
-                                   MAX(e.estatusDesc) AS descripcionEstatus
+                                   MAX(pen.estatus) AS pensionEstatus,
+                                   MAX(e.estatusDesc) AS descripcionEstatus,
                                    MAX(sol.vehiculoCarretera) AS vehiculoCarretera,
                                    MAX(sol.vehiculoTramo) AS vehiculoTramo,
                                    MAX(sol.vehiculoKm) AS vehiculoKm,
@@ -82,11 +82,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
                                     LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
                                     LEFT JOIN estatus e ON e.estatus = pen.estatus
-
-                                    GROUP BY dep.iddeposito;
+                                    WHERE dep.idDelegacion = @idOficina
+                                    GROUP BY dep.idDeposito;
                                     ";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -140,7 +142,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return ReporteAsignacionesList;
         }
 
-        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model)
+        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model, int idOficina)
         {
             List<ReporteAsignacionModel> ReporteAsignacionesList = new List<ReporteAsignacionModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -201,7 +203,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         WHERE g.IdGrua = @IdGrua
                                            OR pen.idPension = @IdPension
                                            OR dep.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin
-                                           OR UPPER(sol.evento) = @Evento
+                                           OR UPPER(sol.evento) = @Evento AND dep.idDelegacion = @idOficina
                                         GROUP BY dep.iddeposito, del.delegacion
                                         ";
 
@@ -211,6 +213,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@Evento", SqlDbType.NVarChar)).Value = (object)model.Evento != null ? model.Evento.ToUpper() : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
                     command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

@@ -77,6 +77,25 @@
                             )
                     </div>
                 </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm mb-3">
+                        <label>Tipo de cortesía:</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(d => d.IdTipoCortesia)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:100%;", Id = "ddlCortesia" })
+                                .OptionLabel("Seleccione una opción...")
+                                .BindTo(new List<SelectListItem>
+                            {
+                            new SelectListItem { Text = "No aplica cortesía", Value = "0" },
+                            new SelectListItem { Text = "Sí aplica cortesía", Value = "1" }
+                            })
+                                )
+
+                        </span>
+                    </div>
+                </div>
                 <div class="form-group col-md-4">
                     <div class="controlForm">
                         <label>Tipo vehículo:</label>
@@ -172,6 +191,7 @@
             data: Mydata,
             success: function (result) {
                 $("#estadisticasInfracciones").html(result);
+
             }
         });
     }

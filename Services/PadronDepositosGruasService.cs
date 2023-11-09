@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        private List<PadronDepositosGruasModel> GetJoinsPadronDepositosGruas()
+        private List<PadronDepositosGruasModel> GetJoinsPadronDepositosGruas(int idOficina)
         {
             List<PadronDepositosGruasModel> PadronDepositosGruasList = new List<PadronDepositosGruasModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -51,10 +52,12 @@ namespace GuanajuatoAdminUsuarios.Services
                             inner join catTipoGrua tg on g.IdTipoGrua= tg.IdTipoGrua
                             inner join depositos dep on c.IdConcesionario =dep.IdConcesionario
                             inner join pensiones p on dep.idPension= p.idPension
-                            inner join catMunicipios m on p.idMunicipio = m.idMunicipio
+                            inner join catMunicipios m on p.idMunicipio = m.idMunicipio 
+                            WHERE c.idDelegacion = @idOficina
                             order by  g.IdGrua,c.IdConcesionario";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -95,9 +98,10 @@ namespace GuanajuatoAdminUsuarios.Services
             return PadronDepositosGruasList;
         }
 
-        public List<PadronDepositosGruasModel> GetAllPadronDepositosGruas()
+        public List<PadronDepositosGruasModel> GetAllPadronDepositosGruas(int idOficina)
         {
-            var modelList = GetJoinsPadronDepositosGruas();
+
+            var modelList = GetJoinsPadronDepositosGruas(idOficina);
             var indices = modelList
                          .Select((s, i) => new { index = i, item = s })
                          .GroupBy(grp => grp.item.IdPension)
@@ -182,7 +186,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListPensiones;
         }
 
-        private List<PadronDepositosGruasModel> GetJoinsPadronDepositosGruas(PadronDepositosGruasBusquedaModel model)
+        private List<PadronDepositosGruasModel> GetJoinsPadronDepositosGruas(PadronDepositosGruasBusquedaModel model, int idOficina)
         {
             List<PadronDepositosGruasModel> PadronDepositosGruasList = new List<PadronDepositosGruasModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -250,9 +254,9 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public List<PadronDepositosGruasModel> GetPadronDepositosGruas(PadronDepositosGruasBusquedaModel model)
+        public List<PadronDepositosGruasModel> GetPadronDepositosGruas(PadronDepositosGruasBusquedaModel model,int idOficina)
         {
-            var modelList = GetJoinsPadronDepositosGruas(model);
+            var modelList = GetJoinsPadronDepositosGruas(model,idOficina);
             var indices = modelList
                          .Select((s, i) => new { index = i, item = s })
                          .GroupBy(grp => grp.item.IdPension)

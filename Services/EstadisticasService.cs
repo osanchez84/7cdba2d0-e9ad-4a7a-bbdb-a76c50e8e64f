@@ -105,6 +105,7 @@ namespace GuanajuatoAdminUsuarios.Services
             condiciones += modelBusqueda.idTipoServicio.Equals(null) || modelBusqueda.idTipoServicio == 0 ? "" : " AND veh.idCatTipoServicio  = @idCatTipoServicio ";
             condiciones += modelBusqueda.idTipoLicencia.Equals(null) || modelBusqueda.idTipoLicencia == 0 ? "" : " AND gar.idTipoLicencia = @idTipoLicencia ";
             condiciones += modelBusqueda.idMunicipio.Equals(null) || modelBusqueda.idMunicipio == 0 ? "" : " AND inf.idMunicipio =@idMunicipio ";
+            condiciones += modelBusqueda.IdTipoCortesia.Equals(null) || modelBusqueda.IdTipoCortesia == 0 ? "" : " AND inf.infraccionCortesia=@IdTipoCortesia ";
 
             string condicionFecha = "";
 
@@ -135,6 +136,7 @@ namespace GuanajuatoAdminUsuarios.Services
     MAX(inf.idPersonaInfraccion) AS idPersonaInfraccion,
     MAX(inf.placasVehiculo) AS placasVehiculo,
     MAX(inf.folioInfraccion) AS folioInfraccion,
+    inf.infraccionCortesia,
     MAX(inf.fechaInfraccion) AS fechaInfraccion,
     MAX(inf.kmCarretera) AS kmCarretera,
     MAX(inf.observaciones) AS observaciones,
@@ -211,7 +213,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                 left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
                                 WHERE inf.estatus = 1 " + condiciones + condicionFecha + @"
-                                GROUP BY inf.idInfraccion;"; 
+                                GROUP BY inf.idInfraccion,inf.infraccionCortesia;"; 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -241,6 +243,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     
                     if (!modelBusqueda.idTipoLicencia.Equals(null) && modelBusqueda.idTipoLicencia != 0)
                         command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoLicencia ?? DBNull.Value;
+                    if (!modelBusqueda.IdTipoCortesia.Equals(null) && modelBusqueda.IdTipoCortesia != 0)
+                        command.Parameters.Add(new SqlParameter("@IdTipoCortesia", SqlDbType.Int)).Value = (object)modelBusqueda.IdTipoCortesia ?? DBNull.Value;
 
                     if (!modelBusqueda.idMunicipio.Equals(null) && modelBusqueda.idMunicipio != 0)
                         command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)modelBusqueda.idMunicipio ?? DBNull.Value;
@@ -250,6 +254,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     if (modelBusqueda.fechaFin != DateTime.MinValue)
                         command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
+
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -280,6 +285,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
                             model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
                             model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+
                             model.Persona = _personasService.GetPersonaById((int)model.idPersona);
                             model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : _infraccionesService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);

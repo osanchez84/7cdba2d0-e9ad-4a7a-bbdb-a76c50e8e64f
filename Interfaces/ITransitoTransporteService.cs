@@ -6,8 +6,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ITransitoTransporteService
     {
-        List<TransitoTransporteModel> GetAllTransitoTransporte();
-        List<TransitoTransporteModel> GetTransitoTransportes(TransitoTransporteBusquedaModel model);
+        List<TransitoTransporteModel> GetAllTransitoTransporte(int idOficina);
+        List<TransitoTransporteModel> GetTransitoTransportes(TransitoTransporteBusquedaModel model,int idOficina);
         TransitoTransporteModel GetTransitoTransporteById(int IdDeposito);       
         List<Pensiones> GetPensiones();
         int DeleteTransitoTransporte(int IdDeposito, int IdSolicitud);

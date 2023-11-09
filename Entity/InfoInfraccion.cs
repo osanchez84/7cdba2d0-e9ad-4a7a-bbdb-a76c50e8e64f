@@ -35,6 +35,8 @@ namespace GuanajuatoAdminUsuarios.Entity
         public string FechaPago { get; set; }
         public string Placas { get; set; }
         public string SerieVeh { get; set; }
+        public string numeroEconomicoVeh { get; set; }
+        
         public string TarjetadeCirculacion { get; set; }
         public string Marca { get; set; }
         public string Submarca { get; set; }
@@ -48,6 +50,9 @@ namespace GuanajuatoAdminUsuarios.Entity
         public string TipoAplicacion { get; set; }
         public string Motivo { get; set; }
         public string MotivoDesc { get; set; }
+        public int NumeroSecuencial { get; set; }
+
+        
 
     }
 }

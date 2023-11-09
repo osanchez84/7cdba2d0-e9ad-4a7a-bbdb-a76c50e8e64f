@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<TransitoTransporteModel> GetAllTransitoTransporte()
+        public List<TransitoTransporteModel> GetAllTransitoTransporte(int idOficina)
         {
             #region Consulta base
             //var query = @"select top(100) d.IdDeposito,d.IdSolicitud,d.IdDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
@@ -110,12 +111,14 @@ namespace GuanajuatoAdminUsuarios.Services
                                         left join vehiculos  veh on sol.idvehiculo =veh.idvehiculo 
                                         left join concesionarios con on con.IdConcesionario =d.IdConcesionario
                                         left join catDependencias dep on ((dep.idDependencia=d.IdDependenciaTransito)OR (dep.idDependencia=d.IdDependenciaNoTransito))
-                                        where  sol.estatus !=0 and d.estatus!=0
+                                        where  sol.estatus !=0 and d.estatus!=0 and d.idDelegacion = @idOficina
                                         GROUP BY d.iddeposito";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+
                     {
                         while (reader.Read())
                         {
@@ -185,7 +188,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return transitoList;
         }
 
-        public List<TransitoTransporteModel> GetTransitoTransportes(TransitoTransporteBusquedaModel model)
+        public List<TransitoTransporteModel> GetTransitoTransportes(TransitoTransporteBusquedaModel model, int idOficina)
         {
             List<TransitoTransporteModel> transitoList = new List<TransitoTransporteModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -266,7 +269,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-                                WHERE d.estatus != 0 " + condiciones;
+                                WHERE d.estatus != 0 and d.idDelegacion = @idOficina " + condiciones;
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
 
@@ -275,6 +278,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.FolioInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.Propietario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.NumeroEconomico ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;

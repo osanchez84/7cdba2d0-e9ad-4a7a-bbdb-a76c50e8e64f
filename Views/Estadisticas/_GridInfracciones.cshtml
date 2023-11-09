@@ -34,6 +34,7 @@
             .Name("gridInfraccionesInfo")
             .Columns(columns =>
             {
+                columns.Bound(c => c.NumeroSecuencial).Title("No.").Width(50);
                 columns.Bound(c => c.Folio).Title("Folio").Width(150);
                 columns.Bound(c => c.FolioTxt).Title("Folio-Txt").Width(150);
                 columns.Bound(c => c.TTOTTE).Title("TTO/TTE").Width(150);
@@ -63,6 +64,7 @@
                 columns.Bound(c => c.FechaPago).Title("Fecha Pago").Width(150).Format("{0:dd/MM/yyyy}");
                 columns.Bound(c => c.Placas).Title("Placas").Width(150);
                 columns.Bound(c => c.SerieVeh).Title("Serie Veh.").Width(150);
+                columns.Bound(c => c.numeroEconomicoVeh).Title("No.económico").Width(150);
                 columns.Bound(c => c.TarjetadeCirculacion).Title("Tarjeta de Circulación").Width(150);
                 columns.Bound(c => c.Marca).Title("Marca").Width(150);
                 columns.Bound(c => c.Submarca).Title("Submarca").Width(150);

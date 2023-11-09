@@ -48,7 +48,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return Response;
             }
 
-            var infraccion = buscarInfraccion(InfoPago.FolioInfraccion);
+            var infraccion = buscarInfraccionByFolio(InfoPago.FolioInfraccion);
             if (infraccion == null)
             {
                 Response.HasError = true;
@@ -105,7 +105,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return Response;
             }
 
-            var infraccion = buscarInfraccion(ReversaPago.ReciboControlInterno);
+            var infraccion = buscarInfraccionByReciboPago(ReversaPago.ReciboControlInterno);
             if (infraccion == null)
             {
                 Response.HasError = true;
@@ -153,7 +153,8 @@ namespace GuanajuatoAdminUsuarios.Services
             //return folioInfraccion.StartsWith("TTO-") || folioInfraccion.StartsWith("TTE-");
             return true;
         }
-        private InfraccionesModel buscarInfraccion(string reciboPago) => _infraccionesService.GetAllInfraccionesByReciboPago(reciboPago).FirstOrDefault();
+        private InfraccionesModel buscarInfraccionByFolio(string FolioInfraccion) => _infraccionesService.GetAllInfraccionesByFolioInfraccion(FolioInfraccion).FirstOrDefault();
+        private InfraccionesModel buscarInfraccionByReciboPago(string reciboPago) => _infraccionesService.GetAllInfraccionesByReciboPago(reciboPago).FirstOrDefault();
         private bool validaMontoPago(string montoPago, decimal montoPorPagar)
         {
             decimal montoPagoD = 0;

@@ -1217,7 +1217,7 @@
                             <div class="row justify-content-center">
                                 <div class="drop-zone">
                                     <div class="drop-zone__prompt">
-                                        <svg id="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="106.791" height="87.148" viewBox="0 0 106.791 87.148">
+                                        <svg id="Imgsvg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="106.791" height="87.148" viewBox="0 0 106.791 87.148">
                                             <defs>
                                                 <clipPath id="clip-path">
                                                     <rect id="Rectángulo_2602" data-name="Rectángulo 2602" width="106.791" height="87.148" fill="none" />
@@ -1228,8 +1228,9 @@
                                             </g>
                                         </svg>
 
+                                        <h2 id="NameFile"></h2>
                                         <h5>Arrastra o adjunta la</h5>
-                                        <h5 class="fw-bold">Imagen ( Jpg / Png )</h5>
+                                        <h5 class="fw-bold">Archivo</h5>
                                     </div>
                                     <input type="file" name="myFile" class="drop-zone__input">
                                 </div>
@@ -2597,7 +2598,7 @@
         let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
 
         // First time - remove the prompt
-        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+      /*  if (dropZoneElement.querySelector(".drop-zone__prompt")) {
             dropZoneElement.querySelector(".drop-zone__prompt").remove();
         }
 
@@ -2606,9 +2607,9 @@
             thumbnailElement = document.createElement("div");
             thumbnailElement.classList.add("drop-zone__thumb");
             dropZoneElement.appendChild(thumbnailElement);
-        }
+        }*/
 
-        thumbnailElement.dataset.label = file.name;
+        //thumbnailElement.dataset.label = file.name;
 
         // Show thumbnail for image files
         if (file.type.startsWith("image/")) {
@@ -2616,11 +2617,24 @@
 
             reader.readAsDataURL(file);
             reader.onload = () => {
-                thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+              //  thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
             };
         } else {
-            thumbnailElement.style.backgroundImage = null;
+           // thumbnailElement.style.backgroundImage = null;
         }
+
+        $(dnamefale).empty().append(file.name)
+        document.getElementById("Imgsvg").classList.add("active")
+
     }
 </script>
 
+<style>
+    #Imgsvg {
+        transition: fill ease-out 0.5s;
+    }
+
+        #Imgsvg.active {
+            fill: green
+        }
+</style>

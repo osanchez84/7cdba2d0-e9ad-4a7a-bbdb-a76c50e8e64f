@@ -16,6 +16,7 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.idVehiculo).Hidden();
+                columns.Bound(p => p.NumeroSecuencial).Title("No.").Width(40);
                 columns.Bound(p => p.placas).Title("Placas").Width(90);
                 columns.Bound(p => p.serie).Title("No.Serie").Width(90);
                 columns.Bound(c => c.marca).Title("Marca").Width(90);
@@ -27,7 +28,6 @@
                 columns.Bound(c => c.motor).Title(" No. Motor").Width(90);
                 columns.Bound(c => c.modelo).Title("Modelo").Width(90);
                 columns.Bound(c => c.color).Title("Color").Width(90);
-                columns.Bound(c => c.modelo).Title("Modelo").Width(90);
                 columns.Bound(c => c.entidadRegistro).Title("Entidad").Width(90);
                 columns.Bound(c => c.tipoServicio).Title("Tipo Servicio").Width(90);
                 columns.Bound(c => c.numeroEconomico).Title("Numero económico").Width(90);
@@ -66,4 +66,28 @@
         var titulo = e.target.context.dataset.title;
         return titulo;
     }
+
+
+
+  /*   $(document).ready(function () {
+            // Función para numerar las filas
+            function updateRowNumbers() {
+                var grid = $("#Grid").data("kendoGrid");
+                var rows = grid.tbody.children();
+                for (var i = 0; i < rows.length; i++) {
+                    var row = $(rows[i]);
+                    var rowNumber = i + 1;
+                    row.find(".row-number").text(rowNumber);
+                }
+            }
+
+            // Llama a la función para numerar las filas cuando el grid se carga o se actualiza
+            var grid = $("#Grid").data("kendoGrid");
+            grid.bind("dataBound", function () {
+                updateRowNumbers();
+            });
+
+            // Llama a la función inicialmente para numerar las filas
+            updateRowNumbers();
+        });*/
 </script>

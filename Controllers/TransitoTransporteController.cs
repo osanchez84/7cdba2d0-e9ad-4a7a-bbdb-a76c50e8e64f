@@ -13,6 +13,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -37,9 +38,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult Index()
-        { 
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
-            List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte();
+            List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
             searchModel.ListTransitoTransporte = listTransitoTransporte;
             return View(searchModel);
         }
@@ -70,7 +72,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"FechaIngreso","Fecha Ingreso"},
             {"FechaLiberacion","Fecha Liberación"},
             };
-            var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model,idOficina);
             var result = _pdfService.CreatePdf("ReporteTransitoTransporte", "Tránsito Transporte", 4, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }
@@ -96,7 +100,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarTransito(TransitoTransporteBusquedaModel model)
         {
-            var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model, idOficina);
 
             if (ListTransitoModel.Count == 0)
             {
@@ -159,7 +165,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = _transitoTransporteService.DeleteTransitoTransporte(Convert.ToInt32(idsList[0]), Convert.ToInt32(idsList[1]));
             if (result > 0)
             {
-                List<TransitoTransporteModel> ListTransitoTransporteModel = _transitoTransporteService.GetAllTransitoTransporte();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                List<TransitoTransporteModel> ListTransitoTransporteModel = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
                 return PartialView("_ListadoTransitoTransporte", ListTransitoTransporteModel);
             }
             else

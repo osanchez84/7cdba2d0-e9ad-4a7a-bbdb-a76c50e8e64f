@@ -84,11 +84,11 @@
                 {
 					columns.Bound(c => c.IdSolicitud).Hidden();
                     columns.Bound(p => p.IdDeposito).Title("Número").Width(90);
-                    columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_evento/Folio_Solicitud/Folio_Infracción").Width(190);
+                    columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_Evento/Folio_Solicitud/Folio_Infracción").Width(190);
                     columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
                     columns.Bound(c => c.FechaIngreso).ClientTemplate("#= convertDate(FechaIngreso) #").Title("Fecha de ingreso").Width(90);
                     columns.Bound(c => c.FechaLiberacion).ClientTemplate("#= convertDate(FechaLiberacion) #").Title("Fecha de salida").Width(90);
-                    columns.Bound(c => c.pension).Title("Pension").Width(100);
+                    columns.Bound(c => c.pension).Title("Pensión").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
                     "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"

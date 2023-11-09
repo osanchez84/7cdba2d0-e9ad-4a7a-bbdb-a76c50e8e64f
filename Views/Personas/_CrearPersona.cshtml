@@ -107,18 +107,37 @@
             <div class="controlForm">
                 <label>Entidad:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad)
-                    .BindTo((SelectList)ViewBag.CatEntidades)
-                    .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona una opción")
+                    .Events(e => e.Change("EntidadDropDownChange"))
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Entidades_Drop", "Personas");
+                        });
+                    })
+                    .HtmlAttributes(new { style = "width:100%;", required = "required",id="idEntidad" })
+                    )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Municipio:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio)
-                    .BindTo((SelectList)ViewBag.CatMunicipios)
-                    .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona un Municipio")
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Municipios_Drop", "Personas");
+                        });
+                    })
+                    .HtmlAttributes(new { style = "width:100%;", required = "required",id="idMunicipio" }))
+                
             </div>
         </div>
         <div class="col-md-4">
@@ -196,6 +215,24 @@
 </div>
 
 <script>
+
+    function EntidadDropDownChange() {
+        var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Personas/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
     function btnCrearPersona() {
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         validator.validate();
@@ -260,6 +297,6 @@ function completarConLicencia() {
         var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
     });
-    
+
 
 </script>

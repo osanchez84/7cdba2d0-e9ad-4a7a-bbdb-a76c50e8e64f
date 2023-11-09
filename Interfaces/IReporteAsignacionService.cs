@@ -5,7 +5,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IReporteAsignacionService
     {
-        List<ReporteAsignacionModel> GetAllReporteAsignaciones();
-        List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model);
+        List<ReporteAsignacionModel> GetAllReporteAsignaciones(int idOficina);
+        List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model,int idOficina);
     }
 }

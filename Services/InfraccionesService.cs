@@ -1741,7 +1741,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return umas;
         }
 
-        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones()
+        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina)
         {
             List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
             string strQuery = @"SELECT ci.nombre Motivo, COUNT(m.idMotivoInfraccion) Contador
@@ -1760,7 +1760,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                LEFT JOIN catMunicipios mun
                                ON inf.idMunicipio = mun.idMunicipio
                                 WHERE m.estatus = 1
-                               AND inf.estatus = 1
+                               AND inf.estatus = 1 AND inf.idDelegacion = @idOficina
 							   group by ci.nombre"
            ;
 
@@ -1771,6 +1771,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

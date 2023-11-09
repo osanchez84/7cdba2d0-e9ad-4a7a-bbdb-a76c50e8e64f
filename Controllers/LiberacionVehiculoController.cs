@@ -42,8 +42,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
                 LiberacionVehiculoBusquedaModel searchModel = new LiberacionVehiculoBusquedaModel();
-                List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos();
+                List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos(idOficina);
                 searchModel.ListDepositosLiberacion = ListDepositos;
                 return View(searchModel);
             }
@@ -71,7 +73,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculo(LiberacionVehiculoBusquedaModel model)
         {
-            var ListVehiculosModel = _liberacionVehiculoService.GetDepositos(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListVehiculosModel = _liberacionVehiculoService.GetDepositos(model, idOficina);
 
             if (ListVehiculosModel.Count == 0)
             {
@@ -85,7 +89,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_UpdateLiberacion(int Id)
         {
-            var model = _liberacionVehiculoService.GetDepositoByID(Id);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var model = _liberacionVehiculoService.GetDepositoByID(Id, idOficina);
             //model.FechaIngreso.ToString("dd/MM/yyyy");
             return PartialView("_UpdateLiberacion", model);
 
@@ -137,7 +143,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             if (result > 0)
             {
-                List<LiberacionVehiculoModel> ListProuctModel = _liberacionVehiculoService.GetAllTopDepositos();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                List<LiberacionVehiculoModel> ListProuctModel = _liberacionVehiculoService.GetAllTopDepositos(idOficina);
                 return Json(ListProuctModel);
             }
             else

@@ -28,6 +28,7 @@
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource
             .Ajax()
+            .Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
             .ServerOperation(false)
             )
             )

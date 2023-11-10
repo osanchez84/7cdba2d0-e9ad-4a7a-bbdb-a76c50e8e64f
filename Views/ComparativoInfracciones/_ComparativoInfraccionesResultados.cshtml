@@ -246,58 +246,7 @@
 		return titulo;
 	}
 	function Generales_excelExport(e) { //"ExcelExport" event handler of "products" Grid.
-		//e.workbook.sheets.push({
-		//	columns: [{ autoWidth: true }],
-		//	rows: [
-		//		{ cells: [{ value: "short" }] },
-		//		{ cells: [{ value: "longer text value" }] }
-		//	]
-		//});
-		//var chartImg = null;
-		//var chart = $("#chartResultadosGenerales").getKendoChart();
-		//chart.exportImage().done(function (data) {
-		//	chartImg = data;
-		//});
-		//e.preventDefault();
-		//var sheet = e.workbook.sheets[0];
-		//var images = {
-		//	testImage: chartImg
-		//};
-		//var workbook = null;
-		//var ids = Object.keys(images);
-		//var count = ids.length;
-		//if (count) {
-		//	Object.keys(images).forEach(function (id) {
-		//		var url = images[id];
-
-		//		loadBinary(url, function (data, contentType) {
-		//			images[id] = { type: contentType, data: data };
-					
-		//			workbook = new kendo.ooxml.Workbook({
-		//				images: images,
-		//				sheets: [{
-		//					columns: sheet.columns,
-		//					frozenRows: 2,
-		//					mergedCells: ["B1:E1"],
-		//					name: "Food Order",
-		//					drawings: [{
-		//						topLeftCell: "A1",
-		//						width: 100,
-		//						height: 90,
-		//						image: "testImage",
-		//						offsetX: 0,
-		//						offsetY: 0,
-		//					}],
-		//					rows: sheet.rows
-		//				}]
-		//			});
-		//			kendo.saveAs({
-		//				dataURI: workbook.toBlob(),
-		//				fileName: "Test.xlsx"
-		//			});
-		//		});
-		//	});
-		//}
+	
 		e.preventDefault();
 		promises[0].resolve(e.workbook);
 	}

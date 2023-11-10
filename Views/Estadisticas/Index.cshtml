@@ -174,9 +174,14 @@
         <div id="estadisticasInfracciones">
             <partial name="_EstadisticaInfraccionesMotivos" model="@ViewBag.Estadisticas" />
         </div>
-        <div id="estadisticasInfracciones">
+        <div id="estadisticasInfracciones2">
+            <partial name="_GridPorMotivos" model="@ViewBag.GridPorMotivos" />
+        </div>
+        <div id="estadisticasInfracciones3">
             <partial name="_GridInfracciones" model="@ViewBag.GridInfracciones" />
         </div>
+      
+
     </section>
 
 </div>
@@ -184,17 +189,28 @@
 <script>
     function submitSearch() {
         var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
-        //console.log(Mydata);
+
+        // Realiza la llamada a la primera acción ajax_BusquedaParaMotivos
         $.ajax({
-            url: '@Url.Action("ajax_BusquedaIncidenciasInfracciones")',
+            url: '@Url.Action("ajax_BusquedaParaMotivos")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                $("#estadisticasInfracciones").html(result);
+                $("#estadisticasInfracciones2").html(result);
 
+                // Llama a la segunda acción ajax_BusquedaIncidenciasInfracciones
+                $.ajax({
+                    url: '@Url.Action("ajax_BusquedaIncidenciasInfracciones")',
+                    type: 'POST',
+                    data: Mydata,
+                    success: function (result) {
+                        $("#estadisticasInfracciones").html(result);
+                    }
+                });
             }
         });
     }
+
     function startChange() {
         var endPicker = $("#end").data("kendoDatePicker"),
             startDate = this.value();

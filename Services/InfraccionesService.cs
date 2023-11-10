@@ -1797,7 +1797,53 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return modelList;
         }
+        public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina)
+        {
+            List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
+            string strQuery = @"SELECT numeroMotivos, COUNT(idInfraccion) AS CantidadInfracciones
+                                    FROM (
+                                        SELECT mi.idInfraccion, COUNT(mi.idMotivoInfraccion) AS numeroMotivos
+                                        FROM infracciones i
+                                        LEFT JOIN motivosInfraccion mi ON i.idInfraccion = mi.idInfraccion
+                                        WHERE i.idDelegacion = @idOficina AND i.estatus = 1
+                                        GROUP BY mi.idInfraccion
+                                    ) AS InfraccionesConMotivos
+                                    GROUP BY numeroMotivos
+                                    HAVING numeroMotivos > 0;";
 
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
+                            model.NumeroMotivos = reader["numeroMotivos"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["numeroMotivos"].ToString());
+                            model.ContadorMotivos = reader["CantidadInfracciones"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["CantidadInfracciones"].ToString());
+                            model.ResultadoMultiplicacion = model.NumeroMotivos * model.ContadorMotivos;
+                            modelList.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return modelList;
+        }
         //TODO: Borrar esta consulta ya no sirve para estadisticas
         public List<InfraccionesModel> GetAllInfracciones2()
         {

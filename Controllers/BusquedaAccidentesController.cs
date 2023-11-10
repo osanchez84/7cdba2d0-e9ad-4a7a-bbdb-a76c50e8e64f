@@ -2,13 +2,12 @@
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Utils;
-using Kendo.Mvc.Infrastructure.Implementation;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +55,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
+        }
+        public JsonResult GetAllAccidentes([DataSourceRequest] DataSourceRequest request)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina);
+
+            return Json(resultadoBusqueda.ToDataSourceResult(request));
         }
         public JsonResult Delegaciones_Drop()
         {

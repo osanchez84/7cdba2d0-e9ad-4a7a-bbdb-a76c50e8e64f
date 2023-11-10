@@ -17,6 +17,95 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
+
+        public List<BusquedaAccidentesModel> GetAllAccidentes(int idOficina)
+        {
+            //
+            List<BusquedaAccidentesModel> ListaAccidentes = new List<BusquedaAccidentesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa, a.idAutoriza, a.kilometro, a.idOficinaDelegacion, "+                       
+                        "mun.municipio, " +
+                        "car.carretera, " +                       
+                        "tra.tramo, " +
+                        "er.estatusReporte, " +
+                        "er.idEstatusReporte, " +
+                        "MAX(vea.placa) AS placa, MAX(vea.serie) AS serie, " +
+                        "MAX(cond.idPersona) AS idConductor, " +
+                        "MAX(vea.idPersona) AS idPropietario, " +
+                        "ela.idOficial AS elabora, " +
+                        "sup.idOficial AS supervisa, " +
+                        "aut.idOficial AS autoriza " +
+                        "FROM accidentes AS a " +
+                        "LEFT JOIN vehiculosAccidente AS vea ON a.idAccidente = vea.idAccidente " +
+                        "LEFT JOIN vehiculos AS v ON vea.idVehiculo = v.idVehiculo " +
+                        "LEFT JOIN conductoresVehiculosAccidente AS cva ON a.idAccidente = cva.idAccidente " +
+                        "LEFT JOIN personas AS cond ON cva.idPersona = cond.idPersona " +
+                        "LEFT JOIN personas AS prop ON vea.idPersona = prop.idPersona " +
+                        "LEFT JOIN catMunicipios AS mun ON a.idMunicipio = mun.idMunicipio " +
+                        "LEFT JOIN catCarreteras AS car ON a.idCarretera = car.idCarretera " +
+                        "LEFT JOIN catTramos AS tra ON a.idTramo = tra.idTramo " +
+                        "LEFT JOIN catEstatusReporteAccidente AS er ON a.idEstatusReporte = er.idEstatusReporte " +
+                        "LEFT JOIN catOficiales AS ela ON a.idElabora = ela.idOficial " +
+                        "LEFT JOIN catOficiales AS sup ON a.idSupervisa = sup.idOficial " +
+                        "LEFT JOIN catOficiales AS aut ON a.idAutoriza = aut.idOficial " +
+                        "WHERE a.idOficinaDelegacion = @idOficina AND a.estatus=1 " +
+                        "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
+                        "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,er.idEstatusReporte, ela.idOficial, sup.idOficial, aut.idOficial; ", connection);
+
+
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                   
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+
+
+                        {
+                            BusquedaAccidentesModel accidente = new BusquedaAccidentesModel();
+                            accidente.IdAccidente = Convert.IsDBNull(reader["idAccidente"]) ? 0 : Convert.ToInt32(reader["idAccidente"]);
+                            accidente.idMunicipio = Convert.IsDBNull(reader["idMunicipio"]) ? 0 : Convert.ToInt32(reader["idMunicipio"]);
+                            accidente.idCarretera = Convert.IsDBNull(reader["idCarretera"]) ? 0 : Convert.ToInt32(reader["idCarretera"]);
+                            accidente.idTramo = Convert.IsDBNull(reader["idTramo"]) ? 0 : Convert.ToInt32(reader["idTramo"]);
+                            accidente.kilometro = reader["kilometro"].ToString();
+                            accidente.idEstatusReporte = Convert.IsDBNull(reader["idEstatusReporte"]) ? 0 : Convert.ToInt32(reader["idEstatusReporte"]);
+                            accidente.estatusReporte = reader["estatusReporte"].ToString();
+                            accidente.municipio = reader["municipio"].ToString();
+                            accidente.carretera = reader["carretera"].ToString();
+                            accidente.tramo = reader["tramo"].ToString();
+                            accidente.idElabora = Convert.IsDBNull(reader["idElabora"]) ? 0 : Convert.ToInt32(reader["idElabora"]);
+                            accidente.idSupervisa = Convert.IsDBNull(reader["idSupervisa"]) ? 0 : Convert.ToInt32(reader["idSupervisa"]);
+                            accidente.idAutoriza = Convert.IsDBNull(reader["idAutoriza"]) ? 0 : Convert.ToInt32(reader["idAutoriza"]);
+                            accidente.idConductor = Convert.IsDBNull(reader["idConductor"]) ? 0 : Convert.ToInt32(reader["idConductor"]);
+                            accidente.idPropietario = Convert.IsDBNull(reader["idPropietario"]) ? 0 : Convert.ToInt32(reader["idPropietario"]);
+                            accidente.numeroReporte = reader["numeroReporte"].ToString();
+                            accidente.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;
+                            accidente.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
+
+                            ListaAccidentes.Add(accidente);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaAccidentes;
+
+
+        }
         public List<BusquedaAccidentesModel> BusquedaAccidentes(BusquedaAccidentesModel model, int idOficina)
         {
             //

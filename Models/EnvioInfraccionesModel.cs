@@ -44,9 +44,16 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string nombreCompletoPropietario { get; set; }
 
+        public string fecha { get; set; }
+		public string fechaVencimiento { get; set; }
+
+
+
+		
 
 
 
 
-    }
+
+	}
 }

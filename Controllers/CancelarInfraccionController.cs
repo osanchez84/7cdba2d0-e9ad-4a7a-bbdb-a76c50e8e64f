@@ -52,6 +52,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ObtenerInfracciones(CancelarInfraccionModel model, string FolioInfraccion)
         {
+
             var ListInfraccionesModel = _cancelarInfraccionService.ObtenerInfraccionPorFolio(FolioInfraccion);
 
             if (ListInfraccionesModel == null || ListInfraccionesModel.Count == 0)

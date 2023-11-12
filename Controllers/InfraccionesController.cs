@@ -28,6 +28,8 @@ using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Kendo.Mvc.UI;
+using Org.BouncyCastle.Crypto;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -1007,6 +1009,88 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return null;
             }
         }
+
+
+
+
+
+        #region Budqueda
+        /************************************************************************************************/
+        //BusquedaEspecial
+
+        public IActionResult BusquedaEspecial()
+        {
+            return View("BusquedaEspecial");
+        }
+
+
+        public JsonResult Overview_GetTerritories()
+        {
+
+            var Options = new List<CatalogModel>();
+
+
+            Options.Add(new CatalogModel { value = "1", text = "  En proceso" });
+            Options.Add(new CatalogModel{    value = "2" ,text="Capturada" });
+            Options.Add(new CatalogModel{    value = "3" ,text="Pagada" });
+            Options.Add(new CatalogModel{    value = "4" ,text="Pagada con descuento" });
+            Options.Add(new CatalogModel{    value = "5" ,text="Solventada" });
+            Options.Add(new CatalogModel{    value = "6" ,text="Pagada con recargo" });
+            Options.Add(new CatalogModel{value = "7" ,text="Enviada" });
+
+            
+
+            return Json(Options);
+            
+        }
+
+        public IActionResult GetDataBusquedaEspecial(InfraccionesBusquedaEspecialModel data )
+        {
+
+            return PartialView("_ListadoInfraccionesBusquedaEspecial");
+        }
+
+
+
+        public IActionResult test([DataSourceRequest] DataSourceRequest request , InfraccionesBusquedaEspecialModel model)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina);
+
+            var result = listReporteAsignacion.ToDataSourceResult(request);
+
+            return Json(result);
+        }
+
+
+        public IActionResult Mostrar(string id)
+        {
+            int ids = Convert.ToInt32(id);
+
+            int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
+            var model = _infraccionesService.GetInfraccion2ById(ids);
+            
+
+
+            return View(model);
+        }
+
+
+
+
+        public IActionResult RemoveData(string id)
+        {
+
+            var model = _infraccionesService.CancelTramite(id);
+
+            return Json(true);
+        }
+
+
+        /*****************************************************************************************************/
+        #endregion
+
+
 
     }
 }

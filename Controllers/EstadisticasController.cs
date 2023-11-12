@@ -53,8 +53,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var modelList = _infraccionesService.GetAllEstadisticasInfracciones();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
+                var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina);
+                var modelListProMotivos = _infraccionesService.GetAllMotivosPorInfraccion(idOficina);
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
                 var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
@@ -79,6 +81,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
                 ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
                 ViewBag.Estadisticas = modelList;
+                ViewBag.GridPorMotivos = modelListProMotivos;
+
 
                 var modelGridInfracciones = _infraccionesService.GetAllInfraccionesEstadisticasGrid();
 
@@ -101,25 +105,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 .GroupBy(g => g.Nombre)
                 .Select(s => new EstadisticaInfraccionMotivosModel() { Motivo = s.Key, Contador = s.Count() }).ToList();
 
-
-
-            //var modelList = _infraccionesService.GetAllInfracciones2()
-            //                                    .Where(w => w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
-            //                                             && w.idOficial == (model.idOficial > 0 ? model.idOficial : w.idOficial)
-            //                                             && w.idCarretera == (model.idCarretera > 0 ? model.idCarretera : w.idCarretera)
-            //                                             && w.idTramo == (model.idTramo > 0 ? model.idTramo : w.idTramo)
-            //                                             && w.Vehiculo.idTipoVehiculo == (model.idTipoVehiculo > 0 ? model.idTipoVehiculo : w.Vehiculo.idTipoVehiculo)
-            //                                             && w.Vehiculo.idCatTipoServicio == (model.idTipoServicio > 0 ? model.idTipoServicio : w.Vehiculo.idCatTipoServicio)
-            //                                             && (int)w.Garantia.idTipoLicencia == (model.idTipoLicencia > 0 ? model.idTipoLicencia : (int)w.Garantia.idTipoLicencia)
-            //                                             && w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
-            //                                             && (w.fechaInfraccion >= model.fechaInicio && w.fechaInfraccion <= model.fechaFin))
-            //                                    .SelectMany(s => s.MotivosInfraccion.
-            //                                    Where(w => w.idCatMotivoInfraccion == (model.idTipoMotivo > 0 ? model.idTipoMotivo : w.idCatMotivoInfraccion)))
-            //                                    .GroupBy(g => g.Nombre)
-            //                                    .Select(s => new EstadisticaInfraccionMotivosModel() { Motivo = s.Key, Contador = s.Count() }).ToList();
-
             return PartialView("_EstadisticaInfraccionesMotivos", modelList);
 
         }
+
+        public IActionResult ajax_BusquedaParaMotivos(IncidenciasBusquedaModel model)
+        {
+            var modelMotivosList = _estadisticasService.GetAllInfraccionesEstadisticas(model)
+                .SelectMany(s => s.MotivosInfraccion)
+                .GroupBy(g => g.idInfraccion)
+                .GroupBy(g => g.Count())
+                .Where(group => group.Key > 0) // Filtra grupos con ContadorMotivos > 0
+                .Select(s => new EstadisticaInfraccionMotivosModel
+                {
+                    NumeroMotivos = s.Key,  // Número de motivos
+                    ContadorMotivos = s.Count(),  // Cantidad de infracciones con ese número de motivos
+                    ResultadoMultiplicacion = s.Key * s.Count()  // Nuevo parámetro con la multiplicación
+                }).ToList();
+
+            // Resto del código para calcular totales y agregar la instancia de totales a modelList
+
+            return PartialView("_GridPorMotivos", modelMotivosList);
+        }
+
+
+
+
+
     }
 }

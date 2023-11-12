@@ -43,8 +43,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string poliza { get; set; }
         public bool? carga { get; set; }
         public int cargaInt { get; set; }
-        
-        public string otros { get; set; }
+		public int NumeroSecuencial { get; set; }
+		
+		public string otros { get; set; }
         public string RFCMoral { get; set; }
         public string PersonaMoralNombre { get; set; }
         public string mensaje { get; set; }

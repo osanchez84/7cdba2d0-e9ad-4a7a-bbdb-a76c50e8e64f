@@ -5,9 +5,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ILiberacionVehiculoService
     {
-        List<LiberacionVehiculoModel> GetAllTopDepositos();
-        List<LiberacionVehiculoModel> GetDepositos(LiberacionVehiculoBusquedaModel model);
-        LiberacionVehiculoModel GetDepositoByID(int Id);
+        List<LiberacionVehiculoModel> GetAllTopDepositos(int idOficina);
+        List<LiberacionVehiculoModel> GetDepositos(LiberacionVehiculoBusquedaModel model, int idOficina);
+        LiberacionVehiculoModel GetDepositoByID(int Id, int idOficina);
         int UpdateDeposito(LiberacionVehiculoModel model);
     }
 }

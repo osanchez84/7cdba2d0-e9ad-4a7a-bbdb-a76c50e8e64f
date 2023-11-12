@@ -17,7 +17,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<PensionModel> GetAllPensiones()
+        public List<PensionModel> GetAllPensiones(int idOficina)
         {
 
             List<PensionModel> ListPensiones = new List<PensionModel>();
@@ -64,9 +64,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                  LEFT JOIN concesionarios c
                                                  on g.idConcesionario = c.idConcesionario
                                                  AND c.estatus = 1
-                                                 WHERE p.estatus = 1";
+                                                 WHERE p.estatus = 1 AND p.idDelegacion = @idOficina";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -109,7 +111,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListPensiones;
         }
 
-        public List<PensionModel> GetPensionesToGrid(string strPension, int? idDelegacion)
+        public List<PensionModel> GetPensionesToGrid(string strPension, int? idOficina)
         {
 
             List<PensionModel> ListPensiones = new List<PensionModel>();
@@ -156,13 +158,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                                  AND c.estatus = 1
                                                  WHERE p.estatus = 1
                                                  AND p.pension LIKE {0}
-                                                 AND p.idDelegacion = {1}";
-
-                    string strWherePension = !string.IsNullOrEmpty(strPension) ? string.Format("'%{0}%'", strPension) : "p.pension";
-                    string strWhereDelegacion = idDelegacion != null ? idDelegacion.ToString() : "p.idDelegacion";
-                    SqlTransact = string.Format(SqlTransact, strWherePension, strWhereDelegacion);
-
+                                                 AND p.idDelegacion = @idOficina";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    string strWherePension = !string.IsNullOrEmpty(strPension) ? string.Format("'%{0}%'", strPension) : "p.pension";
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -206,7 +205,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListPensiones;
         }
 
-        public List<PensionModel> GetPensionById(int idPension)
+        public List<PensionModel> GetPensionById(int idPension, int idOficina)
         {
 
             List<PensionModel> ListPensiones = new List<PensionModel>();
@@ -252,12 +251,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                                  on g.idConcesionario = c.idConcesionario
                                                  AND c.estatus = 1
                                                  WHERE p.estatus = 1
-                                                 AND p.idPension = @idPension";
+                                                 AND p.idPension = @idPension AND p.idDelegacion = @idOficina";
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
@@ -299,7 +299,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return ListPensiones;
         }
-        public List<Gruas2Model> GetGruasDisponiblesByIdPension(int idPension)
+        public List<Gruas2Model> GetGruasDisponiblesByIdPension(int idPension, int idOficina)
         {
             List<Gruas2Model> ListGruas = new List<Gruas2Model>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -368,12 +368,14 @@ namespace GuanajuatoAdminUsuarios.Services
 								                 INNER JOIN catMunicipios cm
 								                 on c.idMunicipio = cm.idMunicipio AND c.estatus = 1
                                                  WHERE g.idGrua in (SELECT DISTINCT idGrua FROM pensionGruas WHERE idPension = @idPension)
-                                                 AND g.estatus = 1";
+                                                 AND g.estatus = 1 AND c.idDelegacion = @idOficina";
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

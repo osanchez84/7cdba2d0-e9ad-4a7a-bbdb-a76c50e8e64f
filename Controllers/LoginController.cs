@@ -199,11 +199,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
-                            string idOficinaStr = Regex.Match(oficina, @"\d+").Value;
-                            string entidad = Regex.Match(oficina, @"\d+(.+?)\|").Groups[1].Value.Trim();
+                            string idOficinaStr = json[0].clave_oficina;
+                            string idDependenciaStr = json[0].tipo_oficina;
+
                             if (int.TryParse(idOficinaStr, out int idOficina))
                             {
                                 HttpContext.Session.SetInt32("IdOficina", idOficina);
+
+                            }
+                            else
+                            {
+
+                            }
+                            if (int.TryParse(idDependenciaStr, out int idDependencia))
+                            {
+                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                             }
                             else
@@ -223,6 +233,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);
+                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
                             }
@@ -233,13 +244,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     HttpContext.Session.Remove("IdsPermitidos");
                     HttpContext.Session.Remove("Nombre");
                     HttpContext.Session.Remove("Oficina");
+                    HttpContext.Session.Remove("IdDependencia");
+
 
                     return BadRequest("Error en la respuesta del servicio");
                 }
             }
             catch (Exception ex)
             {
-                // En caso de errores, limpiar la variable de sesión y manejar el error
                 HttpContext.Session.Clear();
                 return StatusCode(500, $"Error en el servidor: {ex.Message}");
             }

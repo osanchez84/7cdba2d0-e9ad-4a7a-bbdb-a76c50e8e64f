@@ -143,6 +143,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 Modulo = "Infracciones",
                 SubModulo = "Estadisticas"
             },
+			 new Menu()
+			{
+				Controller = "CortesiasNoAplicadas",
+				Action = "Index",
+				Modulo = "Infracciones",
+				SubModulo = "CortesiasNoAplicadas"
+			},
             #endregion
 
             #region ACCIDENTES

@@ -23,5 +23,13 @@ namespace GuanajuatoAdminUsuarios.Services
             var response = _clientDatabaseService.HttpPost<List<RepuveConsgralResponseModel>, RepuveConsgralRequestModel, RepuveWebServicesEnum>(model, (int)RepuveWebServicesEnum.RepuveConsgral);
             return response;
         }
-    }
+
+		public List<RepuveConsRoboResponseModel> ConsultaRobo(RepuveConsgralRequestModel model)
+		{
+			var token = _appSettingsService.GetAppSetting("RepuveToken").SettingValue;
+			model.token = token;
+			var response = _clientDatabaseService.HttpPost<List<RepuveConsRoboResponseModel>, RepuveConsgralRequestModel, RepuveWebServicesEnum>(model, (int)RepuveWebServicesEnum.RepuveConsrobo);
+			return response;
+		}
+	}
 }

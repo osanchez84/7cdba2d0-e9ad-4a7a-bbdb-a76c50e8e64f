@@ -9,12 +9,14 @@
 			Generar excel
 		</button>
 		@(Html.Kendo().Grid(Model)
-			.Name("gridInfraccionesPersonas")
+			.Name("gridInfraccionesPersonas1")
 			.Columns(columns =>
 			{
-				columns.Bound(c => c.Motivo).Title("Accidentes por municipio");
+				columns.Bound(c => c.Delegacion).Title("Delegación");
+				columns.Bound(c => c.Motivo).Title("Municipio");
 				columns.Bound(p => p.Contador).Title("Totales").Format("{0:n0}").ClientFooterTemplate("Total : #= kendo.toString(sum, \"n0\")#");
 			})
+			//.Events(events => events.ExcelExport("ConteoPorMunicipio_excelExport")) // Agregar el manejador de eventos ExcelExport
 			.Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
 			.Sortable()
 			.Scrollable(scr => scr.Enabled(false))
@@ -67,5 +69,7 @@
 			grid.dataSource.pageSize(pageSize);
 		}, 300);
 	}
+
+
 </script>
 

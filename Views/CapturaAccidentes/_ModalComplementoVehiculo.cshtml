@@ -51,7 +51,7 @@
                                     read.Action("Carga_Drop", "CapturaAccidentes");
                                 });
                             })
-                                        .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                         .HtmlAttributes(new { style = "width:100%;" })
                             )
                         </span>
                     </div>
@@ -85,7 +85,7 @@
                             read.Action("Delegaciones_Drop", "CapturaAccidentes");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;" })
+                    .HtmlAttributes(new { style = "width:100%;"})
                     )
                 </span>
             </div>
@@ -113,7 +113,7 @@
         </div>
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm my-3">
-                <label>Forma de traslado <b>(obligatorio):</b></label>
+                <label>Forma de traslado:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdFormaTraslado)
                                 .Label(l => l.Content("Forma de traslado:"))
@@ -127,7 +127,7 @@
                                         read.Action("Traslados_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                .HtmlAttributes(new { style = "width:100%;"})
                                 )
                 </span>
             </div>
@@ -147,7 +147,29 @@
    
 <script>
     function guardarComplementoVehiculo() {
-        var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
+        var validator = $("#complementoVehiculoForm").kendoValidator({
+            validateOnBlur: false,
+            rules: {
+                customRule: function (input) {
+                    // Validar solo campos requeridos
+                    if (input.attr("required")) {
+                        return input.val().trim() !== "";
+                    }
+                    return true;  // Si no es un campo requerido, considerarlo válido
+                }
+            },
+            messages: {
+                customRule: "Este campo es obligatorio."
+            },
+            errorTemplate: "<span class='k-widget k-tooltip k-tooltip-validation k-invalid-msg' style='position: absolute; display: none;'></span>",
+            errorPlacement: function (error, element) {
+                // Evitar mostrar mensajes de error para campos no requeridos
+                if (element.attr("required")) {
+                    error.insertAfter(element);
+                }
+            }
+        }).data('kendoValidator');
+
         var isValid = validator.validate();
 
         if (isValid) {
@@ -172,7 +194,6 @@
                 },
                 error: function (error) {
                     console.error("Error en la solicitud AJAX:", error);
-                    // Aquí puedes manejar el error adecuadamente, ya sea mostrando un mensaje de error o tomando otras acciones.
                 }
             });
         } else {

@@ -4,6 +4,7 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class MotivosInfraccionVistaModel
     {
+        public int prioridad { get; set; }
         public int idMotivoInfraccion { get; set; }
         public string Nombre { get; set; }
         public string Fundamento { get; set; }

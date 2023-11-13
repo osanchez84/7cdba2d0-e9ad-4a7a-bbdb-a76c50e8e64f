@@ -30,6 +30,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Kendo.Mvc.UI;
 using Org.BouncyCastle.Crypto;
+using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -172,9 +173,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionById(IdInfraccion);
-            var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, InfraccionModel);
-            return File(result.Item1, "application/pdf", result.Item2);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
+            return File(report.File.ToArray(), "application/pdf", report.FileName);
         }
 
         [HttpGet]
@@ -340,9 +341,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpPost]
         public IActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
-
         {
-            if (_appSettings.AllowWebServices)
+			RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+			{
+				placa = model.PlacasBusqueda,
+				niv = model.SerieBusqueda
+			};
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+			ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+			if (_appSettings.AllowWebServices)
             {
                 var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
                 vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -451,13 +458,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
-                            //Aqui servico repuve//////
-                            //var resultSegundoServicio = await BusquedaRepuveAsync(model);
-                            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
-                            {
-                                placa = model.PlacasBusqueda,
-                                niv = model.SerieBusqueda
-                            };
                             var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
 

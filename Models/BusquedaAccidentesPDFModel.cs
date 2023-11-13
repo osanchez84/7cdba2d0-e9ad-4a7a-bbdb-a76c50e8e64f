@@ -118,9 +118,11 @@ namespace GuanajuatoAdminUsuarios.Models
         public string conductor { get; set; }
         public int? IdTipoVehiculo { get; set; }
         public int? IdTipoServicio { get; set; }
+		public int estatus { get; set; }
+
+		
 
 
 
-
-    }
+	}
 }

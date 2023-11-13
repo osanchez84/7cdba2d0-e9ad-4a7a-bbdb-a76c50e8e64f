@@ -7,6 +7,7 @@ using GuanajuatoAdminUsuarios.Models;
 using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.Runtime.ConstrainedExecution;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -117,17 +118,25 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa, a.idAutoriza, a.kilometro, a.idOficinaDelegacion, " +
+                        "MAX(a.estatus) AS estatus, "+                       
                         "mun.municipio, " +
-                        "car.carretera, " +
+                        "car.carretera, " +                       
                         "tra.tramo, " +
-                        "er.estatusReporte,er.idEstatusReporte, " +
+                        "er.estatusReporte, " +
+                        "er.idEstatusReporte, " +
                         "MAX(vea.placa) AS placa, MAX(vea.serie) AS serie, " +
                         "MAX(cond.idPersona) AS idConductor, " +
-                        "MAX(vea.idPersona) AS idPropietario, " +
+					    "MAX(cond.nombre) AS nombreCond, " +
+						"MAX(cond.apellidoPaterno) AS apellidoPaternoCond, " +
+						"MAX(cond.apellidoMaterno) AS apellidoMaternoCond, " +
+						"MAX(vea.idPersona) AS idPropietario, " +
                         "ela.idOficial AS elabora, " +
                         "sup.idOficial AS supervisa, " +
-                        "aut.idOficial AS autoriza " +
-                        "FROM accidentes AS a " +
+                        "aut.idOficial AS autoriza, " +
+						"MAX(prop.nombre) AS nombrePropietario, " +
+						"MAX(prop.apellidoPaterno) AS apellidoPaternoProp, " +
+						"MAX(prop.apellidoMaterno) AS apellidoMaternoProp " +
+						"FROM accidentes AS a " +
                         "LEFT JOIN vehiculosAccidente AS vea ON a.idAccidente = vea.idAccidente " +
                         "LEFT JOIN vehiculos AS v ON vea.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN conductoresVehiculosAccidente AS cva ON a.idAccidente = cva.idAccidente " +
@@ -140,46 +149,19 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catOficiales AS ela ON a.idElabora = ela.idOficial " +
                         "LEFT JOIN catOficiales AS sup ON a.idSupervisa = sup.idOficial " +
                         "LEFT JOIN catOficiales AS aut ON a.idAutoriza = aut.idOficial " +
-                        "WHERE (vea.placa = @placasBusqueda OR a.fecha BETWEEN @fechaInicio AND @fechaFin " +
-                        "OR UPPER(a.numeroReporte) = @oficioBusqueda " +
-                        "OR a.idAutoriza = @idOficialBusqueda " +
-                        "OR a.idSupervisa = @idOficialBusqueda " +
-                        "OR a.idAutoriza = @idOficialBusqueda " +
-                        "OR a.idCarretera = @idCarreteraBusqueda " +
-                        "OR a.idTramo = @idTramoBusqueda " +
-                        "OR prop.nombre = @propietarioBusqueda " +
-                        "OR UPPER(prop.apellidoPaterno) = @propietarioBusqueda " +
-                        "OR UPPER(prop.apellidoMaterno) = @propietarioBusqueda " +
-                        "OR cond.nombre = @conductorBusqueda " +
-                        "OR UPPER(cond.apellidoPaterno) = @conductorBusqueda " +
-                        "OR UPPER(cond.apellidoMaterno) = @conductorBusqueda " +
-                        "OR vea.serie = @serieBusqueda)" +
-                        "AND a.idOficinaDelegacion = @idOficina AND a.estatus != 0 " +
+                        "WHERE a.idOficinaDelegacion = @idOficina AND a.estatus=1 " +
                         "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                         "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,er.idEstatusReporte, ela.idOficial, sup.idOficial, aut.idOficial; ", connection);
 
 
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
-
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
-
-                    command.Parameters.Add(new SqlParameter("@oficioBusqueda", SqlDbType.NVarChar)).Value = (object)model.folioBusqueda != null ? model.folioBusqueda.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idDelegacionBusqueda", SqlDbType.Int)).Value = (object)model.IdDelegacionBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idOficialBusqueda", SqlDbType.Int)).Value = (object)model.IdOficialBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idCarreteraBusqueda", SqlDbType.Int)).Value = (object)model.IdCarreteraBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idTramoBusqueda", SqlDbType.Int)).Value = (object)model.IdTramoBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@propietarioBusqueda", SqlDbType.NVarChar)).Value = (object)model.propietarioBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@conductorBusqueda", SqlDbType.NVarChar)).Value = (object)model.conductorBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@placasBusqueda", SqlDbType.NVarChar)).Value = (object)model.placasBusqueda ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@serieBusqueda", SqlDbType.NVarChar)).Value = (object)model.serieBusqueda ?? DBNull.Value;
-
+                   
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
-                        
-                        
+
+
                         {
                             BusquedaAccidentesModel accidente = new BusquedaAccidentesModel();
                             accidente.IdAccidente = Convert.IsDBNull(reader["idAccidente"]) ? 0 : Convert.ToInt32(reader["idAccidente"]);
@@ -191,7 +173,19 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.estatusReporte = reader["estatusReporte"].ToString();
                             accidente.municipio = reader["municipio"].ToString();
                             accidente.carretera = reader["carretera"].ToString();
-                            accidente.tramo = reader["tramo"].ToString();
+							accidente.nombrePropietario = reader["nombrePropietario"].ToString();
+							accidente.apellidoPaternoPropietario = reader["apellidoPaternoProp"].ToString();
+							accidente.apellidoMaternoPropietario = reader["apellidoMaternoProp"].ToString();
+							accidente.propietario = $"{reader["nombrePropietario"]} {(string.IsNullOrEmpty(reader["apellidoPaternoProp"].ToString()) ? "" : reader["apellidoPaternoProp"].ToString() + " ")}{(string.IsNullOrEmpty(reader["apellidoMaternoProp"].ToString()) ? "" : reader["apellidoMaternoProp"].ToString())}".Trim();
+							accidente.nombreConductor = reader["nombreCond"].ToString();
+							accidente.apellidoPaternoConductor = reader["apellidoPaternoCond"].ToString();
+							accidente.apellidoMaternoConductor = reader["apellidoMaternoCond"].ToString();
+							accidente.conductor = $"{reader["nombreCond"]} {(string.IsNullOrEmpty(reader["apellidoPaternoCond"].ToString()) ? "" : reader["apellidoPaternoCond"].ToString() + " ")}{(string.IsNullOrEmpty(reader["apellidoMaternoCond"].ToString()) ? "" : reader["apellidoMaternoCond"].ToString())}".Trim();
+
+							accidente.placa = reader["placa"].ToString();
+							accidente.serie = reader["serie"].ToString();
+
+							accidente.tramo = reader["tramo"].ToString();
                             accidente.idElabora = Convert.IsDBNull(reader["idElabora"]) ? 0 : Convert.ToInt32(reader["idElabora"]);
                             accidente.idSupervisa = Convert.IsDBNull(reader["idSupervisa"]) ? 0 : Convert.ToInt32(reader["idSupervisa"]);
                             accidente.idAutoriza = Convert.IsDBNull(reader["idAutoriza"]) ? 0 : Convert.ToInt32(reader["idAutoriza"]);
@@ -200,8 +194,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.numeroReporte = reader["numeroReporte"].ToString();
                             accidente.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;
                             accidente.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
+							accidente.estatus = Convert.IsDBNull(reader["estatus"]) ? 0 : Convert.ToInt32(reader["estatus"]);
 
-                            ListaAccidentes.Add(accidente);
+							ListaAccidentes.Add(accidente);
 
                         }
 
@@ -220,6 +215,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+     
         public List<BusquedaAccidentesPDFModel> BusquedaAccidentes(BusquedaAccidentesPDFModel model, int idOficina)
         {
             //
@@ -230,7 +226,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa, a.idAutoriza, a.kilometro, a.idOficinaDelegacion, " +
+                    SqlCommand command = new SqlCommand("SELECT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa, a.idAutoriza, a.kilometro, a.idOficinaDelegacion,a.estatus " +
                         "mun.municipio, " +
                         "car.carretera, " +
                         "tra.tramo, " +
@@ -281,7 +277,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
 
                     command.Parameters.Add(new SqlParameter("@oficioBusqueda", SqlDbType.NVarChar)).Value = (object)model.folio != null ? model.folioBusqueda.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idDelegacionBusqueda", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficialBusqueda", SqlDbType.Int)).Value = (object)model.IdOficial ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idCarreteraBusqueda", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTramoBusqueda", SqlDbType.Int)).Value = (object)model.idTramo ?? DBNull.Value;
@@ -311,8 +306,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.numeroReporte = reader["numeroReporte"].ToString();
                             accidente.fecha = reader["fecha"] != DBNull.Value ? reader["fecha"].ToString().Split(" ")[0] : string.Empty;
                             accidente.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
+							accidente.estatus = Convert.IsDBNull(reader["estatus"]) ? 0 : Convert.ToInt32(reader["estatus"]);
 
-                            ListaAccidentes.Add(accidente);
+							ListaAccidentes.Add(accidente);
 
                         }
 

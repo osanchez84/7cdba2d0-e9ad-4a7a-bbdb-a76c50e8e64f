@@ -180,9 +180,12 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ISalidaVehiculosService, SalidaVehiculosService>();
             services.AddScoped<IIngresarVehiculosService, IngresoVehiculosService>();
             services.AddScoped<IBusquedaDepositoService, BusquedaDepositoService>();
+            services.AddScoped<ICortesiasNoAplicadas, CortesiasNoAplicadasService>();
 
 
             services.AddScoped<IColores, CatColoresService>();
+            services.AddScoped<ICatEstatusReporteService, CatEstatusReporteService>();
+
 
             services.AddScoped<IAppSettingsService, AppSettingService>();
             services.AddScoped<IRepuveService, RepuveService>();

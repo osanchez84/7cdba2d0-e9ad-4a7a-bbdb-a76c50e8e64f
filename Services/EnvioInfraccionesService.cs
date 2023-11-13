@@ -53,7 +53,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ", inf.fechaActualizacion" +
                                             ", inf.actualizadoPor" +
                                             ", inf.estatus" +
-                                            ", prop.nombre AS nombrePropietario" +
+                                            ", CONVERT(varchar, inf.fechaInfraccion, 103) AS fecha" +
+											", CONVERT(varchar, dateadd(day, 10,  inf.fechaInfraccion),  103) AS fechaVencimiento" +
+											", prop.nombre AS nombrePropietario" +
                                             ", prop.apellidoPaterno AS apellidoPaternoPropietario" +
                                             ", prop.apellidoMaterno AS apellidoMaternoPropietario" +
                                             ", cond.nombre AS nombreConductor" +
@@ -87,7 +89,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccion.estatusInfraccion = reader["estatusInfraccion"].ToString();
                             infraccion.placas = reader["placasVehiculo"].ToString();
                             infraccion.folioInfraccion = reader["folioInfraccion"].ToString();
-                            infraccion.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+                            infraccion.fecha = reader["fecha"].ToString();
+							infraccion.fechaVencimiento = reader["fechaVencimiento"].ToString();
+							infraccion.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             infraccion.nombreConductor = reader["nombreConductor"].ToString();
                             infraccion.apellidoPaternoConductor = reader["apellidoPaternoConductor"].ToString();
                             infraccion.apellidoMaternoConductor = reader["apellidoMaternoConductor"].ToString();

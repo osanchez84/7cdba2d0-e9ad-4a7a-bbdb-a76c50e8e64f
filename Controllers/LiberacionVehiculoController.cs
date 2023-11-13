@@ -1,5 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -26,13 +28,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPlacaServices _placaServices;
         private readonly IMarcasVehiculos _marcaServices;
         private readonly ILiberacionVehiculoService _liberacionVehiculoService;
+        private readonly IRepuveService _repuveService;
 
         public LiberacionVehiculoController(IPlacaServices placaServices,
-            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService)
+            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService, IRepuveService repuveService)
         {
             _placaServices = placaServices;
             _marcaServices = marcaServices;
             _liberacionVehiculoService = liberacionVehiculoService;
+            _repuveService = repuveService;
         }
 
 
@@ -93,8 +97,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_UpdateLiberacion(int Id)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
             var model = _liberacionVehiculoService.GetDepositoByID(Id, idOficina);
+            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+            {
+                placa = model.Placa,
+                niv = model.Serie
+            };
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
             //model.FechaIngreso.ToString("dd/MM/yyyy");
             return PartialView("_UpdateLiberacion", model);
 

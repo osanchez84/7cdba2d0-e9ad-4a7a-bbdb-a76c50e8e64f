@@ -160,15 +160,26 @@
 						<label>Inicio:</label>
 						@(Html.Kendo().DatePickerFor(t => t.FechaInicio)
 							.Format("dd-MM-yyyy")
-							.HtmlAttributes(new { style = "width: 100%", title = "datepicker" }))
+							.HtmlAttributes(new { style = "width: 100%", title = "datepicker",id="start" })
+							.Events(e => e.Change("validarFecha")) 							)
 					</div>
+					<div id="mensajeError1" style="color: red;"></div>
 				</div>
 				<div class="form-group col-md-4">
 					<div class="controlForm">
 						<label>Fin:</label>
 						@(Html.Kendo().DatePickerFor(t => t.FechaFin)
 							.Format("dd-MM-yyyy")
-							.HtmlAttributes(new { style = "width: 100%", title = "datepicker" }))
+							.HtmlAttributes(new { style = "width: 100%", title = "datepicker", id="end" }))
+					</div>
+				</div>
+
+				<div class="form-group col-md-4">
+					<div class="controlForm">
+						<label>Hora:</label>
+						@(Html.Kendo().TimePickerFor(t => t.hora)
+							.Format("HH:mm")
+							.HtmlAttributes(new { style = "width: 100%", title = "timepicker" }))
 					</div>
 				</div>
 				<div class="form-group col-md-4">
@@ -193,6 +204,7 @@
 </div>
 
 <script>
+
 	function submitSearch() {
 		var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
 		//console.log(Mydata);
@@ -205,27 +217,7 @@
 			}
 		});
 	}
-	function startChange() {
-		var endPicker = $("#end").data("kendoDatePicker"),
-			startDate = this.value();
 
-		if (startDate) {
-			startDate = new Date(startDate);
-			startDate.setDate(startDate.getDate() + 1);
-			endPicker.min(startDate);
-		}
-	}
-
-	function endChange() {
-		var startPicker = $("#start").data("kendoDatePicker"),
-			endDate = this.value();
-
-		if (endDate) {
-			endDate = new Date(endDate);
-			endDate.setDate(endDate.getDate() - 1);
-			startPicker.max(endDate);
-		}
-	}
 
 	$("#ddlFactores").on("change", function () {
 		var value = $(this).val();
@@ -234,12 +226,50 @@
 
 	});
 	$(document).ready(function () {
-		var datePicker = $("#FechaFin").data("kendoDatePicker");
+		var datePicker = $("#end").data("kendoDatePicker");
 		datePicker.value(null);
 	});
 
 	$(document).ready(function () {
-		var datePicker = $("#FechaInicio").data("kendoDatePicker");
+		var datePicker = $("#start").data("kendoDatePicker");
 		datePicker.value(null);
 	});
+
+	function validarFecha() {
+		var fechaInicioPicker = $("#start").data("kendoDatePicker");
+		var fechaFinPicker = $("#end").data("kendoDatePicker");
+
+		var fechaInicio = fechaInicioPicker.value();
+		var fechaFin = fechaFinPicker.value();
+		var currentDate = new Date();
+
+		if (fechaInicio > currentDate || (fechaInicio && fechaFin && fechaFin < fechaInicio)) {
+			if (fechaInicio > currentDate) {
+				mostrarMensajeError("La fecha de inicio no puede ser futura. Por favor, seleccione una fecha válida.");
+				 fechaInicioPicker.value(null); 
+			} else {
+				mostrarMensajeError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+				fechaFinPicker.value(null);
+			}
+		} else {
+			limpiarMensajeError();
+			if (fechaInicio) {
+				fechaFinPicker.min(fechaInicio);
+			}
+		}
+	}
+
+	function mostrarMensajeError(mensaje) {
+		var mensajeError = $("#mensajeError1");
+		mensajeError.text(mensaje);
+		console.log("AK", mensaje);
+	}
+
+	function limpiarMensajeError() {
+		console.log("LIMPIAR");
+
+		var mensajeError = $("#mensajeError1");
+		mensajeError.text("");
+	}
+
 </script>

@@ -4,12 +4,12 @@ using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Utils;
 using Kendo.Mvc.Infrastructure.Implementation;
 using Microsoft.AspNetCore.Authorization;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatTramosService _catTramosService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         private readonly IOficiales _oficialesService;
+        private readonly ICatEstatusReporteService _catEstatusReporteService;
         private readonly ICapturaAccidentesService _capturaAccidentesService;
         private readonly IPdfGenerator<BusquedaAccidentesPDFModel> _pdfService;
         private readonly ICatDictionary _catDictionary;
@@ -34,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public BusquedaAccidentesController(IBusquedaAccidentesService busquedaAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService, IPdfGenerator<BusquedaAccidentesPDFModel> pdfService,
-            ICapturaAccidentesService capturaAccidentesService,ICatDictionary catDictionary)
+            ICapturaAccidentesService capturaAccidentesService,ICatDictionary catDictionary, ICatEstatusReporteService catEstatusReporteService)
         {
             _busquedaAccidentesService = busquedaAccidentesService;
             _catCarreterasService = catCarreterasService;
@@ -44,6 +45,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _pdfService = pdfService;
             _capturaAccidentesService = capturaAccidentesService;
             _catDictionary = catDictionary;
+            _catEstatusReporteService = catEstatusReporteService;
         }
         #region DropDowns
         public IActionResult Index()
@@ -53,13 +55,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                return View();
+                int? idOficina = HttpContext.Session.GetInt32("IdOficina");
+                BusquedaAccidentesModel modelo = new BusquedaAccidentesModel
+                {
+                    IdDelegacionBusqueda = idOficina ?? 0, 
+                };
+                return View(modelo);
             }
             else
             {
                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
+        }
+        public JsonResult GetAllAccidentes([DataSourceRequest] DataSourceRequest request)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina);
+
+            return Json(resultadoBusqueda.ToDataSourceResult(request));
         }
         public JsonResult Delegaciones_Drop()
         {
@@ -90,9 +105,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(result);
         }
+        public JsonResult EstatusAccidente_Drop()
+        {
+            var result = new SelectList(_catEstatusReporteService.ObtenerEstatusReporte(), "idEstatusReporte", "estatusReporte");
+            return Json(result);
+        }
         #endregion
 
-        public ActionResult ajax_BuscarAccidente(BusquedaAccidentesModel model)
+       /* public ActionResult ajax_BuscarAccidente(BusquedaAccidentesModel model)
         {
             if (model.FechaInicio == null)
             {
@@ -105,11 +125,34 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var resultadoBusqueda = _busquedaAccidentesService.BusquedaAccidentes(model,idOficina);
-          return Json(resultadoBusqueda);
+            var resultadoBusqueda = _busquedaAccidentesService.BusquedaAccidentes(model, idOficina);
+            return Json(resultadoBusqueda);
+        }*/
+			public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
+            {
+				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            
-        }
+				var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina)
+                                                    .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+                                                        && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
+                                                        && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
+                                                        && w.idTramo == (model.IdTramoBusqueda > 0 ? model.IdTramoBusqueda : w.idTramo)
+                                                        && w.idElabora == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idElabora)
+								                    	&& w.idAutoriza == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idAutoriza)
+														&& w.idEstatusReporte == (model.IdEstatusAccidente > 0 ? model.IdEstatusAccidente : w.idEstatusReporte)
+													   &&(string.IsNullOrEmpty(model.folioBusqueda) || w.numeroReporte.Contains(model.folioBusqueda))
+												       && (string.IsNullOrEmpty(model.placasBusqueda) || w.placa.Contains(model.placasBusqueda))
+													   && (string.IsNullOrEmpty(model.propietarioBusqueda) || w.propietario.Contains(model.propietarioBusqueda))
+													   && (string.IsNullOrEmpty(model.serieBusqueda) || w.serie.Contains(model.serieBusqueda))
+												       && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda))
+													   && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
+														).ToList();
+
+                return Json(resultadoBusqueda);
+
+            }
+
+		
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdAccidente)
         {

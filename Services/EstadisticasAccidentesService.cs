@@ -217,6 +217,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 MAX(acc.idFactorAccidente) AS idFactorAccidente,
                                                                 MAX(acc.idFactorOpcionAccidente) AS idFactorOpcionAccidente,
                                                                 MAX(acc.estatus) AS estatus,
+																MAX(del.delegacion) AS delegacion,
                                                                 MAX(acc.numeroReporte) AS numeroReporte,
                                                                 MAX(acc.fecha) AS fecha,
                                                                 MAX(acc.hora) AS hora,
@@ -231,7 +232,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 LEFT JOIN conductoresVehiculosAccidente AS cva ON acc.idAccidente = cva.idAccidente  
                                                                 LEFT JOIN personas AS cond ON cond.idPersona = cva.idPersona
                                                                 LEFT JOIN vehiculos AS veh ON cva.idVehiculo = veh.idVehiculo
-                                                                LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
+                                                                LEFT JOIN catDelegaciones AS del ON acc.idOficinaDelegacion = del.idDelegacion
+										                        LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
+
                                                                 WHERE acc.estatus = 1
                                                                 GROUP BY acc.idAccidente;
                                                                 ", connection);
@@ -245,7 +248,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.IdAccidente = reader["IdAccidente"] != DBNull.Value ? Convert.ToInt32(reader["IdAccidente"]) : 0;
                             accidente.idMunicipio = reader["idMunicipio"] != DBNull.Value ? Convert.ToInt32(reader["idMunicipio"]) : 0;
                             accidente.municipio = reader["municipio"].ToString();
-                            accidente.idDelegacion = reader["idOficinaDelegacion"] != DBNull.Value ? Convert.ToInt32(reader["idOficinaDelegacion"]) : 0;
+							accidente.municipio = reader["delegacion"].ToString();
+							accidente.idDelegacion = reader["idOficinaDelegacion"] != DBNull.Value ? Convert.ToInt32(reader["idOficinaDelegacion"]) : 0;
                             accidente.IdOficial = reader["idElabora"] != DBNull.Value ? Convert.ToInt32(reader["idElabora"]) : 0;
                             accidente.idCarretera = reader["idCarretera"] != DBNull.Value ? Convert.ToInt32(reader["idCarretera"]) : 0;
                             accidente.idTramo = reader["IdTramo"] != DBNull.Value ? Convert.ToInt32(reader["IdTramo"]) : 0;
@@ -344,8 +348,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-					int numeroSecuencial = 1; // Inicializa el número secuencial en 1
-					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    int numeroSecuencial = 1; // Inicializa el número secuencial en 1
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
@@ -354,8 +358,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Fecha = reader["Fecha"] == System.DBNull.Value ? default(string) : reader["Fecha"].ToString();
                             model.Hora = reader["Hora"] == System.DBNull.Value ? default(string) : reader["Hora"].ToString();
                             model.Delegacion = reader["Delegacion"] == System.DBNull.Value ? default(string) : reader["Delegacion"].ToString();
-							model.carretera = reader["carretera"] == System.DBNull.Value ? default(string) : reader["carretera"].ToString();
-							model.municipio = reader["municipio"] == System.DBNull.Value ? default(string) : reader["municipio"].ToString();
+                            model.carretera = reader["carretera"] == System.DBNull.Value ? default(string) : reader["carretera"].ToString();
+                            model.municipio = reader["municipio"] == System.DBNull.Value ? default(string) : reader["municipio"].ToString();
                             model.tramo = reader["tramo"] == System.DBNull.Value ? default(string) : reader["tramo"].ToString();
                             model.kilometro = reader["kilometro"] == System.DBNull.Value ? default(string) : reader["kilometro"].ToString();
                             model.latitud = reader["latitud"] == System.DBNull.Value ? default(string) : reader["latitud"].ToString();
@@ -371,10 +375,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.FactoresOpciones = reader["FactoresOpciones"] == System.DBNull.Value ? default(string) : reader["FactoresOpciones"].ToString();
                             model.Causas = reader["Causas"] == System.DBNull.Value ? default(string) : reader["Causas"].ToString();
                             model.CausasDescripcion = reader["CausasDescripcion"] == System.DBNull.Value ? default(string) : reader["CausasDescripcion"].ToString();
-							model.NumeroSecuencial = numeroSecuencial;
-							modelList.Add(model);
-							numeroSecuencial++;
-						}
+                            model.NumeroSecuencial = numeroSecuencial;
+                            modelList.Add(model);
+                            numeroSecuencial++;
+                        }
                     }
                 }
                 catch (SqlException ex)
@@ -455,9 +459,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-					int numeroContinuo = 1; 
+                    int numeroContinuo = 1;
 
-					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
@@ -489,15 +493,15 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Lesionados = reader["Lesionados"] == System.DBNull.Value ? default(string) : reader["Lesionados"].ToString();
                             model.Muertos = reader["Muertos"] == System.DBNull.Value ? default(string) : reader["Muertos"].ToString();
                             model.Causas = reader["Causas"] == System.DBNull.Value ? default(string) : reader["Causas"].ToString();
-							model.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;
-							model.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
-							model.CausasDescripcion = reader["CausasDescripcion"] == System.DBNull.Value ? default(string) : reader["CausasDescripcion"].ToString();
-							model.NumeroContinuo = numeroContinuo;
-							modelList.Add(model);
-							numeroContinuo++;
+                            model.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;
+                            model.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
+                            model.CausasDescripcion = reader["CausasDescripcion"] == System.DBNull.Value ? default(string) : reader["CausasDescripcion"].ToString();
+                            model.NumeroContinuo = numeroContinuo;
+                            modelList.Add(model);
+                            numeroContinuo++;
 
-						}
-					}
+                        }
+                    }
                 }
                 catch (SqlException ex)
                 {

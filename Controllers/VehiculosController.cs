@@ -161,7 +161,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             [HttpPost]
         public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
-            if (_appSettings.AllowWebServices)
+			RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+			{
+				placa = model.PlacasBusqueda,
+				niv = model.SerieBusqueda
+			};
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+			if (_appSettings.AllowWebServices)
             {
                 var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
                 vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -271,11 +278,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
-                            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
-                            {
-                                placa = model.PlacasBusqueda,
-                                niv = model.SerieBusqueda
-                            };
                             var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
 
@@ -310,12 +312,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         return Json(new { success = false, message = "Ha ocurrido un error al comunicarse con el servicio web." });
                     }
                 }
-                RepuveConsgralRequestModel repuveGralModel1 = new RepuveConsgralRequestModel()
-                {
-                    placa = model.PlacasBusqueda,
-                    niv = model.SerieBusqueda
-                };
-                var repuveConsGralResponse1 = _repuveService.ConsultaGeneral(repuveGralModel1).FirstOrDefault();
+              
+                var repuveConsGralResponse1 = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
 
                 var vehiculoEncontrado1 = new VehiculoModel

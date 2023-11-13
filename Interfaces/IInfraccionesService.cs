@@ -11,6 +11,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public List<InfraccionesModel> GetAllInfracciones2();
 
         public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina);
+        public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina);
+
+        
         public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid();
         List<InfraccionesModel> GetAllInfracciones(int idOficina);
         public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion);
@@ -19,6 +22,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina);
 
         InfraccionesModel GetInfraccionById(int IdInfraccion);
+        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion);
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);

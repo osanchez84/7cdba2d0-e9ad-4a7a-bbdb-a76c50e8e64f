@@ -34,6 +34,10 @@ function sitteg_success(msg) {
     set_toastr_options(2500);
     toastr.success(msg, "Alerta");
 }
+function sitteg_error(msg) {
+    set_toastr_options(2500);
+    toastr.error(msg, "Alerta");
+}
 
 
 function set_toastr_options(timeout) {

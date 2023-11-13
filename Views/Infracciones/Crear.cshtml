@@ -146,6 +146,8 @@
                                             .Name("idOficial")
                                             .BindTo((SelectList)ViewBag.CatOficiales)
                                             .OptionLabel("-- Seleccione --")
+                                            .Filter(FilterType.Contains)
+
                                             .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                             )
                                     </div>
@@ -157,6 +159,8 @@
                                             .Name("idMunicipio")
                                             .BindTo((SelectList)ViewBag.CatMunicipios)
                                             .OptionLabel("-- Seleccione --")
+                                            .Filter(FilterType.Contains)
+
                                             .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                             )
                                     </div>
@@ -188,6 +192,8 @@
                                         @(Html.Kendo().DropDownList()
                                             .Name("idCarretera")
                                             .BindTo((SelectList)ViewBag.CatCarreteras)
+                                            .Filter(FilterType.Contains)
+
                                             .OptionLabel("-- Seleccione --")
                                             .HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
                                             )

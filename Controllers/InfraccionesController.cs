@@ -30,6 +30,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Kendo.Mvc.UI;
 using Org.BouncyCastle.Crypto;
+using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -172,9 +173,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionById(IdInfraccion);
-            var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, InfraccionModel);
-            return File(result.Item1, "application/pdf", result.Item2);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
+            return File(report.File.ToArray(), "application/pdf", report.FileName);
         }
 
         [HttpGet]

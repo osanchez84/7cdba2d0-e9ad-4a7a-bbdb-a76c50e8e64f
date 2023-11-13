@@ -77,7 +77,7 @@
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Selecciona la Delegación")
-                    .Events(e => e.Change("pensionDropDownChange"))
+                    .Events(e => e.Change("pensionDropDownChange"))                    
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -127,7 +127,7 @@
                                         read.Action("Traslados_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                .HtmlAttributes(new { style = "width:100%;" })
                                 )
                 </span>
             </div>
@@ -148,7 +148,15 @@
 <script>
     function guardarComplementoVehiculo() {
         var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
+        
+        
+        $("#IdDelegacion").prop("disabled",true)
+        $("#IdPension").prop("disabled", true)
+        $("#IdFormaTraslado").prop("disabled", true)
+
         var isValid = validator.validate();
+
+
 
         if (isValid) {
             var Mydata = $("#complementoVehiculoForm").serialize();
@@ -176,6 +184,12 @@
                 }
             });
         } else {
+
+            $("#IdDelegacion").prop("disabled", false)
+            $("#IdPension").prop("disabled", false)
+            $("#IdFormaTraslado").prop("disabled", false)
+
+
             sitteg_info('Debe llenar los campos requeridos');
             return;
         }

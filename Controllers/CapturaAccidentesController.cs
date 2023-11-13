@@ -31,9 +31,12 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Globalization;
 using GuanajuatoAdminUsuarios.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+    [Authorize]
     public class CapturaAccidentesController : BaseController
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -248,7 +251,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			ViewBag.IdVehiculo = IdVehiculo;
 			var ListConductor = _capturaAccidentesService.ObtenerConductorPorId(IdPersona);
-			return PartialView("_ModalConductor", ListConductor);
+			HttpContext.Session.SetInt32("idVehiculoInsertado",IdVehiculo);
+
+            return PartialView("_ModalConductor", ListConductor);
 		}
 
 		public ActionResult ModalClasificacionAccidente()
@@ -600,7 +605,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(idVehiculoInsertado);
 		}
-		public IActionResult GuardarConductorVehiculo(int IdPersona)
+		public IActionResult GuardarConductorVehiculo(int IdPersona,int idAuto)
 		{
 			int IdVehiculoI = HttpContext.Session.GetInt32("idVehiculoInsertado") ?? 0; // Obtener el valor de idVehiculoInsertado desde la variable de sesión
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
@@ -614,6 +619,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
 			return Json(ListInvolucradoModel);
 		}
+
+
+
+
+
 
 		[HttpPost]
 

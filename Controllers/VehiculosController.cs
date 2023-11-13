@@ -3,6 +3,7 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class VehiculosController : BaseController
     {
         private readonly ICatDictionary _catDictionary;

@@ -30,10 +30,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Kendo.Mvc.UI;
 using Org.BouncyCastle.Crypto;
+using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+    [Authorize]
     public class InfraccionesController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
@@ -1020,6 +1023,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult BusquedaEspecial()
         {
+
+            var t = User.FindFirst(CustomClaims.Nombre).Value;
+
             return View("BusquedaEspecial");
         }
 

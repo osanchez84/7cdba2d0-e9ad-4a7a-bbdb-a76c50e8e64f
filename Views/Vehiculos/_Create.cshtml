@@ -150,6 +150,7 @@
                 @if (disableInput)
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
+                        .DateInput()
                         .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
@@ -157,6 +158,7 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
+                        .DateInput()
                         .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                       
@@ -244,6 +246,7 @@
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubVe")
                             .OptionLabel(@Model.submarca)
+
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
 

@@ -45,6 +45,8 @@
                                 @(Html.Kendo().DatePickerFor(t => t.Fecha)
                                     .Label(l => l.Content("Fecha <b>(obligatorio)</b>:"))
                                     .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
+                                    .Events(e => e
+                                    .Change("validarFecha"))
                                     )
                             </span>
                         </div>
@@ -199,5 +201,15 @@
         });
     }
 
+    function validarFecha() {
+        var datePicker = $("#Fecha").data("kendoDatePicker");
+        var selectedDate = datePicker.value();
+        var currentDate = new Date();
 
+        if (selectedDate > currentDate) {
+            alert("La fecha no puede ser futura. Por favor, seleccione una fecha válida.");
+            // Puedes ajustar la lógica aquí según tus necesidades
+            datePicker.value(null); // Limpia la selección
+        }
+    }
    </script>

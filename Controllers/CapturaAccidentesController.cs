@@ -306,7 +306,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 		public async Task<string> AbrirModalVehiculo(string placa, string serie)
 		{
-			string jsonPartialView = string.Empty;
+            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+            {
+                placa = placa,
+                niv = serie
+            };
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+            string jsonPartialView = string.Empty;
 			VehiculoModel vehiculoEncontrado = null;
 			if (!string.IsNullOrEmpty(placa))
 			{
@@ -409,11 +416,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 			if (!string.IsNullOrEmpty(placa) || !string.IsNullOrEmpty(serie) && vehiculoEncontrado == null)
 			{
-				RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
-				{
-					placa = placa,
-					niv = serie
-				};
 				var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
 

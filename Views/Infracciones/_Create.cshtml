@@ -1105,6 +1105,12 @@
 <script>
 
     $(document).ready(function () {
+        @if (ViewBag.ReporteRobo == true)
+        {
+		<text>
+		sitteg_error('El vehículo cuenta con reporte de robo')
+		</text>
+        }
         buscarPersonasFisicas();
     });
 

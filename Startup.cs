@@ -184,6 +184,8 @@ namespace GuanajuatoAdminUsuarios
 
 
             services.AddScoped<IColores, CatColoresService>();
+            services.AddScoped<ICatEstatusReporteService, CatEstatusReporteService>();
+
 
             services.AddScoped<IAppSettingsService, AppSettingService>();
             services.AddScoped<IRepuveService, RepuveService>();

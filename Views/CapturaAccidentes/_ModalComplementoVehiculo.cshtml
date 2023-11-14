@@ -127,7 +127,7 @@
                                         read.Action("Traslados_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;"})
                                 )
                 </span>
             </div>
@@ -147,12 +147,6 @@
    
 <script>
     function guardarComplementoVehiculo() {
-     /*   var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
-        
-        
-        $("#IdDelegacion").prop("disabled",true)
-        $("#IdPension").prop("disabled", true)
-        $("#IdFormaTraslado").prop("disabled", true)*/
         var validator = $("#complementoVehiculoForm").kendoValidator({
             validateOnBlur: false,
             rules: {

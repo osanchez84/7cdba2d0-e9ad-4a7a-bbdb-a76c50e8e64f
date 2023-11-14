@@ -32,7 +32,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                IEnumerable<Gruas2Model> listGruas = _gruasService.GetAllGruas(idOficina);
+                //IEnumerable<Gruas2Model> listGruas = _gruasService.GetAllGruas(idOficina);
+                var listGruas = new List<Gruas2Model>();
                 var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
                 ViewBag.CatTipoGruas = new SelectList(catTipoGruas.CatalogList, "Id", "Text");
                 return View(listGruas);

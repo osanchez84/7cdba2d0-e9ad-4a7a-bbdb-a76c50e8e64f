@@ -208,6 +208,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }
+       
 
     }
 }

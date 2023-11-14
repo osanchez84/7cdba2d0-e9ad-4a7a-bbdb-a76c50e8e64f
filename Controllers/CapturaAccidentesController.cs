@@ -1106,7 +1106,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
 			return RedirectToAction("CapturaAaccidente");
 		}
-		[HttpPost]
+        public IActionResult ConsultaAccidente(bool modoSoloLectura,int idAccidente)
+        {
+            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
+            ViewBag.ModoSoloLectura = modoSoloLectura;
+            return Ok();
+        }
+        [HttpPost]
 		public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
 		{
 			Persona.idCatTipoPersona = (int)TipoPersona.Moral;

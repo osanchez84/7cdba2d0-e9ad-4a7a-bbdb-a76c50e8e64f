@@ -30,9 +30,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Kendo.Mvc.UI;
 using Org.BouncyCastle.Crypto;
+using Microsoft.AspNetCore.Authorization;
+using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+    [Authorize]
     public class InfraccionesController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
@@ -172,9 +176,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionById(IdInfraccion);
-            var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, InfraccionModel);
-            return File(result.Item1, "application/pdf", result.Item2);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
+            return File(report.File.ToArray(), "application/pdf", report.FileName);
         }
 
         [HttpGet]
@@ -1019,6 +1023,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult BusquedaEspecial()
         {
+
+            var t = User.FindFirst(CustomClaims.Nombre).Value;
+
             return View("BusquedaEspecial");
         }
 

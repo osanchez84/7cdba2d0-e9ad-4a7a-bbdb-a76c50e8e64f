@@ -22,6 +22,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina);
 
         InfraccionesModel GetInfraccionById(int IdInfraccion);
+        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion);
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);

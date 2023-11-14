@@ -72,4 +72,54 @@ namespace GuanajuatoAdminUsuarios.Models
 
         #endregion
     }
+    public class InfraccionesReportModel : EntityModel
+    {
+        public int idInfraccion { get; set; }
+        public string folioInfraccion { get; set; }
+        public DateTime fechaInfraccion { get; set; }
+        public DateTime fechaVencimiento { get; set; }
+        public string estatusInfraccion { get; set; }
+        public string nombreOficial { get; set; }
+        public string municipio { get; set; }
+        public string carretera { get; set; }
+        public string tramo { get; set; }
+        public string kmCarretera { get; set; }
+        public string nombreConductor { get; set; }
+        public string domicilioConductor { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime? fechaNacimientoConductor { get; set; }
+        public int? edadConductor { get; set; }
+        public string generoConductor { get; set; }
+        public string telefonoConductor { get; set; }
+        public string numLicenciaConductor { get; set; }
+        public string tipoLicenciaConductor { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime? vencimientoLicConductor { get; set; }
+        public string placas {  get; set; }
+        public string tipoVehiculo { get; set; }
+        public string marcaVehiculo { get; set; }
+        public string nombreSubmarca { get; set; }
+        public string modelo { get; set; }
+        public string color { get; set; }
+        public string nombrePropietario { get; set; }
+        public string domicilioPropietario { get; set; }
+        public string serie { get; set; }
+        public string NumTarjetaCirculacion { get; set; }
+        public string nombreEntidad { get; set; }
+        public string tipoServicio { get; set; }
+        public string numeroEconomico {  get; set; }
+        public bool tieneCortesia { get; set; }
+        public decimal montoCalificacion { get; set; }
+        public decimal montoPagado { get; set; }
+        public string reciboPago { get; set; }
+        public string oficioCondonacion { get;set; }
+        public DateTime? fechaPago { get; set; }
+        public string lugarPago { get; set; }
+        public string concepto { get; set; }
+        public decimal umas { get; set; }
+        public decimal totalInfraccion { get; set; }
+        public int idGarantia { get; set; }
+        public virtual List<MotivosInfraccionVistaModel> MotivosInfraccion { get; set; }
+        public virtual GarantiaInfraccionModel Garantia { get; set; }
+    }
 }

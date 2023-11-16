@@ -497,16 +497,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-            var personasMoralesModel = _personasService.GetAllPersonasMorales();
-            return PartialView("_ListPersonasMorales", personasMoralesModel);
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+
+            return PartialView("_ListPersonasMorales", modelList);
         }
         [HttpPost]
         public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
             var IdPersonaFisica = _personasService.CreatePersona(Persona);
-            var personasFisicasModel = _personasService.GetAllPersonasFisicas();
-            return PartialView("_PersonasFisicas", personasFisicasModel);
+            if (IdPersonaFisica == 0)
+            {
+                throw new Exception("Ocurrio un error al dar de alta la persona");
+            }
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas", modelList);
         }
         [HttpGet]
         public ActionResult ajax_GetPersonaMoral(int id)

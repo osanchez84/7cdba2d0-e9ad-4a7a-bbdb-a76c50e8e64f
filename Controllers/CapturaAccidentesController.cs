@@ -1127,8 +1127,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			Persona.idCatTipoPersona = (int)TipoPersona.Moral;
 			var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-			var personasMoralesModel = _personasService.GetAllPersonasMorales();
-			return PartialView("_ListPersonasMorales", personasMoralesModel);
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+
+            return PartialView("_ListPersonasMorales", modelList);
 		}
 
 
@@ -1140,7 +1142,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult ajax_BuscarPersonasFiscas()
 		{
 			var personasFisicas = _personasService.GetAllPersonas();
-			return PartialView("_PersonasFisicas", personasFisicas);
+			return PartialView("_PersonasFisicas");
 		}
 
 		[HttpPost]
@@ -1160,8 +1162,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			{
 				throw new Exception("Ocurrio un error al dar de alta la persona");
 			}
-			var personasFisicasModel = _personasService.GetAllPersonasFisicas();
-			return PartialView("_PersonasFisicas", personasFisicasModel);
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas",modelList);
 		}
 		[HttpGet]
 		public ActionResult ajax_GetPersonaMoral(int id)

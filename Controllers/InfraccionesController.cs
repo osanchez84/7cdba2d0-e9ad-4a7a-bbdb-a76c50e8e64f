@@ -900,8 +900,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-            var personasMoralesModel = _personasService.GetAllPersonasMorales();
-            return PartialView("_ListPersonasMorales", personasMoralesModel);
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+
+            return PartialView("_ListPersonasMorales", modelList);
         }
         [HttpGet]
         public IActionResult ajax_ModalCrearPersona()
@@ -927,7 +929,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (id == -1)
             {
                 // El registro ya existe, muestra un mensaje de error al usuario
-                return Json(new { success = false, message = "El registro yaexiste, revise los datos ingresados." });
+                return Json(new { success = false, message = "El registro ya existe, revise los datos ingresados." });
             }
             else
             {
@@ -951,8 +953,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 throw new Exception("Ocurrio un error al dar de alta la persona");
             }
-            var personasFisicasModel = _personasService.GetAllPersonasFisicas();
-            return PartialView("_PersonasFisicas", personasFisicasModel);
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas", modelList);
         }
         [HttpGet]
         public ActionResult ajax_GetPersonaMoral(int id)

@@ -1116,13 +1116,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
 			return RedirectToAction("CapturaAaccidente");
 		}
-		[HttpPost]
+        public IActionResult ConsultaAccidente(bool modoSoloLectura,int idAccidente)
+        {
+            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
+            ViewBag.ModoSoloLectura = modoSoloLectura;
+            return Ok();
+        }
+        [HttpPost]
 		public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
 		{
 			Persona.idCatTipoPersona = (int)TipoPersona.Moral;
 			var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-			var personasMoralesModel = _personasService.GetAllPersonasMorales();
-			return PartialView("_ListPersonasMorales", personasMoralesModel);
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+
+            return PartialView("_ListPersonasMorales", modelList);
 		}
 
 
@@ -1134,7 +1142,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult ajax_BuscarPersonasFiscas()
 		{
 			var personasFisicas = _personasService.GetAllPersonas();
-			return PartialView("_PersonasFisicas", personasFisicas);
+			return PartialView("_PersonasFisicas");
 		}
 
 		[HttpPost]
@@ -1154,8 +1162,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			{
 				throw new Exception("Ocurrio un error al dar de alta la persona");
 			}
-			var personasFisicasModel = _personasService.GetAllPersonasFisicas();
-			return PartialView("_PersonasFisicas", personasFisicasModel);
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas",modelList);
 		}
 		[HttpGet]
 		public ActionResult ajax_GetPersonaMoral(int id)

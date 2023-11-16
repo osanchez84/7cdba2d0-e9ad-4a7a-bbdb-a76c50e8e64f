@@ -851,6 +851,7 @@
                                 )
 
                         </div>
+                            <div id="errorContainerPersona_nombreFisicoV" class="error-container"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -881,6 +882,7 @@
                                 )
 
                         </div>
+                            <div id="errorContainerPersona_RFCFisicoV" class="error-container"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -901,14 +903,16 @@
                                     )
                             </span>
                         </div>
+                           <div id="errorContainerPersona_fechaNacimientoV" class="error-container"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm">
                             <label>Sexo <b>(obligatorio):</b></label>
                         </div>
                       @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
-                            .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>").Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
-                            .HtmlAttributes(new { style = "transform: scale(1.6);" })
+                            .Messages(c => c.Checked("<span style='font-size: 6px;'>Hombre</span>")
+                            .Unchecked("<span style='font-size: 6px;'>Mujer</span>"))
+                            .HtmlAttributes(new { style = "transform: scale(1.6);", id = "generoSwitchV",required = "required" })
 
                             )
                     </div>
@@ -971,6 +975,7 @@
                                 )
 
                         </div>
+                            <div id="errorContainerPersona_PersonaDireccion_coloniaFisicoV" class="error-container"></div>
                     </div>
 
                     <div class="col-12 col-md-6 col-lg-6">
@@ -982,6 +987,7 @@
                                 )
 
                         </div>
+                           <div id="errorContainerPersona_calleFisicoV" class="error-container"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <div class="controlForm my-3">
@@ -992,6 +998,7 @@
                                 )
 
                         </div>
+                       <div id="errorContainerPersona_PersonaDireccion_numeroFisicoV" class="error-container"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -1079,7 +1086,7 @@
                                 </button>
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal" aria-label="Close">
+                                <div class="controlButton" onClick="submitCreatePersonaFisica()" aria-label="Close">
                                     @(Html.Kendo().Button()
                                         .Name("AddFisico")
                                         .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -1203,20 +1210,61 @@
         });
     }
 
-    function submitCreatePersonaFisica() {
-        var Mydata = $("#personaFisicaForm").serialize();
-        console.log(Mydata);
-        $.ajax({
-            url: '@Url.Action("ajax_CrearPersonaFisica")',
-            type: 'POST',
-            data: Mydata,
-            success: function (result) {
-                var grid = $("#gridPersonasFisicas").data("kendoGrid");
-                    grid.refresh();
-            }
-        });
+   function submitCreatePersonaFisica() {
+    var nombreValue = $("#Persona_nombreFisico").val();
+    var RFCValue = $("#Persona_RFCFisico").val();
+    var coloniaValue = $("#Persona_PersonaDireccion_coloniaFisico").val();           
+    var calleValue = $("#Persona_PersonaDireccion_calleFisico").val();            
+     var numeroValue = $("#Persona_PersonaDireccion_numeroFisico").val();
+    var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
+     $('.error-container').empty();
+
+    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+        if (!nombreValue) {
+            asignarMensajeError("errorContainerPersona_nombreFisicoV", "Este campo es obligatorio.");
+        }
+        if (!RFCValue) {
+            asignarMensajeError("errorContainerPersona_RFCFisicoV", "Este campo es obligatorio.");
+        }
+        if (!coloniaValue) {
+            asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisicoV", "Este campo es obligatorio.");
+        }
+        if (!calleValue) {
+            asignarMensajeError("errorContainerPersona_calleFisicoV", "Este campo es obligatorio.");
+        }
+        if (!numeroValue) {
+            asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisicoV", "Este campo es obligatorio.");
+        }
+        if (!fechaNacimientoValue) {
+            asignarMensajeError("errorContainerPersona_fechaNacimientoV", "Este campo es obligatorio.");
+        }
+
+        return;
     }
 
+    var generoBool = $("#generoSwitch").prop("checked");
+    $("#idGenero").val(generoBool ? 1 : 0);
+
+    var Mydata = $("#personaFisicaForm").serialize();
+
+    $.ajax({
+        url: '@Url.Action("ajax_CrearPersonaFisica")',
+        type: 'POST',
+        data: Mydata,
+        success: function (result) {
+            console.log(result);
+            $("#personasFisicas").html(result);
+                        $('#addFisico').modal('hide');
+
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+        }
+    });
+}
+function asignarMensajeError(contenedorErrorId, mensaje) {
+    $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
+}
     function submitCreateVehiculo() {
         
         var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');

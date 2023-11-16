@@ -736,13 +736,18 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET idFactorAccidente = @IdFactorAccidente, idFactorOpcionAccidente = @IdFactorOpcionAccidente WHERE idAccidente = @idAccidente";
+                    string query = "INSERT INTO AccidenteFactoresOpciones (idFactor, idFactorOpcion, idAccidente,fechaActualizacion,actualizadoPor,estatus) " +
+                                   "VALUES (@IdFactorAccidente, @IdFactorOpcionAccidente,@idAccidente,@fechaActualizacion,@actualizadoPor,@estatus);";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@IdFactorAccidente", IdFactorAccidente);
                     command.Parameters.AddWithValue("@IdFactorOpcionAccidente", IdFactorOpcionAccidente);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
+                    command.Parameters.AddWithValue("@actualizadoPor", 1);
+                    command.Parameters.AddWithValue("@estatus", 1);
+
 
                     command.ExecuteNonQuery();
                 }
@@ -758,7 +763,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int EliminarValorFactorYOpcion(int idAccidente)
+        public int EliminarValorFactorYOpcion(int IdAccidenteFactorOpcion)
         {
             int result = 0;
 
@@ -767,11 +772,44 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET idFactorAccidente = 0, idFactorOpcionAccidente = 0 WHERE idAccidente = @idAccidente";
+                    string query = "UPDATE AccidenteFactoresOpciones SET estatus = 0 " +
+                        "WHERE idAccidenteFactorOpcion = @IdAccidenteFactorOpcion";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@IdAccidenteFactorOpcion", IdAccidenteFactorOpcion);
+              
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
+        public int EditarFactorOpcion(int IdFactorAccidente, int IdFactorOpcionAccidente,int IdAccidenteFactorOpcion)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE AccidenteFactoresOpciones SET idFactor = @IdFactor, idFactorOpcion = @IdFactorOpcion  " +
+                                    "WHERE idAccidenteFactorOpcion = @IdAccidenteFactorOpcion";
+                    
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idFactor", IdFactorAccidente);
+                    command.Parameters.AddWithValue("@idFactorOpcion", IdFactorOpcionAccidente);
+                    command.Parameters.AddWithValue("@IdAccidenteFactorOpcion", IdAccidenteFactorOpcion);
 
                     command.ExecuteNonQuery();
                 }
@@ -798,7 +836,11 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT a.*, fa.factorAccidente, op.factorOpcionAccidente FROM accidentes a JOIN catFactoresAccidentes fa ON a.idFactorAccidente = fa.idFactorAccidente JOIN catFactoresOpcionesAccidentes op ON a.idFactorOpcionAccidente = op.idFactorOpcionAccidente WHERE a.idAccidente = @idAccidente AND a.idFactorAccidente > 0;", connection);
+                    SqlCommand command = new SqlCommand("SELECT afo.idAccidenteFactorOpcion, afo.idFactor,afo.idFactorOpcion,afo.idAccidente,cfa.FactorAccidente,cfoa.FactorOpcionAccidente " +
+                        "FROM AccidenteFactoresOpciones AS afo " +
+                        "LEFT JOIN catFactoresAccidentes AS cfa ON afo.idFactor = cfa.idFactorAccidente " +
+                        "LEFT JOIN catFactoresOpcionesAccidentes AS cfoa ON afo.idFactorOpcion = cfoa.idFactorOpcionAccidente " +
+                        "WHERE afo.idAccidente = @IdAccidente AND afo.estatus = 1 ", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -807,9 +849,10 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel factorOpcion = new CapturaAccidentesModel();
+                            factorOpcion.IdAccidenteFactorOpcion = Convert.ToInt32(reader["idAccidenteFactorOpcion"].ToString());
                             factorOpcion.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
-                            factorOpcion.IdFactorAccidente = Convert.ToInt32(reader["IdFactorAccidente"].ToString());
-                            factorOpcion.IdFactorOpcionAccidente = Convert.ToInt32(reader["IdFactorOpcionAccidente"].ToString());
+                            factorOpcion.IdFactorAccidente = Convert.ToInt32(reader["idFactor"].ToString());
+                            factorOpcion.IdFactorOpcionAccidente = Convert.ToInt32(reader["idFactorOpcion"].ToString());
                             factorOpcion.FactorAccidente = reader["FactorAccidente"].ToString();
                             factorOpcion.FactorOpcionAccidente = reader["FactorOpcionAccidente"].ToString();
 

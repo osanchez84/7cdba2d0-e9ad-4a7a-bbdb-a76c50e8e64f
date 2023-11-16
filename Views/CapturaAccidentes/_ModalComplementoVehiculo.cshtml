@@ -147,13 +147,13 @@
    
 <script>
     function guardarComplementoVehiculo() {
-     /*   var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
+        var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
         
         
         $("#IdDelegacion").prop("disabled",true)
         $("#IdPension").prop("disabled", true)
-        $("#IdFormaTraslado").prop("disabled", true)*/
-        var validator = $("#complementoVehiculoForm").kendoValidator({
+        $("#IdFormaTraslado").prop("disabled", true)
+    /*    var validator = $("#complementoVehiculoForm").kendoValidator({
             validateOnBlur: false,
             rules: {
                 customRule: function (input) {
@@ -174,7 +174,7 @@
                     error.insertAfter(element);
                 }
             }
-        }).data('kendoValidator');
+        }).data('kendoValidator');*/
 
         var isValid = validator.validate();
 

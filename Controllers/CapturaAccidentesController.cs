@@ -1142,7 +1142,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult ajax_BuscarPersonasFiscas()
 		{
 			var personasFisicas = _personasService.GetAllPersonas();
-			return PartialView("_PersonasFisicas", personasFisicas);
+			return PartialView("_PersonasFisicas");
 		}
 
 		[HttpPost]

@@ -14,6 +14,9 @@
     {
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
+
+
+    ViewBag.serie = Model.serie;
 }
 
 <section id="sectionCap" class="bg-white boxShadow  mt-2 mb-3 rounded">
@@ -108,8 +111,22 @@
 
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
-                <label>Serie:</label>
-                @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)
+                <label>Serie:  </label>
+             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
+
+             @if(@disableInput){
+                     <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+             </span>
+
+             }
+             else{
+                 <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+             </span>
+
+             }
+             
             </div>
         </div>
 
@@ -149,6 +166,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -156,6 +174,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -1111,6 +1130,10 @@
 		sitteg_error('El vehículo cuenta con reporte de robo')
 		</text>
         }
+
+        
+
+
         buscarPersonasFisicas();
     });
 

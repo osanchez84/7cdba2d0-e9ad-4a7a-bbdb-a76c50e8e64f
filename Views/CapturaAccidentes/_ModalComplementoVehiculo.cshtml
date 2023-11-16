@@ -114,6 +114,7 @@
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm my-3">
                 <label>Forma de traslado:</label>
+                <label>Forma de traslado:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdFormaTraslado)
                                 .Label(l => l.Content("Forma de traslado:"))
@@ -147,29 +148,7 @@
    
 <script>
     function guardarComplementoVehiculo() {
-        var validator = $("#complementoVehiculoForm").kendoValidator({
-            validateOnBlur: false,
-            rules: {
-                customRule: function (input) {
-                    // Validar solo campos requeridos
-                    if (input.attr("required")) {
-                        return input.val().trim() !== "";
-                    }
-                    return true;  // Si no es un campo requerido, considerarlo válido
-                }
-            },
-            messages: {
-                customRule: "Este campo es obligatorio."
-            },
-            errorTemplate: "<span class='k-widget k-tooltip k-tooltip-validation k-invalid-msg' style='position: absolute; display: none;'></span>",
-            errorPlacement: function (error, element) {
-                // Evitar mostrar mensajes de error para campos no requeridos
-                if (element.attr("required")) {
-                    error.insertAfter(element);
-                }
-            }
-        }).data('kendoValidator');
-
+        var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
         var isValid = validator.validate();
 
 

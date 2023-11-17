@@ -679,15 +679,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			return PartialView("_ModalFactor");
 		}
-		public ActionResult ModalEditarFactorAccidente(int IdFactorAccidente, int IdFactorOpcionAccidente)
+		public ActionResult ModalEditarFactorAccidente(int IdFactorAccidente, int IdFactorOpcionAccidente, int IdAccidenteFactorOpcion)
 
 		{
-			return PartialView("_ModalEditarFactor");
+            EditarFactorOpcionModel modelo = new EditarFactorOpcionModel
+            {
+                IdFactorAccidente = IdFactorAccidente,
+                IdFactorOpcionAccidente = IdFactorOpcionAccidente,
+                IdAccidenteFactorOpcion = IdAccidenteFactorOpcion
+            };
+            return PartialView("_ModalEditarFactor",modelo);
 		}
 
-		public ActionResult ModalEliminarFactorAccidente(string FactorAccidente, string FactorOpcionAccidente)
+		public ActionResult ModalEliminarFactorAccidente(string FactorAccidente, string FactorOpcionAccidente, int IdAccidenteFactorOpcion)
 		{
-			ViewBag.FactorAccidente = FactorAccidente;
+            ViewBag.FactorAccidente = FactorAccidente;
 			ViewBag.FactorOpcionAccidente = FactorOpcionAccidente;
 			return PartialView("_ModalEliminarFactor");
 		}
@@ -776,11 +782,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(ListFactores.ToDataSourceResult(request));
 		}
-		[HttpPost]
-		public IActionResult EliminarValorFactorYOpcion()
+        [HttpPost]
+        public IActionResult EditarValorFactorYOpcion(int IdFactorAccidente, int IdFactorOpcionAccidente,int IdAccidenteFactorOpcion)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var RegistroSeleccionado = _capturaAccidentesService.EditarFactorOpcion(IdFactorAccidente, IdFactorOpcionAccidente, IdAccidenteFactorOpcion);
+
+            var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
+
+            return Json(datosGrid);
+        }
+        [HttpPost]
+		public IActionResult EliminarValorFactorYOpcion(int IdAccidenteFactorOpcion)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var RegistroSeleccionado = _capturaAccidentesService.EliminarValorFactorYOpcion(idAccidente);
+			var RegistroSeleccionado = _capturaAccidentesService.EliminarValorFactorYOpcion(IdAccidenteFactorOpcion);
 
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
 

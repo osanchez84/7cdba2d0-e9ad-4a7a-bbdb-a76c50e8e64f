@@ -716,7 +716,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
 			return PartialView("_ModalCapturarConductor");
 		}
-		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, string CausaAccidente)
+		public ActionResult ModalEditarCausaAccidente(int IdCausaAccidente, string CausaAccidente, int idAccidenteCausa )
 		{
             ViewBag.IdCausaAccidente = IdCausaAccidente;
             ViewBag.CausaAccidente = CausaAccidente;
@@ -811,10 +811,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(datosGrid);
 		}
-		public IActionResult EditarCausa(int IdCausaAccidente, int IdCausaAccidenteEdit)
+		public IActionResult EditarCausa(int IdCausaAccidente, int idAccidenteCausa)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var RegistroSeleccionado = _capturaAccidentesService.EditarValorCausa(IdCausaAccidente, idAccidente, IdCausaAccidenteEdit);
+			var RegistroSeleccionado = _capturaAccidentesService.EditarValorCausa(IdCausaAccidente, idAccidenteCausa);
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
 			return Json(datosGrid);

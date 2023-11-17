@@ -9,6 +9,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public int? IdAccidente { get; set; }
         public int? IdInfAcc { get; set; }
+        public int? idAccidenteCausa { get; set; }       
         public int? IdAccidenteFactorOpcion { get; set; }        
         public int? idEstatusReporte { get; set; }
         public string NumeroReporte { get; set; }

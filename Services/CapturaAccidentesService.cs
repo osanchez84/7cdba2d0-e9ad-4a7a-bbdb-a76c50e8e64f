@@ -909,7 +909,7 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public int EditarValorCausa(int IdCausaAccidente, int idAccidente, int IdCausaAccidenteEdit)
+        public int EditarValorCausa(int IdCausaAccidente, int idAccidenteCausa)
         {
             int result = 0;
 
@@ -918,13 +918,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidenteCausas SET idCausaAccidente = @idCausaAccidenteEdit WHERE idAccidente = @idAccidente AND idCausaAccidente = @idCausaAccidente ";
+                    string query = "UPDATE accidenteCausas SET idCausaAccidente = @idCausaAccidente WHERE idAccidenteCausa = @idAccidenteCausa ";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue("@idCausaAccidenteEdit", IdCausaAccidenteEdit);
                     command.Parameters.AddWithValue("@idCausaAccidente", IdCausaAccidente);
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idAccidenteCausa", idAccidenteCausa);
 
                     command.ExecuteNonQuery();
                 }
@@ -1023,7 +1022,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente FROM accidenteCausas ac " +
+                    SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente, ac.idAccidenteCausa FROM accidenteCausas ac " +
                                                         "JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente " +
                                                         "LEFT JOIN accidentes AS a ON ac.idAccidente = a.idAccidente " +
                                                         "WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0;", connection);
@@ -1035,6 +1034,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel causa = new CapturaAccidentesModel();
+                            causa.idAccidenteCausa = Convert.ToInt32(reader["idAccidenteCausa"].ToString());
+
                             causa.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
                             causa.IdCausaAccidente = Convert.ToInt32(reader["IdCausaAccidente"].ToString());
                             causa.CausaAccidente = reader["causaAccidente"].ToString();

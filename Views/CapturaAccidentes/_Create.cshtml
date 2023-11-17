@@ -1152,39 +1152,48 @@
         $('#hdnIdCatTipoPersona').val(value);
 
     });
-
-    function submitCreateMoral() {
-        var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
-        validator.validate();
-        if (validator.validate()) {
-            var formData = $("#frmCreateMoral").serialize();
-
-            $.ajax({
-                url: '@Url.Action("ajax_CrearPersonaMoral")',
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    window.setTimeout(function () {
-                        document.getElementById("sec3").style.display = "none";
-                        document.getElementById("PersonaMoralLocalizada").style.display = "block";
-                        $("#PersonaMoralLocalizada").html(result);
-                        $('#addMoral').modal('hide');
-                        sitteg_success('Elemento guardado correctamente')
-                    }, 500);
-                },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
-                }
-            });
-        }
-        else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+function submitCreateMoral() {
+    var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
+    
+    var idTelefono = $("#Persona_PersonaDireccion_telefono");
+    var idTelefonoValue = idTelefono.val();
+    
+    if (idTelefonoValue === null || idTelefonoValue === "") {
+        idTelefono.prop("disabled", true);
     }
+
+    idTelefono.off('blur');
+
+    if (validator.validate()) {
+        var formData = $("#frmCreateMoral").serialize();
+
+        $.ajax({
+            url: '@Url.Action("ajax_CrearPersonaMoral")',
+            type: 'POST',
+            data: formData,
+            success: function (result) {
+                sitteg_success('Elemento guardado correctamente');
+                window.setTimeout(function () {
+                    document.getElementById("sec3").style.display = "none";
+                    document.getElementById("PersonaMoralLocalizada").style.display = "block";
+                    $("#PersonaMoralLocalizada").html(result);
+                    $('#addMoral').modal('hide');
+                    sitteg_success('Elemento guardado correctamente');
+                }, 500);
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg);
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            }
+        });
+    } else {
+        idTelefono.prop("disabled", false);
+        sitteg_info('Debe llenar los campos requeridos');
+        return;
+    }
+}
+
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();

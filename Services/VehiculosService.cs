@@ -552,7 +552,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 
-                    DateTime? t = model.vigenciaTarjeta.Value.Year > 1 ? model.vigenciaTarjeta : null;
+                    DateTime? t = model.vigenciaTarjeta!=null && model.vigenciaTarjeta.Value.Year > 1 ? model.vigenciaTarjeta : null;
 
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);

@@ -1,7 +1,6 @@
 ﻿@model List<VehiculoModel>
 
-
-<div class="row mb-1">
+<div class="row mb-1 titleCustom">
     <div class="col-12 col-md-auto mt-4 mb-2">
         <h5 class="px-4"><b>Listado de vehículos</b></h5>
         <h6 class="px-4 text-muted">Edita los datos de vehículo.</h6>
@@ -15,6 +14,7 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.idVehiculo).Hidden();
+                columns.Bound(p => p.NumeroSecuencial).Title("No.").Width(40);
                 columns.Bound(p => p.placas).Title("Placas").Width(90);
                 columns.Bound(p => p.serie).Title("No.Serie").Width(90);
                 columns.Bound(c => c.marca).Title("Marca").Width(90);
@@ -22,6 +22,15 @@
                 columns.Bound(c => c.tipoVehiculo).Title("Tipo Vehículo").Width(90);
                 columns.Bound(c => c.propietario).Title("Propietario").Width(90);
                 columns.Bound(c => c.tarjeta).Title("Tarjeta").Width(90);
+                columns.Bound(c => c.vigenciaTarjeta).Title("Vigencia tarjeta").Width(90);
+                columns.Bound(c => c.motor).Title(" No. Motor").Width(90);
+                columns.Bound(c => c.modelo).Title("Modelo").Width(90);
+                columns.Bound(c => c.color).Title("Color").Width(90);
+                columns.Bound(c => c.entidadRegistro).Title("Entidad").Width(90);
+                columns.Bound(c => c.tipoServicio).Title("Tipo Servicio").Width(90);
+                columns.Bound(c => c.numeroEconomico).Title("Numero económico").Width(90);
+
+
                 columns.Bound(p => p.idVehiculo).ClientTemplate(
                 "<button onclick=\"ShowUpdate('#= idVehiculo #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
                 ).Title("Acciones").Sortable(false).Width(100);
@@ -55,4 +64,28 @@
         var titulo = e.target.context.dataset.title;
         return titulo;
     }
+
+
+
+  /*   $(document).ready(function () {
+            // Función para numerar las filas
+            function updateRowNumbers() {
+                var grid = $("#Grid").data("kendoGrid");
+                var rows = grid.tbody.children();
+                for (var i = 0; i < rows.length; i++) {
+                    var row = $(rows[i]);
+                    var rowNumber = i + 1;
+                    row.find(".row-number").text(rowNumber);
+                }
+            }
+
+            // Llama a la función para numerar las filas cuando el grid se carga o se actualiza
+            var grid = $("#Grid").data("kendoGrid");
+            grid.bind("dataBound", function () {
+                updateRowNumbers();
+            });
+
+            // Llama a la función inicialmente para numerar las filas
+            updateRowNumbers();
+        });*/
 </script>

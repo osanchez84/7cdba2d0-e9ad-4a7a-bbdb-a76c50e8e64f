@@ -33,7 +33,6 @@
                             <label>Fecha Inicio:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
                                 .Label(l => l.Content("Fecha Inicio:"))
-                                .Value(DateTime.Today) 
                                 .HtmlAttributes(new { style = "width: 100%", id="dateInicio" })
                                 )
                     </div>
@@ -44,7 +43,6 @@
                         <label>Fecha Fin:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
                                 .Label(l => l.Content("Fecha Fin:"))
-                                .Value(DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59))
                                 .HtmlAttributes(new { style = "width: 100%",id="dateFinal" })
                                 )
                     </div>
@@ -74,12 +72,13 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Delegaciones_Drop", "CapturaAccidentes");
+                                            read.Action("Delegaciones_Drop", "BusquedaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;", Id="ddlDelegaciones" })
-                                )
-                        </span>
+                                    .HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegaciones" })
+                                    .Value(Model.IdDelegacionBusqueda.ToString())  
+                                    )
+                                </span>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
@@ -187,6 +186,26 @@
                         </span>
                     </div>
                 </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            <label>Estatus:</label>
+                            <span>
+                                @(Html.Kendo().DropDownListFor(m => m.IdEstatusAccidente)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("EstatusAccidente_Drop", "BusquedaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;", Id = "ddlEstatusccidentes" })
+                                    )
+                            </span>
+                        </div>
+                    </div>
                </div>
                </form>
                 <div class="col-12 col-md-6 col-lg-3">
@@ -232,7 +251,7 @@
         console.log(Mydata);
 
         $.ajax({
-            url: '/BusquedaAccidentes/ajax_BuscarAccidente',
+            url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
             type: 'GET',
             data: Mydata,
             success: function (data) {
@@ -280,6 +299,12 @@
             }
         });
     }
+    $(document).ready(function () {
+        $("#dateFinal").data("kendoDateTimePicker").value(null);
+    });
+    $(document).ready(function () {
+        $("#dateInicio").data("kendoDateTimePicker").value(null);
+    });
  </script>
 
 

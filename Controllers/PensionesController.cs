@@ -2,6 +2,7 @@
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class PensionesController : BaseController
     {
         #region DPIServices
@@ -37,7 +39,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                List<PensionModel> pensionesList = _pensionesService.GetAllPensiones();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                List<PensionModel> pensionesList = _pensionesService.GetAllPensiones(idOficina);
             var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
             return View(pensionesList);
@@ -52,7 +56,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_BuscarPensiones(string pension, int? idDelegacion)
         {
-            var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idDelegacion);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idOficina);
             if (ListPensionesModel.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
@@ -94,8 +100,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //ModelState.Remove("CategoryName");
             if (ModelState.IsValid)
             {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
                 int idPension = _pensionesService.CrearPension(model);
-                List<Gruas2Model> gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(idPension);
+                List<Gruas2Model> gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(idPension, idOficina);
                 model.IdPension = idPension;
 
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
@@ -125,9 +133,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var model = _pensionesService.GetPensionById(idPension).FirstOrDefault();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                var model = _pensionesService.GetPensionById(idPension,idOficina).FirstOrDefault();
             
-            var gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(model.IdPension);
+            var gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(model.IdPension,idOficina);
 
             var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             var catResponsablesPensiones = _catDictionary.GetCatalog("CatResponsablesPensiones", "0");
@@ -161,7 +171,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     var strListIdGruas = model.strIdGruas.Split(',').Select(s=> Convert.ToInt32(s)).ToList();
                     int altaGruas = _pensionesService.CrearPensionGruas(model.IdPension, strListIdGruas);
                 }
-                List<PensionModel> pensionesList = _pensionesService.GetAllPensiones();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                List<PensionModel> pensionesList = _pensionesService.GetAllPensiones(idOficina);
                 return PartialView("_ListadoPensiones", pensionesList);
             }
             //SetDDLCategories();

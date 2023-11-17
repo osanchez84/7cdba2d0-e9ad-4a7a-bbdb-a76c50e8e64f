@@ -16,10 +16,13 @@ using Newtonsoft.Json;
 using static GuanajuatoAdminUsuarios.RESTModels.AnulacionDocumentoRequestModel;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
 
+
+    [Authorize]
     public class CancelarInfraccionController : BaseController
     {
 
@@ -52,6 +55,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ObtenerInfracciones(CancelarInfraccionModel model, string FolioInfraccion)
         {
+
             var ListInfraccionesModel = _cancelarInfraccionService.ObtenerInfraccionPorFolio(FolioInfraccion);
 
             if (ListInfraccionesModel == null || ListInfraccionesModel.Count == 0)

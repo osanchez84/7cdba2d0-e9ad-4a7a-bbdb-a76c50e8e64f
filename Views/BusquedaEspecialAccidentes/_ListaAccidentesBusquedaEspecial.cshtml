@@ -31,7 +31,7 @@
                 "<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
                 ).Title("Exportar").Sortable(false).Width(90);
                  columns.Bound(p => p.IdAccidente).ClientTemplate(
-                "<button onclick=\"eliminarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorDanger'><i class='icon-delete me-2'></i><b>Eliminar</b></h6></button>"
+                "<button onclick=\"eliminarAccidente('#= IdAccidente #', '#= numeroReporte #')\" class='w-100 btn'><h6 class='m-0 colorDanger'><i class='icon-delete me-2'></i><b>Eliminar</b></h6></button>"
                 ).Title("Eliminar").Sortable(false).Width(90);
                
 
@@ -56,6 +56,15 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade modalCustom" id="eliminarAccidenteModal" tabindex="-1" aria-labelledby="editarCarreteraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body" id="ModalBodyEliminarAccidente">
+                </div>
+            </div>
+        </div>
+    </div>
     
 <script>
     function downLoadPdf(Id) {
@@ -76,20 +85,21 @@
 
         });
     }
-    function eliminarAccidente(idAccidente) {
-        $.ajax({
-            url: '/BusquedaEspecialAccidentes/EliminarAccidente',
-            type: 'POST',
-            data: { idAccidente: idAccidente },
-            success: function (result) {
-                    sitteg_success("Se ha eliminado el registro de accidente")
-                var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
-                grid.dataSource.data(result);
-                grid.refresh();
-            },
 
-        });
-    }
+        function eliminarAccidente(idAccidente, numeroReporte) {
+            $.ajax({
+                url: '/BusquedaEspecialAccidentes/ModalEliminarAccidente',
+                type: 'POST',
+                data: {
+                    idAccidente: idAccidente,
+                    numeroReporte: numeroReporte
+                }, success: function (result) {
+                    $('#ModalBodyEliminarAccidente').html(result);
+                    $('#eliminarAccidenteModal').modal('show');;
+                },
+
+            });
+        }
 
     function ModalEditarFolio(idAccidente, numeroReporte) {
         $.ajax({

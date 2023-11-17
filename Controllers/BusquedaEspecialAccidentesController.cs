@@ -3,6 +3,7 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Utils;
 using Kendo.Mvc.Infrastructure.Implementation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,10 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+
+
+    [Authorize]
     public class BusquedaEspecialAccidentesController : BaseController
     {
         private readonly IBusquedaEspecialAccidentesService _busquedaEspecialAccidentesService;
@@ -173,6 +178,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina);
             return Json(resultadoBusqueda);
         }
+
+        public IActionResult ModalEliminarAccidente(int idAccidente, string numeroReporte)
+        {
+
+            var viewModel = new EditarFolioModel
+            {
+                IdAccidente = idAccidente,
+                NumeroReporte = numeroReporte
+            };
+
+            return PartialView("_ModalEliminarAccidente", viewModel);
+        }
+        
         public IActionResult ModalEditarFolio(int idAccidente, string numeroReporte)
         {
 

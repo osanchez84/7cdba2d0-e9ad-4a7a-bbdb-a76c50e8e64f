@@ -17,7 +17,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<ReporteAsignacionModel> GetAllReporteAsignaciones()
+        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(int idOficina)
         {
             List<ReporteAsignacionModel> ReporteAsignacionesList = new List<ReporteAsignacionModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -37,6 +37,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(dep.placa) AS placa,
                                    MAX(dep.fechaingreso) AS fechaingreso,
                                    MAX(dep.folio) AS folio,
+                                   MAX(dep.numeroInventario) AS numeroInventario,
                                    MAX(dep.km) AS km,
                                    MAX(dep.liberado) AS liberado,
                                    MAX(dep.autoriza) AS autoriza,
@@ -52,9 +53,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(sol.solicitanteap) AS solicitanteap,
                                    MAX(sol.solicitanteam) AS solicitanteam,
                                    MAX(pen.pension) AS pension,
+                                   MAX(pen.estatus) AS pensionEstatus,
+                                   MAX(e.estatusDesc) AS descripcionEstatus,
                                    MAX(sol.vehiculoCarretera) AS vehiculoCarretera,
                                    MAX(sol.vehiculoTramo) AS vehiculoTramo,
                                    MAX(sol.vehiculoKm) AS vehiculoKm,
+                                   MAX(sol.idMotivoAsignacion) AS idMotivoAsignacion,
+                                   MAX(ta.tipoAsignacion) AS tipoAsignacion,
                                    MAX(sol.fechasolicitud) AS fechasolicitud,
                                    MAX(sol.folio) AS FolioSolicitud,
                                    MAX(sol.evento) AS evento,
@@ -69,16 +74,21 @@ namespace GuanajuatoAdminUsuarios.Services
                                    MAX(g.noEconomico) AS noEconomico,
                                    MAX(con.IdConcesionario) AS IdConcesionario,
                                    MAX(con.concesionario) AS concesionario
-                            FROM depositos dep
-                            LEFT JOIN catDelegaciones del ON dep.idDelegacion = del.idDelegacion
-                            LEFT JOIN pensiones pen ON dep.idpension = pen.idpension
-                            LEFT JOIN solicitudes sol ON dep.idsolicitud = sol.idsolicitud
-                            LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
-                            LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
-                            GROUP BY dep.iddeposito;
-                            ";
+                                    FROM depositos dep
+                                    LEFT JOIN catDelegaciones del ON dep.idDelegacion = del.idDelegacion
+                                    LEFT JOIN pensiones pen ON dep.idpension = pen.idpension
+                                    LEFT JOIN solicitudes sol ON dep.idsolicitud = sol.idsolicitud
+                                    LEFT JOIN tipoMotivoAsignacion ta ON ta.idTipoAsignacion = sol.idMotivoAsignacion
+                                    LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
+                                    LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
+                                    LEFT JOIN estatus e ON e.estatus = pen.estatus
+                                    WHERE dep.idDelegacion = @idOficina
+                                    GROUP BY dep.idDeposito;
+                                    ";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -86,6 +96,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             ReporteAsignacionModel ReporteAsignacion = new ReporteAsignacionModel();
                             ReporteAsignacion.idSolicitud = reader["idSolicitud"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"].ToString()) : 0;
+                            ReporteAsignacion.pensionEstatus = reader["pensionEstatus"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"].ToString()) : 0;
                             ReporteAsignacion.vehiculoCarretera = reader["vehiculoCarretera"] != DBNull.Value ? reader["vehiculoCarretera"].ToString() : string.Empty;
                             ReporteAsignacion.vehiculoTramo = reader["vehiculoTramo"] != DBNull.Value ? reader["vehiculoTramo"].ToString() : string.Empty;
                             ReporteAsignacion.vehiculoKm = reader["vehiculoKm"] != DBNull.Value ? reader["vehiculoKm"].ToString() : string.Empty;
@@ -98,6 +109,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             ReporteAsignacion.solicitanteCalle = reader["solicitanteCalle"] != DBNull.Value ? reader["solicitanteCalle"].ToString() : string.Empty;
                             ReporteAsignacion.solicitanteNumero = reader["solicitanteNumero"] != DBNull.Value ? reader["solicitanteNumero"].ToString() : string.Empty;
                             ReporteAsignacion.tipoVehiculo = reader["tipoVehiculo"] != DBNull.Value ? reader["tipoVehiculo"].ToString() : string.Empty;
+                            ReporteAsignacion.idMotivo = reader["idMotivoAsignacion"] != DBNull.Value ? Convert.ToInt32(reader["idMotivoAsignacion"].ToString()) : 0;
+                            ReporteAsignacion.motivoAsignacion = reader["tipoAsignacion"] != DBNull.Value ? reader["tipoAsignacion"].ToString() : string.Empty;
+
                             ReporteAsignacion.propietarioGrua = reader["propietarioGrua"] != DBNull.Value ? reader["propietarioGrua"].ToString() : string.Empty;
                             ReporteAsignacion.oficial = reader["oficial"] != DBNull.Value ? reader["oficial"].ToString() : string.Empty;
                             ReporteAsignacion.folio = reader["folio"] != DBNull.Value ? reader["folio"].ToString() : string.Empty;
@@ -107,6 +121,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             ReporteAsignacion.noEconomico = reader["noEconomico"] != DBNull.Value ? reader["noEconomico"].ToString() : string.Empty;
                             ReporteAsignacion.Delegacion = reader["Delegacion"] != DBNull.Value ? reader["Delegacion"].ToString() : string.Empty;
                             ReporteAsignacion.Alias = reader["concesionario"] != DBNull.Value ? reader["concesionario"].ToString() : string.Empty;
+                            ReporteAsignacion.numeroIventario = reader["numeroInventario"] != DBNull.Value ? reader["numeroInventario"].ToString() : string.Empty;
+
                             ReporteAsignacionesList.Add(ReporteAsignacion);
 
                         }
@@ -126,7 +142,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return ReporteAsignacionesList;
         }
 
-        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model)
+        public List<ReporteAsignacionModel> GetAllReporteAsignaciones(ReporteAsignacionBusquedaModel model, int idOficina)
         {
             List<ReporteAsignacionModel> ReporteAsignacionesList = new List<ReporteAsignacionModel>();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -187,7 +203,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         WHERE g.IdGrua = @IdGrua
                                            OR pen.idPension = @IdPension
                                            OR dep.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin
-                                           OR UPPER(sol.evento) = @Evento
+                                           OR UPPER(sol.evento) = @Evento AND dep.idDelegacion = @idOficina
                                         GROUP BY dep.iddeposito, del.delegacion
                                         ";
 
@@ -197,6 +213,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@Evento", SqlDbType.NVarChar)).Value = (object)model.Evento != null ? model.Evento.ToUpper() : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
                     command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

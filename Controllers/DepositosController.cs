@@ -12,9 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+    [Authorize]
     public class DepositosController : BaseController
     {
         private readonly IDepositosService _catDepositosService;
@@ -143,7 +147,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Pensiones_Drop()
         {
-            var result = new SelectList(_pensionesService.GetAllPensiones(), "IdPension", "Pension");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_pensionesService.GetAllPensiones(idOficina), "IdPension", "Pension");
             return Json(result);
         }
         public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, SolicitudDepositoModel model)

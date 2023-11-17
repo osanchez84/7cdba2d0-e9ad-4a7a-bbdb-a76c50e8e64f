@@ -396,7 +396,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         "SELECT cva.*, COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,cva.idTipoCarga,cva.poliza,ctc.tipoCarga,v.placas, v.tarjeta, v.serie, v.idMarcaVehiculo, " +
                         "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
                         "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
-                        "p.apellidoMaterno,p.RFC,p.CURP, p.fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
+                        "p.apellidoMaterno,p.RFC,p.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
                         "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
@@ -478,8 +478,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-											@"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
-                                            p.rfc,p.curp,p.fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,p.idGenero
+                                            @"SELECT p.idPersona,p.idCatTipoPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,
+                                            p.rfc,p.curp,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento,p.vigenciaLicencia,p.numeroLicencia,p.idGenero
                                             ,ctp.tipoPersona,v.idVehiculo,v.modelo
                                             ,pd.telefono
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
@@ -1165,7 +1165,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("SELECT cva.*, COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,cva.idTipoCarga,cva.poliza,ctc.tipoCarga,v.placas, v.tarjeta, v.serie, v.idMarcaVehiculo, " +
                         "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
                         "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
-                        "p.apellidoMaterno,p.RFC,p.CURP, p.fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
+                        "p.apellidoMaterno,p.RFC,p.CURP, CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
                         "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
@@ -1623,7 +1623,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                              "p.rfc, " +
                                              "p.curp, " +
                                              "p.idTipoLicencia, " +
-											 "p.fechaNacimiento, " +
+                                             "CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, " +
                                              "tl.tipoLicencia, " +
                                              "ia.idAccidente," +
                                              "ia.idPersona, " +
@@ -1758,7 +1758,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
-        public int AgregarDatosFinales(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue, int idAccidente)
+        public int AgregarDatosFinales(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue, int idAccidente, int convenioValue)
         {
             int result = 0;
             string qryUpdate = "";
@@ -1769,6 +1769,7 @@ namespace GuanajuatoAdminUsuarios.Services
             qryUpdate += !datosAccidente.Latitud.Equals(null) ? " , latitud = @Latitud " : "";
             qryUpdate += !datosAccidente.Longitud.Equals(null) ? " , longitud = @Longitud " : "";
             qryUpdate += !datosAccidente.IdCertificado.Equals(null) ? " , idCertificado = @IdCertificado " : "";
+            qryUpdate += !convenioValue.Equals(null) ? " , convenio = @convenioValue " : "";
             qryUpdate += !armasValue.Equals(null) ? " , armas = @armasValue " : "";
             qryUpdate += !drogasValue.Equals(null) ? " , drogas = @drogasValue " : "";
             qryUpdate += !valoresValue.Equals(null) ? " , valores = @valoresValue " : "";
@@ -1787,6 +1788,15 @@ namespace GuanajuatoAdminUsuarios.Services
             qryUpdate += !datosAccidente.IdElabora.Equals(null) ? " , idElabora = @IdElabora " : "";
             qryUpdate += !datosAccidente.IdAutoriza.Equals(null) ? " , idAutoriza = @IdAutoriza " : "";
             qryUpdate += !datosAccidente.IdSupervisa.Equals(null) ? " , idSupervisa = @IdSupervisa " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.ArmasTexto) ? " , armasTexto = @armasTexto " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.DrogasTexto) ? " , drogasTexto = @drogasTexto " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.ValoresTexto) ? " , valoresTexto = @valoresTexto " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.PrendasTexto) ? " , prendasTexto = @prendasTexto " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.OtrosTexto) ? " , otrosTexto = @otrosTexto " : "";
+
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.observacionesConvenio) ? " , observacionesConvenio = @observacionesConvenio " : "";
+
+
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -1805,11 +1815,32 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@Latitud", datosAccidente.Latitud);
                     command.Parameters.AddWithValue("@Longitud", datosAccidente.Longitud);
                     command.Parameters.AddWithValue("@IdCertificado", datosAccidente.IdCertificado);
+                    command.Parameters.AddWithValue("@convenioValue", convenioValue);
                     command.Parameters.AddWithValue("@armasValue", armasValue);
                     command.Parameters.AddWithValue("@drogasValue", drogasValue);
                     command.Parameters.AddWithValue("@valoresValue", valoresValue);
                     command.Parameters.AddWithValue("@prendasValue", prendasValue);
                     command.Parameters.AddWithValue("@otrosValue", otrosValue);
+                   
+                    if (!string.IsNullOrEmpty(datosAccidente.ArmasTexto))
+                        command.Parameters.Add(new SqlParameter("@armasTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.ArmasTexto ?? DBNull.Value;
+                    
+                    if (!string.IsNullOrEmpty(datosAccidente.DrogasTexto))
+                        command.Parameters.Add(new SqlParameter("@drogasTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.DrogasTexto ?? DBNull.Value;
+                    
+                    if (!string.IsNullOrEmpty(datosAccidente.PrendasTexto))
+                        command.Parameters.Add(new SqlParameter("@prendasTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.PrendasTexto ?? DBNull.Value;
+                   
+                    if (!string.IsNullOrEmpty(datosAccidente.ValoresTexto))
+                        command.Parameters.Add(new SqlParameter("@valoresTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.ValoresTexto ?? DBNull.Value;
+                   
+                    if (!string.IsNullOrEmpty(datosAccidente.OtrosTexto))
+                        command.Parameters.Add(new SqlParameter("@otrosTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.OtrosTexto ?? DBNull.Value;
+                    
+                    if (!string.IsNullOrEmpty(datosAccidente.observacionesConvenio))
+                        command.Parameters.Add(new SqlParameter("@observacionesConvenio", SqlDbType.NVarChar)).Value = (object)datosAccidente.observacionesConvenio ?? DBNull.Value;
+
+
                     if (!string.IsNullOrEmpty(datosAccidente.entregaObjetos))
                         command.Parameters.Add(new SqlParameter("@entregaObjetos", SqlDbType.NVarChar)).Value = (object)datosAccidente.entregaObjetos ?? DBNull.Value;
 
@@ -1975,7 +2006,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                     consignacionHechos, idCiudad ,
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
-                                    idElabora , idAutoriza , idSupervisa 
+                                    idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
+                                    observacionesConvenio
                                     FROM accidentes a 
                                     WHERE idAccidente = @IdAccidente
                                     ";
@@ -2016,6 +2048,12 @@ namespace GuanajuatoAdminUsuarios.Services
                             datosFinales.IdAutoriza = reader["idAutoriza"] == DBNull.Value ? 0 : int.Parse(reader["idAutoriza"].ToString());
                             datosFinales.IdSupervisa = reader["idSupervisa"] == DBNull.Value ? 0 : int.Parse(reader["idSupervisa"].ToString());
                             datosFinales.IdEstatusReporte = reader["idEstatusReporte"] == DBNull.Value ? 0 : int.Parse(reader["idEstatusReporte"].ToString());
+                            datosFinales.ArmasTexto = reader["armasTexto"] == DBNull.Value ? "" : reader["armasTexto"].ToString();
+                            datosFinales.DrogasTexto = reader["drogasTexto"] == DBNull.Value ? "" : reader["drogasTexto"].ToString();
+                            datosFinales.ValoresTexto = reader["valoresTexto"] == DBNull.Value ? "" : reader["valoresTexto"].ToString();
+                            datosFinales.PrendasTexto = reader["prendasTexto"] == DBNull.Value ? "" : reader["prendasTexto"].ToString();
+                            datosFinales.OtrosTexto = reader["otrosTexto"] == DBNull.Value ? "" : reader["otrosTexto"].ToString();
+                            datosFinales.observacionesConvenio = reader["observacionesConvenio"] == DBNull.Value ? "" : reader["observacionesConvenio"].ToString();
 
                         }
 

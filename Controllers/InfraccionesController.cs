@@ -28,9 +28,15 @@ using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Kendo.Mvc.UI;
+using Org.BouncyCastle.Crypto;
+using Microsoft.AspNetCore.Authorization;
+using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+
+    [Authorize]
     public class InfraccionesController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
@@ -170,9 +176,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionById(IdInfraccion);
-            var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, InfraccionModel);
-            return File(result.Item1, "application/pdf", result.Item2);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
+            return File(report.File.ToArray(), "application/pdf", report.FileName);
         }
 
         [HttpGet]
@@ -338,9 +344,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpPost]
         public IActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
-
         {
-            if (_appSettings.AllowWebServices)
+			RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+			{
+				placa = model.PlacasBusqueda,
+				niv = model.SerieBusqueda
+			};
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+			ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+			if (_appSettings.AllowWebServices)
             {
                 var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
                 vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -449,13 +461,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         }
                         else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
                         {
-                            //Aqui servico repuve//////
-                            //var resultSegundoServicio = await BusquedaRepuveAsync(model);
-                            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
-                            {
-                                placa = model.PlacasBusqueda,
-                                niv = model.SerieBusqueda
-                            };
                             var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
 
 
@@ -895,8 +900,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-            var personasMoralesModel = _personasService.GetAllPersonasMorales();
-            return PartialView("_ListPersonasMorales", personasMoralesModel);
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+
+            return PartialView("_ListPersonasMorales", modelList);
         }
         [HttpGet]
         public IActionResult ajax_ModalCrearPersona()
@@ -922,7 +929,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (id == -1)
             {
                 // El registro ya existe, muestra un mensaje de error al usuario
-                return Json(new { success = false, message = "El registro yaexiste, revise los datos ingresados." });
+                return Json(new { success = false, message = "El registro ya existe, revise los datos ingresados." });
             }
             else
             {
@@ -946,8 +953,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 throw new Exception("Ocurrio un error al dar de alta la persona");
             }
-            var personasFisicasModel = _personasService.GetAllPersonasFisicas();
-            return PartialView("_PersonasFisicas", personasFisicasModel);
+            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas", modelList);
         }
         [HttpGet]
         public ActionResult ajax_GetPersonaMoral(int id)
@@ -1007,6 +1014,91 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return null;
             }
         }
+
+
+
+
+
+        #region Budqueda
+        /************************************************************************************************/
+        //BusquedaEspecial
+
+        public IActionResult BusquedaEspecial()
+        {
+
+            var t = User.FindFirst(CustomClaims.Nombre).Value;
+
+            return View("BusquedaEspecial");
+        }
+
+
+        public JsonResult Overview_GetTerritories()
+        {
+
+            var Options = new List<CatalogModel>();
+
+
+            Options.Add(new CatalogModel { value = "1", text = "  En proceso" });
+            Options.Add(new CatalogModel{    value = "2" ,text="Capturada" });
+            Options.Add(new CatalogModel{    value = "3" ,text="Pagada" });
+            Options.Add(new CatalogModel{    value = "4" ,text="Pagada con descuento" });
+            Options.Add(new CatalogModel{    value = "5" ,text="Solventada" });
+            Options.Add(new CatalogModel{    value = "6" ,text="Pagada con recargo" });
+            Options.Add(new CatalogModel{value = "7" ,text="Enviada" });
+
+            
+
+            return Json(Options);
+            
+        }
+
+        public IActionResult GetDataBusquedaEspecial(InfraccionesBusquedaEspecialModel data )
+        {
+
+            return PartialView("_ListadoInfraccionesBusquedaEspecial");
+        }
+
+
+
+        public IActionResult test([DataSourceRequest] DataSourceRequest request , InfraccionesBusquedaEspecialModel model)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina);
+
+            var result = listReporteAsignacion.ToDataSourceResult(request);
+
+            return Json(result);
+        }
+
+
+        public IActionResult Mostrar(string id)
+        {
+            int ids = Convert.ToInt32(id);
+
+            int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
+            var model = _infraccionesService.GetInfraccion2ById(ids);
+            
+
+
+            return View(model);
+        }
+
+
+
+
+        public IActionResult RemoveData(string id)
+        {
+
+            var model = _infraccionesService.CancelTramite(id);
+
+            return Json(true);
+        }
+
+
+        /*****************************************************************************************************/
+        #endregion
+
+
 
     }
 }

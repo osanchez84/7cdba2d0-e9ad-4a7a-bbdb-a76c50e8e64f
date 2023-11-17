@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <button href="#" id="btnNueaOf" onclick="mostrarModal()">
-                            <h6 class="m-0 d-flex align-items-center"><i class="icon-addMinisterio h5 mb-0 me-2"></i><b>Agregar nueva agencia del ministerio</b></h6>
+                            <h6 class="m-0 d-flex align-items-center"><i class="icon-addMinisterio h5 mb-0 me-2"></i><b>Agregar nueva agencia de ministerio</b></h6>
                         </button>
                     </div>
                 </div>
@@ -39,7 +39,15 @@
                     </div>
                     <partial name="_ListaAgenciasMinisterio" model="Model" />
 
-
+                     <!-----------------------------------------------------------UPDATE--------------------------------------------------------------------------------------------->
+                    <div class="modal fade modalCustom" id="editarAgenciaministerio" tabindex="-1" aria-labelledby="editarAgenciaministerio" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body" id="ModalBodEditarAgenciaministerio">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="modal fade modalCustom" id="agregarAgenciaministerio" tabindex="-1" aria-labelledby="agregarAgenciaministerioLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
@@ -52,15 +60,7 @@
 
 
 
-                    <!-----------------------------------------------------------UPDATE--------------------------------------------------------------------------------------------->
-                    <div class="modal fade modalCustom" id="editarAgenciaministerio" tabindex="-1" aria-labelledby="editarAgenciaministerio" aria-hidden="true">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body" id="ModalBodEditarAgenciaministerio">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
 
                     <!-----------------------------------------------------------DELETE--------------------------------------------------------------------------------------------->
                     <div class="modal fade modalCustom" id="eliminarAgenciaministerio" tabindex="-1" aria-labelledby="eliminarAgenciaministerioLabel" aria-hidden="true">

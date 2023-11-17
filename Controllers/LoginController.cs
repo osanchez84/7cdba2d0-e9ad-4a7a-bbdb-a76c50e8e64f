@@ -1,5 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.WSRest;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,7 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Security;
 using System.Runtime.ConstrainedExecution;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -199,8 +202,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
-                            string idOficinaStr = Regex.Match(oficina, @"\d+").Value;
-                            string entidad = Regex.Match(oficina, @"\d+(.+?)\|").Groups[1].Value.Trim();
+                            string idOficinaStr = json[0].clave_oficina;
+                            string idDependenciaStr = json[0].tipo_oficina;
+
                             if (int.TryParse(idOficinaStr, out int idOficina))
                             {
                                 HttpContext.Session.SetInt32("IdOficina", idOficina);
@@ -210,6 +214,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
 
                             }
+                            if (int.TryParse(idDependenciaStr, out int idDependencia))
+                            {
+                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
+
+                            }
+                            else
+                            {
+
+                            }
+
+
+                            await SignInUser(idOficina.ToString(),nombre);
+
+
                             string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
@@ -223,6 +241,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);
+                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
                             }
@@ -233,13 +252,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     HttpContext.Session.Remove("IdsPermitidos");
                     HttpContext.Session.Remove("Nombre");
                     HttpContext.Session.Remove("Oficina");
+                    HttpContext.Session.Remove("IdDependencia");
+
 
                     return BadRequest("Error en la respuesta del servicio");
                 }
             }
             catch (Exception ex)
             {
-                // En caso de errores, limpiar la variable de sesión y manejar el error
                 HttpContext.Session.Clear();
                 return StatusCode(500, $"Error en el servidor: {ex.Message}");
             }
@@ -260,6 +280,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idsPermitidos = JsonConvert.DeserializeObject<List<int>>(idsPermitidosJson) ?? new List<int>();
             return Json(idsPermitidos);
         }
+
+
+
+        private async Task SignInUser(string idUsuario, string nombre)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(CustomClaims.IdUsuario, idUsuario),
+                new Claim(CustomClaims.Nombre, nombre)
+            };           
+            
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+        }
+
+
+
 
 
     }

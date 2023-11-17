@@ -9,9 +9,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class ReporteAsignacionServiciosController : BaseController
     {
         private readonly IPadronDepositosGruasService _padronDepositosGruasService;
@@ -45,8 +49,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
                 ReporteAsignacionBusquedaModel searchModel = new ReporteAsignacionBusquedaModel();
-            List<ReporteAsignacionModel> listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones();
+            List<ReporteAsignacionModel> listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(idOficina);
             searchModel.ListReporteAsignacion = listReporteAsignacion;
             return View(searchModel);
             }
@@ -70,8 +76,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 model.FechaFin = DateTime.MinValue;
             }
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model);
+            var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model, idOficina);
             if (listReporteAsignacion.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
@@ -107,7 +114,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"evento","Evento"},
             {"fullName","Nombre Solicitante"}
             };
-            var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model,idOficina);
             var result = _pdfService.CreatePdf("ReporteAsignacionServicios", "Asignación de Servicios", 7, ColumnsNames, listReporteAsignacion);
             return File(result.Item1, "application/pdf", result.Item2);
         }

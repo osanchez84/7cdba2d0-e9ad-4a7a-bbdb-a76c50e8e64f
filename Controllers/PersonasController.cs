@@ -12,19 +12,28 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class PersonasController : BaseController
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IPersonasService _personasService;
         private readonly IHttpClientFactory _httpClientFactory;
-        public PersonasController(ICatDictionary catDictionary, IPersonasService personasService, IHttpClientFactory httpClientFactory)
+        private readonly ICatEntidadesService _catEntidadesService;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+        public PersonasController(ICatDictionary catDictionary, IPersonasService personasService, IHttpClientFactory httpClientFactory, ICatEntidadesService catEntidadesService
+            , ICatMunicipiosService catMunicipiosService)
         {
             _catDictionary = catDictionary;
             _personasService = personasService;
             _httpClientFactory = httpClientFactory;
+            _catEntidadesService = catEntidadesService;
+            _catMunicipiosService = catMunicipiosService;
         }
         public IActionResult Index()
         {
@@ -96,16 +105,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
             var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
-            var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+           // var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
             var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
-            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+           // var catMunicipios = (_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
 
-            ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+           // ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatGeneros = new SelectList(catGeneros.CatalogList, "Id", "Text");
-            ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            //ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
             ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             return PartialView("_CrearPersona", new PersonaModel());
+        }
+        public JsonResult Entidades_Drop()
+        {
+            var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            return Json(result);
+        }
+        public JsonResult Municipios_Drop(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
         }
 
         [HttpPost]

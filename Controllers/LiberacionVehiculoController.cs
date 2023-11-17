@@ -1,5 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -12,10 +14,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+
 using System.Net;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class LiberacionVehiculoController : BaseController
     {
         #region DPIServices
@@ -23,13 +28,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPlacaServices _placaServices;
         private readonly IMarcasVehiculos _marcaServices;
         private readonly ILiberacionVehiculoService _liberacionVehiculoService;
+        private readonly IRepuveService _repuveService;
 
         public LiberacionVehiculoController(IPlacaServices placaServices,
-            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService)
+            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService, IRepuveService repuveService)
         {
             _placaServices = placaServices;
             _marcaServices = marcaServices;
             _liberacionVehiculoService = liberacionVehiculoService;
+            _repuveService = repuveService;
         }
 
 
@@ -42,8 +49,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
                 LiberacionVehiculoBusquedaModel searchModel = new LiberacionVehiculoBusquedaModel();
-                List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos();
+                List<LiberacionVehiculoModel> ListDepositos = _liberacionVehiculoService.GetAllTopDepositos(idOficina);
                 searchModel.ListDepositosLiberacion = ListDepositos;
                 return View(searchModel);
             }
@@ -71,7 +80,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculo(LiberacionVehiculoBusquedaModel model)
         {
-            var ListVehiculosModel = _liberacionVehiculoService.GetDepositos(model);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var ListVehiculosModel = _liberacionVehiculoService.GetDepositos(model, idOficina);
 
             if (ListVehiculosModel.Count == 0)
             {
@@ -85,7 +96,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_UpdateLiberacion(int Id)
         {
-            var model = _liberacionVehiculoService.GetDepositoByID(Id);
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var model = _liberacionVehiculoService.GetDepositoByID(Id, idOficina);
+            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+            {
+                placa = model.Placa,
+                niv = model.Serie
+            };
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
             //model.FechaIngreso.ToString("dd/MM/yyyy");
             return PartialView("_UpdateLiberacion", model);
 
@@ -98,7 +117,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int result = 0;
             try
             {
-                #region funciona
 
                 var model = JsonConvert.DeserializeObject<LiberacionVehiculoModel>(data);
                 if (ImageAcreditacionPropiedad != null)
@@ -129,7 +147,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ////Prueba de que allmacena bien la imagen  
                 ////var imgByte = model.AcreditacionPropiedad;
                 ////return new FileContentResult(imgByte, "image/jpeg");
-                #endregion
                 result = _liberacionVehiculoService.UpdateDeposito(model);
 
             }
@@ -139,7 +156,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             if (result > 0)
             {
-                List<LiberacionVehiculoModel> ListProuctModel = _liberacionVehiculoService.GetAllTopDepositos();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                List<LiberacionVehiculoModel> ListProuctModel = _liberacionVehiculoService.GetAllTopDepositos(idOficina);
                 return Json(ListProuctModel);
             }
             else

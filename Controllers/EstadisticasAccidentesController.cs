@@ -2,6 +2,7 @@
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -9,6 +10,7 @@ using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
+    [Authorize]
     public class EstadisticasAccidentesController : BaseController
     {
         private readonly IEstatusInfraccionService _estatusInfraccionService;
@@ -48,9 +50,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            var modelList = _infraccionesService.GetAllAccidentes2()
-                                            .GroupBy(g => g.municipio)
-                                            .Select(s => new EstadisticaAccidentesMotivosModel() { Motivo = s.Key.ToString(), Contador = s.Count() }).ToList();
+            // var modelList = _infraccionesService.GetAllAccidentes2()
+            //.GroupBy(g => g.municipio)
+            // .Select(s => new EstadisticaAccidentesMotivosModel() { Motivo = s.Key.ToString(), Contador = s.Count() }).ToList();
 
             var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
             var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
@@ -83,7 +85,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatCausasAccidentes = new SelectList(catCausasAccidentes.CatalogList, "Id", "Text");
             ViewBag.CatFactoresAccidentes = new SelectList(catFactoresAccidentes.CatalogList, "Id", "Text");
             ViewBag.CatFactoresOpcionesAccidentes = new SelectList(catFactoresOpcionesAccidentes.CatalogList, "Id", "Text");
-            ViewBag.Estadisticas = modelList;
+            // ViewBag.Estadisticas = modelList;
+             ViewBag.ListadoAccidentesPorAccidente = _estadisticasAccidentesService.AccidentesPorAccidente();
+             ViewBag.ListadoAccidentesPorVehiculo = _estadisticasAccidentesService.AccidentesPorVehiculo();
 
             return View();
         }
@@ -105,23 +109,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                     && w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
                                                     && w.idFactorOpcionAccidente == (model.idFactorOpcionAccidente > 0 ? model.idFactorOpcionAccidente : w.idFactorOpcionAccidente)
                                                     && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
-                                                    ).ToList();
+												    && ((model.hora == TimeSpan.Zero && w.hora != TimeSpan.Zero) || model.hora == w.hora)  
+													).ToList();
 
-            var lista = modelList.GroupBy(g =>g.municipio).ToList();
+            var lista = modelList.GroupBy(g => g.municipio).ToList();
 
             var lista2 = lista.
                 Select(
                     s => new EstadisticaAccidentesMotivosModel()
                     {
                         Motivo = s.Key.ToString(),
+                        Delegacion = s.Key.ToString(),
                         Contador = s.Count()
+
                     }
                     ).ToList();
 
             return PartialView("_EstadisticasAccidentes", lista2);
 
         }
-
-
+       
     }
 }

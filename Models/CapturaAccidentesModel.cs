@@ -12,8 +12,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idEstatusReporte { get; set; }
         public string NumeroReporte { get; set; }
         [Required(ErrorMessage = "-El campo Fecha es obligatorio")]
-        public DateTime? Fecha { get; set; }
-        [Required(ErrorMessage = "-El campo Hora  es obligatorio")]
+		public DateTime? Fecha { get; set; }
+		public string FechaFormateada => Fecha.HasValue ? Fecha.Value.ToString("dd/MM/yyyy") : string.Empty;
+
+		[Required(ErrorMessage = "-El campo Hora  es obligatorio")]
         public TimeSpan? Hora { get; set; }
 
         [Required(ErrorMessage = "-Debe seleccionar una opción para Municipio")]
@@ -208,6 +210,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public int PrendasValue { get; set; }
         public int OtrosValue { get; set; }
         public int idOficial { get; set; }
+        public string ArmasTexto { get; set; }
+
+        
         public string fullVehiculo
         {
             get

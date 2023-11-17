@@ -204,17 +204,20 @@
                         <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                     </button>
                 </div>
-                <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                    <div class="controlButton">
-                        @*<button type="submit" class="btn btn-success"><h5 class="m-0"><b>Guardar</b></h5></button>*@
-                        @*  @(Html.Kendo().Button()
+                  @if (ViewBag.ReporteRobo == false)
+                {
+                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                        <div class="controlButton">
+                            @*<button type="submit" class="btn btn-success"><h5 class="m-0"><b>Guardar</b></h5></button>*@
+                            @*  @(Html.Kendo().Button()
                         .Name("EditVehiculo")
                         .HtmlAttributes(new { @class = "btnPrimary px-3" })
                         .Content("<h5 class=\"m-0\"><b>Guardar ajustes</b></h5>"))*@
-                        <button class="btnPrimary px-3" onclick="submitVehiculo()"><h5 class="m-0"><b>Guardar</b></h5></button>
+                            <button class="btnPrimary px-3" onclick="submitVehiculo()"><h5 class="m-0"><b>Guardar</b></h5></button>
 
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
 
@@ -227,6 +230,15 @@
 
 <script>
 
+     
+    $(document).ready(function () {
+        @if (ViewBag.ReporteRobo == true)
+        {
+		<text>
+		sitteg_error('El vehículo cuenta con reporte de robo')
+		</text>
+        }
+    });
     function submitVehiculo() {
         if ($("#UpdateForm")[0].checkValidity()) {
 

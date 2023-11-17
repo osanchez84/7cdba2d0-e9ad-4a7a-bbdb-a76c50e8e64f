@@ -34,6 +34,10 @@ function sitteg_success(msg) {
     set_toastr_options(2500);
     toastr.success(msg, "Alerta");
 }
+function sitteg_error(msg) {
+    set_toastr_options(2500);
+    toastr.error(msg, "Alerta");
+}
 
 
 function set_toastr_options(timeout) {
@@ -56,6 +60,8 @@ function convertDate(inputFormat) {
     var d = new Date(inputFormat)
 
     var date = [pad(d.getDate()), pad(d.getMonth() + 1), (d.getFullYear() == '1' ? '0001' : d.getFullYear())].join('/')
-        
-    return date == "01/01/0001" ? '' : date; 
+
+    date = date == "01/01/0001" ? '' : date
+    date = date == "NaN/NaN/NaN" ? "" : date;
+    return date; 
 }

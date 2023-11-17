@@ -91,7 +91,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.placas = reader["placas"].ToString();
                             model.serie = reader["serie"].ToString();
                             model.tarjeta = reader["tarjeta"].ToString();
-                            model.vigenciaTarjeta = Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                            model.vigenciaTarjeta = reader["vigenciaTarjeta"].GetType() == typeof(DBNull)?null:  Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
                             model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"].ToString());
                             model.idSubmarca = Convert.ToInt32(reader["idSubmarca"].ToString());
                             model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"].ToString());
@@ -552,7 +552,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 
-                    DateTime? t = model.vigenciaTarjeta.Year > 1 ? model.vigenciaTarjeta : null;
+                    DateTime? t = model.vigenciaTarjeta.Value.Year > 1 ? model.vigenciaTarjeta : null;
 
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);

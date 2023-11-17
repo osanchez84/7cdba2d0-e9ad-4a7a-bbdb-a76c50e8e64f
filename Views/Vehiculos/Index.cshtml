@@ -20,6 +20,8 @@
         });
 
        function submitSearch() {
+            var placasValue = $("#PlacasBusqueda").val().trim();
+            $("#PlacasBusqueda").val(placasValue);
     var Mydata = $("#frmSearch").serialize();
     console.log(Mydata);
     $.ajax({

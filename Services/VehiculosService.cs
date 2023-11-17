@@ -551,13 +551,16 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 try
                 {
+
+                    DateTime? t = model.vigenciaTarjeta.Year > 1 ? model.vigenciaTarjeta : null;
+
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
 
                     command.Parameters.Add(new SqlParameter("@placas", SqlDbType.NVarChar)).Value = (object)model.placas ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@serie", SqlDbType.NVarChar)).Value = (object)model.serie ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@tarjeta", SqlDbType.NVarChar)).Value = (object)model.tarjeta ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@vigenciaTarjeta", SqlDbType.DateTime)).Value = (object)model.vigenciaTarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaTarjeta", SqlDbType.DateTime)).Value = (object)t  ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMarcaVehiculo", SqlDbType.Int)).Value = (object)model.idMarcaVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idSubmarca", SqlDbType.Int)).Value = (object)model.idSubmarca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;

@@ -109,7 +109,23 @@
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Serie:</label>
-                @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)
+                
+                
+                <!--@Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
+                             @if(@disableInput){
+                     <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+             </span>
+
+             }
+             else{
+                 <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+             </span>
+
+             }
+
+
             </div>
         </div>
 
@@ -149,6 +165,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -156,6 +173,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -612,7 +630,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFC)
                                 .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa RFC")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -865,7 +883,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFCFisico)
-                                .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
+                                .Label(l => l.Content("RFC:"))
                                 .Placeholder("Ingresa un RFC valido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )

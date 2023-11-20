@@ -1696,7 +1696,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                              "LEFT JOIN catHospitales h ON ia.idHospital = h.idHospital " +
                                              "LEFT JOIN catAsientos ca ON ia.idAsiento = ca.idAsiento " +
                                              "LEFT JOIN catCinturon cc ON ia.idCinturon = cc.idCinturon " +
-                                             "WHERE ia.idAccidente = @idAccidente;", connection);
+                                             "WHERE ia.idAccidente = @idAccidente AND ia.idPersona != 0;", connection);
 
 
 

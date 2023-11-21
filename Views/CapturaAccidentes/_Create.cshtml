@@ -257,6 +257,7 @@
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
+                            .Filter(FilterType.Contains)
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
 

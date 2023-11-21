@@ -243,8 +243,25 @@
 
         </div>
     </section>
-
 </div>
+
+<div class="modal fade modalCustom" id="pdfCausaAccidenteModal" tabindex="-1" aria-labelledby="pdfCausaAccidenteModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodypdfCausaAccidenteModal">
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/js/es6-promise.auto.min.js"></script>
+    <script src="~/js/jspdf.min.js"></script>
+    <script src="~/js/jspdf.umd.min.js"></script>
+    <script src="~/js/html2canvas.min.js"></script>
+    <script src="~/js/html2pdf.bundle.min.js"></script>
+
+}
+
  <script>
     function buscarAccidente() {
         var Mydata = $("#busquedaAccidenteForm").serialize();

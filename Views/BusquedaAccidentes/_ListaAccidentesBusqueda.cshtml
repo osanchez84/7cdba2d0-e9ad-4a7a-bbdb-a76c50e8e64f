@@ -34,14 +34,63 @@
             .ServerOperation(false)
             )
             )
-
-
     </div>
 </div>
+
+<div id="pdfDetallado">
+
+</div>
+
+
+
 <script>
+    async function printHTML() {
+        const element = document.getElementById("accidenteDetallado");
+
+        var opt = {
+            margin: [0, -0.3, 0, 0],
+            filename: 'myfile.pdf',
+            image: { type: 'jpeg', quality: 0.98},
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'legal', orientation: 'portrait' }
+            //pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            //pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '#divI2' }
+
+        };
+        let worker = await html2pdf().set(opt).from(element).toPdf().output('blob').then((data) => {
+            console.log(data)
+            let fileURL = URL.createObjectURL(data);
+            window.open(fileURL);
+        })
+    }
+
     function downLoadPdf(Id) {
-        console.log("SI", Id)
-        window.location = '/BusquedaAccidentes/CreatePdfUnRegistro?IdAccidente=' + Id;
+        $.ajax({
+            url: '/PDFGenerator/AccidentesDetallado',
+            type: 'GET',
+            data: { idAccidente: Id },
+            success: function (result) {
+                var opt = {
+                    margin: [-9.2, -0.3, 0, 0],
+                    filename: 'myfile.pdf',
+                    image: { type: 'jpeg', quality: 5.0 },
+                    html2canvas: { scale: 1},
+                    jsPDF: { unit: 'in', format: 'legal', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                    //pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.avoidThisRow' }
+
+                };
+                html2pdf().set(opt).from(result).save();
+
+                //html2pdf().from(element).save();
+
+                //$("#pdfDetallado").html(result);
+                //$("#pdfDetallado").hide();
+                //printHTML();
+
+            },
+
+        });
     }
     function editarAccidente(idAccidente) {
         $.ajax({

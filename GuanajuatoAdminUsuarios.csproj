@@ -68,6 +68,7 @@
     <Folder Include="Attributes\" />
     <Folder Include="Extensions\" />
     <Folder Include="Views\ModificacionVehiculos\" />
+    <Folder Include="Views\PDFGenerator\AccidentesDetallado\" />
   </ItemGroup>
 
   <ItemGroup>

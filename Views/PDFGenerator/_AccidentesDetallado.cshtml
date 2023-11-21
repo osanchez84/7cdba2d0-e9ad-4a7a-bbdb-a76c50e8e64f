@@ -1,0 +1,610 @@
+﻿@model PDFAccidenteDetalladoModel
+
+@{
+	int contadorVehiculo = 0;
+}
+<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+		text-indent: 0;
+	}
+
+	.s1 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: none;
+		font-size: 8pt;
+	}
+
+	.s2 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: none;
+		font-size: 7pt;
+	}
+
+	p {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: none;
+		font-size: 9pt;
+		margin: 0pt;
+	}
+
+	.s3 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: bold;
+		text-decoration: none;
+		font-size: 8pt;
+	}
+
+	.s4 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: none;
+		font-size: 7pt;
+	}
+
+	.s5 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: bold;
+		text-decoration: none;
+		font-size: 7pt;
+	}
+
+	h1 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: bold;
+		text-decoration: none;
+		font-size: 9pt;
+	}
+
+	.s6 {
+		color: black;
+		font-family: Arial, sans-serif;
+		font-style: normal;
+		font-weight: normal;
+		text-decoration: none;
+		font-size: 2pt;
+	}
+
+	table, tbody {
+		vertical-align: top;
+		overflow: visible;
+	}
+
+	.middle hr {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		border: 0;
+		width: 50%;
+		border-top: 1pt solid rgb(0, 0, 0);
+	}
+
+	.lateral hr {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		border: 0;
+		width: 60%;
+		border-top: 1pt solid rgb(0, 0, 0);
+	}
+
+	.table td {
+		padding: 1px !important;
+		vertical-align: top;
+		border-top: 0;
+	}
+
+	table, tr, td {
+		border-top-style: solid;
+		border-top-width: 0.5pt;
+		border-left-style: solid;
+		border-left-width: 0.5pt;
+		border-bottom-style: solid;
+		border-bottom-width: 0.5pt;
+		border-right-style: solid;
+		border-right-width: 0.5pt;
+		padding: 0px !important;
+		margin: 0px !important;
+	}
+
+		table tr td p {
+			font-size: 5.5pt !important;
+			padding: 0px !important;
+			margin: 0px !important;
+		}
+
+			table tr td p.s2 {
+				text-align: center;
+			}
+
+			table tr td p.s3 {
+				text-align: center;
+				vertical-align: central;
+			}
+
+			table tr td p.s4 {
+				text-align: center;
+			}
+
+			table tr td p.s5 {
+				text-align: center;
+			}
+
+			table tr td p.s6 {
+				text-align: center;
+			}
+
+</style>
+<div class="card">
+	<div class="card-body">
+		<div class="row row-sm">
+			<div id="divInvoice" class="col-xl-11 col-lg-12 col-md-12 container center">
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="8">
+								<p class="s3">
+									PARTE DE ACCIDENTE
+								</p>
+							</td>
+						</tr>
+					</thead>
+					@*DATOS*@
+					<tr>
+						<td colspan="6"><p class="s1">ING. MARTÍN DE JESÚS MORENO MUÑOZ</p></td>
+						<td colspan="2"><p class="s1">ACC. No.: @Model.ParteAccidente.NumeroReporte</p></td>
+					</tr>
+					<tr>
+						<td colspan="6"><p class="s1">DIRECTOR DE TRÁNSITO DEL ESTADO</p></td>
+						<td colspan="2"><p class="s1">Guanajuato LAT: 21.007948° LONG: -101.273454°</p></td>
+					</tr>
+					<tr>
+						<td colspan="6"><p class="s1">CARR. @Model.ParteAccidente.Carretera KM. @Model.ParteAccidente.Kilometro</p></td>
+						<td colspan="2"><p class="s1">HUMBERTO TORRES PESCADOR</p></td>
+					</tr>
+					<tr>
+						<td colspan="6"><p class="s1">GUANAJUATO, GTO.</p></td>
+						<td colspan="2"><p class="s1">DELEGADO DE: GUANAJUATO</p></td>
+					</tr>
+					@*Columnas*@
+					<tr>
+						<td><p class="s5">HORA</p></td>
+						<td><p class="s5">DÍA</p></td>
+						<td><p class="s5">MES</p></td>
+						<td><p class="s5">AÑO</p></td>
+						<td><p class="s5">DIA DE LA SEMANA</p></td>
+						<td><p class="s5">KM.</p></td>
+						<td><p class="s5">CAMINO ESTATAL</p></td>
+						<td><p class="s5">TRAMO</p></td>
+					</tr>
+					@*DATOS*@
+					<tr>
+						<td><p class="s2">@Model.ParteAccidente.Fecha.Value.ToString("hh:ss")</p></td>
+						<td><p class="s2">@Model.ParteAccidente.Fecha.Value.ToString("dd")</p></td>
+						<td><p class="s2">@Model.ParteAccidente.Fecha.Value.ToString("MM")</p></td>
+						<td><p class="s2">@Model.ParteAccidente.Fecha.Value.ToString("yyyy")</p></td>
+						<td><p class="s2">@Model.ParteAccidente.Fecha.Value.ToString("dddd").ToUpper()</p></td>
+						<td><p class="s2">@Model.ParteAccidente.Kilometro</p></td>
+						<td><p class="s2"></p></td>
+						<td><p class="s2">@Model.ParteAccidente.Tramo</p></td>
+					</tr>
+				</table>
+				<br />
+				@*VEHICULOS*@
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="8">
+								<p class="s3">
+									VEHÍCULOS
+								</p>
+							</td>
+						</tr>
+					</thead>
+					@foreach (var item in Model.VehiculosInvolucrados)
+					{
+						contadorVehiculo++;
+						@*Columnas*@
+						<tr>
+							<td rowspan="2"><p class="s3">VEH.@contadorVehiculo</p></td>
+							<td><p class="s5">TIPO</p></td>
+							<td><p class="s5">MARCA</p></td>
+							<td><p class="s5">SUBMARCA</p></td>
+							<td><p class="s5">MODEL</p></td>
+							<td><p class="s5">COLOR</p></td>
+							<td><p class="s5">No. DE SERIE</p></td>
+							<td><p class="s5">PLACAS</p></td>
+						</tr>
+						@*Datos*@
+						<tr>
+							<td><p class="s2">@item.Tipo</p></td>
+							<td><p class="s2">@item.Marca</p></td>
+							<td><p class="s2">@item.Submarca</p></td>
+							<td><p class="s2">@item.Modelo</p></td>
+							<td><p class="s2">@item.Color</p></td>
+							<td><p class="s2">@item.Serie</p></td>
+							<td><p class="s2">@item.Placa</p></td>
+						</tr>
+						@*Columnas*@
+						<tr>
+							<td colspan="3"><p class="s5">TARJETA CIRCULACIÓN</p></td>
+							<td><p class="s5">VIGENCIA</p></td>
+							<td><p class="s5">ENTIDAD</p></td>
+							<td><p class="s5">CAPACIDAD</p></td>
+							<td><p class="s5">No. ECON.</p></td>
+							<td><p class="s5">PÓLIZA CARGA</p></td>
+						</tr>
+						@*Datos*@
+						<tr>
+							<td colspan="3"><p class="s2">@item.Tarjeta</p></td>
+							<td><p class="s2">@item.vigenciaLicencia.ToString("dd-MM-yyyy")</p></td>
+							<td><p class="s2">@item.Entidad</p></td>
+							<td><p class="s2">@item.Capacidad</p></td>
+							<td><p class="s2">@item.NumeroEconomico</p></td>
+							<td><p class="s2">@item.Poliza</p></td>
+						</tr>
+						@*Columnas*@
+						<tr>
+							<td colspan="3"><p class="s5">TIPO DE SERVICIO</p></td>
+							<td><p class="s5">PROPIETARIO O EMPRESA</p></td>
+							<td colspan="4"><p class="s5">DOMICILIO PROP.</p></td>
+						</tr>
+						@*Datos*@
+						<tr>
+							<td colspan="3"><p class="s2">@item.TipoServicio</p></td>
+							<td><p class="s2">@item.Propietario</p></td>
+							<td colspan="4"><p class="s2">@item.Direccion</p></td>
+						</tr>
+						@*Columnas*@
+						<tr>
+							<td colspan="3"><p class="s5">CONDUCTOR</p></td>
+							<td colspan="3"><p class="s5">DOMICILIO COND.</p></td>
+							<td><p class="s5">EDAD</p></td>
+							<td><p class="s5">SEXO</p></td>
+						</tr>
+						@*Datos*@
+						<tr>
+							<td colspan="3"><p class="s2">@item.ConductorInvolucrado</p></td>
+							<td colspan="3"><p class="s2">-------</p></td>
+							<td><p class="s2">@(DateTime.Now.Year - item.fechaNacimiento.Year)</p></td>
+							<td><p class="s2">@item.Sexo</p></td>
+						</tr>
+						@*Columnas*@
+						<tr>
+							<td colspan="2"><p class="s5">FECHA DE NAC.</p></td>
+							<td colspan="2"><p class="s5">TIPO DE LICENCIA</p></td>
+							<td><p class="s5">No. DE LICENCIA</p></td>
+							<td colspan="3"><p class="s5">VENCIMIENTO DE LIC.</p></td>
+						</tr>
+						@*Datos*@
+						<tr>
+							<td colspan="2"><p class="s2">@item.fechaNacimiento.ToString("dd-MM-yyyy")</p></td>
+							<td colspan="2"><p class="s2">@item.TipoLicencia</p></td>
+							<td><p class="s2">@item.licencia</p></td>
+							<td colspan="3"><p class="s2">@item.vigenciaLicencia.ToString("dd-MM-yyyy")</p></td>
+						</tr>
+					}
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td>
+								<p class="s3">
+									CLASIFICACIÓN DEL ACCIDENTE
+								</p>
+							</td>
+						</tr>
+					</thead>
+					@*Datos*@
+					@foreach (var item in Model.Clasificaciones)
+					{
+						<tr>
+							<td><p class="s2">@item.NombreClasificacion</p></td>
+						</tr>
+					}
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="2">
+								<p class="s3">
+									FACTORES QUE INTERVINIERON
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td><p class="s5">FACTOR</p></td>
+						<td>
+							<p class="s5">OPCIÓN</p>
+						</td>
+					</tr>
+					@foreach (var item in Model.Factores)
+					{
+						<tr>
+							<td><p class="s2">@item.FactorAccidente</p></td>
+							<td><p class="s2">@item.FactorOpcionAccidente</p></td>
+						</tr>
+					}
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="2">
+								<p class="s3">
+									CAUSAS DETERMINANTES
+								</p>
+							</td>
+						</tr>
+					</thead>
+					@foreach (var item in Model.CausasDeterminantes)
+					{
+						<tr>
+							<td><p class="s5">@item.CausaAccidente</p></td>
+						</tr>
+						<tr>
+							<td><p class="s2">@(string.IsNullOrEmpty(item.DescripcionCausa) ? "S/C" : item.DescripcionCausa)</p></td>
+						</tr>
+					}
+				</table>
+				<br />
+				<table class="table" cellspacing="0">
+					<thead>
+						<tr>
+							<td colspan="8">
+								<p class="s3">
+									VICTIMAS
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td><p class="s5">VEH.</p></td>
+						<td><p class="s5">TIPO</p></td>
+						<td><p class="s5">NOMBRE</p></td>
+						<td><p class="s5">SEXO</p></td>
+						<td><p class="s5">EDAD</p></td>
+						<td><p class="s5">DOMICILIO</p></td>
+						<td><p class="s5">ESTADO</p></td>
+						<td><p class="s5">LLEVADO A</p></td>
+					</tr>
+					@(contadorVehiculo = 0)
+					@foreach (var item in Model.VehiculosInvolucrados)
+					{
+						contadorVehiculo++;
+						<tr>
+							<td><p class="s2">@contadorVehiculo</p></td>
+							<td><p class="s2">@item.Tipo</p></td>
+							<td><p class="s2">@item.ConductorInvolucrado</p></td>
+							<td><p class="s2">@item.Sexo</p></td>
+							<td><p class="s2">@(DateTime.Now.Year - item.fechaNacimiento.Year)</p></td>
+							<td><p class="s2">@item.Direccion</p></td>
+							<td><p class="s2">@item.Estado</p></td>
+							<td><p class="s2">@item.LLevadoA</p></td>
+						</tr>
+					}
+					<tr>
+						<td><p class="s5">TOTAL DE LESIONADOS</p></td>
+						<td><p class="s2">0</p></td>
+						<td colspan="2"><p class="s5">TOTAL DE MUERTOS</p></td>
+						<td><p class="s2">0</p></td>
+						<td><p class="s5">TOTAL SIN LESIÓN</p></td>
+						<td><p class="s2">0</p></td>
+					</tr>
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="8">
+								<p class="s3">
+									DAÑOS MATERIALES
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td><p class="s5">VEH.</p></td>
+						<td><p class="s5">PLACAS</p></td>
+						<td><p class="s5">SERIE</p></td>
+						<td><p class="s5">MARCA</p></td>
+						<td><p class="s5">SUBMARCA</p></td>
+						<td><p class="s5">TIPO</p></td>
+						<td><p class="s5">COLOR</p></td>
+						<td><p class="s5">MONTO DAÑOS</p></td>
+					</tr>
+					@(contadorVehiculo = 0)
+					@foreach (var item in Model.VehiculosInvolucrados)
+					{
+						contadorVehiculo++;
+						<tr>
+							<td><p class="s2">@contadorVehiculo</p></td>
+							<td><p class="s2">@item.Placa</p></td>
+							<td><p class="s2">@item.Serie</p></td>
+							<td><p class="s2">@item.Marca</p></td>
+							<td><p class="s2">@item.Submarca</p></td>
+							<td><p class="s2">@item.Tipo</p></td>
+							<td><p class="s2">@item.Color</p></td>
+							<td><p class="s2">@(String.Format("{0:C}", item.montoVehiculo))</p></td>
+						</tr>
+					}
+					<tr>
+						<td colspan="6"><p><br /></p></td>
+						<td><p class="s5">TOTAL DE DAÑOS A VEHÍCULOS:</p></td>
+						<td><p class="s2">@(String.Format("{0:C}", Model.VehiculosInvolucrados.Sum(s => s.montoVehiculo)))</p></td>
+					</tr>
+					<tr>
+						<td><p class="s5">DAÑOS AL CAMINO:</p></td>
+						<td><p class="s2">@(String.Format("{0:C}", Model.ParteAccidente.montoCamino))</p></td>
+						<td><p class="s5">DAÑOS A LA CARGA:</p></td>
+						<td><p class="s2">@(String.Format("{0:C}", Model.ParteAccidente.montoCarga))</p></td>
+						<td><p class="s5">DAÑOS PROPIETARIOS:</p></td>
+						<td><p class="s2">@(String.Format("{0:C}", Model.ParteAccidente.montoPropietarios))</p></td>
+						<td><p class="s5">OTROS DAÑOS:</p></td>
+						<td><p class="s2">@(String.Format("{0:C}", Model.ParteAccidente.montoOtros))</p></td>
+					</tr>
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="3">
+								<p class="s3">
+									INFRACCIONES
+								</p>
+							</td>
+						</tr>
+					</thead>
+					@(contadorVehiculo = 0)
+					@foreach (var item in Model.Infracciones)
+					{
+						contadorVehiculo++;
+						<tr>
+							<td><p class="s5">VEH.</p></td>
+							<td><p class="s5">No. DE FOLIO Y GARANTÍA</p></td>
+							<td><p class="s5">CONCEPTO</p></td>
+						</tr>
+						<tr>
+							<td><p class="s2">@contadorVehiculo</p></td>
+							<td><p class="s2">@item.folioInfraccion</p></td>
+							<td><p class="s2">---</p></td>
+						</tr>
+					}
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="8">
+								<p class="s3">
+									COMPETENCIA MINISTERIAL
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td colspan="2"><p class="text-start s5">A DISPOSICIÓN DE:</p></td>
+						<td colspan="2"><p class="s2">@Model.ADisposicion</p></td>
+						<td colspan="2"><p class="text-start s5">ENTREGADO A:</p></td>
+						<td colspan="2"><p class="s2">-</p></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p class="text-start s5">PROCEDE LA CONSIGNACIÓN DE LOS HECHOS AL C:</p></td>
+						<td colspan="2"><p class="s2">-</p></td>
+						<td colspan="2"><p class="text-start s5">CON SEDE:</p></td>
+						<td colspan="2"><p class="s2">-</p></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p class="text-start s5">CONVENIO:</p></td>
+						<td colspan="2"><p class="s2">NO</p></td>
+						<td colspan="2"><p class="text-start s5">OBSERVACIONES CONVENIO:</p></td>
+						<td colspan="2"><p><br /></p></td>
+					</tr>
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="4">
+								<p class="s3">
+									CONSIGNACIÓN
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td><p class="s5">ELABORA CONSIGNACIÓN:</p></td>
+						<td><p class="s2">-</p></td>
+						<td><p class="s5">No. DE OFICIO:</p></td>
+						<td><p class="s2">-</p></td>
+					</tr>
+					<tr>
+						<td><p class="s5">AGENCIA DE MINISTERIO QUE RECIBE:</p></td>
+						<td><p class="s2">-</p></td>
+						<td><p class="s5">RECIBE:</p></td>
+						<td><p class="s2">-</p></td>
+					</tr>
+				</table>
+				<br />
+				<table class="table">
+					<thead>
+						<tr>
+							<td colspan="2">
+								<p class="s3">
+									VALIDACIÓN DEL PARTE DE ACCIDENTE
+								</p>
+							</td>
+						</tr>
+					</thead>
+					<tr>
+						<td><p class="text-end s5">ELABORA:</p></td>
+						<td><p class="s2">ADRIAN LÓPEZ CARDONA</p></td>
+					</tr>
+					<tr>
+						<td><p class="text-end s5">SUPERVISOR:</p></td>
+						<td><p class="s2">JORGE RODRIGUEZ SANTIBAÑEZ</p></td>
+					</tr>
+					<tr>
+						<td><p class="text-end s5">AUTORIZA:</p></td>
+						<td><p class="s2">JORGE RODRIGUEZ SANTIBAÑEZ</p></td>
+					</tr>
+				</table>
+				<br />
+				<div class="text-center">
+					<h1>RESPETUOSAMENTE OFICIAL DE TRANSITO DEL ESTADO</h1>
+					<br />
+					<div class="d-flex justify-content-center middle"><hr /></div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-2">
+						<div class="text-end">
+							<div class="text-center">
+								<h1>SUPERVISÓ </h1>
+								<h1>JEFE DE SERVICIOS</h1>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-md-offset-2">
+						<div class="text-end">
+							<div class="text-center">
+								<h1>Vo. Bo. </h1>
+								<h1>EL DELEGADO</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<br />
+						<div class="d-flex justify-content-center lateral"><hr /></div>
+					</div>
+					<div class="col-md-6">
+						<br />
+						<div class="d-flex justify-content-center lateral"><hr /></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -284,8 +284,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,catE.nombreEntidad, catC.color  
                                 FROM vehiculos v
                                 INNER JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
-                                INNER JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
-                                INNER JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
+                                left JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
+                                left JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
                                 INNER JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
                                 INNER JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
                                 INNER JOIN catColores catC on v.idColor = catC.idColor  
@@ -313,7 +313,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                             model.serie = reader["serie"].ToString();
                             model.tarjeta = reader["tarjeta"].ToString();
-                            model.vigenciaTarjeta = Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                            model.vigenciaTarjeta = reader["vigenciaTarjeta"].GetType()==typeof(DBNull)?null:Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
                             model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
                             model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
                             model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"]);
@@ -552,7 +552,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 
-                    DateTime? t = model.vigenciaTarjeta.Value.Year > 1 ? model.vigenciaTarjeta : null;
+                    DateTime? t = model.vigenciaTarjeta!=null && model.vigenciaTarjeta.Value.Year > 1 ? model.vigenciaTarjeta : null;
 
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);

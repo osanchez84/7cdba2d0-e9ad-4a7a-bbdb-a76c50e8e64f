@@ -221,7 +221,7 @@ namespace GuanajuatoAdminUsuarios.Services
                        "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                         "FROM vehiculos v " +
                         "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                        "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
+                        "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
                         "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
                         "JOIN catColores cc ON v.idColor = cc.idColor " +
                         "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
@@ -236,7 +236,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                             "FROM vehiculos v " +
                             "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                            "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
+                            "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
                             "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
                             "JOIN catColores cc ON v.idColor = cc.idColor " +
                             "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +

@@ -1696,7 +1696,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                              "LEFT JOIN catHospitales h ON ia.idHospital = h.idHospital " +
                                              "LEFT JOIN catAsientos ca ON ia.idAsiento = ca.idAsiento " +
                                              "LEFT JOIN catCinturon cc ON ia.idCinturon = cc.idCinturon " +
-                                             "WHERE ia.idAccidente = @idAccidente;", connection);
+                                             "WHERE ia.idAccidente = @idAccidente AND ia.idPersona != 0;", connection);
 
 
 
@@ -1822,7 +1822,7 @@ namespace GuanajuatoAdminUsuarios.Services
             qryUpdate += !string.IsNullOrEmpty(datosAccidente.entregaObjetos) ? " , entregaObjetos = @entregaObjetos " : ""; 
             qryUpdate += !string.IsNullOrEmpty(datosAccidente.entregaOtros) ? " , entregaOtros = @entregaOtros " : "";
             qryUpdate += !string.IsNullOrEmpty(datosAccidente.consignacionHechos) ? " , consignacionHechos = @consignacionHechos " : "";
-            qryUpdate += !datosAccidente.IdCiudad.Equals(null) ? " , idCiudad = @idCiudad " : "";
+            qryUpdate += !datosAccidente.IdCiudad.Equals(null) && datosAccidente.IdCiudad > 0 ? " , idCiudad = @idCiudad " : "";
             qryUpdate += !datosAccidente.IdAutoridadEntrega.Equals(null) ? " , idAutoridadEntrega = @IdAutoridadEntrega " : "";
             qryUpdate += !datosAccidente.IdAutoridadDisposicion.Equals(null) ? " , idAutoridadDisposicion = @IdAutoridadDisposicion " : "";
             qryUpdate += !datosAccidente.IdElaboraConsignacion.Equals(null) ? " , idElaboraConsignacion = @IdElaboraConsignacion " : "";

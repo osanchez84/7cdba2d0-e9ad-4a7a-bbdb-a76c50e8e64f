@@ -88,22 +88,31 @@
         event.preventDefault();
 
         var Mydata = $("#fechaHoraForm").serialize();
-        $('#agregarFechaHoraModal').modal('hide');
-        $('modal-body').removeClass('model-open');
-        $('.modal-backdrop').remove();
-
-        $.ajax({
-            url: '@Url.Action("AgregarFechaHora")',
-            type: 'POST',
-            data: Mydata,
-            success: function (result) {
-                sitteg_success("Se ha agregado fecha y hora de ingreso");
-                $("#tablaConFechaYHora").html(result);
-            },
-            error: function (error) {
-                sitteg_warning("!Sucedio un error, intente mas tarde...");
-            }
-        });
+        console.log(Mydata);
+        var Obj = Mydata.split("&");
+        console.log(Obj)
+        if (Obj[1] != null && (Obj[1].split("=")[1].indexOf("day") >= 0 || Obj[1].split("=")[1].indexOf("month") >= 0 || Obj[1].split("=")[1].indexOf("year") >= 0))
+            sitteg_warning("!Ingresa una fecha valida");   
+        else if (Obj[2].split("=")[1] != null && (Obj[2].split("=")[1].indexOf("hours") >= 0 || Obj[2].split("=")[1].indexOf("minutes") >= 0))
+            sitteg_warning("!Ingresa una hora valida");
+        else
+        {
+            $('#agregarFechaHoraModal').modal('hide');
+            $('modal-body').removeClass('model-open');
+            $('.modal-backdrop').remove();
+            $.ajax({
+                url: '@Url.Action("AgregarFechaHora")',
+                type: 'POST',
+                data: Mydata,
+                success: function (result) {
+                    sitteg_success("Se ha agregado fecha y hora de ingreso");
+                    $("#tablaConFechaYHora").html(result);
+                },
+                error: function (error) {
+                    sitteg_warning("!Sucedio un error, intente mas tarde...");
+                }
+            });
+        }
     }
 
 </script>

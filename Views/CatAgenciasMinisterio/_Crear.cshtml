@@ -42,6 +42,7 @@
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Delegación")
                         .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>

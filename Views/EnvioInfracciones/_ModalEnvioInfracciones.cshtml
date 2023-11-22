@@ -64,7 +64,7 @@
                     <div class="controlForm my-3">
                         <label>Lugar a donde se envía <b>(obligatorio):</b></label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(m => m.IdLugarEnvio)
+                            @(Html.Kendo().DropDownListFor(m => m.IdLugarEnvio).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Oficina")

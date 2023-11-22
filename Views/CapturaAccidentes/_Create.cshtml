@@ -91,6 +91,8 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
                     .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -148,6 +150,8 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Color...")
                     .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -192,6 +196,8 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                                            .Filter(FilterType.Contains)
+
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -204,6 +210,8 @@
                 else
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo)
+                                        .Filter(FilterType.Contains)
+
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
@@ -236,6 +244,8 @@
                     @Html.HiddenFor(m=> m.idSubmarcaUpdated, new { @id = "hdnIdSubmarca" })
 
                     @(Html.Kendo().DropDownListFor(d => d.idSubmarca)
+                                        .Filter(FilterType.Contains)
+
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
@@ -257,6 +267,8 @@
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
+                                                .Filter(FilterType.Contains)
+
                             .Filter(FilterType.Contains)
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
@@ -278,6 +290,8 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                                            .Filter(FilterType.Contains)
+
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -437,6 +451,8 @@
             <div class="controlForm my-3">
                 <label>Tipo de Servicio:</label>
                 @(Html.Kendo().DropDownListFor(d => d.idCatTipoServicio)
+                                    .Filter(FilterType.Contains)
+
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Tipo de Servicio...:")
@@ -674,6 +690,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                                        .Filter(FilterType.Contains)
+
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -695,6 +713,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -963,6 +983,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1018,6 +1040,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1059,6 +1083,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona el tipo de licencia")
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>

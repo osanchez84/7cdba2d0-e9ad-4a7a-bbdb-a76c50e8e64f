@@ -46,7 +46,7 @@
                 <label>Delegación <b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdOficinaRenta)
-                    @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                    @(Html.Kendo().DropDownListFor(t => t.IdDelegacion).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Delegación")

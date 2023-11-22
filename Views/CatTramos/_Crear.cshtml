@@ -37,7 +37,7 @@
             <div class="controlForm my-3">
                 <label>Carretera <b>(obligatorio)</b>:</label>
                 <span>
-                    @(Html.Kendo().DropDownListFor(t=>t.IdCarretera)
+                    @(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Carretera")

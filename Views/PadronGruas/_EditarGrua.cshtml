@@ -31,7 +31,7 @@
                                 <div class="controlForm">
                                     <label>Concesionario:</label>
                                     <div id="divConcesionario">
-                                        @(Html.Kendo().DropDownListFor(f => f.idConcesionario)
+                                        @(Html.Kendo().DropDownListFor(f => f.idConcesionario).Filter(FilterType.Contains)
                                             .BindTo(ViewData["CatConcesionarios"] as SelectList)
                                             .OptionLabel("-- Seleccione --")
                                             .HtmlAttributes(new { style = "width:100%;" })
@@ -82,7 +82,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Clasificación:</label>
-                                    @(Html.Kendo().DropDownListFor(f => f.idClasificacion)
+                                    @(Html.Kendo().DropDownListFor(f => f.idClasificacion).Filter(FilterType.Contains)
                                         .BindTo(ViewData["CatClasificacionGruas"] as SelectList)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;" })
@@ -92,7 +92,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Tipo:</label>
-                                    @(Html.Kendo().DropDownListFor(f => f.idTipoGrua)
+                                    @(Html.Kendo().DropDownListFor(f => f.idTipoGrua).Filter(FilterType.Contains)
                                         .BindTo(ViewData["CatTipoGruas"] as SelectList)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;" })
@@ -102,7 +102,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Situación:</label>
-                                    @(Html.Kendo().DropDownListFor(f => f.idSituacion)
+                                    @(Html.Kendo().DropDownListFor(f => f.idSituacion).Filter(FilterType.Contains)
                                         .BindTo(ViewData["CatSituacionGruas"] as SelectList)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;" })

@@ -6,7 +6,7 @@
         <div class="col-12 col-md-4">
             <div class="controlForm">
                 <label>Concepto:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idConcepto)
+                @(Html.Kendo().DropDownListFor(m => m.idConcepto).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewData["CatConcepto"])
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
@@ -16,7 +16,7 @@
             <div class="controlForm">
                 <label>Subconcepto:</label>
                 <div id="divSubConcepto">
-                    @(Html.Kendo().DropDownListFor(m => m.IdSubConcepto)
+                    @(Html.Kendo().DropDownListFor(m => m.IdSubConcepto).Filter(FilterType.Contains)
                         .OptionLabel("-- Seleccione --")
                         .HtmlAttributes(new { style = "width:100%;", required = "required" }))
                 </div>
@@ -26,7 +26,7 @@
             <div class="controlForm">
                 <label>Motivo:</label>
                 <div id="divCatMotivo">
-                    @(Html.Kendo().DropDownListFor(m => m.idCatMotivoInfraccion)
+                    @(Html.Kendo().DropDownListFor(m => m.idCatMotivoInfraccion).Filter(FilterType.Contains)
                         .OptionLabel("-- Seleccione --")
                         .HtmlAttributes(new { style = "width:100%;" }))
                 </div>

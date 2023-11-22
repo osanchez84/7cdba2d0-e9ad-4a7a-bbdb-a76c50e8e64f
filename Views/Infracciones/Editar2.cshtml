@@ -161,7 +161,7 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Oficial:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.idOficial)
+                                        @(Html.Kendo().DropDownListFor(m => m.idOficial).Filter(FilterType.Contains)
                                                 .BindTo((SelectList)ViewBag.CatOficiales)
                                                 .OptionLabel("-- Seleccione --")
                                                 .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -172,7 +172,7 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Municipio:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.IdMunicipio)
+                                        @(Html.Kendo().DropDownListFor(m => m.IdMunicipio).Filter(FilterType.Contains)
                                                 .BindTo((SelectList)ViewBag.CatMunicipios)
                                                 .OptionLabel("-- Seleccione --")
                                                 .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -224,7 +224,7 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Carretera:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.IdCarretera)
+                                        @(Html.Kendo().DropDownListFor(m => m.IdCarretera).Filter(FilterType.Contains)
                                                 .BindTo((SelectList)ViewBag.CatCarreteras)
                                                 .OptionLabel("-- Seleccione --")
                                                 .HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
@@ -235,7 +235,7 @@
                                     <div class="controlForm">
                                         <label>Tramo:</label>
                                         <div id="divTramo">
-                                            @(Html.Kendo().DropDownListFor(f => f.IdTramo)
+                                            @(Html.Kendo().DropDownListFor(f => f.IdTramo).Filter(FilterType.Contains)
                                                     .BindTo((SelectList)ViewBag.CatTramos)
                                                     .OptionLabel("-- Seleccione --")
                                                     .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -447,7 +447,7 @@
                                 <div class="col-12 col-md-4">
                                     <div class="controlForm">
                                         <label>Concepto:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.Garantia.idCatGarantia)
+                                        @(Html.Kendo().DropDownListFor(m => m.Garantia.idCatGarantia).Filter(FilterType.Contains)
                                                 .BindTo((SelectList)ViewBag.CatGarantias)
                                                 .OptionLabel("-- Seleccione --")
                                                 .HtmlAttributes(new { style = "width:100%;", id = "ddlTipoGarantia", required = "required" }))
@@ -498,7 +498,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>Tipo placa:</label>
-                                                @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoPlaca)
+                                                @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoPlaca).Filter(FilterType.Contains)
                                                         .BindTo((SelectList)ViewBag.CatTipoPlaca)
                                                         .OptionLabel("-- Seleccione --")
                                                         .HtmlAttributes(new { style = "width:100%;" }))
@@ -527,7 +527,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>Licencia:</label>
-                                                @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia)
+                                                @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia).Filter(FilterType.Contains)
                                                         .BindTo((SelectList)ViewBag.CatTipoLicencia)
                                                         .OptionLabel("-- Seleccione --")
                                                         .HtmlAttributes(new { style = "width:100%;" }))

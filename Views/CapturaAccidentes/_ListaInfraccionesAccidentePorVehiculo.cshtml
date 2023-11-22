@@ -69,19 +69,16 @@
         .DataSource(dataSource => dataSource
         .Ajax()
         .Read(read => read.Action("ObtenerInfraccionesVehiculos", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.IdInfraccionAccidente))
         )
         .ToolBar(t => t.Search())      
         .Search(s =>
         {
-            s.Field(c => c.EstatusReporte);
+            s.Field(c => c.Placa);
             s.Field(c => c.folioInfraccion);
-            s.Field(c => c.EntidadRegistro);
-                        s.Field(c => c.Placa);
+            s.Field(c => c.Placa);
             s.Field(c => c.ConductorInvolucrado);
-
-
-
+            s.Field(c => c.Propietario);
+            s.Field(c => c.EntidadRegistro);
         })
         
         

@@ -22,12 +22,15 @@
             .DataSource(dataSource => dataSource
             .Ajax()
             .Read(read => read.Action("ObtFactorOpcionAccidente", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.FactorAccidente))
+            .PageSize(5).Model(model => model.Id(p => p.IdAccidenteFactorOpcion))
             )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
-                s.Field(c => c.Municipio);
+                s.Field(c => c.FactorAccidente);
+                s.Field(c => c.FactorOpcionAccidente);
+              
+
 
             })
 
@@ -58,21 +61,7 @@
 </div>
 
 <script>
-    function factoresChangeEdit() {
-        var factorDDValue = $("#IdFactorAccidente").data("kendoDropDownList").value();
 
-        $.ajax({
-            url: "/CapturaAccidentes/FactoresOpciones_Drop",
-            type: "POST",
-            data: { factorDDValue: factorDDValue },
-            success: function (data) {
-                var FactorOpcionDropDown = $("#IdFactorOpcionAccidente").data("kendoDropDownList");
-                FactorOpcionDropDown.dataSource.data(data);
-            },
-            error: function (xhr, status, error) {
-            }
-        });
-    }
     function editarFactorA(event) {
         var grid = $("#gridFactoresA").data("kendoGrid");
         var row = $(event.target).closest("tr");
@@ -101,9 +90,6 @@
         var FactorAccidente = dataItem.FactorAccidente;
         var FactorOpcionAccidente = dataItem.FactorOpcionAccidente;
         var IdAccidenteFactorOpcion = dataItem.IdAccidenteFactorOpcion;
-
-
-        console.log("LIST",dataItem)
 
         $.ajax({
             url: '@Url.Action("ModalEliminarFactorAccidente", "CapturaAccidentes")',

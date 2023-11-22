@@ -82,16 +82,16 @@
                 columns.Bound(c => c.Folio).Title("Folio").Width(90);
                 columns.Bound(c => c.Placa).Title("Placas").Width(90);
                 columns.Bound(c => c.Color).Title("Color").Width(90);
-                columns.Bound(c => c.fullPropietario).Title("Propietario").Width(90);
+                columns.Bound(c => c.fullPropietario).Title("Propietario").Width(120);
                 columns.Bound(c => c.pension).Title("Pensión").Width(90);
-                columns.Bound(c => c.carretera).Title("Carretera").Width(90);
-                columns.Bound(c => c.tramo).Title("Tramo").Width(90);
-                columns.Bound(c => c.Km).Title("Kilómetro").Width(90);
-                columns.Bound(c => c.nombreSubmarca).Title("SubMarca").Width(90);
+                columns.Bound(c => c.carretera).Title("Carretera").Width(130);
+                columns.Bound(c => c.tramo).Title("Tramo").Width(120);
+                columns.Bound(c => c.Km).Title("Kilómetro").Width(110);
+                columns.Bound(c => c.nombreSubmarca).Title("SubMarca").Width(110);
                 //columns.Bound(c => c.delegacion).Title("Delegación").Width(90);
                 columns.Bound(p => p.IdDeposito).ClientTemplate(
                 "<button onclick=\"ShowDetailPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Detalle</b></h6></button>"
-                ).Title("Acciones").Sortable(false).Width(150);
+                ).Title("Acciones").Sortable(false).Width(100);
             }).HtmlAttributes(new { style = "height:350" })
             .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))
             .Sortable()
@@ -100,6 +100,22 @@
             .Ajax()
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.marcaVehiculo);
+                s.Field(c => c.Serie);
+                s.Field(c => c.Folio);
+                s.Field(c => c.FechaIngreso);
+                s.Field(c => c.Placa);
+                s.Field(c => c.Color);
+                s.Field(c => c.fullPropietario);
+                s.Field(c => c.pension);
+                s.Field(c => c.carretera);
+                s.Field(c => c.tramo);
+                s.Field(c => c.Km);
+                s.Field(c => c.nombreSubmarca);
+            })
             )
 
         @(Html.Kendo().Tooltip()

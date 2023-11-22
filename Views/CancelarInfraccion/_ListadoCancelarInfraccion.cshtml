@@ -13,6 +13,7 @@
             .Name("grid")
             .Columns(columns =>
             {
+                columns.Bound(c => c.IdInfraccion).Hidden();
                 columns.Bound(c => c.FolioInfraccion).Title("Folio Infracción").Width(90);
                 columns.Bound(c => c.FechaInfraccion).Title("Fecha Infracción").Format("{0:dd/MM/yyyy}").Width(90);
                 columns.Bound(c => c.Conductor).Width(110).Title("Conductor");
@@ -31,15 +32,20 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
+            .ServerOperation(false)
             .PageSize(5).Model(model => model.Id(p => p.IdInfraccion))
             )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
                 s.Field(c => c.FolioInfraccion);
+                s.Field(c => c.FechaInfraccion);
+                s.Field(c => c.Serie);
+                s.Field(c => c.Delegacion);
+                s.Field(c => c.Propietario);
                 s.Field(c => c.Conductor);
                 s.Field(c => c.Placas);
-
+                s.Field(c => c.descEstatusProceso);
 
             })
 

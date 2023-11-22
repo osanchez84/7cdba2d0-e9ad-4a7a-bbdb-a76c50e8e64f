@@ -39,6 +39,20 @@
             .Ajax()
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.submarca);
+                s.Field(c => c.marca);
+                s.Field(c => c.placa);
+                s.Field(c => c.modelo);
+                s.Field(c => c.serie);
+                s.Field(c => c.fechaIngresoFormateada);
+                s.Field(c => c.color);
+                s.Field(c => c.propietario);
+                s.Field(c => c.pension);
+
+            })
             )
 
 

@@ -1094,12 +1094,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(ListInvolucrados.ToDataSourceResult(request));
 		}
-		public ActionResult MostrarModalFechaHora(int IdPersona)
+		public ActionResult MostrarModalFechaHora(int IdPersona, string FechaIngreso)
 		{
+
 			var model = new FechaHoraIngresoModel
 			{
 				IdPersona = IdPersona,
-			};
+				FechaIngreso = DateTime.ParseExact(FechaIngreso.Substring(0, 24),
+							  "ddd MMM d yyyy HH:mm:ss",
+							  CultureInfo.InvariantCulture),
+				HoraIngreso = DateTime.ParseExact(FechaIngreso.Substring(0, 24),
+							  "ddd MMM d yyyy HH:mm:ss",
+							  CultureInfo.InvariantCulture).TimeOfDay
+            };
 
 
 			return PartialView("_ModalFechaHora", model);

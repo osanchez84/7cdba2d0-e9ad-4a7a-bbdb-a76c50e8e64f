@@ -50,6 +50,8 @@
                                 .Label(label => label.Content("No. Económico:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
+                                .Filter(FilterType.Contains)
+
                                 .OptionLabel("Selecciona una opcion")
                                 .HtmlAttributes(new { style = "max-width: 340px;width: 100%", required = "required" })
                                 .DataSource(source =>

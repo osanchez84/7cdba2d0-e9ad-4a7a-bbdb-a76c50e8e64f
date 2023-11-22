@@ -67,6 +67,8 @@
                                 .Label(l => l.Content("Delegación:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
+                                    .Filter(FilterType.Contains)
+
                                 .OptionLabel("Selecciona la Delegación")
                                 .DataSource(source =>
                                 {
@@ -87,6 +89,8 @@
                         <span>
                             @(Html.Kendo().DropDownListFor(m => m.IdCarreteraBusqueda)
                                 .Label(l => l.Content("Carretera:"))
+                                    .Filter(FilterType.Contains)
+
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Carretera")
@@ -109,6 +113,8 @@
                         <label>Tramo:</label>
                         <span>
                             @(Html.Kendo().DropDownListFor(m => m.IdTramoBusqueda)
+                                    .Filter(FilterType.Contains)
+
                                 .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
@@ -162,6 +168,8 @@
                             .Label(l => l.Content("Conductor:"))
                             .Placeholder("Ingresa un conductor")
                             .HtmlAttributes(new { style = "width: 100%", Id="txtConductores" })
+
+
                             )
 
                     </div>
@@ -174,6 +182,8 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
+                                    .Filter(FilterType.Contains)
+
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -193,6 +203,8 @@
                                 @(Html.Kendo().DropDownListFor(m => m.IdEstatusAccidente)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
+                                    .Filter(FilterType.Contains)
+
                                     .OptionLabel("Selecciona una opción")
                                     .DataSource(source =>
                                     {

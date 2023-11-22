@@ -136,7 +136,7 @@
 
                         <label>Entidad:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(d => d.IdEntidadBusqueda)
+                            @(Html.Kendo().DropDownListFor(d => d.IdEntidadBusqueda).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Seleccione Entidad...")

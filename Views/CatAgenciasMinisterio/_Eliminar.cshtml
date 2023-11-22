@@ -55,7 +55,9 @@
                 <label>Delegación<b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdAgenciaMinisterio)
-                    @Html.DropDownListFor(t=>t.IdDelegacion,delegaciones)
+                    @(Html.Kendo().DropDownListFor(t=>t.IdDelegacion)
+                        .BindTo(delegaciones)
+                    .Filter(FilterType.Contains))
 
                 </span>
             </div>

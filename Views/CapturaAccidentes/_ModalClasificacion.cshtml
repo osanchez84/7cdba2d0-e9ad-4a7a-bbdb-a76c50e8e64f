@@ -43,6 +43,7 @@
                                         .DataValueField("Value")
                                         .OptionLabel("Selecciona una Opción")
                                         .HtmlAttributes(new { style = "width:100%;" })
+                        .Filter(FilterType.Contains)
                                         .DataSource(source =>
                                         {
                                             source.Read(read =>

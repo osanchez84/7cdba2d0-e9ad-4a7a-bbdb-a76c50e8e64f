@@ -68,6 +68,7 @@
                                 .OptionLabel("Selecciona una Opción")
                                 .Events(e => e.Change("factoresChangeEdit"))
                                 .HtmlAttributes(new { style = "width:100%;" })
+                        .Filter(FilterType.Contains)
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -87,6 +88,7 @@
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Opción")
                                 .HtmlAttributes(new { style = "width:100%;" })
+                        .Filter(FilterType.Contains)
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>

@@ -50,7 +50,7 @@
                     @(Html.Kendo().DropDownListFor(t => t.IdFactorAccidente)
                         .DataTextField("Text")
                         .DataValueField("Value")
-                        .OptionLabel("Selecciona un Factor de Accidente")
+                        .OptionLabel("Selecciona un Factor de Accidente").Filter(FilterType.Contains)
                         .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
                         .DataSource(source =>
                         {

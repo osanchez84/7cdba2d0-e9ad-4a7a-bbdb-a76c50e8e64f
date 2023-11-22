@@ -30,7 +30,7 @@
                                 <div class="controlForm">
                                     <label>Concesionario:</label>
                                     <div id="divConcesionario">
-                                        @(Html.Kendo().DropDownListFor(f => f.idConcesionario)
+                                        @(Html.Kendo().DropDownListFor(f => f.idConcesionario).Filter(FilterType.Contains)
                                             .OptionLabel("-- Seleccione --")
                                             .HtmlAttributes(new { style = "width:100%;" })
                                             )

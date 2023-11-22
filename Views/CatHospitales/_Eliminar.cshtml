@@ -56,7 +56,7 @@
                 <label>Municipio<b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdHospital)
-                    @Html.DropDownListFor(t=>t.IdMunicipio,municipios)
+                    @Html.Kendo().DropDownListFor(t=>t.IdMunicipio).BindTo(municipios).Filter(FilterType.Contains)
 
                 </span>
             </div>

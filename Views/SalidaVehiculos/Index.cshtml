@@ -76,7 +76,7 @@
             <div class="controlForm mb-3">
                 <label>Marca</label>
                 <span>
-                        @(Html.Kendo().DropDownListFor(t => t.idMarca)
+                        @(Html.Kendo().DropDownListFor(t => t.idMarca).Filter(FilterType.Contains)
                         .Label(l => l.Content("Marca:"))
                         .DataTextField("Text")
                         .DataValueField("Value")
@@ -97,7 +97,7 @@
             <div class="controlForm mb-3">
                 <label>No. de Placa:</label>
                 <span>
-                        @(Html.Kendo().DropDownListFor(t => t.placa)
+                        @(Html.Kendo().DropDownListFor(t => t.placa).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Text")
                             .OptionLabel("Seleccione Placa...")

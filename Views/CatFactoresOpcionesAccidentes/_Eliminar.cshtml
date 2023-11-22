@@ -54,7 +54,7 @@
                 <label>Factor<b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdFactorOpcionAccidente)
-                    @Html.DropDownListFor(t=>t.IdFactorAccidente,factores)
+                    @Html.Kendo().DropDownListFor(t=>t.IdFactorAccidente).BindTo(factores).Filter(FilterType.Contains)
 
                 </span>
             </div>

@@ -56,7 +56,7 @@
                 <label>Marca <b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdSubmarca)
-                    @(Html.Kendo().DropDownListFor(t => t.IdMarcaVehiculo)
+                    @(Html.Kendo().DropDownListFor(t => t.IdMarcaVehiculo).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })

@@ -51,7 +51,7 @@
                         <div class="controlForm my-3">
                 <span>
                     <label>Municipio<b>(obligatorio)</b>:</label>
-                                @Html.DropDownListFor(t => t.idMunicipio,municipios)
+                    @Html.Kendo().DropDownListFor(t => t.idMunicipio).BindTo(municipios).Filter(FilterType.Contains)
 
 
 

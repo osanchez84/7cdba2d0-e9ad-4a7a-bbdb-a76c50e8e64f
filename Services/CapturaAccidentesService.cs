@@ -1840,6 +1840,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             qryUpdate += !string.IsNullOrEmpty(datosAccidente.observacionesConvenio) ? " , observacionesConvenio = @observacionesConvenio " : "";
 
+            qryUpdate += !datosAccidente.IdEntidadCompetencia.Equals(null) ? " , idEntidadCompetencia = @IdEntidadCompetencia " : "";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1912,10 +1913,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@IdElabora", datosAccidente.IdElabora);
                     command.Parameters.AddWithValue("@IdAutoriza", datosAccidente.IdAutoriza);
                     command.Parameters.AddWithValue("@IdSupervisa", datosAccidente.IdSupervisa);
+                    command.Parameters.AddWithValue("@IdEntidadCompetencia", datosAccidente.IdEntidadCompetencia);
                     command.Parameters.AddWithValue("@idEstatusReporte", 3);
-
-
-
+                    
                     result = command.ExecuteNonQuery();
                 }
                 catch (SqlException ex)

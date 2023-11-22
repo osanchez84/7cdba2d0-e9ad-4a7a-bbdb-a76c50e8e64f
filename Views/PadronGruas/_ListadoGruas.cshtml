@@ -34,7 +34,17 @@
             .ServerOperation(false)
             )
             .NoRecords(noRecords => noRecords.Template("No se encontrarón registros. Realice la búsqueda nuevamente."))
-
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.municipio);
+                s.Field(c => c.concesionario);
+                s.Field(c => c.noEconomico);
+                s.Field(c => c.modelo);
+                s.Field(c => c.placas);
+                s.Field(c => c.tipoGrua);
+                s.Field(c => c.capacidad);
+            })
             )
     </div>
 </div>

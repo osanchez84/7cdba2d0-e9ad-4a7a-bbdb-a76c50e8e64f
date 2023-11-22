@@ -24,17 +24,30 @@
 				"<button onclick=\"consultarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Consultar</b></h6></button>"
 				).Title("Consultar").Sortable(false).Width(90);*/
 
-			}).HtmlAttributes(new { style = "height:550px" })
-			.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
-			.Sortable()
-			.Scrollable(scr => scr.Height(350))
-			.DataSource(dataSource => dataSource
-			.Ajax()
-			//.Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
-			.ServerOperation(false)
-			)
-			)
-	</div>
+            }).HtmlAttributes(new { style = "height:550px" })
+            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+            .Sortable()
+            .Scrollable(scr => scr.Height(350))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            //.Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
+            .ServerOperation(false)
+            )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.numeroReporte);
+                s.Field(c => c.fecha);
+                s.Field(c => c.hora);
+                s.Field(c => c.municipio);
+                s.Field(c => c.carretera);
+                s.Field(c => c.tramo);
+                s.Field(c => c.estatusReporte);
+            })
+            )
+
+
+    </div>
 </div>
 
 <script>

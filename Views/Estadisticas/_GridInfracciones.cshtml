@@ -82,16 +82,61 @@
             }).HtmlAttributes(new { style = "height:auto" })
             .DataSource(dataSource => dataSource
             .Ajax()
+            .ServerOperation(false)
+            .PageSize(10)
+
             )
             .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Enabled(true))
             .Scrollable(scr => scr.Height(500))
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            .ServerOperation(false)
-            .PageSize(10)
-            )
-        )
+           
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.Folio);
+                s.Field(c => c.FolioTxt);
+                s.Field(c => c.Estatus);
+                s.Field(c => c.TipoCortesia);
+                s.Field(c => c.Delegacion);
+                s.Field(c => c.Municipio);
+                s.Field(c => c.FechaInfraccion);
+                s.Field(c => c.HoraInfraccion);
+                s.Field(c => c.FechaVencimiento);
+                s.Field(c => c.Carretera);
+                s.Field(c => c.Tramo);
+                s.Field(c => c.Kilometraje);
+                s.Field(c => c.NombreConductor);
+                s.Field(c => c.CURPConductor);
+                s.Field(c => c.FechadeNacimiento);
+                s.Field(c => c.DomicilioConductor);
+                s.Field(c => c.LicenciaConductor);
+                s.Field(c => c.TipoPersFisica);
+                s.Field(c => c.TipoPersMoral);
+                s.Field(c => c.OficialInfraccion);
+                s.Field(c => c.Propietario);
+                s.Field(c => c.CalifSalarios);
+                s.Field(c => c.MontoPago);
+                s.Field(c => c.ReciboPago);
+                s.Field(c => c.FechaPago);
+                s.Field(c => c.SerieVeh);
+                s.Field(c => c.Placas);
+                s.Field(c => c.numeroEconomicoVeh);
+                s.Field(c => c.Marca);
+                s.Field(c => c.Modelo);
+                s.Field(c => c.TarjetadeCirculacion);               
+                s.Field(c => c.Submarca);
+                s.Field(c => c.Color);
+                s.Field(c => c.EntidaddeReg);
+                s.Field(c => c.TipodeVehículo);
+                s.Field(c => c.TipodeServicio);
+                s.Field(c => c.SubtipodeServicio);
+                s.Field(c => c.TipoGarantia);
+                s.Field(c => c.TipoAplicacion);
+                s.Field(c => c.Motivo);
+                s.Field(c => c.MotivoDesc);
+            })
+            )           
+        
     </div>
 </div>

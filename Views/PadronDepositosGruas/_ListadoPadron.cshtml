@@ -25,7 +25,7 @@
             {
                 columns.Bound(p => p.Municipio).Title("Municipio").Width(90);
                 columns.Bound(p => p.Concesionario).Title("Concesionario").Width(90);
-                columns.Bound(p => p.fullPension).Title("Depósito").Width(90);
+                columns.Bound(p => p.fullPension).Title("Depósito").Width(150);
                 columns.Bound(c => c.noEconomico).Title("No. Económico").Width(90);
                 columns.Bound(c => c.Modelo).Title("Modelo").Width(90);
                 columns.Bound(c => c.Placas).Title("Placas").Width(90);
@@ -38,6 +38,17 @@
             .Ajax()
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.Municipio);
+                s.Field(c => c.Concesionario);
+                s.Field(c => c.fullPension);
+                s.Field(c => c.noEconomico);
+                s.Field(c => c.Modelo);
+                s.Field(c => c.Placas);
+                s.Field(c => c.TipoGrua);
+            })
             )
 
         @(Html.Kendo().Tooltip()

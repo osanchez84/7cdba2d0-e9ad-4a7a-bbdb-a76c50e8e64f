@@ -37,7 +37,7 @@
             columns.Bound(c => c.Serie).Width(90);
             columns.Bound(c => c.Color).Width(90);
             columns.Bound(c => c.Marca).Width(90);
-            columns.Bound(c => c.montoVehiculo).Title("Monto").Width(90);
+            columns.Bound(c => c.montoVehiculo).Format("{0:C}").Title("Monto").Width(90);
             columns.Command(c => c.Custom("Agregar monto").Click("modalAgregarmonto")).Width(100);
 
 
@@ -49,11 +49,12 @@
         .DataSource(dataSource => dataSource
         .Ajax()
         .Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.IdAccidente))
         )
         .ToolBar(t => t.Search())
         .Search(s =>
         {
+            s.Field(c => c.NumeroReporte);
+            s.Field(c => c.Serie);
             s.Field(c => c.EstatusReporte);
             s.Field(c => c.Marca);
             s.Field(c => c.Color);

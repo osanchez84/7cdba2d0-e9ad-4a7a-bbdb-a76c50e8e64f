@@ -33,6 +33,17 @@
             //.Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.numeroReporte);
+                s.Field(c => c.fecha);
+                s.Field(c => c.hora);
+                s.Field(c => c.municipio);
+                s.Field(c => c.carretera);
+                s.Field(c => c.tramo);
+                s.Field(c => c.estatusReporte);
+            })
             )
 
 

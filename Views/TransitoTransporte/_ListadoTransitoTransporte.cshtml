@@ -86,25 +86,25 @@
                     columns.Bound(p => p.IdDeposito).Title("Número").Width(90);
                     columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_Evento/Folio_Solicitud/Folio_Infracción").Width(190);
                     columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
-                    columns.Bound(c => c.FechaIngreso).ClientTemplate("#= convertDate(FechaIngreso) #").Title("Fecha de ingreso").Width(90);
-                    columns.Bound(c => c.FechaLiberacion).ClientTemplate("#= convertDate(FechaLiberacion) #").Title("Fecha de salida").Width(90);
+                    columns.Bound(c => c.FechaIngreso).ClientTemplate("#= convertDate(FechaIngreso) #").Title("Fecha de ingreso").Width(110);
+                    columns.Bound(c => c.FechaLiberacion).ClientTemplate("#= convertDate(FechaLiberacion) #").Title("Fecha de salida").Width(110);
                     columns.Bound(c => c.pension).Title("Pensión").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
                     "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
-                    ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
+                    ).Title("Detalle Grúa(s)").Sortable(false).Width(100);
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
-                    ).Title("Detalle Grúa(s)").Sortable(false).Width(70);
-                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(90);
+                    ).Title("Descargar deatalle").Sortable(false).Width(100);
+                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(100);
 
 						columns.Bound(p => p.IdGrua).ClientTemplate(
 					"<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-						).Title("Editar").Sortable(false).Width(70);
+						).Title("Editar").Sortable(false).Width(100);
 
 						columns.Bound(p => p.IdDeposito).ClientTemplate(
 						"<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
-						).Title("Eliminar").Sortable(false).Width(70);
+						).Title("Eliminar").Sortable(false).Width(100);
 						columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
 						"<div class='turno-captura'>" +
 						"<div class='tto-marked'>TTO:</div>" +
@@ -112,7 +112,7 @@
 						"<div class='dep-marked'>Dep:</div>" +
 						"#= IdDependenciaGenera === 2 ? '✓' : '' #" +
 						"</div>"
-						).Title("Turno Captura").Width(200);
+						).Title("Turno Captura").Width(150);
 
 
 
@@ -126,6 +126,16 @@
 					.Ajax()
 					.ServerOperation(false)
 					)
+				.ToolBar(t => t.Search())
+				.Search(s =>
+				{
+					s.Field(c => c.fullSolicitudfolioInfraccion);
+				    s.Field(c => c.fullVehiculo);
+					s.Field(c => c.FechaIngreso);
+					s.Field(c => c.FechaLiberacion);
+					s.Field(c => c.pension);
+					s.Field(c => c.Concesionario);
+				})
 						)
 
 				}

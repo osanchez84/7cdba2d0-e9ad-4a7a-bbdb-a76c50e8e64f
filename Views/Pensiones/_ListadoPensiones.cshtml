@@ -62,7 +62,22 @@
             .Ajax()
             .ServerOperation(false)
             .Group(groups => groups.Add(p => p.Pension))
-            ))
+            )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.estatusDesc);
+                s.Field(c => c.Pension);
+                s.Field(c => c.Permiso);
+                s.Field(c => c.delegacion);
+                s.Field(c => c.Direccion);
+                s.Field(c => c.Telefono);
+                s.Field(c => c.Correo);
+                s.Field(c => c.responsable);
+                s.Field(c => c.concesionario);      
+
+            })
+            )
 
         @(Html.Kendo().Tooltip()
             .For("#GridP")

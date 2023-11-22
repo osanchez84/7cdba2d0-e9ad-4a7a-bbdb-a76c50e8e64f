@@ -46,8 +46,17 @@
         .DataSource(dataSource => dataSource
         .Ajax()
         .Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.IdMarcaVehiculo))
+            .PageSize(5).Model(model => model.Id(p => p.IdVehiculo))
         )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.IdVehiculoInvolucrado);
+                s.Field(c => c.ConductorInvolucrado);
+                s.Field(c => c.Placa);
+                s.Field(c => c.Tarjeta);
+
+            })
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
         )
 </div>

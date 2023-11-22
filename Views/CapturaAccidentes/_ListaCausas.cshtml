@@ -31,7 +31,7 @@
             .DataSource(dataSource => dataSource
             .Ajax()
             .Read(read => read.Action("ObtCausasAccidente", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.CausaAccidente))
+            .PageSize(5).Model(model => model.Id(p => p.idAccidenteCausa))
             )
             .ToolBar(t => t.Search())
             .Search(s =>

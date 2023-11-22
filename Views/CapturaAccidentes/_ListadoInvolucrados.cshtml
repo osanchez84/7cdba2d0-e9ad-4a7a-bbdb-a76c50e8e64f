@@ -40,13 +40,21 @@
             .DataSource(dataSource => dataSource
             .Ajax()
             .Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.nombre))
             )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
                 s.Field(c => c.nombre);
-
+                s.Field(c => c.apellidoPaterno);
+                s.Field(c => c.apellidoMaterno);
+                s.Field(c => c.rfc);
+                s.Field(c => c.TipoLicencia);
+                s.Field(c => c.TipoVehiculo);
+                s.Field(c => c.EstadoVictima);
+                s.Field(c => c.NombreHospital);
+                s.Field(c => c.InstitucionTraslado);
+                s.Field(c => c.Asiento);
+                s.Field(c => c.Cinturon);
             })
 
             .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)

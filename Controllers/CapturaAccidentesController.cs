@@ -181,8 +181,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var result = new SelectList(_catMunicipiosService.GetMunicipios(), "IdMunicipio", "Municipio");
 			return Json(result);
 		}
+        public JsonResult Municipios_Por_Delegacion_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-		public JsonResult Carreteras_Drop()
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+        public JsonResult Carreteras_Drop()
 		{
 			var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
 			return Json(result);
@@ -218,7 +224,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 				lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
-				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); // Almacenar lastInsertedId en la variable
+				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 
 			}
@@ -227,7 +233,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult CapturaAaccidente()
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
+			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; 
 			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
 			return View("CapturaAaccidente", AccidenteSeleccionado);
 		}

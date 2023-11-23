@@ -88,6 +88,7 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
                     .HtmlAttributes(new { style = "width:100%;" })
+                    .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>

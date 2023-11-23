@@ -83,7 +83,7 @@
             <div class="controlForm my-3">
                 <label>Entidad de registro <b>(obligatorio):</b></label>
 
-                @(Html.Kendo().DropDownListFor(d => d.idEntidad)
+                @(Html.Kendo().DropDownListFor(d => d.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")

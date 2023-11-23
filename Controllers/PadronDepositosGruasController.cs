@@ -22,10 +22,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IMunicipiosService _municipiosService;
         private readonly IConcesionariosService _concesionariosService;
         private readonly ICatDictionary _catDictionary;
+        private readonly ICatMunicipiosService _catMunicipiosService;
+
 
         public PadronDepositosGruasController(IPadronDepositosGruasService padronDepositosGruasService,
              IGruasService gruasService, IMunicipiosService municipiosService, IConcesionariosService concesionariosService
-            , ICatDictionary catDictionary
+            , ICatDictionary catDictionary,ICatMunicipiosService catMunicipiosService
+
             )
         {
             _padronDepositosGruasService = padronDepositosGruasService;
@@ -33,6 +36,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _municipiosService = municipiosService;
             _concesionariosService = concesionariosService;
             _catDictionary = catDictionary;
+            _catMunicipiosService = catMunicipiosService;
         }
 
 
@@ -67,7 +71,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(CatMunicipios.CatalogList, "Id", "Text");
             return Json(result);
         }
-        
+        public JsonResult Municipios_Por_Delegacion_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+
         public JsonResult Concesionarios_Read()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;

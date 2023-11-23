@@ -55,6 +55,7 @@
                         .DataValueField("Value")
                         .OptionLabel("Selecciona un Municipio")
                         .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>

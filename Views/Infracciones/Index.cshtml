@@ -84,7 +84,7 @@
                 <div class="controlForm mb-3">
                     <label>Estatus Infracción:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdEstatus)
+                        @(Html.Kendo().DropDownListFor(d => d.IdEstatus).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Estatus...")
@@ -105,7 +105,7 @@
                 <div class="controlForm mb-3">
                     <label>Tipo de cortesía:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdTipoCortesia)
+                        @(Html.Kendo().DropDownListFor(d => d.IdTipoCortesia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .HtmlAttributes(new { style = "width:100%;", Id = "ddlCortesia" })
@@ -124,7 +124,7 @@
                 <div class="controlForm mb-3">
                     <label>Dependencia:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdDependencia)
+                        @(Html.Kendo().DropDownListFor(d => d.IdDependencia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Dependencia...")
@@ -146,7 +146,7 @@
                     <label>Tipo de garantía:</label>
                     <span>
 
-                        @(Html.Kendo().DropDownListFor(d => d.IdGarantia)
+                        @(Html.Kendo().DropDownListFor(d => d.IdGarantia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Garantía...")
@@ -167,7 +167,7 @@
                 <div class="controlForm mb-3">
                     <label>Delegación/Oficina:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdDelegacion)
+                        @(Html.Kendo().DropDownListFor(d => d.IdDelegacion).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Delegación...")

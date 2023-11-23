@@ -77,6 +77,8 @@
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona un Municipio")
+                            .Filter(FilterType.Contains)
+
                             .DataSource(source =>
                             {
                                 source.Read(read =>
@@ -99,6 +101,8 @@
                             .Label(l => l.Content("Carretera <b>(obligatorio)</b>:"))
                             .DataTextField("Text")
                             .DataValueField("Value")
+                            .Filter(FilterType.Contains)
+
                             .OptionLabel("Selecciona una Carretera")
                             .Events(e => e.Change("carreteraDropDownChange"))
                             .DataSource(source =>
@@ -123,6 +127,8 @@
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona un Tramo")
+                            .Filter(FilterType.Contains)
+
                             .DataSource(source =>
                             {
                                 source.Read(read =>

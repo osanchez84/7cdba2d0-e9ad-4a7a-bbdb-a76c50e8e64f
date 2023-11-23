@@ -60,6 +60,8 @@
                 <label>Género:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero)
                             .BindTo((SelectList)ViewBag.CatGeneros)
+                    .Filter(FilterType.Contains)
+
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
@@ -69,6 +71,8 @@
                 <label>Tipo persona:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona)
                             .BindTo((SelectList)ViewBag.CatTipoPersona)
+                    .Filter(FilterType.Contains)
+
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
@@ -88,6 +92,8 @@
                 <label>Tipo licencia:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia)
                             .BindTo((SelectList)ViewBag.CatTipoLicencia)
+                    .Filter(FilterType.Contains)
+
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
@@ -106,6 +112,8 @@
             <div class="controlForm">
                 <label>Entidad:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidadFisico)
+                    .Filter(FilterType.Contains)
+
                             .BindTo((SelectList)ViewBag.CatEntidades)
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
@@ -117,6 +125,8 @@
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipioFisico)
                             .BindTo((SelectList)ViewBag.CatMunicipios)
                             .OptionLabel("-- Seleccione --")
+                    .Filter(FilterType.Contains)
+
                             .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
             </div>
         </div>

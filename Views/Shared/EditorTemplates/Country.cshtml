@@ -1,6 +1,6 @@
 @model string
 
-@(Html.Kendo().DropDownListFor(m => m)
+@(Html.Kendo().DropDownListFor(m => m).Filter(FilterType.Contains)
             .DataValueField("CountryNameShort")
             .DataTextField("CountryNameLong")
             .HtmlAttributes(new { data_bind = "value: Country" })

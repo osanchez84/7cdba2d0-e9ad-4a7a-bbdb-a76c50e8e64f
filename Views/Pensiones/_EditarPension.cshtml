@@ -53,7 +53,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Delegación:</label>
-                                    @(Html.Kendo().DropDownListFor(f => f.IdDelegacion)
+                                    @(Html.Kendo().DropDownListFor(f => f.IdDelegacion).Filter(FilterType.Contains)
                                         .BindTo((SelectList)ViewBag.CatDelegaciones)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;" }))
@@ -62,7 +62,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Municipio:</label>
-                                    @(Html.Kendo().DropDownListFor(m => m.IdMunicipio)
+                                    @(Html.Kendo().DropDownListFor(m => m.IdMunicipio).Filter(FilterType.Contains)
                                         .BindTo((SelectList)ViewBag.CatMunicipios)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;" }))
@@ -71,7 +71,7 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Responsable:</label>
-                                    @(Html.Kendo().DropDownListFor(m => m.IdResponsable)
+                                    @(Html.Kendo().DropDownListFor(m => m.IdResponsable).Filter(FilterType.Contains)
                                         .BindTo((SelectList)ViewBag.CatResponsablesPensiones)
                                         .OptionLabel("-- Seleccione --")
                                         .HtmlAttributes(new { style = "width:100%;", id = "idResponsable" }))

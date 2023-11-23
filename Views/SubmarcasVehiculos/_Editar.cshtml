@@ -60,7 +60,7 @@
                 <label>Marca<b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdSubmarca)
-                    @Html.DropDownListFor(t => t.IdMarcaVehiculo,marcas)
+                    @Html.Kendo().DropDownListFor(t => t.IdMarcaVehiculo).BindTo(marcas).Filter(FilterType.Contains)
      
                 </span>
             </div>

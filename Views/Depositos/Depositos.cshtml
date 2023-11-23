@@ -89,7 +89,7 @@
                 <div class="controlForm my-3">
                     <label>Tipo de vehículo <b>(obligatorio)</b>:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t => t.idTipoVehiculo)
+                            @(Html.Kendo().DropDownListFor(t => t.idTipoVehiculo).Filter(FilterType.Contains)
                             .Label(l => l.Content("Tipo Vehículo:"))
                             .DataTextField("Text")
                             .DataValueField("Value")
@@ -112,7 +112,7 @@
                     <label>Propietario de grúa:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(t=>t.idConcecionario)
-                                    .Label(l => l.Content("Propietario Grúa:"))
+                                .Label(l => l.Content("Propietario Grúa:")).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona un propietario")
@@ -133,7 +133,7 @@
                 <div class="controlForm my-3">
                     <label>Oficial/Inspector <b>(obligatorio)</b>:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(m => m.idOficial)
+                            @(Html.Kendo().DropDownListFor(m => m.idOficial).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona una opción")
@@ -157,7 +157,7 @@
                 <div class="controlForm">
                     <label>Descripción del evento <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(t => t.idDescripcionEvento)
+                            @(Html.Kendo().DropDownListFor(t => t.idDescripcionEvento).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona una opción")
@@ -178,7 +178,7 @@
                 <div class="controlForm my-3">
                     <label>Tipo de usuario <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(m => m.idTipoUsuario)
+                            @(Html.Kendo().DropDownListFor(m => m.idTipoUsuario).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
@@ -296,7 +296,7 @@
                                     <div class="controlForm my-3">
                                         <label>Entidad:</label>
                                         <span>
-                                            @(Html.Kendo().DropDownListFor(m => m.idEntidad)
+                                            @(Html.Kendo().DropDownListFor(m => m.idEntidad).Filter(FilterType.Contains)
                                                 .DataTextField("Text")
                                                 .DataValueField("Value")
                                                 .OptionLabel("Selecciona una opción")
@@ -318,7 +318,7 @@
                                     <div class="controlForm my-3">
                                         <label>Municipio <b>(obligatorio)</b>:</label>
                                         <span>
-                                            @(Html.Kendo().DropDownListFor(t => t.idMunicipio)
+                                            @(Html.Kendo().DropDownListFor(t => t.idMunicipio).Filter(FilterType.Contains)
                                                 .DataTextField("Text")
                                                 .DataValueField("Value")
                                                 .OptionLabel("Selecciona un Municipio")
@@ -366,7 +366,7 @@
                                     <div class="controlForm my-3">
                                         <label>Motivo de asignación <b>(obligatorio)</b>:</label>
                                         <span>
-                                            @(Html.Kendo().DropDownListFor(t=>t.idMotivoAsignacion)
+                                            @(Html.Kendo().DropDownListFor(t => t.idMotivoAsignacion).Filter(FilterType.Contains)
                                                       .DataTextField("Text")
                                                 .DataValueField("Value")
                                                 .OptionLabel("Selecciona un Motivo de asignación")
@@ -477,7 +477,7 @@
                     <div class="controlForm my-3">
                         <label>Carretera <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(t => t.IdCarretera)
+                            @(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
                                 .Label(l => l.Content("Carretera <b>(obligatorio)</b>:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
@@ -500,7 +500,7 @@
                     <div class="controlForm my-3">
                         <label>Tramo <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(t => t.IdTramo)
+                            @(Html.Kendo().DropDownListFor(t => t.IdTramo).Filter(FilterType.Contains)
                                 .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
@@ -524,7 +524,7 @@
                     <div class="controlForm my-3">
                         <label>Entidad:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(m => m.idEntidadUbicacion)
+                            @(Html.Kendo().DropDownListFor(m => m.idEntidadUbicacion).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
@@ -547,7 +547,7 @@
                     <div class="controlForm my-3">
                         <label>Municipio <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(t => t.idMunicipioUbicacion)
+                            @(Html.Kendo().DropDownListFor(t => t.idMunicipioUbicacion).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona un Municipio")
@@ -568,7 +568,7 @@
                     <div class="controlForm my-3">
                         <label>Pensión <b>(obligatorio)</b>:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(t => t.idPensionUbicacion)
+                            @(Html.Kendo().DropDownListFor(t => t.idPensionUbicacion).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Pensión")

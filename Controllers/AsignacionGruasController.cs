@@ -35,6 +35,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
              List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);*/
             //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
 
+            var q =User.FindFirst(CustomClaims.Nombre).Value;
+
             return View();
         }
         public IActionResult ajax_BuscarSolicitudes(AsignacionGruaModel model)

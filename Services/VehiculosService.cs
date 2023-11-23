@@ -71,7 +71,8 @@ namespace GuanajuatoAdminUsuarios.Services
 								on v.idMarcaVehiculo = cmv.idMarcaVehiculo and cmv.estatus = 1
 								LEFT JOIN catSubmarcasVehiculos csv
 								on v.idSubmarca = csv.idSubmarca and csv.estatus = 1
-                                WHERE v.estatus = 1";
+                                WHERE v.estatus = 1
+                                order by v.idVehiculo desc";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -212,10 +213,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             VehiculoModel model = new VehiculoModel();
                             model.Persona = new PersonaModel();
                             model.idVehiculo = Convert.ToInt32(reader["idVehiculo"]);
-                            model.placas = reader["placas"].ToString();
+                            model.placas = reader["placas"].GetType()==typeof(DBNull)?"": reader["placas"].ToString();
                             model.serie = reader["serie"].ToString();
                             model.tarjeta = reader["tarjeta"].ToString();
-                            model.vigenciaTarjeta = Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                            model.vigenciaTarjeta = reader["vigenciaTarjeta"].GetType()==typeof(DBNull)?null: Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
                             model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"].ToString());
                             model.idSubmarca = Convert.ToInt32(reader["idSubmarca"].ToString());
                             model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"].ToString());

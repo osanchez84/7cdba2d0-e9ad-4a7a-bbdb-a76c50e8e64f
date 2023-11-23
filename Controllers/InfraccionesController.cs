@@ -356,7 +356,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				placa = model.PlacasBusqueda,
 				niv = model.SerieBusqueda
 			};
-			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault()??new RepuveConsRoboResponseModel();
 			ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
 			if (_appSettings.AllowWebServices)
             {

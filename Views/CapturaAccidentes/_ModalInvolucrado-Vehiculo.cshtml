@@ -159,6 +159,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona un tipo")
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -179,6 +180,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -199,6 +201,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -220,6 +223,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -241,6 +245,7 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
+                                    .Filter(FilterType.Contains)
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -260,6 +265,7 @@
                                 @(Html.Kendo().DropDownListFor(t => t.IdCinturon)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
+                                    .Filter(FilterType.Contains)
                                     .OptionLabel("Selecciona una opción")
                                     .DataSource(source =>
                                     {

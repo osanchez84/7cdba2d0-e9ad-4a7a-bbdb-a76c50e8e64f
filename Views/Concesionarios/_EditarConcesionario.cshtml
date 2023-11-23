@@ -32,7 +32,7 @@
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
             <label for="shipTo">Delegación <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownListFor(f => f.idDelegacion)
+            @(Html.Kendo().DropDownListFor(f => f.idDelegacion).Filter(FilterType.Contains)
                 .BindTo((SelectList)ViewBag.CatDelegaciones)
                 .OptionLabel("-- Seleccione --")
                 .HtmlAttributes(new { style = "width:100%;" }))
@@ -41,7 +41,7 @@
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
             <label for="shipTo">Municipio <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownListFor(f => f.idMunicipio)
+            @(Html.Kendo().DropDownListFor(f => f.idMunicipio).Filter(FilterType.Contains)
                 .BindTo((SelectList)ViewBag.CatMunicipios)
                 .OptionLabel("-- Seleccione --")
                 .HtmlAttributes(new { style = "width:100%;" }))

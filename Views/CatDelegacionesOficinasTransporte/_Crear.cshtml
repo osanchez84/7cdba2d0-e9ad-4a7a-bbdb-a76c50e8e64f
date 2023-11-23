@@ -37,6 +37,7 @@
                 <label>Sede / Municipio <b>(obligatorio)</b>:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
+                        .Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona un Municipio")

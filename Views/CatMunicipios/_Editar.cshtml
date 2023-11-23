@@ -51,7 +51,7 @@
                 <label>Entidad <b>(obligatorio)</b>:</label>
                 <span>
                     @Html.HiddenFor(m=>m.IdMunicipio)
-                    @(Html.Kendo().DropDownListFor(t=>t.IdEntidad)
+                    @(Html.Kendo().DropDownListFor(t=>t.IdEntidad).Filter(FilterType.Contains)
                        .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Entidad")
@@ -72,7 +72,7 @@
             <div class="controlForm my-3">
                 <label>Delegación <b>(obligatorio)</b>:</label>
                 <span>
-                    @(Html.Kendo().DropDownListFor(t=>t.IdOficinaTransporte)
+                        @(Html.Kendo().DropDownListFor(t => t.IdOficinaTransporte).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Delegacion")

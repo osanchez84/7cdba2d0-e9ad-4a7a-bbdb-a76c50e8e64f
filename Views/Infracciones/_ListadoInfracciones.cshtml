@@ -32,7 +32,8 @@
             Html.Kendo().Grid(Model)
             .Name("GridInf")
             .Columns(columns =>
-            {
+            {                
+                columns.Bound(c => c.idInfraccion).Hidden();
                 columns.Bound(p => p.folioInfraccion).Title("Folio").Width(90);
                 columns.Bound(p => p.PersonaInfraccion.nombreCompleto).Title("Conductor").Width(90);
                 columns.Bound(p => p.Vehiculo.Persona.nombreCompleto).Title("Propietario").Width(90);
@@ -86,6 +87,19 @@
             .Ajax()
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.folioInfraccion);
+                s.Field(c => c.PersonaInfraccion.nombreCompleto);
+                s.Field(c => c.Vehiculo.Persona.nombreCompleto);
+                s.Field(c => c.NombreGarantia);
+                s.Field(c => c.Vehiculo.fullVehiculo);
+                s.Field(c => c.Vehiculo.placas);
+                s.Field(c => c.delegacion);
+                s.Field(c => c.estatusInfraccion);
+
+            })
             )
         @*</div>*@
 

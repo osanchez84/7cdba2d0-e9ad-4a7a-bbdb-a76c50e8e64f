@@ -57,9 +57,9 @@
             columns.Bound(c => c.Tarjeta).Hidden();
             columns.Bound(c => c.Motor).Hidden();
             columns.Bound(c => c.NumeroEconomico).Hidden();
-            columns.Bound(c => c.folioInfraccion).Title("Folio deInfraccion").Width(80);
+            columns.Bound(c => c.folioInfraccion).Title("Folio de Infracción").Width(80);
             columns.Bound(c => c.Propietario).Title("Propietario del vehículo").Width(150);
-            columns.Bound(c => c.fechaInfraccion).Title("Fecha de Infraccion").Width(100);
+            columns.Bound(c => c.fechaInfraccion).Title("Fecha de Infracción").Width(100);
 
 
 
@@ -74,6 +74,15 @@
         .Read(read => read.Action("BuscarVehiculo", "AsignarGruas"))
         .PageSize(5).Model(model => model.Id(p => p.IdMarcaVehiculo))
         )
+         .ToolBar(t => t.Search())
+         .Search(s =>
+            {
+            s.Field(c => c.folioInfraccion);
+            s.Field(c => c.Propietario);
+            s.Field(c => c.fechaInfraccion);
+
+             
+            })
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
         )
 </div>

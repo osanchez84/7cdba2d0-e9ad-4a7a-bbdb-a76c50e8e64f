@@ -120,47 +120,37 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string SqlTransact = @"SELECT 
-                                                  p.idPension
-                                                 ,p.indicador
-                                                 ,p.pension
-                                                 ,p.permiso
-                                                 ,p.idDelegacion
-                                                 ,p.idMunicipio
-                                                 ,p.direccion
-                                                 ,p.telefono
-                                                 ,p.correo
-                                                 ,p.fechaActualizacion
-                                                 ,p.actualizadoPor
-                                                 ,p.estatus
-                                                 ,p.idResponsable
-                                                 ,d.delegacion
-                                                 ,m.municipio
-                                                 ,cr.responsable
-                                                 ,g.placas
-                                                 ,c.concesionario
-                                                 FROM pensiones p
-                                                 INNER JOIN catDelegaciones d
-                                                 on p.idDelegacion = d.idDelegacion 
-                                                 AND d.estatus = 1
-                                                 INNER JOIN catMunicipios m
-                                                 on p.idMunicipio = m.idMunicipio 
-                                                 AND m.estatus = 1
-                                                 INNER JOIN catResponsablePensiones cr
-                                                 on p.idResponsable = cr.idResponsable
-                                                 AND cr.estatus = 1
-                                                 LEFT JOIN pensionGruas pg
-                                                 on p.idPension = pg.idPension
-                                                 LEFT JOIN gruas g
-                                                 on pg.idGrua = g.idGrua
-                                                 AND g.estatus = 1
-                                                 LEFT JOIN concesionarios c
-                                                 on g.idConcesionario = c.idConcesionario
-                                                 AND c.estatus = 1
-                                                 WHERE p.estatus = 1
-                                                 AND p.pension LIKE {0}
-                                                 AND p.idDelegacion = @idOficina";
+                            p.idPension,
+                            p.indicador,
+                            p.pension,
+                            p.permiso,
+                            p.idDelegacion,
+                            p.idMunicipio,
+                            p.direccion,
+                            p.telefono,
+                            p.correo,
+                            p.fechaActualizacion,
+                            p.actualizadoPor,
+                            p.estatus,
+                            p.idResponsable,
+                            d.delegacion,
+                            m.municipio,
+                            cr.responsable,
+                            g.placas,
+                            c.concesionario
+                      FROM pensiones p
+                      INNER JOIN catDelegaciones d on p.idDelegacion = d.idDelegacion AND d.estatus = 1
+                      INNER JOIN catMunicipios m on p.idMunicipio = m.idMunicipio AND m.estatus = 1
+                      INNER JOIN catResponsablePensiones cr on p.idResponsable = cr.idResponsable AND cr.estatus = 1
+                      LEFT JOIN pensionGruas pg on p.idPension = pg.idPension
+                      LEFT JOIN gruas g on pg.idGrua = g.idGrua AND g.estatus = 1
+                      LEFT JOIN concesionarios c on g.idConcesionario = c.idConcesionario AND c.estatus = 1
+                      WHERE p.estatus = 1
+                      AND p.pension LIKE @strPension";
+
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
-                    string strWherePension = !string.IsNullOrEmpty(strPension) ? string.Format("'%{0}%'", strPension) : "p.pension";
+                    command.Parameters.AddWithValue("@strPension", "%" + strPension + "%");
+
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;

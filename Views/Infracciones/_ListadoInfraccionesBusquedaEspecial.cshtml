@@ -52,7 +52,22 @@
 
             .Sortable()
             .Scrollable(scr => scr.Height(350))
-            
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.folioInfraccion);
+                s.Field(c => c.PersonaInfraccion.nombreCompleto);
+                s.Field(c => c.Vehiculo.Persona.nombreCompleto);
+                s.Field(c => c.Vehiculo.placas);
+                s.Field(c => c.fechaInfraccion);
+                s.Field(c => c.estatusInfraccion);
+                s.Field(c => c.delegacion);
+
+
+
+
+
+            })
             )
         @*</div>*@
     </div>

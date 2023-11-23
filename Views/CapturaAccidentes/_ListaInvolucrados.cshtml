@@ -30,8 +30,24 @@
         .Ajax()
         .Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
         .PageSize(5)
-        .Model(model => model.Id(p => p.IdMarcaVehiculo))
+            .Model(model => model.Id(p => p.IdPersona))
         )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.IdVehiculoInvolucrado);
+                s.Field(c => c.Tarjeta);
+                s.Field(c => c.Fecha);
+                s.Field(c => c.Placa);
+                s.Field(c => c.Serie);
+                s.Field(c => c.Marca);
+                s.Field(c => c.Color);
+                s.Field(c => c.PropietarioInvolucrado);
+                s.Field(c => c.Modelo);
+                s.Field(c => c.FormaTrasladoInvolucrado);
+                s.Field(c => c.Pension);
+
+            })
         )
 </div>
 </div>

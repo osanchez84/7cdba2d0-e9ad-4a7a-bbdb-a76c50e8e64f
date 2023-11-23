@@ -43,6 +43,8 @@
                         .DataSource(dataSource => dataSource
                         .Ajax()
                         .ServerOperation(false)
+                        .PageSize(5).Model(model => model.Id(p => p.idPersona))
+
                         )
                         .ToolBar(t => t.Search())
                         .Search(s =>

@@ -62,6 +62,7 @@
                 @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
+                    .Filter(FilterType.Contains)
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
         </div>

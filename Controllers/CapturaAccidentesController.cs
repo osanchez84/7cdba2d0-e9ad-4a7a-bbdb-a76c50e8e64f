@@ -1376,6 +1376,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(modelList); 
             //return RedirectToAction("Index");
         }
+
+
+
+        public JsonResult test()
+        {
+            var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
+            var result = new SelectList(catGeneros.CatalogList, "Id", "Text");
+            return Json(result);
+        }
+
+
     }
 }
 

@@ -57,11 +57,15 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Género:</label>
+                <label>Génerosss:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero)
-                            .BindTo((SelectList)ViewBag.CatGeneros)
-                    .Filter(FilterType.Contains)
-
+                            //.BindTo((SelectList)ViewBag.CatGeneros)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .DataSource(s =>
+                    s.Read(r => r.Action("test", "CapturaAccidentes"))
+                    )
+                    .Filter(FilterType.StartsWith)
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
@@ -71,8 +75,7 @@
                 <label>Tipo persona:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona)
                             .BindTo((SelectList)ViewBag.CatTipoPersona)
-                    .Filter(FilterType.Contains)
-
+                             
                             .OptionLabel("-- Seleccione --")
                             .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>

@@ -147,7 +147,6 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Color...")
                     .HtmlAttributes(new { style = "width:100%;" })
-                    .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -193,7 +192,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -210,7 +208,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", id = "ddlMarcas" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -244,7 +241,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlidSubmarcaDisabled" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -282,7 +278,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -299,7 +294,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -446,7 +440,6 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Tipo de Servicio...:")
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlCatTipoServicio" })
-                    .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>

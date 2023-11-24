@@ -712,7 +712,7 @@
     }
 
     function serviceCrearInfraccion(idInfraccion) {
-        var shouldGoBack = false; // Variable para indicar si se debe volver a la página anterior
+        var shouldGoBack = false; 
 
         $.ajax({
             url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
@@ -721,18 +721,16 @@
             success: function (response) {
                 if (response.success) {
                     sitteg_success("Infracción actualizada en secretaria de finanzas.");
-                    shouldGoBack = true; // Establece la variable para volver a la página anterior
+                    shouldGoBack = true; 
                 } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                     sitteg_info("El registro fue actualizado en SITTEG.");
-                    shouldGoBack = true; // Establece la variable para volver a la página anterior
+                    shouldGoBack = true; 
                 } else {
                     sitteg_warning(response.message);
                 }
 
-                // Verifica la variable y vuelve a la página anterior si es necesario
                 var redirectTo = sessionStorage.getItem('redirectTo');
                 if (shouldGoBack && redirectTo) {
-                    // Realiza las acciones necesarias para volver a la página anterior
                     window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
                 }
             },

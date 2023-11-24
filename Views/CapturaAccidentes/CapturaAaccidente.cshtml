@@ -131,7 +131,7 @@
 		</div>
 
 		<!--MODAL AGREGAR VEHICULO INVOLUCRADO-->
-		<div class="modal fade modalCustom" id="agregarVehiculoModal" tabindex="-1" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
+		<div class="modal fade modalCustom" id="agregarVehiculoModal" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
 			<div class="modal-dialog modal-xl" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="ModalBodyAgregarVehiculo">
@@ -140,7 +140,7 @@
 			</div>
 		</div>
 		<!--MODAL AL ANEXO 2-->
-		<div class="modal fade modalCustom" id="anexo2Modal" tabindex="-1" aria-labelledby="anexo2Label" aria-hidden="true">
+		<div class="modal fade modalCustom" id="anexo2Modal" aria-labelledby="anexo2Label" aria-hidden="true">
 			<div class="modal-dialog modal-xl" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="BodyModalAnexo2">
@@ -232,7 +232,7 @@
 			</div>
 		</div>
 		<!--MODAL AGREGAR CONDUCTOR-->
-		<div class="modal fade modalCustom" id="modalAgregarConductor" tabindex="-1" aria-labelledby="conductorLabel" aria-hidden="true">
+		<div class="modal fade modalCustom" id="modalAgregarConductor" aria-labelledby="conductorLabel" aria-hidden="true">
 			<div class="modal-dialog modal-xl" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="ModalBodyAgregarConductor">
@@ -244,7 +244,7 @@
 		</div>
 		<!--MODAL COMPLEMENTO-->
 
-		<div class="modal fade modalCustom" id="modalComplementoVehiculo" tabindex="-1" aria-labelledby="modalComplementoVehiculo" aria-hidden="true">
+		<div class="modal fade modalCustom" id="modalComplementoVehiculo" aria-labelledby="modalComplementoVehiculo" aria-hidden="true">
 			<div class="modal-dialog modal-xl" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="ModalBodymodalComplementoVehiculo">
@@ -254,7 +254,7 @@
 		</div>
 		<!--CLASIFICACION DE ACCIDENTE-->
 		
-		<div class="modal fade modalCustom" id="clasificacionAccidenteModal" tabindex="-1" aria-labelledby="clasificacionAccidenteLabel" aria-hidden="true">
+		<div class="modal fade modalCustom" id="clasificacionAccidenteModal" aria-labelledby="clasificacionAccidenteLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="ModalBodyClasificacionAccidente">
@@ -323,6 +323,7 @@
 </div>
 
 <script>
+
 	$(document).ready(function () {
 		var urlParams = new URLSearchParams(window.location.search);
 		var showClasificacionAccidente = urlParams.get('showE');
@@ -331,7 +332,6 @@
 			$('#ClasificacionAccidente').show();
 		}
 	});
-
 	function mostrarModalAgregarVehiculo() {
 		var idAccidente = '@Model.IdAccidente';
 
@@ -345,7 +345,6 @@
 			}
 		});
 	}
-
 
 </script>
 
@@ -379,17 +378,20 @@
 	}
 
 	function mostrarModalCalsificacionAccidente() {
-		$.ajax({
-			url: '@Url.Action("ModalClasificacionAccidente")',
-			type: 'POST',
-			contentType: "application/json; charset=utf-8",
-			dataType: "html",
-			success: function (data) {
-				$('#ModalBodyClasificacionAccidente').html(data);
-				$('#clasificacionAccidenteModal').modal('show');
-			}
-		});
-	}
+    $.ajax({
+        url: '@Url.Action("ModalClasificacionAccidente")',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: "html",
+        success: function (data) {
+            $('#ModalBodyClasificacionAccidente').html(data);
+            $('#clasificacionAccidenteModal').modal('show');
+           
+        }
+    });
+}
+
+	
 
 	function abrirModalAnexo2() {
 		$.ajax({

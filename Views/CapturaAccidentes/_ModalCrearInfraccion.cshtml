@@ -107,13 +107,17 @@
             success: function (result) {
                 sitteg_success("Se ha creado una nueva infracción, proporcione los datos requeridos");
                 $('#crearInfraccionModal').modal('hide');
+
+                // Almacena la información de redirección en sessionStorage
+                sessionStorage.setItem('redirectTo', '/CapturaAccidentes/Editar/' + result.id + '?fromAcc=true');
+
                 window.setTimeout(function () {
-                    window.location.href = '/Infracciones/EditarA/' + result.id
+                    // Redirige a la página de edición con el ID de la infracción
+                    window.location.href = '/Infracciones/Editar/' + result.id;
                 }, 500);
-
-
             },
-        })
+        });
     }
+
 
 </script>

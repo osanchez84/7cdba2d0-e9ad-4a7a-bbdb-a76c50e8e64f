@@ -219,6 +219,8 @@
                         data: formData,
                         success: function (result) {
                             console.log("JJD", result)
+                    $('#capturarConductorModal').on('hidden.bs.modal', function (e) {
+                        $(this).modal('dispose');
                             $('#capturarConductorModal').modal('hide');
                             var grid = $("#gridConductores").data("kendoGrid");
 

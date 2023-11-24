@@ -6,7 +6,7 @@ namespace GuanajuatoAdminUsuarios.Models
     public class NuevaInfraccionModel
     {
         public int IdAccidente { get; set; }
-        public int? IdVehiculo { get; set; }
+        public int IdVehiculo { get; set; }
         public int? IdPersona { get; set; }
         public int? idOficial { get; set; }
         public string folioInfraccion { get; set; }

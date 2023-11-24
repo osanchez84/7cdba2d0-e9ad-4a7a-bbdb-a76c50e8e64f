@@ -10,6 +10,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public CatCarreterasModel ObtenerCarreteraByID(int IdCarretera);
         public int CrearCarretera(CatCarreterasModel model);
        public int EditarCarretera(CatCarreterasModel model);
+        List<CatCarreterasModel> GetCarreterasPorDelegacion(int idOficina);
 
 
 

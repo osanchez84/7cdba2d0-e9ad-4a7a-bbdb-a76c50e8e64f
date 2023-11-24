@@ -90,10 +90,9 @@
 
                 $("#gridClasificacion").data("kendoGrid").dataSource.data(data);
                 sitteg_success("Se ha agregado una clasificacion de accidente");
-                $('modal-body').removeClass('model-open');
-                $('.modal-backdrop').remove();
-                $('#clasificacionAccidenteModal').modal('hide');
-
+                $('#clasificacionAccidenteModal').on('hidden.bs.modal', function (e) {
+                    $(this).modal('dispose');
+                }).modal('hide');
 
             },
             error: function (error) {

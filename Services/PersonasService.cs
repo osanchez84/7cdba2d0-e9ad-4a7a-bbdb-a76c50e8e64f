@@ -698,9 +698,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
 
-
-
-
+            DateTime? vigenciaLicenciaValue = (model.vigenciaLicencia > DateTime.MinValue) ? model.vigenciaLicencia : null;
 
             string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
                               ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
@@ -743,8 +741,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
 
                     command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
-                    DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
-                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(vigenciaLicenciaValue != DateTime.MinValue ? (object)vigenciaLicenciaValue : DBNull.Value);
+                    //command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(model.vigenciaLicencia.HasValue? model.vigenciaLicencia.Value : null);
+
+                    //DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = vigenciaLicenciaValue;
+
+
                     command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     result = Convert.ToInt32(command.ExecuteScalar());

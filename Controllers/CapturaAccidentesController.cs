@@ -1041,7 +1041,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			{
 
 				var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model);
-
+				var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente,idInfraccion);
 				return Json(new { id = idInfraccion });
 			}
 			return PartialView("_ModalCrearInfraccion");

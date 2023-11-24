@@ -272,7 +272,7 @@
 
 
 
-    <div class="modal fade modalCustom" id="editMinisterio" tabindex="-1" aria-labelledby="editMinisterioLabel" aria-hidden="true">
+    <div class="modal fade modalCustom" id="editMinisterio"  aria-labelledby="editMinisterioLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
             <div class="modal-content">
 
@@ -379,7 +379,7 @@
         </div>
     </div>
 
-    <div class="modal fade modalCustom" id="addMinisterio" tabindex="-1" aria-labelledby="addMinisterioLabel" aria-hidden="true">
+    <div class="modal fade modalCustom" id="addMinisterio"  aria-labelledby="addMinisterioLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
             <div class="modal-content">
 

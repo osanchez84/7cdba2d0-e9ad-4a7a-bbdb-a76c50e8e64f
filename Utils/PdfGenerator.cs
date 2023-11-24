@@ -1,22 +1,13 @@
-﻿using iTextSharp.text.pdf;
-using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Text;
-using iText = iTextSharp.text;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Reflection;
-using System.Linq;
-using Kendo.Mvc.Extensions;
-using static Azure.Core.HttpHeader;
-using System.ComponentModel;
-using static iTextSharp.text.pdf.AcroFields;
-using iTextSharp.text;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting.Internal;
-using System.Drawing;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text;
+using iText = iTextSharp.text;
 //using Microsoft.Extensions.Hosting;
 
 namespace GuanajuatoAdminUsuarios.Utils
@@ -290,6 +281,50 @@ namespace GuanajuatoAdminUsuarios.Utils
                     BackgroundColor = new iText.BaseColor(255, 255, 255)
                 });
             }
+        }
+
+
+        public byte[] CreatePDFByHTML(string html, string cssText)
+        {
+            byte[] pdf; // result will be here
+
+            //var cssText = File.ReadAllText("");
+            ////(MapPath("~/css/test.css"));
+            //var html = File.ReadAllText("");
+            //MapPath("~/css/test.html"));
+
+            using (var memoryStream = new MemoryStream())
+            {
+                var document = new Document(PageSize.A4, 50, 50, 60, 60);
+                var writer = PdfWriter.GetInstance(document, memoryStream);
+                document.Open();
+
+                using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
+                {
+                    using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
+                    {
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
+                    }
+                }
+
+                document.Close();
+
+                pdf = memoryStream.ToArray();
+            }
+
+            return pdf;
+        }
+
+        public static Byte[] PdfSharpConvert(String html)
+        {
+            Byte[] res = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
+                pdf.Save(ms);
+                res = ms.ToArray();
+            }
+            return res;
         }
     }
 }

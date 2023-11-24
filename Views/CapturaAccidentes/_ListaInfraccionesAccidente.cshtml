@@ -5,7 +5,8 @@
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
         .Name("gridInfraccionesAccidente")
         .Columns(columns =>
-        {
+            {
+                columns.Bound(c => c.IdInfraccionAccidente).Hidden();
             columns.Bound(c => c.IdInfAcc).Title("Id Acc/Inf").Width(90);
             columns.Bound(c => c.Vehiculo).Title("Vehiculo").Width(90);
             columns.Bound(c => c.folioInfraccion).Title("Infracción").Width(90);
@@ -20,13 +21,14 @@
         .DataSource(dataSource => dataSource
         .Ajax()
         .Read(read => read.Action("ObtInfraccionesAccidente", "CapturaAccidentes"))
-        .PageSize(5).Model(model => model.Id(p => p.IdInfraccionAccidente))
         )
         .ToolBar(t => t.Search())
         .Search(s =>
         {
-            s.Field(c => c.EstatusReporte);
-
+                s.Field(c => c.IdInfAcc);
+                s.Field(c => c.Vehiculo);
+                s.Field(c => c.folioInfraccion);
+                s.Field(c => c.EstatusInfraccion);
         })
 
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)

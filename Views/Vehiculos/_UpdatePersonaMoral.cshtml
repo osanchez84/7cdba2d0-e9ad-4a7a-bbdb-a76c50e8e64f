@@ -7,9 +7,9 @@
     <div class="col-12 col-md-6 col-lg-4">
         <div class="controlForm mb-3">
             @(Html.Kendo().TextBoxFor(t => t.RFC)
-                .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
+                .Label(l => l.Content("RFC :"))
                 .Placeholder("Ingresa RFC")
-                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                .HtmlAttributes(new { style = "width: 100%" })
                 )
         </div>
     </div>
@@ -47,7 +47,7 @@
 
             <label>Entidad:</label>
             <span>
-                @(Html.Kendo().DropDownListFor(d => d.PersonaDireccion.idEntidad)
+                @(Html.Kendo().DropDownListFor(d => d.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
@@ -67,7 +67,7 @@
         <div class="controlForm my-3">
             <label>Municipio:</label>
             <span>
-                @(Html.Kendo().DropDownListFor(d => d.PersonaDireccion.idMunicipio)
+                @(Html.Kendo().DropDownListFor(d => d.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Municipio...")

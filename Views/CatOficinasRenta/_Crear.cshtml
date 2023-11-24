@@ -36,7 +36,7 @@
             <div class="controlForm my-3">
                 <label>Delegación <b>(obligatorio)</b>:</label>
                 <span>
-                    @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                    @(Html.Kendo().DropDownListFor(t => t.IdDelegacion).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una Delegación")

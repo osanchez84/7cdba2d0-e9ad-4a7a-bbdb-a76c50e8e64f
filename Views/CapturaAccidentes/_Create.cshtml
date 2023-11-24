@@ -14,6 +14,9 @@
     {
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
+
+
+    ViewBag.serie = Model.serie;
 }
 
 <section id="sectionCap" class="bg-white boxShadow  mt-2 mb-3 rounded">
@@ -88,6 +91,8 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
                     .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -108,8 +113,22 @@
 
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
-                <label>Serie:</label>
-                @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)
+                <label>Serie:  </label>
+             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
+
+             @if(@disableInput){
+                     <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+             </span>
+
+             }
+             else{
+                 <span class="k-widget k-textbox" style="width:100%;">
+                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+             </span>
+
+             }
+             
             </div>
         </div>
 
@@ -131,6 +150,8 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Color...")
                     .HtmlAttributes(new { style = "width:100%;" })
+                                        .Filter(FilterType.Contains)
+
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -149,6 +170,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -156,6 +178,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .Value(dateVigencia)
+                        .DateInput()
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -173,6 +196,8 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                                            .Filter(FilterType.Contains)
+
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -185,6 +210,8 @@
                 else
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo)
+                                        .Filter(FilterType.Contains)
+
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
@@ -217,6 +244,8 @@
                     @Html.HiddenFor(m=> m.idSubmarcaUpdated, new { @id = "hdnIdSubmarca" })
 
                     @(Html.Kendo().DropDownListFor(d => d.idSubmarca)
+                                        .Filter(FilterType.Contains)
+
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
@@ -238,6 +267,9 @@
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
+                                                .Filter(FilterType.Contains)
+
+                            .Filter(FilterType.Contains)
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
 
@@ -258,6 +290,8 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                                            .Filter(FilterType.Contains)
+
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -417,6 +451,8 @@
             <div class="controlForm my-3">
                 <label>Tipo de Servicio:</label>
                 @(Html.Kendo().DropDownListFor(d => d.idCatTipoServicio)
+                                    .Filter(FilterType.Contains)
+
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Tipo de Servicio...:")
@@ -610,9 +646,9 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFC)
-                                .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
+                                .Label(l => l.Content("RFC:"))
                                 .Placeholder("Ingresa RFC")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -654,6 +690,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                                        .Filter(FilterType.Contains)
+
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -675,6 +713,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -865,7 +905,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFCFisico)
-                                .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
+                                .Label(l => l.Content("RFC :"))
                                 .Placeholder("Ingresa un RFC valido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
@@ -943,6 +983,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -998,6 +1040,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1039,6 +1083,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona el tipo de licencia")
+                                                        .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1118,6 +1164,10 @@
 		sitteg_error('El vehículo cuenta con reporte de robo')
 		</text>
         }
+
+        
+
+
         buscarPersonasFisicas();
     });
 
@@ -1152,39 +1202,48 @@
         $('#hdnIdCatTipoPersona').val(value);
 
     });
-
-    function submitCreateMoral() {
-        var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
-        validator.validate();
-        if (validator.validate()) {
-            var formData = $("#frmCreateMoral").serialize();
-
-            $.ajax({
-                url: '@Url.Action("ajax_CrearPersonaMoral")',
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    window.setTimeout(function () {
-                        document.getElementById("sec3").style.display = "none";
-                        document.getElementById("PersonaMoralLocalizada").style.display = "block";
-                        $("#PersonaMoralLocalizada").html(result);
-                        $('#addMoral').modal('hide');
-                        sitteg_success('Elemento guardado correctamente')
-                    }, 500);
-                },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
-                }
-            });
-        }
-        else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+function submitCreateMoral() {
+    var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
+    
+    var idTelefono = $("#Persona_PersonaDireccion_telefono");
+    var idTelefonoValue = idTelefono.val();
+    
+    if (idTelefonoValue === null || idTelefonoValue === "") {
+        idTelefono.prop("disabled", true);
     }
+
+    idTelefono.off('blur');
+
+    if (validator.validate()) {
+        var formData = $("#frmCreateMoral").serialize();
+
+        $.ajax({
+            url: '@Url.Action("ajax_CrearPersonaMoral")',
+            type: 'POST',
+            data: formData,
+            success: function (result) {
+                sitteg_success('Elemento guardado correctamente');
+                window.setTimeout(function () {
+                    document.getElementById("sec3").style.display = "none";
+                    document.getElementById("PersonaMoralLocalizada").style.display = "block";
+                    $("#PersonaMoralLocalizada").html(result);
+                    $('#addMoral').modal('hide');
+                    sitteg_success('Elemento guardado correctamente');
+                }, 500);
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg);
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            }
+        });
+    } else {
+        idTelefono.prop("disabled", false);
+        sitteg_info('Debe llenar los campos requeridos');
+        return;
+    }
+}
+
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();

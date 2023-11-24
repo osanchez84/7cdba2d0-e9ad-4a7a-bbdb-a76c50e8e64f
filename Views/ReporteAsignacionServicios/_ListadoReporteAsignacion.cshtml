@@ -29,14 +29,14 @@
 
                 columns.Bound(c => c.fullName).Title("Nombre Solicitante").Width(200);
                 columns.Bound(c => c.fullcolonia).Title("Dirección").Width(200);
-                columns.Bound(c => c.tipoVehiculo).Title("Tipo Vehículo").Width(90);
+                columns.Bound(c => c.tipoVehiculo).Title("Tipo Vehículo").Width(160);
                 columns.Bound(c => c.noEconomico).Title("Grúa").Width(90);
                 columns.Bound(c => c.Alias).Title("Alias de la grúa").Width(180);
                 columns.Bound(c => c.oficial).Title("Oficial").Width(150);
                 columns.Bound(c => c.folio).Title("Folio").Width(100);
                 columns.Bound(c => c.vehiculoPension).Title("Pensión").Width(120);
                 columns.Bound(c => c.Delegacion).Title("Delegación").Width(120);
-                columns.Bound(c => c.numeroIventario).Title("Inventario").Width(90);
+                columns.Bound(c => c.numeroIventario).Title("Inventario").Width(120);
             }).HtmlAttributes(new { style = "height:350" })
             .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Top).PageSizes(true))
             .Sortable()
@@ -45,6 +45,26 @@
             .Ajax()
             .ServerOperation(false)
             )
+            .ToolBar(t => t.Search())
+            .Search(s =>
+            {
+                s.Field(c => c.vehiculoCarretera);
+                s.Field(c => c.vehiculoTramo);
+                s.Field(c => c.vehiculoKm);
+                s.Field(c => c.fechaSolicitud);
+                s.Field(c => c.fechaLiberacion);
+                s.Field(c => c.evento);
+                s.Field(c => c.motivoAsignacion);
+                s.Field(c => c.fullName);
+                s.Field(c => c.fullcolonia);
+                s.Field(c => c.tipoVehiculo);
+                s.Field(c => c.noEconomico);
+                s.Field(c => c.Alias);
+                s.Field(c => c.oficial);
+                s.Field(c => c.vehiculoPension);
+                s.Field(c => c.Delegacion);
+                s.Field(c => c.numeroIventario);
+            })
             )
     </div>
 

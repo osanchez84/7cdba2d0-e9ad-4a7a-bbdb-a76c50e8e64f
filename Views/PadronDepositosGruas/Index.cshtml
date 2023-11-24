@@ -48,7 +48,7 @@
                 <div class="controlForm mb-3">
                     <label>Municipios:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdMunicipio)
+                        @(Html.Kendo().DropDownListFor(d => d.IdMunicipio).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Municipio...")
@@ -58,7 +58,7 @@
                             {
                                 source.Read(read =>
                                 {
-                                    read.Action("Municipios_Read", "PadronDepositosGruas");
+                                    read.Action("Municipios_Por_Delegacion_Drop", "PadronDepositosGruas");
                                 });
                             }))
                     </span>
@@ -67,7 +67,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     <label>Concesionario:</label>
-                    @(Html.Kendo().DropDownListFor(d => d.IdConcesionario)
+                    @(Html.Kendo().DropDownListFor(d => d.IdConcesionario).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Concesionario...")
@@ -88,7 +88,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     <label>Depósitos:</label>
-                    @(Html.Kendo().DropDownListFor(d => d.IdPension)
+                    @(Html.Kendo().DropDownListFor(d => d.IdPension).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Depósito...")
@@ -109,7 +109,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
                     <label>Tipo de grúa:</label>
-                    @(Html.Kendo().DropDownListFor(d => d.IdTipoGrua)
+                    @(Html.Kendo().DropDownListFor(d => d.IdTipoGrua).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione tipo...")

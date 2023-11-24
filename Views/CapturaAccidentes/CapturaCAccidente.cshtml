@@ -248,6 +248,8 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
+                                .Filter(FilterType.Contains)
+
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -419,6 +421,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
+                                .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -439,6 +443,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
+                                .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -484,6 +490,8 @@
                         @(Html.Kendo().DropDownListFor(t=>t.IdEntidadCompetencia)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
+                            .Filter(FilterType.Contains)
+
                                 .OptionLabel("Selecciona una opción")
                                 .DataSource(source =>
                                 {
@@ -503,6 +511,8 @@
                 <label>Ciudad de:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdCiudad)
+                            .Filter(FilterType.Contains)
+
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una opción")
@@ -535,6 +545,8 @@
                     <label>Elabora consignación:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(t=>t.IdElaboraConsignacion)
+                            .Filter(FilterType.Contains)
+
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
@@ -565,6 +577,8 @@
                     <label>Agencia de ministerio que recibe:</label>
                     <span>
                             @(Html.Kendo().DropDownListFor(t => t.IdAgenciaMinisterio)
+                            .Filter(FilterType.Contains)
+
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
@@ -618,6 +632,8 @@
                     <label>Elabora:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(t=>t.IdElabora)
+                            .Filter(FilterType.Contains)
+
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
@@ -641,6 +657,8 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
+                            .Filter(FilterType.Contains)
+
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -661,6 +679,8 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una opción")
+                            .Filter(FilterType.Contains)
+
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -759,7 +779,7 @@
     });
 
 
-               $(document).ready(function () {
+    $(document).ready(function () {
             var switchElementA = $("#armasSwitch").data("kendoSwitch");
             var campoArmasTexto = $("#campoArmasTexto");
 

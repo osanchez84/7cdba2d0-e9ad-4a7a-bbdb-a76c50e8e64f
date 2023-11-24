@@ -51,7 +51,7 @@
                     @(Html.Kendo().DropDownListFor(t=>t.IdMunicipio)
                     .DataTextField("Text")
                     .DataValueField("Value")
-                    .OptionLabel("Selecciona un Municipio")
+                        .OptionLabel("Selecciona un Municipio").Filter(FilterType.Contains)
                     .HtmlAttributes(new { @class ="CentradoList",style = "width:100%;" })
                     .DataSource(source =>
                     {

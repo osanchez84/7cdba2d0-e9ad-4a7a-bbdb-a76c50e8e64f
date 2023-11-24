@@ -49,7 +49,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.RFC)
-                    .Label(l => l.Content("RFC <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("RFC :"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;",  })
                     )
             </div>
@@ -59,7 +59,7 @@
         <div class="col-md-6">
             <div class="controlForm">
                 <label>Género:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idGenero)
+                @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
@@ -68,7 +68,7 @@
         <div class="col-md-6">
             <div class="controlForm">
                 <label>Tipo persona:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona)
+                @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
@@ -79,25 +79,25 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
-                    .Label(l => l.Content("Número licencia <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .Label(l => l.Content("Número licencia:"))
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Tipo licencia:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia)
+                @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                     .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                    .HtmlAttributes(new { style = "width:100%;" }))
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
-                    .HtmlAttributes(new { style = "width: 100%;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%;" })
                     )
             </div>
         </div>
@@ -106,7 +106,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Entidad:</label>
-                @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad)
+                @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Selecciona una opción")
@@ -125,7 +125,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Municipio:</label>
-                @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio)
+                @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Selecciona un Municipio")

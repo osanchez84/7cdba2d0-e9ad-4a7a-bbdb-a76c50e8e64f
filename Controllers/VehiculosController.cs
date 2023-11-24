@@ -166,7 +166,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				placa = model.PlacasBusqueda,
 				niv = model.SerieBusqueda
 			};
-			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault()??new RepuveConsRoboResponseModel();
             ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
 			if (_appSettings.AllowWebServices)
             {
@@ -532,7 +532,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ajax_CrearVehiculo(VehiculoModel model)
+        public ActionResult ajax_CrearVehiculo2(VehiculoModel model)
         {
             int IdVehiculo = 0;
             if (model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg)
@@ -548,6 +548,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (IdVehiculo != 0)
             {
                 return Json(new { id = IdVehiculo });
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult ajax_CrearVehiculo(VehiculoModel model)
+        {
+            var IdVehiculo = _vehiculosService.CreateVehiculo(model);
+
+            if (IdVehiculo != 0)
+            {
+                var resultados = _vehiculosService.GetAllVehiculos();
+                return PartialView("_ListadoVehiculos", resultados);
             }
             else
             {

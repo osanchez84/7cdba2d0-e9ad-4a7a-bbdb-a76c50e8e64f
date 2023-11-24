@@ -39,7 +39,7 @@
                     @(Html.Kendo().DropDownListFor(t=>t.IdEntidad)
                         .DataTextField("Text")
                         .DataValueField("Value")
-                        .OptionLabel("Selecciona una Entidad")
+                        .OptionLabel("Selecciona una Entidad").Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -60,7 +60,7 @@
                     @(Html.Kendo().DropDownListFor(t=>t.IdOficinaTransporte)
                         .DataTextField("Text")
                         .DataValueField("Value")
-                        .OptionLabel("Selecciona una Delegacion")
+                        .OptionLabel("Selecciona una Delegacion").Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>

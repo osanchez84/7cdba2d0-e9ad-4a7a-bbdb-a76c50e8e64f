@@ -62,6 +62,8 @@
                                     .Label(l => l.Content("Delegación:"))
                                     .DataTextField("Text")
                                     .DataValueField("Value")
+                                    .Filter(FilterType.Contains)
+
                                     .OptionLabel("Selecciona la Delegación")
                                     .DataSource(source =>
                                     {
@@ -85,6 +87,8 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una Carretera")
                                     .Events(e => e.Change("carreteraDropDownChange"))
+                                    .Filter(FilterType.Contains)
+
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -104,6 +108,8 @@
                             <span>
                                 @(Html.Kendo().DropDownListFor(m => m.IdTramoBusqueda)
                                     .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
+                                    .Filter(FilterType.Contains)
+
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona un Tramo")
@@ -165,6 +171,8 @@
                             <label>Oficial:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(m => m.IdOficialBusqueda)
+                                    .Filter(FilterType.Contains)
+
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")

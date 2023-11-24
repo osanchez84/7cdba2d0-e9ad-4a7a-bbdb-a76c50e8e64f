@@ -81,6 +81,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity));
         }
+
+
         [Route("cerrar-sesion")]
         public async Task<IActionResult> CerrarSesion()
         {

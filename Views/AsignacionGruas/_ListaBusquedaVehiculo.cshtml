@@ -57,8 +57,8 @@
             columns.Bound(c => c.Serie).Title("Serie").Width(100);
             columns.Bound(c => c.Tarjeta).Title("Tarjeta").Width(100);
             columns.Bound(c => c.Motor).Title("Motor").Width(100);
-            columns.Bound(c => c.NumeroEconomico).Title("Numero Económico").Width(100);
-            columns.Bound(c => c.Propietario).Title("Propietario").Width(100);
+            columns.Bound(c => c.NumeroEconomico).Title("Numero Económico").Width(120);
+            columns.Bound(c => c.Propietario).Title("Propietario").Width(130);
 
 
         })
@@ -72,6 +72,19 @@
         .Read(read => read.Action("BuscarVehiculo", "AsignarGruas"))
         .PageSize(5).Model(model => model.Id(p => p.IdMarcaVehiculo))
         )
+        .ToolBar(t => t.Search())
+        .Search(s =>
+        {
+            s.Field(c => c.Marca);
+            s.Field(c => c.Submarca);
+            s.Field(c => c.Placa);
+            s.Field(c => c.Modelo);
+            s.Field(c => c.Serie);
+            s.Field(c => c.Tarjeta);
+            s.Field(c => c.Motor);
+            s.Field(c => c.NumeroEconomico);
+            s.Field(c => c.Propietario);
+        })
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
         )
 </div>

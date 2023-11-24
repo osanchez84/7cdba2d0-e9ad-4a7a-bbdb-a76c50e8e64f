@@ -46,7 +46,7 @@
                         <div class="controlForm my-3">
                 <span>
                     <label>Municipio <b>(obligatorio)</b>:</label>
-                    @(Html.Kendo().DropDownListFor(t => t.idMunicipio)
+                    @(Html.Kendo().DropDownListFor(t => t.idMunicipio).Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona un Municipio")

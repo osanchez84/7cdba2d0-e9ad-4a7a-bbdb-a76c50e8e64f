@@ -114,7 +114,7 @@
                 <div class="controlForm mb-3">
                     <label>Grúa:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdGrua)
+                        @(Html.Kendo().DropDownListFor(d => d.IdGrua).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione grúa...")
@@ -146,7 +146,7 @@
                     <label>Tipo de evento:</label>
                     <span>
                         @Html.HiddenFor(m=>m.Evento, new{Id="hdnEvento"})
-                        @(Html.Kendo().DropDownListFor(d => d.IdEvento)
+                        @(Html.Kendo().DropDownListFor(d => d.IdEvento).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione Evento...")
@@ -168,7 +168,7 @@
                 <div class="controlForm mb-3">
                     <label>Pensión:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdPension)
+                        @(Html.Kendo().DropDownListFor(d => d.IdPension).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Seleccione pensión...")

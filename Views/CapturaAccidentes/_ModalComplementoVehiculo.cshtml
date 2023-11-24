@@ -44,6 +44,7 @@
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona el tipo de carga")
+                                .Filter(FilterType.Contains)
                             .DataSource(source =>
                             {
                                 source.Read(read =>
@@ -77,7 +78,8 @@
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Selecciona la Delegación")
-                    .Events(e => e.Change("pensionDropDownChange"))                    
+                    .Events(e => e.Change("pensionDropDownChange"))  
+                        .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -96,6 +98,7 @@
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdPension)
                     .Label(l => l.Content("Pensión:"))
+                        .Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Selecciona la Pensión")
@@ -114,12 +117,14 @@
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm my-3">
                 <label>Forma de traslado:</label>
+                <label>Forma de traslado:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdFormaTraslado)
                                 .Label(l => l.Content("Forma de traslado:"))
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona la forma de traslado")
+                        .Filter(FilterType.Contains)
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -127,7 +132,7 @@
                                         read.Action("Traslados_Drop", "CapturaAccidentes");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;"})
+                                .HtmlAttributes(new { style = "width:100%;" })
                                 )
                 </span>
             </div>
@@ -147,7 +152,13 @@
    
 <script>
     function guardarComplementoVehiculo() {
-        var validator = $("#complementoVehiculoForm").kendoValidator({
+        var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
+        
+        
+        $("#IdDelegacion").prop("disabled",true)
+        $("#IdPension").prop("disabled", true)
+        $("#IdFormaTraslado").prop("disabled", true)
+    /*    var validator = $("#complementoVehiculoForm").kendoValidator({
             validateOnBlur: false,
             rules: {
                 customRule: function (input) {
@@ -168,7 +179,7 @@
                     error.insertAfter(element);
                 }
             }
-        }).data('kendoValidator');
+        }).data('kendoValidator');*/
 
         var isValid = validator.validate();
 

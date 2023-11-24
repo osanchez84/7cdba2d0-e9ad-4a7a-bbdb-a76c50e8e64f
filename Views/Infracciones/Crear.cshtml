@@ -97,75 +97,210 @@
 							</div>
 						</button>
 
-					</div>
-				</nav>
-				<form id="frmCrearInfraccion">
-					@Html.HiddenFor(m=> m.placasVehiculo)
-					@Html.HiddenFor(m=> m.NumTarjetaCirculacion)
-					@*Contenidos de cada tab*@
-					<div class="tab-content" id="nav-tabContent">
-						<div class="tab-pane tabCustomConteiner fade show active" id="informacionInfraccion-container" role="tabpanel" aria-labelledby="informacionInfraccion-tab">
-							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
-									<div class="row align-items-center justify-content-center justify-content-md-start">
-										<div class="col-auto">
-											<i class="icon-infracion h1 colorPrimary"></i>
-										</div>
-										<div class="col-auto my-3">
-											<h5 class="px-4"><b>Información de infracción</b></h5>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row my-4 px-4">
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Fecha infracción:</label>
-										@(Html.Kendo().DateTimePicker().Name("fechaInfraccion").Max(DateTime.Now)
-											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
-											.HtmlAttributes(new { style = "width: 100%", required = "required" })
-											)
-									</div>
-								</div>
-							</div>
-							<div class="row my-4 px-4">
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Folio <b>(obligatorio):</b></label>
-										@(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
-											.Placeholder("Ingresa folio")
-											.HtmlAttributes(new { style = "width: 100%", required = "required" })
-											)
-									</div>
-								</div>
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Oficial <b>(obligatorio):</b></label>
-										<div id="divOficiales">
-											@(Html.Kendo().DropDownList()
-												.Name("idOficial")
-												.BindTo((SelectList)ViewBag.CatOficiales)
-												.OptionLabel("-- Seleccione --")
-												.Filter(FilterType.Contains)
-												.HtmlAttributes(new { style = "width:100%;", required = "required" })
-												)
-										</div>
-										<button class="btn btn-outline-primary" type="button" onclick="ListarOficiales()">Listar Todos</button>
-									</div>
-								</div>
-@* 								<div class="form-group col-md-1">
-									<div class="controlForm">
-										
-									</div>
-								</div> *@
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Municipio <b>(obligatorio):</b></label>
-										@(Html.Kendo().DropDownList()
-											.Name("idMunicipio")
-											.BindTo((SelectList)ViewBag.CatMunicipios)
+                    </div>
+                </nav>
+                <form id="frmCrearInfraccion">
+                    @Html.HiddenFor(m=> m.placasVehiculo)
+                    @Html.HiddenFor(m=> m.NumTarjetaCirculacion)
+                    @*Contenidos de cada tab*@
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane tabCustomConteiner fade show active" id="informacionInfraccion-container" role="tabpanel" aria-labelledby="informacionInfraccion-tab">
+                            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                                <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                                    <div class="row align-items-center justify-content-center justify-content-md-start">
+                                        <div class="col-auto">
+                                            <i class="icon-infracion h1 colorPrimary"></i>
+                                        </div>
+                                        <div class="col-auto my-3">
+                                            <h5 class="px-4"><b>Información de infracción</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-4 px-4">
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Fecha infracción:</label>
+                                        @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
+                                            .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
+                                            .Format("dd-MM-yyyy")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-4 px-4">
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Folio <b>(obligatorio):</b></label>
+                                        @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
+                                            .Placeholder("Ingresa folio")
+                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Oficial <b>(obligatorio):</b></label>
+                                        @(Html.Kendo().DropDownList()
+                                            .Name("idOficial")
+                                            .BindTo((SelectList)ViewBag.CatOficiales)
+                                            .OptionLabel("-- Seleccione --")
+                                            .Filter(FilterType.Contains)
+
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Municipio <b>(obligatorio):</b></label>
+                                        @(Html.Kendo().DropDownList()
+                                            .Name("idMunicipio")
+											 .DataTextField("Text")
+											 .DataValueField("Value")
+											.DataSource(source =>
+											{
+												source.Read(read =>
+												{
+													read.Action("Municipios_Por_Delegacion_Drop", "Infracciones");
+												});
+											})                                            
 											.OptionLabel("-- Seleccione --")
-											.Filter(FilterType.Contains)
+                                            .Filter(FilterType.Contains)
+
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="tabCustomEnd"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane tabCustomConteiner fade show" id="lugar-container" role="tabpanel" aria-labelledby="lugar-tab">
+                            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                                <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                                    <div class="row align-items-center justify-content-center justify-content-md-start">
+                                        <div class="col-auto">
+                                            <i class="icon-carretera h1 colorPrimary"></i>
+                                        </div>
+                                        <div class="col-auto my-3">
+                                            <h5 class="px-4"><b>Lugar de la infracción</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-4 px-4">
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Carretera <b>(obligatorio):</b></label>
+                                        @(Html.Kendo().DropDownList()
+                                            .Name("idCarretera")
+                                            .BindTo((SelectList)ViewBag.CatCarreteras)
+                                            .Filter(FilterType.Contains)
+
+                                            .OptionLabel("-- Seleccione --")
+                                            .HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        <label>Tramo <b>(obligatorio):</b></label>
+                                        <div id="divTramo">
+											@(Html.Kendo().DropDownListFor(f => f.idTramo).Filter(FilterType.Contains)
+                                                .OptionLabel("-- Seleccione --")
+                                                .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                                )
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="controlForm">
+                                        @(Html.Kendo().TextBoxFor(t => t.kmCarretera)
+                                            .Label(l => l.Content("Kilómetro <b>(obligatorio)</b>:"))
+                                            .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                                            )
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-4 px-4">
+                                <div class="form-group col-md-3">
+                                    <div class="controlForm">
+                                        @(Html.Kendo().TextBoxFor(t => t.lugarCalle)
+                                            .Label(l => l.Content("Calle:"))
+                                            .Placeholder("Ingresa calle")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <div class="controlForm">
+                                        @(Html.Kendo().TextBoxFor(t => t.lugarNumero)
+                                            .Label(l => l.Content("Número:"))
+                                            .Placeholder("Ingresa número")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <div class="controlForm">
+                                        @(Html.Kendo().TextBoxFor(t => t.lugarColonia)
+                                            .Label(l => l.Content("Colonia:"))
+                                            .Placeholder("Ingresa colonia")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <div class="controlForm">
+                                        @(Html.Kendo().TextBoxFor(t => t.lugarEntreCalle)
+                                            .Label(l => l.Content("Entre calle: "))
+                                            .Placeholder("Ingresa entre calle")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="tabCustomEnd"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane tabCustomConteiner fade show" id="vehiculo-container2" role="tabpanel" aria-labelledby="vehiculo-tab">
+                            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                                <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                                    <div class="row align-items-center justify-content-center justify-content-md-start">
+                                        <div class="col-auto">
+                                            <i class="icon-edit-car h1 colorPrimary"></i>
+                                        </div>
+                                        <div class="col-auto my-3">
+                                            <h5 class="px-4"><b>Vehículo de la infracción agsdh</b></h5>
+                                            @*<h6 class="px-4 text-muted">Marque el vehículo que desea asociar.</h6>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+                                    <div class="row">
+                                        <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                            <button id="btnNuevoVehiculo" onclick="mostrarModalAgregarVehiculo()" type="button">
+                                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Agregar nuevo vehículo</b></h6>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @Html.HiddenFor(m=> m.idVehiculo)
+                            <div id="divIsPropietarioConductor" class="row my-4 px-4" style="display:none">
+                                <div class="form-group col-md-8">
+                                    <div class="checkbox">
+                                        <label>El propietario del vehículo es el conductor: </label>&nbsp;&nbsp;
+                                        @(Html.Kendo().SwitchFor(m => m.isPropietarioConductor)
+                                            .Messages(c => c.Checked("SI").Unchecked("NO"))
 
 											.HtmlAttributes(new { style = "width:100%;", required = "required" })
 											)
@@ -209,21 +344,14 @@
 									<div class="controlForm">
 										<label>Tramo <b>(obligatorio):</b></label>
 										<div id="divTramo">
-											@(Html.Kendo().DropDownListFor(f => f.idTramo)
+											@(Html.Kendo().DropDownListFor(f => f.idTramo).Filter(FilterType.Contains)
 												.OptionLabel("-- Seleccione --")
 												.HtmlAttributes(new { style = "width:100%;", required = "required" })
 												)
 										</div>
 									</div>
 								</div>
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										@(Html.Kendo().TextBoxFor(t => t.kmCarretera)
-											.Label(l => l.Content("Kilómetro <b>(obligatorio)</b>:"))
-											.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
-											)
-									</div>
-								</div>
+								
 							</div>
 							@*  <div class="row my-4 px-4">
 							<div class="form-group col-md-3">
@@ -418,7 +546,7 @@
 			return;
 		}
 
-		if (validator.validate()) {
+		if (ValidarCrear()) {
 			var formData = $("#frmCrearInfraccion").serialize();
 			//var formData = new FormData();
 			//formData.delete('idDelegacion');
@@ -472,7 +600,9 @@
 				"idVehiculo": pidVehiculo,
 			},
 			success: function (data) {
-				$("#detalleVehiculo").html(data);
+				$("#detalleVehiculo").empty().append(data);
+				console.log("error",data)
+				console.log(pidVehiculo)
 				$("#idVehiculo").val(pidVehiculo);
 			}
 			//,
@@ -560,5 +690,64 @@
 			}
 		});
 	});
+
+
+
+	function ValidarCrear(){
+		var result=true
+
+		var consult = $("#fechaInfraccion").val()
+
+		if(!consult)
+				return false
+		consult = $("#folioInfraccion").val()
+
+		if (!consult)
+			return false
+		consult = $("#idOficial").val()
+
+		if (!consult)
+			return false
+		consult = $("#idMunicipio").val()
+
+		if (!consult)
+			return false
+		consult = $("#ddlCarreteras").val()
+
+		if (!consult)
+			return false
+		consult = $("#idTramo").val()
+
+		if (!consult)
+			return false
+		consult = $("#kmCarretera").val()
+
+		if (!consult)
+			return false
+		consult = $("#lugarCalle").val()
+
+		if (!consult)
+			return false
+		consult = $("#lugarNumero").val()
+
+		if (!consult)
+			return false
+		consult = $("#lugarColonia").val()
+
+		if (!consult)
+			return false
+		consult = $("#lugarEntreCalle").val()
+
+		if (!consult)
+			return false
+
+
+
+		return result	
+	}
+
+
+
+
 </script>
 

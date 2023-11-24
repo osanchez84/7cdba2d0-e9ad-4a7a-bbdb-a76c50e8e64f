@@ -25,7 +25,7 @@
             @(
 
 
-                Html.Kendo().DropDownListFor(d => d.IdMarcaVehiculo)
+                Html.Kendo().DropDownListFor(d => d.IdMarcaVehiculo).Filter(FilterType.Contains)
                 .DataTextField("CategoryName")
                 .DataValueField("CategoryId")
                 .OptionLabel("---Seleccione Category---")

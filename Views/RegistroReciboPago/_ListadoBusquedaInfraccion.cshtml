@@ -9,6 +9,7 @@
             .Name("gridRegistro")
             .Columns(columns =>
             {
+                columns.Bound(c => c.IdInfraccion).Hidden();
                 columns.Bound(c => c.FolioInfraccion).Title("Folio infracción").Width(90);
                 columns.Bound(c => c.FechaInfraccioFormateada).Title("Fecha infracción").Width(90);
                 columns.Bound(c => c.Conductor).Width(110);
@@ -27,13 +28,20 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
+            .ServerOperation(false)
             .PageSize(5).Model(model => model.Id(p => p.IdInfraccion))
             )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
-          
-
+             s.Field(c => c.FolioInfraccion);
+             s.Field(c => c.FechaInfraccioFormateada);
+             s.Field(c => c.Conductor);
+             s.Field(c => c.Placas);
+             s.Field(c => c.Serie);
+             s.Field(c => c.EstatusInfraccion);
+             s.Field(c => c.Propietario);
+             s.Field(c => c.Delegacion);
             })
 
             .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)

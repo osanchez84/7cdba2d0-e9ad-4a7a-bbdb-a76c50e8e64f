@@ -26,14 +26,21 @@
 			.Pageable()
 			.DataSource(dataSource => dataSource
 			.Ajax()
+			.ServerOperation(false)
 			//.Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
-			.PageSize(5).Model(model => model.Id(p => p.folioInfraccion))
+			.PageSize(5).Model(model => model.Id(p => p.IdInfraccion))
 			)
 			.ToolBar(t => t.Search())
 			.Search(s =>
 			{
 				s.Field(c => c.nombreCompletoPropietario);
 				s.Field(c => c.nombreCompletoConductor);
+				s.Field(c => c.folioInfraccion);
+				s.Field(c => c.placas);
+				s.Field(c => c.fecha);
+				s.Field(c => c.fechaVencimiento);
+				s.Field(c => c.DiasTranscurridos);
+
 			})
 			.Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))
 			.Events(events => events.Change("obtenerIdInfraccionesSeleccionadas"))

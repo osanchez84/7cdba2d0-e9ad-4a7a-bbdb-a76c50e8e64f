@@ -198,7 +198,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_estatusInfraccionService.GetEstatusInfracciones(), "idEstatusInfraccion", "estatusInfraccion");
             return Json(result);
         }
+        public JsonResult Municipios_Por_Delegacion_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
         public JsonResult Cortesias_Read()
         {
             //catTipoCortesia
@@ -229,13 +235,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+           // var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             var vehiculosList = _vehiculosService.GetAllVehiculos();
             var personasList = _personasService.GetAllPersonas();
 
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
-            ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+            //ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.Vehiculos = vehiculosList;
             ViewBag.Personas = personasList;
@@ -350,7 +356,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				placa = model.PlacasBusqueda,
 				niv = model.SerieBusqueda
 			};
-			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+			var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault()??new RepuveConsRoboResponseModel();
 			ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
 			if (_appSettings.AllowWebServices)
             {

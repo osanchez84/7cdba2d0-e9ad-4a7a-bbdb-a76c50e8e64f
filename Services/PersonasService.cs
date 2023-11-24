@@ -668,13 +668,14 @@ namespace GuanajuatoAdminUsuarios.Services
             int result = 0;
 
             // Primero, verifica si ya existe un registro con la misma CURP
-            string checkQuery = "SELECT COUNT(*) FROM personas WHERE CURP = @CURP";
+            string checkQuery = "SELECT top 1 idpersona as test FROM personas WHERE CURP = @CURP";
 
             using (SqlConnection checkConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     checkConnection.Open();
+
                     SqlCommand checkCommand = new SqlCommand(checkQuery, checkConnection);
                     checkCommand.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURPFisico ?? DBNull.Value;
 
@@ -683,7 +684,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (existingRecordsCount > 0)
                     {
                         // Ya existe un registro con la misma CURP, muestra un mensaje o lanza una excepción
-                        return -1; 
+                        return existingRecordsCount; 
                     }
                 }
                 catch (SqlException ex)

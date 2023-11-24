@@ -207,7 +207,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
             return Json(result);
         }
-<<<<<<< HEAD
         public JsonResult CarreterasPorDelegacion()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -215,8 +214,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "idCarretera", "carretera");
             return Json(result);
         }
-=======
->>>>>>> 68a0ef59a74bbd65708e538cf93c9b908f0c9e6a
+
         public JsonResult Cortesias_Read()
         {
             //catTipoCortesia
@@ -248,21 +246,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
            // var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
-<<<<<<< HEAD
             //var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-=======
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
->>>>>>> 68a0ef59a74bbd65708e538cf93c9b908f0c9e6a
             var vehiculosList = _vehiculosService.GetAllVehiculos();
             var personasList = _personasService.GetAllPersonas();
-
+           
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             //ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-<<<<<<< HEAD
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
-=======
-            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
->>>>>>> 68a0ef59a74bbd65708e538cf93c9b908f0c9e6a
+            //ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.Vehiculos = vehiculosList;
             ViewBag.Personas = personasList;
             return View(new InfraccionesModel());

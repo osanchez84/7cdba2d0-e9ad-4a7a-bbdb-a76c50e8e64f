@@ -78,6 +78,7 @@
             data: { IdFactorAccidente: IdFactorAccidente, IdFactorOpcionAccidente: IdFactorOpcionAccidente, IdAccidenteFactorOpcion : IdAccidenteFactorOpcion },
             success: function (result) {
                 $('#ModalBodyFactorAccidente').html(result);
+                $('#factorAccidenteModal').modal({ backdrop: 'static', keyboard: false });
                 $('#factorAccidenteModal').modal('show');
 
             },

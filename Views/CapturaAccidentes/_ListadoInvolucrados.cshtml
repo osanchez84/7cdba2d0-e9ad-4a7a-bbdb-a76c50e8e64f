@@ -1,66 +1,179 @@
-﻿    
+﻿<style>
+	.photo {
+		width: 140px;
+	}
+
+	.details {
+		width: 400px;
+		color: #898989;
+	}
+
+	.name {
+		display: block;
+		font-size: 1.6em;
+	}
+
+	.title {
+		display: block;
+		padding-top: 1.6em;
+	}
+
+	.employeeID,
+	.country {
+		font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+		font-size: 50px;
+		font-weight: bold;
+		color: #898989;
+	}
+	/* .k-grid-header .k-header {
+		padding: 10px 20px;
+	} */
+
+	#gridInvolucradosTodo td {
+		background: -moz-linear-gradient(top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.05)), color-stop(100%,rgba(0,0,0,0.15)));
+		background: -webkit-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+		background: -o-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+		background: -ms-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+		background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+		padding: 20px;
+	}
+
+	#gridInvolucradosTodo td {
+		background: -moz-linear-gradient(top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0.1)));
+		background: -webkit-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+		background: -o-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+		background: -ms-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+		background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+	}
+</style>
+
 <script>
-    function FormatDate(date) {
-        var cdate = convertDate(date);
-        cdate = cdate == "01/01/0001" ? "" : cdate;
-        return cdate;
-    }
+	function FormatDate(date) {
+		var cdate = convertDate(date);
+		cdate = cdate == "01/01/0001" ? "" : cdate;
+		return cdate;
+	}
 </script>
 <div class="row">
-<div class="col-12 mb-4 px-4 rounded gridCustom">
+	<div class="col-12 mb-4 px-4 rounded gridCustom">
 
-        @(
-            Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
-            .Name("gridInvolucradosTodo")
-            .Columns(columns =>
-            {
-                columns.Bound(c => c.idPersonaInvolucrado).Hidden();
-                columns.Bound(c => c.nombre).Title("Nombre").Width(100);//Completo
-                columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
-                columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-                columns.Bound(c => c.rfc).Title("RFC").Width(100);
-                columns.Bound(c => c.curp).Title("CURP").Width(100);
-                columns.Bound(c => c.TipoLicencia).Title("Tipo de No Licencia").Width(100);
-                columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimineto").ClientTemplate("#= FormatDate(fechaNacimiento) #").Format("{0:dd/MM/yyyy}").Width(100);
-                columns.Bound(c => c.TipoVehiculo).Title("Tipo de Vehículo").Width(100);
-                columns.Bound(c => c.EstadoVictima).Title("Estado de involucrado").Width(100);
-                columns.Bound(c => c.NombreHospital).Title("LLevado a:").Width(100);
-                columns.Bound(c => c.InstitucionTraslado).Title("Trasladado por:").Width(100);
-                columns.Bound(c => c.Asiento).Title("Asiento que ocupaba").Width(100);
-                columns.Bound(c => c.Cinturon).Title("Cinturon").Width(100);
-                //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-                //columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100);
+		@(
+			Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
+
+			.Name("gridInvolucradosTodo").Groupable()
+			.Columns(columns =>
+			{
+				columns.Template(" ").Width(140).Title("Detalles");
+				columns.Template(" ").Width(140).Title("Datos persona");
+				columns.Template(" ").Width(140).Title("Domicilio persona");
+				columns.Template(" ").Width(140).Title("Vehículo en que viajaba");
+				//columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
+				//columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100);
+
+			}).HtmlAttributes(new { style = "height:500px" })
+			.ClientRowTemplate(
+			"<tr data-uid='#: uid #'>" +
+			"<td class='Detalles'>" +
+			"<p><span class='description'>Participacion : #: ConductorInvolucrado# </span></p>" +
+			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
+			"<p><span class='description'>Llevado a : #: NombreHospital# </span></p>" +
+			"<p><span class='description'>Traslado : #: InstitucionTraslado# </span></p>" +
+			"<p><span class='description'>Asiento : #: Asiento# </span></p>" +
+			"<p><span class='description'>Cinturon : #: Cinturon# </span></p>" +
+			"</td>" + 
+			"<td class='DatosPersona'>" +
+			"<p><span class='description'>Nombre : #: nombre# </span></p>" +
+			"<p><span class='description'>RFC : #: rfc# </span></p>" +
+			"<p><span class='description'>CURP : #: curp# </span></p>" +
+			"<p><span class='description'>Sexo : #: Sexo# </span></p>" +
+			"<p><span class='description'>Fecha nacimiento : #: FechaFormateada# </span></p>" +
+			"<p><span class='description'>Licencia : #: TipoLicencia# </span></p>" +
+			"</td>"+
+			"<td class='DomicilioPersona'>" +
+			"<p><span class='description'>Dirección : #: Direccion# </span></p>" +
+			"<p><span class='description'>Municipio : #: Municipio# </span></p>" +
+			"<p><span class='description'>Entidad : #: Entidad# </span></p>" +
+			"<p><span class='description'>Teléfono : #: Telefono# </span></p>" +
+			"<p><span class='description'>Correo : #: Correo# </span></p>" +
+			"</td>" +
+			"<td class='VehiculoViajaba'>" +
+			"<p><span class='description'>No. : #: IdAccidente# </span></p>" +
+			"<p><span class='description'>Placas : #: Placa# </span></p>" +
+			"<p><span class='description'>Marca : #: Marca# </span></p>" +
+			"<p><span class='description'>SubMarca : #: Submarca# </span></p>" +
+			"<p><span class='description'>Tipo : #: TipoVehiculo# </span></p>" +
+			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
+			"</td>" +
+			"</tr>"
+			)
+			.ClientAltRowTemplate(
+			"<tr data-uid='#: uid #'>" +
+			 "<td class='Detalles'>" +
+			"<p><span class='description'>Participacion : #: ConductorInvolucrado# </span></p>" +
+			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
+			"<p><span class='description'>Llevado a : #: NombreHospital# </span></p>" +
+			"<p><span class='description'>Traslado : #: InstitucionTraslado# </span></p>" +
+			"<p><span class='description'>Asiento : #: Asiento# </span></p>" +
+			"<p><span class='description'>Cinturon : #: Cinturon# </span></p>" +
+			"</td>" + 
+			"<td class='DatosPersona'>" +
+			"<p><span class='description'>Nombre : #: nombre# </span></p>" +
+			"<p><span class='description'>RFC : #: rfc# </span></p>" +
+			"<p><span class='description'>CURP : #: curp# </span></p>" +
+			"<p><span class='description'>Sexo : #: Sexo# </span></p>" +
+			"<p><span class='description'>Fecha nacimiento : #: FechaFormateada# </span></p>" +
+			"<p><span class='description'>Licencia : #: TipoLicencia# </span></p>" +
+			"</td>" +
+			"<td class='DomicilioPersona'>" +
+			"<p><span class='description'>Dirección : #: Direccion# </span></p>" +
+			"<p><span class='description'>Municipio : #: Municipio# </span></p>" +
+			"<p><span class='description'>Entidad : #: Entidad# </span></p>" +
+			"<p><span class='description'>Teléfono : #: Telefono# </span></p>" +
+			"<p><span class='description'>Correo : #: Correo# </span></p>" +
+			"</td>" +
+			"<td class='VehiculoViajaba'>" +
+			"<p><span class='description'>No. : #: IdAccidente# </span></p>" +
+			"<p><span class='description'>Placas : #: Placa# </span></p>" +
+			"<p><span class='description'>Marca : #: Marca# </span></p>" +
+			"<p><span class='description'>SubMarca : #: Submarca# </span></p>" +
+			"<p><span class='description'>Tipo : #: TipoVehiculo# </span></p>" +
+			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
+			"</td>" +
+			"</tr>"
+			)
+			.Sortable()
+			.Groupable()
+			.Scrollable()
+			.Pageable()
+			.DataSource(dataSource => dataSource
+			.Ajax()
+			.Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
+			.PageSize(5).Model(model => model.Id(p => p.nombre))
+			)
+			.ToolBar(t => t.Search())
+			.Search(s =>
+			{
+				s.Field(c => c.nombre);
+
+			})
+
+			.Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
+			.Type(GridSelectionType.Row)
+			)
+
+			)
 
 
-            }).HtmlAttributes(new { style = "height:500px" })
-            .Sortable()
-            .Groupable()
-            .Scrollable()
-            .Pageable()
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            .Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
-            )
-            .ToolBar(t => t.Search())
-            .Search(s =>
-            {
-                s.Field(c => c.nombre);
-                s.Field(c => c.apellidoPaterno);
-                s.Field(c => c.apellidoMaterno);
-                s.Field(c => c.rfc);
-                s.Field(c => c.TipoLicencia);
-                s.Field(c => c.TipoVehiculo);
-                s.Field(c => c.EstadoVictima);
-                s.Field(c => c.NombreHospital);
-                s.Field(c => c.InstitucionTraslado);
-                s.Field(c => c.Asiento);
-                s.Field(c => c.Cinturon);
-            })
 
-            .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
-            .Type(GridSelectionType.Row)
-            )
 
-            )
-    </div>
+	</div>
 </div>
+
+
+<script>
+	$(document).ready(function () {
+		$("#gridInvolucradosTodo .k-grid table").addClass("table table-condensed");
+	  });
+</script>

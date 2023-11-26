@@ -12,5 +12,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public List<CapturaAccidentesModel> CausasDeterminantes { get; set; }
         public List<CapturaAccidentesModel> Infracciones { get; set; }
         public string ADisposicion { get; set; }
-    }
+        public string ParteNombre { get; set; }
+		public string PartePuesto { get; set; }
+	}
 }

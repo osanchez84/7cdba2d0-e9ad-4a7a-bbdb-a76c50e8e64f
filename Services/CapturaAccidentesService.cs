@@ -99,7 +99,19 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT \r\n    a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente,\r\n    a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc,\r\n    ac.idCausaAccidente\r\nFROM \r\n    accidentes AS a\r\nJOIN \r\n    catMunicipios AS m ON a.idMunicipio = m.idMunicipio\r\nJOIN \r\n    catCarreteras AS c ON a.idCarretera = c.idCarretera\r\nJOIN \r\n    catTramos AS t ON a.idTramo = t.idTramo\r\nJOIN \r\n    estatus AS e ON a.estatus = e.estatus\r\nLEFT JOIN \r\n    accidenteCausas AS ac ON ac.idAccidente = a.idAccidente\r\nWHERE \r\n    a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina;\r\n", connection);
+                    SqlCommand command = new SqlCommand(@"
+                        SELECT DISTINCT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente, 
+                        a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc, 
+                        ac.idCausaAccidente, d.delegacion
+                        FROM accidentes AS a 
+                        JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio
+                        JOIN catDelegaciones as d on d.idDelegacion = (a.idOficinaDelegacion+1)
+                        JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera 
+                        JOIN catTramos AS t ON a.idTramo = t.idTramo 
+                        JOIN estatus AS e ON a.estatus = e.estatus 
+                        LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina
+                    ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
 
@@ -124,11 +136,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Carretera = reader["Carretera"].ToString();
                             accidente.Kilometro = reader["Kilometro"].ToString();
                             accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-
-
-
-
-                        }
+							accidente.DelegacionOficina = reader["delegacion"].ToString();
+						}
                     }
                 }
                 catch (Exception ex)

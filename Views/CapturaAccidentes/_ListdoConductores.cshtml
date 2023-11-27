@@ -58,16 +58,17 @@
                 columns.Bound(c => c.numeroLicencia).Title("No. de Licencia").Width(100);
         
         })
-            .HtmlAttributes(new { style = "height: auto;" })
+            .HtmlAttributes(new { style = "height:450" })
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .DataSource(dataSource => dataSource
+            .Ajax())
             .Sortable()
-        .Groupable()
-        .Scrollable()
-        .Pageable()
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("BuscarConductor", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.IdPersona))
-        )
+            .Scrollable(scr => scr.Height(350))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(read => read.Action("BuscarConductor", "CapturaAccidentes"))
+            .ServerOperation(false)
+            )
             .ToolBar(t => t.Search())
             .Search(s =>
             {

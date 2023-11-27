@@ -517,7 +517,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>No. de placa:</label>
-                                                @Html.DisplayFor(m=> m.placasVehiculo)
+                                                @Html.Kendo().TextBoxFor(m=> m.placasVehiculo).HtmlAttributes(new { style = "width: 100%;height:50px;" })
                                             </div>
                                         </div>
                                     </div>

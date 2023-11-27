@@ -115,13 +115,13 @@
                 <!--@Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
                              @if(@disableInput){
                      <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+                 <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
              </span>
 
              }
              else{
                  <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+                 <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
              </span>
 
              }

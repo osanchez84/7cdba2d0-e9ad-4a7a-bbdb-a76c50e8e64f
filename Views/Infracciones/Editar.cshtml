@@ -472,7 +472,7 @@
     <div class="col-12 col-md-10 mx-md-auto text-center">
         <h3><b>Adjunta una imagen del inventario del vehículo</b></h3>
         <div class="row justify-content-center">
-                                        <div class="drop-zone" ondrop="drophadler(event)" ondragover="dragOver(event)" ondragleave="gragend()" >
+                                        <div class="drop-zone" ondrop="drophadler(event)" ondragover="dragOver(event)" ondragleave="gragend()">
                 <div class="drop-zone__prompt">
                     <svg id="svgImage" class="svg-image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="106.791" height="87.148" viewBox="0 0 106.791 87.148" onclick="document.getElementById('fileInput').click();">
                                                     <defs>
@@ -517,7 +517,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>No. de placa:</label>
-                                                @Html.Kendo().TextBoxFor(m=> m.placasVehiculo).HtmlAttributes(new { style = "width: 100%;height:50px;" })
+                                                @Html.Kendo().TextBoxFor(m=> m.placasVehiculo).HtmlAttributes(new { style = "width: 100%;height:50px;" ,id="test" }).Events(s=>s.Change("UpdatePlaca"))
                                             </div>
                                         </div>
                                     </div>
@@ -890,19 +890,12 @@
         //dropZone.style.backgroundColor = "ligthgray"
         e.preventDefault();
         dropZone.style.background = "lightgray"
+          console.log("esta dentro")
 
     }
 
 
-    function gragend(event) {
-        dropZone.style.backgroundColor = "inerit"
 
-
-    }
-
-    function dragOver(event){
-        console.log("esta dentro")
-    }
 
 
     document.getElementById('fileInput').onchange = function (event) {
@@ -991,6 +984,21 @@
     function goBack() {
         window.history.back();
     }
+
+
+
+
+    function UpdatePlaca(){
+
+
+        var newValue = $("#test").val()
+
+
+        $("#placasVehiculo").val(newValue)
+
+
+    }
+
 
 </script>
 

@@ -2093,7 +2093,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
-                                    observacionesConvenio
+                                    observacionesConvenio, idEntidadCompetencia
                                     FROM accidentes a 
                                     WHERE idAccidente = @IdAccidente
                                     ";
@@ -2140,8 +2140,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             datosFinales.PrendasTexto = reader["prendasTexto"] == DBNull.Value ? "" : reader["prendasTexto"].ToString();
                             datosFinales.OtrosTexto = reader["otrosTexto"] == DBNull.Value ? "" : reader["otrosTexto"].ToString();
                             datosFinales.observacionesConvenio = reader["observacionesConvenio"] == DBNull.Value ? "" : reader["observacionesConvenio"].ToString();
-
-                        }
+                            datosFinales.IdEntidadCompetencia = reader["idEntidadCompetencia"] == DBNull.Value ? 0 : int.Parse(reader["idEntidadCompetencia"].ToString());
+						}
 
 
                         reader.Close();

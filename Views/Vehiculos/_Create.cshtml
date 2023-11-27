@@ -1236,13 +1236,11 @@
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
      $('.error-container').empty();
 
-    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    if (!nombreValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
         if (!nombreValue) {
             asignarMensajeError("errorContainerPersona_nombreFisicoV", "Este campo es obligatorio.");
         }
-        if (!RFCValue) {
-            asignarMensajeError("errorContainerPersona_RFCFisicoV", "Este campo es obligatorio.");
-        }
+
         if (!coloniaValue) {
             asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisicoV", "Este campo es obligatorio.");
         }

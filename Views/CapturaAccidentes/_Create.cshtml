@@ -1271,13 +1271,11 @@ function submitCreateMoral() {
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
      $('.error-container').empty();
 
-    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
         if (!nombreValue) {
             asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
         }
-        if (!RFCValue) {
-            asignarMensajeError("errorContainerPersona_RFCFisico", "Este campo es obligatorio.");
-        }
+
         if (!coloniaValue) {
             asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
         }

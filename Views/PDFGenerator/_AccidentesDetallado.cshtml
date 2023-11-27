@@ -22,20 +22,20 @@
 			</thead>
 			@*DATOS*@
 			<tr style="background-color:#e7e7e7">
-				<td colspan="6"><p class="s1">ING. MARTÍN DE JESÚS MORENO MUÑOZ</p></td>
+				<td colspan="6"><p class="s1">@Model.ParteNombre</p></td>
 				<td colspan="2"><p class="s1">ACC. No.: @Model.ParteAccidente.NumeroReporte</p></td>
 			</tr>
 			<tr style="background-color:#e7e7e7">
-				<td colspan="6"><p class="s1">DIRECTOR DE TRÁNSITO DEL ESTADO</p></td>
-				<td colspan="2"><p class="s1">Guanajuato LAT: 21.007948° LONG: -101.273454°</p></td>
+				<td colspan="6"><p class="s1">@Model.PartePuesto</p></td>
+				<td colspan="2"><p class="s1">@Model.ParteAccidente.DelegacionOficina LAT: @Model.ParteAccidenteComplemento.Latitud ° LONG: @Model.ParteAccidenteComplemento.Longitud °</p></td>
 			</tr>
 			<tr style="background-color:#e7e7e7">
 				<td colspan="6"><p class="s1">CARR. @Model.ParteAccidente.Carretera KM. @Model.ParteAccidente.Kilometro</p></td>
 				<td colspan="2"><p class="s1">HUMBERTO TORRES PESCADOR</p></td>
 			</tr>
 			<tr style="background-color:#e7e7e7">
-				<td colspan="6"><p class="s1">GUANAJUATO, GTO.</p></td>
-				<td colspan="2"><p class="s1">DELEGADO DE: GUANAJUATO</p></td>
+				<td colspan="6"><p class="s1">@Model.ParteAccidente.DelegacionOficina , GTO.</p></td>
+				<td colspan="2"><p class="s1">DELEGADO DE: @Model.ParteAccidente.DelegacionOficina</p></td>
 			</tr>
 			@*Columnas*@
 			<tr>

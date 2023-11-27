@@ -28,10 +28,16 @@
                 <div class="form-group col-12 col-md-6 col-lg-4 my-3">
                     <div class="controlForm">
                         <label>Tipo Motivo:</label>
-                        @(Html.Kendo().DropDownListFor(m => m.idTipoMotivo).Filter(FilterType.Contains)
-                            .BindTo((SelectList)ViewBag.CatMotivosInfraccion)
-                            .OptionLabel("-- Todos --")
-                            .HtmlAttributes(new { style = "width:100%;" })
+                        @(Html.Kendo().DropDownListFor(d => d.idTipoMotivo).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:100%;", Id = "ddlTipoMotivos" })
+                            .OptionLabel("Seleccione una opción...")
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "Motívos de Transporte", Value = "0" },
+                        new SelectListItem { Text = "Motívos de Tránsito", Value = "1" }
+                        })
                             )
                     </div>
                 </div>

@@ -450,8 +450,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.Pension = reader["pension"] != DBNull.Value ? reader["pension"].ToString() : string.Empty;
                             involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
                             involucrado.Color = reader["color"] != DBNull.Value ? reader["color"].ToString() : string.Empty;
-                            involucrado.rfc = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
-                            involucrado.curp = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
+                            involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
+                            involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
 
 
@@ -512,9 +512,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             model.apellidoMaterno = reader["apellidoMaterno"].ToString();
                             model.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
-                            model.rfc = reader["rfc"].ToString();
-                            model.curp = reader["curp"].ToString();
-                            model.licencia = reader["numeroLicencia"].ToString();
+                            model.RFC = reader["rfc"].ToString();
+                            model.CURP = reader["curp"].ToString();
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -1111,9 +1111,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.nombre = reader["nombre"].ToString();
                             involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
-                            involucrado.rfc = reader["rfc"].ToString();
-                            involucrado.curp = reader["curp"].ToString();
-                            involucrado.licencia = reader["numeroLicencia"].ToString();
+                            involucrado.RFC = reader["rfc"].ToString();
+                            involucrado.CURP = reader["curp"].ToString();
+                            involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
                             string fechaNac = reader["fechaNacimiento"].ToString();
                             if (!fechaNac.IsNullOrEmpty())
                                 involucrado.fechaNacimiento = Convert.ToDateTime(fechaNac);
@@ -1262,8 +1262,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.Pension = reader["pension"].ToString();
                             vehiculo.Modelo = reader["modelo"].ToString();
                             vehiculo.Color = reader["color"].ToString();
-                            vehiculo.rfc = reader["RFC"].ToString();
-                            vehiculo.curp = reader["CURP"].ToString();
+                            vehiculo.RFC = reader["RFC"].ToString();
+                            vehiculo.CURP = reader["CURP"].ToString();
                             vehiculo.TipoServicio = reader["tipoServicio"].ToString();
                             vehiculo.FormaTrasladoInvolucrado = reader["formaTraslado"].ToString();
                             vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
@@ -1744,8 +1744,8 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.nombre = reader["nombre"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombre"].ToString());
 							involucrado.apellidoPaterno = reader["apellidoPaterno"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["apellidoPaterno"].ToString());
 							involucrado.apellidoMaterno = reader["apellidoMaterno"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["apellidoMaterno"].ToString());
-							involucrado.rfc = reader["rfc"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["rfc"].ToString());
-							involucrado.curp = reader["curp"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["curp"].ToString());
+							involucrado.RFC = reader["rfc"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["rfc"].ToString());
+							involucrado.CURP = reader["curp"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["curp"].ToString());
 							involucrado.TipoLicencia = reader["tipoLicencia"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoLicencia"].ToString());
 							involucrado.TipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoVehiculo"].ToString());
 							involucrado.EstadoVictima = reader["estadoVictima"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["estadoVictima"].ToString());
@@ -2012,7 +2012,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? 0;
                     command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? 0;
                     command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? 0;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.Kilometro ?? 0;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Float)).Value = (object)model.Kilometro ?? 0;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? 0;

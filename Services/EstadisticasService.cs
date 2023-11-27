@@ -194,7 +194,8 @@ namespace GuanajuatoAdminUsuarios.Services
     MAX(catSubInf.idSubConcepto) AS idSubConcepto,
     MAX(catSubInf.subConcepto) AS subConcepto,
     MAX(catConInf.idConcepto) AS idConcepto,
-    MAX(catConInf.concepto) AS concepto
+    MAX(catConInf.concepto) AS concepto,
+	MAX(catMotInf.transito) AS transito
     FROM infracciones as inf
                                 left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                 left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
@@ -212,7 +213,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
                                 left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                                 left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                WHERE inf.estatus = 1 " + condiciones + condicionFecha + @"
+                                WHERE inf.estatus = 1 AND catMotInf.transito = @transito " + condiciones + condicionFecha + @"
                                 GROUP BY inf.idInfraccion,inf.infraccionCortesia;"; 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -254,6 +255,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     if (modelBusqueda.fechaFin != DateTime.MinValue)
                         command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
+                   
+                    command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoMotivo ?? DBNull.Value;
 
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

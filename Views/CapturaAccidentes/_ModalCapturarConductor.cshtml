@@ -208,40 +208,38 @@
 
 
 <script>
-            function btnCrearPersona() {
-                var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
-                validator.validate();
-                if (validator.validate()) {
-                    var formData = $("#frmCrearPersonaV").serialize();
-                    $.ajax({
-                        url: '@Url.Action("ajax_CrearPersona","CapturaAccidentes")',
-                        type: 'POST',
-                        data: formData,
-                        success: function (result) {
-                            console.log("JJD", result)
-                    $('#capturarConductorModal').on('hidden.bs.modal', function (e) {
-                        $(this).modal('dispose');
-                            $('#capturarConductorModal').modal('hide');
-                            var grid = $("#gridConductores").data("kendoGrid");
+    function btnCrearPersona() {
+        var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
+        validator.validate();
+        if (validator.validate()) {
+            var formData = $("#frmCrearPersonaV").serialize();
+            $.ajax({
+                url: '@Url.Action("ajax_CrearPersona","CapturaAccidentes")',
+                type: 'POST',
+                data: formData,
+                success: function (result) {
+                    console.log("JJD", result)
+                    $('#capturarConductorModal').modal('hide');
+                    var grid = $("#gridConductores").data("kendoGrid");
 
-                            if (typeof result === "object") {
-                                // Limpia el DataSource del grid
-                                grid.dataSource.data([]);
-                                grid.dataSource.add(result);
-                                grid.refresh();
-                            } else {
-                                console.error("El resultado no es un objeto válido:", result);
-                            }
-                        },
-                        error: function (xhr, status) {
-                            var errmsg = xhr.responseText;
-                            sitteg_warning('Lo sentimos, ha ocurrido un error.');
-                        }
-                    });
+                    if (typeof result === "object") {
+                        // Limpia el DataSource del grid
+                        grid.dataSource.data([]);
+                        grid.dataSource.add(result);
+                        grid.refresh();
+                    } else {
+                        console.error("El resultado no es un objeto válido:", result);
+                    }
+                },
+                error: function (xhr, status) {
+                    var errmsg = xhr.responseText;
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
                 }
-                else {
-                    sitteg_info('Debe llenar los campos requeridos');
-                    return;
-                }
-            }
+            });
+        }
+        else {
+            sitteg_info('Debe llenar los campos requeridos');
+            return;
+        }
+    }
 </script>

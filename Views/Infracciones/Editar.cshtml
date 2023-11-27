@@ -517,7 +517,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>No. de placa:</label>
-                                                @Html.DisplayFor(m=> m.placasVehiculo)
+                                                @Html.Kendo().TextBoxFor(m=> m.placasVehiculo).HtmlAttributes(new { style = "width: 100%;height:50px;" })
                                             </div>
                                         </div>
                                     </div>
@@ -973,8 +973,12 @@
         }
         else if (currentval>max){
             $("#calificacion").val(max)
+            sitteg_info("la calificacion es mayor")
+
         }else if(currentval<min){
             $("#calificacion").val(min)
+            sitteg_info("la calificacion es menor")
+
         }
         else{
 

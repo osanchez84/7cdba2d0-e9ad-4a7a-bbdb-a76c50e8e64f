@@ -112,14 +112,14 @@
                 <label>Serie:</label>
             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)--> 
                       @if(@disableInput){
-                     <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+                         <span class="k-widget k-textbox" style="width:100%;">
+                         <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
              </span>
 
              }
              else{
-                 <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+                     <span class="k-widget k-textbox" style="width:100%;">
+                     <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
              </span>
 
              }
@@ -1236,13 +1236,11 @@
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
      $('.error-container').empty();
 
-    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    if (!nombreValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
         if (!nombreValue) {
             asignarMensajeError("errorContainerPersona_nombreFisicoV", "Este campo es obligatorio.");
         }
-        if (!RFCValue) {
-            asignarMensajeError("errorContainerPersona_RFCFisicoV", "Este campo es obligatorio.");
-        }
+
         if (!coloniaValue) {
             asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisicoV", "Este campo es obligatorio.");
         }
@@ -1295,8 +1293,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         if (validator.validate()) {
              var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            console.log(formData);
+
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo")',
                 type: 'POST',

@@ -291,8 +291,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 INNER JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
                                 INNER JOIN catColores catC on v.idColor = catC.idColor  
                                 WHERE v.estatus = 1
-                                AND (v.idEntidad = @idEntidad 
-                                AND v.serie= @Serie 
+                                AND ((v.idEntidad = @idEntidad 
+                                AND v.serie= @Serie) 
                                 OR v.placas= @Placas 
                                 )";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

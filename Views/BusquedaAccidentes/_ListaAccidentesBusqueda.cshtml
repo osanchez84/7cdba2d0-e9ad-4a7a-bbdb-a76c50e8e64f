@@ -24,33 +24,46 @@
 				"<button onclick=\"consultarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Consultar</b></h6></button>"
 				).Title("Consultar").Sortable(false).Width(90);*/
 
-            }).HtmlAttributes(new { style = "height:550px" })
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
-            .Sortable()
-            .Scrollable(scr => scr.Height(350))
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            //.Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
-            .ServerOperation(false)
-            )
-            .ToolBar(t => t.Search())
-            .Search(s =>
-            {
-                s.Field(c => c.numeroReporte);
-                s.Field(c => c.fecha);
-                s.Field(c => c.hora);
-                s.Field(c => c.municipio);
-                s.Field(c => c.carretera);
-                s.Field(c => c.tramo);
-                s.Field(c => c.estatusReporte);
-            })
-            )
+			}).HtmlAttributes(new { style = "height:550px" })
+			.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+			.Sortable()
+			.Scrollable(scr => scr.Height(350))
+			.DataSource(dataSource => dataSource
+			.Ajax()
+			//.Read(read => read.Action("GetAllAccidentes", "BusquedaAccidentes"))
+			.ServerOperation(false)
+			)
+			.ToolBar(t => t.Search())
+			.Search(s =>
+			{
+				s.Field(c => c.numeroReporte);
+				s.Field(c => c.fecha);
+				s.Field(c => c.hora);
+				s.Field(c => c.municipio);
+				s.Field(c => c.carretera);
+				s.Field(c => c.tramo);
+				s.Field(c => c.estatusReporte);
+			})
+			)
 
 
-    </div>
+	</div>
 </div>
 
 <script>
+	const downloadFile = (blob, fileName) => {
+		const link = document.createElement('a');
+		// create a blobURI pointing to our Blob
+		link.href = URL.createObjectURL(blob);
+		link.download = fileName;
+		// some browser needs the anchor to be in the doc
+		document.body.append(link);
+		link.click();
+		link.remove();
+		// in case the Blob uses a lot of memory
+		setTimeout(() => URL.revokeObjectURL(link.href), 7000);
+	};
+
 	function downLoadPdf(Id) {
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', '@Url.Action("AccidentesDetallado","PDFGenerator")' + "?idAccidente=" + Id, true);
@@ -58,8 +71,22 @@
 		xhr.onload = function (e) {
 			if (this.status == 200) {
 				var myBlob = this.response;
-				let fileURL = URL.createObjectURL(myBlob);
-				window.open(fileURL);
+				const downloadFile = (blob, fileName) => {
+					const link = document.createElement('a');
+					// create a blobURI pointing to our Blob
+					link.href = URL.createObjectURL(blob);
+					link.download = fileName;
+					// some browser needs the anchor to be in the doc
+					document.body.append(link);
+					link.click();
+					link.remove();
+					// in case the Blob uses a lot of memory
+					setTimeout(() => URL.revokeObjectURL(link.href), 7000);
+				};
+				downloadFile(new Blob([myBlob]), "AccidentesDetalles.pdf");
+				//var myBlob = this.response;
+				//let fileURL = URL.createObjectURL(myBlob);
+				//window.open(fileURL);
 				// myBlob is now the blob that the object URL pointed to.
 			}
 		};

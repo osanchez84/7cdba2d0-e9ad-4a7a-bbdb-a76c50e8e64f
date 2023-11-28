@@ -20,6 +20,8 @@ function FinishGetData(view) {
 }
 
 
+
+
 const Submmit = (e) => {
     e.preventDefault()
     AddLoading("listadoInfracciones")

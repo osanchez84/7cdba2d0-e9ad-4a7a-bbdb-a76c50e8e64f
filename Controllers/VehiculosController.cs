@@ -122,7 +122,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }
-
+        public JsonResult Municipios_Drop(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
         public JsonResult Colores_Read()
         {
             var catEntidades = _catDictionary.GetCatalog("CatColores", "0");

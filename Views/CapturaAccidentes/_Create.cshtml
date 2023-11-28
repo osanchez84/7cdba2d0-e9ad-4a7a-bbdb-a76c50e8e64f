@@ -216,6 +216,7 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", id = "ddlMarcas" })
+                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>

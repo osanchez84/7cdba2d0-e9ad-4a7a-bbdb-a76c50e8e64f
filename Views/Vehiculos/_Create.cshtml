@@ -112,14 +112,14 @@
                 <label>Serie:</label>
             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)--> 
                       @if(@disableInput){
-                     <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+                         <span class="k-widget k-textbox" style="width:100%;">
+                         <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
              </span>
 
              }
              else{
-                 <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+                     <span class="k-widget k-textbox" style="width:100%;">
+                     <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
              </span>
 
              }
@@ -147,7 +147,6 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Color...")
                     .HtmlAttributes(new { style = "width:100%;" })
-                    .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -193,7 +192,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -210,7 +208,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
                         .HtmlAttributes(new { style = "width:100%;", id = "ddlMarcas" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -244,7 +241,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlidSubmarcaDisabled" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -282,7 +278,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -299,7 +294,6 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;" })
-                        .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -446,7 +440,6 @@
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Tipo de Servicio...:")
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlCatTipoServicio" })
-                    .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
                         source.Read(read =>
@@ -595,7 +588,7 @@
 </div>
 
 
-<div class="modal fade modalCustom" id="addMoral" tabindex="-1" aria-labelledby="addMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addMoral"  aria-labelledby="addMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -773,7 +766,7 @@
     </div>
 </div>
 
-<div class="modal fade modalCustom" id="modalUpdateMoral" tabindex="-1" aria-labelledby="updateMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="modalUpdateMoral"  aria-labelledby="updateMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -820,7 +813,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade modalCustom" id="addFisico" tabindex="-1" aria-labelledby="addFisicoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addFisico"  aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -1243,13 +1236,11 @@
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
      $('.error-container').empty();
 
-    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    if (!nombreValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
         if (!nombreValue) {
             asignarMensajeError("errorContainerPersona_nombreFisicoV", "Este campo es obligatorio.");
         }
-        if (!RFCValue) {
-            asignarMensajeError("errorContainerPersona_RFCFisicoV", "Este campo es obligatorio.");
-        }
+
         if (!coloniaValue) {
             asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisicoV", "Este campo es obligatorio.");
         }
@@ -1302,8 +1293,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         if (validator.validate()) {
              var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            console.log(formData);
+
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo")',
                 type: 'POST',

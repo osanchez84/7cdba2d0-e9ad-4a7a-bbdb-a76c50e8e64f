@@ -59,6 +59,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly IRepuveService _repuveService;
+        private readonly ICatCarreterasService _catCarreterasService;
 
         private readonly AppSettings _appSettings;
 
@@ -76,7 +77,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICapturaAccidentesService capturaAccidentesService,
             ICotejarDocumentosClientService cotejarDocumentosClientService, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-            , IRepuveService repuveService
+            , IRepuveService repuveService,ICatCarreterasService catCarreterasService
+
             )
         {
             _catDictionary = catDictionary;
@@ -92,7 +94,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _capturaAccidentesService = capturaAccidentesService;
             _cotejarDocumentosClientService = cotejarDocumentosClientService;
             // Configurar el cliente HTTP con la URL base del servicio
-
+            _catCarreterasService = catCarreterasService;
             _crearMultasTransitoClientService = crearMultasTransitoClientService;
             _appSettings = appSettings.Value;
             _httpClientFactory = httpClientFactory;
@@ -205,6 +207,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
             return Json(result);
         }
+        public JsonResult CarreterasPorDelegacion()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "idCarretera", "carretera");
+            return Json(result);
+        }
+
         public JsonResult Cortesias_Read()
         {
             //catTipoCortesia
@@ -233,16 +243,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Crear()
         {
-
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
            // var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+            //var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             var vehiculosList = _vehiculosService.GetAllVehiculos();
             var personasList = _personasService.GetAllPersonas();
-
+           
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             //ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
+            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+            //ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.Vehiculos = vehiculosList;
             ViewBag.Personas = personasList;
             return View(new InfraccionesModel());

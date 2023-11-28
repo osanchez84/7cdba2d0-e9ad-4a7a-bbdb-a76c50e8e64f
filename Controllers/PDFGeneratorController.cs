@@ -22,10 +22,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 	{
 		private readonly ICapturaAccidentesService _capturaAccidentesService;
 		private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
-		public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice)
+		private readonly IAppSettingsService _appSettingsService;
+		public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice, IAppSettingsService appSettingService)
 		{
 			_capturaAccidentesService = capturaAccidentesService;
 			_catAutoridadesDisposicionservice = catAutoridadesDisposicionservice;
+			_appSettingsService = appSettingService;
 		}
 
 		[HttpGet]
@@ -44,6 +46,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var ListCausas = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
 
+			var ParteNombre = _appSettingsService.GetAppSetting("ParteNombre").SettingValue;
+			var PartePuesto = _appSettingsService.GetAppSetting("PartePuesto").SettingValue;
+
 			PDFAccidenteDetalladoModel model = new PDFAccidenteDetalladoModel();
 			model.ParteAccidente = AccidenteSeleccionado;
 			model.ParteAccidenteComplemento = datosAccidente;
@@ -52,6 +57,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.Factores = ListFactores;
 			model.CausasDeterminantes = ListCausas;
 			model.Infracciones = ListInfracciones;
+			model.ParteNombre = ParteNombre;
+			model.PartePuesto = PartePuesto;
 			model.ADisposicion = _catAutoridadesDisposicionservice.ObtenerAutoridadesActivas().Where(w => w.IdAutoridadDisposicion == AccidenteSeleccionado.IdAutoridadDisposicion).Select(s => s.NombreAutoridadDisposicion).FirstOrDefault();
 			string jsonView = await this.RenderViewAsync("_AccidentesDetallado", model, false);
 			var bootstrap = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "bootstrap.min.css");

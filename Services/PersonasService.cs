@@ -668,13 +668,14 @@ namespace GuanajuatoAdminUsuarios.Services
             int result = 0;
 
             // Primero, verifica si ya existe un registro con la misma CURP
-            string checkQuery = "SELECT COUNT(*) FROM personas WHERE CURP = @CURP";
+            string checkQuery = "SELECT top 1 idpersona as test FROM personas WHERE CURP = @CURP";
 
             using (SqlConnection checkConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     checkConnection.Open();
+
                     SqlCommand checkCommand = new SqlCommand(checkQuery, checkConnection);
                     checkCommand.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURPFisico ?? DBNull.Value;
 
@@ -683,7 +684,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (existingRecordsCount > 0)
                     {
                         // Ya existe un registro con la misma CURP, muestra un mensaje o lanza una excepción
-                        return -1; 
+                        return existingRecordsCount; 
                     }
                 }
                 catch (SqlException ex)
@@ -696,6 +697,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     checkConnection.Close();
                 }
             }
+
+            DateTime? vigenciaLicenciaValue = (model.vigenciaLicencia > DateTime.MinValue) ? model.vigenciaLicencia : null;
+
             string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
                               ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
                               ,idTipoLicencia
@@ -737,8 +741,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
 
                     command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
-                    DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
-                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(vigenciaLicenciaValue != DateTime.MinValue ? (object)vigenciaLicenciaValue : DBNull.Value);
+                    //command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(model.vigenciaLicencia.HasValue? model.vigenciaLicencia.Value : null);
+
+                    //DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = vigenciaLicenciaValue;
+
+
                     command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     result = Convert.ToInt32(command.ExecuteScalar());

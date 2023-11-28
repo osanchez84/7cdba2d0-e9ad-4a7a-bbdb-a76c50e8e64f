@@ -117,7 +117,6 @@
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm my-3">
                 <label>Forma de traslado:</label>
-                <label>Forma de traslado:</label>
                 <span>
                     @(Html.Kendo().DropDownListFor(t => t.IdFormaTraslado)
                                 .Label(l => l.Content("Forma de traslado:"))
@@ -153,37 +152,12 @@
 <script>
     function guardarComplementoVehiculo() {
         var validator = $("#complementoVehiculoForm").kendoValidator().data('kendoValidator');
-        
-        
-        $("#IdDelegacion").prop("disabled",true)
-        $("#IdPension").prop("disabled", true)
-        $("#IdFormaTraslado").prop("disabled", true)
-    /*    var validator = $("#complementoVehiculoForm").kendoValidator({
-            validateOnBlur: false,
-            rules: {
-                customRule: function (input) {
-                    // Validar solo campos requeridos
-                    if (input.attr("required")) {
-                        return input.val().trim() !== "";
-                    }
-                    return true;  // Si no es un campo requerido, considerarlo válido
-                }
-            },
-            messages: {
-                customRule: "Este campo es obligatorio."
-            },
-            errorTemplate: "<span class='k-widget k-tooltip k-tooltip-validation k-invalid-msg' style='position: absolute; display: none;'></span>",
-            errorPlacement: function (error, element) {
-                // Evitar mostrar mensajes de error para campos no requeridos
-                if (element.attr("required")) {
-                    error.insertAfter(element);
-                }
-            }
-        }).data('kendoValidator');*/
+
+        $("#IdDelegacion").prop("disabled", true);
+        $("#IdPension").prop("disabled", true);
+        $("#IdFormaTraslado").prop("disabled", true);
 
         var isValid = validator.validate();
-
-
 
         if (isValid) {
             var Mydata = $("#complementoVehiculoForm").serialize();
@@ -197,12 +171,19 @@
                         sitteg_success("Se ha actualizado la información del vehículo");
                         $('#modalComplementoVehiculo').modal('hide');
                         $('#agregarVehiculoModal').modal('hide');
+
+                        $('#modalComplementoVehiculo').on('hidden.bs.modal', function (e) {
+                            $(this).modal('dispose');
+                        });
+                        $('#agregarVehiculoModal').on('hidden.bs.modal', function (e) {
+                            $(this).modal('dispose');
+                        });
                         $('.modal-backdrop').remove();
                         $('#ClasificacionAccidente').show();
 
                         actualizarGrid();
                     } else {
-                        alert("Sucedio un error")
+                        alert("Sucedió un error");
                     }
                 },
                 error: function (error) {
@@ -210,16 +191,15 @@
                 }
             });
         } else {
-
-            $("#IdDelegacion").prop("disabled", false)
-            $("#IdPension").prop("disabled", false)
-            $("#IdFormaTraslado").prop("disabled", false)
-
+            $("#IdDelegacion").prop("disabled", false);
+            $("#IdPension").prop("disabled", false);
+            $("#IdFormaTraslado").prop("disabled", false);
 
             sitteg_info('Debe llenar los campos requeridos');
             return;
         }
     }
+
 
 
     function actualizarGrid() {

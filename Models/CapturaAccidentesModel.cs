@@ -135,17 +135,23 @@ namespace GuanajuatoAdminUsuarios.Models
         public string TipoCarga { get; set; }       
         public string DescripcionCausa { get; set; }
         public int idPersonaInvolucrado { get; set; }
-        public string licencia { get; set; }
-        public string curp { get; set; }
+        public string numeroLicencia { get; set; }
+        public string CURP { get; set; }
         public string curpBusqueda { get; set; }
+        
+        public string numeroLicenciaBusqueda { get; set; }
 
-        public string rfc { get; set; }
+        public string RFC { get; set; }
         public string rfcBusqueda { get; set; }
 
         public string nombre { get; set; }
+
+        public string nombreBusqueda { get; set; }
+        
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
-
+        public string apellidoPaternoBusqueda { get; set; }
+        public string apellidoMaternoBusqueda { get; set; }
         public string Sexo { get; set; }
         public string Nacimiento { get; set; }
         public string Tipo { get; set; }
@@ -213,6 +219,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int OtrosValue { get; set; }
         public int idOficial { get; set; }
         public string ArmasTexto { get; set; }
+        public string DelegacionOficina { get; set; }
 
         
         public string fullVehiculo

@@ -76,7 +76,7 @@
 
 
 
-<div class="modal fade modalCustom" id="editInstitucionTraslado" tabindex="-1" aria-labelledby="editInstitucionTrasladoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="editInstitucionTraslado"  aria-labelledby="editInstitucionTrasladoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -169,7 +169,7 @@
 
 
 
-<div class="modal fade modalCustom" id="addInstitucionTraslado" tabindex="-1" aria-labelledby="addInstitucionTrasladoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addInstitucionTraslado"  aria-labelledby="addInstitucionTrasladoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
         <div class="modal-content">
 

@@ -10,19 +10,19 @@
             var nombre = dataItem.nombre
             var apellidoPaterno = dataItem.apellidoPaterno
             var apellidoMaterno = dataItem.apellidoMaterno
-            var curp = dataItem.curp
+            var CURP = dataItem.CURP
             var fechaNacimiento = dataItem.fechaNacimiento;
             console.log("FEC",fechaNacimiento)
             fechaNacimiento = fechaNacimiento == "01/01/0001" ? "" : fechaNacimiento;
-            var rfc = dataItem.rfc
+            var RFC = dataItem.RFC
 
             var nombreCompleto = nombre+" "+apellidoPaterno+" "+apellidoMaterno;
             $('#gridVehiculosInvolucrados').data('idPersona', idPersona);
        
             document.getElementById("nombreModal").innerText = nombreCompleto;
-            document.getElementById("curpModal").innerText = curp;
+            document.getElementById("curpModal").innerText = CURP;
             document.getElementById("fechaNacimientoModal").innerText = fechaNacimiento;
-            document.getElementById("rfcModal").innerText = rfc;
+            document.getElementById("rfcModal").innerText = RFC;
 
              $('#buscarInvolucradoModal').modal('hide');
              $('body').removeClass('model-open');
@@ -48,10 +48,10 @@
                 columns.Bound(c => c.nombre).Title("Nombre").Width(80);
                 columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
                 columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-                columns.Bound(c => c.rfc).Title("RFC").Width(80);
-                columns.Bound(c => c.curp).Title("CURP").Width(100);
+                columns.Bound(c => c.RFC).Title("RFC").Width(80);
+                columns.Bound(c => c.CURP).Title("CURP").Width(100);
                 columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Format("{0:dd/MM/yyyy}").Width(100);
-                columns.Bound(c => c.licencia).Title("No Licencia").Width(100);
+                columns.Bound(c => c.numeroLicencia).Title("No Licencia").Width(100);
                 //columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 
 

@@ -1,7 +1,6 @@
 ﻿@model InfraccionesModel
 
 
-
 <div class="mainContainer bg-light">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -23,6 +22,16 @@
             </div>
             <div class="col-7 ps-0">
                 <div class="bg-light py-1"></div>
+            </div>
+        </div>
+         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+            <div class="row">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
+                    @(Html.Kendo().Button()
+                        .Name("backAccidentes3")
+                        .HtmlAttributes(new { @class = "px-5" })
+                        .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\" data-bs-dismiss=\"modal\" aria - label = \"Close\" ></i><b>Regresar</b></h6>"))
+                </div>
             </div>
         </div>
         <div class="row">
@@ -429,6 +438,9 @@
                                 </div>
                             </div>
                         </div>
+       
+                        
+                        
                         <div class="tab-pane tabCustomConteiner fade show" id="garantia-container" role="tabpanel" aria-labelledby="garantia-tab">
                             <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                                 <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -460,7 +472,7 @@
     <div class="col-12 col-md-10 mx-md-auto text-center">
         <h3><b>Adjunta una imagen del inventario del vehículo</b></h3>
         <div class="row justify-content-center">
-            <div class="drop-zone" >
+                                        <div class="drop-zone" ondrop="drophadler(event)" ondragover="dragOver(event)" ondragleave="gragend()" >
                 <div class="drop-zone__prompt">
                     <svg id="svgImage" class="svg-image" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="106.791" height="87.148" viewBox="0 0 106.791 87.148" onclick="document.getElementById('fileInput').click();">
                                                     <defs>
@@ -505,7 +517,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 <label>No. de placa:</label>
-                                                @Html.DisplayFor(m=> m.placasVehiculo)
+                                                @Html.Kendo().TextBoxFor(m=> m.placasVehiculo).HtmlAttributes(new { style = "width: 100%;height:50px;" })
                                             </div>
                                         </div>
                                     </div>
@@ -596,8 +608,11 @@
         </div>
     </div>
 </div>
+
+
+
 <!--MODAL ANEXAR INVENTARIO-->
-<div class="modal fade modalCustom" id="anexarInventarioModal" tabindex="-1" aria-labelledby="anexarInventarioLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="anexarInventarioModal"  aria-labelledby="anexarInventarioLabel" aria-hidden="true">
     <div class="modal-dialog modal-l" role="document">
         <div class="modal-content">
             <div class="modal-body" id="ModalBodyanexarInventario">
@@ -703,17 +718,26 @@
     }
 
     function serviceCrearInfraccion(idInfraccion) {
+        var shouldGoBack = false; 
+
         $.ajax({
             url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
             type: 'POST',
             data: { idInfraccion: idInfraccion },
             success: function (response) {
                 if (response.success) {
-                    sitteg_success("Infraccion actualizada en secretaria de finanzas.");
+                    sitteg_success("Infracción actualizada en secretaria de finanzas.");
+                    shouldGoBack = true; 
                 } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                     sitteg_info("El registro fue actualizado en SITTEG.");
+                    shouldGoBack = true; 
                 } else {
                     sitteg_warning(response.message);
+                }
+
+                var redirectTo = sessionStorage.getItem('redirectTo');
+                if (shouldGoBack && redirectTo) {
+                    window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
                 }
             },
             error: function (error) {
@@ -721,6 +745,7 @@
             }
         });
     }
+
 
 
 
@@ -810,6 +835,74 @@
     var dropZone = document.querySelector('.drop-zone');
     var fileInput = document.getElementById('fileInput');
     var svgImage = document.getElementById('svgImage');
+    var file
+
+    function drophadler(ev){
+        ev.preventDefault();
+
+        if (ev.dataTransfer.items) {
+            // Usar la interfaz DataTransferItemList para acceder a el/los archivos)
+
+            if (ev.dataTransfer.items[0].kind === "file") {
+                 file = ev.dataTransfer.items[0].getAsFile();
+                svgImage.classList.add("ready")
+                $("#NameFile").empty().append(file.name)
+            }
+
+        } else {
+            // Usar la interfaz DataTransfer para acceder a el/los archivos
+
+
+            file=ev.dataTransfer.files[0]
+            svgImage.classList.add("ready")
+            $("#NameFile").empty().append(file.name)
+
+        }
+        dropZone.style.background = "white"
+
+        // Pasar el evento a removeDragData para limpiar
+        removeDragData(ev);
+
+
+
+    }
+
+
+    function removeDragData(ev) {
+
+        if (ev.dataTransfer.items) {
+            // Use DataTransferItemList interface to remove the drag data
+            ev.dataTransfer.items.clear();
+        } else {
+            // Use DataTransfer interface to remove the drag data
+            ev.dataTransfer.clearData();
+        }
+    }
+
+    function gragend(event) {
+        //dropZone.style.backgroundColor = "inerit"
+        dropZone.style.background = "white"
+
+
+    }
+
+    function dragOver(e){
+        //dropZone.style.backgroundColor = "ligthgray"
+        e.preventDefault();
+        dropZone.style.background = "lightgray"
+
+    }
+
+
+    function gragend(event) {
+        dropZone.style.backgroundColor = "inerit"
+
+
+    }
+
+    function dragOver(event){
+        console.log("esta dentro")
+    }
 
 
     document.getElementById('fileInput').onchange = function (event) {
@@ -832,7 +925,7 @@
         var Data = $("#frmEditarInfraccion").serialize();
 
         var idInfraccion = obtenerValorIdInfraccion(Data);
-        var file = fileInput.files[0];
+         file = fileInput.files[0];
         var formData = new FormData();
         formData.append('file', file);
         formData.append('idInfraccion', idInfraccion);
@@ -868,6 +961,36 @@
         return null;
     }
 
+
+    function onChange() {
+        var max = parseInt($("#calificacionMaxima").val() || "0")
+        var min = parseInt($("#calificacionMinima").val() || "0")
+        var currentval = parseInt($("#calificacion").val()||"0")
+
+
+        if(currentval<=max && currentval>=min){
+
+        }
+        else if (currentval>max){
+            $("#calificacion").val(max)
+            sitteg_info("la calificacion es mayor")
+
+        }else if(currentval<min){
+            $("#calificacion").val(min)
+            sitteg_info("la calificacion es menor")
+
+        }
+        else{
+
+        }
+
+        
+
+
+    }
+    function goBack() {
+        window.history.back();
+    }
 
 </script>
 

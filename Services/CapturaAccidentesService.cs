@@ -19,6 +19,7 @@ using GuanajuatoAdminUsuarios.Controllers;
 using System.Windows.Input;
 using Microsoft.IdentityModel.Tokens;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
+using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -98,7 +99,19 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT \r\n    a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente,\r\n    a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc,\r\n    ac.idCausaAccidente\r\nFROM \r\n    accidentes AS a\r\nJOIN \r\n    catMunicipios AS m ON a.idMunicipio = m.idMunicipio\r\nJOIN \r\n    catCarreteras AS c ON a.idCarretera = c.idCarretera\r\nJOIN \r\n    catTramos AS t ON a.idTramo = t.idTramo\r\nJOIN \r\n    estatus AS e ON a.estatus = e.estatus\r\nLEFT JOIN \r\n    accidenteCausas AS ac ON ac.idAccidente = a.idAccidente\r\nWHERE \r\n    a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina;\r\n", connection);
+                    SqlCommand command = new SqlCommand(@"
+                        SELECT DISTINCT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente, 
+                        a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc, 
+                        ac.idCausaAccidente, d.delegacion
+                        FROM accidentes AS a 
+                        JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio
+                        JOIN catDelegaciones as d on d.idDelegacion = (a.idOficinaDelegacion+1)
+                        JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera 
+                        JOIN catTramos AS t ON a.idTramo = t.idTramo 
+                        JOIN estatus AS e ON a.estatus = e.estatus 
+                        LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina
+                    ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
 
@@ -123,11 +136,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Carretera = reader["Carretera"].ToString();
                             accidente.Kilometro = reader["Kilometro"].ToString();
                             accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-
-
-
-
-                        }
+							accidente.DelegacionOficina = reader["delegacion"].ToString();
+						}
                     }
                 }
                 catch (Exception ex)
@@ -449,8 +459,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.Pension = reader["pension"] != DBNull.Value ? reader["pension"].ToString() : string.Empty;
                             involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
                             involucrado.Color = reader["color"] != DBNull.Value ? reader["color"].ToString() : string.Empty;
-                            involucrado.rfc = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
-                            involucrado.curp = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
+                            involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
+                            involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
 
 
@@ -511,9 +521,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             model.apellidoMaterno = reader["apellidoMaterno"].ToString();
                             model.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
-                            model.rfc = reader["rfc"].ToString();
-                            model.curp = reader["curp"].ToString();
-                            model.licencia = reader["numeroLicencia"].ToString();
+                            model.RFC = reader["rfc"].ToString();
+                            model.CURP = reader["curp"].ToString();
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -1110,9 +1120,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.nombre = reader["nombre"].ToString();
                             involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
-                            involucrado.rfc = reader["rfc"].ToString();
-                            involucrado.curp = reader["curp"].ToString();
-                            involucrado.licencia = reader["numeroLicencia"].ToString();
+                            involucrado.RFC = reader["rfc"].ToString();
+                            involucrado.CURP = reader["curp"].ToString();
+                            involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
                             string fechaNac = reader["fechaNacimiento"].ToString();
                             if (!fechaNac.IsNullOrEmpty())
                                 involucrado.fechaNacimiento = Convert.ToDateTime(fechaNac);
@@ -1261,8 +1271,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.Pension = reader["pension"].ToString();
                             vehiculo.Modelo = reader["modelo"].ToString();
                             vehiculo.Color = reader["color"].ToString();
-                            vehiculo.rfc = reader["RFC"].ToString();
-                            vehiculo.curp = reader["CURP"].ToString();
+                            vehiculo.RFC = reader["RFC"].ToString();
+                            vehiculo.CURP = reader["CURP"].ToString();
                             vehiculo.TipoServicio = reader["tipoServicio"].ToString();
                             vehiculo.FormaTrasladoInvolucrado = reader["formaTraslado"].ToString();
                             vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
@@ -1685,7 +1695,21 @@ namespace GuanajuatoAdminUsuarios.Services
                                              "ia.horaIngreso, "+
                                              "ca.asiento, " +
                                              "ia.idCinturon, " +
-                                             "cc.cinturon " +
+											 "ev.EstadoVictima," +
+											 "v.modelo," +
+											 "v.placas," +
+											 "cg.genero," +
+											 "cm.marcaVehiculo," +
+											 "csv.nombreSubmarca," +
+											 "pd.telefono," +
+											 "pd.correo," +
+                                             "mun.municipio," +
+                                             "e.nombreEntidad," +
+											 "concat (pd.colonia,' ', pd.calle,' ', pd.numero,' ', pd.codigoPostal) as Direccion," +
+											 "va.idAccidente," +
+											 "ct.tipoInvolucrado," +
+											 "cc.cinturon " +
+                                             
                                              "FROM involucradosAccidente ia " +
                                              "LEFT JOIN personas p ON ia.idPersona = p.idPersona " +
                                              "LEFT JOIN catTipoLicencia tl ON p.idTipoLicencia = tl.idTipoLicencia " +
@@ -1696,7 +1720,15 @@ namespace GuanajuatoAdminUsuarios.Services
                                              "LEFT JOIN catHospitales h ON ia.idHospital = h.idHospital " +
                                              "LEFT JOIN catAsientos ca ON ia.idAsiento = ca.idAsiento " +
                                              "LEFT JOIN catCinturon cc ON ia.idCinturon = cc.idCinturon " +
-                                             "WHERE ia.idAccidente = @idAccidente AND ia.idPersona != 0;", connection);
+											 "LEFT JOIN catGeneros AS cg ON cg.idGenero = p.idGenero " +
+											 "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
+											 "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
+                                             "LEFT JOIN catEntidades AS e ON v.idEntidad = e.idEntidad " +
+											 "LEFT JOIN personasDirecciones AS pd ON p.idPersona = pd.idPersona " +
+											 "LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio " +
+											 "LEFT JOIN vehiculosAccidente AS va ON  va.idVehiculo = v.idVehiculo " +
+											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +
+											 "WHERE ia.idAccidente = @idAccidente;", connection);
 
 
 
@@ -1708,30 +1740,40 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
-                            involucrado.IdAccidente = reader["idAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAccidente"].ToString());
-                            involucrado.IdTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
-                            involucrado.IdTipoVehiculo = reader["IdTipoVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdTipoVehiculo"].ToString());
-                            involucrado.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
-                            involucrado.IdVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            involucrado.IdEstadoVictima = reader["idEstadoVictima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idEstadoVictima"].ToString());
-                            involucrado.IdInstitucionTraslado = reader["idInstitucionTraslado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInstitucionTraslado"].ToString());
-                            involucrado.IdHospital = reader["idHospital"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idHospital"].ToString());
-                            involucrado.IdAsiento = reader["idAsiento"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAsiento"].ToString());
-                            involucrado.IdCinturon = reader["idCinturon"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCinturon"].ToString());
-                            involucrado.nombre = reader["nombre"].ToString();
-                            involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
-                            involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
-                            involucrado.rfc = reader["rfc"].ToString();
-                            involucrado.curp = reader["curp"].ToString();
-                            involucrado.TipoLicencia = reader["tipoLicencia"].ToString();
-                            involucrado.TipoVehiculo= reader["tipoVehiculo"].ToString();
-                            involucrado.EstadoVictima = reader["estadoVictima"].ToString();
-                            involucrado.NombreHospital = reader["nombreHospital"].ToString();
-                            involucrado.Asiento = reader["asiento"].ToString();
-                            involucrado.InstitucionTraslado = reader["institucionTraslado"].ToString();
-
-                            involucrado.Cinturon = reader["cinturon"].ToString();
-                            involucrado.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+							involucrado.IdAccidente = reader["idAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAccidente"].ToString());
+							involucrado.IdTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+							involucrado.IdTipoVehiculo = reader["IdTipoVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdTipoVehiculo"].ToString());
+							involucrado.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
+							involucrado.IdVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							involucrado.IdEstadoVictima = reader["idEstadoVictima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idEstadoVictima"].ToString());
+							involucrado.IdInstitucionTraslado = reader["idInstitucionTraslado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInstitucionTraslado"].ToString());
+							involucrado.IdHospital = reader["idHospital"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idHospital"].ToString());
+							involucrado.IdAsiento = reader["idAsiento"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAsiento"].ToString());
+							involucrado.IdCinturon = reader["idCinturon"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCinturon"].ToString());
+							involucrado.nombre = reader["nombre"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombre"].ToString());
+							involucrado.apellidoPaterno = reader["apellidoPaterno"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["apellidoPaterno"].ToString());
+							involucrado.apellidoMaterno = reader["apellidoMaterno"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["apellidoMaterno"].ToString());
+							involucrado.RFC = reader["rfc"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["rfc"].ToString());
+							involucrado.CURP = reader["curp"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["curp"].ToString());
+							involucrado.TipoLicencia = reader["tipoLicencia"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoLicencia"].ToString());
+							involucrado.TipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoVehiculo"].ToString());
+							involucrado.EstadoVictima = reader["estadoVictima"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["estadoVictima"].ToString());
+							involucrado.NombreHospital = reader["nombreHospital"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombreHospital"].ToString());
+							involucrado.Asiento = reader["asiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["asiento"].ToString());
+							involucrado.InstitucionTraslado = reader["institucionTraslado"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["institucionTraslado"].ToString());
+							involucrado.Placa = reader["placas"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["placas"].ToString());
+							involucrado.Sexo = reader["genero"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["genero"].ToString());
+							involucrado.Marca = reader["marcaVehiculo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["marcaVehiculo"].ToString());
+							involucrado.Submarca = reader["nombreSubmarca"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombreSubmarca"].ToString());
+							involucrado.Direccion = reader["Direccion"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["Direccion"].ToString());
+							involucrado.Municipio = reader["municipio"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["municipio"].ToString());
+							involucrado.Telefono = reader["telefono"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["telefono"].ToString());
+							involucrado.Correo = reader["correo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["correo"].ToString());
+							involucrado.Entidad = reader["nombreEntidad"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombreEntidad"].ToString());
+							involucrado.Modelo = reader["modelo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["modelo"].ToString());
+							involucrado.ConductorInvolucrado = reader["tipoInvolucrado"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoInvolucrado"].ToString());
+							involucrado.Cinturon = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
+							involucrado.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             if (reader["fechaIngreso"] != System.DBNull.Value)
                             {
                                 involucrado.FechaIngreso = Convert.ToDateTime(reader["fechaIngreso"].ToString());
@@ -1979,7 +2021,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? 0;
                     command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? 0;
                     command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? 0;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.Kilometro ?? 0;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Float)).Value = (object)model.Kilometro ?? 0;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? 0;
@@ -2051,7 +2093,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
-                                    observacionesConvenio
+                                    observacionesConvenio, idEntidadCompetencia
                                     FROM accidentes a 
                                     WHERE idAccidente = @IdAccidente
                                     ";
@@ -2098,8 +2140,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             datosFinales.PrendasTexto = reader["prendasTexto"] == DBNull.Value ? "" : reader["prendasTexto"].ToString();
                             datosFinales.OtrosTexto = reader["otrosTexto"] == DBNull.Value ? "" : reader["otrosTexto"].ToString();
                             datosFinales.observacionesConvenio = reader["observacionesConvenio"] == DBNull.Value ? "" : reader["observacionesConvenio"].ToString();
-
-                        }
+                            datosFinales.IdEntidadCompetencia = reader["idEntidadCompetencia"] == DBNull.Value ? 0 : int.Parse(reader["idEntidadCompetencia"].ToString());
+						}
 
 
                         reader.Close();

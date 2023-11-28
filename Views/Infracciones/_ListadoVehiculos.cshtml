@@ -7,49 +7,35 @@
     </div>
 </div>
 <div class="col-12 rounded gridCustom">
-    @(Html.Kendo().Grid(Model)
-        .Name("gridInfraccionesVehiculo")
-        .Columns(columns =>
-        {
-            columns.Bound(c => c.idPersona).Hidden();
-            columns.Bound(c => c.idVehiculo).Hidden();
-            columns.Select().Width(50).ClientHeaderTemplate(" ");
-            columns.Bound(c => c.placas).Title("Placas").Width(90);
-            columns.Bound(p => p.serie).Title("Serie").Width(90);
-            columns.Bound(p => p.tarjeta).Title("Tarjeta").Width(90);
-            columns.Bound(p => p.marca).Title("Marca").Width(90);
-            columns.Bound(c => c.submarca).Title("Submarca").Width(90);
-            columns.Bound(c => c.modelo).Title("Modelo").Width(90);
-            columns.Bound(p => p.propietario).Title("Propietario").Width(90);
-            columns.Bound(c => c.numeroEconomico).Title("Número Económico").Width(90);
-            columns.Bound(c => c.entidadRegistro).Title("Entidad Registro").Width(90);
-            columns.Bound(c => c.tipoVehiculo).Title("Tipo").Width(90);
-        }).HtmlAttributes(new { style = "height:auto" })
-        .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
-        .Sortable()
-        .Scrollable(scr => scr.Enabled(true))
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .ServerOperation(false)
-        .PageSize(5)
-        )
-        .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
-        .Search(s =>
-        {
-            s.Field(c => c.placas);
-            s.Field(c => c.serie);
-            s.Field(c => c.tarjeta);
-            s.Field(c => c.marca);
-            s.Field(c => c.submarca);
-            s.Field(c => c.modelo);
-            s.Field(c => c.propietario);
-            s.Field(c => c.numeroEconomico);
-            s.Field(c => c.entidadRegistro);
-            s.Field(c => c.tipoVehiculo);
-
-
-        })
-        )
+    @(
+            Html.Kendo().Grid(Model)
+            .Name("gridInfraccionesVehiculo")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.idPersona).Hidden();
+                columns.Bound(c => c.idVehiculo).Hidden();
+                columns.Select().Width(50).ClientHeaderTemplate(" ");
+                columns.Bound(c => c.placas).Title("Placas").Width(90);
+                columns.Bound(p => p.serie).Title("Serie").Width(90);
+                columns.Bound(p => p.tarjeta).Title("Tarjeta").Width(90);
+                columns.Bound(p => p.marca).Title("Marca").Width(90);
+                columns.Bound(c => c.submarca).Title("Submarca").Width(90);
+                columns.Bound(c => c.modelo).Title("Modelo").Width(90);
+                columns.Bound(p => p.propietario).Title("Propietario").Width(90);
+                columns.Bound(c => c.numeroEconomico).Title("Número Económico").Width(90);
+                columns.Bound(c => c.entidadRegistro).Title("Entidad Registro").Width(90);
+                columns.Bound(c => c.tipoVehiculo).Title("Tipo").Width(90);
+            }).HtmlAttributes(new { style = "height:auto" })
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+            .Sortable()
+            .Scrollable(scr => scr.Enabled(true))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(false)
+            .PageSize(5)
+            )
+            .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
+            )
 
     @(Html.Kendo().Tooltip()
         .For("#gridInfraccionesVehiculo")

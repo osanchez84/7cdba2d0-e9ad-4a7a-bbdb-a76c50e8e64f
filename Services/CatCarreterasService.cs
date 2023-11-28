@@ -159,6 +159,53 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
+        public List<CatCarreterasModel> GetCarreterasPorDelegacion(int idOficina)
+        {
+            //
+            List<CatCarreterasModel> ListaCarreteras = new List<CatCarreterasModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT c.idCarretera,c.idOficinaTransporte,UPPER(c.carretera) AS carretera, " +
+                        "c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus WHERE c.idOficinaTransporte = @idOficina;\r\n", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatCarreterasModel carretera = new CatCarreterasModel();
+                            carretera.IdCarretera = Convert.ToInt32(reader["idCarretera"].ToString());
+                            carretera.idOficinaTransporte = Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+                            carretera.Carretera = reader["carretera"].ToString();
+                            carretera.estatusDesc = reader["estatus"].ToString();
+                            carretera.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
+                            carretera.Estatus = Convert.ToInt32(reader["estatus"] is DBNull ? 0 : reader["estatus"]);
+                            carretera.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+                            ListaCarreteras.Add(carretera);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaCarreteras;
+
+
+        }
     }
 }
 

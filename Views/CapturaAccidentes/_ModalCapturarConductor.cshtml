@@ -5,7 +5,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.nombreFisico)
-                            .Label(l => l.Content("Nombre sfdsfds <b>(obligatorio)</b>:"))
+                            .Label(l => l.Content("Nombre<b>(obligatorio)</b>:"))
                             .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                             )
             </div>
@@ -57,7 +57,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Génerosss:</label>
+                <label>Géneros:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero)
                             //.BindTo((SelectList)ViewBag.CatGeneros)
                     .DataTextField("Text")

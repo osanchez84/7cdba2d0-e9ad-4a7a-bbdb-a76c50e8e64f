@@ -15,7 +15,7 @@
 				} else {
 					// Mostrar los resultados de personas encontradas en la búsqueda
 					if (response.encontrada == false) {
-						sitteg_warning("La búsqueda no arrojó resultados.");
+						sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
 					} else {
 						if (response.data != null || response.data != undefined) {
 							var personasList = response.data;

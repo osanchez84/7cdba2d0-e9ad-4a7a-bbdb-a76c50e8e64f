@@ -673,6 +673,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                    .Events(e => e.Change("EntidadDropDownChangeV"))
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -698,7 +699,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Drop", "Vehiculos");
                                         });
                                     })
                                     )
@@ -961,6 +962,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                    .Events(e => e.Change("EntidadDropDownChangeFis"))
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -1021,7 +1023,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Drop", "Vehiculos");
                                         });
                                     })
                                     )
@@ -1336,6 +1338,39 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
     function goBackModificar(){
      window.location.href = '@Url.Action("Editar", "Vehiculos")';
+    }
+
+    function EntidadDropDownChangeV() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Vehiculos/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+     function EntidadDropDownChangeFis() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Vehiculos/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
     }
 
 </script>

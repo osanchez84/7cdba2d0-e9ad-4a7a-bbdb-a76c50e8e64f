@@ -1060,34 +1060,37 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
 
-                    const string SqlTransact = @"SELECT p.idPersona " +
-                               ",p.numeroLicencia " +
-                               ",p.CURP " +
-                               ",p.RFC " +
-                               ",p.nombre " +
-                               ",p.apellidoPaterno " +
-                               ",p.apellidoMaterno " +
-                               ",p.fechaActualizacion " +
-                               ",p.actualizadoPor " +
-                               ",p.estatus " +
-                               ",p.idCatTipoPersona " +
-                               ",p.idTipoLicencia " +
-							   ",p.fechaNacimiento " +
-							   ",p.idGenero " +
-							   ",p.vigenciaLicencia " +
-                               ",ctp.tipoPersona " +
-							   ",cl.tipoLicencia " +
-							   ",cg.genero " +
-                               "FROM personas p " +
-                               "LEFT JOIN catTipoPersona ctp " +
-                               "on p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1 " +
-							   "LEFT JOIN catTipoLicencia cl " +
-							   "on p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1 " +
-							   "LEFT JOIN catGeneros cg " +
-							   "on p.idGenero = cg.idGenero AND cg.estatus = 1 " +
-                               "WHERE (numeroLicencia LIKE '%' + @numeroLicencia + '%' OR curp LIKE '%' + @curp  + '%' " +
-                               "OR rfc LIKE '%' + @rfc + '%' OR nombre LIKE '%' + @nombre OR apellidoPaterno LIKE '%' + @apellidoPaterno + '%' OR apellidoMaterno LIKE '%' + @apellidoMaterno) " +
-                               "AND p.estatus = 1";
+                    const string SqlTransact = @"SELECT p.idPersona,
+       p.numeroLicencia,
+       p.CURP,
+       p.RFC,
+       p.nombre,
+       p.apellidoPaterno,
+       p.apellidoMaterno,
+       p.fechaActualizacion,
+       p.actualizadoPor,
+       p.estatus,
+       p.idCatTipoPersona,
+       p.idTipoLicencia,
+       p.fechaNacimiento,
+       p.idGenero,
+       p.vigenciaLicencia,
+       ctp.tipoPersona,
+       cl.tipoLicencia,
+       cg.genero
+FROM personas p
+LEFT JOIN catTipoPersona ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1
+LEFT JOIN catTipoLicencia cl ON p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
+LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1
+WHERE
+    (p.estatus = 1)
+    AND (@numeroLicencia IS NULL OR p.numeroLicencia LIKE '%' + @numeroLicencia + '%')
+    AND (@curp IS NULL OR p.CURP LIKE '%' + @curp + '%')
+    AND (@rfc IS NULL OR p.RFC LIKE '%' + @rfc + '%')
+    AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')
+    AND (@apellidoPaterno IS NULL OR p.apellidoPaterno LIKE '%' + @apellidoPaterno + '%')
+    AND (@apellidoMaterno IS NULL OR p.apellidoMaterno LIKE '%' + @apellidoMaterno + '%');
+";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicenciaBusqueda ?? DBNull.Value;

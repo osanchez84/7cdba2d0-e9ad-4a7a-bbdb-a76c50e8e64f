@@ -206,8 +206,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
 			return Json(result);
 		}
-
-		public JsonResult Clasificacion_Drop()
+        public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+        public JsonResult Clasificacion_Drop()
 		{
 			var result = new SelectList(_clasificacionAccidentesService.ObtenerClasificacionesActivas(), "IdClasificacionAccidente", "NombreClasificacion");
 			return Json(result);
@@ -320,9 +324,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			}
 		}
+        public JsonResult Entidades_Read()
+        {
+            var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            return Json(result);
+        }
 
-
-		public async Task<string> AbrirModalVehiculo(string placa, string serie)
+        public async Task<string> AbrirModalVehiculo(string placa, string serie)
 		{
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
             {

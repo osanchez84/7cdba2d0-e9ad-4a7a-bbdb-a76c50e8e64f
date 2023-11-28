@@ -289,10 +289,9 @@
             }
         });
     }
-
-
-
     function buscarConductor() {
+        var grid = $("#gridPersonas").data("kendoGrid");
+        grid.dataSource.data([]);
         var Mydata = $("#buscarConductorForm").serialize();
         $.ajax({
             url: '/Personas/BuscarPorParametro',
@@ -300,18 +299,22 @@
             data: Mydata,
             success: function (response) {
                 if (response.tipo == "success") {
-                    // Crear instancia del modelo con los datos recibidos
                     mostrarModal(response.datos);
-
-                } else {
-                    // Mostrar los resultados de personas encontradas en la búsqueda
-                    var personasList = response.data;
-                    var grid = $("#gridPersonas").data("kendoGrid");
-                    grid.dataSource.data(personasList);
-
-                    if (personasList.length === 0) {
-                        sitteg_warning("La búsqueda no arrojó resultados.");
+                } else if (response.encontrada != undefined) {
+                    if (response.encontrada == false) {
+                        // sitteg_warning("No se pudieron obtener resultados.");
                     }
+                } else if (response.tipo == "warning") {
+                    sitteg_warning("No se pudieron obtener resultados.");
+                }
+
+                var personasList = response.data;
+                var grid = $("#gridPersonas").data("kendoGrid");
+                grid.dataSource.data(personasList);
+
+                if (personasList.length === 0) {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    grid.dataSource.data([]);
                 }
             },
             error: function (error) {

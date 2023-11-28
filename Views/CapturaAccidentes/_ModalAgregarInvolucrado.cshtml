@@ -125,19 +125,19 @@
 		var nombre = dataItem.nombre
 		var apellidoPaterno = dataItem.apellidoPaterno
 		var apellidoMaterno = dataItem.apellidoMaterno
-		var curp = dataItem.curp
+		var CURP = dataItem.CURP
 		var fechaNacimiento = dataItem.fechaNacimiento.split('T')[0]
 		var dat = fechaNacimiento.split("-")
 		fechaNacimiento = dat[2] + "/" + dat[1] + "/" + dat[0]
-		var rfc = dataItem.rfc
+		var RFC = dataItem.RFC
 
 		var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
 		$('#gridVehiculosInvolucrados').data('idPersona', idPersona);
 
 		document.getElementById("nombreModal").innerText = nombreCompleto;
-		document.getElementById("curpModal").innerText = curp;
+		document.getElementById("curpModal").innerText = CURP;
 		document.getElementById("fechaNacimientoModal").innerText = fechaNacimiento;
-		document.getElementById("rfcModal").innerText = rfc;
+		document.getElementById("rfcModal").innerText = RFC;
 
 		$('#buscarInvolucradoModal').modal('hide');
 		$('body').removeClass('model-open');
@@ -156,18 +156,18 @@
 		var nombre = dataItem.nombre
 		var apellidoPaterno = dataItem.apellidoPaterno
 		var apellidoMaterno = dataItem.apellidoMaterno
-		var curp = dataItem.curp
+		var CURP = dataItem.CURP
 		var fechaNacimiento = convertDate(dataItem.fechaNacimiento);
 		fechaNacimiento = fechaNacimiento == "01/01/0001" ? "" : fechaNacimiento;
-		var rfc = dataItem.rfc
+		var RFC = dataItem.RFC
 
 		var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
 		$('#gridVehiculosInvolucrados').data('idPersona', idPersona);
 
 		document.getElementById("nombreModal").innerText = nombreCompleto;
-		document.getElementById("curpModal").innerText = curp;
+		document.getElementById("curpModal").innerText = CURP;
 		document.getElementById("fechaNacimientoModal").innerText = fechaNacimiento;
-		document.getElementById("rfcModal").innerText = rfc;
+		document.getElementById("rfcModal").innerText = RFC;
 
 		$('#buscarInvolucradoModal').modal('hide');
 		$('body').removeClass('model-open');
@@ -253,7 +253,7 @@
 				<div class="row px-4 mt-4 pb-4 align-items-end">
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.licencia)
+							@(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
 								.Label(l => l.Content("No. de licencia:"))
 								.Placeholder("Ingresa el número de licencia valido")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -262,7 +262,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.curp)
+							@(Html.Kendo().TextBoxFor(t => t.CURP)
 								.Label(l => l.Content("CURP:"))
 								.Placeholder("Ingresa el CURP del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -271,7 +271,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.rfc)
+							@(Html.Kendo().TextBoxFor(t => t.RFC)
 								.Label(l => l.Content("RFC:"))
 								.Placeholder("Ingresa el RFC del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })

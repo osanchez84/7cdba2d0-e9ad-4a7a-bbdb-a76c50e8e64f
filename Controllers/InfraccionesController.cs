@@ -531,6 +531,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_Create", vehiculosModel);
             }
         }
+
+
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
             var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);

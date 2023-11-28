@@ -23,7 +23,7 @@
             var placasValue = $("#PlacasBusqueda").val().trim();
             $("#PlacasBusqueda").val(placasValue);
     var Mydata = $("#frmSearch").serialize();
-    console.log(Mydata);
+    console.log("entro",Mydata);
     $.ajax({
         url: '@Url.Action("ajax_BuscarVehiculo")',
         type: 'POST',

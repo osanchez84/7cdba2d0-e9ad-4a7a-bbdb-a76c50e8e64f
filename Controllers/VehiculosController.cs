@@ -491,7 +491,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
 			vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
 
-            if (vehiculosModel.idSubmarcaUpdated > 0)
+            if (vehiculosModel.idVehiculo > 0)
             {
               return PartialView("_Create", vehiculosModel);
 
@@ -734,12 +734,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
         {
             int IdVehiculo = 0;
-            if (model.idSubmarcaUpdated>0)
+            if (model.idVehiculo>0)
             {
                 model.idSubmarca = model.idSubmarcaUpdated;
                 IdVehiculo = _vehiculosService.UpdateVehiculo(model);
             }
-            else if (model.idSubmarcaUpdated<=0)
+            else if (model.idVehiculo <= 0)
             {
                 IdVehiculo = _vehiculosService.CreateVehiculo(model);
             }

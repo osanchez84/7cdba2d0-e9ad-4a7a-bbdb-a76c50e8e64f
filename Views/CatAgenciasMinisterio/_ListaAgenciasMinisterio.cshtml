@@ -52,6 +52,7 @@
 </div>
 
 <script>
+
     function getId(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAgenciaMinisterio = dataItem.IdAgenciaMinisterio;
@@ -81,8 +82,8 @@
             type: 'POST',
             data: { IdAgenciaMinisterio: IdAgenciaMinisterio },
             success: function (result) {
-                $('#ModalBodyEliminarAgenciaministerio').html(result);
-                $('#eliminarAgenciaministerio').modal('show');
+                $('#ModalBodEditarAgenciaministerio').html(result);
+                $('#editarAgenciaministerio').modal('show');
 
             },
         })

@@ -99,7 +99,19 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT \r\n    a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente,\r\n    a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc,\r\n    ac.idCausaAccidente\r\nFROM \r\n    accidentes AS a\r\nJOIN \r\n    catMunicipios AS m ON a.idMunicipio = m.idMunicipio\r\nJOIN \r\n    catCarreteras AS c ON a.idCarretera = c.idCarretera\r\nJOIN \r\n    catTramos AS t ON a.idTramo = t.idTramo\r\nJOIN \r\n    estatus AS e ON a.estatus = e.estatus\r\nLEFT JOIN \r\n    accidenteCausas AS ac ON ac.idAccidente = a.idAccidente\r\nWHERE \r\n    a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina;\r\n", connection);
+                    SqlCommand command = new SqlCommand(@"
+                        SELECT DISTINCT a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idCarretera, a.idTramo, a.kilometro, a.idClasificacionAccidente, 
+                        a.idFactorAccidente, a.IdFactorOpcionAccidente, a.idOficinaDelegacion, a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc, 
+                        ac.idCausaAccidente, d.delegacion
+                        FROM accidentes AS a 
+                        JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio
+                        JOIN catDelegaciones as d on d.idDelegacion = (a.idOficinaDelegacion+1)
+                        JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera 
+                        JOIN catTramos AS t ON a.idTramo = t.idTramo 
+                        JOIN estatus AS e ON a.estatus = e.estatus 
+                        LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina
+                    ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
 
@@ -124,11 +136,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Carretera = reader["Carretera"].ToString();
                             accidente.Kilometro = reader["Kilometro"].ToString();
                             accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-
-
-
-
-                        }
+							accidente.DelegacionOficina = reader["delegacion"].ToString();
+						}
                     }
                 }
                 catch (Exception ex)
@@ -450,8 +459,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.Pension = reader["pension"] != DBNull.Value ? reader["pension"].ToString() : string.Empty;
                             involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
                             involucrado.Color = reader["color"] != DBNull.Value ? reader["color"].ToString() : string.Empty;
-                            involucrado.rfc = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
-                            involucrado.curp = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
+                            involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
+                            involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
 
 
@@ -512,9 +521,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             model.apellidoMaterno = reader["apellidoMaterno"].ToString();
                             model.Propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
-                            model.rfc = reader["rfc"].ToString();
-                            model.curp = reader["curp"].ToString();
-                            model.licencia = reader["numeroLicencia"].ToString();
+                            model.RFC = reader["rfc"].ToString();
+                            model.CURP = reader["curp"].ToString();
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -1111,9 +1120,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.nombre = reader["nombre"].ToString();
                             involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
-                            involucrado.rfc = reader["rfc"].ToString();
-                            involucrado.curp = reader["curp"].ToString();
-                            involucrado.licencia = reader["numeroLicencia"].ToString();
+                            involucrado.RFC = reader["rfc"].ToString();
+                            involucrado.CURP = reader["curp"].ToString();
+                            involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
                             string fechaNac = reader["fechaNacimiento"].ToString();
                             if (!fechaNac.IsNullOrEmpty())
                                 involucrado.fechaNacimiento = Convert.ToDateTime(fechaNac);
@@ -1262,8 +1271,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.Pension = reader["pension"].ToString();
                             vehiculo.Modelo = reader["modelo"].ToString();
                             vehiculo.Color = reader["color"].ToString();
-                            vehiculo.rfc = reader["RFC"].ToString();
-                            vehiculo.curp = reader["CURP"].ToString();
+                            vehiculo.RFC = reader["RFC"].ToString();
+                            vehiculo.CURP = reader["CURP"].ToString();
                             vehiculo.TipoServicio = reader["tipoServicio"].ToString();
                             vehiculo.FormaTrasladoInvolucrado = reader["formaTraslado"].ToString();
                             vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
@@ -2020,7 +2029,7 @@ hola
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? 0;
                     command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? 0;
                     command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? 0;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Int)).Value = (object)model.Kilometro ?? 0;
+                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Float)).Value = (object)model.Kilometro ?? 0;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? 0;
@@ -2092,7 +2101,7 @@ hola
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
-                                    observacionesConvenio
+                                    observacionesConvenio, idEntidadCompetencia
                                     FROM accidentes a 
                                     WHERE idAccidente = @IdAccidente
                                     ";
@@ -2139,8 +2148,8 @@ hola
                             datosFinales.PrendasTexto = reader["prendasTexto"] == DBNull.Value ? "" : reader["prendasTexto"].ToString();
                             datosFinales.OtrosTexto = reader["otrosTexto"] == DBNull.Value ? "" : reader["otrosTexto"].ToString();
                             datosFinales.observacionesConvenio = reader["observacionesConvenio"] == DBNull.Value ? "" : reader["observacionesConvenio"].ToString();
-
-                        }
+                            datosFinales.IdEntidadCompetencia = reader["idEntidadCompetencia"] == DBNull.Value ? 0 : int.Parse(reader["idEntidadCompetencia"].ToString());
+						}
 
 
                         reader.Close();

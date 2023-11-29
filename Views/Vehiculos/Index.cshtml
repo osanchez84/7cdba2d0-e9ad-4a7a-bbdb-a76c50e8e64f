@@ -23,7 +23,7 @@
             var placasValue = $("#PlacasBusqueda").val().trim();
             $("#PlacasBusqueda").val(placasValue);
     var Mydata = $("#frmSearch").serialize();
-    console.log(Mydata);
+    console.log("entro",Mydata);
     $.ajax({
         url: '@Url.Action("ajax_BuscarVehiculo")',
         type: 'POST',
@@ -196,7 +196,7 @@
 
 <!-- Modal -->
 <!-- ********************************************************************************************************** -->
-<div class="modal fade modalCustom" id="editFisico" tabindex="-1" aria-labelledby="editFisicoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="editFisico"  aria-labelledby="editFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 

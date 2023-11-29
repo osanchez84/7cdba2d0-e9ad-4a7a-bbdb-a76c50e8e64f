@@ -42,7 +42,7 @@
     </div>
 </div>
 <!--Modal editar factor accidente-->
-<div class="modal fade modalCustom" id="editarFactorAccidenteModal" tabindex="-1" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="editarFactorAccidenteModal" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body" id="ModalBodyEditarFactorAccidente">
@@ -51,7 +51,7 @@
     </div>
 </div>
 <!--Modal eliminar factor accidente-->
-<div class="modal fade modalCustom" id="eliminarFactorAccidenteModal" tabindex="-1" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="eliminarFactorAccidenteModal" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
     <div class="modal-dialog modal-s" role="document">
         <div class="modal-content">
             <div class="modal-body" id="ModalBodyEliminarFactorAccidente">
@@ -78,6 +78,7 @@
             data: { IdFactorAccidente: IdFactorAccidente, IdFactorOpcionAccidente: IdFactorOpcionAccidente, IdAccidenteFactorOpcion : IdAccidenteFactorOpcion },
             success: function (result) {
                 $('#ModalBodyFactorAccidente').html(result);
+                $('#factorAccidenteModal').modal({ backdrop: 'static', keyboard: false });
                 $('#factorAccidenteModal').modal('show');
 
             },

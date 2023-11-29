@@ -53,30 +53,31 @@
             columns.Bound(c => c.nombre).Title("Nombre").Width(100);
             columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
             columns.Bound(c => c.apellidoMaterno).Title("Apellido Materno").Width(100);
-            columns.Bound(c => c.rfc).Title("RFC").Width(100);
-            columns.Bound(c => c.curp).Title("CURP").Width(100);
-            columns.Bound(c => c.licencia).Title("No. de Licencia").Width(100);
+                columns.Bound(c => c.RFC).Title("RFC").Width(100);
+                columns.Bound(c => c.CURP).Title("CURP").Width(100);
+                columns.Bound(c => c.numeroLicencia).Title("No. de Licencia").Width(100);
         
         })
-        .HtmlAttributes(new { style = "height:250px" })
-        .Sortable()
-        .Groupable()
-        .Scrollable()
-        .Pageable()
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("BuscarConductor", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.IdPersona))
-        )
+            .HtmlAttributes(new { style = "height:450" })
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .DataSource(dataSource => dataSource
+            .Ajax())
+            .Sortable()
+            .Scrollable(scr => scr.Height(350))
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(read => read.Action("BuscarConductor", "CapturaAccidentes"))
+            .ServerOperation(false)
+            )
             .ToolBar(t => t.Search())
             .Search(s =>
             {
                 s.Field(c => c.nombre);
                 s.Field(c => c.apellidoPaterno);
                 s.Field(c => c.apellidoMaterno);
-                s.Field(c => c.rfc);
-                s.Field(c => c.curp);
-                s.Field(c => c.licencia);
+                s.Field(c => c.RFC);
+                s.Field(c => c.CURP);
+                s.Field(c => c.numeroLicencia);
 
             })
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple).Type(GridSelectionType.Row))

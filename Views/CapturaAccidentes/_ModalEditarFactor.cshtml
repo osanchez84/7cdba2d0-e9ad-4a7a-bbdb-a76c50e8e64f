@@ -1,25 +1,53 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.EditarFactorOpcionModel
 <script>
-     function factoresChangeEdit() {
-        console.log("factoresChangeEdit called");
-        var factorDDValue = $("#IdFactorAccidente").data("kendoDropDownList").value();
-        console.log("1DDVLA", factorDDValue)
+    function cargarDropdownFactorAccidente(callback) {
         $.ajax({
-            url: "/CapturaAccidentes/FactoresOpciones_Drop",
-            type: "POST",
-            data: { factorDDValue: factorDDValue },
+            url: "/CapturaAccidentes/Factores_Drop",
+            type: "GET",
             success: function (data) {
-                var FactorOpcionDropDown = $("#IdFactorOpcionAccidente").data("kendoDropDownList");
-                FactorOpcionDropDown.dataSource.data(data);
-                var valorPreexistenteFactorOpcionAccidente = "@Html.Raw(Model.IdFactorOpcionAccidente)";
-                    $("#IdFactorOpcionAccidente").data("kendoDropDownList").value(valorPreexistenteFactorOpcionAccidente);
-                    console.log("FACTORO", valorPreexistenteFactorOpcionAccidente);               
+                var factorDropDown = $("#IdFactorAccidente").data("kendoDropDownList");
+                factorDropDown.dataSource.data(data);
+
+                if (callback) {
+                    callback();
+                }
             },
             error: function (xhr, status, error) {
                 console.error("Error en la llamada AJAX:", error);
             }
         });
     }
+
+    function factoresChangeEdit() {
+        console.log("factoresChangeEdit called");
+
+        cargarDropdownFactorAccidente(function () {
+            var factorDD = $("#IdFactorAccidente").data("kendoDropDownList");
+            var nuevoValor = factorDD.value();
+            var valorActual = factorDD.dataSource.view()[factorDD.selectedIndex].Value;
+
+            if (nuevoValor !== valorActual) {
+                // Realizar la llamada AJAX solo si el valor ha cambiado
+                $.ajax({
+                    url: "/CapturaAccidentes/FactoresOpciones_Drop",
+                    type: "POST",
+                    data: { factorDDValue: nuevoValor },
+                    success: function (data) {
+                        var factorOpcionDropDown = $("#IdFactorOpcionAccidente").data("kendoDropDownList");
+                        factorOpcionDropDown.dataSource.data(data);
+
+                        var valorPreexistenteFactorOpcionAccidente = "@Html.Raw(Model.IdFactorOpcionAccidente)";
+                        factorOpcionDropDown.value(valorPreexistenteFactorOpcionAccidente);
+                        console.log("FACTORO", valorPreexistenteFactorOpcionAccidente);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error en la llamada AJAX:", error);
+                    }
+                });
+            }
+        });
+    }
+
 
     </script>
 <section class=" bg-white rounded">

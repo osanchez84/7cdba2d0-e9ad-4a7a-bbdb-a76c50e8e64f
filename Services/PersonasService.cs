@@ -668,13 +668,14 @@ namespace GuanajuatoAdminUsuarios.Services
             int result = 0;
 
             // Primero, verifica si ya existe un registro con la misma CURP
-            string checkQuery = "SELECT COUNT(*) FROM personas WHERE CURP = @CURP";
+            string checkQuery = "SELECT top 1 idpersona as test FROM personas WHERE CURP = @CURP";
 
             using (SqlConnection checkConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     checkConnection.Open();
+
                     SqlCommand checkCommand = new SqlCommand(checkQuery, checkConnection);
                     checkCommand.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURPFisico ?? DBNull.Value;
 
@@ -683,7 +684,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (existingRecordsCount > 0)
                     {
                         // Ya existe un registro con la misma CURP, muestra un mensaje o lanza una excepción
-                        return -1; 
+                        return existingRecordsCount; 
                     }
                 }
                 catch (SqlException ex)
@@ -696,6 +697,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     checkConnection.Close();
                 }
             }
+
+            DateTime? vigenciaLicenciaValue = (model.vigenciaLicencia > DateTime.MinValue) ? model.vigenciaLicencia : null;
+
             string strQuery = @"INSERT INTO personas(numeroLicencia,CURP,RFC,nombre,apellidoPaterno
                               ,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona
                               ,idTipoLicencia
@@ -737,8 +741,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
 
                     command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
-                    DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
-                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(vigenciaLicenciaValue != DateTime.MinValue ? (object)vigenciaLicenciaValue : DBNull.Value);
+                    //command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)(model.vigenciaLicencia.HasValue? model.vigenciaLicencia.Value : null);
+
+                    //DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = vigenciaLicenciaValue;
+
+
                     command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     result = Convert.ToInt32(command.ExecuteScalar());
@@ -1052,34 +1060,37 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
 
-                    const string SqlTransact = @"SELECT p.idPersona " +
-                               ",p.numeroLicencia " +
-                               ",p.CURP " +
-                               ",p.RFC " +
-                               ",p.nombre " +
-                               ",p.apellidoPaterno " +
-                               ",p.apellidoMaterno " +
-                               ",p.fechaActualizacion " +
-                               ",p.actualizadoPor " +
-                               ",p.estatus " +
-                               ",p.idCatTipoPersona " +
-                               ",p.idTipoLicencia " +
-							   ",p.fechaNacimiento " +
-							   ",p.idGenero " +
-							   ",p.vigenciaLicencia " +
-                               ",ctp.tipoPersona " +
-							   ",cl.tipoLicencia " +
-							   ",cg.genero " +
-                               "FROM personas p " +
-                               "LEFT JOIN catTipoPersona ctp " +
-                               "on p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1 " +
-							   "LEFT JOIN catTipoLicencia cl " +
-							   "on p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1 " +
-							   "LEFT JOIN catGeneros cg " +
-							   "on p.idGenero = cg.idGenero AND cg.estatus = 1 " +
-                               "WHERE (numeroLicencia LIKE '%' + @numeroLicencia + '%' OR curp LIKE '%' + @curp  + '%' " +
-                               "OR rfc LIKE '%' + @rfc + '%' OR nombre LIKE '%' + @nombre OR apellidoPaterno LIKE '%' + @apellidoPaterno + '%' OR apellidoMaterno LIKE '%' + @apellidoMaterno) " +
-                               "AND p.estatus = 1";
+                    const string SqlTransact = @"SELECT p.idPersona,
+       p.numeroLicencia,
+       p.CURP,
+       p.RFC,
+       p.nombre,
+       p.apellidoPaterno,
+       p.apellidoMaterno,
+       p.fechaActualizacion,
+       p.actualizadoPor,
+       p.estatus,
+       p.idCatTipoPersona,
+       p.idTipoLicencia,
+       p.fechaNacimiento,
+       p.idGenero,
+       p.vigenciaLicencia,
+       ctp.tipoPersona,
+       cl.tipoLicencia,
+       cg.genero
+FROM personas p
+LEFT JOIN catTipoPersona ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1
+LEFT JOIN catTipoLicencia cl ON p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
+LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1
+WHERE
+    (p.estatus = 1)
+    AND (@numeroLicencia IS NULL OR p.numeroLicencia LIKE '%' + @numeroLicencia + '%')
+    AND (@curp IS NULL OR p.CURP LIKE '%' + @curp + '%')
+    AND (@rfc IS NULL OR p.RFC LIKE '%' + @rfc + '%')
+    AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')
+    AND (@apellidoPaterno IS NULL OR p.apellidoPaterno LIKE '%' + @apellidoPaterno + '%')
+    AND (@apellidoMaterno IS NULL OR p.apellidoMaterno LIKE '%' + @apellidoMaterno + '%');
+";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicenciaBusqueda ?? DBNull.Value;

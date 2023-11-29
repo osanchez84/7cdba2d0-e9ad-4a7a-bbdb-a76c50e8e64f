@@ -57,7 +57,7 @@
 
     @if (Model != null)
     {
-        @if (Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg)
+        @if (Model.idVehiculo > 0)
         {
             <div class="row">
                 <div class="col-12 my-4">
@@ -111,15 +111,15 @@
             <div class="controlForm my-3">
                 <label>Serie:</label>
             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)--> 
-                      @if(@disableInput){
-                     <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input k-state-disabled" />
+                      @if(@disableInput && @Model.serie!=""){
+                         <span class="k-widget k-textbox" style="width:100%;">
+                         <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
              </span>
 
              }
              else{
-                 <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" class="k-input" />
+                     <span class="k-widget k-textbox" style="width:100%;">
+                     <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
              </span>
 
              }
@@ -161,23 +161,14 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Vigencia de tarjeta:</label>
-                @if (disableInput)
-                {
-                    @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
-                        .DateInput()
-                        .Value(dateVigencia)
-                        .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        )
-                }
-                else
-                {
+
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta)
                         .DateInput()
                         .Value(dateVigencia)
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                       
                         )
-                }
+                
 
             </div>
         </div>
@@ -588,7 +579,7 @@
 </div>
 
 
-<div class="modal fade modalCustom" id="addMoral" tabindex="-1" aria-labelledby="addMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addMoral"  aria-labelledby="addMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -673,6 +664,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                    .Events(e => e.Change("EntidadDropDownChangeV"))
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -698,7 +690,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Drop", "Vehiculos");
                                         });
                                     })
                                     )
@@ -766,7 +758,7 @@
     </div>
 </div>
 
-<div class="modal fade modalCustom" id="modalUpdateMoral" tabindex="-1" aria-labelledby="updateMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="modalUpdateMoral"  aria-labelledby="updateMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -813,7 +805,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade modalCustom" id="addFisico" tabindex="-1" aria-labelledby="addFisicoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addFisico"  aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -961,6 +953,7 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
+                                    .Events(e => e.Change("EntidadDropDownChangeFis"))
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
@@ -1021,7 +1014,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Drop", "Vehiculos");
                                         });
                                     })
                                     )
@@ -1236,13 +1229,11 @@
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
      $('.error-container').empty();
 
-    if (!nombreValue || !RFCValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    if (!nombreValue || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
         if (!nombreValue) {
             asignarMensajeError("errorContainerPersona_nombreFisicoV", "Este campo es obligatorio.");
         }
-        if (!RFCValue) {
-            asignarMensajeError("errorContainerPersona_RFCFisicoV", "Este campo es obligatorio.");
-        }
+
         if (!coloniaValue) {
             asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisicoV", "Este campo es obligatorio.");
         }
@@ -1295,8 +1286,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         if (validator.validate()) {
              var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            console.log(formData);
+
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo")',
                 type: 'POST',
@@ -1338,7 +1328,43 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     });
 
     function goBackModificar(){
+
+        //location.reload()
+
      window.location.href = '@Url.Action("Editar", "Vehiculos")';
+    }
+
+    function EntidadDropDownChangeV() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Vehiculos/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+     function EntidadDropDownChangeFis() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
+
+
+        $.ajax({
+            url: "/Vehiculos/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
     }
 
 </script>

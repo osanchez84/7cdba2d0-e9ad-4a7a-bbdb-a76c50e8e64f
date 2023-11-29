@@ -230,12 +230,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         command = new SqlCommand(
                        "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                         "FROM vehiculos v " +
-                        "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                        "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
-                        "JOIN catColores cc ON v.idColor = cc.idColor " +
-                        "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                        "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                        "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                        "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                        "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                        "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                         "JOIN personas p ON v.idPersona = p.idPersona " +
                         "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%';", connection);
 
@@ -245,12 +245,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                             "FROM vehiculos v " +
-                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                            "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                             "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                            "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
-                            "JOIN catColores cc ON v.idColor = cc.idColor " +
-                            "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                            "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                            "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                            "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                            "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                            "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "JOIN personas p ON v.idPersona = p.idPersona " +
                             "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%';", connection);
                         command.Parameters.AddWithValue("@Placa", Placa);
@@ -259,12 +259,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " + 
                             "FROM vehiculos v " +
-                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo" +      
-                            "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                            "JOIN catEntidades e ON v.idEntidad = e.idEntidad " + 
-                            "JOIN catColores cc ON v.idColor = cc.idColor " +
-                            "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +    
-                            "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo" +
+                            "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
+                            "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                            "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                            "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                            "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "JOIN personas p ON v.idPersona = p.idPersona " +
                             "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Folio + '%';", connection);
                         command.Parameters.AddWithValue("@Folio", Folio);

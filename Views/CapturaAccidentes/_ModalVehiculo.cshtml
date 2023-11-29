@@ -95,7 +95,7 @@
                                 @(Html.Kendo().TextBoxFor(t => t.Placa)
 										.Label(l => l.Content("Placa del vehículo:"))
 										.Placeholder("Ingresa la placa del vehículo")
-										.HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", id = "PlacasBusqueda", name = "PlacasBusqueda" })
 										)
                             </div>
                             <div id="ErrorMessage" class="error-container"></div>
@@ -114,7 +114,7 @@
                                 @(Html.Kendo().TextBoxFor(t => t.Serie)
 										.Label(l => l.Content("Número de serie del vehículo:"))
 										.Placeholder("Ingresa el número de serie del vehículo")
-										.HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", id = "SerieBusqueda", name = "SerieBusqueda" })
 										)
                             </div>
                         </div>
@@ -135,7 +135,7 @@
 										.Name("folio")
 										.Label(l => l.Content("Número de folio de formato G-01:"))
 										.Placeholder("Ingresa el número de folio G-01")
-										.HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", id = "FolioBusqueda", name = "FolioBusqueda" })
 										)
                             </div>
                         </div>
@@ -205,8 +205,8 @@
 
 
     function busquedaVehiculo() {
-        var placasValue = $("#Placa").val().trim();
-        $("#Placa").val(placasValue);
+        var placasValue = $("#PlacasBusqueda").val().trim();
+        $("#PlacasBusqueda").val(placasValue);
 
         var formData = $("#buscarVehiculoForm").serialize();
         $.ajax({
@@ -214,10 +214,6 @@
             type: 'POST',
             data: formData,
             success: function (response) {
-                if (response.success === false) {
-                    sitteg_warning(response.errorMessage);
-                    return;
-                }
 
                 if (response.noResults) {
                     abrirModalVehiculo(response.data);

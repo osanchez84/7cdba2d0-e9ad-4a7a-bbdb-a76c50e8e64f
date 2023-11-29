@@ -309,6 +309,7 @@
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Tipo de vehículo...:")
                         .HtmlAttributes(new { style = "width:100%;" })
+                         .Filter(FilterType.Contains)
                         .DataSource(source =>
                         {
                             source.Read(read =>

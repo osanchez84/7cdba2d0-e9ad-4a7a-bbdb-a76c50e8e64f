@@ -69,7 +69,7 @@
                         @(Html.Kendo().Button()
                             .Name("editSearchMoral")
                             .HtmlAttributes(new { @class = "px-5" })
-                            .Content("<h5 class=\"m-0\"><b>Editar búsqueda</b></h5>"))
+                            .Content("<h5 class=\"m-0\"><b>Regresar</b></h5>"))
                     </div>
                 </div>
                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
@@ -112,7 +112,10 @@
             };
         };
     })
-
+    function EditarBusquedaMoral(){
+        document.getElementById("sec3").style.display = "block";
+        document.getElementById("PersonaMoralLocalizada").style.display = "none";
+    }
 
     function ShowDetailPopUp(id) {
         $.ajax({

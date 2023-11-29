@@ -18,7 +18,38 @@
 
     ViewBag.serie = Model.serie;
 }
+<script>
+     function EntidadDDChangeAccFis() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
+
+        $.ajax({
+            url: "/CapturaAccidentes/Municipios_Por_Entidad",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+ function EntidadDropDownChangeAcc() {
+        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+        $.ajax({
+            url: "/CapturaAccidentes/Municipios_Por_Entidad",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+    </script>
 <section id="sectionCap" class="bg-white boxShadow  mt-2 mb-3 rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
         <div class="col-12 col-md-auto pe-0">
@@ -692,14 +723,14 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
-                                                        .Filter(FilterType.Contains)
-
+                                    .Filter(FilterType.Contains)
+                                    .Events(e => e.Change("EntidadDropDownChangeAcc"))
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Entidades_Read", "Vehiculos");
+                                            read.Action("Entidades_Read", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -721,7 +752,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Por_Entidad", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -985,13 +1016,13 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                                        .Filter(FilterType.Contains)
-
+                                    .Filter(FilterType.Contains)
+                                   .Events(e => e.Change("EntidadDDChangeAccFis"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Entidades_Read", "Vehiculos");
+                                            read.Action("Entidades_Read", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -1048,7 +1079,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Read", "Vehiculos");
+                                            read.Action("Municipios_Por_Entidad", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -1385,7 +1416,5 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             datePicker.value(null);
         }
     });
-
-
-
+       
 </script>

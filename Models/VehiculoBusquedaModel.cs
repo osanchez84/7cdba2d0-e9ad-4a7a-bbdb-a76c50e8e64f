@@ -8,6 +8,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string PlacasBusqueda { get; set; } = null!;
         public string SerieBusqueda { get; set; } = null!;
 
+        public string FolioBusqueda { get; set; } = null!;
+
         #region Campos de busqueda Modificacion
         public string tarjeta { get; set; } = null!;
         public string motor { get; set; } = null!;

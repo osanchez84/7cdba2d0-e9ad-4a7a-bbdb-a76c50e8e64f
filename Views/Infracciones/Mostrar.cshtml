@@ -120,7 +120,7 @@
                 </div>
                 <div class="col-4 col-md-4   col-sm-6 ">
                     <label class="form-label">Vigencia tarjeta</label>
-                    <input type="text" class="form-control" value="@(Model.Vehiculo.vigenciaTarjeta.HasValue ? Model.Vehiculo.vigenciaTarjeta.Value.ToString("dd/MM/yyyy") : string.Empty)" readonly />
+                    <input type="text" class="form-control" value="@((Model.Vehiculo.vigenciaTarjeta.HasValue && Model.Vehiculo.vigenciaTarjeta.Value != new DateTime(1900, 1, 1)) ? Model.Vehiculo.vigenciaTarjeta.Value.ToString("dd/MM/yyyy") : "-")" readonly />
                 </div>
                 <div class="col-4 col-md-4 col-sm-6 ">
                     <label class="form-label">Entidad registro</label>

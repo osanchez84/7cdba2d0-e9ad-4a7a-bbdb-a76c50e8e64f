@@ -65,6 +65,7 @@ namespace GuanajuatoAdminUsuarios.Models
             }
         }
         public string tramo { get; set; }
+        public string telefono { get; set; }      
         public string carretera { get; set; }
         public virtual VehiculoModel Vehiculo { get; set; }
         public PersonaModel Persona { get; set; }

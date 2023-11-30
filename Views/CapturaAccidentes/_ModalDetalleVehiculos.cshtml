@@ -84,7 +84,7 @@
         <div class="col-auto">
             <div class="controlForm mb-3 mt-1">
                 <label class="text-muted">Vigencia de tarjeta:</label>
-                <label>@Model.VigenciaTarjeta</label>
+                <label>@(Model.VigenciaTarjeta > DateTime.MinValue ? Model.VigenciaTarjeta.ToString("dd/MM/yyyy") : "-")</label>
             </div>
         </div>
         <div class="col">

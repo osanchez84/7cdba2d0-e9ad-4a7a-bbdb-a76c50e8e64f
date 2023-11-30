@@ -38,7 +38,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public void CalcularFechas()
         {
-            // Agregar 10 días a la fecha de imposición para obtener la fecha de vencimiento
+            // Agregar 10 dï¿½as a la fecha de imposiciï¿½n para obtener la fecha de vencimiento
             fechaVencimiento = fechaInfraccion.AddDays(10);
         }
         public string kmCarretera { get; set; }

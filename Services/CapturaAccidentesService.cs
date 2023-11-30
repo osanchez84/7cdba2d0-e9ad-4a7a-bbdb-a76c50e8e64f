@@ -230,12 +230,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         command = new SqlCommand(
                        "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                         "FROM vehiculos v " +
-                        "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                        "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
-                        "JOIN catColores cc ON v.idColor = cc.idColor " +
-                        "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                        "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                        "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                        "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                        "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                        "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                         "JOIN personas p ON v.idPersona = p.idPersona " +
                         "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%';", connection);
 
@@ -245,12 +245,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                             "FROM vehiculos v " +
-                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                            "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                             "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                            "JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
-                            "JOIN catColores cc ON v.idColor = cc.idColor " +
-                            "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                            "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                            "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                            "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                            "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                            "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "JOIN personas p ON v.idPersona = p.idPersona " +
                             "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%';", connection);
                         command.Parameters.AddWithValue("@Placa", Placa);
@@ -259,12 +259,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " + 
                             "FROM vehiculos v " +
-                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo" +      
-                            "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
-                            "JOIN catEntidades e ON v.idEntidad = e.idEntidad " + 
-                            "JOIN catColores cc ON v.idColor = cc.idColor " +
-                            "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +    
-                            "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
+                            "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo" +
+                            "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
+                            "left JOIN catEntidades e ON v.idEntidad = e.idEntidad " +
+                            "left JOIN catColores cc ON v.idColor = cc.idColor " +
+                            "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+                            "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "JOIN personas p ON v.idPersona = p.idPersona " +
                             "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Folio + '%';", connection);
                         command.Parameters.AddWithValue("@Folio", Folio);
@@ -1910,12 +1910,12 @@ hola
                     command.Parameters.AddWithValue("@Latitud", datosAccidente.Latitud);
                     command.Parameters.AddWithValue("@Longitud", datosAccidente.Longitud);
                     command.Parameters.AddWithValue("@IdCertificado", datosAccidente.IdCertificado);
-                    command.Parameters.AddWithValue("@convenioValue", convenioValue);
-                    command.Parameters.AddWithValue("@armasValue", armasValue);
-                    command.Parameters.AddWithValue("@drogasValue", drogasValue);
-                    command.Parameters.AddWithValue("@valoresValue", valoresValue);
-                    command.Parameters.AddWithValue("@prendasValue", prendasValue);
-                    command.Parameters.AddWithValue("@otrosValue", otrosValue);
+					command.Parameters.Add(new SqlParameter("@convenioValue", SqlDbType.Bit)).Value = (object)convenioValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@armasValue", SqlDbType.Bit)).Value = (object)armasValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@drogasValue", SqlDbType.Bit)).Value = (object)drogasValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@valoresValue", SqlDbType.Bit)).Value = (object)valoresValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@prendasValue", SqlDbType.Bit)).Value = (object)prendasValue ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@otrosValue", SqlDbType.Bit)).Value = (object)otrosValue ?? DBNull.Value;
                    
                     if (!string.IsNullOrEmpty(datosAccidente.ArmasTexto))
                         command.Parameters.Add(new SqlParameter("@armasTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.ArmasTexto ?? DBNull.Value;

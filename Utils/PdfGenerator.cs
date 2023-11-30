@@ -227,9 +227,12 @@ namespace GuanajuatoAdminUsuarios.Utils
                     {
                         foreach (var item in ColumnsNames)
                         {
-                            PropertyInfo property = type.GetProperty(item.Key);
-                            var value = property.GetValue(objectItem);
-                            AddCellToBody(tableLayout, count, Convert.ToString(value));
+							PropertyInfo pi = type.GetProperty(item.Key);
+                            var value = pi.GetValue(objectItem);
+                            AddCellToBody(tableLayout, count, Convert.ToString(
+                                pi.PropertyType == typeof(DateTime?) ? string.Empty : 
+                                pi.PropertyType == typeof(DateTime) ? (((DateTime)value) == DateTime.MinValue ? string.Empty : ((DateTime)value).ToString("dd-MM-yyyy")) : 
+                                value ?? string.Empty));
                         }
                         count++;
                     }

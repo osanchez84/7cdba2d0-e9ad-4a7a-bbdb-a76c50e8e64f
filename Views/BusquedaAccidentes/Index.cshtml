@@ -1,364 +1,383 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.BusquedaAccidentesModel
 
 <div class="mainContainer bg-light">
-    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
-        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-            <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
-                <div class="row align-items-center justify-content-center justify-content-md-start">
-                    <div class="col-auto">
-                        <i class="icon-research h1 colorPrimary"></i>
-                    </div>
-                    <div class="col-auto my-3">
-                        <h2 class="m-0 h3"><b>Búsqueda de accidentes</b></h2>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+		<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+			<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+				<div class="row align-items-center justify-content-center justify-content-md-start">
+					<div class="col-auto">
+						<i class="icon-research h1 colorPrimary"></i>
+					</div>
+					<div class="col-auto my-3">
+						<h2 class="m-0 h3"><b>Búsqueda de accidentes</b></h2>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
-        <div class="row">
-            <div class="col-12">
-                <div class="bg-light py-1"></div>
-            </div>
-        </div>
-        <div class="col-12 col-md-auto mt-4 mb-3">
-            <h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
-            <h6 class="px-4 text-muted">Filtros de búsqueda para localizar el accidente. Se pueden combinar filtros, por ejemplo se puede combinar fecha y placas.</h6>
-        </div>
-        <div class="mb-4 px-4">
-          <form form id="busquedaAccidenteForm">
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3 selecciondeFecha">
-                            <label>Fecha Inicio:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
-                                .Label(l => l.Content("Fecha Inicio:"))
-                                .HtmlAttributes(new { style = "width: 100%", id="dateInicio" })
-                                )
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
+		<div class="row">
+			<div class="col-12">
+				<div class="bg-light py-1"></div>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto mt-4 mb-3">
+			<h5 class="px-4"><b>Filtros de Búsqueda</b></h5>
+			<h6 class="px-4 text-muted">Filtros de búsqueda para localizar el accidente. Se pueden combinar filtros, por ejemplo se puede combinar fecha y placas.</h6>
+		</div>
+		<div class="mb-4 px-4">
+			<form form id="busquedaAccidenteForm">
+				<div class="row">
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3 selecciondeFecha">
+							<label>Fecha Inicio:</label>
+							@(Html.Kendo().DateTimePickerFor(t => t.FechaInicio)
+								.Label(l => l.Content("Fecha Inicio:"))
+								.HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
+								)
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
 
-                    <div class="controlForm my-3 selecciondeFecha">
-                        <label>Fecha Fin:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
-                                .Label(l => l.Content("Fecha Fin:"))
-                                .HtmlAttributes(new { style = "width: 100%",id="dateFinal" })
-                                )
-                    </div>
-                </div>
-            </div>
-            <div class="row  align-items-end">
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(m=>m.folioBusqueda)
-                            .Label(l => l.Content("Folio:"))
-                            .Placeholder("Ingresa el número de folio del accidente")
-                            .HtmlAttributes(new { style = "width: 100%", Id="txtFolio"})
-                            )
+						<div class="controlForm my-3 selecciondeFecha">
+							<label>Fecha Fin:</label>
+							@(Html.Kendo().DateTimePickerFor(t => t.FechaFin)
+								.Label(l => l.Content("Fecha Fin:"))
+								.HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
+								)
+						</div>
+					</div>
+				</div>
+				<div class="row  align-items-end">
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							@(Html.Kendo().TextBoxFor(m => m.folioBusqueda)
+								.Label(l => l.Content("Folio:"))
+								.Placeholder("Ingresa el número de folio del accidente")
+								.HtmlAttributes(new { style = "width: 100%", Id = "txtFolio" })
+								)
 
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        <label>Delegación/Oficina:</label>
-                        <span>
-                            @(Html.Kendo().DropDownListFor(m => m.IdDelegacionBusqueda)
-                                .Label(l => l.Content("Delegación:"))
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                    .Filter(FilterType.Contains)
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							<label>Delegación/Oficina:</label>
+							<span>
+								@(Html.Kendo().DropDownListFor(m => m.IdDelegacionBusqueda)
+									.Label(l => l.Content("Delegación:"))
+									.DataTextField("Text")
+									.DataValueField("Value")
+									.Filter(FilterType.Contains)
 
-                                .OptionLabel("Selecciona la Delegación")
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                            read.Action("Delegaciones_Drop", "BusquedaAccidentes");
-                                    });
-                                })
-                                    .HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegaciones" })
-                                    .Value(Model.IdDelegacionBusqueda.ToString())  
-                                    )
-                                </span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        <label>Carretera:</label>
-                        <span>
-                            @(Html.Kendo().DropDownListFor(m => m.IdCarreteraBusqueda)
-                                .Label(l => l.Content("Carretera:"))
-                                    .Filter(FilterType.Contains)
+									.OptionLabel("Selecciona la Delegación")
+									.DataSource(source =>
+									{
+										source.Read(read =>
+										{
+											read.Action("Delegaciones_Drop", "BusquedaAccidentes");
+										});
+									})
+									.HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegaciones" })
+									.Value(Model.IdDelegacionBusqueda.ToString())
+									)
+							</span>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							<label>Carretera:</label>
+							<span>
+								@(Html.Kendo().DropDownListFor(m => m.IdCarreteraBusqueda)
+									.Label(l => l.Content("Carretera:"))
+									.Filter(FilterType.Contains)
 
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una Carretera")
-                                .Events(e => e.Change("carreteraDropDownChange"))
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Carreteras_Drop", "BusquedaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;", Id="ddlCarreteras" })
-                                .Filter(FilterType.Contains)
-                                )
-                        </span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        <label>Tramo:</label>
-                        <span>
-                            @(Html.Kendo().DropDownListFor(m => m.IdTramoBusqueda)
-                                    .Filter(FilterType.Contains)
+									.DataTextField("Text")
+									.DataValueField("Value")
+									.OptionLabel("Selecciona una Carretera")
+									.Events(e => e.Change("carreteraDropDownChange"))
+									.DataSource(source =>
+									{
+										source.Read(read =>
+										{
+											read.Action("Carreteras_Drop", "BusquedaAccidentes");
+										});
+									})
+									.HtmlAttributes(new { style = "width:100%;", Id = "ddlCarreteras" })
+									.Filter(FilterType.Contains)
+									)
+							</span>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							<label>Tramo:</label>
+							<span>
+								@(Html.Kendo().DropDownListFor(m => m.IdTramoBusqueda)
+									.Filter(FilterType.Contains)
 
-                                .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona un Tramo")
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Tramos_Drop", "BusquedaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;", Id="ddlTramos" })
-                                .Filter(FilterType.Contains)
-                                )
-                        </span>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(m=>m.placasBusqueda)
-                            .Label(l => l.Content("Placas:"))
-                            .Placeholder("Ingresa el número de placa del vehículo")
-                                .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas"})
-                            )
+									.Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
+									.DataTextField("Text")
+									.DataValueField("Value")
+									.OptionLabel("Selecciona un Tramo")
+									.DataSource(source =>
+									{
+										source.Read(read =>
+										{
+											read.Action("Tramos_Drop", "BusquedaAccidentes");
+										});
+									})
+									.HtmlAttributes(new { style = "width:100%;", Id = "ddlTramos" })
+									.Filter(FilterType.Contains)
+									)
+							</span>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							@(Html.Kendo().TextBoxFor(m => m.placasBusqueda)
+								.Label(l => l.Content("Placas:"))
+								.Placeholder("Ingresa el número de placa del vehículo")
+								.HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas" })
+								)
 
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(m=>m.serieBusqueda)
-                            .Label(l => l.Content("Número de serie:"))
-                            .Placeholder("Ingresa el número de serie")
-                            .HtmlAttributes(new { style = "width: 100%", Id = "txtSerie" })
-                            )
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							@(Html.Kendo().TextBoxFor(m => m.serieBusqueda)
+								.Label(l => l.Content("Número de serie:"))
+								.Placeholder("Ingresa el número de serie")
+								.HtmlAttributes(new { style = "width: 100%", Id = "txtSerie" })
+								)
 
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(m=>m.propietarioBusqueda)
-                            .Label(l => l.Content("Propietario:"))
-                            .Placeholder("Ingresa un propietario")
-                            .HtmlAttributes(new { style = "width: 100%",Id="txtPropietarios" })
-                            )
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							@(Html.Kendo().TextBoxFor(m => m.propietarioBusqueda)
+								.Label(l => l.Content("Propietario:"))
+								.Placeholder("Ingresa un propietario")
+								.HtmlAttributes(new { style = "width: 100%", Id = "txtPropietarios" })
+								)
 
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(m=>m.conductorBusqueda)
-                            .Label(l => l.Content("Conductor:"))
-                            .Placeholder("Ingresa un conductor")
-                            .HtmlAttributes(new { style = "width: 100%", Id="txtConductores" })
-
-
-                            )
-
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        <label>Oficial:</label>
-                        <span>
-                            @(Html.Kendo().DropDownListFor(m => m.IdOficialBusqueda)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                                    .Filter(FilterType.Contains)
-
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;", Id="ddlOficiales" })
-                                )
-                        </span>
-                    </div>
-                </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            <label>Estatus:</label>
-                            <span>
-                                @(Html.Kendo().DropDownListFor(m => m.IdEstatusAccidente)
-                                    .DataTextField("Text")
-                                    .DataValueField("Value")
-                                    .Filter(FilterType.Contains)
-
-                                    .OptionLabel("Selecciona una opción")
-                                    .DataSource(source =>
-                                    {
-                                        source.Read(read =>
-                                        {
-                                            read.Action("EstatusAccidente_Drop", "BusquedaAccidentes");
-                                        });
-                                    })
-                                    .HtmlAttributes(new { style = "width:100%;", Id = "ddlEstatusccidentes" })
-                                    )
-                            </span>
-                        </div>
-                    </div>
-               </div>
-               </form>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlButton my-3" onclick="buscarAccidente()">
-                        @(Html.Kendo().Button()
-                            .Name("BuscarEstadistica")
-                            .HtmlAttributes(new { @class = "btnPrimary" })
-                            .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
-                    </div>
-                </div>
-            </div>
-        <div class="row justify-content-between align-items-end mb-1">
-            <div class="col-12 col-md-auto mt-4 mb-2">
-                <h5 class="px-4"><b>Listado de accidente</b></h5>
-                <h6 class="px-4 text-muted">Edita los datos de accidente.</h6>
-            </div>
-            <div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
-                <div class="row">
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <button onclick="downLoadPdfFiltered()">
-                            <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de accidente</b></h6>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 mb-4 px-4 rounded">
-                <div id="tablaBusquedaAccidentes">
-                    <partial name="_ListaAccidentesBusqueda" model="Model"/>
-                </div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							@(Html.Kendo().TextBoxFor(m => m.conductorBusqueda)
+								.Label(l => l.Content("Conductor:"))
+								.Placeholder("Ingresa un conductor")
+								.HtmlAttributes(new { style = "width: 100%", Id = "txtConductores" })
 
 
-            </div>
+								)
 
-        </div>
-    </section>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							<label>Oficial:</label>
+							<span>
+								@(Html.Kendo().DropDownListFor(m => m.IdOficialBusqueda)
+									.DataTextField("Text")
+									.DataValueField("Value")
+									.OptionLabel("Selecciona una opción")
+									.Filter(FilterType.Contains)
+
+									.DataSource(source =>
+									{
+										source.Read(read =>
+										{
+											read.Action("Oficiales_Drop", "CapturaAccidentes");
+										});
+									})
+									.HtmlAttributes(new { style = "width:100%;", Id = "ddlOficiales" })
+									)
+							</span>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 col-lg-3">
+						<div class="controlForm my-3">
+							<label>Estatus:</label>
+							<span>
+								@(Html.Kendo().DropDownListFor(m => m.IdEstatusAccidente)
+									.DataTextField("Text")
+									.DataValueField("Value")
+									.Filter(FilterType.Contains)
+
+									.OptionLabel("Selecciona una opción")
+									.DataSource(source =>
+									{
+										source.Read(read =>
+										{
+											read.Action("EstatusAccidente_Drop", "BusquedaAccidentes");
+										});
+									})
+									.HtmlAttributes(new { style = "width:100%;", Id = "ddlEstatusccidentes" })
+									)
+							</span>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="col-12 col-md-6 col-lg-3">
+				<div class="controlButton my-3" onclick="buscarAccidente()">
+					@(Html.Kendo().Button()
+						.Name("BuscarEstadistica")
+						.HtmlAttributes(new { @class = "btnPrimary" })
+						.Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-between align-items-end mb-1">
+			<div class="col-12 col-md-auto mt-4 mb-2">
+				<h5 class="px-4"><b>Listado de accidente</b></h5>
+				<h6 class="px-4 text-muted">Edita los datos de accidente.</h6>
+			</div>
+			<div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
+				<div class="row">
+					<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+						<button onclick="downLoadPdfFiltered()">
+							<h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de accidente</b></h6>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 mb-4 px-4 rounded">
+				<div id="tablaBusquedaAccidentes">
+					<partial name="_ListaAccidentesBusqueda" model="Model" />
+				</div>
+
+
+			</div>
+
+		</div>
+	</section>
 </div>
 
-<div class="modal fade modalCustom" id="pdfCausaAccidenteModal"  aria-labelledby="pdfCausaAccidenteModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body" id="ModalBodypdfCausaAccidenteModal">
-            </div>
-        </div>
-    </div>
+<div class="modal fade modalCustom" id="pdfCausaAccidenteModal" aria-labelledby="pdfCausaAccidenteModal" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-body" id="ModalBodypdfCausaAccidenteModal">
+			</div>
+		</div>
+	</div>
 </div>
 @section scripts {
-    <script src="~/js/es6-promise.auto.min.js"></script>
-    <script src="~/js/jspdf.min.js"></script>
-    <script src="~/js/jspdf.umd.min.js"></script>
-    <script src="~/js/html2canvas.min.js"></script>
-    <script src="~/js/html2pdf.bundle.min.js"></script>
+	<script src="~/js/es6-promise.auto.min.js"></script>
+	<script src="~/js/jspdf.min.js"></script>
+	<script src="~/js/jspdf.umd.min.js"></script>
+	<script src="~/js/html2canvas.min.js"></script>
+	<script src="~/js/html2pdf.bundle.min.js"></script>
 
 }
 
- <script>
-    function buscarAccidente() {
-        var Mydata = $("#busquedaAccidenteForm").serialize();
-        console.log(Mydata);
+<script>
+	function buscarAccidente() {
+		var Mydata = $("#busquedaAccidenteForm").serialize();
+		console.log(Mydata);
 
-        $.ajax({
-            url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
-            type: 'GET',
-            data: Mydata,
-            success: function (data) {
-                var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
-                grid.dataSource.data(data); 
-                grid.refresh(); 
-            },
-            error: function () {
-                sitteg_warning("Ocurrieron los siguientes errores");
-            }
-        });
-    }
+		$.ajax({
+			url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
+			type: 'GET',
+			data: Mydata,
+			success: function (data) {
+				var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
+				grid.dataSource.data(data);
+				grid.refresh();
+			},
+			error: function () {
+				sitteg_warning("Ocurrieron los siguientes errores");
+			}
+		});
+	}
 
-    function downLoadPdfFiltered() {
-        var Mydata = $("#busquedaAccidenteForm").serialize();
-        var json = JSON.stringify(Mydata);
-        var http = new XMLHttpRequest();
-        // It would be better to use JSON.stringify to properly generate
-        // a JSON string
-        /**
-        var value = JSON.stringify({
-            prop1: 'value 1',
-            prop2: 'value 2'
-        });
-        **/
+	function downLoadPdfFiltered() {
+		var Mydata = $("#busquedaAccidenteForm").serialize();
+		var fileName = "ReporteGeneralAccidentes.pdf";
+		$.ajax({
+			type: "POST",
+			url: '@Url.Action("AccidentesGeneral","PDFGenerator")',
+			data: Mydata,
+			//contentType: "application/json; charset=utf-8",
+			//dataType: "text",
+			success: function (r) {
+				//Convert Base64 string to Byte Array.
+				var bytes = Base64ToBytes(r);
 
-        http.open('POST', '@Url.Action("AccidentesDetallado","")', true);
-        http.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-        http.setRequestHeader('Content-Length', json.length);
-        http.onreadystatechange = function () {
-            if (http.readyState == 4 && http.status == 200) {
-                alert(http.responseText);
-            }
-        }
-        http.send(json);
+				//Convert Byte Array to BLOB.
+				var blob = new Blob([bytes], { type: "application/octetstream" });
 
+				//Check the Browser type and download the File.
+				var isIE = false || !!document.documentMode;
+				if (isIE) {
+					window.navigator.msSaveBlob(blob, fileName);
+				} else {
+					var url = window.URL || window.webkitURL;
+					link = url.createObjectURL(blob);
+					var a = $("<a />");
+					a.attr("download", fileName);
+					a.attr("href", link);
+					$("body").append(a);
+					a[0].click();
+					$("body").remove(a);
+				}
+			}
+		});
+	}
 
-        //var data = {
-        //    FechaInicio: $('#dateInicio').val(),
-        //    FechaFin: $('#dateFinal').val(),
-        //    placa: $('#txtPlacas').val(),
-        //    serie: $('#txtSerie').val(),
-        //    folio: $('#txtFolio').val(),
-        //    idDelegacion: $('#ddlDelegacion').val(),
-        //    idCarretera: $('#ddlCarreteras').val(),
-        //    idTramo: parseInt($('#ddlTramos').val()),
-        //    propietario: $('#txtPropietarios').val(),
-        //    conductor: $('#txtConductores').val(),
-        //    IdOficial: $('#ddlOficiales').val(),
-        //};
-        var Mydata = $("#busquedaAccidenteForm").serialize();
-        var json = JSON.stringify(Mydata);
-        window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
-    }
-    function carreteraDropDownChange() {
-        var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
-        console.log("IDK", carreteraDDValue)
+	function Base64ToBytes(base64) {
+		var s = window.atob(base64);
+		var bytes = new Uint8Array(s.length);
+		for (var i = 0; i < s.length; i++) {
+			bytes[i] = s.charCodeAt(i);
+		}
+		return bytes;
+	}
 
-        $.ajax({
-            url: "/BusquedaAccidentes/Tramos_Drop",
-            type: "POST",
-            data: { carreteraDDValue: carreteraDDValue },
-            success: function (data) {
-                var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
-                TramosDropDown.dataSource.data(data);
-            },
-            error: function (xhr, status, error) {
-                console.log("EE",error)
-            }
-        });
-    }
-    $(document).ready(function () {
-        $("#dateFinal").data("kendoDateTimePicker").value(null);
-    });
-    $(document).ready(function () {
-        $("#dateInicio").data("kendoDateTimePicker").value(null);
-    });
- </script>
+	//var data = {
+	//    FechaInicio: $('#dateInicio').val(),
+	//    FechaFin: $('#dateFinal').val(),
+	//    placa: $('#txtPlacas').val(),
+	//    serie: $('#txtSerie').val(),
+	//    folio: $('#txtFolio').val(),
+	//    idDelegacion: $('#ddlDelegacion').val(),
+	//    idCarretera: $('#ddlCarreteras').val(),
+	//    idTramo: parseInt($('#ddlTramos').val()),
+	//    propietario: $('#txtPropietarios').val(),
+	//    conductor: $('#txtConductores').val(),
+	//    IdOficial: $('#ddlOficiales').val(),
+	//};
+	//    var Mydata = $("#busquedaAccidenteForm").serialize();
+	//    var json = JSON.stringify(Mydata);
+	//    window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
+	//}
+	function carreteraDropDownChange() {
+		var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
+		console.log("IDK", carreteraDDValue)
+
+		$.ajax({
+			url: "/BusquedaAccidentes/Tramos_Drop",
+			type: "POST",
+			data: { carreteraDDValue: carreteraDDValue },
+			success: function (data) {
+				var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
+				TramosDropDown.dataSource.data(data);
+			},
+			error: function (xhr, status, error) {
+				console.log("EE", error)
+			}
+		});
+	}
+	$(document).ready(function () {
+		$("#dateFinal").data("kendoDateTimePicker").value(null);
+	});
+	$(document).ready(function () {
+		$("#dateInicio").data("kendoDateTimePicker").value(null);
+	});
+</script>
 
 
 

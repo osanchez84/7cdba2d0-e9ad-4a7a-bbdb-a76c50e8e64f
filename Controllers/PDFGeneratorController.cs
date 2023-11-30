@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Helpers;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -9,11 +10,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PdfSharp;
+using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using Newtonsoft.Json;
+using GuanajuatoAdminUsuarios.Utils;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -23,14 +28,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		private readonly ICapturaAccidentesService _capturaAccidentesService;
 		private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
 		private readonly IAppSettingsService _appSettingsService;
-		public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice, IAppSettingsService appSettingService)
-		{
-			_capturaAccidentesService = capturaAccidentesService;
-			_catAutoridadesDisposicionservice = catAutoridadesDisposicionservice;
-			_appSettingsService = appSettingService;
-		}
+        private readonly IBusquedaAccidentesService _busquedaAccidentesService;
+        private readonly IPdfGenerator<BusquedaAccidentesModel> _pdfService;
+        public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice, IAppSettingsService appSettingService, IBusquedaAccidentesService busquedaAccidentesService, IPdfGenerator<BusquedaAccidentesModel> pdfGenerator)
+        {
+            _capturaAccidentesService = capturaAccidentesService;
+            _catAutoridadesDisposicionservice = catAutoridadesDisposicionservice;
+            _appSettingsService = appSettingService;
+            _busquedaAccidentesService = busquedaAccidentesService;
+            _pdfService = pdfGenerator;
+        }
 
-		[HttpGet]
+        [HttpGet]
 		public async Task<FileResult> AccidentesDetallado(int idAccidente)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -72,6 +81,54 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return File(pdfBytes, "application/pdf");
             //return PartialView("_AccidentesDetallado", model);
 		}
+
+        [HttpPost]
+        public async Task<ContentResult> AccidentesGeneral(BusquedaAccidentesModel model)
+        {
+            var ListTransitoModel = AccidentesGeneralBusqueda(model);
+
+            Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
+            {
+            {"IdAccidente","Número"},
+            {"numeroReporte","Folio"},
+            {"fecha","Fecha"},
+            {"hora","Hora"},
+            {"municipio","Municipio" },
+            {"carretera","Carretera" },
+            {"tramo","Tramo" }
+            };
+
+			var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 7, ColumnsNames, ListTransitoModel);
+			//return File(result.Item1, "application/pdf", result.Item2);
+			byte[] bytes = result.Item1.ToArray();
+			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
+			return Content(base64);
+        }
+
+
+
+        private List<BusquedaAccidentesModel> AccidentesGeneralBusqueda(BusquedaAccidentesModel model)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina)
+                                                .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+                                                    && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
+                                                    && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
+                                                    && w.idTramo == (model.IdTramoBusqueda > 0 ? model.IdTramoBusqueda : w.idTramo)
+                                                    && w.idElabora == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idElabora)
+                                                    && w.idAutoriza == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idAutoriza)
+                                                    && w.idEstatusReporte == (model.IdEstatusAccidente > 0 ? model.IdEstatusAccidente : w.idEstatusReporte)
+                                                   && (string.IsNullOrEmpty(model.folioBusqueda) || w.numeroReporte.Contains(model.folioBusqueda))
+                                                   && (string.IsNullOrEmpty(model.placasBusqueda) || w.placa.Contains(model.placasBusqueda))
+                                                   && (string.IsNullOrEmpty(model.propietarioBusqueda) || w.propietario.Contains(model.propietarioBusqueda))
+                                                   && (string.IsNullOrEmpty(model.serieBusqueda) || w.serie.Contains(model.serieBusqueda))
+                                                   && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda))
+                                                   && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
+                                                    ).ToList();
+
+            return resultadoBusqueda;
+        }
 
 
 

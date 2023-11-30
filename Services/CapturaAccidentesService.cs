@@ -1902,12 +1902,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@Latitud", datosAccidente.Latitud);
                     command.Parameters.AddWithValue("@Longitud", datosAccidente.Longitud);
                     command.Parameters.AddWithValue("@IdCertificado", datosAccidente.IdCertificado);
-                    command.Parameters.AddWithValue("@convenioValue", convenioValue);
-                    command.Parameters.AddWithValue("@armasValue", armasValue);
-                    command.Parameters.AddWithValue("@drogasValue", drogasValue);
-                    command.Parameters.AddWithValue("@valoresValue", valoresValue);
-                    command.Parameters.AddWithValue("@prendasValue", prendasValue);
-                    command.Parameters.AddWithValue("@otrosValue", otrosValue);
+					command.Parameters.Add(new SqlParameter("@convenioValue", SqlDbType.Bit)).Value = (object)convenioValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@armasValue", SqlDbType.Bit)).Value = (object)armasValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@drogasValue", SqlDbType.Bit)).Value = (object)drogasValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@valoresValue", SqlDbType.Bit)).Value = (object)valoresValue ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@prendasValue", SqlDbType.Bit)).Value = (object)prendasValue ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@otrosValue", SqlDbType.Bit)).Value = (object)otrosValue ?? DBNull.Value;
                    
                     if (!string.IsNullOrEmpty(datosAccidente.ArmasTexto))
                         command.Parameters.Add(new SqlParameter("@armasTexto", SqlDbType.NVarChar)).Value = (object)datosAccidente.ArmasTexto ?? DBNull.Value;

@@ -38,7 +38,15 @@
 					<div class="controlForm my-3">
 						<label>Fin:</label>
 						@(Html.Kendo().DatePickerFor(m => m.FechaFin)
-							.HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+							.HtmlAttributes(new { style = "width: 100%", title = "endDate" })
+							)
+					</div>
+				</div>
+				<div class="col-6 col-md-auto">
+					<div class="controlForm my-3">
+						<label>Folio:</label>
+						@(Html.Kendo().TextBoxFor(m => m.folioInfraccion)
+							.HtmlAttributes(new { style = "width: 100%", title = "folioInfraccion" })
 							)
 					</div>
 				</div>
@@ -71,7 +79,6 @@
 <script>
 	function busquedaInfracciones() {
 		var myData = $("#busquedaInfraccionForm").serialize();
-		console.log("MY", myData)
 
 		$.ajax({
 			url: '@Url.Action("BusquedaInfracciones", "EnvioInfracciones")',

@@ -54,7 +54,18 @@ namespace GuanajuatoAdminUsuarios.Models
         public string strIsPropietarioConductor { get; set; }
         public string estatusInfraccion { get; set; }
         public string observacionesCortesia { get; set; }
-        
+        public string nombreOficial { get; set; }
+        public string apellidoPaternoOficial { get; set; }
+        public string apellidoMaternoOficial { get; set; }
+        public string nombreCompletoOficial
+        {
+            get
+            {
+                return $"{nombreOficial} {apellidoPaternoOficial} {apellidoMaternoOficial}";
+            }
+        }
+        public string tramo { get; set; }
+        public string carretera { get; set; }
         public virtual VehiculoModel Vehiculo { get; set; }
         public PersonaModel Persona { get; set; }
         public virtual PersonaInfraccionModel PersonaInfraccion { get; set; }
@@ -79,7 +90,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime fechaInfraccion { get; set; }
         public DateTime fechaVencimiento { get; set; }
         public string estatusInfraccion { get; set; }
-        public string nombreOficial { get; set; }
+        public string nombreOficial { get; set; }  
         public string municipio { get; set; }
         public string carretera { get; set; }
         public string tramo { get; set; }

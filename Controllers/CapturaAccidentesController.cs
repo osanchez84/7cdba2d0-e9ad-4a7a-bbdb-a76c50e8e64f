@@ -206,8 +206,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
 			return Json(result);
 		}
-
-		public JsonResult Clasificacion_Drop()
+        public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+        public JsonResult Clasificacion_Drop()
 		{
 			var result = new SelectList(_clasificacionAccidentesService.ObtenerClasificacionesActivas(), "IdClasificacionAccidente", "NombreClasificacion");
 			return Json(result);
@@ -320,9 +324,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			}
 		}
+        public JsonResult Entidades_Read()
+        {
+            var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            return Json(result);
+        }
 
-
-		public async Task<string> AbrirModalVehiculo(string placa, string serie)
+        public async Task<string> AbrirModalVehiculo(string placa, string serie)
 		{
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
             {
@@ -1269,9 +1278,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			List<CapturaAccidentesModel> ListaInvolucrados = new List<CapturaAccidentesModel>();
 			string parametros = "";
-			parametros += string.IsNullOrEmpty(model.licencia) ? "" : "licencia=" + model.licencia;
-			parametros += string.IsNullOrEmpty(model.curp) ? "" : "curp=" + model.curp + "&";
-			parametros += string.IsNullOrEmpty(model.rfc) ? "" : "rfc=" + model.rfc + "&";
+			parametros += string.IsNullOrEmpty(model.numeroLicencia) ? "" : "licencia=" + model.numeroLicencia;
+			parametros += string.IsNullOrEmpty(model.CURP) ? "" : "curp=" + model.CURP + "&";
+			parametros += string.IsNullOrEmpty(model.RFC) ? "" : "rfc=" + model.RFC + "&";
 			parametros += string.IsNullOrEmpty(model.nombre) ? "" : "nombre=" + model.nombre + "&";
 			parametros += string.IsNullOrEmpty(model.apellidoPaterno) ? "" : "primer_apellido=" + model.apellidoPaterno + "&";
 			parametros += string.IsNullOrEmpty(model.apellidoMaterno) ? "" : "segundo_apellido=" + model.apellidoMaterno + "";
@@ -1284,9 +1293,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			// realiza la búsqueda de personas y devuelve los resultados en formato JSON
 
 			PersonaModel persona = new PersonaModel();
-			persona.numeroLicenciaBusqueda = model.licencia;
-			persona.CURPBusqueda = model.curp;
-			persona.RFCBusqueda = model.rfc;
+			persona.numeroLicenciaBusqueda = model.numeroLicencia;
+			persona.CURPBusqueda = model.CURP;
+			persona.RFCBusqueda = model.RFC;
 			persona.nombreBusqueda = model.nombre;
 			persona.apellidoPaternoBusqueda = model.apellidoPaterno;
 			persona.apellidoMaternoBusqueda = model.apellidoMaterno;
@@ -1300,9 +1309,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					involucrado.nombre = p.nombre;
 					involucrado.apellidoPaterno = p.apellidoPaterno;
 					involucrado.apellidoMaterno = p.apellidoMaterno;
-					involucrado.rfc = p.RFC;
-					involucrado.curp = p.CURP;
-					involucrado.licencia = p.numeroLicencia;
+					involucrado.RFC = p.RFC;
+					involucrado.CURP = p.CURP;
+					involucrado.numeroLicencia = p.numeroLicencia;
 					involucrado.fechaNacimiento = p.fechaNacimiento.Value;
 					ListaInvolucrados.Add(involucrado);
 				}
@@ -1354,9 +1363,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 involucrado.nombre = datosTabla.nombre;
                 involucrado.apellidoPaterno = datosTabla.apellidoPaterno;
                 involucrado.apellidoMaterno = datosTabla.apellidoMaterno;
-                involucrado.rfc = datosTabla.RFC;
-                involucrado.curp = datosTabla.CURP;
-                involucrado.licencia = datosTabla.numeroLicencia; 
+                involucrado.RFC = datosTabla.RFC;
+                involucrado.CURP = datosTabla.CURP;
+                involucrado.numeroLicencia = datosTabla.numeroLicencia; 
                 
                 return Json(involucrado);
             }

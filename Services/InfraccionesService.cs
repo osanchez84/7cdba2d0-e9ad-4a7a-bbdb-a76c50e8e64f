@@ -1669,37 +1669,43 @@ namespace GuanajuatoAdminUsuarios.Services
         public InfraccionesModel GetInfraccion2ById(int idInfraccion)
         {
             List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT idInfraccion
-                                      ,idOficial
-                                      ,idDependencia
-                                      ,idDelegacion
-                                      ,idVehiculo
-                                      ,idAplicacion
-                                      ,idGarantia
-                                      ,idEstatusInfraccion
-                                      ,idMunicipio
-                                      ,idTramo
-                                      ,idCarretera
-                                      ,idPersona
-                                      ,idPersonaInfraccion
-                                      ,placasVehiculo
-                                      ,folioInfraccion
-                                      ,fechaInfraccion
-                                      ,kmCarretera
-                                      ,observaciones
-                                      ,lugarCalle
-                                      ,lugarNumero
-                                      ,lugarColonia
-                                      ,lugarEntreCalle
-                                      ,infraccionCortesia
-                                      ,NumTarjetaCirculacion
-                                      ,fechaActualizacion
-                                      ,actualizadoPor
-                                      ,estatus
-                               FROM infracciones
-                               WHERE estatus = 1
-                               AND idInfraccion = @idInfraccion"
-            ;
+            string strQuery = @"SELECT inf.idInfraccion
+                                      ,inf.idOficial
+                                      ,inf.idDependencia
+                                      ,inf.idDelegacion
+                                      ,inf.idVehiculo
+                                      ,inf.idAplicacion
+                                      ,inf.idGarantia
+                                      ,inf.idEstatusInfraccion
+                                      ,inf.idMunicipio
+                                      ,inf.idTramo
+                                      ,inf.idCarretera
+                                      ,inf.idPersona
+                                      ,inf.idPersonaInfraccion
+                                      ,inf.placasVehiculo
+                                      ,inf.folioInfraccion
+                                      ,inf.fechaInfraccion
+                                      ,inf.kmCarretera
+                                      ,inf.observaciones
+                                      ,inf.lugarCalle
+                                      ,inf.lugarNumero
+                                      ,inf.lugarColonia
+                                      ,inf.lugarEntreCalle
+                                      ,inf.infraccionCortesia
+                                      ,inf.NumTarjetaCirculacion
+                                      ,inf.fechaActualizacion
+                                      ,inf.actualizadoPor
+                                      ,inf.estatus
+									  ,ofi.nombre AS nombreOficial
+									  ,ofi.apellidoPaterno AS apellidoPaternoOficial
+								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
+									  ,car.carretera,tra.tramo
+                               FROM infracciones AS inf
+							   LEFT JOIN catOficiales AS ofi ON inf.idOficial = ofi.idOficial
+							   LEFT JOIN catCarreteras AS car ON inf.idCarretera = car.idCarretera
+							   LEFT JOIN catTramos AS tra ON inf.idTramo = tra.idTramo
+                               WHERE inf.estatus = 1
+                               AND idInfraccion = @idInfraccion";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -1729,6 +1735,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
+                            model.nombreOficial = reader["nombreOficial"].ToString();
+                            model.apellidoPaternoOficial = reader["apellidoPaternoOficial"].ToString();
+                            model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
+                            model.carretera = reader["carretera"].ToString();
+                            model.tramo = reader["tramo"].ToString();
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();

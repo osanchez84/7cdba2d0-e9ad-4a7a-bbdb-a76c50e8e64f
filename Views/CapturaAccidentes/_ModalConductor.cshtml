@@ -111,13 +111,13 @@
                     <div class="col">
                         <div class="controlForm mb-3 mt-1">
                             <label class="text-muted">RFC:</label>
-                            <label>@Model.rfc</label>
+                            <label>@Model.RFC</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="controlForm mb-3 mt-1">
                             <label class="text-muted">CURP:</label>
-                            <label>@Model.curp</label>
+                            <label>@Model.CURP</label>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -240,7 +240,7 @@
                     <div class="row px-4 mt-4 align-items-end">
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t=>t.licencia)
+                                @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
                                             .Label(l => l.Content("No. de licencia:"))
                                             .Placeholder("Ingresa el número de licencia valido")
                                             .HtmlAttributes(new { style = "width: 100%" })
@@ -269,7 +269,7 @@
 
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t=>t.nombre)
+                                @(Html.Kendo().TextBoxFor(t=>t.nombreBusqueda)
                                         .Label(l => l.Content("Nombre(s):"))
                                         .Placeholder("Ingresa el nombre(s) del propietario")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -279,7 +279,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t=>t.apellidoPaterno)
+                                @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
                                         .Label(l => l.Content("Apellido paterno:"))
                                         .Placeholder("Ingresa el apellido paterno")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -289,7 +289,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t=>t.apellidoMaterno)
+                                @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
                                         .Label(l => l.Content("Apellido materno:"))
                                         .Placeholder("Ingresa el apellido materno")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -390,7 +390,7 @@
 
 
 
-         function mostrarModalCapturarConductor() {
+ function mostrarModalCapturarConductor() {
 
         $.ajax({
             url: '@Url.Action("ModalCapturaConductor")',
@@ -496,37 +496,32 @@
             }
         });
     }
-
-
-
     function buscarConductor() {
-        var Mydata = $("#otroConductorForm").serialize(); 
+        var grid = $("#gridConductores").data("kendoGrid");
+        grid.dataSource.data([]);
+        var Mydata = $("#otroConductorForm").serialize();
         $.ajax({
-            url: '/CapturaAccidentes/BuscarPorParametro',
+            url: '/Personas/BuscarPorParametro',
             type: 'POST',
             data: Mydata,
-            success: function (response) { 
+            success: function (response) {
                 if (response.tipo == "success") {
-                    // Crear instancia del modelo con los datos recibidos
                     mostrarModal(response.datos);
+                } else if (response.encontrada != undefined) {
+                    if (response.encontrada == false) {
+                        // sitteg_warning("No se pudieron obtener resultados.");
+                    }
+                } else if (response.tipo == "warning") {
+                    sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+                }
 
-                } else {
-                    // Mostrar los resultados de personas encontradas en la búsqueda
-                    if(response.encontrada == false){
-                        sitteg_warning("La búsqueda no arrojó resultados.");
-                    }else{ 
-                        if(response.data != null || response.data != undefined){
-                            var personasList = response.data;
-                            var grid = $("#gridConductores").data("kendoGrid");
-                            grid.dataSource.data(personasList);
+                var personasList = response.data;
+                var grid = $("#gridConductores").data("kendoGrid");
+                grid.dataSource.data(personasList);
 
-                            if (personasList.length === 0) {
-                                sitteg_warning("La búsqueda no arrojó resultados.");
-                            }
-                        }else{
-                            sitteg_warning("La búsqueda no arrojó resultados.");
-                        }  
-                    } 
+                if (personasList.length === 0) {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    grid.dataSource.data([]);
                 }
             },
             error: function (error) {
@@ -534,7 +529,6 @@
             }
         });
     }
-
     function mostrarModal(jsonData) {
         const modal = document.getElementById('modalLicencias');
 

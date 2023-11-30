@@ -119,15 +119,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 .SelectMany(s => s.MotivosInfraccion)
                 .GroupBy(g => g.idInfraccion)
                 .GroupBy(g => g.Count())
-                .Where(group => group.Key > 0) // Filtra grupos con ContadorMotivos > 0
+                .Where(group => group.Key > 0) 
                 .Select(s => new EstadisticaInfraccionMotivosModel
                 {
-                    NumeroMotivos = s.Key,  // Número de motivos
-                    ContadorMotivos = s.Count(),  // Cantidad de infracciones con ese número de motivos
-                    ResultadoMultiplicacion = s.Key * s.Count()  // Nuevo parámetro con la multiplicación
+                    NumeroMotivos = s.Key,  
+                    ContadorMotivos = s.Count(),  
+                    ResultadoMultiplicacion = s.Key * s.Count()  
                 }).ToList();
 
-            // Resto del código para calcular totales y agregar la instancia de totales a modelList
 
             return PartialView("_GridPorMotivos", modelMotivosList);
         }

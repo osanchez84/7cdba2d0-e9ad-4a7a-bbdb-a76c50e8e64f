@@ -28,12 +28,12 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime fechaInfraccion { get; set; }
-
-        public int DiasTranscurridos
+		public string fechaVencimiento { get; set; }
+		public int DiasTranscurridos
         {
             get
             {
-                return (DateTime.Today - fechaInfraccion.Date).Days;
+                return (DateTime.Today - Convert.ToDateTime(fechaVencimiento).Date).Days;
             }
         }
 
@@ -45,15 +45,6 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreCompletoPropietario { get; set; }
 
         public string fecha { get; set; }
-		public string fechaVencimiento { get; set; }
-
-
-
 		
-
-
-
-
-
 	}
 }

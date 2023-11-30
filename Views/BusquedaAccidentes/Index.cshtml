@@ -295,20 +295,44 @@
     }
 
     function downLoadPdfFiltered() {
-        var data = {
-            FechaInicio: $('#dateInicio').val(),
-            FechaFin: $('#dateFinal').val(),
-            placa: $('#txtPlacas').val(),
-            serie: $('#txtSerie').val(),
-            folio: $('#txtFolio').val(),
-            idDelegacion: $('#ddlDelegacion').val(),
-            idCarretera: $('#ddlCarreteras').val(),
-            idTramo: parseInt($('#ddlTramos').val()),
-            propietario: $('#txtPropietarios').val(),
-            conductor: $('#txtConductores').val(),
-            IdOficial: $('#ddlOficiales').val(),
-        };
-        var json = JSON.stringify(data);
+        var Mydata = $("#busquedaAccidenteForm").serialize();
+        var json = JSON.stringify(Mydata);
+        var http = new XMLHttpRequest();
+        // It would be better to use JSON.stringify to properly generate
+        // a JSON string
+        /**
+        var value = JSON.stringify({
+            prop1: 'value 1',
+            prop2: 'value 2'
+        });
+        **/
+
+        http.open('POST', '@Url.Action("AccidentesDetallado","")', true);
+        http.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        http.setRequestHeader('Content-Length', json.length);
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                alert(http.responseText);
+            }
+        }
+        http.send(json);
+
+
+        //var data = {
+        //    FechaInicio: $('#dateInicio').val(),
+        //    FechaFin: $('#dateFinal').val(),
+        //    placa: $('#txtPlacas').val(),
+        //    serie: $('#txtSerie').val(),
+        //    folio: $('#txtFolio').val(),
+        //    idDelegacion: $('#ddlDelegacion').val(),
+        //    idCarretera: $('#ddlCarreteras').val(),
+        //    idTramo: parseInt($('#ddlTramos').val()),
+        //    propietario: $('#txtPropietarios').val(),
+        //    conductor: $('#txtConductores').val(),
+        //    IdOficial: $('#ddlOficiales').val(),
+        //};
+        var Mydata = $("#busquedaAccidenteForm").serialize();
+        var json = JSON.stringify(Mydata);
         window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
     }
     function carreteraDropDownChange() {

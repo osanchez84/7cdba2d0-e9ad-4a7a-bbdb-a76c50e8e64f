@@ -4,6 +4,15 @@
 		@(
 			Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.BusquedaAccidentesModel>()
 			.Name("gridBusquedaAccidentes")
+			.ToolBar(tools => 
+			tools.Pdf())
+			.Pdf(pdf => pdf
+			.FileName("BusquedaGeneralAccidentes.pdf")
+			.AllPages()
+			.PaperSize("A4")
+			.Scale(0.75)
+			.TemplateId("page-template")
+			)
 			.Columns(columns =>
 			{
 				columns.Bound(c => c.IdAccidente).Title("Número").Width(60);
@@ -50,6 +59,51 @@
 	</div>
 </div>
 
+
+<script type="text/x-kendo-template" id="page-template">
+	<div class="toolbar">
+	  <label class="category-label" for="category">Test input:</label>
+	  <input type="search" id="category" style="width: 150px"/>
+	  <a class="k-button k-button-icontext k-grid-pdf" href="\\#">Export to Pdf</a>
+	</div>
+</script>
+<script id="rowTemplate" type="text/x-kendo-tmpl">
+	<tr data-uid="#: uid #">
+	  <td class="photo">
+		<img src="../content/web/Employees/#: EmployeeID #.jpg" alt="#: EmployeeID #" />
+	  </td>
+	  <td class="details">
+		<span class="name">#: FirstName# #: LastName# </span>
+		<span class="title">Title: #: Title #</span>
+	  </td>
+	  <td class="country">
+		#: Country #
+	  </td>
+	  <td class="employeeID">
+		#: EmployeeID #
+	  </td>
+	</tr>
+</script>
+<script id="altRowTemplate" type="text/x-kendo-tmpl">
+	<tr class="k-alt" data-uid="#: uid #">
+	  <td class="photo">
+		<img src="../content/web/Employees/#: data.EmployeeID #.jpg" alt="#: EmployeeID #" />
+	  </td>
+	  <td class="details">
+		<span class="name">#: FirstName# #: LastName# </span>
+		<span class="title">Title: #: Title #</span>
+	  </td>
+	  <td class="country">
+		#: Country #
+	  </td>
+	  <td class="employeeID">
+		#: EmployeeID #
+	  </td>
+	</tr>
+</script>
+
+
+<script src="https://unpkg.com/pako/dist/pako_deflate.min.js"></script>
 <script>
 	const downloadFile = (blob, fileName) => {
 		const link = document.createElement('a');

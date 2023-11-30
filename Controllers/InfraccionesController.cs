@@ -207,6 +207,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
             return Json(result);
         }
+        public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
         public JsonResult CarreterasPorDelegacion()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -526,6 +531,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_Create", vehiculosModel);
             }
         }
+
+
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
             var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);

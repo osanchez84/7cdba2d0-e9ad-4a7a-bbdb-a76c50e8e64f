@@ -5,6 +5,16 @@
 
 <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+            <div class="row">
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="cerrarModalConductor()">
+                    @(Html.Kendo().Button()
+                        .Name("backAccidentes3")
+                        .HtmlAttributes(new { @class = "px-5" })
+                        .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\" data-bs-dismiss=\"modal\" aria - label = \"Close\" ></i><b>Regresar</b></h6>"))
+                </div>
+            </div>
+        </div>
         <div class="col-12 col-md-auto">
             <div class="row align-items-center justify-content-center justify-content-md-start">
                 <div class="col-auto p-0">
@@ -305,7 +315,7 @@
                         // sitteg_warning("No se pudieron obtener resultados.");
                     }
                 } else if (response.tipo == "warning") {
-                    sitteg_warning("No se pudieron obtener resultados.");
+                    sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
                 }
 
                 var personasList = response.data;
@@ -419,5 +429,9 @@
             $('#confirmacionModal').modal('hide');
             window.close(); // Cierra la ventana
         });
+    }
+    function cerrarModalConductor() {
+        $('#agregarConductorModal').modal('hide');
+
     }
 </script>

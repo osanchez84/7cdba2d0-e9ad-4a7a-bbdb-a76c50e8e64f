@@ -26,6 +26,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
+                    string findFolio = "";
+
+                    if (!string.IsNullOrEmpty(model.folioInfraccion))                    
+                        findFolio = "AND folioInfraccion = @FOLIO";                    
+
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT inf.idInfraccion, inf.idOficial" +
                                             ", inf.idDependencia" +
@@ -67,13 +72,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             "LEFT JOIN catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion " +
                             "LEFT JOIN personas AS prop ON inf.idPersona = prop.idPersona " +
                             "LEFT JOIN personas AS cond ON inf.idPersonaInfraccion = cond.idPersona " +
-                            "WHERE CONVERT(DATETIME, fechaInfraccion, 120) BETWEEN CONVERT(DATETIME, @fechaInicio, 101) AND CONVERT(DATETIME, @fechaFin, 101) AND DATEDIFF(day, inf.fechaInfraccion, GETDATE()) > 10", connection); 
+							"WHERE CONVERT(DATETIME, fechaInfraccion, 120) BETWEEN CONVERT(DATETIME, @fechaInicio, 101) AND CONVERT(DATETIME, @fechaFin, 101) AND DATEDIFF(day, inf.fechaInfraccion, GETDATE()) > 10 " + findFolio, connection); 
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.DateTime)).Value = (object)model.FechaInicio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)model.FechaFin ?? DBNull.Value;
+
+					if (!string.IsNullOrEmpty(model.folioInfraccion))
+					{
+						command.Parameters.Add(new SqlParameter("@FOLIO", SqlDbType.VarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
+					}
                    
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

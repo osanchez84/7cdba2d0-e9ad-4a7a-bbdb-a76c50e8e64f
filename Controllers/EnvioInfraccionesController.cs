@@ -54,8 +54,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var resultadoBusqueda = _envioInfraccionesService.ObtenerInfracciones(model);
             return Json(resultadoBusqueda);
-
-
         }
         public JsonResult OficinasRenta_Drop()
         {

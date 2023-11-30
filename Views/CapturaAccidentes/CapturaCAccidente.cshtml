@@ -275,7 +275,6 @@
                   <label class="label">Seleccione uno o varios elementos que se encontraron en el accidente:</label>
                        <label>Armas</label> @(Html.Kendo().SwitchFor(t => t.ArmasBool)
                             .Name("armasSwitch")
-                        .Checked(false)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                       <div id="campoArmasTexto" style="display:none">
@@ -286,7 +285,6 @@
                         </div>
                         <label>Drogas</label> @(Html.Kendo().SwitchFor(t => t.DrogasBool)
                             .Name("drogasSwitch")
-                            .Checked(false)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                          <div id="campoDrogasTexto" style="display:none">
@@ -297,7 +295,6 @@
                           </div>
                         <label>Valores</label> @(Html.Kendo().SwitchFor(t => t.ValoresBool)
                             .Name("valoresSwitch")
-                            .Checked(false)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                          <div id="campoValoresTexto" style="display:none">
@@ -308,7 +305,6 @@
                            </div>
                          <label>Prendas</label> @(Html.Kendo().SwitchFor(t => t.PrendasBool)
                             .Name("prendasSwitch")
-                            .Checked(false)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                           <div id="campoPrendasTexto" style="display:none">
@@ -319,7 +315,6 @@
                                 </div>
                         <label>Otros</label> @(Html.Kendo().SwitchFor(t => t.OtrosBool)
                             .Name("otrosSwitch")
-                            .Checked(false)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                             <div id="campoTexto" style="display:none">

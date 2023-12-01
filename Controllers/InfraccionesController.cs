@@ -1332,7 +1332,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /*****************************************************************************************************/
         #endregion
 
-
+        public JsonResult Entidades_Drop()
+        {
+            var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            return Json(result);
+        }
+        public JsonResult Municipios_Drop(int entidadDDlValue)
+        {
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
 
     }
 }

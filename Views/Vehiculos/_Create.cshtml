@@ -1173,6 +1173,9 @@
 
     idTelefono.off('blur');
 
+
+    $("#hdnIdCatTipoPersona").prop("disabled",true)
+
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
 
@@ -1198,6 +1201,7 @@
         });
     } else {
         idTelefono.prop("disabled", false);
+            $("#hdnIdCatTipoPersona").prop("disabled",false)
         sitteg_info('Debe llenar los campos requeridos');
         return;
     }

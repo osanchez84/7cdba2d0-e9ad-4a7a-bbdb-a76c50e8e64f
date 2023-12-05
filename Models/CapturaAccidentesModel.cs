@@ -79,7 +79,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public string DatoBusquedaVehiculo { get; set; }
         public int IdTipoLicencia { get; set; }
         public int IdCatTipoPersona { get; set; }
-        public DateTime fechaNacimiento { get; set; }
+        public DateTime? fechaNacimiento { get; set; }
+
+		public DateTime dateNacimiento { get; set; }
+		public string FechaNacimientoFormateada => fechaNacimiento.HasValue ? fechaNacimiento.Value.ToString("dd/MM/yyyy") : string.Empty;
 
         public DateTime vigenciaLicencia { get; set; }
         public string TipoPersona { get; set; }

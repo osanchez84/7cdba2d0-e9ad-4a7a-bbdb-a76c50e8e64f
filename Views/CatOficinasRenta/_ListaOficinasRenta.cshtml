@@ -9,9 +9,10 @@
 
         @(
             Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CatOficinasRentaModel>()
-            .Name("grid")
+            .Name("gridCatOficinasRenta")
             .Columns(columns =>
             {
+                columns.Bound(c => c.IdDelegacion).Hidden();
                 columns.Bound(c => c.IdOficinaRenta).Title("Id").Width(30);
                 columns.Bound(c => c.NombreOficina).Title("Oficina").Width(100);
                 columns.Bound(c => c.DelegacionDesc).Title("Delegación").Width(90);
@@ -61,15 +62,17 @@
     function getId(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficinaRenta = dataItem.IdOficinaRenta;
-        console.log(IdOficinaRenta);
+        var IdDelegacion = dataItem.IdDelegacion;
+
+        console.log(IdDelegacion);
 
         $.ajax({
             url: '@Url.Action("EditarOficinaRentaModal", "CatOficinasRenta")',
             type: 'POST', 
-            data: { IdOficinaRenta: IdOficinaRenta },
+            data: { IdOficinaRenta: IdOficinaRenta, IdDelegacion: IdDelegacion },
             success: function (result) {
-                $('#ModalBodEditarOficinasRenta').html(result);
-                $('#editarOficinasRenta').modal('show');
+                $('#ModalBodyaAgregarOficinasRenta').html(result);
+                $('#agregarOficinasRenta').modal('show');
 
             },
         })
@@ -78,15 +81,17 @@
     function eliminar(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficinaRenta = dataItem.IdOficinaRenta;
+        var IdDelegacion = dataItem.IdDelegacion;
+
         console.log(IdOficinaRenta);
 
         $.ajax({
             url: '@Url.Action("EliminarOficinaRentaModal", "CatOficinasRenta")', 
             type: 'POST',
-            data: { IdOficinaRenta: IdOficinaRenta },
+            data: { IdOficinaRenta: IdOficinaRenta, IdDelegacion : IdDelegacion },
             success: function (result) {
-                $('#ModalBodyEliminarOficinasRenta').html(result);
-                $('#eliminarOficinasRenta').modal('show');
+                $('#ModalBodyaAgregarOficinasRenta').html(result);
+                $('#agregarOficinasRenta').modal('show');
 
             },
         })

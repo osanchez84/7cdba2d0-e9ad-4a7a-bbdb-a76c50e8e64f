@@ -1247,6 +1247,10 @@ function submitCreateMoral() {
 
     idTelefono.off('blur');
 
+
+    $("#idCatTipoServicio").prop("disabled",true)
+
+
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
 
@@ -1272,6 +1276,8 @@ function submitCreateMoral() {
         });
     } else {
         idTelefono.prop("disabled", false);
+        $("#idCatTipoServicio").prop("disabled",false)
+
         sitteg_info('Debe llenar los campos requeridos');
         return;
     }

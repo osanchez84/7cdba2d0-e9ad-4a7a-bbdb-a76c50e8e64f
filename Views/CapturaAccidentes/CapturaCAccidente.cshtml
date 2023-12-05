@@ -42,6 +42,7 @@
                     @(Html.Kendo().TextBoxFor(t => t.montoCamino)
                         .Label(l => l.Content("Daños al camino:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños al camino")
+                        .Enable(!ViewBag.EsSoloLectura) 
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
                         )
 
@@ -52,6 +53,7 @@
                     @(Html.Kendo().TextBoxFor(t => t.montoCarga)
                         .Label(l => l.Content("Daños a la carga:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños a la carga")
+                        .Enable(!ViewBag.EsSoloLectura) 
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
                         )
 
@@ -62,6 +64,7 @@
                     @(Html.Kendo().TextBoxFor(t => t.montoPropietarios)
                         .Label(l => l.Content("Daños a propietarios:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños a los propietarios")
+                            .Enable(!ViewBag.EsSoloLectura)
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
                         )
 
@@ -73,6 +76,7 @@
                     @(Html.Kendo().TextBoxFor(t => t.montoOtros)
                         .Label(l => l.Content("Otros daños:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños bajo el concepto de otros")
+                            .Enable(!ViewBag.EsSoloLectura)
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
                         )
 
@@ -226,6 +230,7 @@
                         .Label(l => l.Content("Latitud:"))
                         .Placeholder("Ingresa la latitud donde ocurrió el accidente.")
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                            .Enable(!ViewBag.EsSoloLectura)
                         )
 
                 </div>
@@ -236,6 +241,7 @@
                         .Label(l => l.Content("Longitud:"))
                         .Placeholder("Ingresa la longitud donde ocurrió el accidente.")
                         .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        .Enable(!ViewBag.EsSoloLectura)
                         )
 
                 </div>
@@ -258,6 +264,7 @@
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;" })
+                                .Enable(!ViewBag.EsSoloLectura)
                                 )
                     </span>
                 </div>

@@ -931,13 +931,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
 			var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
-			var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+			//var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
 			var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
-			var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+			//var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
 
-			ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+			//ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
 			ViewBag.CatGeneros = new SelectList(catGeneros.CatalogList, "Id", "Text");
-			ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
+			///ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
 			ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
 			ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
 			return PartialView("_ModalCapturarConductor");

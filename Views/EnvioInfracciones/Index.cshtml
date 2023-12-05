@@ -24,9 +24,9 @@
 			<h6 class="px-4 text-muted">Filtrar por fecha para localizar la infracción no pagada.</h6>
 		</div>
 		<form id="busquedaInfraccionForm">
-			<div class="row">
+			<div class="row align-items-center  px-4 px-md-4 pt-3 pb-2">
 
-				<div class="col-6 col-md-auto">
+				<div class="col-3 ">
 					<div class="controlForm my-3">
 						<label>Inicio:</label>
 						@(Html.Kendo().DatePickerFor(m => m.FechaInicio)
@@ -34,22 +34,32 @@
 							)
 					</div>
 				</div>
-				<div class="col-6 col-md-auto">
+				<div class="col-3 ">
 					<div class="controlForm my-3">
 						<label>Fin:</label>
 						@(Html.Kendo().DatePickerFor(m => m.FechaFin)
-							.HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+							.HtmlAttributes(new { style = "width: 100%", title = "endDate" })
+							)
+					</div>
+				</div>
+				<div class="col-3 ">
+					<div class="controlForm my-3">
+						<label>Folio:</label>
+						@(Html.Kendo().TextBoxFor(m => m.folioInfraccion)
+							.HtmlAttributes(new { style = "width: 100%", title = "folioInfraccion" })
 							)
 					</div>
 				</div>
 			</div>
 		</form>
-		<div class="col-12 col-md-6 col-lg-3">
-			<div class="controlButton my-3" onclick="busquedaInfracciones()">
-				@(Html.Kendo().Button()
-					.Name("BuscarEnvio")
-					.HtmlAttributes(new { @class = "btnPrimary" })
-					.Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+		<div class="row align-items-center  px-4 px-md-4 pt-3 pb-2">
+			<div class="col-3 ">
+				<div class="controlButton my-3" onclick="busquedaInfracciones()">
+					@(Html.Kendo().Button()
+						.Name("BuscarEnvio")
+						.HtmlAttributes(new { @class = "btnPrimary" })
+						.Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+				</div>
 			</div>
 		</div>
 		<div class="row justify-content-between align-items-end mb-1">
@@ -71,7 +81,6 @@
 <script>
 	function busquedaInfracciones() {
 		var myData = $("#busquedaInfraccionForm").serialize();
-		console.log("MY", myData)
 
 		$.ajax({
 			url: '@Url.Action("BusquedaInfracciones", "EnvioInfracciones")',

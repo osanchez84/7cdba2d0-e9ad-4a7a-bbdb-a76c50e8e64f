@@ -46,17 +46,20 @@
                 "</h6></button>"
                 ).Width(150);
                 columns.Bound(c => c.IdCausaAccidente).Title("Orden").Width(30);
-                columns.Command(command =>
-                command.Custom("Arriba")
-                .Text("")
-                .Click("arriba")
-                .HtmlAttributes(new { @class = "w-100 btn custom-button " + claseColorOtroBoton })).Width(60);
-                // columns.Command(command => command.Custom("Abajo").Text("").Click("abajo")).Width(60);
-                columns.Command(command =>
-                command.Custom("Abajo")
-                .Text("")
-                .Click("abajo")
-            .HtmlAttributes(new { @class = "w-100 btn custom-button " + claseColorOtroBoton })).Width(60);
+               
+                columns.Template(
+                "<button class='w-100 btn " + claseColorOtroBoton + "'>" +
+                "<h6 class='m-0' onclick='arriba(event)'>" +
+                "<i class='h5'></i><b>Arriba</b>" +
+                "</h6></button>"
+                ).Width(50);
+
+                columns.Template(
+                "<button class='w-100 btn " + claseColorOtroBoton + "'>" +
+                "<h6 class='m-0' onclick='abajo(event)'>" +
+                "<i class='h5'></i><b>Abajo</b>" +
+                "</h6></button>"
+                ).Width(50);                
             }).HtmlAttributes(new { style = "height:400px" })
 
             .Sortable()
@@ -144,13 +147,13 @@
         });
     }
  
-    function arriba(e) {
-        e.preventDefault();
+    function arriba(event) {
+        event.preventDefault();
         if ('@ViewBag.EsSoloLectura' === 'True') {
             return;
         }
         var grid = $("#gridCausasA").data("kendoGrid");
-        var selectedRow = $(e.target).closest("tr");
+        var selectedRow = $(event.target).closest("tr");
         var dataItem = grid.dataItem(selectedRow);
         var currentIndex = grid.dataSource.indexOf(dataItem);
         if (currentIndex > 0) {
@@ -160,13 +163,13 @@
         }
     }
 
-    function abajo(e) {
-        e.preventDefault();
+    function abajo(event) {
+        event.preventDefault();
         if ('@ViewBag.EsSoloLectura' === 'True') {
             return;
         }
         var grid = $("#gridCausasA").data("kendoGrid");
-        var selectedRow = $(e.target).closest("tr");
+        var selectedRow = $(event.target).closest("tr");
         var dataItem = grid.dataItem(selectedRow);
         var currentIndex = grid.dataSource.indexOf(dataItem);
         if (currentIndex < grid.dataSource.total() - 1) {

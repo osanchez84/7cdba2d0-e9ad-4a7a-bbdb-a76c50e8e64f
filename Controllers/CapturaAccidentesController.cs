@@ -1189,18 +1189,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-        
 
-        public ActionResult CapturaAccidenteC(string descripcionCausa, bool esSoloLectura)
-		{
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			_capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
-			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
-            ViewBag.EsSoloLectura = esSoloLectura;
 
-            return View("CapturaCAccidente", datosAccidente);
-		}
-		public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
+        public ActionResult CapturaAccidenteC(string descripcionCausa, bool rOy)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
+            DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
+            ViewBag.EsSoloLectura = rOy;
+			return View("CapturaCAccidente", datosAccidente);
+
+         }
+
+        public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;

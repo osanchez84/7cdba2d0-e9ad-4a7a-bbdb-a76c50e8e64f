@@ -195,17 +195,20 @@
             }
         }
     function dirigirParteC() {
+        console.log('dirigirParteC llamado');
         var descripcionCausa = document.getElementById("descripcionCausaTextArea").value;
         var esSoloLectura = @(ViewBag.EsSoloLectura ? "true" : "false");
+        console.log("ESSOLO",esSoloLectura)
         $.ajax({
             url: '/CapturaAccidentes/CapturaAccidenteC',
             method: 'POST',
             data: {
                 descripcionCausa: descripcionCausa,
                 esSoloLectura: esSoloLectura
-            }, success: function (response) {
+            },
+            success: function (response) {
                 sitteg_success('Datos enviados correctamente');
-                window.location.href = '/CapturaAccidentes/CapturaAccidenteC';            
+            window.location.href = '/CapturaAccidentes/CapturaAccidenteC?rOy=' + esSoloLectura;           
             },
             error: function (xhr, status, error) {
                 sitteg_warning('Error al enviar los datos:', error);

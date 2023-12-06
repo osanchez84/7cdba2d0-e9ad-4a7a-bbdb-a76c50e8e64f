@@ -242,12 +242,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 		}
 
-		public ActionResult CapturaAaccidente()
+		public ActionResult CapturaAaccidente(bool? showE)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; 
 			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
-			return View("CapturaAaccidente", AccidenteSeleccionado);
+            ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
+            return View("CapturaAaccidente", AccidenteSeleccionado);
 		}
 
 		public ActionResult ModalAgregarVehiculo()
@@ -892,11 +893,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		///SEGUNDA SECCION CAPTURA ACCIDENTE///////////
 		///
 
-		public ActionResult CapturaBAccidente()
+		public ActionResult CapturaBAccidente(bool? esSoloLectura)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			string descripcionCausa = _capturaAccidentesService.ObtenerDescripcionCausaDesdeBD(idAccidente);
 			ViewData["DescripcionCausa"] = descripcionCausa;
+			ViewBag.EsSoloLectura = esSoloLectura ?? false;
 			return View("CapturaBAccidente");
 		}
 
@@ -1187,18 +1189,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-        
-
-        public ActionResult CapturaAccidenteC(string descripcionCausa)
-		{
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			_capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
-			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
 
 
+        public ActionResult CapturaAccidenteC(string descripcionCausa, bool rOy)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
+            DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
+            ViewBag.EsSoloLectura = rOy;
 			return View("CapturaCAccidente", datosAccidente);
-		}
-		public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
+
+         }
+
+        public ActionResult CapturaCr(int IdVehiculo, int IdInfraccion)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;

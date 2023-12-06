@@ -90,14 +90,14 @@
                 @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                     .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                    .HtmlAttributes(new { style = "width:100%;" }))
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
-                    .HtmlAttributes(new { style = "width: 100%;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%;" })
                     )
             </div>
         </div>

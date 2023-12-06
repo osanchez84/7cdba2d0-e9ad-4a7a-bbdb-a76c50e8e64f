@@ -1363,10 +1363,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(datosAccidente);
 		}
 
-		public ActionResult SetLastInsertedIdEdit(int idAccidente)
+		public ActionResult SetLastInsertedIdEdit(bool modoSoloLectura,int idAccidente)
 		{
 			HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
-			return RedirectToAction("CapturaAaccidente");
+            ViewBag.ModoSoloLectura = modoSoloLectura;
+
+            return RedirectToAction("CapturaAaccidente");
 		}
         public IActionResult ConsultaAccidente(bool modoSoloLectura,int idAccidente)
         {

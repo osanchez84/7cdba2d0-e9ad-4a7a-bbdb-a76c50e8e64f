@@ -436,7 +436,12 @@
         @Html.HiddenFor(m=> m.idVehiculo, new { @id = "hdnIdVehiculo" })
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
-        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+
+        <input type="text" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
+
+@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+*@        
+        
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
     </form>

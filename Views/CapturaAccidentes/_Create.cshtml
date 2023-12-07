@@ -1249,6 +1249,7 @@ function submitCreateMoral() {
 
 
     $("#idCatTipoServicio").prop("disabled",true)
+    $("#hdnIdCatTipoPersona").prop("disabled",true)
 
 
     if (validator.validate()) {
@@ -1277,6 +1278,7 @@ function submitCreateMoral() {
     } else {
         idTelefono.prop("disabled", false);
         $("#idCatTipoServicio").prop("disabled",false)
+        $("#hdnIdCatTipoPersona").prop("disabled",false)
 
         sitteg_info('Debe llenar los campos requeridos');
         return;

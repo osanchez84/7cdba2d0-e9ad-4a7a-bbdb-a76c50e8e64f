@@ -407,7 +407,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
                         "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
                         "p.apellidoMaterno,p.RFC,p.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
-                        "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
+                        "tc.tipoCarga,v.vigenciaTarjeta, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
                         "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
@@ -462,7 +462,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
                             involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
-
+                            involucrado.VigenciaTarjeta = reader["vigenciaTarjeta"] != DBNull.Value ? (DateTime)reader["vigenciaTarjeta"] : DateTime.MinValue;
 
 
                         }
@@ -495,6 +495,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
 							                ,tl.tipoLicencia,tv.tipoVehiculo
                                             ,mun.Municipio,cent.nombreEntidad
+                                            ,v.vigenciaTarjeta
 
 
                                             FROM personas AS p                                           

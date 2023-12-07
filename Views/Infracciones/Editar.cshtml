@@ -627,6 +627,7 @@
 
     function initialCharge() {
         var idCatGarantia = '@(Model.Garantia.idCatGarantia ?? 0)';
+        // Se inhabilita folio de infracción.
         var folioInfraccion = '@(Model.folioInfraccion)';
         if (folioInfraccion != null || folioInfraccion != undefined)
             $("#folioInfraccion").prop('readonly', true);

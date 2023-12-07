@@ -16,9 +16,20 @@
             if (valor == null) return string.Empty;
         }
 
+        // Verificar si el valor es de tipo DateTime y formatear adecuadamente
+        if (valor is DateTime fecha)
+        {
+            return fecha.ToString("dd/MM/yyyy");
+        }
+
         return valor?.ToString() ?? string.Empty;
     }
+
 }
+<script>
+    console.log('@ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento")');
+</script>
+
 
 <div class="mainContainer bg-light h-100" style="overflow-y:scroll; max-height:100vh;">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -265,8 +276,8 @@
                     </div>
                 <div class="col-4 col-md-4   col-sm-6 ">
                     <label class="form-label">Fecha nacimiento</label>
-                        <input type="text" class="form-control" value="@(!string.IsNullOrWhiteSpace(ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento")) ? ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento.Value.ToString(\"dd/MM/yyyy\")") : string.Empty)" readonly />               
-                  </div>
+                        <input type="text" class="form-control" value="@(!string.IsNullOrWhiteSpace(ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento")) && ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento") != "01/01/1900" ? ObtenerValorSeguro(Model, "PersonaInfraccion.fechaNacimiento") : "-")" readonly />
+                    </div>
                         <div class="col-4 col-md-4   col-sm-6 ">
                             <label class="form-label">Municipio</label>
                        <input type="text" class="form-control" value="@ObtenerValorSeguro(Model, "PersonaInfraccion.PersonaDireccion.municipio")" readonly />
@@ -305,7 +316,7 @@
                 </div>
                 <div class="col-4 col-md-4   col-sm-6 ">
                     <label class="form-label">Vigencia Licencia</label>
-                        <input type="text" class="form-control" value="@((ObtenerValorSeguro(Model, "PersonaInfraccion.vigenciaLicencia.Value.ToString(\"dd/MM/yyyy\")") == "01/01/1900") ? "-" : ObtenerValorSeguro(Model, "PersonaInfraccion.vigenciaLicencia.Value.ToString(\"dd/MM/yyyy\")"))" readonly />
+                        <input type="text" class="form-control" value="@((ObtenerValorSeguro(Model, "PersonaInfraccion.vigenciaLicencia") == "01/01/1900") ? "-" : ObtenerValorSeguro(Model, "PersonaInfraccion.vigenciaLicencia"))" readonly />
                     </div>
             </div>
         </div>

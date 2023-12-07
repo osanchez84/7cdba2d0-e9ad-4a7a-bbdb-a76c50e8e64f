@@ -151,7 +151,6 @@
                                         @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
                                             .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
                                             .Format("dd/MM/yyyy HH:mm")
-                                            .Value("")
                                             .HtmlAttributes(new { style = "width: 100%", required = "required"})
                                             )
                                     </div>
@@ -628,6 +627,9 @@
 
     function initialCharge() {
         var idCatGarantia = '@(Model.Garantia.idCatGarantia ?? 0)';
+        var folioInfraccion = '@(Model.folioInfraccion)';
+        if (folioInfraccion != null || folioInfraccion != undefined)
+            $("#folioInfraccion").prop('readonly', true);
 
         if (idCatGarantia == 1) { $("#divGarantiaPlaca").show(); }
         if (idCatGarantia == 2) { $("#divGarantiaLicencia").show(); }

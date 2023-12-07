@@ -151,7 +151,6 @@
                                         @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
                                             .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
                                             .Format("dd/MM/yyyy HH:mm")
-                                            .Value("")
                                             .HtmlAttributes(new { style = "width: 100%", required = "required"})
                                             )
                                     </div>
@@ -547,7 +546,7 @@
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
                                                 @(Html.Kendo().TextBoxFor(t => t.Garantia.numLicencia)
-                                                    .Label(l => l.Content("Número licencia: <b>(obligatorio)</b>:"))
+                                                    .Label(l => l.Content("Número licencia:"))
                                                     .Placeholder("Ingresa licencia")
                                                     .HtmlAttributes(new { style = "width: 100%" })
                                                     )
@@ -628,6 +627,10 @@
 
     function initialCharge() {
         var idCatGarantia = '@(Model.Garantia.idCatGarantia ?? 0)';
+        // Se inhabilita folio de infracción.
+        var folioInfraccion = '@(Model.folioInfraccion)';
+        if (folioInfraccion != null || folioInfraccion != undefined)
+            $("#folioInfraccion").prop('readonly', true);
 
         if (idCatGarantia == 1) { $("#divGarantiaPlaca").show(); }
         if (idCatGarantia == 2) { $("#divGarantiaLicencia").show(); }

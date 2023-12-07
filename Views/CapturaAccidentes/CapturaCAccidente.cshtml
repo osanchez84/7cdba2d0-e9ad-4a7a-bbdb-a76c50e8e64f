@@ -410,7 +410,7 @@
                 <div>
                      <label>Convenio</label> @(Html.Kendo().SwitchFor(t => t.convenioBool)
                             .Name("convenioSwitch")
-                            .Checked(false)
+                            .Checked(Model.EstadoConvenio == 1)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 })
                             )

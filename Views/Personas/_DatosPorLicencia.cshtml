@@ -196,6 +196,11 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        $('#vigenciaLicencia').removeAttr("required");
+    });
+
     function btnCrearPersona() {
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         validator.validate();

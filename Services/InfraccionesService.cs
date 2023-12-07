@@ -639,7 +639,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,catCarre.idCarretera,catCarre.carretera
                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico 
-                                                                        FROM infracciones as inf
+                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
@@ -1034,6 +1034,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
                             model.umas = GetUmas();
 
+
                             if (model.MotivosInfraccion.Any(w => w.calificacion != null))
                             {
                                 model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
@@ -1060,7 +1061,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 catch (SqlException ex)
                 {
                     //Guardar la excepcion en algun log de errores
-                    //ex
+                    
                 }
                 finally
                 {
@@ -1373,20 +1374,31 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             List<PersonaInfraccionModel> modelList = new List<PersonaInfraccionModel>();
             string strQuery = @"SELECT
-                                 idPersonaInfraccion
-                                ,numeroLicencia
-                                ,CURP
-                                ,RFC
-                                ,nombre
-                                ,apellidoPaterno
-                                ,apellidoMaterno
-                                ,fechaActualizacion
-                                ,actualizadoPor
-                                ,estatus
-                                ,idCatTipoPersona
-                                FROM personasInfracciones
-                                WHERE estatus = 1
-                                AND idPersonaInfraccion = @idPersonaInfraccion";
+                                 pInf.idPersonaInfraccion
+                                ,pInf.numeroLicencia
+                                ,pInf.CURP
+                                ,pInf.RFC
+                                ,pInf.nombre
+                                ,pInf.apellidoPaterno
+                                ,pInf.apellidoMaterno
+                                ,pInf.fechaActualizacion
+                                ,pInf.actualizadoPor
+                                ,pInf.estatus
+                                ,p.idPersona
+                                ,pInf.idCatTipoPersona
+                                ,p.fechaNacimiento
+								,p.idTipoLicencia
+								,p.numeroLicencia
+								,p.vigenciaLicencia
+								,ctl.tipoLicencia,ctp.tipoPersona,cg.genero
+                                FROM personasInfracciones as pInf
+								LEFT JOIN infracciones As inf ON pInf.idPersonaInfraccion = inf.idPersonaInfraccion
+                              	LEFT JOIN personas As p ON inf.idPersonaInfraccion = p.idPersona
+								LEFT JOIN catTipoLicencia As ctl ON ctl.idTipoLicencia = p.idTipoLicencia
+							    LEFT JOIN catTipoPersona As ctp ON ctp.idCatTipoPersona = p.idCatTipoPersona
+                                LEFT JOIN catGeneros cg on p.idGenero = cg.idGenero
+							    WHERE pInf.estatus = 1
+                                AND pInf.idPersonaInfraccion = @idPersonaInfraccion";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1409,10 +1421,17 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.nombre = reader["nombre"].ToString();
                             model.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             model.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                            model.tipoLicencia = reader["tipoLicencia"].ToString();
+                            model.tipoPersona = reader["tipoPersona"].ToString();
+                            model.genero = reader["genero"].ToString();
+                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
                             model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
                             model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                            model.PersonaDireccion = _personasService.GetPersonaDireccionByIdPersona((int)model.idPersonaInfraccion);
+
                             modelList.Add(model);
                         }
                     }
@@ -1708,11 +1727,13 @@ namespace GuanajuatoAdminUsuarios.Services
 									  ,ofi.nombre AS nombreOficial
 									  ,ofi.apellidoPaterno AS apellidoPaternoOficial
 								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
-									  ,car.carretera,tra.tramo
+									  ,car.carretera,tra.tramo,mun.municipio,pdir.telefono
                                FROM infracciones AS inf
 							   LEFT JOIN catOficiales AS ofi ON inf.idOficial = ofi.idOficial
 							   LEFT JOIN catCarreteras AS car ON inf.idCarretera = car.idCarretera
 							   LEFT JOIN catTramos AS tra ON inf.idTramo = tra.idTramo
+					           LEFT JOIN catMunicipios AS mun ON inf.idMunicipio = mun.idMunicipio
+				               LEFT JOIN personasDirecciones AS pdir ON inf.idPersonaInfraccion = pdir.idPersona
                                WHERE inf.estatus = 1
                                AND idInfraccion = @idInfraccion";
 
@@ -1740,7 +1761,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
                             model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
                             model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
                             model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
                             model.placasVehiculo = reader["placasVehiculo"].ToString();
                             model.folioInfraccion = reader["folioInfraccion"].ToString();
@@ -1749,6 +1769,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
                             model.carretera = reader["carretera"].ToString();
                             model.tramo = reader["tramo"].ToString();
+                            model.municipio = reader["municipio"].ToString();
+                            model.telefono = reader["telefono"].ToString();
                             model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
                             model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
@@ -1756,12 +1778,22 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
                             model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
                             model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+                            if (model.Vehiculo != null)
+                            {
+                                model.idPersona = model.Vehiculo.idPersona;
+                            }
+                            else
+                            {
+                              throw new Exception("Vehiculo es nulo, no se puede obtener datos.");
+                            };
                             model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
                             model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
                             model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+                            //model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
                             model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+                            model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPersonaInfraccion ? "Propietario" : "Conductor";
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.umas = GetUmas();
                             if (model.MotivosInfraccion.Any(w => w.calificacion != null))

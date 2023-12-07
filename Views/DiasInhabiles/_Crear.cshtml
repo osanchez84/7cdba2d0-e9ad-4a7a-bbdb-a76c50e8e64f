@@ -116,7 +116,7 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                $("#tablaDiasInhabiles").html(result);
+                $("#gridCatDiasInhabiles").data("kendoGrid").dataSource.data(result);
             }
         });
     }

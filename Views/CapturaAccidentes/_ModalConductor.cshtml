@@ -47,7 +47,7 @@
     </div>
     <div class="row px-4 align-items-end">
         <div class="col-12 mt-4 controlForm">
-            <label>Conductor de infracción:</label>
+            <label>Conductor del vehículo:</label>
         </div>
     </div>
     <div>
@@ -182,8 +182,10 @@
                     </div>
                     <div class="col-auto">
                         <div class="controlForm mb-3 mt-1">
+
                             <label class="text-muted">Vigencia Licencia:</label>
                             <label>@(Model.vigenciaLicencia > DateTime.MinValue ? Model.vigenciaLicencia.ToString("dd/MM/yyyy") : "-" )</label>
+
 
 
                         </div>
@@ -197,7 +199,7 @@
                     <div class="col">
                         <div class="controlForm mb-3 mt-1">
                             <label class="text-muted">Fecha de vencimiento:</label>
-                            <label>@Model.vigenciaLicencia</label>
+                            <label>@Model.vigenciaLicencia.ToString("dd/MM/yyyy")</label>
                         </div>
                     </div>
                 </div>

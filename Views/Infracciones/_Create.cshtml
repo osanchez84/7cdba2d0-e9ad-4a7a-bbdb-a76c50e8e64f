@@ -420,7 +420,11 @@
         @Html.HiddenFor(m=> m.idVehiculo, new { @id = "hdnIdVehiculo" })
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
-        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+        
+        <input type="text" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnidCatTipoServicio">
+@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnidCatTipoServicio" })
+*@        
+        
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
     </form>
@@ -1201,7 +1205,7 @@
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
-        $('#hdnIdCatTipoPersona').val(value);
+        $('#hdnidCatTipoServicio').val(value);
 
     });
 
@@ -1217,7 +1221,8 @@
 
     idTelefono.off('blur');
 
-    $("#hdnIdCatTipoPersona").prop("disabled",true)
+    $("#hdnidCatTipoServicio").prop("disabled",true)
+
 
 
     if (validator.validate()) {
@@ -1246,7 +1251,8 @@
     } else {
         idTelefono.prop("disabled", false);
         sitteg_info('Debe llenar los campos requeridos');
-    $("#hdnIdCatTipoPersona").prop("disabled",false)
+    $("#hdnidCatTipoServicio").prop("disabled",false)
+
 
         return;
     }

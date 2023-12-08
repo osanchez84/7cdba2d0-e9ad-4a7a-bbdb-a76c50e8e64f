@@ -438,7 +438,12 @@
         @Html.HiddenFor(m=> m.idVehiculo, new { @id = "hdnIdVehiculo" })
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
-        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+
+        <input type="text" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
+
+@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+*@        
+        
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
     </form>
@@ -1252,6 +1257,9 @@ function submitCreateMoral() {
 
     $("#idCatTipoServicio").prop("disabled",true)
 
+    $("#hdnIdCatTipoPersona").prop("disabled",true)
+
+
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
@@ -1279,6 +1287,8 @@ function submitCreateMoral() {
     } else {
         idTelefono.prop("disabled", false);
         $("#idCatTipoServicio").prop("disabled",false)
+        $("#hdnIdCatTipoPersona").prop("disabled",false)
+
 
         sitteg_info('Debe llenar los campos requeridos');
         return;

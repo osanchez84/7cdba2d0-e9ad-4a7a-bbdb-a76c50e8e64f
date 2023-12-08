@@ -241,6 +241,15 @@
 
 
 <script>
+	$(document).ready(function () {
+		var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+		datePicker.value(null);
+	});
+
+	$(document).ready(function () {
+		$('#vigenciaLicencia').removeAttr("required");
+	});
+
 	function btnCrearPersona() {
 		var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
 		var idTelefono = $("#telefono");

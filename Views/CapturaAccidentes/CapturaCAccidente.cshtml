@@ -410,19 +410,21 @@
                 <div>
                      <label>Convenio</label> @(Html.Kendo().SwitchFor(t => t.convenioBool)
                             .Name("convenioSwitch")
-                            .Checked(false)
+                            .Checked(Model.EstadoConvenio == 1)
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 })
                             )
                 </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
+                   <div id="convenioTexto" style="display:none">
                     @(Html.Kendo().TextBoxFor(t => t.observacionesConvenio)
                         .Label(l => l.Content("Observaciones de convenio:"))
                         .Placeholder("Ingresa las observaciones")
-                        .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
                         .Enable(!ViewBag.EsSoloLectura)
                         )
+                    </div>
                 </div>
             </div>
 
@@ -877,6 +879,19 @@
         });
 
     $(document).ready(function () {
+        var switchElementConv = $("#convenioSwitch").data("kendoSwitch");
+        var convenioTexto = $("#convenioTexto");
+
+        switchElementConv.bind("change", function () {
+            if (switchElementConv.check()) {
+                convenioTexto.show();
+            } else {
+                convenioTexto.hide();
+            }
+        });
+    });
+
+    $(document).ready(function () {
         verificarCamposDeTexto();
 
         $("#armasSwitch").change(function () {
@@ -921,6 +936,7 @@
             }
         }
     });
+
 
      $(document).ready(function () {
         verificarCamposDeTexto();
@@ -990,6 +1006,30 @@
             }
         }
     });
+    $(document).ready(function () {
+        verificarCamposDeTexto();
+
+        $("#convenioSwitch").change(function () {
+            verificarCamposDeTexto();
+        });
+
+        function verificarCamposDeTexto() {
+            var $campoconvenioTexto = $("#convenioTexto");
+            var $convenioTexto = $("#observacionesConvenio");
+
+            var switchEstadoConv = $("#convenioSwitch").is(":checked");
+
+            var textoNoVacioConv = $convenioTexto.val().trim() !== "";
+
+            if (textoNoVacioConv || switchEstadoConv) {
+                $campoconvenioTexto.show();
+            } else {
+                $campoconvenioTexto.hide();
+            }
+        }
+    });
+
+
     $(document).ready(function () {
         var esSoloLectura = @(ViewBag.EsSoloLectura ? "true" : "false");
 

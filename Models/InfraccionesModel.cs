@@ -20,6 +20,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string municipio { get; set; }
         public int? idTramo { get; set; }
         public int? idCarretera { get; set; }
+        public int? idPropitario { get; set; }
+        
         public int? idPersona { get; set; }
         public int? idPersonaInfraccion { get; set; }
         public int? idCortesia { get; set; }

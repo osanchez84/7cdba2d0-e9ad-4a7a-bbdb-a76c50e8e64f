@@ -304,13 +304,8 @@
 			//contentType: "application/json; charset=utf-8",
 			//dataType: "text",
 			success: function (r) {
-				//Convert Base64 string to Byte Array.
 				var bytes = Base64ToBytes(r);
-
-				//Convert Byte Array to BLOB.
 				var blob = new Blob([bytes], { type: "application/octetstream" });
-
-				//Check the Browser type and download the File.
 				var isIE = false || !!document.documentMode;
 				if (isIE) {
 					window.navigator.msSaveBlob(blob, fileName);
@@ -328,32 +323,6 @@
 		});
 	}
 
-	function Base64ToBytes(base64) {
-		var s = window.atob(base64);
-		var bytes = new Uint8Array(s.length);
-		for (var i = 0; i < s.length; i++) {
-			bytes[i] = s.charCodeAt(i);
-		}
-		return bytes;
-	}
-
-	//var data = {
-	//    FechaInicio: $('#dateInicio').val(),
-	//    FechaFin: $('#dateFinal').val(),
-	//    placa: $('#txtPlacas').val(),
-	//    serie: $('#txtSerie').val(),
-	//    folio: $('#txtFolio').val(),
-	//    idDelegacion: $('#ddlDelegacion').val(),
-	//    idCarretera: $('#ddlCarreteras').val(),
-	//    idTramo: parseInt($('#ddlTramos').val()),
-	//    propietario: $('#txtPropietarios').val(),
-	//    conductor: $('#txtConductores').val(),
-	//    IdOficial: $('#ddlOficiales').val(),
-	//};
-	//    var Mydata = $("#busquedaAccidenteForm").serialize();
-	//    var json = JSON.stringify(Mydata);
-	//    window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
-	//}
 	function carreteraDropDownChange() {
 		var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
 		console.log("IDK", carreteraDDValue)

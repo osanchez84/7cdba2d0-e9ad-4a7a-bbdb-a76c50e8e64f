@@ -12,7 +12,7 @@ using iText = iTextSharp.text;
 
 namespace GuanajuatoAdminUsuarios.Utils
 {
-    public class PdfGenerator<T> : IPdfGenerator<T> where T : class
+    public class PdfGenerator
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         public PdfGenerator(IWebHostEnvironment hostingEnvironment)
@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Utils
 
         }
 
-        public (MemoryStream, string) CreatePdf(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, List<T> ModelData)
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, List<T> ModelData)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             }
         }
 
-        public (MemoryStream, string) CreatePdf(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, T ModelData)
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, T ModelData)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             }
         }
 
-        protected PdfPTable Add_Content_To_PDF(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames, int size)
+        protected PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames, int size)
         {
             if (ColumnsNames.Count == size)
             {
@@ -178,7 +178,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             return null;
         }
 
-        protected PdfPTable Add_Content_To_PDF(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames, int size)
+        protected PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames, int size)
         {
             if (ColumnsNames.Count == size)
             {

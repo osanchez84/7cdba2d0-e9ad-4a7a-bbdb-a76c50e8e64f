@@ -293,6 +293,7 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
+                console.log("VERIF",response)
                 if (response.tipo == "success") {
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
@@ -304,6 +305,7 @@
                 }
 
                 var personasList = response.data;
+                console.log("PERSLI", personasList)
                 var grid = $("#gridPersonas").data("kendoGrid");
                 grid.dataSource.data(personasList);
 
@@ -338,7 +340,7 @@
         const modalContent = `
             <div class="modal-header">
                 <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close id="cerrarModalBtn">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

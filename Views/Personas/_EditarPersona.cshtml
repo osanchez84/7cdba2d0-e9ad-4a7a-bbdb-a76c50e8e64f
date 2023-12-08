@@ -1,5 +1,22 @@
 ﻿@model PersonaModel
+<script>
+    function EntidadDropDownChange() {
+        var entidadDDlValue = $("#idEntidadED").data("kendoDropDownList").value();
 
+
+        $.ajax({
+            url: "/Personas/Municipios_Drop",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#idMunicipioED").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+</script>
 <form id="frmEditarPersona" class="row px-4 mb-4 align-items-end justify-content-center">
     @Html.HiddenFor(m=> m.idPersona)
     @Html.HiddenFor(m=> m.PersonaDireccion.idPersona)
@@ -109,18 +126,36 @@
             <div class="controlForm">
                 <label>Entidad:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
-                    .BindTo((SelectList)ViewBag.CatEntidades)
-                    .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona una opción")
+                    .Events(e => e.Change("EntidadDropDownChange"))
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Entidades_Drop", "Personas");
+                        });
+                    })
+                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idEntidadED" })
+                    )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Municipio:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
-                    .BindTo((SelectList)ViewBag.CatMunicipios)
-                    .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona un Municipio")
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Municipios_Drop", "Personas");
+                        });
+                    })
+                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipioED" }))
             </div>
         </div>
         <div class="col-md-4">
@@ -208,7 +243,7 @@
                 data: formData,
                 success: function (result) {
                     $("#listadoPersonas").html(result);
-                    $('#modalEditarPersona').modal('hide');
+                    $('#modalCrearPersona').modal('hide');
                     sitteg_success('Elemento guardado correctamente')
                 },
                 error: function (xhr, status) {

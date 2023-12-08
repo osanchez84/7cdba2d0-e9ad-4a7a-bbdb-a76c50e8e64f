@@ -241,8 +241,18 @@
 
 
 <script>
+	$(document).ready(function () {
+		var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+		datePicker.value(null);
+	});
+
+	$(document).ready(function () {
+		$('#vigenciaLicencia').removeAttr("required");
+	});
+
 	function btnCrearPersona() {
 		var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
+		$("#vigenciaLicencia").prop("disabled", true);
 		validator.validate();
 		if (validator.validate()) {
 			var formData = $("#frmCrearPersonaV").serialize();
@@ -271,6 +281,7 @@
 			});
 		}
 		else {
+			$("#vigenciaLicencia").prop("disabled", false);s
 			sitteg_info('Debe llenar los campos requeridos');
 			return;
 		}

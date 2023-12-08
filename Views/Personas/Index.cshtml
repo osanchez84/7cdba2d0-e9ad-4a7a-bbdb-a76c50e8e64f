@@ -275,9 +275,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (value) {
-                $('#modalBodyEditarPersona').html(value);
-                $('#modalEditarPersona').modal({ backdrop: 'static', keyboard: false });
-                $('#modalEditarPersona').modal('show');
+                $('#modalBodyCrearPersona').html(value);
+                $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
+                $('#modalCrearPersona').modal('show');
             }
         });
     }
@@ -293,6 +293,7 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
+                console.log("VERIF",response)
                 if (response.tipo == "success") {
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
@@ -304,6 +305,7 @@
                 }
 
                 var personasList = response.data;
+                console.log("PERSLI", personasList)
                 var grid = $("#gridPersonas").data("kendoGrid");
                 grid.dataSource.data(personasList);
 

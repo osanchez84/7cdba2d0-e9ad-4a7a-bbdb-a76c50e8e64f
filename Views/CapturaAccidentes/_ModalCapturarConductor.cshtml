@@ -16,6 +16,10 @@
 			}
 		});
 	}
+	function cerrarCaptura(){
+		$('#capturarConductorModal').modal('hide');
+
+	}
 </script>
 <form id="frmCrearPersonaV" class="row px-4 mb-4 align-items-end justify-content-center">
 	@Html.HiddenFor(m => m.idPersona)
@@ -122,7 +126,7 @@
 			<div class="controlForm">
 				<label>Vigencia licencia:</label>
 				@(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
-					.HtmlAttributes(new { style = "width: 100%;" })
+					.HtmlAttributes(new { style = "width: 100%;", id="vigencia" })
 					)
 			</div>
 		</div>
@@ -224,7 +228,7 @@
 	<div class="col-12 col-md-6 mx-md-auto">
 		<div class="row justify-content-around">
 			<div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-				<button type="button" data-bs-dismiss="modal" aria-label="Close">
+				<button type="button" onclick="cerrarCaptura()">
 					<h6 class="m-0 px-3"><b>Cerrar</b></h6>
 				</button>
 			</div>
@@ -242,12 +246,12 @@
 
 <script>
 	$(document).ready(function () {
-		var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+		var datePicker = $("#vigencia").data("kendoDatePicker");
 		datePicker.value(null);
 	});
 
 	$(document).ready(function () {
-		$('#vigenciaLicencia').removeAttr("required");
+		$('#vigencia').removeAttr("required");
 	});
 
 	function btnCrearPersona() {
@@ -255,7 +259,9 @@
 		var idTelefono = $("#telefono");
 		var idTelefonoValue = idTelefono.val();
 		var idTipoPersona = $("#tipoPersona");
-		var idTipoPersonaValue = idTipoPersona.val();
+		var idTipoPersonaValue = idTipoPersona.val(); 
+		var Vigencia = $("#vigencia");
+		var vigenciaValue = Vigencia.val();
 
 		if (idTelefonoValue === null || idTelefonoValue === "") {
 			idTelefono.prop("disabled", true);
@@ -266,6 +272,11 @@
 			idTipoPersona.prop("disabled", true);
 		}
 		idTipoPersona.off('blur');
+
+		if (vigenciaValue === null || vigenciaValue === "") {
+			Vigencia.prop("disabled", true);
+		}
+		Vigencia.off('blur');
 
 		if (validator.validate()) {
 			var formData = $("#frmCrearPersonaV").serialize();
@@ -295,7 +306,7 @@
 		else {
 			idTelefono.prop("disabled", false);
 			idTipoPersona.prop("disabled", false);
-
+			Vigencia.prop("disabled", false);
 			sitteg_info('Debe llenar los campos requeridos');
 			return;
 		}

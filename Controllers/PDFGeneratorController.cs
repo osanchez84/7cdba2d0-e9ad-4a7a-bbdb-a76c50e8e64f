@@ -119,10 +119,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public async Task<ContentResult> AccidentesGeneral(InfraccionesBusquedaModel model)
+        public async Task<ContentResult> InfraccionesGeneral(InfraccionesBusquedaModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
+            //var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
             return null;
         }
 

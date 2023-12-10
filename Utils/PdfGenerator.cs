@@ -12,7 +12,7 @@ using iText = iTextSharp.text;
 
 namespace GuanajuatoAdminUsuarios.Utils
 {
-    public class PdfGenerator<T> : IPdfGenerator<T> where T : class
+    public class PdfGenerator : IPdfGenerator
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         public PdfGenerator(IWebHostEnvironment hostingEnvironment)
@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Utils
 
         }
 
-        public (MemoryStream, string) CreatePdf(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, List<T> ModelData)
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, List<T> ModelData)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             }
         }
 
-        public (MemoryStream, string) CreatePdf(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, T ModelData)
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, T ModelData)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             }
         }
 
-        protected PdfPTable Add_Content_To_PDF(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames, int size)
+        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames, int size)
         {
             if (ColumnsNames.Count == size)
             {
@@ -178,7 +178,7 @@ namespace GuanajuatoAdminUsuarios.Utils
             return null;
         }
 
-        protected PdfPTable Add_Content_To_PDF(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames, int size)
+        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames, int size)
         {
             if (ColumnsNames.Count == size)
             {
@@ -227,9 +227,12 @@ namespace GuanajuatoAdminUsuarios.Utils
                     {
                         foreach (var item in ColumnsNames)
                         {
-                            PropertyInfo property = type.GetProperty(item.Key);
-                            var value = property.GetValue(objectItem);
-                            AddCellToBody(tableLayout, count, Convert.ToString(value));
+							PropertyInfo pi = type.GetProperty(item.Key);
+                            var value = pi.GetValue(objectItem);
+                            AddCellToBody(tableLayout, count, Convert.ToString(
+                                pi.PropertyType == typeof(DateTime?) ? string.Empty : 
+                                pi.PropertyType == typeof(DateTime) ? (((DateTime)value) == DateTime.MinValue ? string.Empty : ((DateTime)value).ToString("dd-MM-yyyy")) : 
+                                value ?? string.Empty));
                         }
                         count++;
                     }
@@ -284,47 +287,47 @@ namespace GuanajuatoAdminUsuarios.Utils
         }
 
 
-        public byte[] CreatePDFByHTML(string html, string cssText)
-        {
-            byte[] pdf; // result will be here
+        //public byte[] CreatePDFByHTML(string html, string cssText)
+        //{
+        //    byte[] pdf; // result will be here
 
-            //var cssText = File.ReadAllText("");
-            ////(MapPath("~/css/test.css"));
-            //var html = File.ReadAllText("");
-            //MapPath("~/css/test.html"));
+        //    //var cssText = File.ReadAllText("");
+        //    ////(MapPath("~/css/test.css"));
+        //    //var html = File.ReadAllText("");
+        //    //MapPath("~/css/test.html"));
 
-            using (var memoryStream = new MemoryStream())
-            {
-                var document = new Document(PageSize.A4, 50, 50, 60, 60);
-                var writer = PdfWriter.GetInstance(document, memoryStream);
-                document.Open();
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        var document = new Document(PageSize.A4, 50, 50, 60, 60);
+        //        var writer = PdfWriter.GetInstance(document, memoryStream);
+        //        document.Open();
 
-                using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
-                {
-                    using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
-                    {
-                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
-                    }
-                }
+        //        using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
+        //        {
+        //            using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
+        //            {
+        //                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
+        //            }
+        //        }
 
-                document.Close();
+        //        document.Close();
 
-                pdf = memoryStream.ToArray();
-            }
+        //        pdf = memoryStream.ToArray();
+        //    }
 
-            return pdf;
-        }
+        //    return pdf;
+        //}
 
-        public static Byte[] PdfSharpConvert(String html)
-        {
-            Byte[] res = null;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-                pdf.Save(ms);
-                res = ms.ToArray();
-            }
-            return res;
-        }
+        //public static Byte[] PdfSharpConvert(String html)
+        //{
+        //    Byte[] res = null;
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
+        //        pdf.Save(ms);
+        //        res = ms.ToArray();
+        //    }
+        //    return res;
+        //}
     }
 }

@@ -287,47 +287,47 @@ namespace GuanajuatoAdminUsuarios.Utils
         }
 
 
-        //public byte[] CreatePDFByHTML(string html, string cssText)
-        //{
-        //    byte[] pdf; // result will be here
+        public byte[] CreatePDFByHTML(string html, string cssText, Rectangle pageSize)
+        {
+            byte[] pdf; // result will be here
 
-        //    //var cssText = File.ReadAllText("");
-        //    ////(MapPath("~/css/test.css"));
-        //    //var html = File.ReadAllText("");
-        //    //MapPath("~/css/test.html"));
+            //var cssText = File.ReadAllText("");
+            ////(MapPath("~/css/test.css"));
+            //var html = File.ReadAllText("");
+            //MapPath("~/css/test.html"));
 
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        var document = new Document(PageSize.A4, 50, 50, 60, 60);
-        //        var writer = PdfWriter.GetInstance(document, memoryStream);
-        //        document.Open();
+            using (var memoryStream = new MemoryStream())
+            {
+                var document = new iTextSharp.text.Document(pageSize, 20, 20, 20, 20);
+                var writer = PdfWriter.GetInstance(document, memoryStream);
+                document.Open();
 
-        //        using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
-        //        {
-        //            using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
-        //            {
-        //                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
-        //            }
-        //        }
+                using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
+                {
+                    using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
+                    {
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
+                    }
+                }
 
-        //        document.Close();
+                document.Close();
 
-        //        pdf = memoryStream.ToArray();
-        //    }
+                pdf = memoryStream.ToArray();
+            }
 
-        //    return pdf;
-        //}
+            return pdf;
+        }
 
-        //public static Byte[] PdfSharpConvert(String html)
-        //{
-        //    Byte[] res = null;
-        //    using (MemoryStream ms = new MemoryStream())
-        //    {
-        //        var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-        //        pdf.Save(ms);
-        //        res = ms.ToArray();
-        //    }
-        //    return res;
-        //}
+        public static Byte[] PdfSharpConvert(String html)
+        {
+            Byte[] res = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
+                pdf.Save(ms);
+                res = ms.ToArray();
+            }
+            return res;
+        }
     }
 }

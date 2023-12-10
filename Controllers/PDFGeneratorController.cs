@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using Newtonsoft.Json;
 using GuanajuatoAdminUsuarios.Utils;
+using Telerik.SvgIcons;
+using GuanajuatoAdminUsuarios.Models.PDFModels;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -29,14 +31,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatAutoridadesDisposicionService _catAutoridadesDisposicionservice;
         private readonly IAppSettingsService _appSettingsService;
         private readonly IBusquedaAccidentesService _busquedaAccidentesService;
+        private readonly IInfraccionesService _infraccionesService;
         private readonly IPdfGenerator _pdfService;
-        public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice, IAppSettingsService appSettingService, IBusquedaAccidentesService busquedaAccidentesService, IPdfGenerator pdfGenerator)
+        public PDFGeneratorController(ICapturaAccidentesService capturaAccidentesService, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice, IAppSettingsService appSettingService, IBusquedaAccidentesService busquedaAccidentesService, IPdfGenerator pdfGenerator, IInfraccionesService infraccionesService)
         {
             _capturaAccidentesService = capturaAccidentesService;
             _catAutoridadesDisposicionservice = catAutoridadesDisposicionservice;
             _appSettingsService = appSettingService;
             _busquedaAccidentesService = busquedaAccidentesService;
             _pdfService = pdfGenerator;
+            _infraccionesService = infraccionesService;
         }
 
         [HttpGet]
@@ -73,18 +77,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
             bootstrap = bootstrap + css;
             ////(MapPath("~/css/test.css"));
 
-            byte[] pdfBytes = CreatePDFByHTML(jsonView, bootstrap, iTextSharp.text.PageSize.LETTER);
+            byte[] pdfBytes = _pdfService.CreatePDFByHTML(jsonView, bootstrap, iTextSharp.text.PageSize.LETTER);
             //return Json(jsonView);
             return File(pdfBytes, "application/pdf");
             //return PartialView("_AccidentesDetallado", model);
         }
 
         [HttpPost]
-        public async Task<ContentResult> AccidentesGeneral(BusquedaAccidentesModel model)
+        public ContentResult AccidentesGeneral(BusquedaAccidentesModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var ListTransitoModel = _busquedaAccidentesService.GetAllAccidentes(idOficina)
+            var modelList = _busquedaAccidentesService.GetAllAccidentes(idOficina)
                                                 .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
                                                     && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
@@ -111,7 +115,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"tramo","Tramo" }
             };
 
-            var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 7, ColumnsNames, ListTransitoModel);
+            var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 7, ColumnsNames, modelList);
             //return File(result.Item1, "application/pdf", result.Item2);
             byte[] bytes = result.Item1.ToArray();
             string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
@@ -119,42 +123,39 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         [HttpPost]
-        public async Task<ContentResult> InfraccionesGeneral(InfraccionesBusquedaModel model)
+        public ContentResult InfraccionesGeneral(InfraccionesBusquedaModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            //var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
-            return null;
-        }
-
-        public byte[] CreatePDFByHTML(string html, string cssText, Rectangle pageSize)
-        {
-            byte[] pdf; // result will be here
-
-            //var cssText = File.ReadAllText("");
-            ////(MapPath("~/css/test.css"));
-            //var html = File.ReadAllText("");
-            //MapPath("~/css/test.html"));
-
-            using (var memoryStream = new MemoryStream())
+            var modelList = _infraccionesService.GetAllInfracciones(model, idOficina);
+            var pdfModel = modelList.Select(s => new InfraccionesGeneralPDFModel { 
+            folioInfraccion = s.folioInfraccion,
+            conductor = s.PersonaInfraccion.nombreCompleto,
+            propietario = s.Vehiculo.Persona.nombreCompleto,
+            fechaAplicacion = s.fechaInfraccion,
+            garantia = s.NombreGarantia,
+            vehiculo = s.Vehiculo.fullVehiculo,
+            placas = s.Vehiculo.placas,
+            delegacion= s.delegacion,
+            estatusInfraccion = s.estatusInfraccion
+            }).ToList();
+            Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
-                var document = new iTextSharp.text.Document(pageSize, 20, 20, 20, 20);
-                var writer = PdfWriter.GetInstance(document, memoryStream);
-                document.Open();
-
-                using (var cssMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cssText)))
-                {
-                    using (var htmlMemoryStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html)))
-                    {
-                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, htmlMemoryStream, cssMemoryStream);
-                    }
-                }
-
-                document.Close();
-
-                pdf = memoryStream.ToArray();
-            }
-
-            return pdf;
+                //{"idInfraccion",""},
+                {"folioInfraccion","Folio"},
+                {"conductor","Conductor"},
+                {"propietario","Propietario"},
+                {"fechaAplicacion","Fecha Aplicación"},
+                {"garantia","Garantía"},
+                {"vehiculo","Vehículo"},
+                {"placas","Placas"},
+                {"delegacion","Delegación"},
+                { "estatusInfraccion", "Estatus"}
+            };
+            var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", 9, ColumnsNames, pdfModel);
+            byte[] bytes = result.Item1.ToArray();
+            string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
+            return Content(base64);
         }
+
     }
 }

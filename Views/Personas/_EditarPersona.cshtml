@@ -1,7 +1,7 @@
 ﻿@model PersonaModel
 <script>
     function EntidadDropDownChange() {
-        var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
+        var entidadDDlValue = $("#idEntidadED").data("kendoDropDownList").value();
 
 
         $.ajax({
@@ -137,7 +137,7 @@
                             read.Action("Entidades_Drop", "Personas");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idEntidad" })
+                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idEntidadED" })
                     )
             </div>
         </div>
@@ -243,7 +243,7 @@
                 data: formData,
                 success: function (result) {
                     $("#listadoPersonas").html(result);
-                    $('#modalEditarPersona').modal('hide');
+                    $('#modalCrearPersona').modal('hide');
                     sitteg_success('Elemento guardado correctamente')
                 },
                 error: function (xhr, status) {

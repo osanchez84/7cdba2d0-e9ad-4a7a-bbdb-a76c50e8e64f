@@ -304,15 +304,6 @@
         var phone = $("#telefono").val();
         var email = $("#correo").val();
 
-        //if ($("#numeroLicenciaFisico").text() != null || $("#numeroLicenciaFisico").val() != undefined) {
-        //    sitteg_warning('Con numero de licencia.' + $("#numeroLicenciaFisico").val());
-        //    //if ($("#idTipoLicencia").val() == null || $("#vigenciaLicencia").val() == null) {
-        //    //    sitteg_warning('Si ingresó el número de licencia, deberá ingresar ');
-        //    //    return;
-        //    //}
-        //}
-
-        //return;
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         $("#vigenciaLicencia").prop("disabled", true);
         $("#idTipoLicencia").prop("disabled", true);
@@ -387,5 +378,10 @@
     $(document).ready(function () {
         var datePicker = $("#fechaNacimiento").data("kendoDatePicker");
         datePicker.value(null);
+    });
+
+
+    $(document).ready(function () {
+        $('#vigenciaLicencia').removeAttr("required");
     });
 </script>

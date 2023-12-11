@@ -407,7 +407,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
                         "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
                         "p.apellidoMaterno,p.RFC,p.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
-                        "tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
+                        "tc.tipoCarga,v.vigenciaTarjeta, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
                         "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
@@ -462,7 +462,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
                             involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
-
+                            involucrado.VigenciaTarjeta = reader["vigenciaTarjeta"] != DBNull.Value ? (DateTime)reader["vigenciaTarjeta"] : DateTime.MinValue;
 
 
                         }
@@ -494,7 +494,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,pd.telefono
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
 							                ,tl.tipoLicencia,tv.tipoVehiculo
-                                            ,mun.Municipio,cent.nombreEntidad
+                                            ,mun.Municipio,cent.nombreEntidad, cg.genero
 
 
                                             FROM personas AS p                                           
@@ -524,6 +524,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.RFC = reader["rfc"].ToString();
                             model.CURP = reader["curp"].ToString();
                             model.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.Genero = reader["genero"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
                             model.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
@@ -1780,7 +1781,9 @@ hola
 							involucrado.Cinturon = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
 							involucrado.NumeroEconomico = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
 							involucrado.NoAccidente = reader["NoAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["NoAccidente"].ToString());
+
 							involucrado.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
+
                             
                             if (reader["fechaIngreso"] != System.DBNull.Value)
                             {
@@ -2097,7 +2100,7 @@ hola
                                     montoCamino, montoCarga, montoPropietarios, montoOtros,
                                     latitud ,longitud ,idCertificado ,
                                     armas ,drogas ,valores ,prendas ,otros ,entregaObjetos, entregaOtros ,
-                                    consignacionHechos, idCiudad ,
+                                    consignacionHechos, idCiudad , convenio ,
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
@@ -2128,6 +2131,7 @@ hola
                             datosFinales.EstadoValores = reader["valores"] == DBNull.Value ? 0 : int.Parse(reader["valores"].ToString());
                             datosFinales.EstadoPrendas = reader["prendas"] == DBNull.Value ? 0 : int.Parse(reader["prendas"].ToString());
                             datosFinales.EstadoOtros = reader["otros"] == DBNull.Value ? 0 : int.Parse(reader["otros"].ToString());
+                            datosFinales.EstadoConvenio = reader["convenio"] == DBNull.Value ? 0 : int.Parse(reader["convenio"].ToString());
                             datosFinales.consignacionHechos = reader["consignacionHechos"] == DBNull.Value ? "" : reader["consignacionHechos"].ToString();
                             datosFinales.IdCiudad = reader["idCiudad"] == DBNull.Value ? 0 : int.Parse(reader["idCiudad"].ToString());
                             datosFinales.entregaObjetos = reader["entregaObjetos"] == DBNull.Value ? "" : reader["entregaObjetos"].ToString();

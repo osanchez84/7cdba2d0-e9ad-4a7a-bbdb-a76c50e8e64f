@@ -11,7 +11,7 @@
             <div class="col-12 col-md-auto">
                 <div class="row align-items-center justify-content-center justify-content-md-start">
                     <div class="col-auto p-0">
-                        <i class="icon-oficial h1 colorPrimary"></i>
+                        <i class="icon-fisica h1 colorPrimary"></i>
                     </div>
                     <div class="col-auto my-3">
                         <h2 class="m-0 h3"><b>Personas</b></h2>
@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <button href="#" id="btnCrearPersona" onclick="btnModalCrearPersona()">
-                            <h6 class="m-0 d-flex align-items-center"><i class="icon-addConcecionario h2 mb-0 me-2"></i><b>Agregar nueva persona</b></h6>
+                            <h6 class="m-0 d-flex align-items-center"><i class="icon-addFisica h2 mb-0 me-2"></i><b>Agregar nueva persona</b></h6>
                         </button>
                     </div>
 
@@ -30,7 +30,7 @@
             </div>
         </div>
             <form id="buscarConductorForm">
-                <div class="row px-4 mt-4 pb-4 align-items-end">
+                <div class="row px-4 mt-4 align-items-end">
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
                             @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
@@ -92,17 +92,19 @@
                     </div>
                 </div>
             </form>
-            <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
-                <div class="controlButton my-3">
-                    <div class="controlButton my-3" onclick="buscarConductor()">
-                        @(Html.Kendo().Button()
+            <div class="row px-4">
+                <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
+                    <div class="controlButton my-3">
+                        <div class="controlButton my-3" onclick="buscarConductor()">
+                            @(Html.Kendo().Button()
                             .Name("buscarOtroConductor")
                             .HtmlAttributes(new { @class = "btnPrimary" })
                             .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+                        </div>
                     </div>
                 </div>
             </div>
-        <div class="row">
+            <div class="row">
             <div class="col-12">
                 <div class="bg-light py-1"></div>
             </div>
@@ -152,7 +154,7 @@
                 <div class="col-auto pe-0">
                     <div class="row align-items-center justify-content-center justify-content-md-start">
                         <div class="col-auto pe-0">
-                            <i class="icon-addConcecionario h1 colorPrimary"></i>
+                            <i class="icon-addFisica h1 colorPrimary"></i>
                         </div>
                         <div class="col-auto my-3">
                             <h2 class="m-0 h3"><b>Agregar Persona</b></h2>
@@ -197,7 +199,7 @@
                 <div class="col-auto pe-0">
                     <div class="row align-items-center justify-content-center justify-content-md-start">
                         <div class="col-auto pe-0">
-                            <i class="icon-addConcecionario h1 colorPrimary"></i>
+                            <i class="iicon-editFisica h1 colorPrimary"></i>
                         </div>
                         <div class="col-auto my-3">
                             <h2 class="m-0 h3"><b>Editar Persona</b></h2>
@@ -275,9 +277,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (value) {
-                $('#modalBodyEditarPersona').html(value);
-                $('#modalEditarPersona').modal({ backdrop: 'static', keyboard: false });
-                $('#modalEditarPersona').modal('show');
+                $('#modalBodyCrearPersona').html(value);
+                $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
+                $('#modalCrearPersona').modal('show');
             }
         });
     }
@@ -293,6 +295,7 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
+                console.log("VERIF",response)
                 if (response.tipo == "success") {
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
@@ -304,6 +307,7 @@
                 }
 
                 var personasList = response.data;
+                console.log("PERSLI", personasList)
                 var grid = $("#gridPersonas").data("kendoGrid");
                 grid.dataSource.data(personasList);
 

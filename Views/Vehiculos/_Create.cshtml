@@ -297,7 +297,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-2 col-lg-1 col-xl-1">
+        <div class="col-12 col-md-2 col-lg-3">
             <div class="controlForm my-3">
                 <label>Modelo:</label>
                 @Html.CustomTextBoxFor(model => model.modelo,"Ingresa Modelo", disableInput)
@@ -379,7 +379,11 @@
         @Html.HiddenFor(m=> m.idVehiculo, new { @id = "hdnIdVehiculo" })
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
-        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+        
+                <input type="hidden" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnidCatTipoServicio">
+@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnidCatTipoServicio" })
+*@      
+        
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
     </form>
@@ -1147,7 +1151,7 @@
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
-        $('#hdnIdCatTipoPersona').val(value);
+        $('#hdnidCatTipoServicio').val(value);
 
     });
  
@@ -1174,7 +1178,8 @@
     idTelefono.off('blur');
 
 
-    $("#hdnIdCatTipoPersona").prop("disabled",true)
+    $("#hdnidCatTipoServicio").prop("disabled",true)
+
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
@@ -1201,7 +1206,8 @@
         });
     } else {
         idTelefono.prop("disabled", false);
-            $("#hdnIdCatTipoPersona").prop("disabled",false)
+            $("#hdnidCatTipoServicio").prop("disabled",false)
+
         sitteg_info('Debe llenar los campos requeridos');
         return;
     }

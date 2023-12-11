@@ -45,7 +45,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         private readonly IGarantiasService _garantiasService;
         private readonly IInfraccionesService _infraccionesService;
-        private readonly IPdfGenerator<InfraccionesModel> _pdfService;
         private readonly ICatDictionary _catDictionary;
         private readonly IVehiculosService _vehiculosService;
         private readonly IPersonasService _personasService;
@@ -67,7 +66,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public InfraccionesController(
             IEstatusInfraccionService estatusInfraccionService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
             ITipoCortesiaService tipoCortesiaService, IDependencias dependeciaService, IGarantiasService garantiasService,
-            IInfraccionesService infraccionesService, IPdfGenerator<InfraccionesModel> pdfService,
+            IInfraccionesService infraccionesService,
             ICatDictionary catDictionary,
             IVehiculosService vehiculosService,
             IPersonasService personasService,
@@ -88,7 +87,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
             _garantiasService = garantiasService;
             _infraccionesService = infraccionesService;
-            _pdfService = pdfService;
             _vehiculosService = vehiculosService;
             _personasService = personasService;
             _capturaAccidentesService = capturaAccidentesService;
@@ -115,7 +113,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
-                List<InfraccionesModel> listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
+                List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
+                    //_infraccionesService.GetAllInfracciones(idOficina);
                 searchModel.ListInfracciones = listInfracciones;
                 return View(searchModel);
             }
@@ -138,33 +137,33 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ListadoInfracciones", listReporteAsignacion);
         }
 
-        [HttpGet]
-        public FileResult CreatePdf(string data)
-        {
-            var model = JsonConvert.DeserializeObject<InfraccionesBusquedaModel>(data,
-               new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
+        //[HttpGet]
+        //public FileResult CreatePdf(string data)
+        //{
+        //    var model = JsonConvert.DeserializeObject<InfraccionesBusquedaModel>(data,
+        //       new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
 
-            model.folioInfraccion = model.folioInfraccion == string.Empty ? null : model.folioInfraccion;
-            model.placas = model.placas == string.Empty ? null : model.placas;
-            model.NumeroEconomico = model.NumeroEconomico == string.Empty ? null : model.NumeroEconomico;
-            model.Conductor = model.Conductor == string.Empty ? null : model.Conductor;
-            model.Propietario = model.Propietario == string.Empty ? null : model.Propietario;
-            model.NumeroLicencia = model.NumeroLicencia == string.Empty ? null : model.NumeroLicencia;
+        //    model.folioInfraccion = model.folioInfraccion == string.Empty ? null : model.folioInfraccion;
+        //    model.placas = model.placas == string.Empty ? null : model.placas;
+        //    model.NumeroEconomico = model.NumeroEconomico == string.Empty ? null : model.NumeroEconomico;
+        //    model.Conductor = model.Conductor == string.Empty ? null : model.Conductor;
+        //    model.Propietario = model.Propietario == string.Empty ? null : model.Propietario;
+        //    model.NumeroLicencia = model.NumeroLicencia == string.Empty ? null : model.NumeroLicencia;
 
-            Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
-            {
-            {"folioInfraccion","Folio"},
-            {"NombreConductor","Conductor"},
-            {"NombrePropietario","Propietario"},
-            {"fechaInfraccion","Fecha Aplicada a"},
-            {"NombreGarantia","Garantía"},
-            {"delegacion","Delegación/Oficina"}
-            };
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var ListTransitoModel = _infraccionesService.GetAllInfracciones(model, idOficina);
-            var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, ListTransitoModel);
-            return File(result.Item1, "application/pdf", result.Item2);
-        }
+        //    Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
+        //    {
+        //    {"folioInfraccion","Folio"},
+        //    {"NombreConductor","Conductor"},
+        //    {"NombrePropietario","Propietario"},
+        //    {"fechaInfraccion","Fecha Aplicada a"},
+        //    {"NombreGarantia","Garantía"},
+        //    {"delegacion","Delegación/Oficina"}
+        //    };
+        //    int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+        //    var ListTransitoModel = _infraccionesService.GetAllInfracciones(model, idOficina);
+        //    var result = _pdfService.CreatePdf("ReporteInfracciones", "Infracciones", 6, ColumnsNames, ListTransitoModel);
+        //    return File(result.Item1, "application/pdf", result.Item2);
+        //}
 
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdInfraccion)
@@ -1132,18 +1131,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
+            if (string.IsNullOrEmpty(model.numeroLicencia)) model.numeroLicencia = model.numeroLicenciaFisico;
             int id = _personasService.CreatePersona(model);
 
             if (id == -1)
             {
                 // El registro ya existe, muestra un mensaje de error al usuario
                 return Json(new { success = false, message = "El registro ya existe, revise los datos ingresados." });
-            }
+            } else if (id == 0)
+                return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud."});
             else
             {
                 // La inserción se realizó correctamente
                 model.PersonaDireccion.idPersona = id;
-                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+                // NO APLICA YA QUE PREVIAMENTE SE HABIA INSERTADO.
+                //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
 
                 var modelList = _personasService.GetAllPersonas();

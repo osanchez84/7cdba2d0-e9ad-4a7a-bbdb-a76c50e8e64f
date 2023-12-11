@@ -1132,18 +1132,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
+            if (string.IsNullOrEmpty(model.numeroLicencia)) model.numeroLicencia = model.numeroLicenciaFisico;
             int id = _personasService.CreatePersona(model);
 
             if (id == -1)
             {
                 // El registro ya existe, muestra un mensaje de error al usuario
                 return Json(new { success = false, message = "El registro ya existe, revise los datos ingresados." });
-            }
+            } else if (id == 0)
+                return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud."});
             else
             {
                 // La inserción se realizó correctamente
                 model.PersonaDireccion.idPersona = id;
-                int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+
+                // NO APLICA YA QUE PREVIAMENTE SE HABIA INSERTADO.
+                //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
 
                 var modelList = _personasService.GetAllPersonas();

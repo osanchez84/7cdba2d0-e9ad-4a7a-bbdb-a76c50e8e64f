@@ -2181,15 +2181,15 @@ namespace GuanajuatoAdminUsuarios.Services
                         ,CASE WHEN inf.infraccionCortesia = 1 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia
                         ,del.nombreOficina Delegacion
                         ,catMun.municipio as Municipio
-                        ,Convert(DATE, inf.fechaInfraccion) FechaInfraccion
-                        ,Convert(TIME, inf.fechaInfraccion) HoraInfraccion
+                        ,CONVERT(varchar, inf.fechaInfraccion, 103) AS FechaInfraccion
+                        ,CONVERT(varchar, inf.fechaInfraccion, 8) AS HoraInfraccion
                         ,'' as FechaVencimiento
                         ,catCarre.carretera as Carretera
                         ,catTra.tramo as Tramo
                         ,inf.kmCarretera AS Kilometraje
                         ,CONCAT(pers.nombre, ' ', pers.apellidoPaterno, ' ', pers.apellidoMaterno) as NombreConductor
 						,pers.CURP as CURPConductor
-                        ,pers.fechaNacimiento as FechadeNacimientoConductor
+                        ,CONVERT(varchar, pers.fechaNacimiento, 103) AS FechadeNacimientoConductor
                         ,CONCAT(dirpers.calle,' ', dirpers.numero, ' ',dirpers.colonia, ', ', dipersmuni.municipio, ', ', dirpersenti.nombreEntidad) as DomicilioConductor                        
                         ,pers.numeroLicencia as LicenciaConductor
                         ,CASE WHEN pers.idCatTipoPersona = 1 THEN 'x' ELSE '' END AS TipoPersFisica
@@ -2246,7 +2246,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
                         WHERE 
                         inf.estatus= 1"
-            ;
+			;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {

@@ -1131,7 +1131,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_CrearPersona(PersonaModel model)
         {
-            if (string.IsNullOrEmpty(model.numeroLicencia)) model.numeroLicencia = model.numeroLicenciaFisico;
+            if (!string.IsNullOrEmpty(model.numeroLicenciaFisico)) model.numeroLicencia = model.numeroLicenciaFisico;
+            if (model.idTipoLicenciaInfraccion != null) model.idTipoLicencia = model.idTipoLicenciaInfraccion;
+            if (!string.IsNullOrEmpty(model.telefonoInfraccion)) model.PersonaDireccion.telefono = Convert.ToInt64(model.telefonoInfraccion);
+            if (!string.IsNullOrEmpty(model.correoInfraccion)) model.PersonaDireccion.correo = model.correoInfraccion;
+            if (model.vigenciaLicenciaFisico != null)
+            {
+                if (Convert.ToDateTime(model.vigenciaLicenciaFisico).Year > 2000)
+                    model.vigenciaLicencia = model.vigenciaLicenciaFisico;
+                else
+                    model.vigenciaLicencia = null;
+            } 
+
             int id = _personasService.CreatePersona(model);
 
             if (id == -1)

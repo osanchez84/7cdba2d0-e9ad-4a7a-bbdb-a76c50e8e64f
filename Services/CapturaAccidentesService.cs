@@ -496,7 +496,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,pd.telefono
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
 							                ,tl.tipoLicencia,tv.tipoVehiculo
-                                            ,mun.Municipio,cent.nombreEntidad, cg.genero
+                                            ,mun.Municipio,cent.nombreEntidad
+                                            ,v.vigenciaTarjeta
 
 
                                             FROM personas AS p                                           
@@ -528,7 +529,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.Genero = reader["genero"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
-                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
                             model.idGenero = reader["idGenero"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"]);
 							model.Telefono = reader["telefono"].ToString();

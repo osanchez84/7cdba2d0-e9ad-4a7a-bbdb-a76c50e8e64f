@@ -31,7 +31,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Inicio:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.FechaInicio).Format("dd/mm/yyyy")
+                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Format("dd/mm/yyyy")
                                 .Label(l => l.Content("Fecha Inicio:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
                                 .Value("")
@@ -42,7 +42,7 @@
 
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Fin:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.FechaFin).Format("dd/mm/yyyy")
+                            @(Html.Kendo().DatePickerFor(t => t.FechaFin).Format("dd/mm/yyyy")
                                 .Label(l => l.Content("Fecha Fin:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
                                 .Value("")
@@ -342,16 +342,16 @@
         });
     }
     $(document).ready(function () {
-        $("#dateFinal").kendoDateTimePicker({
-            format: "dd/MM/yyyy HH:mm",
-            parseFormats: ["dd/MM/yyyy", "HH:mm"], timeFormat: "HH:mm",
+        $("#dateFinal").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["dd/MM/yyyy"],
             value: null
         });
     });
     $(document).ready(function () {
-        $("#dateInicio").kendoDateTimePicker({
-            format: "dd/MM/yyyy HH:mm",
-            parseFormats: ["dd/MM/yyyy", "HH:mm"], timeFormat: "HH:mm",
+        $("#dateInicio").kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["dd/MM/yyyy"],
             value: null
         });
     });

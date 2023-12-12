@@ -125,8 +125,8 @@
                                             .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
 
                                             .Format("dd/MM/yyyy HH:mm")
-                                            .Value("")
-                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
+											.Value("")
+											.HtmlAttributes(new { style = "width: 100%", required = "required", id = "dateInicio" })
                                             )
                                     </div>
                                 </div>
@@ -517,7 +517,7 @@
         </div>
     </section>
 
-    <div id="loading">
+    <div id="loading" style="display: none">
         <div class="container-fluid">
             <main role="main" class="pb-3">
                 <div class="loadingGif" id="loadingx" >
@@ -791,18 +791,18 @@
 
             if (!consult)
                 return false
-
-
-
-            return result
+            return result 
         }
 
-        //hideSpinner();
-
-
-    $(document).ready(function () {
+	$(document).ready(function () {
+		$("#dateInicio").kendoDateTimePicker({
+			format: "dd/MM/yyyy HH:mm",
+			parseFormats: ["dd/MM/yyyy", "HH:mm"], timeFormat: "HH:mm",
+			value: null,
+			interval: 1
+		});
         $('#loading').css('display', 'none');
-    });
+	});
 
 </script>
 

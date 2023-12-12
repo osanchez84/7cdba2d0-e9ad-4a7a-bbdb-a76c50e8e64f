@@ -55,6 +55,7 @@
 			<div class="controlForm">
 				<label>Fecha de nacimiento <b>(obligatorio)</b>:"</label>
 				@(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
+.Culture("es-ES")
 					.HtmlAttributes(new { style = "width: 100%;", required = "required" })
 					)
 			</div>
@@ -126,6 +127,7 @@
 			<div class="controlForm">
 				<label>Vigencia licencia:</label>
 				@(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
+.Culture("es-ES")
 					.HtmlAttributes(new { style = "width: 100%;", id="vigencia" })
 					)
 			</div>
@@ -247,12 +249,12 @@
 
 <script>
 	$(document).ready(function () {
-		var datePicker = $("#vigencia").data("kendoDatePicker");
+		var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
 		datePicker.value(null);
 	});
 
 	$(document).ready(function () {
-		$('#vigencia').removeAttr("required");
+		$('#vigenciaLicencia').removeAttr("required");
 	});
 	function validarNumero(event) {
 		var charCode = (event.which) ? event.which : event.keyCode;
@@ -277,28 +279,8 @@
 
 	function btnCrearPersona() {
 		var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
-		var idTelefono = $("#telefono");
-		var idTelefonoValue = idTelefono.val();
-		var idTipoPersona = $("#tipoPersona");
-		var idTipoPersonaValue = idTipoPersona.val(); 
-		var Vigencia = $("#vigencia");
-		var vigenciaValue = Vigencia.val();
-
-		if (idTelefonoValue === null || idTelefonoValue === "") {
-			idTelefono.prop("disabled", true);
-		}
-		idTelefono.off('blur');
-
-		if (idTipoPersonaValue === null || idTipoPersonaValue === "") {
-			idTipoPersona.prop("disabled", true);
-		}
-		idTipoPersona.off('blur');
-
-		if (vigenciaValue === null || vigenciaValue === "") {
-			Vigencia.prop("disabled", true);
-		}
-		Vigencia.off('blur');
-
+		$("#vigenciaLicencia").prop("disabled", true);
+		validator.validate();
 		if (validator.validate()) {
 			var formData = $("#frmCrearPersonaV").serialize();
 			$.ajax({
@@ -325,9 +307,7 @@
 			});
 		}
 		else {
-			idTelefono.prop("disabled", false);
-			idTipoPersona.prop("disabled", false);
-			Vigencia.prop("disabled", false);
+			$("#vigenciaLicencia").prop("disabled", false);s
 			sitteg_info('Debe llenar los campos requeridos');
 			return;
 		}

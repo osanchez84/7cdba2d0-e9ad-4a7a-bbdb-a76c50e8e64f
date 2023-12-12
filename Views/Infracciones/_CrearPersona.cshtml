@@ -9,7 +9,7 @@
             type: "POST",
             data: { entidadDDlValue: entidadDDlValue },
             success: function (data) {
-                var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
+                var MunicipiosDropDown = $("#idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
             },
             error: function (xhr, status, error) {
@@ -51,6 +51,7 @@
             <div class="controlForm">
                 <label>Fecha de nacimiento <b>(obligatorio):</b></label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
+                    .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;", required = "required" })
                     )
             </div>
@@ -80,6 +81,7 @@
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
                     .Filter(FilterType.Contains)
+                    .Label(l => l.Content("Género <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
         </div>
@@ -89,6 +91,7 @@
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
+                    .Label(l => l.Content("Tipo persona <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
         </div>
@@ -105,7 +108,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Tipo licencia:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
+                @(Html.Kendo().DropDownListFor(m => m.idTipoLicenciaInfraccion).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;" }))
@@ -114,7 +117,8 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
-                @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
+                @(Html.Kendo().DatePickerFor(t => t.vigenciaLicenciaFisico)
+              .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;" })
                     )
             </div>
@@ -154,7 +158,7 @@
                             read.Action("Municipios_Drop", "Infracciones");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipio" }))
+                    .HtmlAttributes(new { style = "width:100%;", id = "idMunicipioFisico" }))
                     @*.HtmlAttributes(new { style = "width:100%;", id = "idMunicipio" }))*@
             </div>
         </div>
@@ -196,7 +200,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                @(Html.Kendo().TextBoxFor(t => t.telefono)
+                @(Html.Kendo().TextBoxFor(t => t.telefonoInfraccion)
                     .Label(l => l.Content("Teléfono:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
@@ -204,7 +208,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                @(Html.Kendo().TextBoxFor(t => t.correo)
+                @(Html.Kendo().TextBoxFor(t => t.correoInfraccion)
                     .Label(l => l.Content("Correo <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
@@ -234,35 +238,45 @@
 </div>
 
 <script>
-    var isValidPhone = function (phone) {
-        var regex = /^[0-9]+$/;
-        return regex.test(phone);
-    };
+    
+    function btnCrearPersona() {
+      var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
+        $("#vigenciaLicencia").prop("disabled",true);
+         $("#idTipoLicencia").prop("disabled",true);
+        $("#numeroLicenciaFisico").prop("disabled",true);
 
-    var isValidEmail = function (email) {
-        var regex = /^\w+([.-_+]?\w+)*\w+([.-]?\w+)*(\.\w{2,10})+$/;
-        return regex.test(email);
-    };
-
-    function isControlsValid(controlsValidate) {
-        var isValid = true;
-        var isFirst = false;
-
-        controlsValidate.forEach(x => {
-            var element = $('#' + x.controlName);
-            element.removeClass("errorData");
-            if (element.val() == '') {
-                element.addClass("errorData");
-                if (!isFirst) {
-                    //element.focus();
+        validator.validate();
+        if (validator.validate()) {
+            var formData = $("#frmCrearPersona").serialize();
+            $.ajax({
+                url: '@Url.Action("ajax_CrearPersona","Infracciones")',
+                type: 'POST',
+                data: formData,
+                success: function (result) {
+                    if (result.success === false){
+                        sitteg_warning('Informacióm registrada anteriormente, revise la informacion proporcionada.');
+                    }
+                    else{
+                    $("#listadoPersonas").html(result);
+                    $('#modalCrearPersona').modal('hide');
+                    $('#agregarConductorModal').modal('hide');
+                    sitteg_success('Elemento guardado correctamente')
+                    }
+                },
+                error: function (xhr, status) {
+                    var errmsg = xhr.responseText;
+                    console.log(errmsg)
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
                 }
-                isValid = false;
-                isFirst = true;
-            }
-
-        });
-
-        return isValid;
+            });
+        }
+         else {
+          //  $("#vigenciaLicencia").prop("disabled", false);
+                $("#idTipoLicencia").prop("disabled",true);
+        $("#numeroLicenciaFisico").prop("disabled",true);
+            sitteg_info('Debe llenar los campos requeridos');
+            return;
+        }
     }
 
 
@@ -301,26 +315,26 @@
     function btnCrearPersona() {
         var controlsValidate = [];
         var isValid = true;
-        var phone = $("#telefono").val();
-        var email = $("#correo").val();
+        var phone = $("#telefonoInfraccion").val();
+        var email = $("#correoInfraccion").val();
 
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         $("#vigenciaLicencia").prop("disabled", true);
         $("#idTipoLicencia").prop("disabled", true);
         $("#numeroLicencia").prop("disabled", true);
 
-        $('#telefono').removeClass("errorData");
+        $('#telefonoInfraccion').removeClass("errorData");
         if (phone != "" && phone != undefined) {
             if (!isValidPhone(phone)) {
-                $('#telefono').addClass("errorData");
+                $('#telefonoInfraccion').addClass("errorData");
                 isValid = false;
             }
         }
 
         if (email != "" && email != undefined) {
-            $('#correo').removeClass("errorData");
+            $('#correoInfraccion').removeClass("errorData");
             if (!isValidEmail(email)) {
-                $('#correo').addClass("errorData");
+                $('#correoInfraccion').addClass("errorData");
                 isValid = false;
             }
         }

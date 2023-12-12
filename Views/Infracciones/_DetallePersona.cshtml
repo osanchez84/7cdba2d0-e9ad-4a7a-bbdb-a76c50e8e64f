@@ -113,7 +113,7 @@
         <div class="controlForm">
             <label>Vigencia licencia:</label>
             <p>
-                @(Model.vigenciaLicencia != DateTime.MinValue ? Model.vigenciaLicencia.ToShortDateString() : "-")
+                @(Model.vigenciaLicencia != DateTime.MinValue ? Model.vigenciaLicencia.Value.ToString("dd/MM/yyyy") : "-")
             </p>
 
         </div>

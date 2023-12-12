@@ -2,6 +2,10 @@
 @model VehiculoModel
 
 @{
+
+
+
+
     var dateVigencia = Model.vigenciaTarjeta;
     var myAttributes = new { disabled = "", style = "width:100%;" };
     if (Model != null)
@@ -18,6 +22,7 @@
 
     ViewBag.serie = Model.serie;
 }
+
 <script>
      function EntidadDDChangeAccFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
@@ -202,6 +207,8 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
                         .DateInput()
+                        
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
                         )
@@ -211,6 +218,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.Value(dateVigencia)
                         .DateInput()
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
                         )
@@ -969,6 +977,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd/MM/yyyy")
+                                    .Culture("es-ES")
                                    .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                     )
                             </span>
@@ -1143,6 +1152,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia).Format("dd/MM/yyyy")
                                     .DateInput()
+                                    .Culture("es-ES")
                                     )
 
                             </span>

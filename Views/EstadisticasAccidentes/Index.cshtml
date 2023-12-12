@@ -160,6 +160,7 @@
 						<label>Inicio:</label>
 						@(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
 							.Format("dd/MM/yyyy")
+							.Culture("es-ES")
 							.HtmlAttributes(new { style = "width: 100%", title = "datepicker",id="start" })
 							.Events(e => e.Change("validarFecha")) 							)
 					</div>
@@ -170,6 +171,7 @@
 						<label>Fin:</label>
 						@(Html.Kendo().DatePickerFor(t => t.FechaFin)
 							.Format("dd/MM/yyyy")
+							.Culture("es-ES")
 							.HtmlAttributes(new { style = "width: 100%", title = "datepicker", id="end" }))
 					</div>
 				</div>

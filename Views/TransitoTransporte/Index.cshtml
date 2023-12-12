@@ -252,6 +252,8 @@
                     <label>Fecha de Ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
                         .Format("dd/MM/yyyy")
+                        .Culture("es-ES")
+
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
                         )
 
@@ -271,6 +273,7 @@
 
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngresoFin)
                         .Format("dd/MM/yyyy")
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
                         )
 

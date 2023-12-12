@@ -53,6 +53,7 @@
             <div class="controlForm">
                 <label>Fecha de nacimiento:</label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
+                    .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;", required = "required" })
                     )
             </div>
@@ -116,6 +117,7 @@
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
+                    .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;" })
                     )
             </div>

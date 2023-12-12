@@ -187,7 +187,7 @@
                     <div class="controlForm">
                         <label>Inicio:</label>
                         @(Html.Kendo().DatePickerFor(t => t.fechaInicio)
-                           
+                            .Culture("es-ES")
                             .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
                             )
                     </div>
@@ -196,7 +196,7 @@
                     <div class="controlForm">
                         <label>Fin:</label>
                         @(Html.Kendo().DatePickerFor(t => t.fechaFin)
-                           
+                            .Culture("es-ES")
                             .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
                             )
                     </div>

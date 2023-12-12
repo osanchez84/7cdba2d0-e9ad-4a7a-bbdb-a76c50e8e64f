@@ -76,6 +76,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddHttpClient();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+            
+
             services.AddRouting(setupAction =>
             {
                 setupAction.LowercaseUrls = true;
@@ -230,7 +232,7 @@ namespace GuanajuatoAdminUsuarios
             // implementa la validacion de sesion
             app.UseSession();
             app.UseRouting();
-
+            
 
             //Autorizacion y autenticacion de usuario
             app.UseAuthentication();

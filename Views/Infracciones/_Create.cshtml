@@ -198,6 +198,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
                         .DateInput()
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -206,6 +207,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
                         .DateInput()
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
                 }
@@ -944,6 +946,7 @@
                             <label>Fecha de nacimiento <b>(obligatorio):</b></label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
+                                .Culture("es-ES")
                                     .Format("dd/MM/yyyy")
                                     )
                             </span>
@@ -1112,6 +1115,7 @@
                             <label>Fecha de vencimiento:</label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia)
+                                .Culture("es-ES")
                                     .DateInput()
                                     )
 

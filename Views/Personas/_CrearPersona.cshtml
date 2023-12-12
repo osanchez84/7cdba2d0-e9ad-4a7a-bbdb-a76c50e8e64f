@@ -35,6 +35,7 @@
                 <label>Fecha de nacimiento:</label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
                     .HtmlAttributes(new { style = "width: 100%;", required = "required" })
+                    .Culture("es-ES")
                     )
             </div>
         </div>
@@ -98,6 +99,7 @@
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
                     .HtmlAttributes(new { style = "width: 100%;" })
+                    .Culture("es-ES")
                     )
             </div>
         </div>

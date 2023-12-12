@@ -44,6 +44,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Fecha).Max(DateTime.Now)
                                     .Label(l => l.Content("Fecha <b>(obligatorio)</b>:"))
+                                    .Culture("es-ES")
                                     .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
                                     .Events(e => e
                                     .Change("validarFecha"))

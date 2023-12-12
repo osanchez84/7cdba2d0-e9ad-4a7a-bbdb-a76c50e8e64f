@@ -165,6 +165,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.DateInput()
                         .Value("")
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                       
                         )
@@ -904,6 +905,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd/MM/yyyy")
+                                    .Culture("es-ES")
                                     )
                             </span>
                         </div>
@@ -1073,6 +1075,7 @@
                             <span>
                               @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicenciaFisico)
                                           .Format("yyyy-MM-dd")
+                                          .Culture("es-ES")
                                )
 
 

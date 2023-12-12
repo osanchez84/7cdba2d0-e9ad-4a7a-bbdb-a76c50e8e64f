@@ -406,8 +406,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         "SELECT cva.*, COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,cva.idTipoCarga,cva.poliza,ctc.tipoCarga,v.placas, v.tarjeta, v.serie, v.idMarcaVehiculo, " +
                         "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
                         "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
-                        "p.apellidoMaterno,p.RFC,p.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
-                        "tc.tipoCarga,v.vigenciaTarjeta, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
+                        "p.apellidoMaterno,pcv.RFC,pcv.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
+                        "tc.tipoCarga,v.vigenciaTarjeta,tp.tipoPersona, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
                         "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
                         "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
@@ -423,7 +423,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
                         "LEFT JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
                         "LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona " +
-                        "WHERE cva.idAccidente = @idAccidente AND cva.idPersona = @idPersona AND cva.idVehiculo = @IdVehiculoInvolucrado AND cva.idAccidente > 0;",connection);
+                        "LEFT JOIN catTipoPersona AS tp ON p.idCatTipoPersona = tp.idCatTipoPersona " +
+                        "WHERE cva.idAccidente = @idAccidente AND cva.idPersona = @idPersona AND cva.idVehiculo = @IdVehiculoInvolucrado AND cva.idAccidente > 0;", connection);
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
@@ -461,6 +462,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.Color = reader["color"] != DBNull.Value ? reader["color"].ToString() : string.Empty;
                             involucrado.RFC = reader["RFC"] != DBNull.Value ? reader["RFC"].ToString() : string.Empty;
                             involucrado.CURP = reader["CURP"] != DBNull.Value ? reader["CURP"].ToString() : string.Empty;
+                            involucrado.TipoPersona = reader["tipoPersona"] != DBNull.Value ? reader["tipoPersona"].ToString() : string.Empty;
                             involucrado.TipoServicio = reader["tipoServicio"] != DBNull.Value ? reader["tipoServicio"].ToString() : string.Empty;
                             involucrado.VigenciaTarjeta = reader["vigenciaTarjeta"] != DBNull.Value ? (DateTime)reader["vigenciaTarjeta"] : DateTime.MinValue;
 
@@ -896,7 +898,7 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 try
                 {
-                    connection.Open();
+					connection.Open();
                     string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente) values(@idAccidente, @idCausaAccidente)";
 
                     SqlCommand command = new SqlCommand(query, connection);
@@ -1032,7 +1034,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
-                    connection.Open();
+					int numeroContinuo = 1;
+					connection.Open();
                     SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente, ac.idAccidenteCausa FROM accidenteCausas ac " +
                                                         "JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente " +
                                                         "LEFT JOIN accidentes AS a ON ac.idAccidente = a.idAccidente " +
@@ -1051,13 +1054,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             causa.IdCausaAccidente = Convert.ToInt32(reader["IdCausaAccidente"].ToString());
                             causa.CausaAccidente = reader["causaAccidente"].ToString();
                             causa.DescripcionCausa = reader["descripcionCausas"].ToString();
+							causa.NumeroContinuo = numeroContinuo;
+							ListaGridCausa.Add(causa);
+							numeroContinuo++;
 
 
-                            ListaGridCausa.Add(causa);
+						}
 
-                        }
-
-                    }
+					}
 
                 }
                 catch (SqlException ex)

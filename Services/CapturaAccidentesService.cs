@@ -494,7 +494,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,pd.telefono
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
 							                ,tl.tipoLicencia,tv.tipoVehiculo
-                                            ,mun.Municipio,cent.nombreEntidad, cg.genero
+                                            ,mun.Municipio,cent.nombreEntidad
+                                            ,v.vigenciaTarjeta
 
 
                                             FROM personas AS p                                           

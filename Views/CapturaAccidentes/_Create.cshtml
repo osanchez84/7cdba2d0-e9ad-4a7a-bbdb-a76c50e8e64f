@@ -706,8 +706,9 @@
                             <label>Teléfono:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
                                 .Placeholder("Ingresa Teléfono")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%" ,onkeypress = "return validarNumero(event)"})
                                 )
+                        <div id="errorTelefono" style="color: red;"></div>
                         </div>
                     </div>
 
@@ -996,9 +997,9 @@
                             <label>Teléfono:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
                                 .Placeholder("Ingresa un Teléfono")
-                                .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico" })
+                                .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico",onkeypress = "return validarNumero(event)" })
                                 )
-
+                        <div id="errorTelefonoFisico" style="color: red;"></div>
                         </div>
                     </div>
 
@@ -1208,6 +1209,29 @@
 
         buscarPersonasFisicas();
     });
+    function validarNumero(event) {
+            var charCode = (event.which) ? event.which : event.keyCode;
+
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
+                mostrarError("Solo se permiten números.");
+                event.preventDefault();
+                return false;
+            }
+
+            ocultarError();
+            return true;
+        }
+
+    function mostrarError(mensaje) {
+        $("#errorTelefono").text(mensaje);
+          $("#errorTelefonoFisico").text(mensaje);
+    }
+
+    function ocultarError() {
+        $("#errorTelefono").text("");
+                  $("#errorTelefonoFisico").text("");
+
+    }
 
     function buscarPersonasFisicas() {
 

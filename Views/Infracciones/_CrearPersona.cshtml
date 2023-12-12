@@ -81,6 +81,7 @@
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
                     .Filter(FilterType.Contains)
+                    .Label(l => l.Content("Género <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
         </div>
@@ -90,6 +91,7 @@
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
+                    .Label(l => l.Content("Tipo persona <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width:100%;", required = "required" }))
             </div>
         </div>
@@ -106,7 +108,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Tipo licencia:</label>
-                @(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
+                @(Html.Kendo().DropDownListFor(m => m.idTipoLicenciaInfraccion).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;" }))
@@ -115,8 +117,8 @@
         <div class="col-md-4">
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
-                @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
-                    .Culture("es-ES")
+                @(Html.Kendo().DatePickerFor(t => t.vigenciaLicenciaFisico)
+              .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;" })
                     )
             </div>
@@ -156,7 +158,7 @@
                             read.Action("Municipios_Drop", "Infracciones");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipioFisico" }))
+                    .HtmlAttributes(new { style = "width:100%;", id = "idMunicipioFisico" }))
                     @*.HtmlAttributes(new { style = "width:100%;", id = "idMunicipio" }))*@
             </div>
         </div>
@@ -198,7 +200,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                @(Html.Kendo().TextBoxFor(t => t.telefono)
+                @(Html.Kendo().TextBoxFor(t => t.telefonoInfraccion)
                     .Label(l => l.Content("Teléfono:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
@@ -206,7 +208,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                @(Html.Kendo().TextBoxFor(t => t.correo)
+                @(Html.Kendo().TextBoxFor(t => t.correoInfraccion)
                     .Label(l => l.Content("Correo <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
@@ -313,26 +315,26 @@
     function btnCrearPersona() {
         var controlsValidate = [];
         var isValid = true;
-        var phone = $("#telefono").val();
-        var email = $("#correo").val();
+        var phone = $("#telefonoInfraccion").val();
+        var email = $("#correoInfraccion").val();
 
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         $("#vigenciaLicencia").prop("disabled", true);
         $("#idTipoLicencia").prop("disabled", true);
         $("#numeroLicencia").prop("disabled", true);
 
-        $('#telefono').removeClass("errorData");
+        $('#telefonoInfraccion').removeClass("errorData");
         if (phone != "" && phone != undefined) {
             if (!isValidPhone(phone)) {
-                $('#telefono').addClass("errorData");
+                $('#telefonoInfraccion').addClass("errorData");
                 isValid = false;
             }
         }
 
         if (email != "" && email != undefined) {
-            $('#correo').removeClass("errorData");
+            $('#correoInfraccion').removeClass("errorData");
             if (!isValidEmail(email)) {
-                $('#correo').addClass("errorData");
+                $('#correoInfraccion').addClass("errorData");
                 isValid = false;
             }
         }

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using Newtonsoft.Json;
 using GuanajuatoAdminUsuarios.Utils;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 using GuanajuatoAdminUsuarios.Models.PDFModels;
 
 namespace GuanajuatoAdminUsuarios.Controllers

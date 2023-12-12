@@ -1172,7 +1172,7 @@ WHERE
             return licenciaNoSITTEG;
         }
 
-        public void InsertarDesdeServicio(LicenciaPersonaDatos personaDatos)
+        public int InsertarDesdeServicio(LicenciaPersonaDatos personaDatos)
         {
             int insertedId = 0; 
             int idPersona = ExistePersona(personaDatos.NUM_LICENCIA, personaDatos.CURP);
@@ -1187,7 +1187,7 @@ WHERE
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@NumeroLicencia", string.IsNullOrEmpty(personaDatos.NUM_LICENCIA) ? "" : personaDatos.NUM_LICENCIA);
+                        command.Parameters.AddWithValue("@NumeroLicencia", (object)personaDatos.NUM_LICENCIA ?? DBNull.Value);
                         command.Parameters.AddWithValue("@curp", string.IsNullOrEmpty(personaDatos.CURP) ? "" : personaDatos.CURP);
                         command.Parameters.AddWithValue("@rfc", string.IsNullOrEmpty(personaDatos.RFC) ? "" : personaDatos.RFC);
                         command.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(personaDatos.NOMBRE) ? "" : personaDatos.NOMBRE);
@@ -1211,6 +1211,7 @@ WHERE
             }
             idPersona = ExistePersona(personaDatos.NUM_LICENCIA, personaDatos.CURP);
             insertarDireccion(personaDatos, idPersona);
+            return (idPersona);
         }
 
         public void insertarDireccion(LicenciaPersonaDatos personaDatos, int insertado)
@@ -1246,18 +1247,45 @@ WHERE
         }
 
         public int ExistePersona(string licencia, string curp)
-        { 
-            int idPersona = 0; 
+        {
+            int idPersona = 0;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 connection.Open();
-                string query = "SELECT idPersona FROM PERSONAS p WHERE numeroLicencia=@licencia AND CURP=@curp";
+
+                // Verificar si alguno de los parámetros es null
+                if (licencia == null && curp == null)
+                {
+                    // Manejar la lógica cuando ambos parámetros son null
+                    return idPersona;
+                }
+
+                // Construir la consulta SQL basada en los parámetros no nulos
+                string query = "SELECT idPersona FROM PERSONAS p WHERE ";
+                if (licencia != null)
+                {
+                    query += "numeroLicencia=@licencia ";
+                }
+                if (curp != null)
+                {
+                    if (licencia != null)
+                    {
+                        query += "OR ";
+                    }
+                    query += "CURP=@curp";
+                }
 
                 using (SqlCommand command = new SqlCommand(query, connection))
-                { 
-                    command.Parameters.AddWithValue("@licencia", licencia);
-                    command.Parameters.AddWithValue("@curp", curp);
+                {
+                    if (licencia != null)
+                    {
+                        command.Parameters.AddWithValue("@licencia", licencia);
+                    }
+                    if (curp != null)
+                    {
+                        command.Parameters.AddWithValue("@curp", curp);
+                    }
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -1266,11 +1294,13 @@ WHERE
                             idPersona = reader["idPersona"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"]);
                         }
                     }
-                } 
+                }
+
             }
 
             return idPersona;
         }
+
 
         public PersonaModel BuscarPersonaSoloLicencia(string numeroLicencia)
         {

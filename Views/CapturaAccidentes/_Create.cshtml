@@ -2,6 +2,10 @@
 @model VehiculoModel
 
 @{
+
+
+
+
     var dateVigencia = Model.vigenciaTarjeta;
     var myAttributes = new { disabled = "", style = "width:100%;" };
     if (Model != null)
@@ -18,6 +22,7 @@
 
     ViewBag.serie = Model.serie;
 }
+
 <script>
      function EntidadDDChangeAccFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
@@ -202,6 +207,8 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
                         .DateInput()
+                        
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
                         )
@@ -211,6 +218,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.Value(dateVigencia)
                         .DateInput()
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
                         )
@@ -439,7 +447,7 @@
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
 
-        <input type="text" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
+        <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
 
 @*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
 *@        
@@ -706,8 +714,9 @@
                             <label>Teléfono:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
                                 .Placeholder("Ingresa Teléfono")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%" ,onkeypress = "return validarNumero(event)"})
                                 )
+                        <div id="errorTelefono" style="color: red;"></div>
                         </div>
                     </div>
 
@@ -968,6 +977,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd/MM/yyyy")
+                                    .Culture("es-ES")
                                    .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                     )
                             </span>
@@ -996,9 +1006,9 @@
                             <label>Teléfono:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
                                 .Placeholder("Ingresa un Teléfono")
-                                .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico" })
+                                .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico",onkeypress = "return validarNumero(event)" })
                                 )
-
+                        <div id="errorTelefonoFisico" style="color: red;"></div>
                         </div>
                     </div>
 
@@ -1141,6 +1151,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia).Format("dd/MM/yyyy")
                                     .DateInput()
+                                    .Culture("es-ES")
                                     )
 
                             </span>
@@ -1208,6 +1219,29 @@
 
         buscarPersonasFisicas();
     });
+    function validarNumero(event) {
+            var charCode = (event.which) ? event.which : event.keyCode;
+
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
+                mostrarError("Solo se permiten números.");
+                event.preventDefault();
+                return false;
+            }
+
+            ocultarError();
+            return true;
+        }
+
+    function mostrarError(mensaje) {
+        $("#errorTelefono").text(mensaje);
+          $("#errorTelefonoFisico").text(mensaje);
+    }
+
+    function ocultarError() {
+        $("#errorTelefono").text("");
+                  $("#errorTelefonoFisico").text("");
+
+    }
 
     function buscarPersonasFisicas() {
 

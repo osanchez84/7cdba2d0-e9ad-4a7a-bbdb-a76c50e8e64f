@@ -165,6 +165,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.DateInput()
                         .Value("")
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                       
                         )
@@ -380,7 +381,7 @@
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
         
-                <input type="hidden" disabled  value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnidCatTipoServicio">
+                <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnidCatTipoServicio">
 @*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnidCatTipoServicio" })
 *@      
         
@@ -904,6 +905,7 @@
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd/MM/yyyy")
+                                    .Culture("es-ES")
                                     )
                             </span>
                         </div>
@@ -1073,6 +1075,7 @@
                             <span>
                               @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicenciaFisico)
                                           .Format("yyyy-MM-dd")
+                                          .Culture("es-ES")
                                )
 
 
@@ -1331,17 +1334,14 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
         var dateVigencia = datePicker.value();
 
-        // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
         if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
             datePicker.value(null);
         }
     });
 
     function goBackModificar(){
-
-        //location.reload()
-
-     window.location.href = '@Url.Action("Editar", "Vehiculos")';
+         document.getElementById("sec0").style.display = "block";
+        document.getElementById("VehiculoLocalizado").style.display = "none";    
     }
 
     function EntidadDropDownChangeV() {

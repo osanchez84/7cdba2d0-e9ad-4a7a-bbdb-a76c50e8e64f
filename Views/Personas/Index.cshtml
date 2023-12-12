@@ -300,18 +300,17 @@
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
                     if (response.encontrada == false) {
-                        // sitteg_warning("No se pudieron obtener resultados.");
+                         sitteg_warning("No se pudieron obtener resultados.");
                     }
                 } else if (response.tipo == "warning") {
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
                 }
 
                 var personasList = response.data;
-                console.log("PERSLI", personasList)
                 var grid = $("#gridPersonas").data("kendoGrid");
                 grid.dataSource.data(personasList);
 
-                if (personasList.length === 0) {
+                if (personasList.count === 0) {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }

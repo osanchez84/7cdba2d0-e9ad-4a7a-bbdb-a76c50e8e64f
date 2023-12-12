@@ -1331,17 +1331,14 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
         var dateVigencia = datePicker.value();
 
-        // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
         if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
             datePicker.value(null);
         }
     });
 
     function goBackModificar(){
-
-        //location.reload()
-
-     window.location.href = '@Url.Action("Editar", "Vehiculos")';
+         document.getElementById("sec0").style.display = "block";
+        document.getElementById("VehiculoLocalizado").style.display = "none";    
     }
 
     function EntidadDropDownChangeV() {

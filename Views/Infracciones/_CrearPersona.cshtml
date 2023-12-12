@@ -157,7 +157,7 @@
                         });
                     })
                     .HtmlAttributes(new { style = "width:100%;", id = "idMunicipioFisico" }))
-                    @*.HtmlAttributes(new { style = "width:100%;", id = "idMunicipio" }))*@
+                @*.HtmlAttributes(new { style = "width:100%;", id = "idMunicipio" }))*@
             </div>
         </div>
         <div class="col-md-4">
@@ -236,45 +236,35 @@
 </div>
 
 <script>
-    
-    function btnCrearPersona() {
-      var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
-        $("#vigenciaLicencia").prop("disabled",true);
-         $("#idTipoLicencia").prop("disabled",true);
-        $("#numeroLicenciaFisico").prop("disabled",true);
+    var isValidPhone = function (phone) {
+        var regex = /^[0-9]+$/;
+        return regex.test(phone);
+    };
 
-        validator.validate();
-        if (validator.validate()) {
-            var formData = $("#frmCrearPersona").serialize();
-            $.ajax({
-                url: '@Url.Action("ajax_CrearPersona","Infracciones")',
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    if (result.success === false){
-                        sitteg_warning('Informacióm registrada anteriormente, revise la informacion proporcionada.');
-                    }
-                    else{
-                    $("#listadoPersonas").html(result);
-                    $('#modalCrearPersona').modal('hide');
-                    $('#agregarConductorModal').modal('hide');
-                    sitteg_success('Elemento guardado correctamente')
-                    }
-                },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+    var isValidEmail = function (email) {
+        var regex = /^\w+([.-_+]?\w+)*\w+([.-]?\w+)*(\.\w{2,10})+$/;
+        return regex.test(email);
+    };
+
+    function isControlsValid(controlsValidate) {
+        var isValid = true;
+        var isFirst = false;
+
+        controlsValidate.forEach(x => {
+            var element = $('#' + x.controlName);
+            element.removeClass("errorData");
+            if (element.val() == '') {
+                element.addClass("errorData");
+                if (!isFirst) {
+                    //element.focus();
                 }
-            });
-        }
-         else {
-          //  $("#vigenciaLicencia").prop("disabled", false);
-                $("#idTipoLicencia").prop("disabled",true);
-        $("#numeroLicenciaFisico").prop("disabled",true);
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+                isValid = false;
+                isFirst = true;
+            }
+
+        });
+
+        return isValid;
     }
 
 
@@ -317,7 +307,7 @@
         var email = $("#correoInfraccion").val();
 
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
-        $("#vigenciaLicencia").prop("disabled", true);
+        $("#vigenciaLicenciaFisico").prop("disabled", true);
         $("#idTipoLicencia").prop("disabled", true);
         $("#numeroLicencia").prop("disabled", true);
 
@@ -374,7 +364,7 @@
             });
         }
         else {
-            $("#vigenciaLicencia").prop("disabled", false);
+            $("#vigenciaLicenciaFisico").prop("disabled", false);
             $("#idTipoLicencia").prop("disabled", true);
             $("#numeroLicencia").prop("disabled", true);
             sitteg_info('Debe llenar los campos requeridos');
@@ -383,7 +373,7 @@
     }
 
     $(document).ready(function () {
-        var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+        var datePicker = $("#vigenciaLicenciaFisico").data("kendoDatePicker");
         datePicker.value(null);
     });
 
@@ -394,6 +384,6 @@
 
 
     $(document).ready(function () {
-        $('#vigenciaLicencia').removeAttr("required");
+        $('#vigenciaLicenciaFisico').removeAttr("required");
     });
 </script>

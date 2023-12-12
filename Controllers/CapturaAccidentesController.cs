@@ -1427,16 +1427,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult ajax_UpdatePersonaMoral(PersonaModel Persona)
-		{
-			Persona.idCatTipoPersona = (int)TipoPersona.Moral;
-			var personaModel = _personasService.UpdatePersonaMoral(Persona);
+        public ActionResult ajax_UpdatePersonaMoral(PersonaModel Persona)
+        {
+            Persona.idCatTipoPersona = (int)TipoPersona.Moral;
+            var personaModel = _personasService.UpdatePersonaMoral(Persona);
             var personaEditada = _personasService.GetPersonaTypeById((int)Persona.idPersona);
-            return Json(personaEditada);
-		}
 
-		//TODO: ejemplo crear vehiculo por service de guanajuato
-		[HttpPost]
+            return Json(new { data = personaEditada });
+        }
+
+
+        //TODO: ejemplo crear vehiculo por service de guanajuato
+        [HttpPost]
 
 
         public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)

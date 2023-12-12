@@ -525,8 +525,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.RFC = reader["rfc"].ToString();
                             model.CURP = reader["curp"].ToString();
                             model.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.Genero = reader["genero"].ToString();
                             model.TipoPersona = reader["tipoPersona"].ToString();
-                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
                             model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
                             model.idGenero = reader["idGenero"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"]);
 							model.Telefono = reader["telefono"].ToString();
@@ -2100,7 +2101,7 @@ hola
                                     montoCamino, montoCarga, montoPropietarios, montoOtros,
                                     latitud ,longitud ,idCertificado ,
                                     armas ,drogas ,valores ,prendas ,otros ,entregaObjetos, entregaOtros ,
-                                    consignacionHechos, idCiudad ,
+                                    consignacionHechos, idCiudad , convenio ,
                                     idAutoridadEntrega , idAutoridadDisposicion , idElaboraConsignacion , 
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
@@ -2131,6 +2132,7 @@ hola
                             datosFinales.EstadoValores = reader["valores"] == DBNull.Value ? 0 : int.Parse(reader["valores"].ToString());
                             datosFinales.EstadoPrendas = reader["prendas"] == DBNull.Value ? 0 : int.Parse(reader["prendas"].ToString());
                             datosFinales.EstadoOtros = reader["otros"] == DBNull.Value ? 0 : int.Parse(reader["otros"].ToString());
+                            datosFinales.EstadoConvenio = reader["convenio"] == DBNull.Value ? 0 : int.Parse(reader["convenio"].ToString());
                             datosFinales.consignacionHechos = reader["consignacionHechos"] == DBNull.Value ? "" : reader["consignacionHechos"].ToString();
                             datosFinales.IdCiudad = reader["idCiudad"] == DBNull.Value ? 0 : int.Parse(reader["idCiudad"].ToString());
                             datosFinales.entregaObjetos = reader["entregaObjetos"] == DBNull.Value ? "" : reader["entregaObjetos"].ToString();

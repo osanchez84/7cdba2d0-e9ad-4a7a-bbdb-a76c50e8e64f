@@ -1385,18 +1385,20 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,pInf.actualizadoPor
                                 ,pInf.estatus
                                 ,p.idPersona
+                                ,inf.idPersona AS idPersonaDireccion
                                 ,pInf.idCatTipoPersona
-                                ,p.fechaNacimiento
-								,p.idTipoLicencia
-								,p.numeroLicencia
-								,p.vigenciaLicencia
+                                ,pv.fechaNacimiento
+								,pv.idTipoLicencia
+								,pv.numeroLicencia
+								,pv.vigenciaLicencia
 								,ctl.tipoLicencia,ctp.tipoPersona,cg.genero
                                 FROM personasInfracciones as pInf
 								LEFT JOIN infracciones As inf ON pInf.idPersonaInfraccion = inf.idPersonaInfraccion
                               	LEFT JOIN personas As p ON inf.idPersonaInfraccion = p.idPersona
-								LEFT JOIN catTipoLicencia As ctl ON ctl.idTipoLicencia = p.idTipoLicencia
-							    LEFT JOIN catTipoPersona As ctp ON ctp.idCatTipoPersona = p.idCatTipoPersona
-                                LEFT JOIN catGeneros cg on p.idGenero = cg.idGenero
+								LEFT JOIN personas As pv ON inf.idPersona = pv.idPersona
+								LEFT JOIN catTipoLicencia As ctl ON ctl.idTipoLicencia = pv.idTipoLicencia
+							    LEFT JOIN catTipoPersona As ctp ON ctp.idCatTipoPersona = pv.idCatTipoPersona
+                                LEFT JOIN catGeneros cg on pv.idGenero = cg.idGenero
 							    WHERE pInf.estatus = 1
                                 AND pInf.idPersonaInfraccion = @idPersonaInfraccion";
 
@@ -1415,6 +1417,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             PersonaInfraccionModel model = new PersonaInfraccionModel();
                             model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+                            model.idPersona = reader["idPersonaDireccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaDireccion"].ToString());
+                            model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
                             model.numeroLicencia = reader["numeroLicencia"].ToString();
                             model.CURP = reader["CURP"].ToString();
                             model.RFC = reader["RFC"].ToString();
@@ -1429,8 +1433,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
-                            model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
-                            model.PersonaDireccion = _personasService.GetPersonaDireccionByIdPersona((int)model.idPersonaInfraccion);
+                            model.PersonaDireccion = _personasService.GetPersonaDireccionByIdPersona((int)model.idPersona);
 
                             modelList.Add(model);
                         }
@@ -1752,6 +1755,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             InfraccionesModel model = new InfraccionesModel();
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
                             model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
                             model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
                             model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
                             model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
@@ -1781,7 +1785,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
                             if (model.Vehiculo != null)
                             {
-                                model.idPersona = model.Vehiculo.idPersona;
+                                model.idPropitario = model.Vehiculo.idPersona;
                             }
                             else
                             {
@@ -1789,11 +1793,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             };
                             model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
                             model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+                            model.Persona = _personasService.GetPersonaById((int)model.idPropitario);
                             //model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
                             model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPersonaInfraccion ? "Propietario" : "Conductor";
+                            model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.umas = GetUmas();
                             if (model.MotivosInfraccion.Any(w => w.calificacion != null))
@@ -2177,15 +2181,15 @@ namespace GuanajuatoAdminUsuarios.Services
                         ,CASE WHEN inf.infraccionCortesia = 1 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia
                         ,del.nombreOficina Delegacion
                         ,catMun.municipio as Municipio
-                        ,Convert(DATE, inf.fechaInfraccion) FechaInfraccion
-                        ,Convert(TIME, inf.fechaInfraccion) HoraInfraccion
+                        ,CONVERT(varchar, inf.fechaInfraccion, 103) AS FechaInfraccion
+                        ,CONVERT(varchar, inf.fechaInfraccion, 8) AS HoraInfraccion
                         ,'' as FechaVencimiento
                         ,catCarre.carretera as Carretera
                         ,catTra.tramo as Tramo
                         ,inf.kmCarretera AS Kilometraje
                         ,CONCAT(pers.nombre, ' ', pers.apellidoPaterno, ' ', pers.apellidoMaterno) as NombreConductor
 						,pers.CURP as CURPConductor
-                        ,pers.fechaNacimiento as FechadeNacimientoConductor
+                        ,CONVERT(varchar, pers.fechaNacimiento, 103) AS FechadeNacimientoConductor
                         ,CONCAT(dirpers.calle,' ', dirpers.numero, ' ',dirpers.colonia, ', ', dipersmuni.municipio, ', ', dirpersenti.nombreEntidad) as DomicilioConductor                        
                         ,pers.numeroLicencia as LicenciaConductor
                         ,CASE WHEN pers.idCatTipoPersona = 1 THEN 'x' ELSE '' END AS TipoPersFisica
@@ -2242,7 +2246,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
                         WHERE 
                         inf.estatus= 1"
-            ;
+			;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {

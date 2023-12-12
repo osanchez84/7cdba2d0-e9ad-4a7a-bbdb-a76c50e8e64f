@@ -1622,8 +1622,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //if (ModelState.IsValid)
             //{
             int id = _personasService.CreatePersona(model);
-            model.PersonaDireccion.idPersona = id;
-            int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+            //model.PersonaDireccion.idPersona = id;
+            //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
             var modelList = _capturaAccidentesService.ObtenerConductorPorId(id);
             return Json(modelList); 

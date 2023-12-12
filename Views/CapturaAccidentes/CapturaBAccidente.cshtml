@@ -70,7 +70,7 @@
                     } else {
                         if (response.data != null || response.data != undefined) {
                             var personasList = response.data;
-                            var grid = $("#gridInvolucradosPrevio").data("kendoGrid"); 
+                            var grid = $("#gridConductores").data("kendoGrid"); 
 
                             [].forEach.call(personasList, function (persona) {
                                 persona.fechaNacimiento = convertDate(persona.fechaNacimiento);

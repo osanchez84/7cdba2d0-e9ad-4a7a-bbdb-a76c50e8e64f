@@ -5,6 +5,8 @@ namespace GuanajuatoAdminUsuarios.Models
     public class PersonaInfraccionModel : EntityModel
     {
         public int idPersonaInfraccion { get; set; }
+        public int idPersona { get; set; }
+
         public int idGenero { get; set; }
         public int idTipoLicencia { get; set; }       
         public string numeroLicencia { get; set; }

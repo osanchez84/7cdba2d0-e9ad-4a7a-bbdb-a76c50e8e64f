@@ -101,7 +101,7 @@ namespace GuanajuatoAdminUsuarios
             // services.AddTransient<ConexionBD>();
 
             //Servicios 
-            services.AddScoped(typeof(IPdfGenerator<>), typeof(PdfGenerator<>));
+            services.AddScoped(typeof(IPdfGenerator), typeof(PdfGenerator));
             services.AddScoped<ISqlClientConnectionBD, SqlClientConnectionBD>();
             services.AddScoped<IMarcasVehiculos, MarcasVehiculoService>();
             services.AddScoped<ICatFormasTrasladoService, CatFormasTrasladoService>();

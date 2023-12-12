@@ -496,7 +496,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,pd.telefono
                                             ,pd.correo,pd.idEntidad,pd.idMunicipio,pd.colonia,pd.calle,pd.numero
 							                ,tl.tipoLicencia,tv.tipoVehiculo
-                                            ,mun.Municipio,cent.nombreEntidad
+                                            ,mun.Municipio,cent.nombreEntidad,cg.genero
                                             ,v.vigenciaTarjeta
 
 

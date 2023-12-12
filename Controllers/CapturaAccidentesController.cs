@@ -1431,8 +1431,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			Persona.idCatTipoPersona = (int)TipoPersona.Moral;
 			var personaModel = _personasService.UpdatePersonaMoral(Persona);
-			var personasMoralesModel = _personasService.GetAllPersonasMorales();
-			return PartialView("_ListPersonasMorales", personasMoralesModel);
+            var personaEditada = _personasService.GetPersonaTypeById((int)Persona.idPersona);
+            return Json(personaEditada);
 		}
 
 		//TODO: ejemplo crear vehiculo por service de guanajuato

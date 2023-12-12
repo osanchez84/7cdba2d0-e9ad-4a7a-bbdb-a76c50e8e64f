@@ -9,7 +9,7 @@
             type: "POST",
             data: { entidadDDlValue: entidadDDlValue },
             success: function (data) {
-                var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
+                var MunicipiosDropDown = $("#idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
             },
             error: function (xhr, status, error) {
@@ -154,7 +154,7 @@
                             read.Action("Municipios_Drop", "Infracciones");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipio" }))
+                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipioFisico" }))
                     @*.HtmlAttributes(new { style = "width:100%;", id = "idMunicipio" }))*@
             </div>
         </div>

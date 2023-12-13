@@ -263,6 +263,7 @@
             $('#modalUpdateLiberacion').modal('hide');
             $('body').removeClass('model-open');
             $('.modal-backdrop').remove();
+            showLoading();
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("UpdateLiberacion")',
@@ -274,10 +275,12 @@
                 success: function (result) {
                     sitteg_info('Se ha actualizado la información');
                     //$("#listadoLiberacionVehiculos").html(result);
+                    hideLoading();
 
                 },
                 error: function (error) {
                     sitteg_warning('Sucedió un error, intente mas tarde...');
+                    hideLoading();
                 }
             });
         }

@@ -45,7 +45,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAutoridadDisposicion = dataItem.IdAutoridadDisposicion;
         console.log(IdAutoridadDisposicion);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarAutoridadDisposicionParcial", "CatAutoridadesDisposicion")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -53,8 +53,11 @@
             success: function (result) {
                 $('#ModalBodyCrearAutoridadDisp').html(result);
                 $('#agregarAutoridadDisp').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -62,7 +65,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAutoridadDisposicion = dataItem.IdAutoridadDisposicion;
         console.log(IdAutoridadDisposicion);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarAutoridadDisposicionParcial", "CatAutoridadesDisposicion")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -70,8 +73,11 @@
             success: function (result) {
                 $('#ModalBodyCrearAutoridadDisp').html(result);
                 $('#agregarAutoridadDisp').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 </script>

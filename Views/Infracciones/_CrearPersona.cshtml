@@ -3,7 +3,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Infracciones/Municipios_Drop",
             type: "POST",
@@ -11,8 +11,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -280,6 +282,7 @@
         // Validar si el TextBox contiene información
         if (numeroLicencia.trim() !== "") {
             // Enviar el valor al controlador mediante AJAX
+            showLoading();
             $.ajax({
                 type: "POST",
                 url: "/Personas/BusquedaPorLicencia",
@@ -287,10 +290,12 @@
                 success: function (result) {
                     // Manejar la respuesta del controlador si es necesario
                     console.log(result);
+                    hideLoading();
                 },
                 error: function (error) {
                     // Manejar errores en la solicitud AJAX
                     console.error(error);
+                    hideLoading();
                 }
             });
         } else {
@@ -333,7 +338,7 @@
 
         validator.validate();
         if (validator.validate()) {
-            $('#loading').css('display', 'block');
+            showLoading();
             $("#btnSave").prop("disabled", true);
 
             var formData = $("#frmCrearPersona").serialize();
@@ -352,14 +357,14 @@
                         $('#agregarConductorModal').modal('hide');
                         sitteg_success('Elemento guardado correctamente')
                     }
-                    $('#loading').css('display', 'none');
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
                     $("#btnSave").prop("disabled", false);
-                    $('#loading').css('display', 'none');
+                    hideLoading();
                 }
             });
         }

@@ -100,6 +100,7 @@
     function buscarDeposito(){
         var Mydata = $("#busquedaPrDepositoForm").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BusquedaDepositos", "BusquedaDeposito")',
             type: 'POST',
@@ -107,6 +108,11 @@
             success: (data) => {
                 var grid = $("#gridBusquedaServicioDepositos").data("kendoGrid");
                 grid.dataSource.data(data);
+                hideLoading();
+            },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

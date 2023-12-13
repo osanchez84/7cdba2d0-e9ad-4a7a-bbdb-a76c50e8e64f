@@ -53,7 +53,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdCarretera = dataItem.IdCarretera;
         console.log(IdCarretera);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarCarreteraModal", "CatCarreteras")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -61,8 +61,11 @@
             success: function (result) {
                 $('#ModalBodyCarretera').html(result);
                 $('#agregarCarretera').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function tooltipContent(e) {

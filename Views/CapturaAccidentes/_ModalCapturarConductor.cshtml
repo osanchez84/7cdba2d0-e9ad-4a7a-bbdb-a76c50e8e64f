@@ -3,7 +3,7 @@
 	function EntidadDropDownChange() {
 		var entidadDDlValue = $("#idEntidadFisico").data("kendoDropDownList").value();
 
-
+		showLoading();
 		$.ajax({
 			url: "/CapturaAccidentes/Municipios_Por_Entidad",
 			type: "POST",
@@ -11,8 +11,10 @@
 			success: function (data) {
 				var MunicipiosDropDown = $("#idMunicipioFisico").data("kendoDropDownList");
 				MunicipiosDropDown.dataSource.data(data);
+				hideLoading();
 			},
 			error: function (xhr, status, error) {
+				hideLoading();
 			}
 		});
 	}
@@ -281,6 +283,7 @@
 		validator.validate();
 		if (validator.validate()) {
 			var formData = $("#frmCrearPersonaV").serialize();
+			showLoading();
 			$.ajax({
 				url: '@Url.Action("ajax_CrearPersona","CapturaAccidentes")',
 				type: 'POST',
@@ -297,10 +300,12 @@
 					} else {
 						console.error("El resultado no es un objeto válido:", result);
 					}
+					hideLoading();
 				},
 				error: function (xhr, status) {
 					var errmsg = xhr.responseText;
 					sitteg_warning('Lo sentimos, ha ocurrido un error.');
+					hideLoading();
 				}
 			});
 		}

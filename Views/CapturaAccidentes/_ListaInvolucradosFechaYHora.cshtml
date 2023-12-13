@@ -79,6 +79,7 @@
         console.log(dataItem);
         var IdPersona = dataItem.IdPersona;
         var FechaIngreso = dataItem.FechaIngreso;
+        showLoading();
      $.ajax({
             url: '@Url.Action("MostrarModalFechaHora", "CapturaAccidentes")',
             type: 'POST',           
@@ -89,6 +90,10 @@
             success: (data) => {
                 $('#ModalBodyAgregarFechaHora').html(data);
                 $('#agregarFechaHoraModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

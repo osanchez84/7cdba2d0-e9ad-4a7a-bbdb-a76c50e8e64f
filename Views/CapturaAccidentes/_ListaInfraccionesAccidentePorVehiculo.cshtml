@@ -8,7 +8,7 @@
             IdVehiculo = dataItem.IdVehiculo;
             IdInfraccion = dataItem.IdInfraccion;
 
-
+            showLoading();
             $.ajax({
                 url: '@Url.Action("VincularInfraccionAccidente", "CapturaAccidentes")',
                 type: 'POST',
@@ -17,11 +17,13 @@
                     sitteg_success("Se ha agragado la infracion al registro de accidente")
                     $('#agregarInfraccionModal').modal('hide');
                     actualizarGridPrincipal()
+                    hideLoading();
                 },
 
 
                 error: function (error) {
                     siteg_warning("Ha sucedido un error inetnte mas tarde");
+                    hideLoading();
                 }
             });
         }

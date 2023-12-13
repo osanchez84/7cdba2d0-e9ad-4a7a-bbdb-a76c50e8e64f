@@ -77,7 +77,7 @@
     function buscarInfraccion() {
 
         var Data = $("#BusquedaCancelacionInfraccion").serialize(); 
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ObtenerInfracciones")',
             type: 'POST',
@@ -85,7 +85,12 @@
             success: function (result) { 
 
                 $('#listadoCancelacionInfracciones').html(result);
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

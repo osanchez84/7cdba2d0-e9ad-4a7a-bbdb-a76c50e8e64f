@@ -1,6 +1,7 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.EditarFactorOpcionModel
 <script>
     function cargarDropdownFactorAccidente(callback) {
+        showLoading();
         $.ajax({
             url: "/CapturaAccidentes/Factores_Drop",
             type: "GET",
@@ -11,9 +12,11 @@
                 if (callback) {
                     callback();
                 }
+                hideLoading();
             },
             error: function (xhr, status, error) {
                 console.error("Error en la llamada AJAX:", error);
+                hideLoading();
             }
         });
     }
@@ -28,6 +31,7 @@
 
             if (nuevoValor !== valorActual) {
                 // Realizar la llamada AJAX solo si el valor ha cambiado
+                showLoading();
                 $.ajax({
                     url: "/CapturaAccidentes/FactoresOpciones_Drop",
                     type: "POST",
@@ -39,9 +43,11 @@
                         var valorPreexistenteFactorOpcionAccidente = "@Html.Raw(Model.IdFactorOpcionAccidente)";
                         factorOpcionDropDown.value(valorPreexistenteFactorOpcionAccidente);
                         console.log("FACTORO", valorPreexistenteFactorOpcionAccidente);
+                        hideLoading();
                     },
                     error: function (xhr, status, error) {
                         console.error("Error en la llamada AJAX:", error);
+                        hideLoading();
                     }
                 });
             }
@@ -157,7 +163,7 @@
     function editarFactor() {
 
         var Mydata = $("#editarFactorForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarValorFactorYOpcion")',
             type: 'POST',
@@ -169,11 +175,12 @@
                 $('.modal-backdrop').remove();
                 $('#factorAccidenteModal').modal('hide');
                 sitteg_success("Se ha modificado la información");
-
+                hideLoading();
 
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

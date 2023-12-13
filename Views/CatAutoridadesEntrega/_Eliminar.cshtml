@@ -80,13 +80,17 @@
         var Mydata = $("#eliminarAutEntregaForm").serialize();
         console.log(Mydata);
         $('#agregarAutEntrega').modal('hide');
-    
+    showLoading();
         $.ajax({
             url: '@Url.Action("EliminarAutoridadEntregaMod")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
                 $("#tablaAutoridadesEntrega").html(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

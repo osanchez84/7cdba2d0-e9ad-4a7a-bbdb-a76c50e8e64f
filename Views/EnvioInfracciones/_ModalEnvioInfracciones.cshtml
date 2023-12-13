@@ -137,8 +137,9 @@
             },
             form: formSerialized
         };
-
+        showLoading();
         $.ajax({
+
             url: "/EnvioInfracciones/ajax_GuardarInfraccionesEnviadas",
             type: 'POST',
             data: data,
@@ -164,9 +165,11 @@
                 } else {
                     sitteg_warning('Uno o más registros no pudieron ser enviados. Inténtalo nuevamente.');
                 }
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }
@@ -186,7 +189,7 @@
             },
             form: formSerialized
         };
-
+        showLoading();
         $.ajax({
             url: "/EnvioInfracciones/ajax_GuardarInfraccionesEnviadas",
             type: 'POST',
@@ -194,10 +197,11 @@
             success: function (result) {
                 sitteg_success('Infracciones enviadas correctamente');
                 $('#enviarInfraccionesModal').modal('hide');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }
@@ -223,7 +227,7 @@
             },
             form: formSerialized
         };
-
+        showLoading();
         $.ajax({
             url: "/EnvioInfracciones/ajax_GuardarInfraccionesEnviadas",
             type: 'POST',
@@ -231,10 +235,11 @@
             success: function (result) {
                 sitteg_success('Infracciones enviadas correctamente');
                 $('#enviarInfraccionesModal').modal('hide');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }

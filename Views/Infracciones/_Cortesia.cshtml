@@ -92,6 +92,7 @@
             $('#modalCortesia').modal('hide');
             $('body').removeClass('model-open');
             $('.modal-backdrop').remove();
+            showLoading();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("ajax_UpdateCortesiaInfraccion")',
@@ -100,12 +101,14 @@
                 async: false,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente');
-                        $('#listadoInfracciones').html(result);         
+                        $('#listadoInfracciones').html(result);    
+                        hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }

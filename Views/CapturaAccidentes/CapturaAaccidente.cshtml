@@ -344,7 +344,7 @@
 			return;
 		}
 		var idAccidente = '@Model.IdAccidente';
-
+		showLoading();
 		$.ajax({
 			url: '@Url.Action("ModalAgregarVehiculo")',
 			type: 'POST',
@@ -352,6 +352,10 @@
 			success: function (result) {
 				$('#ModalBodyAgregarVehiculo').html(result);
 				$('#agregarVehiculoModal').modal('show');
+				hideLoading();
+			}, error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
 			}
 		});
 	}
@@ -361,6 +365,7 @@
 <script>
 	function pensionDropDownChange() {
 		var delegacionDDValue = $("#IdDelegacion").data("kendoDropDownList").value();
+		showLoading();
 		$.ajax({
 			url: "/CapturaAccidentes/Pensiones_Drop",
 			type: "POST",
@@ -368,13 +373,16 @@
 			success: function (data) {
 				var pensionesDropDown = $("#IdPension").data("kendoDropDownList");
 				pensionesDropDown.dataSource.data(data);
+				hideLoading();
 			},
 			error: function (xhr, status, error) {
+				hideLoading();
 			}
 		});
 	}
 
 	function mostrarModalComplementoVehiculo() {
+		showLoading();
 		$.ajax({
 			url: '@Url.Action("ModalAgregarVehiculo")',
 			type: 'POST',
@@ -383,6 +391,10 @@
 			success: function (data) {
 				$('#ModalBodymodalComplementoVehiculo').html(data);
 				$('#modalComplementoVehiculo').modal('show');
+				hideLoading();
+			}, error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
 			}
 		});
 	}

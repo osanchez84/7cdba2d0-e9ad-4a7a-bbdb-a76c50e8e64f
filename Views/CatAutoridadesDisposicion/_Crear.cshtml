@@ -74,7 +74,7 @@
 
         var Mydata = $("#AgregarAutoDispForm").serialize();
         $('#agregarAutoridadDisp').modal('hide');
-       
+       showLoading();
         $.ajax({
             url: '@Url.Action("CrearAutoridadDisposicionParcialModal")',
             type: 'POST',
@@ -83,6 +83,10 @@
                 $("#gridAutoridadesDisp").data("kendoGrid").dataSource.data(result);
 
                // $("#tablaAutoridadesDisposicion").html(result);
+               hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

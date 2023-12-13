@@ -232,16 +232,18 @@
     function guardarDatos() {
         var Mydata = $("#dataSalidaForm").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("GuardarDatosSalida")',
             type: 'POST',
             data: Mydata,
             success: function (data) {
                 sitteg_success('Se ha actualizado la información');
-               
+               hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

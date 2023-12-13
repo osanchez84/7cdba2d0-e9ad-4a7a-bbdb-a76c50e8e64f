@@ -83,7 +83,7 @@
     function editarCausa() {
         console.log("ACCION")
         var Mydata = $("#editarCausaForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarCausa")',
             type: 'POST',
@@ -95,10 +95,11 @@
                 $('#causaAccidenteModal').modal('hide');
                 sitteg_success("Se ha modificado la información");
 
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

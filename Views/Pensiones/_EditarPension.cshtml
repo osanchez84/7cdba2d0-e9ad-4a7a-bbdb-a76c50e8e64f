@@ -144,6 +144,7 @@
         $("#strIdGruas").val(strIdGruas);
 
         var formData = $("#frmEditarPension").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_EditarPension")',
             type: 'POST',
@@ -154,12 +155,13 @@
                 $('#modalEditarPension').modal('hide');
                 sitteg_info('Elemento guardado correctamente');
                 setTimeout(function () { location.href = '/Pensiones/Index' }, 1000);
-                
+                hideLoading();
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg)
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
 

@@ -5,6 +5,7 @@
         var dataItem = grid.dataItem(row);
         var idAsignacion = dataItem.idAsignacion
         console.log("Data clas", idAsignacion);
+        showLoading();
         $.ajax({
             url: "/AsignacionGruas/ModalEliminarGrua",
             type: 'POST',
@@ -14,11 +15,17 @@
             success: (data) =>{
                 $('#ModalBodyEliminarGrua').html(data);
                 $('#eliminarGruaModal').modal('show');
+                hideLoading();
+            },
+            error: function () {
+                sitteg_warning("Ocurrio un error intetnte mas tarde");
+                hideLoading();
             }
         });
     }
 
     function editarGrua(idAsignacion) {
+        showLoading();
         $.ajax({
             url: '/AsignacionGruas/ModalEditarGrua',
             type: 'POST',
@@ -26,8 +33,12 @@
             success: function (data) {
                 $('#ModalBodyEditarGrua').html(data);
                 $('#editarGruaModal').modal('show');
-
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
 
         });
     }

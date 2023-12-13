@@ -3,6 +3,7 @@
 <script>
 	function buscarConductor() {
 		var Mydata = $("#buscarInvolucradoForm").serialize();
+		showLoading();
 		$.ajax({
 			url: '/CapturaAccidentes/BuscarPorParametro',
 			type: 'POST',
@@ -30,9 +31,11 @@
 						}
 					}
 				}
+				hideLoading();
 			},
 			error: function (error) {
 				sitteg_warning('Ocurrió un error en la búsqueda.');
+				hideLoading();
 			}
 		});
 	}
@@ -96,6 +99,7 @@
 			const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
 			jsonData.id_tipo_licencia = tipoLicenciaNumero;
 			var idVehiculo = $("#IdVehiculoH").val();
+			showLoading();
 			$.ajax({
 				type: 'POST',
 				url: '/CapturaAccidentes/guardaDesdeServicio',
@@ -105,10 +109,11 @@
 					var personasList = [response];
 					var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
 					grid.dataSource.data(personasList);
-
+					hideLoading();
 				},
 				error: function (error) {
 					sitteg_warning('Error al guardar en la base de datos:');
+					hideLoading();
 				}
 			});
 		});

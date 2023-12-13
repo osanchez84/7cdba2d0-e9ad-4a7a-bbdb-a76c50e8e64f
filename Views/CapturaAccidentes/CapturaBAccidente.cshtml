@@ -14,6 +14,7 @@
     }
     function factoresDropDownChange() {
         var factorDDValue = $("#IdFactorAccidente").data("kendoDropDownList").value();
+        showLoading();
         $.ajax({
             url: "/CapturaAccidentes/FactoresOpciones_Drop",
             type: "POST",
@@ -21,8 +22,10 @@
             success: function (data) {
                 var FactorOpcionDropDown = $("#IdFactorOpcionAccidente").data("kendoDropDownList");
                 FactorOpcionDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -54,6 +57,7 @@
     }
     function buscarInvolucrado() {        
         var Mydata = $("#buscarInvolucradoForm").serialize();
+        showLoading();
         $.ajax({
             url: '/CapturaAccidentes/BuscarPorParametro',
             type: 'POST',
@@ -87,9 +91,11 @@
                         }
                     }
                 }
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
             }
         });
     }
@@ -153,6 +159,7 @@
             const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
             jsonData.id_tipo_licencia = tipoLicenciaNumero;
             var idVehiculo = $("#IdVehiculoH").val();
+            showLoading();
             $.ajax({
                 type: 'POST',
                 url: '/CapturaAccidentes/guardaDesdeServicio', 
@@ -162,10 +169,11 @@
                     var personasList = [response]; 
                     var grid = $("#gridConductores").data("kendoGrid");
                     grid.dataSource.data(personasList);
-
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning('Error al guardar en la base de datos:');
+                    hideLoading();
                 }
             });
         });
@@ -179,7 +187,7 @@
             var dataItem = this.dataItem(selectedRow);
             var idPersonaInvolucrado =dataItem.idPersonaInvolucrado
 
-
+            showLoading();
                 $.ajax({
                     url: '@Url.Action("GuardarInvolucrado", "CapturaAccidentes")',
                     type: 'POST',
@@ -187,8 +195,10 @@
                     success: function (result) {
                         sitteg_success("Se agregó una persona involucrada");
                         $('#ListaVehiculosInvolucrados').show();
+                        hideLoading();
                     },
                     error: function (error) {
+                        hideLoading();
                         alert("ERROR");
                     }
                 });
@@ -199,6 +209,7 @@
         var descripcionCausa = document.getElementById("descripcionCausaTextArea").value;
         var esSoloLectura = @(ViewBag.EsSoloLectura ? "true" : "false");
         console.log("ESSOLO",esSoloLectura)
+        showLoading();
         $.ajax({
             url: '/CapturaAccidentes/CapturaAccidenteC',
             method: 'POST',
@@ -208,10 +219,12 @@
             },
             success: function (response) {
                 sitteg_success('Datos enviados correctamente');
-            window.location.href = '/CapturaAccidentes/CapturaAccidenteC?rOy=' + esSoloLectura;           
+            window.location.href = '/CapturaAccidentes/CapturaAccidenteC?rOy=' + esSoloLectura; 
+            hideLoading();
             },
             error: function (xhr, status, error) {
                 sitteg_warning('Error al enviar los datos:', error);
+                hideLoading();
             }
         });
     }

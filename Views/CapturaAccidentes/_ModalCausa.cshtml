@@ -82,7 +82,7 @@
     function agregarCausa() {
 
         var Mydata = $("#agregarCausaForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("AgregarCausaNuevo")',
             type: 'POST',
@@ -95,10 +95,11 @@
                 $('.modal-backdrop').remove();
                 $('#causaAccidenteModal').modal('hide');
 
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

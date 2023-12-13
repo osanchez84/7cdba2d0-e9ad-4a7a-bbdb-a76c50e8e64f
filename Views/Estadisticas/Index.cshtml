@@ -3,7 +3,7 @@
  function tipoServicioDropDownChange() {
         var tipoServicioDDlValue = $("#idTipoServicio").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Estadisticas/SubtipoServicio_Drop",
             type: "POST",
@@ -11,8 +11,10 @@
             success: function (data) {
                 var subtipoDropDown = $("#idSubTipoServicio").data("kendoDropDownList");
                 subtipoDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -228,7 +230,7 @@
 <script>
     function submitSearch() {
         var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
-
+        showLoading();
         // Realiza la llamada a la primera acción ajax_BusquedaParaMotivos
         $.ajax({
             url: '@Url.Action("ajax_BusquedaParaMotivos")',
@@ -246,6 +248,10 @@
                         $("#estadisticasInfracciones").html(result);
                     }
                 });
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

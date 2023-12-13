@@ -182,7 +182,7 @@
             formData.append("salvamento", salvamentoValue);
 
             console.log("formData:", formData);
-
+            showLoading();
             $.ajax({
                 url: '/AsignacionGruas/InsertarDatos',
                 type: 'POST',
@@ -195,13 +195,16 @@
                     var grid = $("#gridGruas").data("kendoGrid");
                     grid.dataSource.data(data);
                     grid.refresh();
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning("!Sucedió un error, inténtalo de nuevo más tarde...");
+                    hideLoading();
                 }
             });
         } else {
             sitteg_info('Debe llenar los campos requeridos');
+            hideLoading();
             return;
         }
     }

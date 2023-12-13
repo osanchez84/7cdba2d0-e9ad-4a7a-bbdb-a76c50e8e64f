@@ -88,6 +88,7 @@
         $('#agregarFactornAccidente').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarFactorAccidenteMod")',
             type: 'POST',
@@ -95,10 +96,11 @@
             success: function (result) {
                 $("#gridCatFactoresAccidentes").data("kendoGrid").dataSource.data(result);
                 sitteg_info('Se ha actualizado la información');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

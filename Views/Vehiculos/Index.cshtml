@@ -24,6 +24,7 @@
             $("#PlacasBusqueda").val(placasValue);
     var Mydata = $("#frmSearch").serialize();
     console.log("entro",Mydata);
+    showLoading();
     $.ajax({
         url: '@Url.Action("ajax_BuscarVehiculo")',
         type: 'POST',
@@ -36,7 +37,11 @@
                 document.getElementById("VehiculoLocalizado").style.display = "block";
                 $("#VehiculoLocalizado").html(result);
             }
-        }
+            hideLoading();
+                }, error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
     });
 }
 

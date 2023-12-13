@@ -3,7 +3,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidadED").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Personas/Municipios_Drop",
             type: "POST",
@@ -11,8 +11,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipioED").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -237,6 +239,7 @@
         validator.validate();
         if (validator.validate()) {
             var formData = $("#frmEditarPersona").serialize();
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_EditarPersona","Personas")',
                 type: 'POST',
@@ -245,11 +248,13 @@
                     $("#listadoPersonas").html(result);
                     $('#modalCrearPersona').modal('hide');
                     sitteg_success('Elemento guardado correctamente')
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }

@@ -143,7 +143,7 @@
         validator.validate();
         if (validator.validate()) {
             var formData = $("#frmUpdateMoral").serialize();
-
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_UpdatePersonaMoral")',
                 type: 'POST',
@@ -157,11 +157,13 @@
                         $('#modalUpdateMoral').modal('hide');
                         sitteg_success('Elemento guardado correctamente')
                     }, 500);
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }

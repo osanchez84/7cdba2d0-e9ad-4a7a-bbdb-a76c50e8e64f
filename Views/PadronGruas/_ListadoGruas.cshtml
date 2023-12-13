@@ -129,7 +129,7 @@
 
         var idGrua = dataItem.idGrua;
         console.log(idGrua);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_edit")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -141,7 +141,11 @@
                 $('#ModalBodyEdit').html(result);
                 $('#editGrua').modal('show');
                 }
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 </script>

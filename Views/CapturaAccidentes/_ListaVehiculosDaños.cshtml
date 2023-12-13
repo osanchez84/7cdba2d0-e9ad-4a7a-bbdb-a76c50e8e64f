@@ -15,6 +15,7 @@
         var IdAccidente = dataItem.IdAccidente;
         var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado;
         var IdPropietarioInvolucrado = dataItem.IdPropietarioInvolucrado;
+        showLoading();
         $.ajax({
             url: '@Url.Action("MostrarModalAgregarMonto", "CapturaAccidentes")',
             type: 'POST',
@@ -26,8 +27,11 @@
             success: function (result) {
                 $('#ModalBodyAgregarMontoAccidente').html(result);
                 $('#agregarMontoModal').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

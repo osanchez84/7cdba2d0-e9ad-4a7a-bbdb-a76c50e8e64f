@@ -92,6 +92,7 @@
         $('#addDependencia').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("UpdatePartialModal")',
             type: 'POST',
@@ -99,10 +100,11 @@
             success: function (result) {
                 $("#gridCatDependencias").data("kendoGrid").dataSource.data(result);
                 sitteg_success('Se ha actualizado la información');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

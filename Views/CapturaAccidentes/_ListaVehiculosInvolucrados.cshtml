@@ -71,7 +71,7 @@
             var dataItem = grid.dataItem(row);
         var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado
         var IdPropietarioInvolucrado = dataItem.IdPropietarioInvolucrado
-            
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ModalDetallesVehiculo", "CapturaAccidentes")',
                 type: 'POST',
@@ -81,7 +81,11 @@
                 success: (data) => {
                 $('#ModalBodyMostrarDetalle').html(data);
                 $('#mostrarDetalleModal').modal('show');
-                }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
             });
         }
 
@@ -95,7 +99,7 @@
         var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado
         var IdPropietarioInvolucrado = dataItem.IdPropietarioInvolucrado
         var IdAccidente = dataItem.IdAccidente
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalBorraRegistro", "CapturaAccidentes")',
             type: 'POST',
@@ -105,6 +109,10 @@
             success: (data) => {
                 $('#ModalBodyEliminar').html(data);
                 $('#mostrarEliminarModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

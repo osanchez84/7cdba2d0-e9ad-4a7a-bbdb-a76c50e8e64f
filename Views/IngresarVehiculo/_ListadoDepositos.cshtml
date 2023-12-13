@@ -5,7 +5,7 @@
         if (selectedRow.length > 0) {
             var dataItem = this.dataItem(selectedRow);
             idDeposito = dataItem.idDeposito;
-
+            showLoading();
             $.ajax({
                 url: '@Url.Action("GuardarRegistroSeleccionado", "IngresarVehiculo")',
                 type: 'POST',
@@ -39,12 +39,14 @@
                     $("#idDepositoContainer").html("<b></b> " + (result.idDeposito || "-"));
                     sitteg_success("Registro seleccionado correctamente");
                     $("#datosContainer").css("display", "block");
+                    hideLoading();
                 },
 
 
 
                 error: function (error) {
                     sitteg_warning("Ha sucedido un error intente mas tarde");
+                    hideLoading();
                 }
             });
         }

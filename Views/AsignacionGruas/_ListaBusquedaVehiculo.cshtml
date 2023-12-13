@@ -8,7 +8,7 @@
         $('#modalVehiculos').modal('hide');
 
         var jsonData = JSON.stringify(selectedRowData);
-
+        showLoading();
         $.ajax({
             type: 'POST',
             url: '/AsignacionGruas/ActualizarDatosVehiculo',
@@ -26,11 +26,12 @@
                 document.getElementById("CurpSpan").textContent = selectedRowData.CURP;
                 document.getElementById("RfcSpan").textContent = selectedRowData.RFC;
 
-                
+                hideLoading();
             },
             error: function (error) {
                 // Ocurrió un error al procesar la solicitud
                 console.error("Error en la actualización", error);
+                hideLoading();
             }
         });
     }

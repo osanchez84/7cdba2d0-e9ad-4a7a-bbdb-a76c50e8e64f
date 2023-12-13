@@ -57,7 +57,7 @@
         var row = $(event.target).closest("tr");
         var dataItem = grid.dataItem(row);
         var idDeposito = dataItem.idDeposito;     
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalCostosGrua", "SalidaVehiculos")',
             type: 'POST',
@@ -65,8 +65,11 @@
             success: function (result) {
                 $('#ModalBodyCostosGrua').html(result);
                 $('#editarCostosModal').modal('show');
-
-            },
+                hideLoading();
+                }, error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
         })
     }
 

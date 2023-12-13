@@ -24,6 +24,7 @@
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
         var ids = $('#hdnIds').val();
+		showLoading();
         $.ajax({
             url: '@Url.Action("ajax_DeleteTransito")',
             type: 'POST',
@@ -32,7 +33,11 @@
             success: function (result) {
                 sitteg_success('Elemento guardado correctamente');
                 $('#listadoTransitoTransporte').html(result);
-            }
+				hideLoading();
+			}, error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
+			}
         });
     }
 

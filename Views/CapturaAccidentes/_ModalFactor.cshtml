@@ -103,7 +103,7 @@
     function agregarFactor() {
 
         var Mydata = $("#agregarFactorForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("AgregarFactorNuevo")',
             type: 'POST',
@@ -115,11 +115,12 @@
                 $('.modal-backdrop').remove();
                 $('#factorAccidenteModal').modal('hide');
                 sitteg_success("Se ha agregado Factor y Factor opcion de accidente");
-
+                hideLoading();
 
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

@@ -83,7 +83,7 @@
 <script>
 	function busquedaInfracciones() {
 		var myData = $("#busquedaInfraccionForm").serialize();
-
+		showLoading();
 		$.ajax({
 			url: '@Url.Action("BusquedaInfracciones", "EnvioInfracciones")',
 			type: 'POST',
@@ -92,8 +92,10 @@
 				var grid = $("#gridEnvioInfracciones").data("kendoGrid");
 				grid.dataSource.data(result);
 				grid.refresh();
+				hideLoading();
 			},
 			error: function (error) {
+				hideLoading();
 				alert("ERROR");
 			}
 		});

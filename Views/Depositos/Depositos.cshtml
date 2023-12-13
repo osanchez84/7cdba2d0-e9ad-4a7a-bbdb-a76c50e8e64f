@@ -645,7 +645,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Depositos/Municipios_Drop",
             type: "POST",
@@ -653,8 +653,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -666,7 +668,7 @@
         if (validator.validate()) {
             var Mydata = $("#solicitudForm").serialize();
             console.log(Mydata);
-
+            showLoading();
             $.ajax({
                 url: '/Depositos/ajax_EnviarSolicitudDeposito',
                 type: 'GET',
@@ -674,9 +676,11 @@
                 success: function (data) {
                     $("#folioPlaceholder").text(data);
                     $("#solicitudModal").modal('show');
+                    hideLoading();
                 },
                 error: function () {
                     sitteg_warning("Ocurrió un error, inténtelo de nuevo más tarde");
+                    hideLoading();
                 }
             });
         } else {
@@ -692,7 +696,7 @@
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Depositos/Tramos_Drop",
             type: "POST",
@@ -700,8 +704,10 @@
             success: function (data) {
                 var TramosDropDown = $("#IdTramo").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -709,7 +715,7 @@
     function EntidadDropDownChange2() {
         var entidadDDlValue = $("#idEntidadUbicacion").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Depositos/Municipios_Drop",
             type: "POST",
@@ -717,8 +723,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipioUbicacion").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -732,7 +740,7 @@
     function enviarComplemento() {
         var Mydata = $("#complementoSolicitudForm").serialize();
         console.log(Mydata);
-
+        showLoading();
         $.ajax({
             url: '/Depositos/ajax_EnviarComplementoSolicitud',
             type: 'POST',
@@ -740,9 +748,11 @@
             success: function (data) {
                 $("#folioPlaceholder").text(data.numeroDeFolio);
                 $("#solicitudModal").modal('show');
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Ocurrioun error intente mas tarde");
+                hideLoading();
             }
         });
     }
@@ -750,7 +760,7 @@
     function buscarInfraccion() {
         var folioBusquedaInfraccion = $("#folioBusquedaInfraccion").val(); 
         console.log(folioBusquedaInfraccion);
-
+        showLoading();
         $.ajax({
             url: '/Depositos/ajax_ImportarInfoInfraccion',
             type: 'POST',
@@ -778,9 +788,11 @@
                 $("#idMunicipioUbicacion").data("kendoDropDownList").trigger("change");
 
                 $("#interseccion").val(data.interseccion);
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Ocurrió un error, inténtelo más tarde");
+                hideLoading();
             }
         });
     }

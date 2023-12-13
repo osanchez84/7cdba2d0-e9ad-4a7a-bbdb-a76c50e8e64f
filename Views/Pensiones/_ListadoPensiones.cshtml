@@ -91,6 +91,7 @@
     function editarPensionByGrid() {
         var grid = $("#GridP").data("kendoGrid");
         var dataItem = grid.dataItem($(event.srcElement).closest("tr").next());
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ModalEditarPension")',
             type: 'GET',
@@ -104,6 +105,10 @@
                 $('#modalBodyEditarPension').html(value);
                 $('#modalEditarPension').modal('show');
                 }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

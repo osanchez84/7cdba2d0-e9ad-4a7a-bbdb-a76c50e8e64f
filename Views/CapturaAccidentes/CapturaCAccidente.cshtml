@@ -781,7 +781,7 @@
         var prendasValue = $("#prendasSwitch").prop("checked") ? 1 : 0;
         var otrosValue = $("#otrosSwitch").prop("checked") ? 1 : 0;
         var convenioValue =$("#convenioSwitch").prop("checked") ? 1 : 0;
-     
+     showLoading();
         $.ajax({
             url: '@Url.Action("InsertarDatos")',
             type: 'POST',
@@ -789,10 +789,11 @@
             success: function (result) {
                 sitteg_success("Se ha concluido el registro del accidente");
                 window.location.href = "/CapturaAccidentes/Index";
-
+                hideLoading();
             },
             error: function (error) {
               sitteg_warning("!Sucedio un error, intente mas tarde...");  
+              hideLoading();
             }
         });
     }
@@ -801,6 +802,7 @@
 
     $("#cambiarContenidoButton").click(function (event) {
         event.preventDefault(); 
+        showLoading();
         $.ajax({
             url: '@Url.Action("CambiosDDLOficiales", "CapturaAccidentes")',
             type: 'GET',
@@ -808,6 +810,10 @@
                 $("#IdElabora").data("kendoDropDownList").dataSource.data(data);
                 $("#IdSupervisa").data("kendoDropDownList").dataSource.data(data);
                 $("#IdAutoriza").data("kendoDropDownList").dataSource.data(data);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     });

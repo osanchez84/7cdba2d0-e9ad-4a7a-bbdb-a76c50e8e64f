@@ -10,7 +10,7 @@
             IdPersona = dataItem.IdPersona;
             idAuto = parseInt(window.IdVehiculo)
         }
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("GuardarConductorVehiculo", "CapturaAccidentes")',
             type: 'POST',
@@ -19,10 +19,12 @@
             sitteg_success("Se ha agregado un conductor")
                 $('#modalAgregarConductor').modal('hide');
                 $('.modal-backdrop').remove();
-                abrirModalDetalles();            
+                abrirModalDetalles();  
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning("Ocurrio un error, intente de nuevo mas tarde");
+                hideLoading();
             }
         });
     }

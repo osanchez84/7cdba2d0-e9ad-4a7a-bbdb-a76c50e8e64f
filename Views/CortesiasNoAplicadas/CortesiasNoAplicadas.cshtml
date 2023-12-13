@@ -78,7 +78,7 @@
 
         var Data = $("#Busqueda").serialize();
         console.log(Data);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ObtenerCortesiasNoAplicadas")',
             type: 'POST',
@@ -91,7 +91,11 @@
                     grid.dataSource.data(result);
                     $('#mensajeSinResultados').text(" ");
                 }
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
    

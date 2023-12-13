@@ -165,7 +165,7 @@
         //        $("#listadoGruas").html(result);
         //    }
         //});
-
+        showLoading();
         $.ajax({
             type: "GET",
             url: '@Url.Action("ajax_BuscarGruas")',
@@ -176,12 +176,11 @@
             },
             success: function (data) {
                 $("#listadoGruas").html(data);
+                hideLoading();
+            },
+            error: function (xhr, status) {
+                hideLoading();
             }
-            //,
-            //error: function (xhr, status) {
-            //    var errmsg = msg_err_gral;
-            //    semg_error(errmsg);
-            //}
         });
     }
 </script>

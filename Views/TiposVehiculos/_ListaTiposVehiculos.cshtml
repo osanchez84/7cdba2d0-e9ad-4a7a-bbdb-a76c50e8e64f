@@ -50,7 +50,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdTipoVehiculo = dataItem.IdTipoVehiculo;
         console.log(IdTipoVehiculo);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarTipoVehiculo", "TiposVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -58,8 +58,11 @@
             success: function (result) {
                 $('#ModalBodyCreateTipo').html(result);
                 $('#addTipo').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -67,7 +70,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdTipoVehiculo = dataItem.IdTipoVehiculo;
         console.log(IdTipoVehiculo);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarTipoVehiculoParcial", "TiposVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -75,8 +78,11 @@
             success: function (result) {
                 $('#ModalBodyCreateTipo').html(result);
                 $('#addTipo').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

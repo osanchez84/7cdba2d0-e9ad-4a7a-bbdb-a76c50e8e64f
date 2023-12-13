@@ -161,6 +161,7 @@
     }
 
     function ShowCortesia(Id) {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CortesiaInfraccion")',
             type: 'GET',
@@ -170,6 +171,10 @@
             success: function (value) {
                 $('#ModalBodyCortesia').html(value);
                 $('#modalCortesia').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

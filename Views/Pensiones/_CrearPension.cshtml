@@ -150,6 +150,7 @@
         //var formData = new FormData();
         //formData.delete('idDelegacion');
         //alert(json);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CrearPension")',
             type: 'POST',
@@ -161,13 +162,14 @@
                 $("body").removeClass("modal-open").find(".modal-backdrop").remove();
                 sitteg_info('Elemento guardado correctamente');
                 $("GridP").data("kendoGrid").dataSource.data(data);
-
+                hideLoading();
 
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg)
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
         }

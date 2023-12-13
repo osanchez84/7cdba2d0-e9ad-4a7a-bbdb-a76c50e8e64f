@@ -130,6 +130,7 @@
         $('#agregarMunicipio').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarMunicipioMod")',
             type: 'POST',
@@ -137,10 +138,11 @@
             success: function (result) {
                 $("#gridMunicipios").data("kendoGrid").dataSource.data(result);
                 sitteg_success('Elemento modificado correctamente')
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }

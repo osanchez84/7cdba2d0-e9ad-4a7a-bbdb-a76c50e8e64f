@@ -1,5 +1,14 @@
 ﻿@model PersonaModel
 <script>
+    function onDatePickerChange(e) {
+        var datePicker = e.sender;
+        var selectedDate = datePicker.value();
+
+        // Verificar si la fecha seleccionada es la fecha predeterminada
+        if (selectedDate && selectedDate.getFullYear() == 1 && selectedDate.getMonth() == 0 && selectedDate.getDate() == 1) {
+            datePicker.value(null); // Si es la fecha predeterminada, establecer el valor del DatePicker como nulo
+        }
+    }
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidadED").data("kendoDropDownList").value();
 
@@ -55,7 +64,9 @@
             <div class="controlForm">
                 <label>Fecha de nacimiento:</label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
+                    .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;", required = "required" })
+                
                     )
             </div>
         </div>
@@ -118,7 +129,12 @@
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
+                    .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;" })
+                    .Value(Model.vigenciaLicencia != DateTime.MinValue ? Model.vigenciaLicencia : (DateTime?)null)
+                    .Events(e => e
+                    .Change("onDatePickerChange")
+                    )
                     )
             </div>
         </div>
@@ -263,4 +279,6 @@
             return;
         }
     }
+
+   
 </script>

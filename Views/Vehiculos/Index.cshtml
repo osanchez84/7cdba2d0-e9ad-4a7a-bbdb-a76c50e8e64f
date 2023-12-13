@@ -298,6 +298,7 @@
                             <label>Fecha de nacimiento <b>(obligatorio)</b></label>
                             <span>
                                 @(Html.Kendo().DatePicker()
+                                    .Culture("es-ES")
                                     .Name("nacimientoEditFisico")
                                     .DateInput()
                                     )
@@ -482,6 +483,7 @@
                             <label>Fecha de vencimiento:</label>
                             <span>
                                 @(Html.Kendo().DatePicker()
+                                    .Culture("es-ES")
                                     .Name("vencimientoEditFisico")
                                     .DateInput()
                                     )

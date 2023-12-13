@@ -104,6 +104,7 @@
                     <label> Fecha de ingreso (obligatorio):</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
                         .Format("dd/MM/yyyy")
+                        .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%"})
                         ) 
 

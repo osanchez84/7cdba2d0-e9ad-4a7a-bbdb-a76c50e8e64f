@@ -1,5 +1,5 @@
 ﻿@*model List<PersonaModel>*@
-    @model GuanajuatoAdminUsuarios.Models.PersonaModel
+@model GuanajuatoAdminUsuarios.Models.PersonaModel
 
 
 @{
@@ -29,82 +29,82 @@
                 </div>
             </div>
         </div>
-            <form id="buscarConductorForm">
-                <div class="row px-4 mt-4 align-items-end">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
-                                .Label(l => l.Content("No. de licencia:"))
-                                .Placeholder("Ingresa el número de licencia valido")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
-                                .Label(l => l.Content("CURP:"))
-                                .Placeholder("Ingresa el CURP del propietario")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
-                                .Label(l => l.Content("RFC:"))
-                                .Placeholder("Ingresa el RFC del propietario")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
-                                .Label(l => l.Content("Nombre(s):"))
-                                .Placeholder("Ingresa el nombre(s) del propietario")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
-                                .Label(l => l.Content("Apellido paterno:"))
-                                .Placeholder("Ingresa el apellido paterno")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
-                                .Label(l => l.Content("Apellido materno:"))
-                                .Placeholder("Ingresa el apellido materno")
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-
-                        </div>
+        <form id="buscarConductorForm">
+            <div class="row px-4 mt-4 align-items-end">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
+                            .Label(l => l.Content("No. de licencia:"))
+                            .Placeholder("Ingresa el número de licencia valido")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
                     </div>
                 </div>
-            </form>
-            <div class="row px-4">
-                <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
-                    <div class="controlButton my-3">
-                        <div class="controlButton my-3" onclick="buscarConductor()">
-                            @(Html.Kendo().Button()
-                            .Name("buscarOtroConductor")
-                            .HtmlAttributes(new { @class = "btnPrimary" })
-                            .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
-                        </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
+                            .Label(l => l.Content("CURP:"))
+                            .Placeholder("Ingresa el CURP del propietario")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
+                            .Label(l => l.Content("RFC:"))
+                            .Placeholder("Ingresa el RFC del propietario")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
+                            .Label(l => l.Content("Nombre(s):"))
+                            .Placeholder("Ingresa el nombre(s) del propietario")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
+                            .Label(l => l.Content("Apellido paterno:"))
+                            .Placeholder("Ingresa el apellido paterno")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
+                            .Label(l => l.Content("Apellido materno:"))
+                            .Placeholder("Ingresa el apellido materno")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
                     </div>
                 </div>
             </div>
-            <div class="row">
+        </form>
+        <div class="row px-4">
+            <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
+                <div class="controlButton my-3">
+                    <div class="controlButton my-3" onclick="buscarConductor()">
+                        @(Html.Kendo().Button()
+                            .Name("buscarOtroConductor")
+                            .HtmlAttributes(new { @class = "btnPrimary" })
+                            .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-12">
                 <div class="bg-light py-1"></div>
             </div>
@@ -135,19 +135,28 @@
                 <h6 class="px-4 text-muted">Edita las personas que lo requieran.</h6>
             </div>
         </div>
-       
-       
+
+
         @*Table*@
         <div id="listadoPersonas">
             <partial name="_ListadoPersonas" model="Model" />
         </div>
-  
+
 
     </section>
 </div>
 
 
 <div class="modal fade modalCustom" id="modalCrearPersona" aria-labelledby="modalCrearPersona" aria-hidden="true">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
+        <div class="modal-content">
+       
+            <div class="modal-body" id="modalBodyCrearPersona">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade modalCustom" id="modalEditarPersona" aria-labelledby="modalEditarPersona" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
         <div class="modal-content">
        
@@ -181,14 +190,14 @@
         </div>
     </div>
 
-   
+
 
 </div>
 
 
 
 <script>
-   
+
     $(document).ready(function () {
         $("#modalCrearPersona").on("show.bs.modal shown.bs.modal", function (e) {
             $("body").removeClass("modal-open").find(".modal-backdrop").remove();
@@ -213,7 +222,7 @@
             dataType: "html",
             success: function (data) {
                 $('#modalBodyCrearPersona').html(data);
-                $('#modalCrearPersona').modal({backdrop: 'static', keyboard: false});
+                $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPersona').modal('show');
             }
         });
@@ -226,9 +235,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (value) {
-                $('#modalBodyCrearPersona').html(value);
-                $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
-                $('#modalCrearPersona').modal('show');
+                $('#modalBodyEditarPersona').html(value);
+                $('#modalEditarPersona').modal({ backdrop: 'static', keyboard: false });
+                $('#modalEditarPersona').modal('show');
             }
         });
     }
@@ -244,12 +253,12 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
-                console.log("VERIF",response)
+                console.log("VERIF", response)
                 if (response.tipo == "success") {
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
                     if (response.encontrada == false) {
-                         sitteg_warning("No se pudieron obtener resultados.");
+                        sitteg_warning("No se pudieron obtener resultados.");
                     }
                 } else if (response.tipo == "warning") {
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
@@ -288,28 +297,28 @@
         };
 
         const modalContent = `
-            <div class="modal-header">
-                <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
-                <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
-                <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
-                <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
-            </div>
-          <div class="modal-footer">
-            <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
-            <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
-          </div>
-        `;
+                <div class="modal-header">
+                    <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
+                    <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
+                    <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+                    <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
+                    <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+                    <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
+                    <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
+                </div>
+              <div class="modal-footer">
+                <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
+              </div>
+            `;
 
-        modal.querySelector('.modal-content').innerHTML = modalContent; 
+        modal.querySelector('.modal-content').innerHTML = modalContent;
         const cerrarModalBtn = document.getElementById('cerrarModalBtn');
         cerrarModalBtn.addEventListener('click', () => {
             $('#modalLicencias').modal('hide');
@@ -338,13 +347,13 @@
                 "PA-PERMISO AUTOMOVILISTA": 6,
                 "PD-PERMISO MOTOCICLISTA": 7,
 
-            }; 
-            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; 
-            jsonData.id_tipo_licencia = tipoLicenciaNumero; 
+            };
+            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
+            jsonData.id_tipo_licencia = tipoLicenciaNumero;
 
             $.ajax({
                 type: 'POST',
-                url: '/Personas/guardaDesdeServicio', 
+                url: '/Personas/guardaDesdeServicio',
                 data: jsonData,
                 success: function (response) {
                     $('#modalLicencias').modal('hide');

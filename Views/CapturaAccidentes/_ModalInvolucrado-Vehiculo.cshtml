@@ -319,31 +319,36 @@
             async: false,
             success: function (data) {
                 $('#ModalBodyBuscarInvolucrado').html(data);
+                $('#buscarInvolucradoModal').modal({ backdrop: 'static', keyboard: false });
                 $('#buscarInvolucradoModal').modal('show');
             }
         });
     }
 
-    function agregarComplementos() {
-
-        var Mydata = $("#complementoInvolucradoForm").serialize();
-        
-        $.ajax({
-            url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
-            type: 'POST',
-            data: Mydata,
-            success: function (result) {
-                $('#agregarInvolucradoModal').modal('hide');
-                $('.modal-backdrop').remove();
-                sitteg_success("Se ha actualizado la información");
-                actualizarGrid();
-
-            },
-            error: function (error) {
-
-            }
-        });
+  function agregarComplementos() {
+    var idPersona = $("#idPersonaInput").val();
+        if (idPersona === "") {        
+        sitteg_warning("Debe seleccionar una persona involucrada");
+        return; 
     }
+
+    var Mydata = $("#complementoInvolucradoForm").serialize();
+    
+    $.ajax({
+        url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
+        type: 'POST',
+        data: Mydata,
+        success: function (result) {
+            $('#agregarInvolucradoModal').modal('hide');
+            $('.modal-backdrop').remove();
+            sitteg_success("Se ha actualizado la información");
+            actualizarGrid();
+        },
+        error: function (error) {
+        }
+    });
+}
+
     function actualizarGrid() {
         var grid = $("#gridInvolucradosTodo").data("kendoGrid");
         grid.dataSource.read();
@@ -359,10 +364,8 @@
             data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
             success: function (response) {
                 sitteg_success("Se ha actualizado la información");
-                // Resto del código
             },
             error: function (xhr, status, error) {
-                // Manejo del error
             }
         });
     }

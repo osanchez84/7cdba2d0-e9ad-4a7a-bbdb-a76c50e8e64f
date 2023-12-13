@@ -113,6 +113,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Capacidad { get; set; }
         public string ConductorInvolucrado { get; set; }
         public int NoAccidente { get; set; }
+		
+		public int NumeroContinuo { get; set; }
 
 
 

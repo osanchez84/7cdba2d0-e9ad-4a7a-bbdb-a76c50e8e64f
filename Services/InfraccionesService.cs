@@ -2394,16 +2394,6 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             int result = 0;
 
-           
-            var checkQuery = "SELECT top 1 idpersona FROM infracciones WHERE folioInfraccion = @folioInfraccion";
-
-
-            if (checkQuery == "1")
-            {
-                return result;
-            }
-            else { 
-
                 string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
@@ -2498,7 +2488,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         connection.Close();
                     }
-                }
+                
             }
             return result;
         }

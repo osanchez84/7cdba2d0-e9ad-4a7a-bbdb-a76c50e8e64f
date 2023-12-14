@@ -121,11 +121,13 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Fecha infracción:</label>
-                                        @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
+                                        @(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
+                                            .Max(DateTime.Now)
                                             .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
-
                                             .Format("dd/MM/yyyy HH:mm")
 											.Value("")
+                                            .Culture("es-ES")
+                                            .Interval(1)
                                             .HtmlAttributes(new { style = "width: 100%", required = "required", id = "fechaInfraccion" })
                                             )
                                     </div>
@@ -793,16 +795,6 @@
                 return false
             return result 
         }
-
-	$(document).ready(function () {
-        $("#fechaInfraccion").kendoDateTimePicker({
-			format: "dd/MM/yyyy HH:mm",
-			parseFormats: ["dd/MM/yyyy", "HH:mm"], timeFormat: "HH:mm",
-			value: null,
-			interval: 1
-		});
-        $('#loading').css('display', 'none');
-	});
 
 </script>
 

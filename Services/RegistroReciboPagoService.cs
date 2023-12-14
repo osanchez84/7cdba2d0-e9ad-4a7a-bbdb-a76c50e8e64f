@@ -39,7 +39,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
                                                         LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
                                                         LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
-                                                        WHERE folioInfraccion = @FolioInfraccion", connection);
+                                                        WHERE folioInfraccion = @FolioInfraccion and  i.idEstatusInfraccion = ''", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
                     command.CommandType = CommandType.Text;

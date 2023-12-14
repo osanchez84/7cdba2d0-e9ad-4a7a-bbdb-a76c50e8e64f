@@ -78,7 +78,7 @@
                 <div class="controlForm my-3">
                     <label>Fecha <b>(obligatorio)</b>:</label>
                     @(Html.Kendo().DateTimePickerFor(t=>t.fechaSolicitud)
-                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker", required = "required", id = "date" })
+                            .HtmlAttributes(new { style = "width: 100%", title = "datepicker", required = "required", id = "fechaSolicitud" })
                     )
                 </div>
             </div>
@@ -636,7 +636,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#date").kendoDateTimePicker({
+        $("#fechaSolicitud").kendoDateTimePicker({
             format: "dd/MM/yyyy HH:mm",
             parseFormats: ["dd/MM/yyyy", "HH:mm"], timeFormat: "HH:mm",
             interval: 1

@@ -17,14 +17,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         private readonly ICatDictionary _catDictionary;
         private readonly IComparativoInfraccionesService _comparativoInfracciones;
+        private readonly ICatSubtipoServicio _catSubtipoServicio;
 
-        public ComparativoInfraccionesController(ICatDictionary catDictionary, IComparativoInfraccionesService comparativoInfracciones)
+
+
+
+        public ComparativoInfraccionesController(ICatDictionary catDictionary, IComparativoInfraccionesService comparativoInfracciones,
+			 IEstadisticasService estadisticasService, ICatSubtipoServicio catSubtipoServicio)
         {
             _catDictionary = catDictionary;
             _comparativoInfracciones = comparativoInfracciones;
-        }
-        // GET: ComparativoInfraccionesController
-        public ActionResult Index()
+			_catSubtipoServicio = catSubtipoServicio;
+
+
+		}
+		// GET: ComparativoInfraccionesController
+		public ActionResult Index()
         {
             int IdModulo = 709;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
@@ -75,6 +83,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             resumen.detallesPorCausa = _comparativoInfracciones.BusquedaDetallesPorCausas(model);
             resumen.desgloseTotalDeInfracciones = _comparativoInfracciones.DesgloseTotalesInfracciones(model);            
             return PartialView("_ComparativoInfraccionesResultados", resumen);
+        }
+
+        public JsonResult SubtipoServicio_Drop(int tipoServicioDDlValue)
+        {
+            var result = new SelectList(_catSubtipoServicio.GetSubtipoPorTipo(tipoServicioDDlValue), "idSubTipoServicio", "subTipoServicio");
+            return Json(result);
         }
     }
 }

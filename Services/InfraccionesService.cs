@@ -1093,13 +1093,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.kmCarretera
                                             ,inf.idPersona
                                             ,inf.idPersonaInfraccion
-                                            ,CONCAT(conduct.nombre, ' ', conduct.apellidoPaterno, ' ', conduct.apellidoMaterno) as nombreConductor
+                                            ,CONCAT(pInf.nombre, ' ', pInf.apellidoPaterno, ' ', pInf.apellidoMaterno) as nombreConductor
                                             ,UPPER(CONCAT(dirconduct.calle,' ', dirconduct.numero, ', ',dirconduct.colonia, ', ', dirconductmuni.municipio, ', ', dirconductenti.nombreEntidad)) as domicilioConductor 
                                             ,conduct.fechaNacimiento fechaNacimientoConductor
                                             ,DATEDIFF(YEAR, conduct.fechaNacimiento, GETDATE()) edadConductor
                                             ,generoconduct.genero generoConductor
                                             ,dirconduct.telefono telefonoConductor
-                                            ,conduct.numeroLicencia numLicenciaConductor
+                                            ,pInf.numeroLicencia numLicenciaConductor
                                             ,tipolicconduct.tipoLicencia tipoLicenciaConductor
                                             ,conduct.vigenciaLicencia vencimientoLicConductor
                                             ,veh.placas
@@ -1133,8 +1133,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                             left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
                                             left join catTramos catTra on inf.idTramo = catTra.idTramo
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
+                                            left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersonaInfraccion
-			                                            LEFT JOIN personasDirecciones dirconduct on dirconduct.idPersona = conduct.idPersona
+			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersonaInfraccion
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio
 			                                            left join catEntidades dirconductenti on dirconductenti.idEntidad = dirconduct.idEntidad
 			                                            left join catGeneros generoconduct on generoconduct.idGenero = conduct.idGenero
@@ -1170,6 +1171,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.carretera = reader["carretera"] == System.DBNull.Value ? string.Empty : reader["carretera"].ToString();
                             model.tramo = reader["tramo"] == System.DBNull.Value ? string.Empty : reader["tramo"].ToString();
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+                            
                             model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
                             model.domicilioConductor = reader["domicilioConductor"] == System.DBNull.Value ? string.Empty : reader["domicilioConductor"].ToString();
                             model.fechaNacimientoConductor = reader["fechaNacimientoConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimientoConductor"].ToString());
@@ -1179,6 +1181,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.numLicenciaConductor = reader["numLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["numLicenciaConductor"].ToString();
                             model.tipoLicenciaConductor = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
                             model.vencimientoLicConductor = reader["vencimientoLicConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vencimientoLicConductor"].ToString());
+                            
                             model.placas = reader["placas"] == System.DBNull.Value ? string.Empty : reader["placas"].ToString();
                             model.tipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : reader["tipoVehiculo"].ToString();
                             model.marcaVehiculo = reader["marcaVehiculo"] == System.DBNull.Value ? string.Empty : reader["marcaVehiculo"].ToString();
@@ -1205,6 +1208,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
                             model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
                             model.umas = GetUmas();
+
 
                             if (model.MotivosInfraccion.Any(w => w.calificacion != null))
                             {

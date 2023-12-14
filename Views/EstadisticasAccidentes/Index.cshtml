@@ -210,12 +210,17 @@
 	function submitSearch() {
 		var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
 		//console.log(Mydata);
+		showLoading();
 		$.ajax({
 			url: '@Url.Action("ajax_BusquedaAccidentes")',
 			type: 'POST',
 			data: Mydata,
 			success: function (result) {
 				$("#estadisticasInfracciones").html(result);
+				hideLoading();
+			}, error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
 			}
 		});
 	}

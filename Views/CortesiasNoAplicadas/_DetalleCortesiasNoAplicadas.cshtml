@@ -98,16 +98,18 @@
 
 		var folio = $("#folio_infraccion").val();
 		var Mydata = $("#ObservacionesForm").serialize();
-		
+		showLoading();
 		$.ajax({
 			url: '@Url.Action("GuardarObservaciones", "CortesiasNoAplicadas")',
 			type: 'POST',
 			data: Mydata,
 			success: function (result) {
 				sitteg_success('La observación se ha guardado exitosamenten.');
+				hideLoading();
 			},
 			error: function (error) {
 				sitteg_warning('Sucedió un error, intente mas tarde...');
+				hideLoading();
 			}
 		});
 	}

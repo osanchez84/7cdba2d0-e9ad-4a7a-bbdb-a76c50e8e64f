@@ -87,6 +87,7 @@
         $('#agregarClasificacionAccidente').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarClasificacionAccidenteMod")',
             type: 'POST',
@@ -94,10 +95,11 @@
             success: function (result) {
                 $("#gridCatClasificacionAccidente").data("kendoGrid").dataSource.data(result);
                 sitteg_success('Elemento modificado correctamente')
-
+                hideLoading();
             },
             error: function (error) {
                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+               hideLoading();
             }
         });
     }

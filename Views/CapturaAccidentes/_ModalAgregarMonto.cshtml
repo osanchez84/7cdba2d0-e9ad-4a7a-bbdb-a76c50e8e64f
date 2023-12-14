@@ -75,6 +75,7 @@
         $('#agregarMontoModal').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("AgregarMontoVehiculo")',
             type: 'POST',
@@ -82,10 +83,11 @@
             success: function (result) {
                 $("#tablaConMonto").html(result);
                 sitteg_success("Se ha Actualizado la Información");
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning("!Sucedió un error, intente mas tarde...");
+                hideLoading();
             }
         });
     }

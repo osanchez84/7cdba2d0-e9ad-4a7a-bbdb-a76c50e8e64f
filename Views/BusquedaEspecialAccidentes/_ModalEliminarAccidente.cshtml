@@ -60,6 +60,7 @@
 <script>
     function eliminarAccidente(idAccidente) {
         var Mydata = $("#eliminarAccidenteForm").serialize();
+         showLoading();
         $.ajax({
             url: '/BusquedaEspecialAccidentes/EliminarAccidente',
             type: 'POST',
@@ -70,7 +71,12 @@
                 var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
                 grid.dataSource.data(result);
                 grid.refresh();
+                 hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
 
         });
     }

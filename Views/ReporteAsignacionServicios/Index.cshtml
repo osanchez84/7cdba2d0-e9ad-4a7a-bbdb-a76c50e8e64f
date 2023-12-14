@@ -5,12 +5,17 @@
     <script>
         function submitSearch() {
             var Mydata = $("#frmSearch").serialize();
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_BuscarReporte")',
                 type: 'POST',
                 data: Mydata,
                 success: function (result) {
                     $("#listadoReporteAsignacion").html(result);
+                    hideLoading();
+                }, error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
                 }
             });
         }

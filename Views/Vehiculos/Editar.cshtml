@@ -254,6 +254,7 @@
     function submitSearch() {
         var Mydata = $("#frmSearch").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarVehiculos")',
             type: 'POST',
@@ -264,6 +265,10 @@
                 //document.getElementById("sec0").style.display = "none";
                 //document.getElementById("VehiculoLocalizado").style.display = "block";
                 $("#ListVehiculos").html(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

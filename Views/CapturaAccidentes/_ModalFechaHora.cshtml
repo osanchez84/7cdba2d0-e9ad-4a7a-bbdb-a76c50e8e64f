@@ -101,6 +101,7 @@
             $('#agregarFechaHoraModal').modal('hide');
             $('modal-body').removeClass('model-open');
             $('.modal-backdrop').remove();
+            showLoading();
             $.ajax({
                 url: '@Url.Action("AgregarFechaHora")',
                 type: 'POST',
@@ -108,9 +109,11 @@
                 success: function (result) {
                     sitteg_success("Se ha agregado fecha y hora de ingreso");
                     $("#tablaConFechaYHora").html(result);
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning("!Sucedio un error, intente mas tarde...");
+                    hideLoading();
                 }
             });
         }

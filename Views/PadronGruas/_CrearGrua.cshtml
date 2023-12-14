@@ -148,6 +148,7 @@
         //var formData = new FormData();
         //formData.delete('idDelegacion');
         //alert(json);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_createGrua")',
             type: 'POST',
@@ -156,11 +157,13 @@
                 $("#listadoGruas").html(result);
                 $('#addGrua').modal('hide');
                 sitteg_info('Elemento guardado correctamente')
+                hideLoading();
             },
             error: function (xhr, status) {
             var errmsg = xhr.responseText;
             console.log(errmsg)
             sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            hideLoading();
         }
         });
 

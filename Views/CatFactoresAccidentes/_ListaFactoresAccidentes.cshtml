@@ -55,7 +55,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdFactorAccidente = dataItem.IdFactorAccidente;
         console.log(IdFactorAccidente);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarFactoresAccidenteModal", "CatFactoresAccidentes")',
             type: 'POST',
@@ -63,8 +63,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarFactorAccidente').html(result);
                 $('#agregarFactornAccidente').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -72,7 +75,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdFactorAccidente = dataItem.IdFactorAccidente;
         console.log(IdFactorAccidente);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarFactoresAccidenteModal", "CatFactoresAccidentes")',
             type: 'POST',
@@ -80,8 +83,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarFactorAccidente').html(result);
                 $('#agregarFactornAccidente').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

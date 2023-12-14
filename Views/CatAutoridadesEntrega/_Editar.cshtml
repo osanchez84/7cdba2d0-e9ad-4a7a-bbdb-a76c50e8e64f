@@ -86,6 +86,7 @@
         $('#agregarAutEntrega').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarAutoridadEntregaMod")',
             type: 'POST',
@@ -93,10 +94,11 @@
             success: function (result) {
                 $("#tablaAutoridadesEntrega").html(result); 
                 sitteg_info('Se ha actualizado la información');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

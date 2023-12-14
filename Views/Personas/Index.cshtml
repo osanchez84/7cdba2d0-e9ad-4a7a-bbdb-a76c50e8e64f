@@ -215,6 +215,7 @@
     });
 
     function btnModalCrearPersona() {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ModalCrearPersona")',
             type: 'GET',
@@ -224,10 +225,15 @@
                 $('#modalBodyCrearPersona').html(data);
                 $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPersona').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
     function btnModalEditarPersona(id) {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ModalEditarPersona")',
             type: 'GET',
@@ -238,6 +244,10 @@
                 $('#modalBodyCrearPersona').html(value);
                 $('#modalCrearPersona').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPersona').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -248,6 +258,7 @@
         var grid = $("#gridPersonas").data("kendoGrid");
         grid.dataSource.data([]);
         var Mydata = $("#buscarConductorForm").serialize();
+        showLoading();
         $.ajax({
             url: '/Personas/BuscarPorParametro',
             type: 'POST',
@@ -272,9 +283,11 @@
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
             }
         });
     }
@@ -347,10 +360,10 @@
                 "PA-PERMISO AUTOMOVILISTA": 6,
                 "PD-PERMISO MOTOCICLISTA": 7,
 
-            };
-            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
-            jsonData.id_tipo_licencia = tipoLicenciaNumero;
-
+            }; 
+            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; 
+            jsonData.id_tipo_licencia = tipoLicenciaNumero; 
+            showLoading();
             $.ajax({
                 type: 'POST',
                 url: '/Personas/guardaDesdeServicio',
@@ -360,9 +373,11 @@
                     var personasList = [response];
                     var grid = $("#gridPersonas").data("kendoGrid");
                     grid.dataSource.data(personasList);
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning('Error al guardar en la base de datos:');
+                    hideLoading();
                 }
             });
         });
@@ -373,7 +388,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Personas/Municipios_Drop",
             type: "POST",
@@ -381,8 +396,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }

@@ -102,6 +102,7 @@
     function busquedaInfraccion(){
         var formData = $("#buscarInfraccionForm").serialize();
         console.log("D",formData)
+        showLoading();
         $.ajax({
             url: '/AsignacionGruas/BuscarInfracciones',
             type: 'POST',
@@ -110,10 +111,12 @@
                 console.log("Response:", response);
                 var grid = $("#gridInfraccionesDeposito").data("kendoGrid");
                 grid.dataSource.data(response);
+                hideLoading();
             },
             error: function (error) {
                 var errorMessage = error.responseText || "Ocurrió un error, inténtelo nuevamente más tarde.";
                 sitteg_warning(errorMessage);
+                hideLoading();
             }
         });
     }

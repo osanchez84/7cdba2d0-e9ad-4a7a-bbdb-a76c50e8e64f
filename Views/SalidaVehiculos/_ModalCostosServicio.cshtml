@@ -135,6 +135,7 @@
 
         var Mydata = $("#costosForm").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("GuardarCostos")',
             type: 'POST',
@@ -146,9 +147,11 @@
                 grid.dataSource.read();
                 var numericTextBox = $("#costoTotalTodasGruas").data("kendoNumericTextBox");
                 numericTextBox.value(data.costoTotalPorGrua);
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

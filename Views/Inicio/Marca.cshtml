@@ -32,6 +32,15 @@
     <globalization culture="es-MX" uiCulture="es" />
     <script>kendo.culture("es-ES");</script>
     <script>
+        function hideLoading() {
+            $('#loading').css('display', 'none');
+        }
+
+
+        function showLoading() {
+            $('#loading').css('display', 'block');
+        }
+
         function inicioSesion() {
             var usuario = document.getElementById('usuario').value;
             var contrasena = document.getElementById('contrasena').value;
@@ -40,7 +49,7 @@
                 usuario: usuario,
                 contrasena: contrasena
             };
-
+            showLoading();
             $.ajax({
                 url: '/Login/IniciarSesion',
                 type: 'POST',
@@ -57,6 +66,7 @@
                     }
 
                     mensajeUsuario.style.display = "block";
+                    hideLoading();
                 },
                 error: function (error) {
                     var mensajeUsuario = document.getElementById('mensajeUsuario');
@@ -65,7 +75,7 @@
                     mensajeUsuario.style.display = "block";
 
                     console.error(error);
-                    
+                    hideLoading();
                 }
             });
         }
@@ -155,11 +165,9 @@
                                 )
                         </div>
                     </div>
+                        
+
                     <div id="mensajeUsuario" style="display: none;"></div>
-
-
-
-
 
                 </div>
             </section>
@@ -170,6 +178,54 @@
         </div>
 
     </main>
+    <style>
+        .loadingGif {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.10);
+            z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .errorData {
+            border: 1px solid red !important;
+            border-radius: 5px !important;
+        }
+    </style>
+
+    <div id="loading" style="display: none">
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                <div class="loadingGif" id="loadingx">
+                    <div class="row text-center">
+                        <div class="col-md-12 loading-spinner">
+                            <div class="spinner-grow text-primary" style="color:#366777!important" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="spinner-grow text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="spinner-grow text-success" style="color:#6AB438!important" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
 </body>
 </html>
 

@@ -97,12 +97,17 @@
         $('#agregarTramo').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("CrearTramoMod")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
                 $("#gridTramos").data("kendoGrid").dataSource.data(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

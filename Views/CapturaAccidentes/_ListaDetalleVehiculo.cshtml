@@ -11,7 +11,7 @@
             Placa = dataItem.Placa;
             Serie = dataItem.Serie;
              
-
+            showLoading();
             $.ajax({
               url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
                 type: 'POST',
@@ -19,16 +19,18 @@
                 success: function (result) { 
                     console.log("FER",result)
                     abrirModalConductor(IdPersona, result.IdVehiculoH);
-
+                    hideLoading();
                 },
                 error: function (error) {
-                    sitteg_warning("Sucedio un error,comuniquese con el administrador");
+                    hideLoading();
+                    alert("ERROR");
                 }
             });
         }
     }
 
     function abrirModalConductor(IdPersona, IdVehiculo) { 
+        showLoading();
         $.ajax({
             url: '@Url.Action("MostrarModalConductor", "CapturaAccidentes")',
             type: 'POST',
@@ -38,9 +40,11 @@
                 $('.modal-backdrop').remove();
                 $('#modalAgregarConductor').modal('show');
                 $('#ModalBodyAgregarConductor').html(data);
+                hideLoading();
             },
             error: function (error) {
                 console.log("ERROR", error);
+                hideLoading();
             }
         });
     }

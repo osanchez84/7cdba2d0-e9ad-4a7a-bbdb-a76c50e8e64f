@@ -100,6 +100,7 @@
 <script>
     function crearInfraccion() {
         var Mydata = $("#nuevaInfraccionForm").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CrearInfraccion", "CapturaAccidentes")',
             type: 'POST',
@@ -115,7 +116,11 @@
                     // Redirige a la página de edición con el ID de la infracción
                     window.location.href = '/Infracciones/Editar/' + result.id;
                 }, 500);
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         });
     }
 

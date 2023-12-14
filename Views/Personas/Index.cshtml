@@ -371,7 +371,7 @@
                 data: jsonData,
                 success: function (result) {
                     $('#modalLicencias').modal('hide');
-                    var grid = $("#gridConductores").data("kendoGrid");
+                    var grid = $("#gridPersonas").data("kendoGrid");
                     if (result && result.data) {
                         var dataArray = [result.data];
                         grid.dataSource.data(dataArray);

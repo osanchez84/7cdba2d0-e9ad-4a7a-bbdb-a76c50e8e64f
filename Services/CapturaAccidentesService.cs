@@ -900,7 +900,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 					connection.Open();
-                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente,indice) values(@idAccidente, @idCausaAccidente, (SELECT Max(indice)+1 FROM accidenteCausas where idAccidente = @idAccidente and idCausaAccidente <> 0))";
+                    string query =@"INSERT into accidenteCausas(idAccidente,idCausaAccidente,indice) 
+                                    values(@idAccidente, @idCausaAccidente, (SELECT Max(indice)+1
+                                    FROM accidenteCausas where idAccidente = @idAccidente and idCausaAccidente <> 0))";
 
                     SqlCommand command = new SqlCommand(query, connection);
 

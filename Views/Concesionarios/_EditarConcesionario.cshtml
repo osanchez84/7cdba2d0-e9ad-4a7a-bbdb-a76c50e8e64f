@@ -120,6 +120,7 @@
 <script>
     function btnEditarConcesionario() {
         var formData = $("#frmEditarConcesionario").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_EditarConcesionario")',
             type: 'POST',
@@ -128,11 +129,13 @@
                 $("#listadoConcesionarios").html(result);
                 $('#modalEditarConcesionario').modal('hide');
                 sitteg_success('Elemento guardado correctamente')
+                hideLoading();
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg)
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }

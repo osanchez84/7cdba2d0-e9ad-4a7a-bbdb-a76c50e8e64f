@@ -114,6 +114,7 @@
 
 
     function ShowDetailPopUp(id) {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_GetPersonaMoral")',
             type: 'GET',
@@ -123,6 +124,10 @@
             success: function (value) {
                 $('#ModalBodyUpdateMoral').html(value);
                 $('#modalUpdateMoral').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

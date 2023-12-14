@@ -145,7 +145,7 @@
 <script>
     function busquedaVehiculo() {
         var formData = $("#buscarVehiculoForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '/AsignacionGruas/BuscarVehiculo',
             type: 'POST',
@@ -154,10 +154,12 @@
                 console.log("Response:", response);
                 var grid = $("#gridVehiculosDeposito").data("kendoGrid");
                 grid.dataSource.data(response);
+                hideLoading();
             },
             error: function (error) {
                 var errorMessage = error.responseText || "Ocurrió un error, inténtelo nuevamente más tarde.";
                 sitteg_warning(errorMessage);
+                hideLoading();
             }
         });
     }

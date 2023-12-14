@@ -90,7 +90,7 @@
         var IdAccidenteFactorOpcion = dataItem.IdAccidenteFactorOpcion;
 
 
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalEditarFactorAccidente", "CapturaAccidentes")',
             type: 'POST',
@@ -99,8 +99,11 @@
                 $('#ModalBodyFactorAccidente').html(result);
                 $('#factorAccidenteModal').modal({ backdrop: 'static', keyboard: false });
                 $('#factorAccidenteModal').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function eliminarFactorA(event) {
@@ -113,7 +116,7 @@
         var FactorAccidente = dataItem.FactorAccidente;
         var FactorOpcionAccidente = dataItem.FactorOpcionAccidente;
         var IdAccidenteFactorOpcion = dataItem.IdAccidenteFactorOpcion;
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalEliminarFactorAccidente", "CapturaAccidentes")',
             type: 'POST',
@@ -121,7 +124,11 @@
             success: function (data) {
                 $('#ModalBodyFactorAccidente').html(data);
                 $('#factorAccidenteModal').modal('show');
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         });
     }
 

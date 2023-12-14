@@ -67,7 +67,7 @@
     function EliminarCausaBD() {
 
         var Mydata = $("#eliminaCausaForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarCausaAccidente")',
             type: 'POST',
@@ -80,10 +80,11 @@
                 $('modal-body').removeClass('model-open');
                 $('.modal-backdrop').remove();
 
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning("!Sucedio un error, intente mas tarde...");
+                hideLoading();
             }
         });
     }

@@ -280,7 +280,7 @@
     function buscarAccidente() {
         var Mydata = $("#busquedaAccidenteForm").serialize();
         console.log(Mydata);
-
+        showLoading();
         $.ajax({
             url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
             type: 'GET',
@@ -289,9 +289,11 @@
                 var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
                 grid.dataSource.data(data);
                 grid.refresh();
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Ocurrieron los siguientes errores");
+                hideLoading();
             }
         });
     }
@@ -299,6 +301,7 @@
     function downLoadPdfFiltered() {
         var Mydata = $("#busquedaAccidenteForm").serialize();
         var fileName = "ReporteGeneralAccidentes.pdf";
+        showLoading();
         $.ajax({
             type: "POST",
             url: '@Url.Action("AccidentesGeneral","PDFGenerator")',
@@ -320,6 +323,11 @@
                     $("body").append(a);
                     a[0].click();
                     $("body").remove(a);
+                    hideLoading();
+                },
+                error: function () {
+                    sitteg_warning("Ocurrio un error intetnte mas tarde");
+                    hideLoading();
                 }
             }
         });
@@ -327,7 +335,7 @@
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
         console.log("IDK", carreteraDDValue)
-
+        showLoading();
         $.ajax({
             url: "/BusquedaAccidentes/Tramos_Drop",
             type: "POST",
@@ -335,9 +343,11 @@
             success: function (data) {
                 var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
                 console.log("EE", error)
+                hideLoading();
             }
         });
     }

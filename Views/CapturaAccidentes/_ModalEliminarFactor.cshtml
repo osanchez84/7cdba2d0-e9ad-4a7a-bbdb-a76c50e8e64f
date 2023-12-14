@@ -78,6 +78,7 @@
 
         var Mydata = $("#eliminarFactorForm").serialize();
         console.log("MUD",Mydata)
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarValorFactorYOpcion")',
             type: 'POST',
@@ -90,10 +91,11 @@
                 $('modal-body').removeClass('model-open');
                 $('.modal-backdrop').remove();
 
-
+                hideLoading();
             },
             error: function (error) { 
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

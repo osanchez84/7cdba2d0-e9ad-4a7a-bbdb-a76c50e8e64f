@@ -56,7 +56,7 @@
     function getId(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAgenciaMinisterio = dataItem.IdAgenciaMinisterio;
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarAgenciaMinisterioModal", "CatAgenciasMinisterio")',
             type: 'POST',
@@ -68,15 +68,18 @@
                 $('#ModalBodEditarAgenciaministerio').html(result);
                 $('#editarAgenciaministerio').modal('show');
                 }
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
     function eliminar(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAgenciaMinisterio = dataItem.IdAgenciaMinisterio;
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarAgenciaMinisterioModal", "CatAgenciasMinisterio")',
             type: 'POST',
@@ -84,8 +87,11 @@
             success: function (result) {
                 $('#ModalBodEditarAgenciaministerio').html(result);
                 $('#editarAgenciaministerio').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

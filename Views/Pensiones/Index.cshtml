@@ -162,7 +162,7 @@
     function btnBuscarPension() {
         var pension = $("#txtPension").val();
         var idDelegacion = $("#ddlIdDelegacion").val();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPensiones")',
             type: 'GET',
@@ -173,12 +173,17 @@
             dataType: "html",
             success: function (value) {
                 $('#listadoPensiones').html(value);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
 
 
     function modalCrearPension() {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ModalCrearPension")',
             type: 'POST',
@@ -192,6 +197,10 @@
                 $('#modalCrearPension').modal({ backdrop: 'static', keyboard: false });
                 $('#modalCrearPension').modal('show');
                 }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

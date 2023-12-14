@@ -201,26 +201,31 @@
 </div>
 
 <script>
-	function submitSearch() {
-		var Mydata = $("#frmComparativoInfracciones").serialize();
-		//console.log(Mydata);
-		$.ajax({
-			url: '@Url.Action("ajax_ComparativoInfracciones")',
-			type: 'POST',
-			data: Mydata,
-			success: function (result) {
-				$("#Resultados").html(result);
-				console.log(result);
-			}
-		});
-	}
-
-	$(document).ready(function () {
-		var ele = document.querySelectorAll('.number-only');
-		[].forEach.call(ele, function (el) {
-			el.onkeypress = function (e) {
-				if (e != undefined && e.target.value.length > 3)
-					return false;
+    function submitSearch() {
+        var Mydata = $("#frmComparativoInfracciones").serialize();
+        //console.log(Mydata);
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ajax_ComparativoInfracciones")',
+            type: 'POST',
+            data: Mydata,
+            success: function (result) {
+                $("#Resultados").html(result);
+                console.log(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+        var ele = document.querySelectorAll('.number-only');
+        [].forEach.call(ele, function (el) {
+            el.onkeypress = function (e) {
+                if (e != undefined && e.target.value.length > 3)
+                    return false;
 
 				if (isNaN(String.fromCharCode(e.charCode)))
 					return false;

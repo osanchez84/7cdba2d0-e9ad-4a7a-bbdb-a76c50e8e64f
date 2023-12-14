@@ -52,7 +52,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdSubmarca = dataItem.IdSubmarca;
         console.log(IdSubmarca);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarSubmarcaParcial", "SubmarcasVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -60,8 +60,11 @@
             success: function (result) {
                 $('#editarSubmarcaBody').html(result);
                 $('#editarSubMarca').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -69,7 +72,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdSubmarca = dataItem.IdSubmarca;
         console.log(IdSubmarca);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarSubmarcaParcial", "SubmarcasVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -77,8 +80,11 @@
             success: function (result) {
                 $('#eliminarSubmarcaBody').html(result);
                 $('#eliminarSubMarca').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function tooltipContent(e) {

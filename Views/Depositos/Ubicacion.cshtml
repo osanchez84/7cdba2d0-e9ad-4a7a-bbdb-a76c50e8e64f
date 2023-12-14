@@ -153,7 +153,7 @@
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Depositos/Tramos_Drop",
             type: "POST",
@@ -161,8 +161,10 @@
             success: function (data) {
                 var TramosDropDown = $("#IdTramo").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -170,7 +172,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidadUbicacion").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Depositos/Municipios_Drop",
             type: "POST",
@@ -178,8 +180,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipioUbicacion").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -193,7 +197,7 @@
      function enviarComplemento(){
         var Mydata = $("#complementoSolicitudForm").serialize();
         console.log(Mydata);
-
+        showLoading();
         $.ajax({
             url: '/Depositos/ajax_EnviarComplementoSolicitud',
             type: 'POST',
@@ -201,9 +205,11 @@
             success: function (data) {
                 sitteg_success("Datos guardados correctamente");
                 window.location.href = "/AsignacionGruas/Index";
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Ocurrioun error intente mas tarde");
+                hideLoading();
             }
         });
     }

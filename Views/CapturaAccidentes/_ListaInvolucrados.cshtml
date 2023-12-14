@@ -82,19 +82,19 @@
         var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
         $('#idPersonaHidden').val(idPersona);
         $('#idVehiculoHidden').val(IdVehiculoInvolucrado);
-
+        showLoading();
         $.ajax({
             url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
             type: 'POST',
             data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
             success: function (response) {
                 sitteg_success("Se ha actualizado la información del vehículo");
-
+                hideLoading();
                 // $("#tablaHospitales").html(result);
 
             },
             error: function (error) {
-
+                hideLoading();
             }
         });
     }

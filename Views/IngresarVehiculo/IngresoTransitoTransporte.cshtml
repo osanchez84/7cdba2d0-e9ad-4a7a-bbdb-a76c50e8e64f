@@ -192,6 +192,7 @@
     function buscarVehiculo() {
         var Mydata = $("#busquedaIngresoForm").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BusquedaDepositos", "IngresarVehiculo")',
             type: 'POST',
@@ -199,6 +200,10 @@
             success: (data) => {
                 var grid = $("#gridBusquedIngresos").data("kendoGrid");
                 grid.dataSource.data(data);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -228,7 +233,7 @@
         var file = fileInput.files[0];
 
         formData.append("AnexarImagen1", file);
-
+        showLoading();
         $.ajax({
             url: '/IngresarVehiculo/ajax_GuardarDatos',
             method: 'POST',
@@ -237,9 +242,11 @@
             contentType: false,
             success: function (response) {
                 sitteg_success("Se ha guardado la información correctamente");
+                hideLoading();
             },
             error: function (error) {
                 sitteg_error("Lo sentimos, ha sucedido un error");
+                hideLoading();
             }
         });
     }

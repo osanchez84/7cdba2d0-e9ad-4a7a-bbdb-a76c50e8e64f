@@ -94,6 +94,7 @@
         $('#agregarOficinasRenta').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("AgregarOficinaRenta")',
             type: 'POST',
@@ -101,7 +102,10 @@
             success: function (result) {
                 $("#gridCatOficinasRenta").data("kendoGrid").dataSource.data(result);
                 sitteg_info('Se ha actualizado la información');
-
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

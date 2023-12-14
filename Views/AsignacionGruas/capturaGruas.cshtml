@@ -306,8 +306,6 @@
             </div>
         </div>
     </div>
-
-
         </div>
 
 
@@ -316,6 +314,7 @@
  function finalizar() {
    var Mydata = $("#observacionesForm").serialize();
             console.log(Mydata);
+        showLoading();
             $.ajax({
                 url: '/AsignacionGruas/AgregarObservaciones',
                 type: 'GET',
@@ -323,9 +322,11 @@
                 success: function (data) {
                 sitteg_success("Información guardada con éxito");
                 document.getElementById("grua2").style.display = "block";
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning("!Sucedió un error, inténtalo de nuevo más tarde...");
+                hideLoading();
             }
         });
     }
@@ -422,39 +423,51 @@
     }
     
     function modalInfraccion(){
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalInfracciones", "AsignacionGruas")',
             type: 'POST',
             success: function (result) {
                 $('#ModalBodyInfracciones').html(result);
                 $('#modalInfracciones').modal('show');
-
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function modalVehiculos() {
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalVehiculos", "AsignacionGruas")',
             type: 'POST',
             success: function (result) {
                 $('#ModalBodyVehiculos').html(result);
                 $('#modalVehiculos').modal('show');
-
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
      function agregarGrua(){
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalAgregarGrua", "AsignacionGruas")',
             type: 'POST',
             success: function (result) {
                 $('#ModalBodyAgregarGrua').html(result);
                 $('#modalAgregarGrua').modal('show');
-
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -471,7 +484,7 @@
         var formData = new FormData();
         formData.append("myFile", inputFile.files[0]);
         formData.append("numeroInventario", numeroInventario); // Agregar el contenido del TextBox
-
+        showLoading();
         $.ajax({
             url: '/AsignacionGruas/AgregarInventario',
             type: 'POST',
@@ -486,10 +499,12 @@
                     // Mostrar mensaje de error
                     sitteg_warning(data.message);
                 }
+                hideLoading();
             },
             error: function (error) {
                 // Tu código de error aquí
                 console.error("Error al enviar la imagen:", error);
+                hideLoading();
             }
         });
     }

@@ -214,6 +214,7 @@
         $("#PlacasBusqueda").val(placasValue);
 
         var formData = $("#buscarVehiculoForm").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("BuscarVehiculo")',
             type: 'POST',
@@ -227,9 +228,11 @@
                     grid.dataSource.data(response.data);
                     grid.refresh();
                 }
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Sucedio un error intente de nuevo mas tarde");
+                hideLoading();
             }
         });
     }

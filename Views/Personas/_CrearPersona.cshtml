@@ -257,7 +257,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Personas/Municipios_Drop",
             type: "POST",
@@ -265,8 +265,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -297,6 +299,7 @@
 
         if (validator.validate()) {
             var formData = $("#frmCrearPersona").serialize();
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_CrearPersona","Personas")',
                 type: 'POST',
@@ -313,11 +316,13 @@
                     } else {
                         console.error("El resultado no es un objeto válido:", result);
                     }
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }
@@ -337,15 +342,18 @@ function completarConLicencia() {
     var numeroLicencia = searchParams.get('numeroLicencia');
 
     if (numeroLicencia.trim() !== "") {
+        showLoading();
         $.ajax({
             type: "POST",
             url: "/Personas/BusquedaPorLicencia",
             data: { numeroLicencia: numeroLicencia },
             success: function (result) {
                 console.log(result);
+                hideLoading();
             },
             error: function (error) {
                 console.error(error);
+                hideLoading();
             }
         });
     } else {

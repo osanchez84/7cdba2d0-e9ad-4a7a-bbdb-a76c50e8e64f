@@ -93,6 +93,7 @@
             $('#addColor').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("UpdatePartialModal")',
             type: 'POST',
@@ -100,10 +101,11 @@
             success: function (result) {
                     sitteg_success('Se ha actualizado la información');
                     $("#gridCatColores").data("kendoGrid").dataSource.data(result);
-
+                    hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedio um error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

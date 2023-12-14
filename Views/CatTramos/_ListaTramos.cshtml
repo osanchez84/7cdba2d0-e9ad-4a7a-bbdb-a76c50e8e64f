@@ -54,7 +54,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdTramo = dataItem.IdTramo;
         console.log(IdTramo);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarTramoModal", "CatTramos")',
             type: 'POST', 
@@ -62,8 +62,11 @@
             success: function (result) {
                 $('#ModalBodyTramo').html(result);
                 $('#agregarTramo').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

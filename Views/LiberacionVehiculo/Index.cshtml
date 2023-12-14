@@ -7,13 +7,19 @@
 
             var Mydata = $("#frmSearch").serialize();
             //console.log(Mydata);
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_BuscarVehiculo")',
                 type: 'POST',
                 data: Mydata,
                 success: function (result) {              
                     $("#listadoLiberacionVehiculos").html(result);
-                    }               
+                    hideLoading();
+                    },
+                error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
             });
         }
       

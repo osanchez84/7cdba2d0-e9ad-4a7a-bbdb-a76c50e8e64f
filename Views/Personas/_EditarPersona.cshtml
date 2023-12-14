@@ -57,25 +57,26 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Nombre <b>(obligatorio)</b>:</label>
+
                 @(Html.Kendo().TextBoxFor(t => t.nombre)
-                    .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Apellido paterno:</label>
                 @(Html.Kendo().TextBoxFor(t => t.apellidoPaterno)
-                    .Label(l => l.Content("Apellido paterno <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Apellido materno:</label>
                 @(Html.Kendo().TextBoxFor(t => t.apellidoMaterno)
-                    .Label(l => l.Content("Apellido materno <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -94,16 +95,16 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>CURP <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.CURP)
-                    .Label(l => l.Content("CURP <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>RFC:</label>
                 @(Html.Kendo().TextBoxFor(t => t.RFC)
-                    .Label(l => l.Content("RFC :"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -132,8 +133,8 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
+                <label>No. de licencia:</label>
                 @(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
-                    .Label(l => l.Content("Número licencia:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -177,7 +178,7 @@
                             read.Action("Entidades_Drop", "Personas");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idEntidadED" })
+                    .HtmlAttributes(new { style = "width:100%;",id = "idEntidadED" })
                     )
             </div>
         </div>
@@ -195,13 +196,13 @@
                             read.Action("Municipios_Drop", "Personas");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;", required = "required", id = "idMunicipioED" }))
+                    .HtmlAttributes(new { style = "width:100%;", id = "idMunicipioED" }))
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Código postal <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .Label(l => l.Content("Código postal <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -210,24 +211,24 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Colonia <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
-                    .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Calle <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
-                    .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
         </div>
         <div class="col-md-4">
             <div class="controlForm">
+                <label>Número <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
-                    .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
                     )
             </div>
@@ -236,17 +237,19 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
+                <label>Teléfono:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefono)
-                    .Label(l => l.Content("Teléfono: <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new
+                    {
+                        style = "width: 100%; height:58px;", id="telefono"})
                     )
             </div>
         </div>
         <div class="col-md-6">
             <div class="controlForm">
+                <label>Correo:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correo)
-                    .Label(l => l.Content("Correo <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
             </div>
         </div>
@@ -273,8 +276,14 @@
 
 <script>
     function btnEditarPersona() {
+
         var validator = $("#frmEditarPersona").kendoValidator().data('kendoValidator');
-        validator.validate();
+        var idTelefono = $("#telefono");
+        var idTelefonoValue = idTelefono.val();
+        if (idTelefonoValue === null || idTelefonoValue === "") {
+            idTelefono.prop("disabled", true);
+        }
+        idTelefono.off('blur');
         if (validator.validate()) {
             var formData = $("#frmEditarPersona").serialize();
             $.ajax({
@@ -282,7 +291,15 @@
                 type: 'POST',
                 data: formData,
                 success: function (result) {
-                    $("#listadoPersonas").html(result);
+                    var grid = $("#gridPersonas").data("kendoGrid");
+
+                    if (result && result.data) {
+                        var dataArray = [result.data];
+                        grid.dataSource.data(dataArray);
+                    } else {
+                        console.error("La respuesta no tiene la estructura esperada:", result);
+                    }
+
                     $('#modalCrearPersona').modal('hide');
                     sitteg_success('Elemento guardado correctamente')
                 },
@@ -294,6 +311,7 @@
             });
         }
         else {
+            idTelefono.prop("disabled", false);         
             sitteg_info('Debe llenar los campos requeridos');
             return;
         }

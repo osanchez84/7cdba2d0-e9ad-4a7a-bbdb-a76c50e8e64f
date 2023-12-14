@@ -32,6 +32,7 @@ using Kendo.Mvc.UI;
 using Org.BouncyCastle.Crypto;
 using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
+using Org.BouncyCastle.Asn1.X509.SigI;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -1106,11 +1107,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
+            Persona.PersonaDireccion.telefono = (String.IsNullOrEmpty(Persona.telefono)) ? 0 :Convert.ToInt64(Persona.telefono);
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
-            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
-            var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
+            if (IdPersonaMoral == 0)
+                return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud." });
+            else
+            {
+                var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral);
+                return PartialView("_ListPersonasMorales", modelList);
+            }
 
-            return PartialView("_ListPersonasMorales", modelList);
+
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+            
         }
         [HttpGet]
         public IActionResult ajax_ModalCrearPersona()
@@ -1169,6 +1178,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)
         {
+            Persona.nombre = Persona.nombreFisico;
+            Persona.apellidoMaterno = Persona.apellidoMaternoFisico;
+            Persona.apellidoPaterno = Persona.apellidoPaternoFisico;
+            Persona.CURP = Persona.CURPFisico;
+            Persona.RFC = Persona.RFCFisico;
+            Persona.numeroLicencia = Persona.numeroLicenciaFisico;
+            Persona.idTipoLicencia = Persona.idTipoLicencia;
+            Persona.vigenciaLicencia = Persona.vigenciaLicenciaFisico;
+            Persona.PersonaDireccion.idEntidad = Persona.PersonaDireccion.idEntidadFisico;
+            Persona.PersonaDireccion.idMunicipio = Persona.PersonaDireccion.idMunicipioFisico;
+            Persona.PersonaDireccion.correo = Persona.PersonaDireccion.correoFisico;
+            Persona.PersonaDireccion.telefono = Persona.PersonaDireccion.telefonoFisico;
+            Persona.PersonaDireccion.colonia = Persona.PersonaDireccion.coloniaFisico;
+            Persona.PersonaDireccion.calle = Persona.PersonaDireccion.calleFisico;
+            Persona.PersonaDireccion.numero = Persona.PersonaDireccion.numeroFisico;
             Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
             var IdPersonaFisica = _personasService.CreatePersona(Persona);
             if (IdPersonaFisica == 0)

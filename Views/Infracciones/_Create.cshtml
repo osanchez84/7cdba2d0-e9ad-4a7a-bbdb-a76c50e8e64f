@@ -631,6 +631,7 @@
 </div>
 
 
+@*PERSONA MORAL*@
 <div class="modal fade modalCustom" id="addMoral"  aria-labelledby="addMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
@@ -643,7 +644,7 @@
                                 <i class="icon-addMoral h1 colorPrimary"></i>
                             </div>
                             <div class="col-auto my-3">
-                                <h2 class="m-0 h3"><b>Agregar persona moral</b></h2>
+                                <h2 class="m-0 h3"><b>Agregar persona moral.</b></h2>
                             </div>
                         </div>
                     </div>
@@ -689,7 +690,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.telefono)
                                 .Label(l => l.Content("Teléfono:"))
                                 .Placeholder("Ingresa Teléfono")
                                 .HtmlAttributes(new { style = "width: 100%" })
@@ -765,7 +766,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa calle")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -776,14 +777,12 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa número")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
                         </div>
                     </div>
-
-
-
                 </form>
+
                 <div class="row my-4">
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
@@ -857,6 +856,8 @@
         </div>
     </div>
 </div>
+
+@*PERSONA FISICA*@
 <div class="modal fade modalCustom" id="addFisico"  aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
@@ -899,7 +900,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombreFisico)
                                 .Label(l => l.Content("Nombre(s) <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa el nombre(s)")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1024,7 +1025,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.coloniaFisico)
                                 .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una colonia")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1036,7 +1037,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calleFisico)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una calle")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1047,7 +1048,7 @@
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numeroFisico)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa un número interior")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1223,20 +1224,43 @@
     });
 
    function submitCreateMoral() {
+    var isValid = true;
+    var phone = $("#Persona_telefono").val();
+    var email = $("#Persona_PersonaDireccion_correo").val();
+    
     var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
     
-    var idTelefono = $("#Persona_PersonaDireccion_telefono");
-    var idTelefonoValue = idTelefono.val();
+    //var idTelefono = $("#Persona_telefono");
+    //var idTelefonoValue = idTelefono.val();
     
-    if (idTelefonoValue === null || idTelefonoValue === "") {
-        idTelefono.prop("disabled", true);
-    }
+    //if (idTelefonoValue === null || idTelefonoValue === "") {
+    //    idTelefono.prop("disabled", true);
+    //}
 
-    idTelefono.off('blur');
+    //idTelefono.off('blur');
 
     $("#hdnidCatTipoServicio").prop("disabled",true)
+    //TODO
 
+    $('#Persona_telefono').removeClass("errorData");
+    if (phone != "" && phone != undefined) {
+        if (!isValidPhone(phone)) {
+            $('#Persona_telefono').addClass("errorData");
+            isValid = false;
+        }
+    }
 
+    $('#Persona_PersonaDireccion_correo').removeClass("errorData");
+    if (email != "" && email != undefined) {
+        if (!isValidEmail(email)) {
+            $('#Persona_PersonaDireccion_correo').addClass("errorData");
+            isValid = false;
+        }
+    }
+    if (!isValid) {
+        sitteg_warning('Datos incorrectos, favor de verificar.');
+        return;
+    }
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
@@ -1252,6 +1276,13 @@
                     document.getElementById("PersonaMoralLocalizada").style.display = "block";
                     $("#PersonaMoralLocalizada").html(result);
                         $('#addMoral').modal('hide');
+                        $('#Persona_telefono').val(null);
+                        $('#Persona_nombre').val(null);
+                        $('#Persona_RFC').val(null);
+                        $('#Persona_PersonaDireccion_correo').val(null);
+                        $('#Persona_PersonaDireccion_colonia').val(null);
+                        $('#Persona_PersonaDireccion_calle').val(null);
+                        
                         sitteg_success('Elemento guardado correctamente')
                 }, 500);
 
@@ -1265,7 +1296,7 @@
             }
         });
     } else {
-        idTelefono.prop("disabled", false);
+        //idTelefono.prop("disabled", false);
         sitteg_info('Debe llenar los campos requeridos');
     $("#hdnidCatTipoServicio").prop("disabled",false)
 
@@ -1326,6 +1357,29 @@
 
         return;
     }
+    var isValid = true;
+    var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
+    var email = $("#Persona_PersonaDireccion_correoFisico").val();
+
+    $('#Persona_PersonaDireccion_telefonoFisico').removeClass("errorData");
+    if (phone != "" && phone != undefined) {
+        if (!isValidPhone(phone)) {
+            $('#Persona_PersonaDireccion_telefonoFisico').addClass("errorData");
+            isValid = false;
+        }
+    }
+
+    $('#Persona_PersonaDireccion_correoFisico').removeClass("errorData");
+    if (email != "" && email != undefined) {
+        if (!isValidEmail(email)) {
+            $('#Persona_PersonaDireccion_correoFisico').addClass("errorData");
+            isValid = false;
+        }
+    }
+    if (!isValid) {
+        sitteg_warning('Datos incorrectos, favor de verificar.');
+        return;
+    }
 
     var generoBool = $("#generoSwitch").prop("checked");
     $("#idGenero").val(generoBool ? 1 : 0);
@@ -1339,7 +1393,21 @@
         success: function (result) {
             console.log(result);
             $("#personasFisicasInf").html(result);
-
+            $("#Persona_apellidoPaternoFisico").val(null);
+            $("#Persona_apellidoMaternoFisico").val(null);
+            $("#Persona_nombreFisico").val(null);
+            $("#Persona_vigenciaLicencia").val(null);
+            $("#Persona_numeroLicenciaFisico").val(null);
+            $("#Persona_Direccion_numeroFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
+            $("#Persona_fechaNacimiento").val(null);
+            $("#Persona_CURPFisico").val(null);
+            $("#Persona_RFCFisico").val(null);
+            $("#Persona_PersonaDireccion_calleFisico").val(null);
+            $("#Persona_PersonaDireccion_coloniaFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
             $('#addFisico').modal('hide');
             hideLoading();
         },

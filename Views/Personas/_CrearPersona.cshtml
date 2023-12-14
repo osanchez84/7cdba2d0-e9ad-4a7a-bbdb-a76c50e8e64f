@@ -1,14 +1,12 @@
 ﻿@model PersonaModel
 <script>
     $(document).ready(function () {
-        var datePicker = $("#vigencia").data("kendoDatePicker");
-        datePicker.value(null);
-    });
-
-    $(document).ready(function () {
-        $('#vigencia').removeAttr("required");
+        hideLoading();
+        var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+        $('#vigenciaLicencia').removeAttr("required");
     });
 </script>
+
 <form id="frmCrearPersona" class="row px-4 mb-4 align-items-end justify-content-center">
     @Html.HiddenFor(m=> m.idPersona)
     <div class="row my-2">
@@ -281,6 +279,8 @@
         var idTipoPersonaValue = idTipoPersona.val();
         var Vigencia = $("#vigencia");
         var vigenciaValue = Vigencia.val();
+
+        alert("pasoooo:" + vigenciaValue);
 
         if (idTelefonoValue === null || idTelefonoValue === "") {
             idTelefono.prop("disabled", true);

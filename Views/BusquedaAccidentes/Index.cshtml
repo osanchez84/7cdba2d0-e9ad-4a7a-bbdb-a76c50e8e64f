@@ -33,7 +33,7 @@
                             <label>Fecha Inicio:</label>
                             @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Format("dd/MM/yyyy")
                                 .Label(l => l.Content("Fecha Inicio:"))
-                                .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
+                                .HtmlAttributes(new { style = "width: 100%", id = "FechaInicio" })
                                 .Value("")
                                 )
                         </div>
@@ -44,7 +44,7 @@
                             <label>Fecha Fin:</label>
                             @(Html.Kendo().DatePickerFor(t => t.FechaFin).Format("dd/MM/yyyy")
                                 .Label(l => l.Content("Fecha Fin:"))
-                                .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
+                                .HtmlAttributes(new { style = "width: 100%", id = "FechaFin" })
                                 .Value("")
                                 )
                         </div>
@@ -353,22 +353,7 @@
             }
         });
     }
-    $(document).ready(function () {
-        $("#dateFinal").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
-    $(document).ready(function () {
-        $("#dateInicio").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
-
-
+  
 </script>
 
 

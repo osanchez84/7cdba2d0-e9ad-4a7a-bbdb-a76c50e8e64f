@@ -139,11 +139,12 @@
     var dataItem = grid.dataItem(row);
     var CausaAccidente = dataItem.CausaAccidente
     var IdCausaAccidente = dataItem.IdCausaAccidente
+    var IdAccidenteCausa = dataItem.idAccidenteCausa
     showLoading();
     $.ajax({
             url: '@Url.Action("ModalEliminarCausas", "CapturaAccidentes")',
             type: 'POST',
-            data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente : CausaAccidente },
+            data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente: CausaAccidente, IdAccidenteCausa: IdAccidenteCausa },
             success: function (result) {
                 $('#ModalBodyCausaAccidente').html(result);
                 $('#causaAccidenteModal').modal('show');

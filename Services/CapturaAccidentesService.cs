@@ -900,7 +900,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 					connection.Open();
-                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente,indice) values(@idAccidente, @idCausaAccidente, (SELECT Max(indice)+1 FROM accidenteCausas where idAccidente = @idAccidente))";
+                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente,indice) values(@idAccidente, @idCausaAccidente, (SELECT Max(indice)+1 FROM accidenteCausas where idAccidente = @idAccidente and idCausaAccidente <> 0))";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -979,7 +979,44 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int EliminarCausaBD(int IdCausaAccidente, int idAccidente)
+
+        public void RecalcularIndex(int IdAccidente)
+        {
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = @"
+                    With UpdateData  As
+                    (
+                    SELECT idAccidenteCausa,idAccidente, idCausaAccidente, row_number() OVER (PARTITION BY idAccidente ORDER BY indice) indexs 
+                    FROM accidenteCausas 
+                    WHERE idAccidente = @idAccidente
+                    and idCausaAccidente > 0
+                    )
+                    UPDATE accidenteCausas SET indice = indexs
+                    FROM accidenteCausas
+                    INNER JOIN UpdateData ON accidenteCausas.idAccidenteCausa = UpdateData.idAccidenteCausa and accidenteCausas.idAccidente = UpdateData.idAccidente ";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", IdAccidente);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+            }
+        }
+
+        public int EliminarCausaBD(int IdCausaAccidente, int idAccidente, int idAccidenteCausa)
         {
             int result = 0;
 
@@ -988,12 +1025,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidenteCausas SET idCausaAccidente = 0 WHERE idAccidente = @idAccidente AND idCausaAccidente = @idCausaAccidente ";
+                    string query = "UPDATE accidenteCausas SET idCausaAccidente = 0 WHERE idAccidente = @idAccidente AND idCausaAccidente = @idCausaAccidente AND idAccidenteCausa = @idAccidenteCausa ";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idCausaAccidente", IdCausaAccidente);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idAccidenteCausa", idAccidenteCausa);
 
                     command.ExecuteNonQuery();
                 }

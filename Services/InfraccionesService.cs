@@ -2389,45 +2389,10 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList;
 		}
 
-		public bool ExisteInfraccion(string folioInfraccion)
-		{
-			bool folio = false;
-
-			if (string.IsNullOrEmpty(folioInfraccion)) return false;
-
-			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-			{
-				connection.Open();
-
-				string query = @"SELECT COUNT(*) AS Result FROM infracciones 
-								WHERE folioInfraccion=@folioInfraccion";
-							
-				using (SqlCommand command = new SqlCommand(query, connection))
-				{
-					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
-					
-
-					using (SqlDataReader reader = command.ExecuteReader())
-					{
-						if (reader.Read())
-						{
-							folio =  (int)reader["Result"] == 0;
-						}
-					}
-				}
-
-			}
-
-			return folio;
-		}
-
-
 		public int CrearInfraccion(InfraccionesModel model)
 		{
 			int result = 0;
 
-			if (ExisteInfraccion(model.folioInfraccion))
-			{
 				string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
@@ -2524,11 +2489,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					}
 
 				}
-			}
-			else
-			{
-				return 0;
-			}
+			
 			return result;
 		}
 

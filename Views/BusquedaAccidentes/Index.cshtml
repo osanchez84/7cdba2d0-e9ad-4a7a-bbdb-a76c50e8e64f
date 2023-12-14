@@ -31,7 +31,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Inicio:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Format("dd/mm/yyyy")
+                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Format("dd/MM/yyyy")
                                 .Label(l => l.Content("Fecha Inicio:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
                                 .Value("")
@@ -42,7 +42,7 @@
 
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Fin:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaFin).Format("dd/mm/yyyy")
+                            @(Html.Kendo().DatePickerFor(t => t.FechaFin).Format("dd/MM/yyyy")
                                 .Label(l => l.Content("Fecha Fin:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
                                 .Value("")
@@ -314,7 +314,8 @@
                 var isIE = false || !!document.documentMode;
                 if (isIE) {
                     window.navigator.msSaveBlob(blob, fileName);
-                } else {
+                } 
+                else {
                     var url = window.URL || window.webkitURL;
                     link = url.createObjectURL(blob);
                     var a = $("<a />");
@@ -324,12 +325,13 @@
                     a[0].click();
                     $("body").remove(a);
                     hideLoading();
+                }
                 },
                 error: function () {
                     sitteg_warning("Ocurrio un error intetnte mas tarde");
                     hideLoading();
                 }
-            }
+            
         });
     }
     function carreteraDropDownChange() {

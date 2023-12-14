@@ -639,7 +639,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
 
                     command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = DBNull.Value;
 
                     //command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
                     //command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)model.vigenciaLicencia ?? DBNull.Value;
@@ -651,7 +651,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    return result;
+                    return 0;
                 }
                 finally
                 {

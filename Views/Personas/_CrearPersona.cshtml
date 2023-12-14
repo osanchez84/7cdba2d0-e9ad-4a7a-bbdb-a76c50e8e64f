@@ -1,4 +1,12 @@
 ﻿@model PersonaModel
+<script>
+    $(document).ready(function () {
+        hideLoading();
+        var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+        $('#vigenciaLicencia').removeAttr("required");
+    });
+</script>
+
 
      <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                 <div class="col-auto pe-0">
@@ -302,6 +310,8 @@
         var idTipoPersonaValue = idTipoPersona.val();
         var Vigencia = $("#vigencia");
         var vigenciaValue = Vigencia.val();
+
+        alert("pasoooo:" + vigenciaValue);
 
         if (idTelefonoValue === null || idTelefonoValue === "") {
             idTelefono.prop("disabled", true);

@@ -957,7 +957,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return PartialView("_ModalEliminarCausa");
 		}
 
-		public ActionResult ModalAgregarInvolucrado()
+        public ActionResult ActualizaIndiceCausaAccidente(int idAccidenteCausa, int indice, int idAccidenteCausaParent, int indiceParent)
+        {
+            _capturaAccidentesService.ActualizaIndiceCuasa(idAccidenteCausa, indice);
+            _capturaAccidentesService.ActualizaIndiceCuasa(idAccidenteCausaParent, indiceParent);
+            return Json(new { success = true });
+        }
+
+        public ActionResult ModalAgregarInvolucrado()
 		{
 
             return PartialView("_ModalInvolucrado-Vehiculo");

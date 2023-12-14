@@ -356,8 +356,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
             model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.CrearInfraccion(model);
+            
+            
+            
             return Json(new { id = idInfraccion });
-            //return Ok();
+           
+
+
 
         }
         public ActionResult ModalAgregarVehiculo()

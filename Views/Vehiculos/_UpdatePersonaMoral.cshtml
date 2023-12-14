@@ -149,16 +149,21 @@
                 type: 'POST',
                 data: formData,
                 success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    window.setTimeout(function () {
-                        document.getElementById("sec3").style.display = "none";
-                        document.getElementById("PersonaMoralLocalizada").style.display = "block";
-                        $("#PersonaMoralLocalizada").html(result);
-                        $('#modalUpdateMoral').modal('hide');
-                        sitteg_success('Elemento guardado correctamente')
-                    }, 500);
-                    hideLoading();
+
+                    var grid = $("#gridPersonasMorales").data("kendoGrid");
+
+                    if (result && result.data) {
+                        var dataArray = [result.data];
+                        grid.dataSource.data(dataArray);
+                    } else {
+                        console.error("La respuesta no tiene la estructura esperada:", result);
+                    }
+
+                    $('#modalUpdateMoral').modal('hide');
+                    sitteg_success('Elemento guardado correctamente');
                 },
+              hideLoading();
+
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)

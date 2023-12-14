@@ -69,8 +69,9 @@
 				columns.Template(" ").Width(140).Title("Datos persona");
 				columns.Template(" ").Width(140).Title("Domicilio persona");
 				columns.Template(" ").Width(140).Title("Vehículo en que viajaba");
-				//columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-				//columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100);
+				columns.Template(" ").Width(140).Title("");
+				@*columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
+				columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100); *@
 
 			}).HtmlAttributes(new { style = "height:500px" })
 			.ClientRowTemplate(
@@ -106,6 +107,10 @@
 			"<p><span class='description'>Tipo : #: TipoVehiculo# </span></p>" +
 			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
 			"</td>" +
+			"<td class=''>" +
+			"<p><span class='description'><button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn colorDanger'><h6 class='m-0 colorPrimary'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
+			"</td>" +
 			"</tr>"
 			)
 			.ClientAltRowTemplate(
@@ -140,6 +145,10 @@
 			"<p><span class='description'>SubMarca : #: Submarca# </span></p>" +
 			"<p><span class='description'>Tipo : #: TipoVehiculo# </span></p>" +
 			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
+			"</td>" +
+			"<td class=''>" +
+			"<p><span class='description'><button onclick=\"editarAccidente('#= NoAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick=\"editarAccidente('#= NoAccidente #')\" class='w-100 btn colorDanger'><h6 class='m-0 colorPrimary'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
 			"</td>" +
 			"</tr>"
 			)

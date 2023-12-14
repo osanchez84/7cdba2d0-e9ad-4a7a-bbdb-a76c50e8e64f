@@ -672,6 +672,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                 {
                     vehiculosModel = GetVEiculoModelFromFinanzas(result);
+
+                    vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+
                     return PartialView("_Create", vehiculosModel);
                 }
             }
@@ -701,9 +704,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
                 };
+
+                vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
+
+
                 return PartialView("_Create", vehiculoEncontrado);
 
             }
+            vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+
 
             return PartialView("_Create", vehiculosModel);
 

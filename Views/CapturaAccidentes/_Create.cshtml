@@ -19,11 +19,25 @@
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
 
+        var mensaje = Model.ErrorRepube;
 
     ViewBag.serie = Model.serie;
 }
 
 <script>
+
+    $(document).ready(()=>{
+
+    var t = "@mensaje"
+
+    if(!t){
+                  sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+ 
+    }
+ 
+})
+
+
      function EntidadDDChangeAccFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 

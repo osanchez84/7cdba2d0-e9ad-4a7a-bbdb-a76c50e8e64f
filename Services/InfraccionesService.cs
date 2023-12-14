@@ -20,24 +20,24 @@ using System.ServiceModel.Channels;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class InfraccionesService : IInfraccionesService
-    {
-        private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
-        private readonly IVehiculosService _vehiculosService;
-        private readonly IPersonasService _personasService;
-        public InfraccionesService(ISqlClientConnectionBD sqlClientConnectionBD
-                                  , IVehiculosService vehiculosService
-                                  , IPersonasService personasService)
-        {
-            _sqlClientConnectionBD = sqlClientConnectionBD;
-            _vehiculosService = vehiculosService;
-            _personasService = personasService;
-        }
+	public class InfraccionesService : IInfraccionesService
+	{
+		private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
+		private readonly IVehiculosService _vehiculosService;
+		private readonly IPersonasService _personasService;
+		public InfraccionesService(ISqlClientConnectionBD sqlClientConnectionBD
+								  , IVehiculosService vehiculosService
+								  , IPersonasService personasService)
+		{
+			_sqlClientConnectionBD = sqlClientConnectionBD;
+			_vehiculosService = vehiculosService;
+			_personasService = personasService;
+		}
 
-        public List<InfraccionesModel> GetAllInfracciones(int idOficina)
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT DISTINCT inf.idInfraccion
+		public List<InfraccionesModel> GetAllInfracciones(int idOficina)
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT DISTINCT inf.idInfraccion
                                     ,inf.idOficial
                                     ,inf.idDependencia
                                     ,inf.idDelegacion
@@ -124,103 +124,103 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico ";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
-                    //command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+					//command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
+							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
-                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
-                            model.NombreGarantia = model.Garantia.garantia;
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
+							model.NombreGarantia = model.Garantia.garantia;
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
-            return modelList;
-        }
+			return modelList;
+		}
 
-        public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model, int idOficina)
-        {
-            List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                try
-                {
-                    connection.Open();
+		public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model, int idOficina)
+		{
+			List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+					connection.Open();
 
-                    string sqlCondiciones = "";
-                    sqlCondiciones += (object)model.IdGarantia == null ? "" : " inf.idGarantia=@IdGarantia AND \n";
-                    sqlCondiciones += (object)model.IdTipoCortesia == null ? "" : " inf.infraccionCortesia=@IdTipoCortesia AND \n";
-                    sqlCondiciones += (object)model.IdDelegacion == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
-                    sqlCondiciones += (object)model.IdEstatus == null ? "" : " estIn.idEstatusInfraccion=@IdEstatus AND \n";
-                    sqlCondiciones += (object)model.IdDependencia == null ? "" : " dep.idDependencia=@IdDependencia AND \n";
-                    sqlCondiciones += (object)model.NumeroLicencia == null ? "" : " pInf.numeroLicencia =@numeroLicencia AND \n";
-                    sqlCondiciones += (object)model.NumeroEconomico == null ? "" : " veh.numeroEconomico =@numeroEconomico AND \n";
-                    sqlCondiciones += (object)model.folioInfraccion == null ? "" : " UPPER(inf.folioInfraccion) like  '%'+ @FolioInfraccion + '%' AND \n";
-                    sqlCondiciones += (object)model.placas          == null ? "" : " UPPER(veh.placas)=@Placas AND \n";
-                    sqlCondiciones += (object)model.Propietario == null ? "" : "UPPER(per.nombre + ' ' + per.apellidoPaterno + ' ' + per.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Propietario + '%' AND \n";
-                    sqlCondiciones += (object)model.Conductor == null ? "" : "UPPER(pInf.nombre + ' ' + pInf.apellidoPaterno + ' ' + pInf.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Conductor + '%' AND \n";
+					string sqlCondiciones = "";
+					sqlCondiciones += (object)model.IdGarantia == null ? "" : " inf.idGarantia=@IdGarantia AND \n";
+					sqlCondiciones += (object)model.IdTipoCortesia == null ? "" : " inf.infraccionCortesia=@IdTipoCortesia AND \n";
+					sqlCondiciones += (object)model.IdDelegacion == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
+					sqlCondiciones += (object)model.IdEstatus == null ? "" : " estIn.idEstatusInfraccion=@IdEstatus AND \n";
+					sqlCondiciones += (object)model.IdDependencia == null ? "" : " dep.idDependencia=@IdDependencia AND \n";
+					sqlCondiciones += (object)model.NumeroLicencia == null ? "" : " pInf.numeroLicencia =@numeroLicencia AND \n";
+					sqlCondiciones += (object)model.NumeroEconomico == null ? "" : " veh.numeroEconomico =@numeroEconomico AND \n";
+					sqlCondiciones += (object)model.folioInfraccion == null ? "" : " UPPER(inf.folioInfraccion) like  '%'+ @FolioInfraccion + '%' AND \n";
+					sqlCondiciones += (object)model.placas == null ? "" : " UPPER(veh.placas)=@Placas AND \n";
+					sqlCondiciones += (object)model.Propietario == null ? "" : "UPPER(per.nombre + ' ' + per.apellidoPaterno + ' ' + per.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Propietario + '%' AND \n";
+					sqlCondiciones += (object)model.Conductor == null ? "" : "UPPER(pInf.nombre + ' ' + pInf.apellidoPaterno + ' ' + pInf.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Conductor + '%' AND \n";
 
-                    sqlCondiciones += (object)model.FechaInicio == null && (object)model.FechaFin == null ? "" : " inf.fechaInfraccion between @FechaInicio and  @FechaFin AND \n";
+					sqlCondiciones += (object)model.FechaInicio == null && (object)model.FechaFin == null ? "" : " inf.fechaInfraccion between @FechaInicio and  @FechaFin AND \n";
 
 
 
-                    string SqlTransact =
-                            string.Format(@"SELECT MAX( inf.idInfraccion)AS idInfraccion
+					string SqlTransact =
+							string.Format(@"SELECT MAX( inf.idInfraccion)AS idInfraccion
                                     ,MAX(inf.idOficial) AS idOficial
                                     ,MAX(inf.idDependencia) AS idDependencia
                                     ,MAX(inf.idDelegacion) AS idDelegacion
@@ -301,125 +301,125 @@ namespace GuanajuatoAdminUsuarios.Services
                                     where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
 									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
-                    SqlCommand command = new SqlCommand(SqlTransact, connection);
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdGarantia", SqlDbType.Int)).Value = (object)model.IdGarantia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdTipoCortesia", SqlDbType.Int)).Value = (object)model.IdTipoCortesia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdDependencia", SqlDbType.Int)).Value = (object)model.IdDependencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.NumeroLicencia != null ? model.NumeroLicencia.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.NumeroEconomico != null ? model.NumeroEconomico.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion != null ? model.folioInfraccion.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)model.placas != null ? model.placas.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.Propietario != null ? model.Propietario.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@Conductor", SqlDbType.NVarChar)).Value = (object)model.Conductor != null ? model.Conductor.ToUpper() : DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = model.FechaInicio == DateTime.MinValue ? new DateTime(1800, 01, 01) : (object)model.FechaInicio;
-                    command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = model.FechaFin == DateTime.MinValue ? DateTime.Now : (object)model.FechaFin;
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel infraccionModel = new InfraccionesModel();
-                            infraccionModel.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            infraccionModel.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            infraccionModel.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
-                            infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            infraccionModel.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            infraccionModel.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            infraccionModel.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            infraccionModel.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            infraccionModel.placasVehiculo = reader["placasVehiculo"].ToString();
-                            infraccionModel.folioInfraccion = reader["folioInfraccion"].ToString();
-                            infraccionModel.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            infraccionModel.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            infraccionModel.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            infraccionModel.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            infraccionModel.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            infraccionModel.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
-                            infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
-                            infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
-                            
-                            //infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
+					SqlCommand command = new SqlCommand(SqlTransact, connection);
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@IdGarantia", SqlDbType.Int)).Value = (object)model.IdGarantia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@IdTipoCortesia", SqlDbType.Int)).Value = (object)model.IdTipoCortesia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@IdDependencia", SqlDbType.Int)).Value = (object)model.IdDependencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.NumeroLicencia != null ? model.NumeroLicencia.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.NumeroEconomico != null ? model.NumeroEconomico.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion != null ? model.folioInfraccion.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)model.placas != null ? model.placas.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.Propietario != null ? model.Propietario.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@Conductor", SqlDbType.NVarChar)).Value = (object)model.Conductor != null ? model.Conductor.ToUpper() : DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = model.FechaInicio == DateTime.MinValue ? new DateTime(1800, 01, 01) : (object)model.FechaInicio;
+					command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = model.FechaFin == DateTime.MinValue ? DateTime.Now : (object)model.FechaFin;
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel infraccionModel = new InfraccionesModel();
+							infraccionModel.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							infraccionModel.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							infraccionModel.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+							infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							infraccionModel.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							infraccionModel.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							infraccionModel.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							infraccionModel.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							infraccionModel.placasVehiculo = reader["placasVehiculo"].ToString();
+							infraccionModel.folioInfraccion = reader["folioInfraccion"].ToString();
+							infraccionModel.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							infraccionModel.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							infraccionModel.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							infraccionModel.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							infraccionModel.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							infraccionModel.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
+							infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
+							infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
 
-                            infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
-                            infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
-                            infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+							//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
 
-                            if (infraccionModel.PersonaInfraccion != null)
-                            {
-                                infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
-                            }
-                            else
-                            {
-                                infraccionModel.NombreConductor = null; // O cualquier otro valor predeterminado que desees
-                            }
-                            infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "" : infraccionModel.Vehiculo.Persona.nombreCompleto;
-                            // infraccionModel.NombreGarantia = infraccionModel.garantia;
-                            infraccionModel.NombreGarantia = reader["garantia"] == System.DBNull.Value ? string.Empty : reader["garantia"].ToString();
+							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+							infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
+							infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
-                            InfraccionesList.Add(infraccionModel);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            return InfraccionesList;
-        }
+							if (infraccionModel.PersonaInfraccion != null)
+							{
+								infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
+							}
+							else
+							{
+								infraccionModel.NombreConductor = null; // O cualquier otro valor predeterminado que desees
+							}
+							infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "" : infraccionModel.Vehiculo.Persona.nombreCompleto;
+							// infraccionModel.NombreGarantia = infraccionModel.garantia;
+							infraccionModel.NombreGarantia = reader["garantia"] == System.DBNull.Value ? string.Empty : reader["garantia"].ToString();
 
-
-
-
-        public List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina)
-        {
-            List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                try
-                {
-
-                    DateTime? fechasIni = string.IsNullOrEmpty(model.FechaInicio)?null:  DateTime.ParseExact(model.FechaInicio, "dd/MM/yyyy",CultureInfo.InvariantCulture);
-                    DateTime? fechasFin = string.IsNullOrEmpty(model.FechaFin) ? null : DateTime.ParseExact(model.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                    connection.Open();
-
-                    string sqlCondiciones = "";
-
-                    sqlCondiciones += (object)model.folio == null ? "" : " UPPER(inf.folioInfraccion)=@FolioInfraccion AND \n";
-                    sqlCondiciones += (object)model.placas == null ? "" : " UPPER(veh.placas)=@Placas AND \n";
-                    sqlCondiciones += (object)model.oficinas == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
-
-                    sqlCondiciones += (object)model.propietario == null ? "" : "UPPER(per.nombre + ' ' + per.apellidoPaterno + ' ' + per.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Propietario + '%' AND \n";
-                    sqlCondiciones += (object)model.conductor == null ? "" : "UPPER(pInf.nombre + ' ' + pInf.apellidoPaterno + ' ' + pInf.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Conductor + '%' AND \n";
-                    sqlCondiciones += (object)model.estatus == null ? "" : " inf.idEstatusInfraccion=@IdEstatus AND \n";
-                    sqlCondiciones += string.IsNullOrEmpty(model.noLicencia) ? "" : " pInf.numeroLicencia =@numeroLicencia AND \n";
-
-                    sqlCondiciones += string.IsNullOrEmpty(model.noEconomico) ? "" : "veh.numeroEconomico = @numeroEconomico AND \n";
-
-
-                    sqlCondiciones += (object)fechasIni == null && (object)fechasFin == null ? "" : " inf.fechaInfraccion between @FechaInicio and  @FechaFin AND \n";
+							InfraccionesList.Add(infraccionModel);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return InfraccionesList;
+		}
 
 
 
-                    string SqlTransact =
-                            string.Format(@"SELECT MAX( inf.idInfraccion)AS idInfraccion
+
+		public List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina)
+		{
+			List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+
+					DateTime? fechasIni = string.IsNullOrEmpty(model.FechaInicio) ? null : DateTime.ParseExact(model.FechaInicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+					DateTime? fechasFin = string.IsNullOrEmpty(model.FechaFin) ? null : DateTime.ParseExact(model.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+					connection.Open();
+
+					string sqlCondiciones = "";
+
+					sqlCondiciones += (object)model.folio == null ? "" : " UPPER(inf.folioInfraccion)=@FolioInfraccion AND \n";
+					sqlCondiciones += (object)model.placas == null ? "" : " UPPER(veh.placas)=@Placas AND \n";
+					sqlCondiciones += (object)model.oficinas == null ? "" : " del.idOficinaTransporte=@IdDelegacion AND \n";
+
+					sqlCondiciones += (object)model.propietario == null ? "" : "UPPER(per.nombre + ' ' + per.apellidoPaterno + ' ' + per.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Propietario + '%' AND \n";
+					sqlCondiciones += (object)model.conductor == null ? "" : "UPPER(pInf.nombre + ' ' + pInf.apellidoPaterno + ' ' + pInf.apellidoMaterno) COLLATE Latin1_general_CI_AI LIKE '%' + @Conductor + '%' AND \n";
+					sqlCondiciones += (object)model.estatus == null ? "" : " inf.idEstatusInfraccion=@IdEstatus AND \n";
+					sqlCondiciones += string.IsNullOrEmpty(model.noLicencia) ? "" : " pInf.numeroLicencia =@numeroLicencia AND \n";
+
+					sqlCondiciones += string.IsNullOrEmpty(model.noEconomico) ? "" : "veh.numeroEconomico = @numeroEconomico AND \n";
+
+
+					sqlCondiciones += (object)fechasIni == null && (object)fechasFin == null ? "" : " inf.fechaInfraccion between @FechaInicio and  @FechaFin AND \n";
+
+
+
+					string SqlTransact =
+							string.Format(@"SELECT MAX( inf.idInfraccion)AS idInfraccion
                                     ,MAX(inf.idOficial) AS idOficial
                                     ,MAX(inf.idDependencia) AS idDependencia
                                     ,MAX(inf.idDelegacion) AS idDelegacion
@@ -499,113 +499,113 @@ namespace GuanajuatoAdminUsuarios.Services
                                     where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
 									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
-                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+					SqlCommand command = new SqlCommand(SqlTransact, connection);
 
 
-                    if(!string.IsNullOrEmpty(model.folio))
-                    command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folio != null ? model.folio.ToUpper() : DBNull.Value;
+					if (!string.IsNullOrEmpty(model.folio))
+						command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folio != null ? model.folio.ToUpper() : DBNull.Value;
 
-                    if (!string.IsNullOrEmpty(model.placas))
-                        command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)model.placas != null ? model.placas.ToUpper() : DBNull.Value;
-                    if (!string.IsNullOrEmpty(model.oficinas))
-                        command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.oficinas ?? DBNull.Value;
+					if (!string.IsNullOrEmpty(model.placas))
+						command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)model.placas != null ? model.placas.ToUpper() : DBNull.Value;
+					if (!string.IsNullOrEmpty(model.oficinas))
+						command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.oficinas ?? DBNull.Value;
 
-                        command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
-                    if (!string.IsNullOrEmpty(model.estatus))
-                        command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.estatus ?? DBNull.Value;
-                    if (!string.IsNullOrEmpty(model.propietario))
-                        command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.propietario != null ? model.propietario.ToUpper() : DBNull.Value;
-                    if (!string.IsNullOrEmpty(model.conductor))
-                        command.Parameters.Add(new SqlParameter("@Conductor", SqlDbType.NVarChar)).Value = (object)model.conductor != null ? model.conductor.ToUpper() : DBNull.Value;
+					if (!string.IsNullOrEmpty(model.estatus))
+						command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.estatus ?? DBNull.Value;
+					if (!string.IsNullOrEmpty(model.propietario))
+						command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.propietario != null ? model.propietario.ToUpper() : DBNull.Value;
+					if (!string.IsNullOrEmpty(model.conductor))
+						command.Parameters.Add(new SqlParameter("@Conductor", SqlDbType.NVarChar)).Value = (object)model.conductor != null ? model.conductor.ToUpper() : DBNull.Value;
 
-                    if (!string.IsNullOrEmpty(model.noLicencia))
-                        command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.noLicencia != null ? model.noLicencia.ToUpper() : DBNull.Value;
-                  
-                    if(!string.IsNullOrEmpty(model.noEconomico))
-                        command.Parameters.Add(new SqlParameter("@numeroEconomico",SqlDbType.NVarChar)).Value = (object)model.noEconomico != null ? model.noEconomico.ToUpper() : DBNull.Value;
+					if (!string.IsNullOrEmpty(model.noLicencia))
+						command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.noLicencia != null ? model.noLicencia.ToUpper() : DBNull.Value;
 
-                    if (!string.IsNullOrEmpty(model.FechaInicio))
-                        command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = fechasIni == DateTime.MinValue ? new DateTime(1800, 01, 01) : (object)fechasIni;
-                    if (!string.IsNullOrEmpty(model.FechaFin))
-                        command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = fechasFin == DateTime.MinValue ? DateTime.Now : (object)fechasFin;
-                   
-                    
-                    
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel infraccionModel = new InfraccionesModel();
-                            infraccionModel.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            infraccionModel.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            infraccionModel.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
-                            infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            infraccionModel.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            infraccionModel.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            infraccionModel.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            infraccionModel.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            infraccionModel.placasVehiculo = reader["placasVehiculo"].ToString();
-                            infraccionModel.folioInfraccion = reader["folioInfraccion"].ToString();
-                            infraccionModel.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            infraccionModel.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            infraccionModel.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            infraccionModel.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            infraccionModel.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            infraccionModel.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
-                            infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
-                            infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
-                            //infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
+					if (!string.IsNullOrEmpty(model.noEconomico))
+						command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.noEconomico != null ? model.noEconomico.ToUpper() : DBNull.Value;
 
-                            infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
-                            infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
-                            infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
-
-                            if (infraccionModel.PersonaInfraccion != null)
-                            {
-                                infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
-                            }
-                            else
-                            {
-                                infraccionModel.NombreConductor = null; // O cualquier otro valor predeterminado que desees
-                            }
-                            infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "" : infraccionModel.Vehiculo.Persona.nombreCompleto;
-                            // infraccionModel.NombreGarantia = infraccionModel.garantia;
-                            infraccionModel.NombreGarantia = reader["garantia"] == System.DBNull.Value ? string.Empty : reader["garantia"].ToString();
-
-                            InfraccionesList.Add(infraccionModel);
-
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            return InfraccionesList;
-        }
+					if (!string.IsNullOrEmpty(model.FechaInicio))
+						command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = fechasIni == DateTime.MinValue ? new DateTime(1800, 01, 01) : (object)fechasIni;
+					if (!string.IsNullOrEmpty(model.FechaFin))
+						command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = fechasFin == DateTime.MinValue ? DateTime.Now : (object)fechasFin;
 
 
-        public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion)
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT DISTINCT inf.idInfraccion
+
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel infraccionModel = new InfraccionesModel();
+							infraccionModel.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							infraccionModel.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							infraccionModel.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							infraccionModel.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+							infraccionModel.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							infraccionModel.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							infraccionModel.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							infraccionModel.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							infraccionModel.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							infraccionModel.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							infraccionModel.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							infraccionModel.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							infraccionModel.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							infraccionModel.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							infraccionModel.placasVehiculo = reader["placasVehiculo"].ToString();
+							infraccionModel.folioInfraccion = reader["folioInfraccion"].ToString();
+							infraccionModel.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							infraccionModel.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							infraccionModel.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							infraccionModel.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							infraccionModel.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							infraccionModel.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
+							infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
+							infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
+							//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
+
+							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+							infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
+							infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+
+							if (infraccionModel.PersonaInfraccion != null)
+							{
+								infraccionModel.NombreConductor = infraccionModel.PersonaInfraccion.nombreCompleto;
+							}
+							else
+							{
+								infraccionModel.NombreConductor = null; // O cualquier otro valor predeterminado que desees
+							}
+							infraccionModel.NombrePropietario = infraccionModel.Vehiculo == null ? "" : infraccionModel.Vehiculo.Persona == null ? "" : infraccionModel.Vehiculo.Persona.nombreCompleto;
+							// infraccionModel.NombreGarantia = infraccionModel.garantia;
+							infraccionModel.NombreGarantia = reader["garantia"] == System.DBNull.Value ? string.Empty : reader["garantia"].ToString();
+
+							InfraccionesList.Add(infraccionModel);
+
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return InfraccionesList;
+		}
+
+
+		public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion)
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT DISTINCT inf.idInfraccion
                                     ,inf.idOficial
                                     ,inf.idDependencia
                                     ,inf.idDelegacion
@@ -692,80 +692,80 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico ";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.VarChar)).Value = (object)FolioInfraccion ?? DBNull.Value;
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.VarChar)).Value = (object)FolioInfraccion ?? DBNull.Value;
 
-                    //command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+					//command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
+							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
-                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
-                            model.NombreGarantia = model.Garantia.garantia;
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
+							model.NombreGarantia = model.Garantia.garantia;
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
-            return modelList;
-        }
+			return modelList;
+		}
 
-        public List<InfraccionesModel> GetAllInfraccionesByReciboPago(string ReciboPago)
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT DISTINCT inf.idInfraccion
+		public List<InfraccionesModel> GetAllInfraccionesByReciboPago(string ReciboPago)
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT DISTINCT inf.idInfraccion
                                     ,inf.idOficial
                                     ,inf.idDependencia
                                     ,inf.idDelegacion
@@ -852,87 +852,87 @@ namespace GuanajuatoAdminUsuarios.Services
                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico ";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@ReciboPago", SqlDbType.VarChar)).Value = (object)ReciboPago ?? DBNull.Value;
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@ReciboPago", SqlDbType.VarChar)).Value = (object)ReciboPago ?? DBNull.Value;
 
-                    //command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+					//command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
+							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
-                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
-                            model.NombreGarantia = model.Garantia.garantia;
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
+							model.NombreGarantia = model.Garantia.garantia;
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
-            return modelList;
-        }
+			return modelList;
+		}
 
 
 
-        public InfraccionesModel GetInfraccionById(int IdInfraccion)
-        {
-            InfraccionesModel model = new InfraccionesModel();
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                try
-                {
-                    connection.Open();
-                    const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+		public InfraccionesModel GetInfraccionById(int IdInfraccion)
+		{
+			InfraccionesModel model = new InfraccionesModel();
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+					connection.Open();
+					const string SqlTransact =
+											@"SELECT inf.idInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -995,93 +995,93 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
                                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
                                                     WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion";
-                    SqlCommand command = new SqlCommand(SqlTransact, connection);
-                    command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.municipio = reader["municipio"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-                            model.PersonaInfraccion = GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
-                            model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
-                            model.umas = GetUmas();
+					SqlCommand command = new SqlCommand(SqlTransact, connection);
+					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idOficinaTransporte"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.municipio = reader["municipio"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+							model.PersonaInfraccion = GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
+							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
+							model.umas = GetUmas();
 
 
-                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
-                            {
-                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
-                            }
-                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
-                            model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
-                            model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
+							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+							{
+								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+							}
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombrePropietario = model.Vehiculo.Persona.nombreCompleto;
 
-                            if (model.Vehiculo.Persona.fechaNacimiento.HasValue)
-                            {
-                                model.fechaNacimiento = model.Vehiculo.Persona.fechaNacimiento.Value;
-                            }
-                            else
-                            {
-                                model.fechaNacimiento = DateTime.MinValue;
-                            }
+							if (model.Vehiculo.Persona.fechaNacimiento.HasValue)
+							{
+								model.fechaNacimiento = model.Vehiculo.Persona.fechaNacimiento.Value;
+							}
+							else
+							{
+								model.fechaNacimiento = DateTime.MinValue;
+							}
 
 
-                            model.NombreGarantia = model.Garantia.garantia;
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            return model;
-        }
+							model.NombreGarantia = model.Garantia.garantia;
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
 
-        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion)
-        {
-            InfraccionesReportModel model = new InfraccionesReportModel();
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                try
-                {
-                    connection.Open();
-                    const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return model;
+		}
+
+		public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion)
+		{
+			InfraccionesReportModel model = new InfraccionesReportModel();
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+					connection.Open();
+					const string SqlTransact =
+											@"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
@@ -1153,83 +1153,83 @@ namespace GuanajuatoAdminUsuarios.Services
                                             WHERE inf.estatus = 1 
                                             and inf.idInfraccion=@IdInfraccion";
 
-                    SqlCommand command = new SqlCommand(SqlTransact, connection);
-                    command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.folioInfraccion = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.fechaVencimiento = reader["fechaVencimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaVencimiento"].ToString());
-                            model.estatusInfraccion = reader["estatusInfraccion"] == System.DBNull.Value ? string.Empty : reader["estatusInfraccion"].ToString();
-                            model.nombreOficial = reader["nombreOficial"] == System.DBNull.Value ? string.Empty : reader["nombreOficial"].ToString();
-                            model.municipio = reader["municipio"] == System.DBNull.Value ? string.Empty : reader["municipio"].ToString();
-                            model.carretera = reader["carretera"] == System.DBNull.Value ? string.Empty : reader["carretera"].ToString();
-                            model.tramo = reader["tramo"] == System.DBNull.Value ? string.Empty : reader["tramo"].ToString();
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
-                            model.domicilioConductor = reader["domicilioConductor"] == System.DBNull.Value ? string.Empty : reader["domicilioConductor"].ToString();
-                            model.fechaNacimientoConductor = reader["fechaNacimientoConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimientoConductor"].ToString());
-                            model.edadConductor = reader["edadConductor"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["edadConductor"].ToString());
-                            model.generoConductor = reader["generoConductor"] == System.DBNull.Value ? string.Empty : reader["generoConductor"].ToString();
-                            model.telefonoConductor = reader["telefonoConductor"] == System.DBNull.Value ? string.Empty : reader["telefonoConductor"].ToString();
-                            model.numLicenciaConductor = reader["numLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["numLicenciaConductor"].ToString();
-                            model.tipoLicenciaConductor = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
-                            model.vencimientoLicConductor = reader["vencimientoLicConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vencimientoLicConductor"].ToString());
-                            model.placas = reader["placas"] == System.DBNull.Value ? string.Empty : reader["placas"].ToString();
-                            model.tipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : reader["tipoVehiculo"].ToString();
-                            model.marcaVehiculo = reader["marcaVehiculo"] == System.DBNull.Value ? string.Empty : reader["marcaVehiculo"].ToString();
-                            model.nombreSubmarca = reader["nombreSubmarca"] == System.DBNull.Value ? string.Empty : reader["nombreSubmarca"].ToString();
-                            model.modelo = reader["modelo"] == System.DBNull.Value ? string.Empty : reader["modelo"].ToString();
-                            model.color = reader["color"] == System.DBNull.Value ? string.Empty : reader["color"].ToString();
-                            model.nombrePropietario = reader["nombrePropietario"] == System.DBNull.Value ? string.Empty : reader["nombrePropietario"].ToString();
-                            model.domicilioPropietario = reader["domicilioPropietario"] == System.DBNull.Value ? string.Empty : reader["domicilioPropietario"].ToString();
-                            model.serie = reader["serie"] == System.DBNull.Value ? string.Empty : reader["serie"].ToString();
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"] == System.DBNull.Value ? string.Empty : reader["NumTarjetaCirculacion"].ToString();
-                            model.nombreEntidad = reader["nombreEntidad"] == System.DBNull.Value ? string.Empty : reader["nombreEntidad"].ToString();
-                            model.tipoServicio = reader["tipoServicio"] == System.DBNull.Value ? string.Empty : reader["tipoServicio"].ToString();
-                            model.numeroEconomico = reader["numeroEconomico"] == System.DBNull.Value ? string.Empty : reader["numeroEconomico"].ToString();
-                            model.tieneCortesia = reader["tieneCortesia"] == System.DBNull.Value ? default(bool) : Convert.ToBoolean(Convert.ToByte(reader["tieneCortesia"].ToString()));
-                            model.montoCalificacion = reader["montoCalificacion"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoCalificacion"].ToString());
-                            model.montoPagado = reader["montoPagado"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoPagado"].ToString());
-                            model.reciboPago = reader["reciboPago"] == System.DBNull.Value ? string.Empty : reader["reciboPago"].ToString();
-                            model.oficioCondonacion = reader["oficioCondonacion"] == System.DBNull.Value ? string.Empty : reader["oficioCondonacion"].ToString();
-                            model.fechaPago = reader["fechaPago"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaPago"].ToString());
-                            model.lugarPago = reader["lugarPago"] == System.DBNull.Value ? string.Empty : reader["lugarPago"].ToString();
-                            model.concepto = reader["concepto"] == System.DBNull.Value ? string.Empty : reader["concepto"].ToString();
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGarantia"].ToString());
+					SqlCommand command = new SqlCommand(SqlTransact, connection);
+					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.folioInfraccion = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.fechaVencimiento = reader["fechaVencimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaVencimiento"].ToString());
+							model.estatusInfraccion = reader["estatusInfraccion"] == System.DBNull.Value ? string.Empty : reader["estatusInfraccion"].ToString();
+							model.nombreOficial = reader["nombreOficial"] == System.DBNull.Value ? string.Empty : reader["nombreOficial"].ToString();
+							model.municipio = reader["municipio"] == System.DBNull.Value ? string.Empty : reader["municipio"].ToString();
+							model.carretera = reader["carretera"] == System.DBNull.Value ? string.Empty : reader["carretera"].ToString();
+							model.tramo = reader["tramo"] == System.DBNull.Value ? string.Empty : reader["tramo"].ToString();
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
+							model.domicilioConductor = reader["domicilioConductor"] == System.DBNull.Value ? string.Empty : reader["domicilioConductor"].ToString();
+							model.fechaNacimientoConductor = reader["fechaNacimientoConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimientoConductor"].ToString());
+							model.edadConductor = reader["edadConductor"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["edadConductor"].ToString());
+							model.generoConductor = reader["generoConductor"] == System.DBNull.Value ? string.Empty : reader["generoConductor"].ToString();
+							model.telefonoConductor = reader["telefonoConductor"] == System.DBNull.Value ? string.Empty : reader["telefonoConductor"].ToString();
+							model.numLicenciaConductor = reader["numLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["numLicenciaConductor"].ToString();
+							model.tipoLicenciaConductor = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
+							model.vencimientoLicConductor = reader["vencimientoLicConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vencimientoLicConductor"].ToString());
+							model.placas = reader["placas"] == System.DBNull.Value ? string.Empty : reader["placas"].ToString();
+							model.tipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : reader["tipoVehiculo"].ToString();
+							model.marcaVehiculo = reader["marcaVehiculo"] == System.DBNull.Value ? string.Empty : reader["marcaVehiculo"].ToString();
+							model.nombreSubmarca = reader["nombreSubmarca"] == System.DBNull.Value ? string.Empty : reader["nombreSubmarca"].ToString();
+							model.modelo = reader["modelo"] == System.DBNull.Value ? string.Empty : reader["modelo"].ToString();
+							model.color = reader["color"] == System.DBNull.Value ? string.Empty : reader["color"].ToString();
+							model.nombrePropietario = reader["nombrePropietario"] == System.DBNull.Value ? string.Empty : reader["nombrePropietario"].ToString();
+							model.domicilioPropietario = reader["domicilioPropietario"] == System.DBNull.Value ? string.Empty : reader["domicilioPropietario"].ToString();
+							model.serie = reader["serie"] == System.DBNull.Value ? string.Empty : reader["serie"].ToString();
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"] == System.DBNull.Value ? string.Empty : reader["NumTarjetaCirculacion"].ToString();
+							model.nombreEntidad = reader["nombreEntidad"] == System.DBNull.Value ? string.Empty : reader["nombreEntidad"].ToString();
+							model.tipoServicio = reader["tipoServicio"] == System.DBNull.Value ? string.Empty : reader["tipoServicio"].ToString();
+							model.numeroEconomico = reader["numeroEconomico"] == System.DBNull.Value ? string.Empty : reader["numeroEconomico"].ToString();
+							model.tieneCortesia = reader["tieneCortesia"] == System.DBNull.Value ? default(bool) : Convert.ToBoolean(Convert.ToByte(reader["tieneCortesia"].ToString()));
+							model.montoCalificacion = reader["montoCalificacion"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoCalificacion"].ToString());
+							model.montoPagado = reader["montoPagado"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoPagado"].ToString());
+							model.reciboPago = reader["reciboPago"] == System.DBNull.Value ? string.Empty : reader["reciboPago"].ToString();
+							model.oficioCondonacion = reader["oficioCondonacion"] == System.DBNull.Value ? string.Empty : reader["oficioCondonacion"].ToString();
+							model.fechaPago = reader["fechaPago"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaPago"].ToString());
+							model.lugarPago = reader["lugarPago"] == System.DBNull.Value ? string.Empty : reader["lugarPago"].ToString();
+							model.concepto = reader["concepto"] == System.DBNull.Value ? string.Empty : reader["concepto"].ToString();
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGarantia"].ToString());
 
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.umas = GetUmas();
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.umas = GetUmas();
 
-                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
-                            {
-                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
-                                model.concepto = model.MotivosInfraccion.FirstOrDefault().Concepto;
-                            }                                                        
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            return model;
-        }
+							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+							{
+								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+								model.concepto = model.MotivosInfraccion.FirstOrDefault().Concepto;
+							}
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return model;
+		}
 
-        public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion)
-        {
-            List<MotivosInfraccionVistaModel> modelList = new List<MotivosInfraccionVistaModel>();
-            string strQuery = @"SELECT
+		public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion)
+		{
+			List<MotivosInfraccionVistaModel> modelList = new List<MotivosInfraccionVistaModel>();
+			string strQuery = @"SELECT
                                 m.idMotivoInfraccion
                                 ,ci.nombre
                                 ,ci.fundamento
@@ -1258,56 +1258,56 @@ namespace GuanajuatoAdminUsuarios.Services
                                 AND cci.estatus = 1
                                 WHERE m.estatus = 1
                                 AND idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            MotivosInfraccionVistaModel model = new MotivosInfraccionVistaModel();
-                            model.idMotivoInfraccion = reader["idMotivoInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idMotivoInfraccion"].ToString());
-                            model.Nombre = reader["nombre"].ToString();
-                            model.Fundamento = reader["fundamento"].ToString();
-                            model.CalificacionMinima = reader["calificacionMinima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMinima"].ToString());
-                            model.CalificacionMaxima = reader["calificacionMaxima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMaxima"].ToString());
-                            model.calificacion = reader["calificacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["calificacion"].ToString());
-                            model.idCatMotivoInfraccion = reader["idCatMotivosInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivosInfraccion"].ToString());
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.IdSubConcepto = reader["IdSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdSubConcepto"].ToString());
-                            model.IdConcepto = reader["idConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idConcepto"].ToString());
-                            model.Motivo = reader["motivo"].ToString();
-                            model.SubConcepto = reader["subConcepto"].ToString();
-                            //model.concepto = reader["concepto"].ToString();
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							MotivosInfraccionVistaModel model = new MotivosInfraccionVistaModel();
+							model.idMotivoInfraccion = reader["idMotivoInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idMotivoInfraccion"].ToString());
+							model.Nombre = reader["nombre"].ToString();
+							model.Fundamento = reader["fundamento"].ToString();
+							model.CalificacionMinima = reader["calificacionMinima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMinima"].ToString());
+							model.CalificacionMaxima = reader["calificacionMaxima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMaxima"].ToString());
+							model.calificacion = reader["calificacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["calificacion"].ToString());
+							model.idCatMotivoInfraccion = reader["idCatMotivosInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivosInfraccion"].ToString());
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.IdSubConcepto = reader["IdSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdSubConcepto"].ToString());
+							model.IdConcepto = reader["idConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idConcepto"].ToString());
+							model.Motivo = reader["motivo"].ToString();
+							model.SubConcepto = reader["subConcepto"].ToString();
+							//model.concepto = reader["concepto"].ToString();
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
-            return modelList;
+			return modelList;
 
-        }
+		}
 
-        public GarantiaInfraccionModel GetGarantiaById(int idGarantia)
-        {
-            List<GarantiaInfraccionModel> modelList = new List<GarantiaInfraccionModel>();
-            string strQuery = @"SELECT 
+		public GarantiaInfraccionModel GetGarantiaById(int idGarantia)
+		{
+			List<GarantiaInfraccionModel> modelList = new List<GarantiaInfraccionModel>();
+			string strQuery = @"SELECT 
                                  g.idGarantia
                                 ,g.idCatGarantia
                                 ,g.idTipoPlaca
@@ -1333,50 +1333,50 @@ namespace GuanajuatoAdminUsuarios.Services
                                 AND ctl.estatus = 1
                                 WHERE g.idGarantia = @idGarantia";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idGarantia", SqlDbType.Int)).Value = (object)idGarantia ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            GarantiaInfraccionModel model = new GarantiaInfraccionModel();
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idCatGarantia = reader["idCatGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCatGarantia"].ToString());
-                            model.idTipoPlaca = reader["idTipoPlaca"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoPlaca"].ToString());
-                            model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
-                            model.numPlaca = reader["numPlaca"].ToString();
-                            model.numLicencia = reader["numPlaca"].ToString();
-                            model.vehiculoDocumento = reader["vehiculoDocumento"].ToString();
-                            model.garantia = reader["garantia"].ToString();
-                            model.tipoPlaca = reader["tipoPlaca"].ToString();
-                            model.tipoLicencia = reader["tipoLicencia"].ToString();
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return modelList.FirstOrDefault();
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idGarantia", SqlDbType.Int)).Value = (object)idGarantia ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							GarantiaInfraccionModel model = new GarantiaInfraccionModel();
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idCatGarantia = reader["idCatGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCatGarantia"].ToString());
+							model.idTipoPlaca = reader["idTipoPlaca"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoPlaca"].ToString());
+							model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+							model.numPlaca = reader["numPlaca"].ToString();
+							model.numLicencia = reader["numPlaca"].ToString();
+							model.vehiculoDocumento = reader["vehiculoDocumento"].ToString();
+							model.garantia = reader["garantia"].ToString();
+							model.tipoPlaca = reader["tipoPlaca"].ToString();
+							model.tipoLicencia = reader["tipoLicencia"].ToString();
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return modelList.FirstOrDefault();
+		}
 
-        public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion)
-        {
-            List<PersonaInfraccionModel> modelList = new List<PersonaInfraccionModel>();
-            string strQuery = @"SELECT
+		public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion)
+		{
+			List<PersonaInfraccionModel> modelList = new List<PersonaInfraccionModel>();
+			string strQuery = @"SELECT
                                  pInf.idPersonaInfraccion
                                 ,pInf.numeroLicencia
                                 ,pInf.CURP
@@ -1406,101 +1406,101 @@ namespace GuanajuatoAdminUsuarios.Services
                                 AND pInf.idPersonaInfraccion = @idPersonaInfraccion";
 
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idPersonaInfraccion", SqlDbType.Int)).Value = (object)idPersonaInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            PersonaInfraccionModel model = new PersonaInfraccionModel();
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.idPersona = reader["idPersonaDireccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaDireccion"].ToString());
-                            model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
-                            model.numeroLicencia = reader["numeroLicencia"].ToString();
-                            model.CURP = reader["CURP"].ToString();
-                            model.RFC = reader["RFC"].ToString();
-                            model.nombre = reader["nombre"].ToString();
-                            model.apellidoPaterno = reader["apellidoPaterno"].ToString();
-                            model.apellidoMaterno = reader["apellidoMaterno"].ToString();
-                            model.tipoLicencia = reader["tipoLicencia"].ToString();
-                            model.tipoPersona = reader["tipoPersona"].ToString();
-                            model.genero = reader["genero"].ToString();
-                            model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
-                            model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
-                            model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
-                            model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
-                            model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
-                            model.PersonaDireccion = _personasService.GetPersonaDireccionByIdPersona((int)model.idPersona);
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idPersonaInfraccion", SqlDbType.Int)).Value = (object)idPersonaInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							PersonaInfraccionModel model = new PersonaInfraccionModel();
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.idPersona = reader["idPersonaDireccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaDireccion"].ToString());
+							model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+							model.numeroLicencia = reader["numeroLicencia"].ToString();
+							model.CURP = reader["CURP"].ToString();
+							model.RFC = reader["RFC"].ToString();
+							model.nombre = reader["nombre"].ToString();
+							model.apellidoPaterno = reader["apellidoPaterno"].ToString();
+							model.apellidoMaterno = reader["apellidoMaterno"].ToString();
+							model.tipoLicencia = reader["tipoLicencia"].ToString();
+							model.tipoPersona = reader["tipoPersona"].ToString();
+							model.genero = reader["genero"].ToString();
+							model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+							model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+							model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+							model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
+							model.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
+							model.PersonaDireccion = _personasService.GetPersonaDireccionByIdPersona((int)model.idPersona);
 
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
-            var t = modelList.FirstOrDefault();
+			var t = modelList.FirstOrDefault();
 
-            var test = new PersonaInfraccionModel();
+			var test = new PersonaInfraccionModel();
 
-            return t ?? test;
-        }
+			return t ?? test;
+		}
 
-        /// <summary>
-        /// Captura de persona con registro especifico para infraccion, se crea al final del proceso de creacion parte 1
-        /// </summary>
-        /// <param name="idPersona"></param>
-        /// <returns></returns>
-        public int CrearPersonaInfraccion(int idPersona)
-        {
-            int result = 0;
-            string strQuery = @"INSERT INTO personasInfracciones(numeroLicencia, CURP, RFC, nombre,apellidoPaterno, apellidoMaterno, idCatTipoPersona, fechaActualizacion, actualizadoPor, estatus)
+		/// <summary>
+		/// Captura de persona con registro especifico para infraccion, se crea al final del proceso de creacion parte 1
+		/// </summary>
+		/// <param name="idPersona"></param>
+		/// <returns></returns>
+		public int CrearPersonaInfraccion(int idPersona)
+		{
+			int result = 0;
+			string strQuery = @"INSERT INTO personasInfracciones(numeroLicencia, CURP, RFC, nombre,apellidoPaterno, apellidoMaterno, idCatTipoPersona, fechaActualizacion, actualizadoPor, estatus)
                                 SELECT numeroLicencia, CURP, RFC, nombre,apellidoPaterno, apellidoMaterno, idCatTipoPersona, @fechaActualizacion, @actualizadoPor, @estatus
                                 FROM personas
                                 WHERE idPersona = @idPersona;SELECT SCOPE_IDENTITY()";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)idPersona;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("estatus", SqlDbType.NVarChar)).Value = (object)1;
-                    result = Convert.ToInt32(command.ExecuteScalar());
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)idPersona;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.NVarChar)).Value = (object)1;
+					result = Convert.ToInt32(command.ExecuteScalar());
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-        public int CrearGarantiaInfraccion(GarantiaInfraccionModel model)
-        {
-            int result = 0;
-            string strQuery = @"INSERT INTO garantiasInfraccion VALUES(@idCatGarantia
+		public int CrearGarantiaInfraccion(GarantiaInfraccionModel model)
+		{
+			int result = 0;
+			string strQuery = @"INSERT INTO garantiasInfraccion VALUES(@idCatGarantia
                                                                       ,@idTipoPlaca
                                                                       ,@idTipoLicencia
                                                                       ,@numPlaca
@@ -1509,41 +1509,41 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                       ,@fechaActualizacion
                                                                       ,@actualizadoPor
                                                                       ,@estatus);SELECT SCOPE_IDENTITY()";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
-                    int? idTipoPlaca = (model.idTipoPlaca != null) ? model.idTipoPlaca : 0;
-                    command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = idTipoPlaca;
-                    int? idTipoLicencia = (model.idTipoLicencia != null) ? model.idTipoLicencia : 0;
-                    command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = idTipoLicencia;
-                    command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
-                    result = Convert.ToInt32(command.ExecuteScalar());
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
+					int? idTipoPlaca = (model.idTipoPlaca != null) ? model.idTipoPlaca : 0;
+					command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = idTipoPlaca;
+					int? idTipoLicencia = (model.idTipoLicencia != null) ? model.idTipoLicencia : 0;
+					command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = idTipoLicencia;
+					command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
+					result = Convert.ToInt32(command.ExecuteScalar());
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-        public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE garantiasInfraccion SET  idCatGarantia = @idCatGarantia
+		public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE garantiasInfraccion SET  idCatGarantia = @idCatGarantia
                                                                ,idTipoPlaca = @idTipoPlaca
                                                                ,idTipoLicencia = @idTipoLicencia
                                                                ,numPlaca = @numPlaca
@@ -1553,38 +1553,38 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                ,actualizadoPor = @actualizadoPor
                                                                WHERE idGarantia = @idGarantia";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = (object)model.idTipoPlaca ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    result = command.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = (object)model.idTipoPlaca ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-        public int CrearMotivoInfraccion(MotivoInfraccionModel model)
-        {
-            int result = 0;
-            string strQuery = @"INSERT INTO motivosInfraccion
+		public int CrearMotivoInfraccion(MotivoInfraccionModel model)
+		{
+			int result = 0;
+			string strQuery = @"INSERT INTO motivosInfraccion
                                       (calificacionMinima
                                       ,calificacionMaxima
                                       ,calificacion
@@ -1605,105 +1605,105 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,@idInfraccion
                                       ,@idConcepto
                                       ,@idSubConcepto);SELECT SCOPE_IDENTITY()";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("calificacionMinima", SqlDbType.Int)).Value = (object)model.calificacionMinima ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("calificacionMaxima", SqlDbType.Int)).Value = (object)model.calificacionMaxima ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("calificacion", SqlDbType.Int)).Value = (object)model.calificacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("idCatMotivosInfraccion", SqlDbType.Int)).Value = (object)model.idCatMotivoInfraccion;
-                    command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
-                    command.Parameters.Add(new SqlParameter("idConcepto", SqlDbType.Int)).Value = (object)model.idConcepto;
-                    command.Parameters.Add(new SqlParameter("idSubConcepto", SqlDbType.Int)).Value = (object)model.IdSubConcepto;
-                    result = Convert.ToInt32(command.ExecuteScalar());
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("calificacionMinima", SqlDbType.Int)).Value = (object)model.calificacionMinima ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("calificacionMaxima", SqlDbType.Int)).Value = (object)model.calificacionMaxima ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("calificacion", SqlDbType.Int)).Value = (object)model.calificacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("idCatMotivosInfraccion", SqlDbType.Int)).Value = (object)model.idCatMotivoInfraccion;
+					command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
+					command.Parameters.Add(new SqlParameter("idConcepto", SqlDbType.Int)).Value = (object)model.idConcepto;
+					command.Parameters.Add(new SqlParameter("idSubConcepto", SqlDbType.Int)).Value = (object)model.IdSubConcepto;
+					result = Convert.ToInt32(command.ExecuteScalar());
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-        public int EliminarMotivoInfraccion(int idMotivoInfraccion)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE motivosInfraccion
+		public int EliminarMotivoInfraccion(int idMotivoInfraccion)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE motivosInfraccion
                                 SET fechaActualizacion = @fechaActualizacion
                                     actualizadoPor = @actualizadoPor
                                     estatus = @estatus)
                                 WHERE idMotivoInfraccion = @idMotivoInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idMotivoInfraccion", SqlDbType.Int)).Value = (object)idMotivoInfraccion;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)0;
-                    result = command.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idMotivoInfraccion", SqlDbType.Int)).Value = (object)idMotivoInfraccion;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)0;
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
 
-        public bool CancelTramite(string id)
-        {
-            var result = false;
+		public bool CancelTramite(string id)
+		{
+			var result = false;
 
-            string queryString = @"update infracciones set estatus=0 where idInfraccion=@id";
+			string queryString = @"update infracciones set estatus=0 where idInfraccion=@id";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(queryString, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)id ?? DBNull.Value;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
-                    result = true;
-                }
-                catch (Exception e)
-                {
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(queryString, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)id ?? DBNull.Value;
+					SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+					result = true;
+				}
+				catch (Exception e)
+				{
 
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-
-
-            return result;
-        }
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
-        public InfraccionesModel GetInfraccion2ById(int idInfraccion)
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT inf.idInfraccion
+			return result;
+		}
+
+
+		public InfraccionesModel GetInfraccion2ById(int idInfraccion)
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT inf.idInfraccion
                                       ,inf.idOficial
                                       ,inf.idDependencia
                                       ,inf.idDelegacion
@@ -1743,94 +1743,94 @@ namespace GuanajuatoAdminUsuarios.Services
                                WHERE inf.estatus = 1
                                AND idInfraccion = @idInfraccion";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.nombreOficial = reader["nombreOficial"].ToString();
-                            model.apellidoPaternoOficial = reader["apellidoPaternoOficial"].ToString();
-                            model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
-                            model.carretera = reader["carretera"].ToString();
-                            model.tramo = reader["tramo"].ToString();
-                            model.municipio = reader["municipio"].ToString();
-                            model.telefono = reader["telefono"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            if (model.Vehiculo != null)
-                            {
-                                model.idPropitario = model.Vehiculo.idPersona;
-                            }
-                            else
-                            {
-                              throw new Exception("Vehiculo es nulo, no se puede obtener datos.");
-                            };
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPropitario);
-                            //model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.umas = GetUmas();
-                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
-                            {
-                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
-                            }
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.nombreOficial = reader["nombreOficial"].ToString();
+							model.apellidoPaternoOficial = reader["apellidoPaternoOficial"].ToString();
+							model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
+							model.carretera = reader["carretera"].ToString();
+							model.tramo = reader["tramo"].ToString();
+							model.municipio = reader["municipio"].ToString();
+							model.telefono = reader["telefono"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							if (model.Vehiculo != null)
+							{
+								model.idPropitario = model.Vehiculo.idPersona;
+							}
+							else
+							{
+								throw new Exception("Vehiculo es nulo, no se puede obtener datos.");
+							};
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPropitario);
+							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.umas = GetUmas();
+							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+							{
+								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+							}
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
 
-            return modelList.FirstOrDefault();
-        }
+			return modelList.FirstOrDefault();
+		}
 
-        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion)
-        {
-            List<NuevaInfraccionModel> modelList = new List<NuevaInfraccionModel>();
-            string strQuery = @"SELECT idInfraccion
+		public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion)
+		{
+			List<NuevaInfraccionModel> modelList = new List<NuevaInfraccionModel>();
+			string strQuery = @"SELECT idInfraccion
                                       ,idOficial
                                       ,idDependencia
                                       ,idDelegacion
@@ -1860,116 +1860,116 @@ namespace GuanajuatoAdminUsuarios.Services
                                FROM infracciones
                                WHERE estatus = 1
                                AND idInfraccion = @idInfraccion"
-            ;
+			;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            NuevaInfraccionModel model = new NuevaInfraccionModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
-                            model.IdVehiculo = (int)(reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString()));
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.IdMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.Placa = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.Kilometro = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.Tarjeta = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.IdPersona);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.IdVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.umas = GetUmas();
-                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
-                            {
-                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
-                            }
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-
-
-
-            return modelList.FirstOrDefault();
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							NuevaInfraccionModel model = new NuevaInfraccionModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+							model.IdVehiculo = (int)(reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString()));
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.IdMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.IdPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.Placa = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.Kilometro = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.Tarjeta = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.IdPersona);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.IdVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.umas = GetUmas();
+							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+							{
+								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+							}
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
-        public decimal GetUmas()
-        {
-            decimal umas = 0M;
-            string strQuery = @"SELECT salario
+
+			return modelList.FirstOrDefault();
+		}
+
+
+		public decimal GetUmas()
+		{
+			decimal umas = 0M;
+			string strQuery = @"SELECT salario
                                FROM catSalariosMinimos
                                WHERE estatus = 1 AND area = 'C'"
-            ;
+			;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            umas = reader["salario"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["salario"].ToString());
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return umas;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							umas = reader["salario"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["salario"].ToString());
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return umas;
+		}
 
-        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina)
-        {
-            List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
-            string strQuery = @"SELECT ci.nombre Motivo, COUNT(m.idMotivoInfraccion) Contador
+		public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina)
+		{
+			List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
+			string strQuery = @"SELECT ci.nombre Motivo, COUNT(m.idMotivoInfraccion) Contador
                                FROM infracciones inf
                                 INNER JOIN motivosInfraccion m
                                 ON m.idInfraccion = inf.idInfraccion
@@ -1987,45 +1987,45 @@ namespace GuanajuatoAdminUsuarios.Services
                                 WHERE m.estatus = 1
                                AND inf.estatus = 1 AND inf.idDelegacion = @idOficina
 							   group by ci.nombre"
-           ;
+		   ;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
-                            model.Contador = reader["Contador"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["Contador"].ToString());
-                            model.Motivo = reader["Motivo"].ToString();
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
+							model.Contador = reader["Contador"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["Contador"].ToString());
+							model.Motivo = reader["Motivo"].ToString();
 
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return modelList;
-        }
-        public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina)
-        {
-            List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
-            string strQuery = @"SELECT numeroMotivos, COUNT(idInfraccion) AS CantidadInfracciones
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return modelList;
+		}
+		public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina)
+		{
+			List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
+			string strQuery = @"SELECT numeroMotivos, COUNT(idInfraccion) AS CantidadInfracciones
                                     FROM (
                                         SELECT mi.idInfraccion, COUNT(mi.idMotivoInfraccion) AS numeroMotivos
                                         FROM infracciones i
@@ -2036,44 +2036,44 @@ namespace GuanajuatoAdminUsuarios.Services
                                     GROUP BY numeroMotivos
                                     HAVING numeroMotivos > 0;";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
-                            model.NumeroMotivos = reader["numeroMotivos"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["numeroMotivos"].ToString());
-                            model.ContadorMotivos = reader["CantidadInfracciones"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["CantidadInfracciones"].ToString());
-                            model.ResultadoMultiplicacion = model.NumeroMotivos * model.ContadorMotivos;
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return modelList;
-        }
-        //TODO: Borrar esta consulta ya no sirve para estadisticas
-        public List<InfraccionesModel> GetAllInfracciones2()
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT inf.idInfraccion
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
+							model.NumeroMotivos = reader["numeroMotivos"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["numeroMotivos"].ToString());
+							model.ContadorMotivos = reader["CantidadInfracciones"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["CantidadInfracciones"].ToString());
+							model.ResultadoMultiplicacion = model.NumeroMotivos * model.ContadorMotivos;
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return modelList;
+		}
+		//TODO: Borrar esta consulta ya no sirve para estadisticas
+		public List<InfraccionesModel> GetAllInfracciones2()
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT inf.idInfraccion
                                       ,inf.idOficial
                                       ,inf.idDependencia
                                       ,inf.idDelegacion
@@ -2105,79 +2105,79 @@ namespace GuanajuatoAdminUsuarios.Services
                                LEFT JOIN catMunicipios mun
                                ON inf.idMunicipio = mun.idMunicipio
                                WHERE inf.estatus = 1"
-            ;
+			;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
-                            model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
-                            model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
-                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
-                            model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
-                            model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
-                            model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.municipio = reader["municipio"].ToString();
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
-                            model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
-                            model.placasVehiculo = reader["placasVehiculo"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-                            model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
-                            model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
-                            model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
-                            model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
-                            model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-                            model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-                            model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-                            model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
-                            model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
-                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-                            model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
-                            model.umas = GetUmas();
-                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
-                            {
-                                model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
-                            }
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+							model.idDependencia = reader["idDependencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDependencia"].ToString());
+							model.idDelegacion = reader["idDelegacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDelegacion"].ToString());
+							model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idVehiculo"].ToString());
+							model.idAplicacion = reader["idAplicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idAplicacion"].ToString());
+							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idGarantia"].ToString());
+							model.idEstatusInfraccion = reader["idEstatusInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEstatusInfraccion"].ToString());
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.municipio = reader["municipio"].ToString();
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersona"].ToString());
+							model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
+							model.placasVehiculo = reader["placasVehiculo"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
+							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
+							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
+							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.umas = GetUmas();
+							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+							{
+								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
+							}
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
 
-            return modelList;
-        }
+			return modelList;
+		}
 
-        public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid()
-        {
-            List<InfoInfraccion> modelList = new List<InfoInfraccion>();
-            string strQuery = @"SELECT DISTINCT inf.folioInfraccion as Folio
+		public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid()
+		{
+			List<InfoInfraccion> modelList = new List<InfoInfraccion>();
+			string strQuery = @"SELECT DISTINCT inf.folioInfraccion as Folio
                         ,inf.folioInfraccion FolioTXT
                         ,'' AS TTOTTE
                         ,estIn.estatusInfraccion AS Estatus
@@ -2251,90 +2251,90 @@ namespace GuanajuatoAdminUsuarios.Services
                         inf.estatus= 1"
 			;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    int numeroSecuencial = 1;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					int numeroSecuencial = 1;
 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfoInfraccion model = new InfoInfraccion();
-                            model.Folio = reader["Folio"] == System.DBNull.Value ? default(string) : reader["Folio"].ToString();
-                            model.FolioTxt = reader["FolioTXT"] == System.DBNull.Value ? default(string) : reader["FolioTXT"].ToString();
-                            model.TTOTTE = reader["TTOTTE"] == System.DBNull.Value ? default(string) : reader["TTOTTE"].ToString();
-                            model.Estatus = reader["Estatus"] == System.DBNull.Value ? default(string) : reader["Estatus"].ToString();
-                            model.TipoCortesia = reader["TipoCortesia"] == System.DBNull.Value ? default(string) : reader["TipoCortesia"].ToString();
-                            model.Delegacion = reader["Delegacion"] == System.DBNull.Value ? default(string) : reader["Delegacion"].ToString();
-                            model.Municipio = reader["Municipio"] == System.DBNull.Value ? default(string) : reader["Municipio"].ToString();
-                            model.FechaInfraccion = reader["FechaInfraccion"] == System.DBNull.Value ? default(string) : reader["FechaInfraccion"].ToString();
-                            model.HoraInfraccion = reader["HoraInfraccion"] == System.DBNull.Value ? default(string) : reader["HoraInfraccion"].ToString();
-                            model.FechaVencimiento = reader["FechaVencimiento"] == System.DBNull.Value ? default(string) : reader["FechaVencimiento"].ToString();
-                            model.Carretera = reader["Carretera"] == System.DBNull.Value ? default(string) : reader["Carretera"].ToString();
-                            model.Tramo = reader["Tramo"] == System.DBNull.Value ? default(string) : reader["Tramo"].ToString();
-                            model.Kilometraje = reader["Kilometraje"] == System.DBNull.Value ? default(string) : reader["Kilometraje"].ToString();
-                            model.NombreConductor = reader["NombreConductor"] == System.DBNull.Value ? default(string) : reader["NombreConductor"].ToString();
-                            model.CURPConductor = reader["CURPConductor"] == System.DBNull.Value ? default(string) : reader["CURPConductor"].ToString();
-                            model.FechadeNacimiento = reader["FechadeNacimientoConductor"] == System.DBNull.Value ? default(string) : reader["FechadeNacimientoConductor"].ToString();
-                            model.DomicilioConductor = reader["DomicilioConductor"] == System.DBNull.Value ? default(string) : reader["DomicilioConductor"].ToString();
-                            model.LicenciaConductor = reader["LicenciaConductor"] == System.DBNull.Value ? default(string) : reader["LicenciaConductor"].ToString();
-                            model.TipoPersFisica = reader["TipoPersFisica"] == System.DBNull.Value ? default(string) : reader["TipoPersFisica"].ToString();
-                            model.TipoPersMoral = reader["TipoPersMoral"] == System.DBNull.Value ? default(string) : reader["TipoPersMoral"].ToString();
-                            model.Propietario = reader["Propietario"] == System.DBNull.Value ? default(string) : reader["Propietario"].ToString();
-                            model.OficialInfraccion = reader["OficialInfraccion"] == System.DBNull.Value ? default(string) : reader["OficialInfraccion"].ToString();
-                            model.CalifSalarios = reader["CalifSalarios"] == System.DBNull.Value ? default(string) : reader["CalifSalarios"].ToString();
-                            model.MontoCalif = reader["MontoCalif"] == System.DBNull.Value ? default(string) : reader["MontoCalif"].ToString();
-                            model.MontoPago = reader["MontoPago"] == System.DBNull.Value ? default(string) : reader["MontoPago"].ToString();
-                            model.ReciboPago = reader["ReciboPago"] == System.DBNull.Value ? default(string) : reader["ReciboPago"].ToString();
-                            model.FechaPago = reader["FechaPago"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
-                            model.Placas = reader["Placas"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
-                            model.SerieVeh = reader["SerieVeh"] == System.DBNull.Value ? default(string) : reader["SerieVeh"].ToString();
-                            model.numeroEconomicoVeh = reader["numeroEconomico"] == System.DBNull.Value ? default(string) : reader["numeroEconomico"].ToString();
-                            model.TarjetadeCirculacion = reader["TarjetadeCirculacion"] == System.DBNull.Value ? default(string) : reader["TarjetadeCirculacion"].ToString();
-                            model.Marca = reader["Marca"] == System.DBNull.Value ? default(string) : reader["Marca"].ToString();
-                            model.Submarca = reader["Submarca"] == System.DBNull.Value ? default(string) : reader["Submarca"].ToString();
-                            model.Modelo = reader["Modelo"] == System.DBNull.Value ? default(string) : reader["Modelo"].ToString();
-                            model.Color = reader["Color"] == System.DBNull.Value ? default(string) : reader["Color"].ToString();
-                            model.EntidaddeReg = reader["EntidaddeReg"] == System.DBNull.Value ? default(string) : reader["EntidaddeReg"].ToString();
-                            model.TipodeVehículo = reader["TipodeVehículo"] == System.DBNull.Value ? default(string) : reader["TipodeVehículo"].ToString();
-                            model.TipodeServicio = reader["TipodeServicio"] == System.DBNull.Value ? default(string) : reader["TipodeServicio"].ToString();
-                            model.SubtipodeServicio = reader["SubtipodeServicio"] == System.DBNull.Value ? default(string) : reader["SubtipodeServicio"].ToString();
-                            model.TipoGarantia = reader["TipoGarantia"] == System.DBNull.Value ? default(string) : reader["TipoGarantia"].ToString();
-                            model.TipoAplicacion = reader["TipoAplicacion"] == System.DBNull.Value ? default(string) : reader["TipoAplicacion"].ToString();
-                            model.Motivo = reader["Motivo"] == System.DBNull.Value ? default(string) : reader["Motivo"].ToString();
-                            model.MotivoDesc = reader["MotivoDesc"] == System.DBNull.Value ? default(string) : reader["MotivoDesc"].ToString();
-                            model.NumeroSecuencial = numeroSecuencial;
-                            modelList.Add(model);
-                            numeroSecuencial++;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfoInfraccion model = new InfoInfraccion();
+							model.Folio = reader["Folio"] == System.DBNull.Value ? default(string) : reader["Folio"].ToString();
+							model.FolioTxt = reader["FolioTXT"] == System.DBNull.Value ? default(string) : reader["FolioTXT"].ToString();
+							model.TTOTTE = reader["TTOTTE"] == System.DBNull.Value ? default(string) : reader["TTOTTE"].ToString();
+							model.Estatus = reader["Estatus"] == System.DBNull.Value ? default(string) : reader["Estatus"].ToString();
+							model.TipoCortesia = reader["TipoCortesia"] == System.DBNull.Value ? default(string) : reader["TipoCortesia"].ToString();
+							model.Delegacion = reader["Delegacion"] == System.DBNull.Value ? default(string) : reader["Delegacion"].ToString();
+							model.Municipio = reader["Municipio"] == System.DBNull.Value ? default(string) : reader["Municipio"].ToString();
+							model.FechaInfraccion = reader["FechaInfraccion"] == System.DBNull.Value ? default(string) : reader["FechaInfraccion"].ToString();
+							model.HoraInfraccion = reader["HoraInfraccion"] == System.DBNull.Value ? default(string) : reader["HoraInfraccion"].ToString();
+							model.FechaVencimiento = reader["FechaVencimiento"] == System.DBNull.Value ? default(string) : reader["FechaVencimiento"].ToString();
+							model.Carretera = reader["Carretera"] == System.DBNull.Value ? default(string) : reader["Carretera"].ToString();
+							model.Tramo = reader["Tramo"] == System.DBNull.Value ? default(string) : reader["Tramo"].ToString();
+							model.Kilometraje = reader["Kilometraje"] == System.DBNull.Value ? default(string) : reader["Kilometraje"].ToString();
+							model.NombreConductor = reader["NombreConductor"] == System.DBNull.Value ? default(string) : reader["NombreConductor"].ToString();
+							model.CURPConductor = reader["CURPConductor"] == System.DBNull.Value ? default(string) : reader["CURPConductor"].ToString();
+							model.FechadeNacimiento = reader["FechadeNacimientoConductor"] == System.DBNull.Value ? default(string) : reader["FechadeNacimientoConductor"].ToString();
+							model.DomicilioConductor = reader["DomicilioConductor"] == System.DBNull.Value ? default(string) : reader["DomicilioConductor"].ToString();
+							model.LicenciaConductor = reader["LicenciaConductor"] == System.DBNull.Value ? default(string) : reader["LicenciaConductor"].ToString();
+							model.TipoPersFisica = reader["TipoPersFisica"] == System.DBNull.Value ? default(string) : reader["TipoPersFisica"].ToString();
+							model.TipoPersMoral = reader["TipoPersMoral"] == System.DBNull.Value ? default(string) : reader["TipoPersMoral"].ToString();
+							model.Propietario = reader["Propietario"] == System.DBNull.Value ? default(string) : reader["Propietario"].ToString();
+							model.OficialInfraccion = reader["OficialInfraccion"] == System.DBNull.Value ? default(string) : reader["OficialInfraccion"].ToString();
+							model.CalifSalarios = reader["CalifSalarios"] == System.DBNull.Value ? default(string) : reader["CalifSalarios"].ToString();
+							model.MontoCalif = reader["MontoCalif"] == System.DBNull.Value ? default(string) : reader["MontoCalif"].ToString();
+							model.MontoPago = reader["MontoPago"] == System.DBNull.Value ? default(string) : reader["MontoPago"].ToString();
+							model.ReciboPago = reader["ReciboPago"] == System.DBNull.Value ? default(string) : reader["ReciboPago"].ToString();
+							model.FechaPago = reader["FechaPago"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
+							model.Placas = reader["Placas"] == System.DBNull.Value ? default(string) : reader["FechaPago"].ToString();
+							model.SerieVeh = reader["SerieVeh"] == System.DBNull.Value ? default(string) : reader["SerieVeh"].ToString();
+							model.numeroEconomicoVeh = reader["numeroEconomico"] == System.DBNull.Value ? default(string) : reader["numeroEconomico"].ToString();
+							model.TarjetadeCirculacion = reader["TarjetadeCirculacion"] == System.DBNull.Value ? default(string) : reader["TarjetadeCirculacion"].ToString();
+							model.Marca = reader["Marca"] == System.DBNull.Value ? default(string) : reader["Marca"].ToString();
+							model.Submarca = reader["Submarca"] == System.DBNull.Value ? default(string) : reader["Submarca"].ToString();
+							model.Modelo = reader["Modelo"] == System.DBNull.Value ? default(string) : reader["Modelo"].ToString();
+							model.Color = reader["Color"] == System.DBNull.Value ? default(string) : reader["Color"].ToString();
+							model.EntidaddeReg = reader["EntidaddeReg"] == System.DBNull.Value ? default(string) : reader["EntidaddeReg"].ToString();
+							model.TipodeVehículo = reader["TipodeVehículo"] == System.DBNull.Value ? default(string) : reader["TipodeVehículo"].ToString();
+							model.TipodeServicio = reader["TipodeServicio"] == System.DBNull.Value ? default(string) : reader["TipodeServicio"].ToString();
+							model.SubtipodeServicio = reader["SubtipodeServicio"] == System.DBNull.Value ? default(string) : reader["SubtipodeServicio"].ToString();
+							model.TipoGarantia = reader["TipoGarantia"] == System.DBNull.Value ? default(string) : reader["TipoGarantia"].ToString();
+							model.TipoAplicacion = reader["TipoAplicacion"] == System.DBNull.Value ? default(string) : reader["TipoAplicacion"].ToString();
+							model.Motivo = reader["Motivo"] == System.DBNull.Value ? default(string) : reader["Motivo"].ToString();
+							model.MotivoDesc = reader["MotivoDesc"] == System.DBNull.Value ? default(string) : reader["MotivoDesc"].ToString();
+							model.NumeroSecuencial = numeroSecuencial;
+							modelList.Add(model);
+							numeroSecuencial++;
 
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
 
-            return modelList;
-        }
+			return modelList;
+		}
 
-        public List<InfraccionesModel> GetAllAccidentes2()
-        {
-            List<InfraccionesModel> modelList = new List<InfraccionesModel>();
-            string strQuery = @"SELECT inf.idAccidente
+		public List<InfraccionesModel> GetAllAccidentes2()
+		{
+			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
+			string strQuery = @"SELECT inf.idAccidente
                                       ,inf.idMunicipio
                                       ,mun.municipio
                                       ,inf.idCarretera
@@ -2348,53 +2348,52 @@ namespace GuanajuatoAdminUsuarios.Services
                                LEFT JOIN catMunicipios mun
                                ON inf.idMunicipio = mun.idMunicipio
                                WHERE inf.estatus = 1"
-            ;
+			;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesModel model = new InfraccionesModel();
-                            model.idInfraccion = reader["idAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAccidente"].ToString());
-                            model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
-                            model.municipio = reader["municipio"].ToString();
-                            model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
-                            model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
-                            model.kmCarretera = reader["kilometro"] == System.DBNull.Value ? string.Empty : reader["kilometro"].ToString();
-                            model.fechaInfraccion = reader["fecha"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fecha"].ToString());
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-
-
-
-            return modelList;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesModel model = new InfraccionesModel();
+							model.idInfraccion = reader["idAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAccidente"].ToString());
+							model.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+							model.municipio = reader["municipio"].ToString();
+							model.idCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+							model.idTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+							model.kmCarretera = reader["kilometro"] == System.DBNull.Value ? string.Empty : reader["kilometro"].ToString();
+							model.fechaInfraccion = reader["fecha"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fecha"].ToString());
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
 
-        public int CrearInfraccion(InfraccionesModel model)
-        {
-            int result = 0;
 
-                string strQuery = @"INSERT INTO infracciones
+			return modelList;
+		}
+
+		public int CrearInfraccion(InfraccionesModel model)
+		{
+			int result = 0;
+
+				string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
                                             ,idOficial
@@ -2437,66 +2436,68 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
                                             ,@estatus);SELECT SCOPE_IDENTITY()";
-                using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                {
-                    try
-                    {
-                        connection.Open();
-                        SqlCommand command = new SqlCommand(strQuery, connection);
-                        command.CommandType = CommandType.Text;
-                        command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
-                        command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
-                        command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
-                        command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
-                        command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio;
+				using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				{
+					try
+					{
+						connection.Open();
+						SqlCommand command = new SqlCommand(strQuery, connection);
+						command.CommandType = CommandType.Text;
+						command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
+						command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
+						command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
+						command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
+						command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio;
 
-                        command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera;
-                        command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo;
-                        command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera;
-                        command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle == null ? "" : (object)model.lugarCalle;
-                        command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero == null ? "" : (object)model.lugarNumero;
-                        command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia == null ? "" : (object)model.lugarColonia;
-                        command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle == null ? "" : (object)model.lugarEntreCalle;
+						command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera;
+						command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo;
+						command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera;
+						command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle == null ? "" : (object)model.lugarCalle;
+						command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero == null ? "" : (object)model.lugarNumero;
+						command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia == null ? "" : (object)model.lugarColonia;
+						command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle == null ? "" : (object)model.lugarEntreCalle;
 
-                        command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo;
-                        command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona;
-                        command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion;
-                        command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo.Trim(new Char[] { ' ', '-' });
-                        command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value =
-                            !string.IsNullOrEmpty(model.NumTarjetaCirculacion) ? (object)model.NumTarjetaCirculacion : DBNull.Value;
-                        command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion;
+						command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo;
+						command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona;
+						command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion;
+						command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo.Trim(new Char[] { ' ', '-' });
+						command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value =
+							!string.IsNullOrEmpty(model.NumTarjetaCirculacion) ? (object)model.NumTarjetaCirculacion : DBNull.Value;
+						command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion;
 
-                        //command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
-                        //command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
-                        //command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion;
-                        //command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia;
-                        //command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones;
-                        //command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Bit)).Value = (object)model.infraccionCortesia;
+						//command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
+						//command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
+						//command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion;
+						//command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia;
+						//command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones;
+						//command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Bit)).Value = (object)model.infraccionCortesia;
 
-                        command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                        command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                        command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
+						command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+						command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+						command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
 
 
-                        result = Convert.ToInt32(command.ExecuteScalar());
-                    }
-                    catch (SqlException ex)
-                    {
-                        return result;
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
-                
-            }
-            return result;
-        }
+						result = Convert.ToInt32(command.ExecuteScalar());
+					}
+					catch (SqlException ex)
+					{
+						return result;
+					}
+					finally
+					{
+						connection.Close();
+					}
 
-        public int ModificarInfraccion(InfraccionesModel model)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE infracciones
+				}
+			
+			return result;
+		}
+
+
+		public int ModificarInfraccion(InfraccionesModel model)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE infracciones
                                        SET idOficial = @idOficial
                                           ,idDependencia = @idDependencia
                                           ,idDelegacion = @idDelegacion
@@ -2523,127 +2524,127 @@ namespace GuanajuatoAdminUsuarios.Services
                                           ,fechaActualizacion = @fechaActualizacion
                                           ,actualizadoPor = @actualizadoPor
                                           WHERE idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
-                    command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
-                    model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.Capturada;
-                    command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Int)).Value = (object)model.cortesiaInt ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.NumTarjetaCirculacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
+					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idAplicacion", SqlDbType.Int)).Value = (object)model.idAplicacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = (object)model.idGarantia ?? DBNull.Value;
+					model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.Capturada;
+					command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("lugarCalle", SqlDbType.NVarChar)).Value = (object)model.lugarCalle ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("lugarNumero", SqlDbType.NVarChar)).Value = (object)model.lugarNumero ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Int)).Value = (object)model.cortesiaInt ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.NumTarjetaCirculacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 
 
-                    result = command.ExecuteNonQuery();
-                    if (result > 0) // Si la actualización tuvo éxito
-                    {
-                        return model.idInfraccion; // Retornar el idInfraccion
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    return result;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+					result = command.ExecuteNonQuery();
+					if (result > 0) // Si la actualización tuvo éxito
+					{
+						return model.idInfraccion; // Retornar el idInfraccion
+					}
+				}
+				catch (SqlException ex)
+				{
+					return result;
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
 
-        public int ModificarInfraccionPorCortesia(InfraccionesModel model)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE infracciones
+		public int ModificarInfraccionPorCortesia(InfraccionesModel model)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE infracciones
                                        SET                                          
                                            infraccionCortesia = @infraccionCortesia
                                           ,fechaActualizacion = @fechaActualizacion
                                           WHERE idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
-                    command.Parameters.Add(new SqlParameter("@infraccionCortesia", SqlDbType.Int)).Value = 1;
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    //command.Parameters.Add(new SqlParameter("@observacionesCortesia", SqlDbType.NVarChar)).Value = (object)model.observacionesCortesia ?? DBNull.Value;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
+					command.Parameters.Add(new SqlParameter("@infraccionCortesia", SqlDbType.Int)).Value = 1;
+					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					//command.Parameters.Add(new SqlParameter("@observacionesCortesia", SqlDbType.NVarChar)).Value = (object)model.observacionesCortesia ?? DBNull.Value;
 
-                    result = command.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                    return result;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
-        public int InsertarImagenEnInfraccion(byte[] imageData, int idInfraccion)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE infracciones
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					return result;
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
+		public int InsertarImagenEnInfraccion(byte[] imageData, int idInfraccion)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE infracciones
                        SET inventario = @inventario
                        WHERE idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = idInfraccion;
-                    command.Parameters.Add(new SqlParameter("@inventario", SqlDbType.VarBinary)).Value = imageData;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = idInfraccion;
+					command.Parameters.Add(new SqlParameter("@inventario", SqlDbType.VarBinary)).Value = imageData;
 
-                    result = command.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                    return result;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
-        public int GuardarReponse(CrearMultasTransitoChild MT_CrearMultasTransito_res, int idInfraccion)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE infracciones
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					return result;
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
+		public int GuardarReponse(CrearMultasTransitoChild MT_CrearMultasTransito_res, int idInfraccion)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE infracciones
                                 SET partner = @partner,
                                         cuenta = @cuenta,
                                         objeto = @objeto,
@@ -2652,38 +2653,38 @@ namespace GuanajuatoAdminUsuarios.Services
                                         fechaActualizacion = @fechaActualizacion,
                                         actualizadoPor = @actualizadoPor                             
                                 WHERE idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.NVarChar)).Value = idInfraccion;
-                    command.Parameters.Add(new SqlParameter("@partner", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.BUSINESSPARTNER == null ? "" : MT_CrearMultasTransito_res.BUSINESSPARTNER;
-                    command.Parameters.Add(new SqlParameter("@cuenta", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.CUENTAnmbb == null ? "" : MT_CrearMultasTransito_res.CUENTAnmbb;
-                    command.Parameters.Add(new SqlParameter("@objeto", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.OBJETO == null ? "" : MT_CrearMultasTransito_res.OBJETO;
-                    command.Parameters.Add(new SqlParameter("@documento", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.DOCUMENTNUMBER == null ? "" : MT_CrearMultasTransito_res.DOCUMENTNUMBER;
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("@idEstatusInfraccion", SqlDbType.Int)).Value = (object)7;
-                    result = command.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.NVarChar)).Value = idInfraccion;
+					command.Parameters.Add(new SqlParameter("@partner", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.BUSINESSPARTNER == null ? "" : MT_CrearMultasTransito_res.BUSINESSPARTNER;
+					command.Parameters.Add(new SqlParameter("@cuenta", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.CUENTAnmbb == null ? "" : MT_CrearMultasTransito_res.CUENTAnmbb;
+					command.Parameters.Add(new SqlParameter("@objeto", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.OBJETO == null ? "" : MT_CrearMultasTransito_res.OBJETO;
+					command.Parameters.Add(new SqlParameter("@documento", SqlDbType.NVarChar)).Value = MT_CrearMultasTransito_res.DOCUMENTNUMBER == null ? "" : MT_CrearMultasTransito_res.DOCUMENTNUMBER;
+					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+					command.Parameters.Add(new SqlParameter("@idEstatusInfraccion", SqlDbType.Int)).Value = (object)7;
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-        public List<InfraccionesResumen> GetInfraccionesLicencia(string numLicencia, string CURP)
-        {
-            List<InfraccionesResumen> modelList = new List<InfraccionesResumen>();
-            string strQuery = @"SELECT inf.idInfraccion
+		public List<InfraccionesResumen> GetInfraccionesLicencia(string numLicencia, string CURP)
+		{
+			List<InfraccionesResumen> modelList = new List<InfraccionesResumen>();
+			string strQuery = @"SELECT inf.idInfraccion
 	                                ,piin.nombre+' '+ piin.apellidoPaterno +' '+ piin.apellidoMaterno conductor
 	                                ,piin.numeroLicencia
 	                                ,p.CURP 
@@ -2713,93 +2714,93 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN personas p on piin.idPersonaInfraccion = p.idPersona 
                                 WHERE inf.estatus = 1 and (piin.numeroLicencia =@numero_licencia OR p.CURP =@CURP)";
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@numero_licencia", SqlDbType.VarChar)).Value = (object)numLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.VarChar)).Value = (object)CURP ?? DBNull.Value;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@numero_licencia", SqlDbType.VarChar)).Value = (object)numLicencia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.VarChar)).Value = (object)CURP ?? DBNull.Value;
 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            InfraccionesResumen model = new InfraccionesResumen();
-                            model.IdInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                            model.conductor = reader["conductor"].ToString();
-                            model.numeroLicencia = reader["numeroLicencia"].ToString();
-                            model.CURP = reader["CURP"].ToString();
-                            model.folioInfraccion = reader["folioInfraccion"].ToString();
-                            model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            model.estatusInfraccion = reader["estatusInfraccion"].ToString();
-                            model.nombreOficial = reader["nombreOficial"].ToString();
-                            model.municipio = reader["municipio"].ToString();
-                            model.color = reader["color"].ToString();
-                            model.marcaVehiculo = reader["marcaVehiculo"].ToString();
-                            model.nombreSubmarca = reader["nombreSubmarca"].ToString();
-                            model.placas = reader["placas"].ToString();
-                            model.modelo = reader["modelo"].ToString();
-                            model.serie = reader["serie"].ToString();
-                            model.tarjeta = reader["tarjeta"].ToString();
-                            model.vigenciaTarjeta = reader["vigenciaTarjeta"].ToString();
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							InfraccionesResumen model = new InfraccionesResumen();
+							model.IdInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.conductor = reader["conductor"].ToString();
+							model.numeroLicencia = reader["numeroLicencia"].ToString();
+							model.CURP = reader["CURP"].ToString();
+							model.folioInfraccion = reader["folioInfraccion"].ToString();
+							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+							model.estatusInfraccion = reader["estatusInfraccion"].ToString();
+							model.nombreOficial = reader["nombreOficial"].ToString();
+							model.municipio = reader["municipio"].ToString();
+							model.color = reader["color"].ToString();
+							model.marcaVehiculo = reader["marcaVehiculo"].ToString();
+							model.nombreSubmarca = reader["nombreSubmarca"].ToString();
+							model.placas = reader["placas"].ToString();
+							model.modelo = reader["modelo"].ToString();
+							model.serie = reader["serie"].ToString();
+							model.tarjeta = reader["tarjeta"].ToString();
+							model.vigenciaTarjeta = reader["vigenciaTarjeta"].ToString();
 
-                            modelList.Add(model);
-                        }
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+							modelList.Add(model);
+						}
+					}
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
-            return modelList;
-        }
+			return modelList;
+		}
 
-        public int ModificarEstatusInfraccion(int idInfraccion, int idEstatusInfraccion)
-        {
-            int result = 0;
-            string strQuery = @"UPDATE infracciones
+		public int ModificarEstatusInfraccion(int idInfraccion, int idEstatusInfraccion)
+		{
+			int result = 0;
+			string strQuery = @"UPDATE infracciones
                                        SET idEstatusInfraccion = @idEstatusInfraccion
                                        WHERE idInfraccion = @idInfraccion";
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = idInfraccion;
-                    command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = idEstatusInfraccion;
-                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(strQuery, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = idInfraccion;
+					command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = idEstatusInfraccion;
+					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 
-                    result = command.ExecuteNonQuery();
-                    if (result > 0) // Si la actualización tuvo éxito
-                    {
-                        return idInfraccion; // Retornar el idInfraccion
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    return result;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-            return result;
-        }
+					result = command.ExecuteNonQuery();
+					if (result > 0) // Si la actualización tuvo éxito
+					{
+						return idInfraccion; // Retornar el idInfraccion
+					}
+				}
+				catch (SqlException ex)
+				{
+					return result;
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
+			return result;
+		}
 
-    }
+	}
 }
 

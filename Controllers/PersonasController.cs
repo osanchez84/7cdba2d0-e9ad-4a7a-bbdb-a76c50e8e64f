@@ -184,9 +184,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
                 }
                 int id = _personasService.UpdatePersona(model);
-                var modelList = _personasService.GetAllPersonas();
+                var modelList = _personasService.GetPersonaById((int)model.idPersona);
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
-                return PartialView("_ListadoPersonas", modelList);
+                return Json(new { data = modelList });
             }
             return RedirectToAction("Index");
         }

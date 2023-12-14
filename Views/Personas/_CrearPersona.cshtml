@@ -105,7 +105,7 @@
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
- .Culture("es-ES")
+                        .Culture("es-ES")
                         .Value((DateTime?)null)
                         .HtmlAttributes(new { style = "width: 100%;", id="vigencia" })
                     )
@@ -368,7 +368,11 @@ function completarConLicencia() {
         var datePicker = $("#vigencia").data("kendoDatePicker");
         datePicker.value(null);
     });
-   
+
+
+    $(document).ready(function () {
+        $('#vigencia').removeAttr("required");
+    });
 
 
 </script>

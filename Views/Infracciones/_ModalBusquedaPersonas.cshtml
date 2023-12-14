@@ -286,6 +286,7 @@
         });
     }
     function btnModalEditarPersona(id) {
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ModalEditarPersona","Personas")',
             type: 'GET',
@@ -296,6 +297,10 @@
                 $('#modalBodyEditarPersona').html(value);
                 $('#modalEditarPersona').modal({ backdrop: 'static', keyboard: false });
                 $('#modalEditarPersona').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -303,6 +308,7 @@
         var grid = $("#gridPersonas").data("kendoGrid");
         grid.dataSource.data([]);
         var Mydata = $("#buscarConductorForm").serialize();
+        showLoading();
         $.ajax({
             url: '/Personas/BuscarPorParametro',
             type: 'POST',
@@ -326,9 +332,11 @@
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
             }
         });
     }
@@ -402,7 +410,7 @@
             };
             const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; // 0 o valor predeterminado si no hay coincidencia
             jsonData.id_tipo_licencia = tipoLicenciaNumero;
-
+            showLoading();
             $.ajax({
                 type: 'POST',
                 url: '/Personas/guardaDesdeServicio', 
@@ -412,9 +420,11 @@
                     var personasList = [response]; // Convierte el objeto en un arreglo
                     var grid = $("#gridPersonas").data("kendoGrid");
                     grid.dataSource.data(personasList);
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning('Error al guardar en la base de datos:');
+                    hideLoading();
                 }
             });
         });

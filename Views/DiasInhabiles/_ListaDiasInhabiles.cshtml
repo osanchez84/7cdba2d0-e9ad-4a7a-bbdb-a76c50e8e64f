@@ -57,7 +57,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var idDiaInhabil = dataItem.idDiaInhabil;
         console.log(idDiaInhabil);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarParcial", "DiasInhabiles")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -65,8 +65,11 @@
             success: function (result) {
                 $('#ModalBodyCreateDiaInhabil').html(result);
                 $('#addDateInhabil').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -74,7 +77,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var idDiaInhabil = dataItem.idDiaInhabil;
         console.log(idDiaInhabil);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarDiaInhabilParcial", "DiasInhabiles")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -82,8 +85,11 @@
             success: function (result) {
                 $('#ModalBodyCreateDiaInhabil').html(result);
                 $('#addDateInhabil').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

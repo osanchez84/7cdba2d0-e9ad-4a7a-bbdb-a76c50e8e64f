@@ -159,6 +159,7 @@
 
 <script>
     function abrirModalVehiculo(placa) {
+        showLoading();
         $.ajax({
             url: '/CapturaAccidentes/AbrirModalVehiculo',
             type: 'GET',
@@ -175,10 +176,12 @@
                     $('#ModalBodyVehiculoService').html(data);
                     $('#VehiculoServiceModal').modal('show');
                 }
+                hideLoading();
             },
             error: function () {
                 // Manejar error de la llamada AJAX
                 console.log("Error en la llamada AJAX para abrir el modal.");
+                hideLoading();
             }
         });
     }
@@ -188,6 +191,7 @@
         var placasValue = $("#PlacasBusqueda").val().trim();
         $("#PlacasBusqueda").val(placasValue);
         var formData = $("#buscarVehiculoForm").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarVehiculo")',
             type: 'POST',
@@ -215,9 +219,11 @@
                     $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
                 }
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Sucedio un error intente de nuevo mas tarde");
+                hideLoading();
             }
         });
     }

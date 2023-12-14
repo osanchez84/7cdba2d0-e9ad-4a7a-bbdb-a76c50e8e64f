@@ -266,6 +266,7 @@
 
     function submitSearch() {
         var Mydata = $("#frmSearch").serialize();
+        showLoading();
         //console.log(Mydata);
         $.ajax({
             url: '@Url.Action("ajax_BuscarInfracciones")',
@@ -273,6 +274,11 @@
             data: Mydata,
             success: function (result) {
                 $("#listadoInfracciones").html(result);
+                hideLoading();
+            },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -281,6 +287,7 @@
     function downLoadPdfFiltered() {
         var Mydata = $("#frmSearch").serialize();
         var fileName = "ReporteGeneralInfracciones.pdf";
+        showLoading();
         $.ajax({
             type: "POST",
             url: '@Url.Action("InfraccionesGeneral","PDFGenerator")',
@@ -303,6 +310,10 @@
                     a[0].click();
                     $("body").remove(a);
                 }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

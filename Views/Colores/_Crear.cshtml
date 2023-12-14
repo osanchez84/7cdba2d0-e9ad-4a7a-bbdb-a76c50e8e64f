@@ -74,6 +74,7 @@
         $('#addColor').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("CreatePartialModal")',
             type: 'POST',

@@ -161,6 +161,7 @@
     function submitSearch() {
         var Mydata = $("#frmComparativoInfracciones").serialize();
         //console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_ComparativoInfracciones")',
             type: 'POST',
@@ -168,6 +169,10 @@
             success: function (result) {
                 $("#Resultados").html(result);
                 console.log(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

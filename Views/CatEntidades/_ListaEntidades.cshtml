@@ -50,7 +50,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var idEntidad = dataItem.idEntidad;
         console.log(idEntidad);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarEntidadModal", "CatEntidades")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -58,8 +58,11 @@
             success: function (result) {
                 $('#ModalBodyEntidad').html(result);
                 $('#agregarEntidad').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

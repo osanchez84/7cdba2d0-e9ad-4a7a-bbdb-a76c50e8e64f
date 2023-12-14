@@ -87,7 +87,7 @@
 
         var Data = $("#reciboPagoBusqueda").serialize();
         console.log(Data);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ObtenerInfracciones")',
             type: 'POST',
@@ -100,7 +100,11 @@
                     grid.dataSource.data(result);
                     $('#mensajeSinResultados').text(" ");
                 }
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
    

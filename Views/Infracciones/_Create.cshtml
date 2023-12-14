@@ -19,7 +19,7 @@
      function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Infracciones/Municipios_Por_Entidad",
             type: "POST",
@@ -27,13 +27,16 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
  function EntidadDropDownChangeV() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+        showLoading();
         $.ajax({
             url: "/Infracciones/Municipios_Por_Entidad",
             type: "POST",
@@ -41,8 +44,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -1182,12 +1187,16 @@
     });
 
     function buscarPersonasFisicas() {
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
                 $("#personasFisicasInf").html(result);
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -1231,7 +1240,7 @@
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CrearPersonaMoral")',
             type: 'POST',
@@ -1245,11 +1254,14 @@
                         $('#addMoral').modal('hide');
                         sitteg_success('Elemento guardado correctamente')
                 }, 500);
+
+                hideLoading();
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg);
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     } else {
@@ -1265,6 +1277,7 @@
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
             type: 'POST',
@@ -1276,6 +1289,10 @@
                 var grid = $("#gridPersonasMorales").data("kendoGrid");
                   sitteg_success('Elemento guardado correctamente')
                 grid.refresh();
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -1314,7 +1331,7 @@
     $("#idGenero").val(generoBool ? 1 : 0);
 
     var Mydata = $("#personaFisicaForm").serialize();
-
+    showLoading();
     $.ajax({
         url: '@Url.Action("ajax_CrearPersonaFisica")',
         type: 'POST',
@@ -1324,9 +1341,11 @@
             $("#personasFisicasInf").html(result);
 
             $('#addFisico').modal('hide');
+            hideLoading();
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+            hideLoading();
         }
     });
 }
@@ -1352,6 +1371,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
@@ -1361,10 +1381,12 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     $('#VehiculoServiceModal').modal('hide');
                     $('#agregarVehiculoModal').modal('hide');
                     var gridVehiculos = $("#listadoVehiculos").html(result);
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
+                    hideLoading();
                     sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                 }
             });

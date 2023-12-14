@@ -82,6 +82,7 @@
         window.location = '/BusquedaAccidentes/CreatePdfUnRegistro?IdAccidente=' + Id;
     }
     function editarAccidente(idAccidente) {
+            showLoading();
         $.ajax({
             url: '/CapturaAccidentes/SetLastInsertedIdEdit',
             type: 'POST',
@@ -89,13 +90,17 @@
             success: function (result) {
 
                 window.location.href = '/CapturaAccidentes/CapturaAaccidente/?showE=true'
-
-            },
-
+                    hideLoading();
+                },
+                error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
         });
     }
 
         function eliminarAccidente(idAccidente, numeroReporte) {
+            showLoading();
             $.ajax({
                 url: '/BusquedaEspecialAccidentes/ModalEliminarAccidente',
                 type: 'POST',
@@ -104,13 +109,19 @@
                     numeroReporte: numeroReporte
                 }, success: function (result) {
                     $('#ModalBodyEliminarAccidente').html(result);
-                    $('#eliminarAccidenteModal').modal('show');;
+                    $('#eliminarAccidenteModal').modal('show');
+                    hideLoading();
                 },
+                error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
 
             });
         }
 
     function ModalEditarFolio(idAccidente, numeroReporte) {
+            showLoading();
         $.ajax({
             url: '/BusquedaEspecialAccidentes/ModalEditarFolio', 
             type: 'POST',
@@ -121,9 +132,11 @@
             success: function (result) {
                     $('#ModalBodyEditarFolio').html(result);
                     $('#editarFolioModal').modal('show');
+                    hideLoading();
             },
             error: function (xhr, status, error) {
                 console.log("Error al realizar la solicitud AJAX: " + error);
+                hideLoading();
             }
         });
     }

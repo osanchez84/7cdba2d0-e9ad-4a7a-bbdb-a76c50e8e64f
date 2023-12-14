@@ -113,7 +113,7 @@
             var IdCausaAccidente = dataItem.IdCausaAccidente;
          var idAccidenteCausa = dataItem.idAccidenteCausa;
 
-
+         showLoading();
             $.ajax({
                 url: '@Url.Action("ModalEditarCausaAccidente", "CapturaAccidentes")',
                 type: 'POST',
@@ -121,7 +121,11 @@
                 success: function (result) {
                 $('#ModalBodyCausaAccidente').html(result);
                 $('#causaAccidenteModal').modal('show');
-                },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
             });
         }
     
@@ -135,6 +139,7 @@
     var dataItem = grid.dataItem(row);
     var CausaAccidente = dataItem.CausaAccidente
     var IdCausaAccidente = dataItem.IdCausaAccidente
+    showLoading();
     $.ajax({
             url: '@Url.Action("ModalEliminarCausas", "CapturaAccidentes")',
             type: 'POST',
@@ -142,6 +147,10 @@
             success: function (result) {
                 $('#ModalBodyCausaAccidente').html(result);
                 $('#causaAccidenteModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

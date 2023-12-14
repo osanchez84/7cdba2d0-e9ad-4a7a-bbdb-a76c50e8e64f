@@ -90,6 +90,7 @@
     </div>
 <script>
     function guardarReciboPago() {
+        showLoading();
         $.ajax({
             url: '/RegistroReciboPago/GuardarReciboPago',
             type: 'POST',
@@ -103,15 +104,18 @@
             success: function (result) {
                 sitteg_success("Información guardada correctamente ");
                 $('#modalComprobacion').modal('hide');
+                hideLoading();
 
             },
             error: function (error) {
                 sitteg_warning("!Sucedio un error, intente mas tarde...");
+                hideLoading();
             }
         });
     }
 
     function comprobarRecibo(reciboValue) {
+        showLoading();
         $.ajax({
             url: '/RegistroReciboPago/ConsultarDocumento',
             type: 'POST',
@@ -147,9 +151,11 @@
                         $('#mensajeError').text("El servicio no está respondiendo en este momento. Por favor, intenta más tarde.");
                     }
                 }
+                hideLoading();
             },
             error: function (response) {
                 console.error('Error en la llamada AJAX:', response);
+                hideLoading();
                 $('#mensajeError').text("Ha ocurrido un error en la comunicación con el servidor. Por favor, verifica tu conexión y vuelve a intentar.");
             }
         });

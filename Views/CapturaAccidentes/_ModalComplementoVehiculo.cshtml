@@ -161,7 +161,7 @@
 
         if (isValid) {
             var Mydata = $("#complementoVehiculoForm").serialize();
-
+            showLoading();
             $.ajax({
                 url: '/CapturaAccidentes/GuardarComplementoVehiculo',
                 type: 'POST',
@@ -185,9 +185,11 @@
                     } else {
                         alert("Sucedió un error");
                     }
+                    hideLoading();
                 },
                 error: function (error) {
                     console.error("Error en la solicitud AJAX:", error);
+                    hideLoading();
                 }
             });
         } else {

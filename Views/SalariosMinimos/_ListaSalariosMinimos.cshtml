@@ -49,7 +49,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdSalario = dataItem.IdSalario;
         console.log(IdSalario);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarSalarioParcial", "SalariosMinimos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -57,8 +57,11 @@
             success: function (result) {
                 $('#ModalBodyCreate').html(result);
                 $('#addUdiSalario').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -66,7 +69,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdSalario = dataItem.IdSalario;
         console.log(IdSalario);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarSalarioParcial", "SalariosMinimos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -74,8 +77,11 @@
             success: function (result) {
                 $('#ModalBodyCreate').html(result);
                 $('#addUdiSalario').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function tooltipContent(e) {

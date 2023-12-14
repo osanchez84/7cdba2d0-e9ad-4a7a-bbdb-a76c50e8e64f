@@ -950,11 +950,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CausaAccidente = CausaAccidente;
             return PartialView("_ModalEditarCausa");
 		}
-		public ActionResult ModalEliminarCausas(int IdCausaAccidente, string CausaAccidente)
+		public ActionResult ModalEliminarCausas(int IdCausaAccidente, string CausaAccidente, int IdAccidenteCausa)
 		{
 			ViewBag.IdCausaAccidente = IdCausaAccidente;
 			ViewBag.CausaAccidente = CausaAccidente;
-			return PartialView("_ModalEliminarCausa");
+            ViewBag.IdAccidenteCausa = IdAccidenteCausa;
+            return PartialView("_ModalEliminarCausa");
 		}
 
         public ActionResult ActualizaIndiceCausaAccidente(int idAccidenteCausa, int indice, int idAccidenteCausaParent, int indiceParent)
@@ -1049,16 +1050,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public IActionResult EditarCausa(int IdCausaAccidente, int idAccidenteCausa)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var RegistroSeleccionado = _capturaAccidentesService.EditarValorCausa(IdCausaAccidente, idAccidenteCausa);
+			var RegistroSeleccionado = _capturaAccidentesService.EditarValorCausa(IdCausaAccidente, idAccidenteCausa);			
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
 			return Json(datosGrid);
 		}
-		public IActionResult EliminarCausaAccidente(int IdCausaAccidente)
+		public IActionResult EliminarCausaAccidente(int IdCausaAccidente, int idAccidenteCausa)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var RegistroSeleccionado = _capturaAccidentesService.EliminarCausaBD(IdCausaAccidente, idAccidente);
-			var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
+			var RegistroSeleccionado = _capturaAccidentesService.EliminarCausaBD(IdCausaAccidente, idAccidente, idAccidenteCausa);
+            _capturaAccidentesService.RecalcularIndex(idAccidente);
+            var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
 			return Json(datosGrid);
 		}

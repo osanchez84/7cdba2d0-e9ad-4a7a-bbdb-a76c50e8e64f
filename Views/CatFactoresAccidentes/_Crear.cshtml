@@ -83,7 +83,7 @@
             data: Mydata,
             success: function (result) {
                 $("#gridCatFactoresAccidentes").data("kendoGrid").dataSource.data(result);
-                showLoading();
+                hideLoading();
             }, error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();

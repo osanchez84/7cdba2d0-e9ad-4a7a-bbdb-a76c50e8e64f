@@ -7,6 +7,9 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class VehiculoModel : EntityModel
     {
+
+
+        public string ErrorRepube { get; set; } = ""; 
         public int idVehiculo { get; set; }
         public string placas { get; set; }
         public string serie { get; set; }

@@ -29,6 +29,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int EditarFactorOpcion(int IdFactorAccidente, int IdFactorOpcionAccidente, int IdAccidenteFactorOpcion);
         List<CapturaAccidentesModel> ObtenerDatosGridFactor(int idAccidente);
         public int AgregarValorCausa(int IdCausaAccidente,int idAccidente);
+        public void ActualizaIndiceCuasa(int idAccidenteCausa, int indice);
         public int EditarValorCausa(int IdCausaAccidente,int idAccidenteCausa);
 
         List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente);

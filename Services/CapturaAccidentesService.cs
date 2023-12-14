@@ -900,7 +900,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
 					connection.Open();
-                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente) values(@idAccidente, @idCausaAccidente)";
+                    string query = "INSERT into accidenteCausas(idAccidente,idCausaAccidente,indice) values(@idAccidente, @idCausaAccidente, (SELECT Max(indice)+1 FROM accidenteCausas where idAccidente = @idAccidente))";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -922,6 +922,32 @@ namespace GuanajuatoAdminUsuarios.Services
             }
         }
 
+        public void ActualizaIndiceCuasa(int idAccidenteCausa, int indice)
+        {
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE accidenteCausas SET indice = @indice WHERE idAccidenteCausa = @idCausaAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idCausaAccidente", idAccidenteCausa);
+                    command.Parameters.AddWithValue("@indice", indice);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    // Manejar la excepción
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
 
         public int EditarValorCausa(int IdCausaAccidente, int idAccidenteCausa)
         {
@@ -1037,10 +1063,10 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
 					int numeroContinuo = 1;
 					connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente, ac.idAccidenteCausa FROM accidenteCausas ac " +
+                    SqlCommand command = new SqlCommand("SELECT ac.*,a.descripcionCausas, c.causaAccidente, ac.idAccidenteCausa, ac.indice FROM accidenteCausas ac " +
                                                         "JOIN catCausasAccidentes c ON ac.idCausaAccidente = c.idCausaAccidente " +
                                                         "LEFT JOIN accidentes AS a ON ac.idAccidente = a.idAccidente " +
-                                                        "WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0;", connection);
+                                                        "WHERE ac.idAccidente = @idAccidente AND ac.idCausaAccidente > 0 Order By ac.indice", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -1055,7 +1081,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             causa.IdCausaAccidente = Convert.ToInt32(reader["IdCausaAccidente"].ToString());
                             causa.CausaAccidente = reader["causaAccidente"].ToString();
                             causa.DescripcionCausa = reader["descripcionCausas"].ToString();
-							causa.NumeroContinuo = numeroContinuo;
+                            string indx = reader["indice"].ToString();
+                            causa.indice = Convert.ToInt32((indx == string.Empty? "0": indx));
+                            causa.NumeroContinuo = numeroContinuo;
 							ListaGridCausa.Add(causa);
 							numeroContinuo++;
 

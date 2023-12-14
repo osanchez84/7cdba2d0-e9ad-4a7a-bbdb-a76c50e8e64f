@@ -272,7 +272,7 @@
 				<div class="row px-4 mt-4 pb-4 align-items-end">
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
 								.Label(l => l.Content("No. de licencia:"))
 								.Placeholder("Ingresa el número de licencia valido")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -281,7 +281,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.curpBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.CURP)
 								.Label(l => l.Content("CURP:"))
 								.Placeholder("Ingresa el CURP del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -290,7 +290,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.rfcBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.RFC)
 								.Label(l => l.Content("RFC:"))
 								.Placeholder("Ingresa el RFC del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -302,7 +302,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.nombre)
 								.Label(l => l.Content("Nombre(s):"))
 								.Placeholder("Ingresa el nombre(s) del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -312,7 +312,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.apellidoPaterno)
 								.Label(l => l.Content("Apellido paterno:"))
 								.Placeholder("Ingresa el apellido paterno")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -322,7 +322,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
+							@(Html.Kendo().TextBoxFor(t => t.apellidoMaterno)
 								.Label(l => l.Content("Apellido materno:"))
 								.Placeholder("Ingresa el apellido materno")
 								.HtmlAttributes(new { style = "width: 100%" })

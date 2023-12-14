@@ -1093,13 +1093,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.kmCarretera
                                             ,inf.idPersona
                                             ,inf.idPersonaInfraccion
-                                            ,CONCAT(conduct.nombre, ' ', conduct.apellidoPaterno, ' ', conduct.apellidoMaterno) as nombreConductor
+                                            ,CONCAT(pInf.nombre, ' ', pInf.apellidoPaterno, ' ', pInf.apellidoMaterno) as nombreConductor
                                             ,UPPER(CONCAT(dirconduct.calle,' ', dirconduct.numero, ', ',dirconduct.colonia, ', ', dirconductmuni.municipio, ', ', dirconductenti.nombreEntidad)) as domicilioConductor 
                                             ,conduct.fechaNacimiento fechaNacimientoConductor
                                             ,DATEDIFF(YEAR, conduct.fechaNacimiento, GETDATE()) edadConductor
                                             ,generoconduct.genero generoConductor
                                             ,dirconduct.telefono telefonoConductor
-                                            ,conduct.numeroLicencia numLicenciaConductor
+                                            ,pInf.numeroLicencia numLicenciaConductor
                                             ,tipolicconduct.tipoLicencia tipoLicenciaConductor
                                             ,conduct.vigenciaLicencia vencimientoLicConductor
                                             ,veh.placas
@@ -1133,8 +1133,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                             left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
                                             left join catTramos catTra on inf.idTramo = catTra.idTramo
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
+                                            left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersonaInfraccion
-			                                            LEFT JOIN personasDirecciones dirconduct on dirconduct.idPersona = conduct.idPersona
+			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersonaInfraccion
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio
 			                                            left join catEntidades dirconductenti on dirconductenti.idEntidad = dirconduct.idEntidad
 			                                            left join catGeneros generoconduct on generoconduct.idGenero = conduct.idGenero

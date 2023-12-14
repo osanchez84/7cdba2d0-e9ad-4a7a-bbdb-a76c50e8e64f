@@ -224,7 +224,11 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Conductor"));
                 nested.AddCell(FieldCellBox("Nombre: ", ModelDataInfracciones.nombreConductor));
-                nested.AddCell(FieldCellBox("Fecha de nacimiento: ", ModelDataInfracciones.fechaNacimientoConductor?.ToString("dd/MM/yyyy")));
+                if (ModelDataInfracciones.fechaNacimientoConductor == null || ModelDataInfracciones.fechaNacimientoConductor.Value == DateTime.MinValue)                
+                    nested.AddCell(FieldCellBox("Fecha de nacimiento: ", ""));
+                else
+                    nested.AddCell(FieldCellBox("Fecha de nacimiento: ", ModelDataInfracciones.fechaNacimientoConductor?.ToString("dd/MM/yyyy")));
+
                 nested.AddCell(FieldCellBox("Edad: ", ModelDataInfracciones.edadConductor.ToString()));
                 nested.AddCell(FieldCellBox("Sexo: ", ModelDataInfracciones.generoConductor.ToString()));
                 nested.AddCell(FieldCellBox("Domicilio: ", ModelDataInfracciones.domicilioConductor.ToString()));
@@ -242,7 +246,11 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Télefono: ", ModelDataInfracciones.telefonoConductor));
                 nested.AddCell(FieldCellBox("No. Licencia: ", ModelDataInfracciones.numLicenciaConductor));
                 nested.AddCell(FieldCellBox("Tipo de licencia: ", ModelDataInfracciones.tipoLicenciaConductor));
-                nested.AddCell(FieldCellBox("Vencimiento: ", ModelDataInfracciones.vencimientoLicConductor.Value.ToString("dd/MM/yyyy")));
+                if (ModelDataInfracciones.vencimientoLicConductor == null || ModelDataInfracciones.vencimientoLicConductor.Value == DateTime.MinValue)
+                    nested.AddCell(FieldCellBox("Vencimiento: ", ""));
+                else 
+                    nested.AddCell(FieldCellBox("Vencimiento: ", ModelDataInfracciones.vencimientoLicConductor.Value.ToString("dd/MM/yyyy")));
+
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -486,9 +494,9 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Garantía"));
-                nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia.garantia));
-                nested.AddCell(FieldCellBox("Tipo placa: ", ModelDataInfracciones.Garantia.tipoPlaca));
-                nested.AddCell(FieldCellBox("No. de placa: ", ModelDataInfracciones.Garantia.numPlaca));
+                nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia?.garantia));
+                nested.AddCell(FieldCellBox("Tipo placa: ", ModelDataInfracciones.Garantia?.tipoPlaca));
+                nested.AddCell(FieldCellBox("No. de placa: ", ModelDataInfracciones.Garantia?.numPlaca));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -499,8 +507,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             {
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
-                nested.AddCell(FieldCellBox("Tipo licencia: ", ModelDataInfracciones.Garantia.tipoLicencia));
-                nested.AddCell(FieldCellBox("No. de licencia: ", ModelDataInfracciones.Garantia.numLicencia));
+                nested.AddCell(FieldCellBox("Tipo licencia: ", ModelDataInfracciones.Garantia?.tipoLicencia));
+                nested.AddCell(FieldCellBox("No. de licencia: ", ModelDataInfracciones.Garantia?.numLicencia));
                 nested.AddCell(FieldCellBox("No. de tarjeta: ", ModelDataInfracciones.NumTarjetaCirculacion));//VALIDAR
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
@@ -557,7 +565,11 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellBox("Oficio de condonación: ", ModelDataInfracciones.oficioCondonacion));
                 nested.AddCell(FieldCellEmptyBox());
-                nested.AddCell(FieldCellBox("Fecha de pago: ", ModelDataInfracciones.fechaPago.Value.ToString("dd/MM/yyyy")));
+                if (ModelDataInfracciones.fechaPago == null || ModelDataInfracciones.fechaPago.Value == DateTime.MinValue)
+                    nested.AddCell(FieldCellBox("Fecha de pago: ", ""));
+                else
+                    nested.AddCell(FieldCellBox("Fecha de pago: ", ModelDataInfracciones.fechaPago.Value.ToString("dd/MM/yyyy")));
+
                 nested.AddCell(FieldCellBox("Lugar de pago: ", ModelDataInfracciones.lugarPago));//VALIDAR
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);

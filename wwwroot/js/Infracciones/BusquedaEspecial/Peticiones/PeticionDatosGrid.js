@@ -1,15 +1,15 @@
 ﻿
-export function GetData(data,Succes,Fail) {
-    showLoading();
+export function GetData(data, Succes, Fail) {
+    //showLoading();
     $.ajax({
         url: './GetDataBusquedaEspecial',
         type: 'POST',
         data: data,
-        success: Succes|| function (result) {
+        success: Succes || function (result) {
             console.log(result);
             hideLoading();
         },
-        error: Fail|| function (result) {
+        error: Fail || function (result) {
             console.log(result);
             hideLoading();
         }

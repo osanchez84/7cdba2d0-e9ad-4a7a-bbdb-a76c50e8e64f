@@ -1412,8 +1412,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		[HttpPost]
 		public ActionResult ajax_BuscarPersonasFiscas()
 		{
-			var personasFisicas = _personasService.GetAllPersonas();
-			return PartialView("_PersonasFisicas");
+			var personasFisicas = _personasService.GetAllPersonasFisicas();
+			return PartialView("_PersonasFisicas", personasFisicas);
 		}
 
 		[HttpPost]
@@ -1522,7 +1522,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			if (IdVehiculo != 0)
 			{
 				var resultados = _vehiculosService.GetAllVehiculos();
-                return Json(resultados); 
+                return Json(new { data = resultados });
             }
             else
 			{

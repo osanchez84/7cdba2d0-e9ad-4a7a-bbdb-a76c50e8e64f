@@ -1249,7 +1249,7 @@
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
-                $("#personasFisicas").html(result);
+                $("#personasFisicasAcc").html(result);
                 hideLoading();
             },error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -1397,7 +1397,7 @@ function submitCreateMoral() {
         data: Mydata,
         success: function (result) {
             console.log(result);
-            $("#personasFisicas").html(result);
+            $("#personasFisicasAcc").html(result);
                         $('#addFisico').modal('hide');
                         hideLoading();
 

@@ -690,7 +690,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarPersonasFiscas()
         {
-            var personasFisicas = _personasService.GetAllPersonas();
+           var personasFisicas = _personasService.GetAllPersonasFisicas();
             return PartialView("_PersonasFisicas", personasFisicas);
         }
 

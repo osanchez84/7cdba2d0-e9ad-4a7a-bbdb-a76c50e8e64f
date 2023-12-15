@@ -9,26 +9,28 @@
 			type: 'POST',
 			data: Mydata,
 			success: function (response) {
-				 if (response.tipo == "success") {
-                    mostrarModal(response.datos);
-                } else if (response.encontrada != undefined) {
-                    if (response.encontrada == false) {
-                        sitteg_warning("No se pudieron obtener resultados.");
-                    }
-                } else if (response.tipo == "warning") {
-                    sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
-                }
+				if (response.tipo === "success") {
+					mostrarModal(response.datos);
+					hideLoading();
+				} else if (response.encontrada !== undefined && response.encontrada === false) {
+					sitteg_warning("No se pudieron obtener resultados.");
+				} else if (response.tipo === "warning") {
+					sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+				} else {
+					// Otro tipo de respuesta, si es necesario manejarla
+				}
 
-                var personasList = response.data;
+				var personasList = response.data;
 				var grid = $("#gridConductores").data("kendoGrid");
-                grid.dataSource.data(personasList);
+				grid.dataSource.data(personasList);
 
-                if (personasList.count === 0) {
-                    sitteg_warning("La búsqueda no arrojó resultados.");
-                    grid.dataSource.data([]);
-                }
-                hideLoading();
-            },
+				if (personasList.count === 0 && response.tipo !== "success") {
+					sitteg_warning("La búsqueda no arrojó resultados.");
+					grid.dataSource.data([]);
+				}
+
+				hideLoading();
+			},
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
                 hideLoading();
@@ -272,7 +274,7 @@
 				<div class="row px-4 mt-4 pb-4 align-items-end">
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
+							@(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
 								.Label(l => l.Content("No. de licencia:"))
 								.Placeholder("Ingresa el número de licencia valido")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -281,7 +283,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.CURP)
+							@(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
 								.Label(l => l.Content("CURP:"))
 								.Placeholder("Ingresa el CURP del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -290,7 +292,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.RFC)
+							@(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
 								.Label(l => l.Content("RFC:"))
 								.Placeholder("Ingresa el RFC del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -302,7 +304,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.nombre)
+							@(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
 								.Label(l => l.Content("Nombre(s):"))
 								.Placeholder("Ingresa el nombre(s) del propietario")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -312,7 +314,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoPaterno)
+							@(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
 								.Label(l => l.Content("Apellido paterno:"))
 								.Placeholder("Ingresa el apellido paterno")
 								.HtmlAttributes(new { style = "width: 100%" })
@@ -322,7 +324,7 @@
 					</div>
 					<div class="col-12 col-md-6 col-lg-3">
 						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoMaterno)
+							@(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
 								.Label(l => l.Content("Apellido materno:"))
 								.Placeholder("Ingresa el apellido materno")
 								.HtmlAttributes(new { style = "width: 100%" })

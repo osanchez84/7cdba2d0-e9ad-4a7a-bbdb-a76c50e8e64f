@@ -250,28 +250,6 @@
         return regex.test(email);
     };
 
-    function isControlsValid(controlsValidate) {
-        var isValid = true;
-        var isFirst = false;
-
-        controlsValidate.forEach(x => {
-            var element = $('#' + x.controlName);
-            element.removeClass("errorData");
-            if (element.val() == '') {
-                element.addClass("errorData");
-                if (!isFirst) {
-                    //element.focus();
-                }
-                isValid = false;
-                isFirst = true;
-            }
-
-        });
-
-        return isValid;
-    }
-
-
     function completarConLicencia() {
         var formData = $("#frmCrearPersona").serialize();
 
@@ -313,6 +291,9 @@
         var phone = $("#telefonoInfraccion").val();
         var email = $("#correoInfraccion").val();
 
+        // ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
+        //controlsValidate.push({ 'controlName': 'correoInfraccion' });
+
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
         $("#vigenciaLicenciaFisico").prop("disabled", true);
         $("#idTipoLicencia").prop("disabled", true);
@@ -326,8 +307,8 @@
             }
         }
 
+        $('#correoInfraccion').removeClass("errorData");
         if (email != "" && email != undefined) {
-            $('#correoInfraccion').removeClass("errorData");
             if (!isValidEmail(email)) {
                 $('#correoInfraccion').addClass("errorData");
                 isValid = false;

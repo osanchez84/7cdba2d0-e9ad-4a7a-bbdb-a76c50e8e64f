@@ -55,7 +55,7 @@
     function getId(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr")); 
         var IdCatMotivoInfraccion = dataItem.IdCatMotivoInfraccion; 
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarParcial", "MotivosInfraccion")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -63,8 +63,11 @@
             success: function (result) {
                 $('#addMotivoBody').html(result);
                 $('#addMotivo').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -73,7 +76,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdMotivoInfraccion = dataItem.IdMotivoInfraccion;
         console.log(IdMotivoInfraccion);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarMotivoParcial", "MotivosInfraccion")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -81,8 +84,11 @@
             success: function (result) {
                 $('#addMotivoBody').html(result);
                 $('#addMotivo').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function tooltipContent(e) {

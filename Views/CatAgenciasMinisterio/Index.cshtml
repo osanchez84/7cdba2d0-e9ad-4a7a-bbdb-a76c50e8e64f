@@ -82,6 +82,7 @@
 
 <script>
     function mostrarModal() {
+        showLoading();
         $.ajax({
             url: '@Url.Action("AgregarAgenciaMinisterioModal")',
             type: 'POST',
@@ -94,6 +95,10 @@
                     $('#ModalBodEditarAgenciaministerio').html(data);
                     $('#editarAgenciaministerio').modal('show');
                 }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

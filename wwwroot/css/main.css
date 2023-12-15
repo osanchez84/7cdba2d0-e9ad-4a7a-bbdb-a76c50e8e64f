@@ -1711,3 +1711,27 @@ td button, td .k-button {
     padding: 0.375rem 0.75rem;
 }
 
+
+.loadingGif {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.10);
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    width: 100vw;
+    height: 100vh;
+}
+
+.errorData {
+    border: 1px solid red !important;
+    border-radius: 5px !important;
+}

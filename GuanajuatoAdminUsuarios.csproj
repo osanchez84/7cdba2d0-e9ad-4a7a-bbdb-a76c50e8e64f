@@ -7,43 +7,42 @@
 	</PropertyGroup>
 
 
-  <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
-    <PackageReference Include="HtmlRenderer.PdfSharp" Version="1.5.0.6" />
-    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
-    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
-    <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.13" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.10.*" />
-	  <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2023.3.1114" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+		<PackageReference Include="HtmlRenderer.PdfSharp" Version="1.5.0.6" />
+		<PackageReference Include="iTextSharp" Version="5.5.13.3" />
+		<PackageReference Include="itextsharp.xmlworker" Version="5.5.13.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="3.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+		<PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NSwag.ApiDescription.Client" Version="13.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.13" />
+		<PackageReference Include="System.ServiceModel.Duplex" Version="4.10.*" />
+		<PackageReference Include="System.ServiceModel.Federation" Version="4.10.*" />
+		<PackageReference Include="System.ServiceModel.Http" Version="4.10.*" />
+		<PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.*" />
+		<PackageReference Include="System.ServiceModel.Security" Version="4.10.*" />
+		<PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2023.3.1114" />
+	</ItemGroup>
 
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -51,12 +50,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Attributes\**" />
+		<Compile Remove="Extensions\**" />
 		<Compile Remove="Templates\**" />
 		<Compile Remove="WebClientServices\**" />
+		<Content Remove="Attributes\**" />
+		<Content Remove="Extensions\**" />
 		<Content Remove="Templates\**" />
 		<Content Remove="WebClientServices\**" />
+		<EmbeddedResource Remove="Attributes\**" />
+		<EmbeddedResource Remove="Extensions\**" />
 		<EmbeddedResource Remove="Templates\**" />
 		<EmbeddedResource Remove="WebClientServices\**" />
+		<None Remove="Attributes\**" />
+		<None Remove="Extensions\**" />
 		<None Remove="Templates\**" />
 		<None Remove="WebClientServices\**" />
 		<None Remove="Helpers\" />
@@ -69,8 +76,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Attributes\" />
-		<Folder Include="Extensions\" />
 		<Folder Include="Views\ModificacionVehiculos\" />
 		<Folder Include="Views\PDFGenerator\AccidentesDetallado\" />
 	</ItemGroup>

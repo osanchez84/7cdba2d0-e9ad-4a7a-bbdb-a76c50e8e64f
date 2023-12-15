@@ -143,25 +143,32 @@
         validator.validate();
         if (validator.validate()) {
             var formData = $("#frmUpdateMoral").serialize();
-
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_UpdatePersonaMoral")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    window.setTimeout(function () {
-                        document.getElementById("sec3").style.display = "none";
-                        document.getElementById("PersonaMoralLocalizada").style.display = "block";
-                        $("#PersonaMoralLocalizada").html(result);
-                        $('#modalUpdateMoral').modal('hide');
-                        sitteg_success('Elemento guardado correctamente')
-                    }, 500);
+
+                    var grid = $("#gridPersonasMorales").data("kendoGrid");
+
+                    if (result && result.data) {
+                        var dataArray = [result.data];
+                        grid.dataSource.data(dataArray);
+                    } else {
+                        console.error("La respuesta no tiene la estructura esperada:", result);
+                    }
+
+                    $('#modalUpdateMoral').modal('hide');
+                    sitteg_success('Elemento guardado correctamente');
                 },
+              hideLoading();
+
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }

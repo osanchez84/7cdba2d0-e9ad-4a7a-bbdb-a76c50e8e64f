@@ -46,6 +46,7 @@
 <script>
     function eliminarGrua() {
         var Mydata = $("#eliminarGruaForm").serialize();
+        showLoading();
         $.ajax({
             url: "/AsignacionGruas/EliminarGrua",
             type: "POST",
@@ -56,10 +57,12 @@
                 var grid = $("#gridGruas").data("kendoGrid");
                 grid.dataSource.data(data);
                 grid.refresh();
+                hideLoading();
             },
             error: function (error) {
                 // Maneja el error en caso de que ocurra
                 console.log("Error: " + error);
+                hideLoading();
             }
         });
     }

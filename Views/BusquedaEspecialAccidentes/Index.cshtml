@@ -239,7 +239,7 @@
     function buscarAccidente() {
         var Mydata = $("#busquedaEspecialAccidenteForm").serialize();
         console.log(Mydata);
-
+        showLoading();
         $.ajax({
             url: '/BusquedaEspecialAccidentes/ajax_BuscarAccidente',
             type: 'GET',
@@ -248,9 +248,11 @@
                 var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
                 grid.dataSource.data(data);
                 grid.refresh();
+                hideLoading();
             },
             error: function () {
                 sitteg_warning("Ocurrio un error en la busqueda,intente mas tarde");
+                hideLoading();
             }
         });
     }
@@ -274,7 +276,7 @@
     }
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
-
+        showLoading();
         $.ajax({
             url: "/BusquedaAccidentes/Tramos_Drop",
             type: "POST",
@@ -282,9 +284,11 @@
             success: function (data) {
                 var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
                 console.log("EE", error)
+                hideLoading();
             }
         });
     }

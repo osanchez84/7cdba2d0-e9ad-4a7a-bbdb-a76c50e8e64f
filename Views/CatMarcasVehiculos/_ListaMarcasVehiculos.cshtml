@@ -49,7 +49,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdMarcaVehiculo = dataItem.IdMarcaVehiculo;
         console.log(IdMarcaVehiculo);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarParcial", "CatMarcasVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -57,8 +57,12 @@
             success: function (result) {
                 $('#ModalBodyCreate').html(result);
                 $('#addMarca').modal('show');
-
+                hideLoading();
             },
+            error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -66,7 +70,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdMarcaVehiculo = dataItem.IdMarcaVehiculo;
         console.log(IdMarcaVehiculo);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarMarcaParcial", "MarcasVehiculos")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -74,8 +78,11 @@
             success: function (result) {
                 $('#ModalBodyCreate').html(result);
                 $('#addMarca').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

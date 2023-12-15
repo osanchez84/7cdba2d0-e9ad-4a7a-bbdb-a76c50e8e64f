@@ -43,7 +43,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAutoridadEntrega = dataItem.IdAutoridadEntrega;
         console.log(IdAutoridadEntrega);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarAutoridadEntregaModal", "CatAutoridadesEntrega")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -51,8 +51,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarAutEntrega').html(result);
                 $('#agregarAutEntrega').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -60,7 +63,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdAutoridadEntrega = dataItem.IdAutoridadEntrega;
         console.log(IdAutoridadEntrega);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarAutoridadEntregaModal", "CatAutoridadesEntrega")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -68,8 +71,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarAutEntrega').html(result);
                 $('#agregarAutEntrega').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 </script>

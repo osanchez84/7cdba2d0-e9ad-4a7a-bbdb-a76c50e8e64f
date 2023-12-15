@@ -3,39 +3,38 @@
 <script>
 	function buscarConductor() {
 		var Mydata = $("#buscarInvolucradoForm").serialize();
+		showLoading();
 		$.ajax({
 			url: '/CapturaAccidentes/BuscarPorParametro',
 			type: 'POST',
 			data: Mydata,
 			success: function (response) {
-				if (response.tipo == "success") {
-					// Crear instancia del modelo con los datos recibidos
-					mostrarModal(response.datos);
+				 if (response.tipo == "success") {
+                    mostrarModal(response.datos);
+                } else if (response.encontrada != undefined) {
+                    if (response.encontrada == false) {
+                        sitteg_warning("No se pudieron obtener resultados.");
+                    }
+                } else if (response.tipo == "warning") {
+                    sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+                }
 
-				} else {
-					// Mostrar los resultados de personas encontradas en la búsqueda
-					if (response.encontrada == false) {
-						sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
-					} else {
-						if (response.data != null || response.data != undefined) {
-							var personasList = response.data;
-							var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
-							grid.dataSource.data(personasList);
+                var personasList = response.data;
+				var grid = $("#gridConductores").data("kendoGrid");
+                grid.dataSource.data(personasList);
 
-							if (personasList.length === 0) {
-								sitteg_warning("La búsqueda no arrojó resultados.");
-							}
-						} else {
-							sitteg_warning("La búsqueda no arrojó resultados.");
-						}
-					}
-				}
-			},
-			error: function (error) {
-				sitteg_warning('Ocurrió un error en la búsqueda.');
-			}
-		});
-	}
+                if (personasList.count === 0) {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    grid.dataSource.data([]);
+                }
+                hideLoading();
+            },
+            error: function (error) {
+                sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
+            }
+        });
+    }
 
 	function mostrarModal(jsonData) {
 		const modal = document.getElementById('modalLicencias');
@@ -96,6 +95,7 @@
 			const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
 			jsonData.id_tipo_licencia = tipoLicenciaNumero;
 			var idVehiculo = $("#IdVehiculoH").val();
+			showLoading();
 			$.ajax({
 				type: 'POST',
 				url: '/CapturaAccidentes/guardaDesdeServicio',
@@ -103,12 +103,13 @@
 				success: function (response) {
 					$('#modalLicencias').modal('hide');
 					var personasList = [response];
-					var grid = $("#gridInvolucradosPrevio").data("kendoGrid");
+					var grid = $("#gridConductores").data("kendoGrid");
 					grid.dataSource.data(personasList);
-
+					hideLoading();
 				},
 				error: function (error) {
 					sitteg_warning('Error al guardar en la base de datos:');
+					hideLoading();
 				}
 			});
 		});
@@ -189,6 +190,11 @@
 			}
 		});
 	}
+
+	function cerrarModalInvolucrado(){
+		$('#buscarInvolucradoModal').modal('hide');
+
+	}
 </script>
 <!--SECCION INVOLUCRADOS-->
 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -209,7 +215,7 @@
 			</div>
 
 			<div class="col-auto">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" onclick="cerrarModalInvolucrado()"><b>X</b></button>
             </div>
 			
 		</div>

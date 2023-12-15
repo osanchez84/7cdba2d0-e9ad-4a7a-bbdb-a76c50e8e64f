@@ -311,6 +311,7 @@
 
 <script>
     function busquedaPersona(){
+        showLoading();
         $.ajax({
             url: '@Url.Action("SubmodalBuscarInvolucrado", "CapturaAccidentes")',
             type: 'GET',
@@ -319,15 +320,23 @@
             async: false,
             success: function (data) {
                 $('#ModalBodyBuscarInvolucrado').html(data);
+                $('#buscarInvolucradoModal').modal({ backdrop: 'static', keyboard: false });
                 $('#buscarInvolucradoModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
 
     function agregarComplementos() {
-
+     var idPersona = $("#idPersonaInput").val();
+        if (idPersona === "") {        
+        sitteg_warning("Debe seleccionar una persona involucrada");
+        return; 
         var Mydata = $("#complementoInvolucradoForm").serialize();
-        
+        showLoading();
         $.ajax({
             url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
             type: 'POST',
@@ -337,13 +346,31 @@
                 $('.modal-backdrop').remove();
                 sitteg_success("Se ha actualizado la información");
                 actualizarGrid();
-
+                hideLoading();
             },
             error: function (error) {
-
+                hideLoading();
             }
         });
     }
+
+    var Mydata = $("#complementoInvolucradoForm").serialize();
+    
+    $.ajax({
+        url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
+        type: 'POST',
+        data: Mydata,
+        success: function (result) {
+            $('#agregarInvolucradoModal').modal('hide');
+            $('.modal-backdrop').remove();
+            sitteg_success("Se ha actualizado la información");
+            actualizarGrid();
+        },
+        error: function (error) {
+        }
+    });
+}
+
     function actualizarGrid() {
         var grid = $("#gridInvolucradosTodo").data("kendoGrid");
         grid.dataSource.read();
@@ -352,7 +379,7 @@
     function involucardoNoVehiculo() {
         var idPersona = $("#idPersonaInput").val();
         var IdVehiculoInvolucrado = $("#idVehiculoHidden").val();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("GuardarRelacionPersonaVehiculo", "CapturaAccidentes")',
             type: 'POST',
@@ -360,9 +387,11 @@
             success: function (response) {
                 sitteg_success("Se ha actualizado la información");
                 // Resto del código
+                hideLoading();
             },
             error: function (xhr, status, error) {
                 // Manejo del error
+                hideLoading();
             }
         });
     }

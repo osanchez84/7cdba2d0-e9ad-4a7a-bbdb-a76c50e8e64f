@@ -1,5 +1,5 @@
 ﻿function _set_combo_catalog(catalog, parameter, htmlName, isRequired, container, functionName, multiple = "false") {
-
+    showLoading();
     $.ajax({
         type: "POST",
         url: '/GenericComponents/GetComboByCatalog',
@@ -14,7 +14,10 @@
         },
         success: function (data) {
             $("#" + container).html(data);
-            
+            hideLoading();
+        }, error: function () {
+            sitteg_warning("Ocurrio un error al procesar su solicitud.");
+            hideLoading();
         }
     });
 }

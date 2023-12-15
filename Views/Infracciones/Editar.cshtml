@@ -699,6 +699,7 @@
             //var formData = new FormData();
             //formData.delete('idDelegacion');
             //alert(json);
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_editarInfraccion")',
                 type: 'POST',
@@ -711,9 +712,11 @@
                 } else {
                         sitteg_warning(response.message);
                 }
+                hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         } else {
@@ -723,7 +726,7 @@
 
     function serviceCrearInfraccion(idInfraccion) {
         var shouldGoBack = false; 
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
             type: 'POST',
@@ -743,9 +746,12 @@
                 if (shouldGoBack && redirectTo) {
                     window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
                 }
+
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     }
@@ -770,6 +776,7 @@
         }
     }
     function buscarVehiculo(pidVehiculo) {
+        showLoading();
         $.ajax({
             type: "GET",
             url: '@Url.Action("ajax_detalleVehiculo")',
@@ -779,16 +786,17 @@
             success: function (data) {
                 $("#detalleVehiculo").html(data);
                 $("#idVehiculo").val(pidVehiculo);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
-            //,
-            //error: function (xhr, status) {
-            //    var errmsg = msg_err_gral;
-            //    semg_error(errmsg);
-            //}
+            
         });
     }
 
     function buscarPersona(pidPersona) {
+        showLoading();
         $.ajax({
             type: "GET",
             url: '@Url.Action("ajax_detallePersona")',
@@ -799,27 +807,28 @@
                 $("#detallePersonas").html(data);
                 $("#idPersona").val(pidPersona);
                 $("#detallePersonas").show();
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
-            //,
-            //error: function (xhr, status) {
-            //    var errmsg = msg_err_gral;
-            //    semg_error(errmsg);
-            //}
+            
         });
     }
     function getListadoPersonasInfracciones() {
         $("#listadoPersonas").show();
+        showLoading();
         $.ajax({
             type: "GET",
             url: '@Url.Action("ajax_listadoPersonasInfracciones")',
             success: function (data) {
                 $("#listadoPersonas").html(data);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
-            //,
-            //error: function (xhr, status) {
-            //    var errmsg = msg_err_gral;
-            //    semg_error(errmsg);
-            //}
+            
         });
     }
 
@@ -926,7 +935,7 @@
         var formData = new FormData();
         formData.append('file', file);
         formData.append('idInfraccion', idInfraccion);
-
+        showLoading();
         $.ajax({
             url: '/Infracciones/SubirImagen',
             type: 'POST',
@@ -937,10 +946,12 @@
                 sitteg_success("Se ha anexado el archivo exitosamente");
 
                 console.log(response);
+                hideLoading();
             },
             error: function (xhr, status, error) {
                 // Manejo de errores
                 console.log(error);
+                hideLoading();
             }
         });
     }

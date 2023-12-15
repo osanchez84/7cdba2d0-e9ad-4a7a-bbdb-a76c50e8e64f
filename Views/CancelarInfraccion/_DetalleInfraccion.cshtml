@@ -8,6 +8,7 @@
         var id_delegacion = $("#id_delegacion").val();
         var Mydata = $("#cancelarInfraccionForm").serialize();
         console.log("first" + folio);
+        showLoading();
         $.ajax({
             url: '@Url.Action("IniciarCancelacion", "CancelarInfraccion")',
             type: 'POST',
@@ -15,14 +16,17 @@
             success: function (result) {
                 sitteg_info('Se ha cancelado la infracción en el sistema.');
                 callback(folio, id_delegacion);
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }
 
     function cancelarFinanzas(folio_infraccion, id_delegacion) {
+        showLoading();
         $.ajax({
             url: '/CancelarInfraccion/AnulacionDocumento',
             type: 'POST',
@@ -58,9 +62,11 @@
                         }, 5000);
                     }
                 }
+                hideLoading();
             },
             error: function (response) {
                 console.error('Error en la llamada AJAX:', response);
+                hideLoading();
             }
         });
     }

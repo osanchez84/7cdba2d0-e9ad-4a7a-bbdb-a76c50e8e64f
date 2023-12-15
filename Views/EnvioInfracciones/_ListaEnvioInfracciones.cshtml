@@ -90,6 +90,7 @@
 		console.log("IDS", idInfraccionesSeleccionados)
 	}
 	function enviarIdInfraccionesSeleccionados() {
+		showLoading();
 		$.ajax({
 			url: "/EnvioInfracciones/MostrarModal",
 			type: "POST",
@@ -97,9 +98,11 @@
 			success: function (response) {
 				$('#ModalBodyEnviarInfracciones').html(response);
 				$('#enviarInfraccionesModal').modal('show');
+				hideLoading();
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				console.error(textStatus, errorThrown);
+				hideLoading();
 			}
 		});
 	}

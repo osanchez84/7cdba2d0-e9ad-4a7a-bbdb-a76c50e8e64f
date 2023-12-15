@@ -41,7 +41,7 @@
      function EntidadDDChangeAccFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/CapturaAccidentes/Municipios_Por_Entidad",
             type: "POST",
@@ -49,13 +49,16 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
  function EntidadDropDownChangeAcc() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+        showLoading();
         $.ajax({
             url: "/CapturaAccidentes/Municipios_Por_Entidad",
             type: "POST",
@@ -63,8 +66,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -1309,7 +1314,7 @@ function submitCreateMoral() {
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CrearPersonaMoral")',
             type: 'POST',
@@ -1323,11 +1328,13 @@ function submitCreateMoral() {
                     $('#addMoral').modal('hide');
                     sitteg_success('Elemento guardado correctamente');
                 }, 500);
+                hideLoading();
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg);
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     } else {
@@ -1345,6 +1352,7 @@ function submitCreateMoral() {
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
             type: 'POST',
@@ -1355,6 +1363,10 @@ function submitCreateMoral() {
                 $("#PersonaMoralLocalizada").html(result);
                 var grid = $("#gridPersonasMorales").data("kendoGrid");
                 grid.refresh();
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -1393,7 +1405,7 @@ function submitCreateMoral() {
     $("#idGenero").val(generoBool ? 1 : 0);
 
     var Mydata = $("#personaFisicaForm").serialize();
-
+    showLoading();
     $.ajax({
         url: '@Url.Action("ajax_CrearPersonaFisica")',
         type: 'POST',
@@ -1403,9 +1415,11 @@ function submitCreateMoral() {
             $("#personasFisicasAcc").html(result);
 
             $('#addFisico').modal('hide');
+            hideLoading();
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+            hideLoading();
         }
     });
 }
@@ -1431,7 +1445,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
                console.log("dtaa: ", formData)
-
+               showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
@@ -1444,11 +1458,13 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
                     grid.dataSource.data(result.data);
                     grid.refresh();
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
+                    hideLoading();
                 }
             });
         }

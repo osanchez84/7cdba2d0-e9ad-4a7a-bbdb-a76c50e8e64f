@@ -42,6 +42,7 @@
 <script>
     function eliminarClasBD(IdAccidente) {
         var Mydata = $("#idForm").serialize();
+        showLoading();
         $.ajax({
             url: "/CapturaAccidentes/EliminaClasificacion",
             type: "POST",
@@ -53,10 +54,12 @@
                 $('.modal-body').removeClass('modal-open');
                 $('.modal-backdrop').remove();
                 $('#eliminarClasificacionModal').modal('hide');
+                hideLoading();
             },
             error: function (error) {
                 // Maneja el error en caso de que ocurra
                 console.log("Error: " + error);
+                hideLoading();
             }
         });
     }

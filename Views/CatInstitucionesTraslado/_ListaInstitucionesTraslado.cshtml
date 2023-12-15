@@ -55,7 +55,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdInstitucionTraslado = dataItem.IdInstitucionTraslado;
         console.log(IdInstitucionTraslado);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarInstitucionTrasladoModal", "CatInstitucionesTraslado")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -63,8 +63,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarInstTraslado').html(result);
                 $('#agregarInstTraslado').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -72,7 +75,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdInstitucionTraslado = dataItem.IdInstitucionTraslado;
         console.log(IdInstitucionTraslado);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarInstitucionTrasladoModal", "CatInstitucionesTraslado")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -80,8 +83,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarInstTraslado').html(result);
                 $('#agregarInstTraslado').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

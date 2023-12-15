@@ -56,7 +56,7 @@
         var dataItem = grid.dataItem(row);
         var IdMunicipio = dataItem.IdMunicipio;
         console.log("UJ",dataItem);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarMunicipioModal", "CatMunicipios")',
             type: 'POST', 
@@ -64,8 +64,11 @@
             success: function (result) {
                 $('#ModalBodyMunicipio').html(result);
                 $('#agregarMunicipio').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

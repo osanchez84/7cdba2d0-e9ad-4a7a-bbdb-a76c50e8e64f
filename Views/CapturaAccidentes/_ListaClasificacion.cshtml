@@ -61,6 +61,7 @@
         var row = $(event.target).closest("tr");
         var dataItem = grid.dataItem(row);
         var IdAccidente = dataItem.IdAccidente
+        showLoading();
         $.ajax({
             url: '@Url.Action("ModalEliminarClasificacion", "CapturaAccidentes")',
             type: 'POST',           
@@ -69,6 +70,10 @@
             success: (data) => {
                 $('#ModalBodyEliminarClasificacion').html(data);
                 $('#eliminarClasificacionModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

@@ -54,7 +54,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficial = dataItem.IdOficial;
         console.log(IdOficial);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarOficialParcial", "Oficiales")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -62,8 +62,11 @@
             success: function (result) {
                 $('#ModalBodyCrearOficial').html(result);
                 $('#agregarOficial').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -71,7 +74,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficial = dataItem.IdOficial;
         console.log(IdOficial);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarOficialParcial", "Oficiales")', // URL de la acción del controlador
             type: 'POST', // Tipo de solicitud HTTP (POST o GET)
@@ -79,8 +82,11 @@
             success: function (result) {
                 $('#ModalBodyCrearOficial').html(result);
                 $('#agregarOficial').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

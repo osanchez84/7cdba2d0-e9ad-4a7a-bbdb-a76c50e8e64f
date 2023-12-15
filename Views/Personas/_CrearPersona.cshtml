@@ -1,14 +1,43 @@
 ﻿@model PersonaModel
 <script>
     $(document).ready(function () {
-        var datePicker = $("#vigencia").data("kendoDatePicker");
-        datePicker.value(null);
-    });
-
-    $(document).ready(function () {
-        $('#vigencia').removeAttr("required");
+        hideLoading();
+        var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
+        $('#vigenciaLicencia').removeAttr("required");
     });
 </script>
+
+
+     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                <div class="col-auto pe-0">
+                    <div class="row align-items-center justify-content-center justify-content-md-start">
+                        <div class="col-auto pe-0">
+                            <i class="icon-addFisica h1 colorPrimary"></i>
+                        </div>
+                        <div class="col-auto my-3">
+                            <h2 class="m-0 h3"><b>Agregar Persona</b></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="row">
+                        <div class="col-auto my-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-light py-1"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 my-4">
+                    <h5 class="px-4"><b>Datos de persona</b></h5>
+                    <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
+                </div>
+            </div>
 <form id="frmCrearPersona" class="row px-4 mb-4 align-items-end justify-content-center">
     @Html.HiddenFor(m=> m.idPersona)
     <div class="row my-2">
@@ -107,7 +136,7 @@
             <div class="controlForm">
                 <label>Vigencia licencia:</label>
                 @(Html.Kendo().DatePickerFor(t => t.vigenciaLicencia)
- .Culture("es-ES")
+                        .Culture("es-ES")
                         .Value((DateTime?)null)
                         .HtmlAttributes(new { style = "width: 100%;", id="vigencia" })
                     )
@@ -257,7 +286,7 @@
     function EntidadDropDownChange() {
         var entidadDDlValue = $("#idEntidad").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Personas/Municipios_Drop",
             type: "POST",
@@ -265,8 +294,10 @@
             success: function (data) {
                 var MunicipiosDropDown = $("#idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -279,6 +310,8 @@
         var idTipoPersonaValue = idTipoPersona.val();
         var Vigencia = $("#vigencia");
         var vigenciaValue = Vigencia.val();
+
+        alert("pasoooo:" + vigenciaValue);
 
         if (idTelefonoValue === null || idTelefonoValue === "") {
             idTelefono.prop("disabled", true);
@@ -297,6 +330,7 @@
 
         if (validator.validate()) {
             var formData = $("#frmCrearPersona").serialize();
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_CrearPersona","Personas")',
                 type: 'POST',
@@ -313,11 +347,13 @@
                     } else {
                         console.error("El resultado no es un objeto válido:", result);
                     }
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
                 }
             });
         }
@@ -337,15 +373,18 @@ function completarConLicencia() {
     var numeroLicencia = searchParams.get('numeroLicencia');
 
     if (numeroLicencia.trim() !== "") {
+        showLoading();
         $.ajax({
             type: "POST",
             url: "/Personas/BusquedaPorLicencia",
             data: { numeroLicencia: numeroLicencia },
             success: function (result) {
                 console.log(result);
+                hideLoading();
             },
             error: function (error) {
                 console.error(error);
+                hideLoading();
             }
         });
     } else {
@@ -360,7 +399,11 @@ function completarConLicencia() {
         var datePicker = $("#vigencia").data("kendoDatePicker");
         datePicker.value(null);
     });
-   
+
+
+    $(document).ready(function () {
+        $('#vigencia').removeAttr("required");
+    });
 
 
 </script>

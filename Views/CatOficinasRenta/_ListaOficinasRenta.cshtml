@@ -65,7 +65,7 @@
         var IdDelegacion = dataItem.IdDelegacion;
 
         console.log(IdDelegacion);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarOficinaRentaModal", "CatOficinasRenta")',
             type: 'POST', 
@@ -73,8 +73,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarOficinasRenta').html(result);
                 $('#agregarOficinasRenta').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -84,7 +87,7 @@
         var IdDelegacion = dataItem.IdDelegacion;
 
         console.log(IdOficinaRenta);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarOficinaRentaModal", "CatOficinasRenta")', 
             type: 'POST',
@@ -92,8 +95,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarOficinasRenta').html(result);
                 $('#agregarOficinasRenta').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
     function tooltipContent(e) {

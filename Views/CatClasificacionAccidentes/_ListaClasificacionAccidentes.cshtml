@@ -46,7 +46,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdClasificacionAccidente = dataItem.IdClasificacionAccidente;
         console.log(IdClasificacionAccidente);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarClasificacionAccidenteModal", "CatClasificacionAccidentes")', 
             type: 'POST', 
@@ -54,8 +54,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarClasificacionAccidente').html(result);
                 $('#agregarClasificacionAccidente').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -63,7 +66,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdClasificacionAccidente = dataItem.IdClasificacionAccidente;
         console.log(IdClasificacionAccidente);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarClasificacionAccidenteModal", "CatClasificacionAccidentes")', 
             type: 'POST',
@@ -71,8 +74,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarClasificacionAccidente').html(result);
                 $('#agregarClasificacionAccidente').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 </script>

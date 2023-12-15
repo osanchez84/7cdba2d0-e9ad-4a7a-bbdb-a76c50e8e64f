@@ -38,6 +38,10 @@
                 @Html.HiddenFor(t => t.IdCausaAccidente)
                 <h5 class="px-4"><b>@ViewBag.CausaAccidente</b></h5>
             </div>
+            <div class="col-10 col-md-5 mt-1">
+                <h6 class="px-4 text-muted">Causa:</h6>
+                @Html.HiddenFor(t => t.idAccidenteCausa)
+            </div>
         </div>
     </form>
     <div class="row my-4">
@@ -67,7 +71,7 @@
     function EliminarCausaBD() {
 
         var Mydata = $("#eliminaCausaForm").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarCausaAccidente")',
             type: 'POST',
@@ -80,10 +84,11 @@
                 $('modal-body').removeClass('model-open');
                 $('.modal-backdrop').remove();
 
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning("!Sucedio un error, intente mas tarde...");
+                hideLoading();
             }
         });
     }

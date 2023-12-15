@@ -31,6 +31,10 @@
 		$('#involucradoSeleccionado').show();
 
 	}
+
+
+	
+
 </script>
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
@@ -52,8 +56,8 @@
 				columns.Bound(c => c.CURP).Title("CURP").Width(100);
 				columns.Bound(c => c.fechaNacimiento).Title("Fecha Nacimiento").Format("{0:dd/MM/yyyy}").Width(100);
 				columns.Bound(c => c.numeroLicencia).Title("No Licencia").Width(100);
-				//columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
-
+				//columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarPersona(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(150);
+			
 
 			})
 			.Sortable()
@@ -80,6 +84,14 @@
 			< div >< h1 > @ex.Message </ h1 > </ div >
 		}
 	}
+	<div class="modal fade modalCustom" id="modalCrearPersona" aria-labelledby="modalCrearPersona" aria-hidden="true">
+		<div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
+			<div class="modal-content">
 
+				<div class="modal-body" id="modalBodyCrearPersona">
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 

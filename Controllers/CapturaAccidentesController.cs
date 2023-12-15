@@ -1658,7 +1658,58 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
+		[HttpGet]
+		public IActionResult ajax_ModalEditarPersona(int id)
+		{
+			var model = _personasService.GetPersonaById(id);
+			var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
+			var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
+			var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
+			var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
+			var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
 
-    }
+			ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+			ViewBag.CatGeneros = new SelectList(catGeneros.CatalogList, "Id", "Text");
+			ViewBag.CatEntidades = new SelectList(catEntidades.CatalogList, "Id", "Text");
+			ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
+			ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
+			return PartialView("_EditarPersona", model);
+		}
+
+		[HttpPost]
+		public IActionResult ajax_EditarPersona(PersonaModel model)
+		{
+			//var model = json.ToObject<Gruas2Model>();
+			var errors = ModelState.Values.Select(s => s.Errors);
+			if (ModelState.IsValid)
+			{
+				if (model.PersonaDireccion.idPersona == null || model.PersonaDireccion.idPersona <= 0)
+				{
+					model.PersonaDireccion.idPersona = model.idPersona;
+					int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+				}
+				else
+				{
+					int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+				}
+				int id = _personasService.UpdatePersona(model);
+				var modelList = _personasService.GetPersonaById((int)model.idPersona);
+                var formattedModelList = new
+                {
+                    IdPersona = modelList.idPersona,
+					nombre = modelList.nombre,
+					apellidoPaterno = modelList.apellidoPaterno,
+					apellidoMaterno = modelList.apellidoMaterno,
+					RFC = modelList.RFC,
+					CURP = modelList.CURP,
+					fechaNacimiento = modelList.fechaNacimiento,
+					numeroLicencia = modelList.numeroLicencia
+                };
+                return Json(new { data = formattedModelList });
+			}
+			return RedirectToAction("Index");
+		}
+
+	}
 }
 

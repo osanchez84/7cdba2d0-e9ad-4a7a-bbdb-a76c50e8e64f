@@ -1249,7 +1249,7 @@
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
-                $("#personasFisicas").html(result);
+                $("#personasFisicasAcc").html(result);
                 hideLoading();
             },error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -1398,10 +1398,23 @@ function submitCreateMoral() {
         success: function (result) {
             console.log(result);
             $("#personasFisicas").html(result);
-                        $('#addFisico').modal('hide');
-                        hideLoading();
-
+            $("#Persona_apellidoPaternoFisico").val(null);
+            $("#Persona_apellidoMaternoFisico").val(null);
+            $("#Persona_nombreFisico").val(null);
+            $("#Persona_vigenciaLicencia").val(null);
+            $("#Persona_numeroLicenciaFisico").val(null);
+            $("#Persona_Direccion_numeroFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
+            $("#Persona_fechaNacimiento").val(null);
+            $("#Persona_CURPFisico").val(null);
+            $("#Persona_RFCFisico").val(null);
+            $("#Persona_PersonaDireccion_calleFisico").val(null);
+            $("#Persona_PersonaDireccion_coloniaFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
             $('#addFisico').modal('hide');
+            hideLoading();
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX:", textStatus, errorThrown);

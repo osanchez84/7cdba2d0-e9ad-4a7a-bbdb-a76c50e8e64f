@@ -1278,6 +1278,10 @@
             type: 'POST',
             success: function (result) {
                 $("#personasFisicasAcc").html(result);
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

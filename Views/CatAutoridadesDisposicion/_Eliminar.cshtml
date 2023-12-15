@@ -81,13 +81,17 @@
         var Mydata = $("#eliminarAutDispForm").serialize();
         console.log(Mydata);
         $('#agregarAutoridadDisp').modal('hide');
- 
+ showLoading();
         $.ajax({
             url: '@Url.Action("EliminarAutoridadDisposicionModal")',
             type: 'POST',
             data: Mydata,
             success: function (result) {
                 $("#tablaAutoridadesDisposicion").html(result);
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }

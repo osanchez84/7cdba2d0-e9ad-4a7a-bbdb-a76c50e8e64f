@@ -93,11 +93,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
     catch (Exception ex)
     {
         // En caso de errores, devolver una respuesta JSON con licencia no encontrada
-        return Json(new { encontrada = false, message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
+        return Json(new { encontrada = false, data = personasList,message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
     }
 
     // Si no se cumple la condición anterior, devolver una respuesta JSON indicando que no se encontraron resultados
-    return Json(new { encontrada = false, message = "No se encontraron resultados." });
+    return Json(new { encontrada = false, data = personasList, message = "No se encontraron resultados." });
 }
 
 
@@ -184,9 +184,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
                 }
                 int id = _personasService.UpdatePersona(model);
-                var modelList = _personasService.GetAllPersonas();
+                var modelList = _personasService.GetPersonaById((int)model.idPersona);
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
-                return PartialView("_ListadoPersonas", modelList);
+                return Json(new { data = modelList });
             }
             return RedirectToAction("Index");
         }
@@ -203,7 +203,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
                 var datosTabla = _personasService.GetPersonaById(idPersona);
 
-                return Json(datosTabla);
+                return Json(new { data = datosTabla });
             }
             catch (Exception ex)
             {

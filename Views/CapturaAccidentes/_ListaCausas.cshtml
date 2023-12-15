@@ -45,7 +45,8 @@
                 "<i class='h5 icon-delete me-2'></i><b>Eliminar</b>" +
                 "</h6></button>"
                 ).Width(150);
-                columns.Bound(c => c.NumeroContinuo).Title("Orden").Width(30);
+
+                columns.Bound(c => c.indice).Title("Orden").Width(30);
                
                 columns.Template(
                 "<button class='w-100 btn " + claseColorOtroBoton + "'>" +
@@ -61,7 +62,6 @@
                 "</h6></button>"
                 ).Width(50);                
             }).HtmlAttributes(new { style = "height:400px" })
-
             .Sortable()
             .Groupable()
             .Scrollable()
@@ -114,7 +114,7 @@
             var IdCausaAccidente = dataItem.IdCausaAccidente;
          var idAccidenteCausa = dataItem.idAccidenteCausa;
 
-
+         showLoading();
             $.ajax({
                 url: '@Url.Action("ModalEditarCausaAccidente", "CapturaAccidentes")',
                 type: 'POST',
@@ -122,7 +122,11 @@
                 success: function (result) {
                 $('#ModalBodyCausaAccidente').html(result);
                 $('#causaAccidenteModal').modal('show');
-                },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
             });
         }
     
@@ -136,13 +140,19 @@
     var dataItem = grid.dataItem(row);
     var CausaAccidente = dataItem.CausaAccidente
     var IdCausaAccidente = dataItem.IdCausaAccidente
+    var IdAccidenteCausa = dataItem.idAccidenteCausa
+    showLoading();
     $.ajax({
             url: '@Url.Action("ModalEliminarCausas", "CapturaAccidentes")',
             type: 'POST',
-            data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente : CausaAccidente },
+            data: { IdCausaAccidente: IdCausaAccidente, CausaAccidente: CausaAccidente, IdAccidenteCausa: IdAccidenteCausa },
             success: function (result) {
                 $('#ModalBodyCausaAccidente').html(result);
                 $('#causaAccidenteModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -158,9 +168,18 @@
         var currentIndex = grid.dataSource.indexOf(dataItem);
         if (currentIndex > 0) {
             var previousItem = grid.dataSource.at(currentIndex - 1);
-            grid.dataSource.remove(dataItem);
-            grid.dataSource.insert(currentIndex - 1, dataItem);
-        }
+            $.ajax({
+                url: '@Url.Action("ActualizaIndiceCausaAccidente", "CapturaAccidentes")',
+                type: 'POST',
+                data: { idAccidenteCausa: dataItem.idAccidenteCausa, indice: (dataItem.indice - 1), idAccidenteCausaParent: previousItem.idAccidenteCausa, indiceParent: (previousItem.indice + 1) },
+                success: function (result) {
+                    grid.dataSource.remove(dataItem);
+                    grid.dataSource.insert(currentIndex - 1, dataItem);
+                    dataItem.set("indice", dataItem.indice - 1);
+                    previousItem.set("indice", previousItem.indice + 1);
+                }
+            });            
+        }        
     }
 
     function abajo(event) {
@@ -174,8 +193,19 @@
         var currentIndex = grid.dataSource.indexOf(dataItem);
         if (currentIndex < grid.dataSource.total() - 1) {
             var nextItem = grid.dataSource.at(currentIndex + 1);
-            grid.dataSource.remove(dataItem);
-            grid.dataSource.insert(currentIndex + 1, dataItem);
+            $.ajax({
+                url: '@Url.Action("ActualizaIndiceCausaAccidente", "CapturaAccidentes")',
+                type: 'POST',
+                data: { idAccidenteCausa: dataItem.idAccidenteCausa, indice: (dataItem.indice + 1), idAccidenteCausaParent: nextItem.idAccidenteCausa, indiceParent: (nextItem.indice - 1) },
+                success: function (result) {
+                    grid.dataSource.remove(dataItem);
+                    grid.dataSource.insert(currentIndex + 1, dataItem);
+                    nextItem.set("indice", nextItem.indice - 1);
+                    dataItem.set("indice", dataItem.indice + 1);
+                }
+            });
+            
+
         }
     }
 

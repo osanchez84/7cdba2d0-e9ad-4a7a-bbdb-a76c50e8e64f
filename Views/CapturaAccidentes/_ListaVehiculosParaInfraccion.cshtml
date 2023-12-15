@@ -8,6 +8,7 @@
         var IdPropietario = dataItem.IdPropietarioInvolucrado
         var Placa = dataItem.Placa
         var Tarjeta = dataItem.Tarjeta
+        showLoading();
         $.ajax({
             url: '@Url.Action("MostrarModalCrearInfraccion", "CapturaAccidentes")',
             type: 'POST', 
@@ -15,8 +16,11 @@
             success: function (result) {
                 $('#ModalBodyCrearInfraccion').html(result);
                 $('#crearInfraccionModal').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

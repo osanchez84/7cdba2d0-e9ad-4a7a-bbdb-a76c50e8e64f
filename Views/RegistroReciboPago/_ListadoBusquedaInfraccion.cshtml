@@ -63,7 +63,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var Id = dataItem.IdInfraccion;
         console.log(Id);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("Detalleinfraccion", "RegistroReciboPago")', 
             type: 'POST', 
@@ -71,8 +71,11 @@
             success: function (result) {
                 $('#BodyComprobacion').html(result);
                 $('#modalComprobacion').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

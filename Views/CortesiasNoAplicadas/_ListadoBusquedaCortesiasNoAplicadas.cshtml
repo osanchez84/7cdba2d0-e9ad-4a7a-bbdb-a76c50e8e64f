@@ -63,7 +63,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var Id = dataItem.folioInfraccion;
         //console.log(Id);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("MostrarDetalle", "CortesiasNoAplicadas")',
             type: 'POST',
@@ -71,8 +71,11 @@
             success: function (result) {
                 $("#detalle").html(result);
                 $("#detalle").show();
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 </script>

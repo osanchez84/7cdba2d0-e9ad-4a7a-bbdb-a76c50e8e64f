@@ -106,6 +106,7 @@
         $('#agregarCarretera').modal('hide');
         $('body').removeClass('model-open');
         $('.modal-backdrop').remove();
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarCarreteraBD")',
             type: 'POST',
@@ -113,10 +114,11 @@
             success: function (result) {
                 $("#gridCatCarreteras").data("kendoGrid").dataSource.data(result);
                 sitteg_info('Se ha actualizado la información');
-
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

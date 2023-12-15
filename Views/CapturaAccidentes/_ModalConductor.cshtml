@@ -417,6 +417,7 @@
     }
     function guardarVehiculoConductor() {
         var formData = $("#propietarioConductorForm").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ActualizarConConductor")',
             type: 'POST',
@@ -426,17 +427,19 @@
                 $('#modalAgregarConductor').modal('hide');
                 $('.modal-backdrop').remove();
                 abrirModalDetalles();
-               
+               hideLoading();
             },
             error: function (error) {
                 var errorMessage = error.responseText || "Ocurrió un error, inténtelo nuevamente más tarde.";
                 sitteg_warning(errorMessage);
+                hideLoading();
             }
         });
     }
      function sinConductor() {
 
         var formData = $("#sinConductorForm").serialize();
+        showLoading();
         $.ajax({
             url: '@Url.Action("ActualizarConConductor")',
             type: 'POST',
@@ -446,11 +449,12 @@
                 $('#modalAgregarConductor').modal('hide');
                 $('.modal-backdrop').remove();
                 abrirModalDetalles();
-
+                hideLoading();
             },
             error: function (error) {
                 var errorMessage = error.responseText || "Ocurrió un error, inténtelo nuevamente más tarde.";
                 sitteg_warning(errorMessage);
+                hideLoading();
             }
         });
     }
@@ -492,7 +496,7 @@
     //}
 
     function regresarModalVehiculo(IdPersona){
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("RegresarModalVehiculo", "CapturaAccidentes")',
             type: 'POST',
@@ -502,8 +506,10 @@
                 $('.modal-backdrop').remove();
                 $('#modalAgregarConductor').modal('show');
                 $('#ModalBodyAgregarConductor').html(data);
+                hideLoading();
             },
             error: function (error) {
+                hideLoading();
                 console.log("ERROR", error);
             }
         });
@@ -512,32 +518,40 @@
         var grid = $("#gridConductores").data("kendoGrid");
         grid.dataSource.data([]);
         var Mydata = $("#otroConductorForm").serialize();
+        showLoading();
         $.ajax({
             url: '/Personas/BuscarPorParametro',
             type: 'POST',
             data: Mydata,
             success: function (response) {
-                if (response.tipo == "success") {
+                console.log("RESP", response);
+
+                if (response.tipo === "success") {
                     mostrarModal(response.datos);
-                } else if (response.encontrada != undefined) {
-                    if (response.encontrada == false) {
-                        // sitteg_warning("No se pudieron obtener resultados.");
-                    }
-                } else if (response.tipo == "warning") {
+                    hideLoading();
+                } else if (response.encontrada !== undefined && response.encontrada === false) {
+                    sitteg_warning("No se pudieron obtener resultados.");
+                } else if (response.tipo === "warning") {
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+                } else {
+                    // Otro tipo de respuesta, si es necesario manejarla
                 }
 
                 var personasList = response.data;
                 var grid = $("#gridConductores").data("kendoGrid");
                 grid.dataSource.data(personasList);
 
-                if (personasList.length === 0) {
+                if (personasList.count === 0 && response.tipo !== "success") {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }
+
+                hideLoading();
             },
+
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
             }
         });
     }
@@ -600,18 +614,27 @@
             const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; // 0 o valor predeterminado si no hay coincidencia
             jsonData.id_tipo_licencia = tipoLicenciaNumero;
             var idVehiculo = $("#IdVehiculoH").val();
+            showLoading();
             $.ajax({
                 type: 'POST',
-                url: '/CapturaAccidentes/guardaDesdeServicio', // Reemplaza con la URL correcta
+                url: '/Personas/guardaDesdeServicio', // Reemplaza con la URL correcta
                 data:  jsonData ,
-                success: function (response) { 
+                success: function (result) { 
+                    console.log("DA", result)
                     $('#modalLicencias').modal('hide');
-                    var personasList = [response];
                     var grid = $("#gridConductores").data("kendoGrid");
-                    grid.dataSource.data(result);
+                    if (result && result.data) {
+                        var dataArray = [result.data];
+                        grid.dataSource.data(dataArray);
+                    } else {
+                        console.error("La respuesta no tiene la estructura esperada:", result);
+                    }
+                sitteg_success('Elemento guardado correctamente')
+                    hideLoading();
                 },
                 error: function (error) {
                     sitteg_warning('Error al guardar en la base de datos:');
+                    hideLoading();
                 }
             });
         });

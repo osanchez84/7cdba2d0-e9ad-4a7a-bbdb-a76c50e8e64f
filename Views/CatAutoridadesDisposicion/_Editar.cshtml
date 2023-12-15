@@ -85,7 +85,7 @@
         var Mydata = $("#editarAutDispForm").serialize();
         console.log(Mydata);
         $('#agregarAutoridadDisp').modal('hide');
-  
+  showLoading();
         $.ajax({
             url: '@Url.Action("Update")',
             type: 'POST',
@@ -94,10 +94,11 @@
                // $("#tablaAutoridadesDisposicion").html(result);
                 $("#gridAutoridadesDisp").data("kendoGrid").dataSource.data(result);
                 sitteg_info('Se ha actualizado la información');
-
+                hideLoading();
             },
             error: function (error) { 
                 sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
             }
         });
     }

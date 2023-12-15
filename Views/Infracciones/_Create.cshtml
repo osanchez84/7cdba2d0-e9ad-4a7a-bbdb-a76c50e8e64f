@@ -37,7 +37,7 @@ $(document).ready(()=>{
      function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
-
+        showLoading();
         $.ajax({
             url: "/Infracciones/Municipios_Por_Entidad",
             type: "POST",
@@ -45,13 +45,16 @@ $(document).ready(()=>{
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
  function EntidadDropDownChangeV() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
+        showLoading();
         $.ajax({
             url: "/Infracciones/Municipios_Por_Entidad",
             type: "POST",
@@ -59,8 +62,10 @@ $(document).ready(()=>{
             success: function (data) {
                 var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                hideLoading();
             }
         });
     }
@@ -644,6 +649,7 @@ $(document).ready(()=>{
 </div>
 
 
+@*PERSONA MORAL*@
 <div class="modal fade modalCustom" id="addMoral"  aria-labelledby="addMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
@@ -656,7 +662,7 @@ $(document).ready(()=>{
                                 <i class="icon-addMoral h1 colorPrimary"></i>
                             </div>
                             <div class="col-auto my-3">
-                                <h2 class="m-0 h3"><b>Agregar persona moral</b></h2>
+                                <h2 class="m-0 h3"><b>Agregar persona moral.</b></h2>
                             </div>
                         </div>
                     </div>
@@ -702,7 +708,7 @@ $(document).ready(()=>{
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.telefono)
                                 .Label(l => l.Content("Teléfono:"))
                                 .Placeholder("Ingresa Teléfono")
                                 .HtmlAttributes(new { style = "width: 100%" })
@@ -778,7 +784,7 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa calle")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -789,14 +795,12 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa número")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
                         </div>
                     </div>
-
-
-
                 </form>
+
                 <div class="row my-4">
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
@@ -870,6 +874,8 @@ $(document).ready(()=>{
         </div>
     </div>
 </div>
+
+@*PERSONA FISICA*@
 <div class="modal fade modalCustom" id="addFisico"  aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
@@ -912,7 +918,7 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombreFisico)
                                 .Label(l => l.Content("Nombre(s) <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa el nombre(s)")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1037,7 +1043,7 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.coloniaFisico)
                                 .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una colonia")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1049,7 +1055,7 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calleFisico)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una calle")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1060,7 +1066,7 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numeroFisico)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa un número interior")
-                                .HtmlAttributes(new { style = "width: 100%" })
+                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                 )
 
                         </div>
@@ -1200,12 +1206,16 @@ $(document).ready(()=>{
     });
 
     function buscarPersonasFisicas() {
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
                 $("#personasFisicasInf").html(result);
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -1232,24 +1242,47 @@ $(document).ready(()=>{
     });
 
    function submitCreateMoral() {
+    var isValid = true;
+    var phone = $("#Persona_telefono").val();
+    var email = $("#Persona_PersonaDireccion_correo").val();
+    
     var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
     
-    var idTelefono = $("#Persona_PersonaDireccion_telefono");
-    var idTelefonoValue = idTelefono.val();
+    //var idTelefono = $("#Persona_telefono");
+    //var idTelefonoValue = idTelefono.val();
     
-    if (idTelefonoValue === null || idTelefonoValue === "") {
-        idTelefono.prop("disabled", true);
-    }
+    //if (idTelefonoValue === null || idTelefonoValue === "") {
+    //    idTelefono.prop("disabled", true);
+    //}
 
-    idTelefono.off('blur');
+    //idTelefono.off('blur');
 
     $("#hdnidCatTipoServicio").prop("disabled",true)
+    //TODO
 
+    $('#Persona_telefono').removeClass("errorData");
+    if (phone != "" && phone != undefined) {
+        if (!isValidPhone(phone)) {
+            $('#Persona_telefono').addClass("errorData");
+            isValid = false;
+        }
+    }
 
+    $('#Persona_PersonaDireccion_correo').removeClass("errorData");
+    if (email != "" && email != undefined) {
+        if (!isValidEmail(email)) {
+            $('#Persona_PersonaDireccion_correo').addClass("errorData");
+            isValid = false;
+        }
+    }
+    if (!isValid) {
+        sitteg_warning('Datos incorrectos, favor de verificar.');
+        return;
+    }
 
     if (validator.validate()) {
         var formData = $("#frmCreateMoral").serialize();
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_CrearPersonaMoral")',
             type: 'POST',
@@ -1261,17 +1294,27 @@ $(document).ready(()=>{
                     document.getElementById("PersonaMoralLocalizada").style.display = "block";
                     $("#PersonaMoralLocalizada").html(result);
                         $('#addMoral').modal('hide');
+                        $('#Persona_telefono').val(null);
+                        $('#Persona_nombre').val(null);
+                        $('#Persona_RFC').val(null);
+                        $('#Persona_PersonaDireccion_correo').val(null);
+                        $('#Persona_PersonaDireccion_colonia').val(null);
+                        $('#Persona_PersonaDireccion_calle').val(null);
+                        
                         sitteg_success('Elemento guardado correctamente')
                 }, 500);
+
+                hideLoading();
             },
             error: function (xhr, status) {
                 var errmsg = xhr.responseText;
                 console.log(errmsg);
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
             }
         });
     } else {
-        idTelefono.prop("disabled", false);
+        //idTelefono.prop("disabled", false);
         sitteg_info('Debe llenar los campos requeridos');
     $("#hdnidCatTipoServicio").prop("disabled",false)
 
@@ -1283,6 +1326,7 @@ $(document).ready(()=>{
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
         console.log(Mydata);
+        showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
             type: 'POST',
@@ -1294,6 +1338,10 @@ $(document).ready(()=>{
                 var grid = $("#gridPersonasMorales").data("kendoGrid");
                   sitteg_success('Elemento guardado correctamente')
                 grid.refresh();
+                hideLoading();
+            },error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
         });
     }
@@ -1327,12 +1375,35 @@ $(document).ready(()=>{
 
         return;
     }
+    var isValid = true;
+    var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
+    var email = $("#Persona_PersonaDireccion_correoFisico").val();
+
+    $('#Persona_PersonaDireccion_telefonoFisico').removeClass("errorData");
+    if (phone != "" && phone != undefined) {
+        if (!isValidPhone(phone)) {
+            $('#Persona_PersonaDireccion_telefonoFisico').addClass("errorData");
+            isValid = false;
+        }
+    }
+
+    $('#Persona_PersonaDireccion_correoFisico').removeClass("errorData");
+    if (email != "" && email != undefined) {
+        if (!isValidEmail(email)) {
+            $('#Persona_PersonaDireccion_correoFisico').addClass("errorData");
+            isValid = false;
+        }
+    }
+    if (!isValid) {
+        sitteg_warning('Datos incorrectos, favor de verificar.');
+        return;
+    }
 
     var generoBool = $("#generoSwitch").prop("checked");
     $("#idGenero").val(generoBool ? 1 : 0);
 
     var Mydata = $("#personaFisicaForm").serialize();
-
+    showLoading();
     $.ajax({
         url: '@Url.Action("ajax_CrearPersonaFisica")',
         type: 'POST',
@@ -1340,11 +1411,27 @@ $(document).ready(()=>{
         success: function (result) {
             console.log(result);
             $("#personasFisicasInf").html(result);
-
+            $("#Persona_apellidoPaternoFisico").val(null);
+            $("#Persona_apellidoMaternoFisico").val(null);
+            $("#Persona_nombreFisico").val(null);
+            $("#Persona_vigenciaLicencia").val(null);
+            $("#Persona_numeroLicenciaFisico").val(null);
+            $("#Persona_Direccion_numeroFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
+            $("#Persona_fechaNacimiento").val(null);
+            $("#Persona_CURPFisico").val(null);
+            $("#Persona_RFCFisico").val(null);
+            $("#Persona_PersonaDireccion_calleFisico").val(null);
+            $("#Persona_PersonaDireccion_coloniaFisico").val(null);
+            $("#Persona_PersonaDireccion_correoFisico").val(null);
+            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
             $('#addFisico').modal('hide');
+            hideLoading();
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+            hideLoading();
         }
     });
 }
@@ -1370,6 +1457,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
                 type: 'POST',
@@ -1379,10 +1467,12 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     $('#VehiculoServiceModal').modal('hide');
                     $('#agregarVehiculoModal').modal('hide');
                     var gridVehiculos = $("#listadoVehiculos").html(result);
+                    hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
+                    hideLoading();
                     sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                 }
             });

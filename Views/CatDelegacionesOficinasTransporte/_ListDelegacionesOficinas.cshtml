@@ -58,7 +58,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficinaTransporte = dataItem.IdOficinaTransporte;
         console.log(IdOficinaTransporte);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EditarDelegacionOficinaModal", "CatDelegacionesOficinasTransporte")',
             type: 'POST',
@@ -66,8 +66,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarDelegacionOficina').html(result);
                 $('#agregarDelegacionOficina').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 
@@ -75,7 +78,7 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var IdOficinaTransporte = dataItem.IdOficinaTransporte;
         console.log(IdOficinaTransporte);
-
+        showLoading();
         $.ajax({
             url: '@Url.Action("EliminarDelegacionOficinaModal", "CatDelegacionesOficinasTransporte")',
             type: 'POST',
@@ -83,8 +86,11 @@
             success: function (result) {
                 $('#ModalBodyaAgregarDelegacionOficina').html(result);
                 $('#agregarDelegacionOficina').modal('show');
-
-            },
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
         })
     }
 

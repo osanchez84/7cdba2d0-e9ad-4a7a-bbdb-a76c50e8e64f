@@ -522,7 +522,6 @@
 
 	function OnCarreteraChange(e) {
 		var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
-		console.log("IDK", carreteraDDValue)
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("Tramos_Drop")',

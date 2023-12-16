@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [Required(ErrorMessage = "-El campo Kilómetro es obligatorio")]
         public string Kilometro { get; set; }
-        public string Colonia { get; set; }
+		public string Colonia { get; set; }
         public string Numero { get; set; }
         public string Calle { get; set; }
 

@@ -207,7 +207,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
 			return Json(result);
 		}
-        public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
+
+		public JsonResult TramosTodos_Drop(int carreteraDDValue)
+		{
+			var result = new SelectList(_catTramosService.ObtenerTramos(), "IdTramo", "Tramo");
+			return Json(result);
+		}
+
+		public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
         {
             var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
             return Json(result);
@@ -842,6 +849,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(idVehiculoInsertado);
 		}
+
+		[HttpPost]
+		public IActionResult ActualizarInfoAccidente(DateTime Fecha, TimeSpan Hora, int IdMunicipio, int IdCarretera, int IdTramo, int Kilometro)
+		{
+			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
+			var idAccidenteActualizado = _capturaAccidentesService.ActualizaInfoAccidente(idAccidente, Fecha, Hora, IdMunicipio, IdCarretera, IdTramo, Kilometro);
+			return Json(idAccidenteActualizado);
+		}
+
 		public IActionResult GuardarConductorVehiculo(int IdPersona,int idAuto)
 		{
 			int IdVehiculoI = HttpContext.Session.GetInt32("idVehiculoInsertado") ?? 0; // Obtener el valor de idVehiculoInsertado desde la variable de sesión
@@ -1694,7 +1710,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 			return RedirectToAction("Index");
 		}
-
 	}
 }
 

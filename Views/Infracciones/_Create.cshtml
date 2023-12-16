@@ -702,7 +702,8 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombre)
                                 .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa Nombre")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
+                                .HtmlAttributes(new { style = "width: 100%"})
                                 )
                         </div>
                     </div>
@@ -775,7 +776,8 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.colonia)
                                 .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa colonia")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -784,7 +786,8 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa calle")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
                                 )
 
                         </div>
@@ -795,7 +798,8 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa número")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
                                 )
                         </div>
                     </div>
@@ -918,11 +922,12 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombreFisico)
                                 .Label(l => l.Content("Nombre(s) <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa el nombre(s)")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
                                 )
 
                         </div>
-                         <div id="errorContainerPersona_nombreFisico" class="error-container"></div>
+                         @*<div id="errorContainerPersona_nombreFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -953,7 +958,7 @@ $(document).ready(()=>{
                                 )
 
                         </div>
-                          <div id="errorContainerPersona_RFCFisico" class="error-container"></div>
+                          @*<div id="errorContainerPersona_RFCFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -975,7 +980,7 @@ $(document).ready(()=>{
                                     )
                             </span>
                         </div>
-                         <div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>
+                         @*<div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm">
@@ -1043,11 +1048,12 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.coloniaFisico)
                                 .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una colonia")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
                                 )
 
                         </div>
-                       <div id="errorContainerPersona_PersonaDireccion_coloniaFisico" class="error-container"></div>
+                       @*<div id="errorContainerPersona_PersonaDireccion_coloniaFisico" class="error-container"></div>*@
                     </div>
 
                     <div class="col-12 col-md-6 col-lg-6">
@@ -1055,22 +1061,23 @@ $(document).ready(()=>{
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calleFisico)
                                 .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa una calle")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
 
                         </div>
-                        <div id="errorContainerPersona_calleFisico" class="error-container"></div>
+                        @*<div id="errorContainerPersona_calleFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <div class="controlForm my-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numeroFisico)
                                 .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa un número interior")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
                                 )
 
                         </div>
-                         <div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>
+                         @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -1242,24 +1249,21 @@ $(document).ready(()=>{
     });
 
    function submitCreateMoral() {
+    var controlsValidate = [];
     var isValid = true;
     var phone = $("#Persona_telefono").val();
     var email = $("#Persona_PersonaDireccion_correo").val();
-    
     var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
-    
-    //var idTelefono = $("#Persona_telefono");
-    //var idTelefonoValue = idTelefono.val();
-    
-    //if (idTelefonoValue === null || idTelefonoValue === "") {
-    //    idTelefono.prop("disabled", true);
-    //}
 
-    //idTelefono.off('blur');
+    //TODO
+    // ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
+    controlsValidate.push({ 'controlName': 'Persona_nombre' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
+    if (!isControlsValid(controlsValidate)) { isValid = false; }
 
     $("#hdnidCatTipoServicio").prop("disabled",true)
-    //TODO
-
     $('#Persona_telefono').removeClass("errorData");
     if (phone != "" && phone != undefined) {
         if (!isValidPhone(phone)) {
@@ -1276,7 +1280,7 @@ $(document).ready(()=>{
         }
     }
     if (!isValid) {
-        sitteg_warning('Datos incorrectos, favor de verificar.');
+        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
         return;
     }
 
@@ -1347,35 +1351,43 @@ $(document).ready(()=>{
     }
 
  function submitCreatePersonaFisica() {
-    var nombreValue = $("#Persona_nombreFisico").val();
-    var RFCValue = $("#Persona_RFCFisico").val();
-    var coloniaValue = $("#Persona_PersonaDireccion_coloniaFisico").val();           
-    var calleValue = $("#Persona_PersonaDireccion_calleFisico").val();            
-     var numeroValue = $("#Persona_PersonaDireccion_numeroFisico").val();
-    var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
-     $('.error-container').empty();
-
-    if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-        if (!nombreValue) {
-            asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-        }
-
-        if (!coloniaValue) {
-            asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-        }
-        if (!calleValue) {
-            asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-        }
-        if (!numeroValue) {
-            asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-        }
-        if (!fechaNacimientoValue) {
-            asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-        }
-
-        return;
-    }
+    var controlsValidate = [];
     var isValid = true;
+    controlsValidate.push({ 'controlName': 'Persona_nombreFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_coloniaFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calleFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
+    if (!isControlsValid(controlsValidate)) { isValid = false; }
+    //var nombreValue = $("#Persona_nombreFisico").val();
+    //var RFCValue = $("#Persona_RFCFisico").val();
+    //var coloniaValue = $("#Persona_PersonaDireccion_coloniaFisico").val();           
+    //var calleValue = $("#Persona_PersonaDireccion_calleFisico").val();            
+    // var numeroValue = $("#Persona_PersonaDireccion_numeroFisico").val();
+    //var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
+    // $('.error-container').empty();
+
+    //if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
+    //    if (!nombreValue) {
+    //        asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
+    //    }
+
+    //    if (!coloniaValue) {
+    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
+    //    }
+    //    if (!calleValue) {
+    //        asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
+    //    }
+    //    if (!numeroValue) {
+    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
+    //    }
+    //    if (!fechaNacimientoValue) {
+    //        asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
+    //    }
+
+    //    return;
+    //}
+    
     var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
     var email = $("#Persona_PersonaDireccion_correoFisico").val();
 
@@ -1395,7 +1407,7 @@ $(document).ready(()=>{
         }
     }
     if (!isValid) {
-        sitteg_warning('Datos incorrectos, favor de verificar.');
+        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
         return;
     }
 

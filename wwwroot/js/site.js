@@ -25,8 +25,28 @@ function isControlsValid(controlsValidate) {
     controlsValidate.forEach(x => {
         var element = $('#' + x.controlName);
         element.removeClass("errorData");
-        if (element.val() == '' || element.val() == undefined) {
+        if (element.val() === '' || element.val() === undefined) {
             element.addClass("errorData");
+            if (!isFirst) {
+                //element.focus();
+            }
+            isValid = false;
+            isFirst = true;
+        }
+    });
+
+    return isValid;
+}
+
+function isControlsValidDropDown(controlsValidate) {
+    var isValid = true;
+    var isFirst = false;
+
+    controlsValidate.forEach(x => {
+        var element = $('#' + x.controlName);
+        element.closest('.k-dropdown').removeClass("errorData");
+        if (element.val() === '' || element.val() === undefined) {
+            element.closest('.k-dropdown').addClass("errorData");
             if (!isFirst) {
                 //element.focus();
             }

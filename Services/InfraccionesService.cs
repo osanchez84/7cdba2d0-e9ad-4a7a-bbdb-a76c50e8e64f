@@ -1797,7 +1797,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							};
 							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-							model.Persona = _personasService.GetPersonaById((int)model.idPropitario);
+							model.Persona = _personasService.GetPersonaById((int)model.Vehiculo.idPersona);
 							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);

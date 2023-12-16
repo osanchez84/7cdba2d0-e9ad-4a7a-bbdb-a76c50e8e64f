@@ -1554,38 +1554,41 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                ,actualizadoPor = @actualizadoPor
                                                                WHERE idGarantia = @idGarantia";
 
-			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-			{
-				try
-				{
-					connection.Open();
-					SqlCommand command = new SqlCommand(strQuery, connection);
-					command.CommandType = CommandType.Text;
-					command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = (object)model.idTipoPlaca ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
-					result = command.ExecuteNonQuery();
-				}
-				catch (SqlException ex)
-				{
-				}
-				finally
-				{
-					connection.Close();
-				}
-			}
-			return result;
-		}
+          using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = (object)model.idTipoPlaca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = model.idGarantia;
 
-		public int CrearMotivoInfraccion(MotivoInfraccionModel model)
-		{
-			int result = 0;
-			string strQuery = @"INSERT INTO motivosInfraccion
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+
+        public int CrearMotivoInfraccion(MotivoInfraccionModel model)
+        {
+            int result = 0;
+            string strQuery = @"INSERT INTO motivosInfraccion
+
                                       (calificacionMinima
                                       ,calificacionMaxima
                                       ,calificacion
@@ -1797,7 +1800,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							};
 							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-							model.Persona = _personasService.GetPersonaById((int)model.idPropitario);
+							model.Persona = _personasService.GetPersonaById((int)model.Vehiculo.idPersona);
 							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);

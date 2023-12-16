@@ -64,6 +64,29 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
+                            <label>Estatus:</label>
+                            <span>
+                                @(Html.Kendo().DropDownListFor(m => m.idEstatusReporte)
+                                    .Label(l => l.Content("Estatus:"))
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .Filter(FilterType.Contains)
+
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("EstatusReporte_Drop", "BusquedaEspecialAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;", Id = "ddlEstatus" })
+                                    )
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
                             <label>Delegación/Oficina:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(m => m.IdDelegacionBusqueda)
@@ -212,7 +235,7 @@
                 <h5 class="px-4"><b>Listado de accidente</b></h5>
                 <h6 class="px-4 text-muted">Edita los datos de accidente.</h6>
             </div>
-            <div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
+            <!-- <div class="col-12 me-md-4 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <button onclick="downLoadPdfFiltered()">
@@ -220,7 +243,7 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
         <div class="row">
             <div class="col-12 mb-4 px-4 rounded">
@@ -238,10 +261,11 @@
 <script>
     function buscarAccidente() {
         var Mydata = $("#busquedaEspecialAccidenteForm").serialize();
+        Mydata = Mydata.replace(/%2F/g, '/'); 
         console.log(Mydata);
         showLoading();
         $.ajax({
-            url: '/BusquedaEspecialAccidentes/ajax_BuscarAccidente',
+            url: '/BusquedaEspecialAccidentes/ajax_BusquedaAccidentes',
             type: 'GET',
             data: Mydata,
             success: function (data) {
@@ -251,7 +275,7 @@
                 hideLoading();
             },
             error: function () {
-                sitteg_warning("Ocurrio un error en la busqueda,intente mas tarde");
+                sitteg_warning("Ocurrieron los siguientes errores");
                 hideLoading();
             }
         });

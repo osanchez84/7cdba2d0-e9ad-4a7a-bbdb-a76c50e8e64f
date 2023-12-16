@@ -597,7 +597,45 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
-        public int AgregarValorClasificacion(int IdClasificacionAccidente, int idAccidente)
+		public int ActualizaInfoAccidente(int idAccidente, DateTime Fecha, TimeSpan Hora, int IdMunicipio, int IdCarretera, int IdTramo, int Kilometro)
+		{
+			int result = 0;
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					string query = "UPDATE accidentes SET fecha = @fecha, hora = @hora, idMunicipio = @idMunicipio, idCarretera = @idCarretera, idTramo = @idTramo, kilometro = @kilometro WHERE idAccidente = @idAccidente";
+
+					SqlCommand command = new SqlCommand(query, connection);
+
+					command.Parameters.Add(new SqlParameter("@fecha", SqlDbType.Date)).Value = (object)Fecha ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@hora", SqlDbType.Time)).Value = (object)Hora ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = IdMunicipio;
+					command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.Int)).Value = IdCarretera;
+					command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = IdTramo;
+					command.Parameters.Add(new SqlParameter("@kilometro", SqlDbType.Int)).Value = Kilometro;
+					command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
+
+					result = command.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					return result;
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+				return result;
+			}
+
+
+		}
+
+		public int AgregarValorClasificacion(int IdClasificacionAccidente, int idAccidente)
         {
             int result = 0;
 

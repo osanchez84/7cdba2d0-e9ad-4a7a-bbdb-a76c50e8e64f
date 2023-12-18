@@ -103,7 +103,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda))
                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
-            modelList.Select(s=> s.estatusAccidente);
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"IdAccidente","Número"},

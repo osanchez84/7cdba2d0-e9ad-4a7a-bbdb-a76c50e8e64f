@@ -103,7 +103,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda))
                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
-
+            modelList.Select(s=> s.estatusAccidente);
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"IdAccidente","Número"},
@@ -112,10 +112,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"hora","Hora"},
             {"municipio","Municipio" },
             {"carretera","Carretera" },
-            {"tramo","Tramo" }
+            {"tramo","Tramo" },
+            {"estatusReporte", "Estatus" }
             };
 
-            var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 7, ColumnsNames, modelList);
+            var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 8, ColumnsNames, modelList);
             //return File(result.Item1, "application/pdf", result.Item2);
             byte[] bytes = result.Item1.ToArray();
             string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);

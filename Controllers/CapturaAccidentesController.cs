@@ -146,6 +146,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int IdModulo = 800;
 			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
 			List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+			ViewBag.EsSoloLectura = false;
 			if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
 
 			{

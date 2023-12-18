@@ -518,7 +518,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (allowSistem)
             {
-                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault()?? new RepuveConsgralResponseModel();
 
                 var vehiculoEncontrado = new VehiculoModel
                 {

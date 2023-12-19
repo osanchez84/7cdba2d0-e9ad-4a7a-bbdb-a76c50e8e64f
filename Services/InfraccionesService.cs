@@ -1284,6 +1284,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.IdConcepto = reader["idConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idConcepto"].ToString());
 							model.Motivo = reader["motivo"].ToString();
 							model.SubConcepto = reader["subConcepto"].ToString();
+							model.Concepto = reader["concepto"].ToString();
 							//model.concepto = reader["concepto"].ToString();
 							modelList.Add(model);
 						}
@@ -1352,7 +1353,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.idTipoPlaca = reader["idTipoPlaca"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoPlaca"].ToString());
 							model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
 							model.numPlaca = reader["numPlaca"].ToString();
-							model.numLicencia = reader["numPlaca"].ToString();
+							model.numLicencia = reader["numLicencia"].ToString();
 							model.vehiculoDocumento = reader["vehiculoDocumento"].ToString();
 							model.garantia = reader["garantia"].ToString();
 							model.tipoPlaca = reader["tipoPlaca"].ToString();
@@ -1800,7 +1801,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							};
 							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-							model.Persona = _personasService.GetPersonaById((int)model.Vehiculo.idPersona);
+							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
 							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);

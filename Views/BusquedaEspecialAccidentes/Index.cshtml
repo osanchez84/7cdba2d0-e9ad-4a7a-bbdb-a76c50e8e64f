@@ -31,7 +31,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Inicio:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
+                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Inicio:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
                                 )
@@ -41,7 +41,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Fin:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaFin)
+                            @(Html.Kendo().DatePickerFor(t => t.FechaFin).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Fin:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
                                 )
@@ -328,21 +328,6 @@
         });
     }
 
-    $(document).ready(function () {
-        $("#dateInicio").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
-
-    $(document).ready(function () {
-        $("#dateFinal").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
 </script>
 
 

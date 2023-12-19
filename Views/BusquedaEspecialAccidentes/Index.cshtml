@@ -31,7 +31,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Inicio:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio)
+                            @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Inicio:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
                                 )
@@ -41,7 +41,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3 selecciondeFecha">
                             <label>Fecha Fin:</label>
-                            @(Html.Kendo().DatePickerFor(t => t.FechaFin)
+                            @(Html.Kendo().DatePickerFor(t => t.FechaFin).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Fin:"))
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
                                 )
@@ -260,14 +260,25 @@
 </div>
 <script>
     function buscarAccidente() {
-        var Mydata = $("#busquedaEspecialAccidenteForm").serialize();
-        Mydata = Mydata.replace(/%2F/g, '/'); 
-        console.log(Mydata);
+        var data = {
+            FechaInicio: $('#dateInicio').val(),
+            FechaFin: $('#dateFinal').val(),
+            placasBusqueda: $('#txtPlacas').val(),
+            serieBusqueda: $('#txtSerie').val(),
+            folioBusqueda: $('#txtFolio').val(),
+            IdDelegacionBusqueda: $('#ddlDelegaciones').val(),
+            idCarreteraBusqueda: $('#ddlCarreteras').val(),
+            idTramoBusqueda: parseInt($('#ddlTramos').val()),
+            propietarioBusqueda: $('#txtPropietarios').val(),
+            conductorBusqueda: $('#txtConductores').val(),
+            IdOficialBusqueda: $('#ddlOficiales').val(),
+            IdEstatusReporte: $('#ddlEstatus').val(),
+        };
         showLoading();
         $.ajax({
             url: '/BusquedaEspecialAccidentes/ajax_BusquedaAccidentes',
             type: 'GET',
-            data: Mydata,
+            data: data,
             success: function (data) {
                 var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
                 grid.dataSource.data(data);
@@ -317,21 +328,6 @@
         });
     }
 
-    $(document).ready(function () {
-        $("#dateInicio").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
-
-    $(document).ready(function () {
-        $("#dateFinal").kendoDatePicker({
-            format: "dd/MM/yyyy",
-            parseFormats: ["dd/MM/yyyy"],
-            value: null
-        });
-    });
 </script>
 
 

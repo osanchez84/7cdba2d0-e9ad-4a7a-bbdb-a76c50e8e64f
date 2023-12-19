@@ -103,7 +103,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+      
+        @if(Model.showclose){
+            <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
                 <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="cerrarModalV()">
                     @(Html.Kendo().Button()
@@ -113,6 +115,12 @@
                 </div>
             </div>
         </div>
+
+        }
+
+        
+
+
     </div>
     <div class="row">
         <div class="col-8 pe-0">
@@ -235,8 +243,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
-                        .DateInput()
-                        
+                        .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -245,8 +252,7 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        //.Value(dateVigencia)
-                        .DateInput()
+                        //.Value(dateVigencia)                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")

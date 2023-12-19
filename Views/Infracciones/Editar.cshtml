@@ -122,6 +122,8 @@
                     </div>
                 </nav>
                 <form id="frmEditarInfraccion">
+                    @Html.HiddenFor(m=> m.Garantia.numLicencia)
+
                     @Html.HiddenFor(m=> m.idInfraccion)
                     @Html.HiddenFor(m=> m.placasVehiculo)
                     @Html.HiddenFor(m=> m.NumTarjetaCirculacion)
@@ -548,7 +550,8 @@
                                                 @(Html.Kendo().TextBoxFor(t => t.Garantia.numLicencia)
                                                     .Label(l => l.Content("Número licencia:"))
                                                     .Placeholder("Ingresa licencia")
-                                                    .HtmlAttributes(new { style = "width: 100%" })
+                                                    .Events(s=> s.Change("updateNumLic"))
+                                                    .HtmlAttributes(new { style = "width: 100%",id="numLicGar" })
                                                     )
                                             </div>
                                         </div>
@@ -621,6 +624,19 @@
     </div>
 </div>
 <script>
+
+
+    function updateNumLic(){
+
+        var numvalue = $("#numLicGar").val()
+
+        $("#Garantia_numLicencia").val(numvalue)
+
+
+    }
+
+
+
     $(document).ready(function () {
         initialCharge();
     });

@@ -17,7 +17,6 @@ using System.Globalization;
 using Azure;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ServiceModel.Channels;
-using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1353,7 +1352,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.idTipoPlaca = reader["idTipoPlaca"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoPlaca"].ToString());
 							model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
 							model.numPlaca = reader["numPlaca"].ToString();
-							model.numLicencia = reader["numPlaca"].ToString();
+							model.numLicencia = reader["numLicencia"].ToString();
 							model.vehiculoDocumento = reader["vehiculoDocumento"].ToString();
 							model.garantia = reader["garantia"].ToString();
 							model.tipoPlaca = reader["tipoPlaca"].ToString();

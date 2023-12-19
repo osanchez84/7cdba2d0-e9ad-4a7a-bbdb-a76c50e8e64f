@@ -60,6 +60,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly IRepuveService _repuveService;
         private readonly ICatCarreterasService _catCarreterasService;
+        private readonly IBitacoraService _bitacoraServices;
+
 
         private readonly AppSettings _appSettings;
 
@@ -77,7 +79,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICapturaAccidentesService capturaAccidentesService,
             ICotejarDocumentosClientService cotejarDocumentosClientService, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-            , IRepuveService repuveService,ICatCarreterasService catCarreterasService
+            , IRepuveService repuveService,ICatCarreterasService catCarreterasService,IBitacoraService bitacoraService
 
             )
         {
@@ -103,6 +105,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catMarcasVehiculosService = catMarcasVehiculosService;
             _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
             _repuveService = repuveService;
+            _bitacoraServices = bitacoraService;
         }
 
         public IActionResult Index()
@@ -353,6 +356,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
 
+            var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(HttpContext.Session.GetInt32("IdDependencia"));
+
+            
+
             if (!validarFolio)
             {
                 var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.idPersona);
@@ -362,6 +370,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model);
+
+                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR", "insert", user);
 
                 return Json(new { id = idInfraccion });
             }
@@ -1355,11 +1365,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
             
         }
 
-        public IActionResult GetDataBusquedaEspecial(InfraccionesBusquedaEspecialModel data )
+        public IActionResult GetDataBusquedaEspecialBit(string id)
+        {
+
+            var result = _bitacoraServices.getBitacoraData(id);
+
+            return Json(result);
+
+        }
+            public IActionResult GetDataBusquedaEspecial(InfraccionesBusquedaEspecialModel data )
         {
 
             return PartialView("_ListadoInfraccionesBusquedaEspecial");
         }
+
 
 
 

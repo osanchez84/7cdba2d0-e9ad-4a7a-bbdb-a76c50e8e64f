@@ -1620,8 +1620,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
-                        "mv.marcaVehiculo, sv.nombreSubmarca " +
-                        "FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
+						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
+						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
                         "JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
                         "JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
                         "JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
@@ -1639,7 +1639,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel elemnto = new CapturaAccidentesModel();
-                            elemnto.IdInfAcc = Convert.IsDBNull(reader["IdInf_Acc"]) ? 0 : Convert.ToInt32(reader["IdInf_Acc"]);
+							elemnto.IdInfraccion = Convert.IsDBNull(reader["idInfraccion"]) ? 0 : Convert.ToInt32(reader["idInfraccion"]);
+							elemnto.IdInfAcc = Convert.IsDBNull(reader["IdInf_Acc"]) ? 0 : Convert.ToInt32(reader["IdInf_Acc"]);
                             elemnto.IdAccidente = Convert.IsDBNull(reader["IdAccidente"]) ? 0 : Convert.ToInt32(reader["IdAccidente"]);
                             elemnto.IdVehiculoInvolucrado = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
                             elemnto.Placa = reader["placas"].ToString();

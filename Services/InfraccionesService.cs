@@ -17,7 +17,7 @@ using System.Globalization;
 using Azure;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ServiceModel.Channels;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Services
 {

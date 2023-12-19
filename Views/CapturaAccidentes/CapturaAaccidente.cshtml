@@ -38,13 +38,14 @@
 		</div>
 		<form class="row px-4 align-items-end" id="AccidenteInfoForm">
 			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
+				<div class="controlForm mb-3">
 					<label class="text-muted">No. de reporte de accidente:</label>
 					<label>@Model.NumeroReporte</label>
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Fecha:</label>
 					@(Html.Kendo().DatePickerFor(t => t.Fecha)
 						.Label(l => l.Content("Fecha:"))
 						.Format("dd/MM/yyyy")
@@ -54,8 +55,9 @@
 					@* <label>@Model.FechaFormateada - @Model.Hora</label> *@
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Hora:</label>
 					@(Html.Kendo().TimePickerFor(t => t.Hora)
 						.Label(l => l.Content("Hora:"))
 						.Format("hh:mm:ss")
@@ -65,9 +67,9 @@
 					@* <label>@Model.FechaFormateada - @Model.Hora</label> *@
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
-					<label class="text-muted">Municipio:</label>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Municipio:</label>
 					@(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
 						.Filter(FilterType.Contains)
 						.DataTextField("Text")
@@ -83,9 +85,9 @@
 						}))
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
-					<label class="text-muted">Carretera:</label>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Carretera:</label>
 					@(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
 						.DataTextField("Text")
 						.DataValueField("Value")
@@ -103,9 +105,9 @@
 						)
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
-					<label class="text-muted">Tramo:</label>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Tramo:</label>
 					@(
 						Html.Kendo().DropDownListFor(t => t.IdTramo).Filter(FilterType.Contains)
 							.DataTextField("Text")							
@@ -121,12 +123,12 @@
 						//.HtmlAttributes(new { data_required_msg = "El campo Municipio es obligatorio" })
 						.HtmlAttributes(new { style = "width:100%;", Id = "ddlTramos" })
 						)
-					<label class="text-muted">@Model.IdTramo - @Model.Tramo</label>
+					@*<label class="text-muted">@Model.IdTramo - @Model.Tramo</label>*@
 				</div>
 			</div>
-			<div class="col-auto">
-				<div class="controlForm mb-3 mt-1">
-					<label class="text-muted">Kilómetro:</label>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="controlForm mb-3">
+					<label>Kilómetro:</label>
 					@(Html.Kendo().TextBoxFor(t => t.Kilometro)
 						.Placeholder("Ingresa Kilometro")
 						.HtmlAttributes(new { style = "width: 100%", Id = "txtKilometro" })

@@ -120,7 +120,7 @@
 							<div class="row my-4 px-4">
 								<div class="form-group col-md-4">
 									<div class="controlForm">
-										<label>Fecha infracción:</label>
+										<label>Fecha infracción <b>(obligatorio)</b>:</label>
 										@(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
 											.Max(DateTime.Now)
 											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
@@ -304,6 +304,7 @@
 									<div class="checkbox">
 										<label>El propietario del vehículo es el conductor: </label>
 										<div class="btnToggleActive">
+
 										@(Html.Kendo().SwitchFor(m => m.isPropietarioConductor)
 											.Messages(c => c.Checked("SI").Unchecked("NO"))
 

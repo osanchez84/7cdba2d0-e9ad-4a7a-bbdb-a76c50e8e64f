@@ -5,14 +5,20 @@
         function submitSearch() {
             var Mydata = $("#frmSearch").serialize();
             //console.log(Mydata);
+            showLoading();
             $.ajax({
                 url: '@Url.Action("ajax_BuscarTransito")',
                 type: 'POST',
                 data: Mydata,
                 success: function (result) {
                     $("#listadoTransitoTransporte").html(result);
+                    hideLoading();
                    // $("#frmSearch")[0].reset();
-                }
+            },
+            error: function (error) {
+                sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
+            }
             });
         }
 
@@ -250,7 +256,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
                     <label>Fecha de Ingreso:</label>
-                    @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
+                    @(Html.Kendo().DatePickerFor(t => t.FechaIngreso).Max(DateTime.Now)
                         .Format("dd/MM/yyyy")
                         .Culture("es-ES")
 
@@ -271,7 +277,7 @@
                 <div class="controlForm my-3">
                     <label>Fecha Hasta:</label>
 
-                    @(Html.Kendo().DatePickerFor(t => t.FechaIngresoFin)
+                    @(Html.Kendo().DatePickerFor(t => t.FechaIngresoFin).Max(DateTime.Now)
                         .Format("dd/MM/yyyy")
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })

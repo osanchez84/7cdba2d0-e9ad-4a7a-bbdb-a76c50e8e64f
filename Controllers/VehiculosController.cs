@@ -99,7 +99,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             vehiculoBusquedaModel.isFromUpdate = true;
             vehiculosModel.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
-            return View("Index", vehiculoBusquedaModel);
+
+            vehiculoBusquedaModel.Vehiculo.ErrorRepube = "No";
+            vehiculoBusquedaModel.Vehiculo.showclose = false;
+
+
+
+            return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
         }
 
         public JsonResult Entidades_Read()
@@ -518,7 +524,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (allowSistem)
             {
-                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault()?? new RepuveConsgralResponseModel();
 
                 var vehiculoEncontrado = new VehiculoModel
                 {
@@ -690,7 +696,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarPersonasFiscas()
         {
-            var personasFisicas = _personasService.GetAllPersonas();
+           var personasFisicas = _personasService.GetAllPersonasFisicas();
             return PartialView("_PersonasFisicas", personasFisicas);
         }
 

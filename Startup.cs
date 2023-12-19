@@ -103,6 +103,7 @@ namespace GuanajuatoAdminUsuarios
             //Servicios 
             services.AddScoped(typeof(IPdfGenerator), typeof(PdfGenerator));
             services.AddScoped<ISqlClientConnectionBD, SqlClientConnectionBD>();
+            
             services.AddScoped<IMarcasVehiculos, MarcasVehiculoService>();
             services.AddScoped<ICatFormasTrasladoService, CatFormasTrasladoService>();
             services.AddScoped<ICatEntidadesService, CatEntidadesService>();
@@ -159,6 +160,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<ICatCiudadesService, CatCiudadesService>();
             services.AddScoped<ICatAgenciasMinisterioService, CatAgenciasMinisterioService>();
             services.AddScoped<IBusquedaAccidentesService, BusquedaAccidentesService>();
+            services.AddScoped<IBitacoraService, BitacoraService>();
+
             services.AddScoped<IBusquedaEspecialAccidentesService, BusquedaEspecialAccidentesService>();
             services.AddScoped<IEnvioInfraccionesService, EnvioInfraccionesService>();
             services.AddScoped<ICatOficinasRentaService, CatOficinasRentaService>();

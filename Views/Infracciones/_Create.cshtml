@@ -14,8 +14,26 @@
     {
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
+
+
+    var mensaje = Model.ErrorRepube;
+
 }
 <script>
+
+$(document).ready(()=>{
+
+    var t = "@mensaje"
+
+    if(!t){
+                  sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+ 
+    }
+ 
+})
+
+
+
      function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
@@ -935,7 +953,7 @@
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFCFisico)
                                 .Label(l => l.Content("RFC:"))
-                                .Placeholder("Ingresa un RFC valido")
+                                .Placeholder("Ingresa un RFC válido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
 
@@ -946,7 +964,7 @@
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.Persona.CURPFisico)
                                 .Label(l => l.Content("CURP:"))
-                                .Placeholder("Ingresa un CURP valido")
+                                .Placeholder("Ingresa un CURP válido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>

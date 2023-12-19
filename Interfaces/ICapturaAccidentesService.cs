@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Models;
+using System;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -17,7 +18,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int ActualizarConVehiculo(int IdVehiculo, int idAccidente,int IdPersona, string Placa, string Serie);
         public int BorrarVehiculoAccidente(int idAccidente, int idVehiculo);
         public int InsertarConductor(int IdVehiculo, int idAccidente, int IdPersona);
-        public int AgregarValorClasificacion(int IdClasificacionAccidente, int idAccidente);
+        public int ActualizaInfoAccidente(int idAccidente, DateTime Fecha, TimeSpan Hora, int IdMunicipio, int IdCarretera, int IdTramo, int Kilometro);
+
+		public int AgregarValorClasificacion(int IdClasificacionAccidente, int idAccidente);
 
         List<CapturaAccidentesModel> ObtenerDatosGrid(int idAccidente);
 

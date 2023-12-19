@@ -19,41 +19,70 @@
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
 
+        var mensaje = Model.ErrorRepube;
 
     ViewBag.serie = Model.serie;
 }
 
 <script>
+
+    $(document).ready(()=>{
+
+    var t = "@mensaje"
+
+    if(!t){
+                  sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+ 
+    }
+ 
+})
+
+
      function EntidadDDChangeAccFis() {
-        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
+        var entidadDDlValue = $("#idEntidadFisico").data("kendoDropDownList").value();
 
+        showLoading();
+        $.ajax({
+            url: "/CapturaAccidentes/Municipios_Por_Entidad",
+            type: "POST",
+            data: { entidadDDlValue: entidadDDlValue },
+            success: function (data) {
+                var MunicipiosDropDown = $("#idMunicipioFisico").data("kendoDropDownList");
+                MunicipiosDropDown.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+    function EntidadDropDownChangeAcc() {
+        var entidadDDlValue = $("#EntidadMoral").data("kendoDropDownList").value();
+
+        showLoading();
 
         $.ajax({
             url: "/CapturaAccidentes/Municipios_Por_Entidad",
             type: "POST",
             data: { entidadDDlValue: entidadDDlValue },
             success: function (data) {
-                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
-                MunicipiosDropDown.dataSource.data(data);
+                var municipiosDropDown = $("#MunicipioMoral").data("kendoDropDownList");
+
+                // Verificar si el objeto existe antes de intentar acceder a sus propiedades
+                if (municipiosDropDown) {
+                    municipiosDropDown.dataSource.data(data);
+                }
+
+                hideLoading();
             },
             error: function (xhr, status, error) {
+                console.error("Error en la llamada AJAX:", error);
+                hideLoading();
             }
         });
     }
- function EntidadDropDownChangeAcc() {
-        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
-        $.ajax({
-            url: "/CapturaAccidentes/Municipios_Por_Entidad",
-            type: "POST",
-            data: { entidadDDlValue: entidadDDlValue },
-            success: function (data) {
-                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
-                MunicipiosDropDown.dataSource.data(data);
-            },
-            error: function (xhr, status, error) {
-            }
-        });
-    }
+
+
     </script>
 <section id="sectionCap" class="bg-white boxShadow  mt-2 mb-3 rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -74,7 +103,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+      
+        @if(Model.showclose){
+            <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
                 <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="cerrarModalV()">
                     @(Html.Kendo().Button()
@@ -84,6 +115,12 @@
                 </div>
             </div>
         </div>
+
+        }
+
+        
+
+
     </div>
     <div class="row">
         <div class="col-8 pe-0">
@@ -206,8 +243,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
-                        .DateInput()
-                        
+                        .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -216,8 +252,7 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        //.Value(dateVigencia)
-                        .DateInput()
+                        //.Value(dateVigencia)                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -741,7 +776,7 @@
                                     .OptionLabel("Seleccione Entidad...")
                                     .Filter(FilterType.Contains)
                                     .Events(e => e.Change("EntidadDropDownChangeAcc"))
-                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .HtmlAttributes(new { style = "width:100%;", id="EntidadMoral" })
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -761,9 +796,8 @@
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
-                                    .HtmlAttributes(new { style = "width:100%;" })
-                                                        .Filter(FilterType.Contains)
-
+                                    .HtmlAttributes(new { style = "width:100%;" , id="MunicipioMoral"})
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -954,7 +988,7 @@
                         <div class="controlForm mb-3">
                             <label>RFC:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.RFC)
-                                .Placeholder("Ingresa un RFC valido")
+                                .Placeholder("Ingresa un RFC válido")
                                 .HtmlAttributes(new { style = "width: 100%",id="RFCFisico" })
                                 )
 
@@ -965,7 +999,7 @@
                         <div class="controlForm mb-3">
                             <label>CURP:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.CURP)
-                                .Placeholder("Ingresa un CURP valido")
+                                .Placeholder("Ingresa un CURP válido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
@@ -1244,12 +1278,12 @@
     }
 
     function buscarPersonasFisicas() {
-        showLoading();
+
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonasFiscas")',
             type: 'POST',
             success: function (result) {
-                $("#personasFisicas").html(result);
+                $("#personasFisicasAcc").html(result);
                 hideLoading();
             },error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -1311,6 +1345,16 @@ function submitCreateMoral() {
                     document.getElementById("PersonaMoralLocalizada").style.display = "block";
                     $("#PersonaMoralLocalizada").html(result);
                     $('#addMoral').modal('hide');
+                        $('#Persona_PersonaDireccion_telefono').val(null);
+                        $('#Persona_nombre').val(null);
+                        $('#Persona_RFC').val(null);
+                        $('#Persona_PersonaDireccion_correo').val(null);
+                        $('#Persona_PersonaDireccion_colonia').val(null);
+                        $('#Persona_PersonaDireccion_numero').val(null);
+                        $('#Persona_PersonaDireccion_calle').val(null);                      
+                        $("#EntidadMoral").data("kendoDropDownList").text(""); 
+                        $("#MunicipioMoral").data("kendoDropDownList").text("");
+
                     sitteg_success('Elemento guardado correctamente');
                 }, 500);
                 hideLoading();
@@ -1346,9 +1390,9 @@ function submitCreateMoral() {
                 document.getElementById("sec3").style.display = "none";
                 document.getElementById("PersonaMoralLocalizada").style.display = "block";
                 $("#PersonaMoralLocalizada").html(result);
-                 var grid = $("#gridPersonasMorales").data("kendoGrid");
-                    grid.refresh();
-                    hideLoading();
+                var grid = $("#gridPersonasMorales").data("kendoGrid");
+                grid.refresh();
+                hideLoading();
             },error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
@@ -1397,11 +1441,26 @@ function submitCreateMoral() {
         data: Mydata,
         success: function (result) {
             console.log(result);
-            $("#personasFisicas").html(result);
-                        $('#addFisico').modal('hide');
-                        hideLoading();
-
+            $("#personasFisicasAcc").html(result);
+            $("#Persona_apellidoPaterno").val(null);
+            $("#Persona_apellidoMaterno").val(null);
+            $("#nombreFisico").val(null);
+            $("#Persona_vigenciaLicencia").val(null);
+            $("#Persona_numeroLicencia").val(null);
+            $("#numeroFisico").val(null);
+            $("#correoFisico").val(null);
+            $("#telefonoFisico").val(null);
+            $("#Persona_fechaNacimiento").val(null);
+            $("#Persona_CURP").val(null);
+            $("#RFCFisico").val(null);
+            $("#calleFisico").val(null);
+            $("#coloniaFisico").val(null);
+           $("#idEntidadFisico").data("kendoDropDownList").text(""); 
+            $("#idMunicipioFisico").data("kendoDropDownList").text("");
+            $("#Persona_idTipoLicencia").data("kendoDropDownList").text("");
             $('#addFisico').modal('hide');
+            hideLoading();
+
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
@@ -1429,25 +1488,24 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            showLoading();
+            console.log("Id vehiculo: ", idVeh)
+               console.log("dtaa: ", formData)
+               showLoading();
             $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
+                url: '@Url.Action("ajax_CrearVehiculo")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
                     console.log("hd", result)
                     sitteg_success('Elemento guardado correctamente')
-                    $('#VehiculoServiceModal').modal('hide');
-                    //$('#agregarVehiculoModal').modal('hide');
-                    var grid = $("#gridPrevioVehiculo").data("kendoGrid");
-                    grid.dataSource.data(result.data);
-                    grid.refresh();
+                   document.getElementById("sec0").style.display = "block";
+                   document.getElementById("VehiculoLocalizado").style.display = "none";
                     hideLoading();
                 },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                     hideLoading();
                 }
             });
@@ -1480,48 +1538,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             datePicker.value(null);
         }
     });
-
-    function goBackModificar(){
-         document.getElementById("sec0").style.display = "block";
-        document.getElementById("VehiculoLocalizado").style.display = "none";    
-    }
-
-    function EntidadDropDownChangeV() {
-        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
-
-        showLoading();
-        $.ajax({
-            url: "/Vehiculos/Municipios_Drop",
-            type: "POST",
-            data: { entidadDDlValue: entidadDDlValue },
-            success: function (data) {
-                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipio").data("kendoDropDownList");
-                MunicipiosDropDown.dataSource.data(data);
-                hideLoading();
-            },
-            error: function (xhr, status, error) {
-                hideLoading();
-            }
-        });
-    }
-     function EntidadDropDownChangeFis() {
-        var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
-
-
-        $.ajax({
-            url: "/Vehiculos/Municipios_Drop",
-            type: "POST",
-            data: { entidadDDlValue: entidadDDlValue },
-            success: function (data) {
-                var MunicipiosDropDown = $("#Persona_PersonaDireccion_idMunicipioFisico").data("kendoDropDownList");
-                MunicipiosDropDown.dataSource.data(data);
-            },
-            error: function (xhr, status, error) {
-            }
-        });
-    }
-
-    function cerraModalFisico(){
+       function cerraModalFisico(){
             $('#addFisico').modal('hide');
        }
  function cerraModalMoral(){

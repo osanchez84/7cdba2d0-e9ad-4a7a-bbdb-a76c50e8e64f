@@ -1,11 +1,10 @@
-﻿import { AddLoading, GetDataGrid, RemoveTramite } from './Funcionality/ConexxionPeticiones.js'
+﻿import { AddLoading, GetDataGrid, RemoveTramite,getListBit } from './Funcionality/ConexxionPeticiones.js'
 
 $(document).ready(() => {
 
     var t = document.getElementById("frmSearch")
     t.method = "POST"
     t.addEventListener("submit", Submmit)
-
     AddLoading("listadoInfracciones")
     var Mydata = $("#frmSearch").serialize();
     GetDataGrid(Mydata, FinishGetData)
@@ -52,7 +51,7 @@ window.TemplateCortecia = (d) => {
 
 
 window.TemplateEditar = (d) => {
-    return `<button onclick="ShowUpdate('idInfraccion ')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>`
+    return `<button onclick="ShowUpdate('${d.idInfraccion}' )" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>`
 }
 
 
@@ -86,3 +85,39 @@ window.CancelTramite = (d) => {
     RemoveTramite(data, finishCancel)
 
 }
+
+var finish = (d) => {
+    $('#mostrardetalle').modal('show');
+
+    var text = ""
+
+    d.forEach((w) => {
+
+        text=`${text}
+        <tr>
+        <td>${w.folio}</td>
+        <td>${w.fecha + " " + w.hora}</td>
+        <td>${w.nombre}</td>
+
+        <td>${w.operacion}</td>
+        <td>${w.desc}</td>
+        <td>${w.ip}</td>
+
+        </tr>
+        `
+
+    })
+
+
+    $("#tabdata").empty().append(text)
+
+}
+
+
+window.ShowUpdate = (d) => {
+
+    var data = { id: d }
+
+    getListBit(data,finish)
+}
+

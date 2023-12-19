@@ -82,7 +82,7 @@
                     )
             </div>
         </div>
-        
+
     </div>
     <div class="row my-2">
         <div class="col-md-4">
@@ -91,7 +91,7 @@
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
                     .Culture("es-ES")
                     .HtmlAttributes(new { style = "width: 100%;", required = "required" })
-                
+
                     )
             </div>
         </div>
@@ -99,7 +99,7 @@
             <div class="controlForm">
                 <label>CURP <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.CURP)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -180,7 +180,7 @@
                             read.Action("Entidades_Drop", "Personas");
                         });
                     })
-                    .HtmlAttributes(new { style = "width:100%;",id = "idEntidadED" })
+                    .HtmlAttributes(new { style = "width:100%;", id = "idEntidadED" })
                     )
             </div>
         </div>
@@ -243,7 +243,9 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefono)
                     .HtmlAttributes(new
                     {
-                        style = "width: 100%; height:58px;", id="telefono"})
+                        style = "width: 100%; height:58px;",
+                        id = "telefono"
+                    })
                     )
             </div>
         </div>
@@ -251,7 +253,7 @@
             <div class="controlForm">
                 <label>Correo:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correo)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -290,11 +292,12 @@
             var formData = $("#frmEditarPersona").serialize();
             showLoading();
             $.ajax({
-                url: '@Url.Action("ajax_EditarPersona","Personas")',
+                url: '@Url.Action("ajax_EditarPersona","CapturaAccidentes")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
-                    var grid = $("#gridPersonas").data("kendoGrid");
+                    console.log("DFDF",result)
+                    var grid = $("#gridConductores").data("kendoGrid");
 
                     if (result && result.data) {
                         var dataArray = [result.data];
@@ -316,11 +319,11 @@
             });
         }
         else {
-            idTelefono.prop("disabled", false);         
+            idTelefono.prop("disabled", false);
             sitteg_info('Debe llenar los campos requeridos');
             return;
         }
     }
 
-   
+
 </script>

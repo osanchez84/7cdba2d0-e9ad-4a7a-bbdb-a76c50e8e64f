@@ -254,14 +254,14 @@
                             <div class="controlForm my-3">
                                 @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
                                             .Label(l => l.Content("No. de licencia:"))
-                                            .Placeholder("Ingresa el número de licencia valido")
+                                    .Placeholder("Ingresa el número de licencia válido")
                                             .HtmlAttributes(new { style = "width: 100%" })
                                             )
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t => t.curpBusqueda)
+                                @(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
                                         .Label(l => l.Content("CURP:"))
                                         .Placeholder("Ingresa el CURP del propietario")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -270,7 +270,7 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <div class="controlForm my-3">
-                                @(Html.Kendo().TextBoxFor(t => t.rfcBusqueda)
+                                @(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
                                         .Label(l => l.Content("RFC:"))
                                         .Placeholder("Ingresa el RFC del propietario")
                                         .HtmlAttributes(new { style = "width: 100%" })
@@ -524,26 +524,31 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
-                if (response.tipo == "success") {
+                console.log("RESP", response);
+
+                if (response.tipo === "success") {
                     mostrarModal(response.datos);
-                } else if (response.encontrada != undefined) {
-                    if (response.encontrada == false) {
-                        // sitteg_warning("No se pudieron obtener resultados.");
-                    }
-                } else if (response.tipo == "warning") {
+                    hideLoading();
+                } else if (response.encontrada !== undefined && response.encontrada === false) {
+                    sitteg_warning("No se pudieron obtener resultados.");
+                } else if (response.tipo === "warning") {
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+                } else {
+                    // Otro tipo de respuesta, si es necesario manejarla
                 }
 
                 var personasList = response.data;
                 var grid = $("#gridConductores").data("kendoGrid");
                 grid.dataSource.data(personasList);
 
-                if (personasList.length === 0) {
+                if (personasList.count === 0 && response.tipo !== "success") {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }
+
                 hideLoading();
             },
+
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
                 hideLoading();
@@ -612,13 +617,19 @@
             showLoading();
             $.ajax({
                 type: 'POST',
-                url: '/CapturaAccidentes/guardaDesdeServicio', // Reemplaza con la URL correcta
+                url: '/Personas/guardaDesdeServicio', // Reemplaza con la URL correcta
                 data:  jsonData ,
-                success: function (response) { 
+                success: function (result) { 
+                    console.log("DA", result)
                     $('#modalLicencias').modal('hide');
-                    var personasList = [response];
                     var grid = $("#gridConductores").data("kendoGrid");
-                    grid.dataSource.data(result);
+                    if (result && result.data) {
+                        var dataArray = [result.data];
+                        grid.dataSource.data(dataArray);
+                    } else {
+                        console.error("La respuesta no tiene la estructura esperada:", result);
+                    }
+                sitteg_success('Elemento guardado correctamente')
                     hideLoading();
                 },
                 error: function (error) {

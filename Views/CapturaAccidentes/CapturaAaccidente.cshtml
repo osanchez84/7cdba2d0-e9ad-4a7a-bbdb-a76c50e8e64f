@@ -36,7 +36,7 @@
 				<h6 class="px-4 text-muted">El accidente ya está registrado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
 			</div>
 		</div>
-		<form class="row px-4 align-items-end">
+		<form class="row px-4 align-items-end" id="AccidenteInfoForm">
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
 					<label class="text-muted">No. de reporte de accidente:</label>
@@ -45,36 +45,177 @@
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
-					<label class="text-muted">Fecha y hora:</label>
-				<!--	<label>@Model.Fecha.Value.ToString("dd/MM/yyyy") - @Model.Hora</label>-->
-					<label>@Model.FechaFormateada - @Model.Hora</label>
+					<label class="text-muted">Fecha:</label>
+					@(Html.Kendo().DatePickerFor(t => t.Fecha).Max(DateTime.Now)
+						.Label(l => l.Content("Fecha:"))
+						.Format("dd/MM/yyyy")
+						.Culture("es-ES")
+						.Enable(!ViewBag.EsSoloLectura)
+						.HtmlAttributes(new { style = "width: 100%", id = "dateF" })
+						)
+					@* <label>@Model.FechaFormateada - @Model.Hora</label> *@
+				</div>
+			</div>
+			<div class="col-auto">
+				<div class="controlForm mb-3 mt-1">
+					<label class="text-muted">Hora:</label>
+					@(Html.Kendo().TimePickerFor(t => t.Hora).Interval(1).Max(DateTime.Now)
+						.Label(l => l.Content("Hora:"))
+						.Format("HH:mm")
+						.Culture("es-ES")
+						.Enable(!ViewBag.EsSoloLectura)
+						.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
+						)
+					@* <label>@Model.FechaFormateada - @Model.Hora</label> *@
 				</div>
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
 					<label class="text-muted">Municipio:</label>
-					<label>@Model.Municipio</label>
+
+					@if(ViewBag.EsSoloLectura != null && ViewBag.EsSoloLectura)
+					{
+						@(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
+							.Filter(FilterType.Contains)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.OptionLabel("Selecciona un Municipio")
+							.HtmlAttributes(new { @class = "CentradoList", style = "width:100%;", id = "ddlMunicipios", disabled = "disabled" })
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("Municipios_Drop", "CapturaAccidentes");
+								});
+							}))
+					}
+					else
+					{
+						@(Html.Kendo().DropDownListFor(t => t.IdMunicipio)
+							.Filter(FilterType.Contains)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.OptionLabel("Selecciona un Municipio")
+							.HtmlAttributes(new { @class = "CentradoList", style = "width:100%;", id = "ddlMunicipios" })
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("Municipios_Drop", "CapturaAccidentes");
+								});
+							}))
+					}
 				</div>
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
 					<label class="text-muted">Carretera:</label>
-					<label>@Model.Carretera</label>
+					@if(ViewBag.EsSoloLectura != null && ViewBag.EsSoloLectura)
+					{
+						@(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.OptionLabel("Selecciona una Carretera")						
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("Carreteras_Drop", "CapturaAccidentes");
+								});
+							})
+							.Events(e => e.Change("OnCarreteraChange"))
+							//.HtmlAttributes(new { data_required_msg = "El campo Municipio es obligatorio" })
+							.HtmlAttributes(new { style = "width:100%;", Id = "ddlCarreteras", disabled = "disabled" })
+						)
+					}
+					else
+					{
+						@(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.OptionLabel("Selecciona una Carretera")
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("Carreteras_Drop", "CapturaAccidentes");
+								});
+							})
+							.Events(e => e.Change("OnCarreteraChange"))
+							//.HtmlAttributes(new { data_required_msg = "El campo Municipio es obligatorio" })
+							.HtmlAttributes(new { style = "width:100%;", Id = "ddlCarreteras" })
+							)
+					}
 				</div>
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
 					<label class="text-muted">Tramo:</label>
-					<label>@Model.Tramo</label>
+					@if(ViewBag.EsSoloLectura != null && ViewBag.EsSoloLectura)
+					{
+						@(
+							Html.Kendo().DropDownListFor(t => t.IdTramo).Filter(FilterType.Contains)
+								.DataTextField("Text")							
+								.DataValueField("Value")
+								.OptionLabel("Selecciona un Tramo")
+								.DataSource(source =>
+								{
+									source.Read(read =>
+									{
+										read.Action("Tramos_Drop", "CapturaAccidentes", new { carreteraDDValue = Model.IdCarretera });
+									});
+							})						
+							//.HtmlAttributes(new { data_required_msg = "El campo Municipio es obligatorio" })
+							.HtmlAttributes(new { style = "width:100%;", Id = "ddlTramos", disabled = "disabled" })
+						)
+					}
+					else
+					{
+						@(
+							Html.Kendo().DropDownListFor(t => t.IdTramo).Filter(FilterType.Contains)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.OptionLabel("Selecciona un Tramo")
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("Tramos_Drop", "CapturaAccidentes", new { carreteraDDValue = Model.IdCarretera });
+								});
+							})
+							//.HtmlAttributes(new { data_required_msg = "El campo Municipio es obligatorio" })
+							.HtmlAttributes(new { style = "width:100%;", Id = "ddlTramos" })
+						)
+					}
 				</div>
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
 					<label class="text-muted">Kilómetro:</label>
-					<label>@Model.Kilometro</label>
+					@(Html.Kendo().TextBoxFor(t => t.Kilometro)
+						.Placeholder("Ingresa Kilometro")
+						.Enable(!ViewBag.EsSoloLectura)
+						.HtmlAttributes(new { style = "width: 100%", Id = "txtKilometro" })
+						)
+				</div>
+			</div>			
+		</form>
+		<div class="row mt-1 mb-3">
+			<div class="col-12">
+				<div class="row justify-content-around">
+					<div class="col-auto btnOutline my-2 mx-auto p-0 text-center" onclick="ActualizaInformacion()">
+					@if(ViewBag.EsSoloLectura != null && !ViewBag.EsSoloLectura)
+					{
+						@(Html.Kendo().Button()
+							.Name("editInvolucrados")
+							.HtmlAttributes(new { @class = "px-5" })
+							.Enable(!ViewBag.EsSoloLectura) // Desactiva el botón si es solo lectura
+							.Content("<h6 class=\"m-0\"><b>Actualizar información del Accidente</b></h6>"))
+					}
+					</div>
 				</div>
 			</div>
-		</form>
+		</div>
 	</section>
 	<section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded pb-1">
 		<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -338,6 +479,7 @@
 		if (showClasificacionAccidente === 'true') {
 			$('#ClasificacionAccidente').show();
 		}
+
 	});
 	function mostrarModalAgregarVehiculo() {
 		if ('@ViewBag.EsSoloLectura' === 'True') {
@@ -416,8 +558,6 @@
     });
 }
 
-	
-
 	function abrirModalAnexo2() {
 		$.ajax({
 			url: '@Url.Action("ModalAnexo2")',
@@ -427,6 +567,44 @@
 			success: function (data) {
 				$('#BodyModalAnexo2').html(data);
 				$('#anexo2Modal').modal('show');
+			}
+		});
+	}
+
+	function ActualizaInformacion() {
+		var Mydata = $("#AccidenteInfoForm").serialize();
+		console.log(Mydata);
+		showLoading();
+		$.ajax({
+			url: '@Url.Action("ActualizarInfoAccidente")',
+			type: 'POST',
+			data: Mydata,
+			success: function (data) {	
+				sitteg_success("Información actualizada con éxito");
+				hideLoading();
+			},
+			error: function () {
+				sitteg_warning("Ocurrieron los siguientes errores");
+				hideLoading();
+			}
+		});
+	}
+
+	function OnCarreteraChange(e) {
+		var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
+		showLoading();
+		$.ajax({
+			url: '@Url.Action("Tramos_Drop")',
+			type: "POST",
+			data: { carreteraDDValue: carreteraDDValue },
+			success: function (data) {
+				var TramosDropDown = $("#ddlTramos").data("kendoDropDownList");
+				TramosDropDown.dataSource.data(data);
+				hideLoading();
+			},
+			error: function (xhr, status, error) {
+				console.log("EE", error)
+				hideLoading();
 			}
 		});
 	}

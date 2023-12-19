@@ -235,8 +235,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
-                        .DateInput()
-                        
+                        .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -245,8 +244,7 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        //.Value(dateVigencia)
-                        .DateInput()
+                        //.Value(dateVigencia)                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")

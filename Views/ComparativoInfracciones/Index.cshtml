@@ -171,137 +171,9 @@
         <partial name="_ComparativoInfraccionesResultados" model="@ViewBag.ComparativoInfraccionesResumen" />
         </div>
 
-			<div class="row my-4 px-4">
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Tipo Motivo:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idTipoMotivo).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatMotivosInfraccion)
-							.OptionLabel("-- Todos --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Delegación:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idDelegacion).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatDelegaciones)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Oficial:</label>
-						@(Html.Kendo().DropDownListFor(f => f.idOficial)
-							.BindTo((SelectList)ViewBag.CatOficiales).Filter(FilterType.Contains)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Carretera:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idCarretera).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatCarreteras)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Tramo:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idTramo).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatTramos)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Tipo vehículo:</label>
-						<div id="divTramo">
-							@(Html.Kendo().DropDownListFor(f => f.idTipoVehiculo).Filter(FilterType.Contains)
-								.BindTo((SelectList)ViewBag.CatTiposVehiculo)
-								.OptionLabel("-- Seleccione --")
-								.HtmlAttributes(new { style = "width:100%;" })
-								)
-						</div>
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Tipo servicio:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idTipoServicio).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatTipoServicio)
-							.OptionLabel("-- Seleccione --")
-							.Events(e => e.Change("tipoServicioDropDownChange"))
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-
-				</div>
-				<div class="form-group col-12 col-md-6 col-lg-4 my-3">
-					<div class="controlForm">
-						<label>Subtipo servicio:</label>
-						<div id="divTramo">
-							@(Html.Kendo().DropDownListFor(f => f.idSubTipoServicio).Filter(FilterType.Contains)
-								.DataTextField("Text")
-								.DataValueField("Value")
-								.OptionLabel("Selecciona una opción")
-								.Filter(FilterType.Contains)
-								.DataSource(source =>
-								{
-									source.Read(read =>
-									{
-										read.Action("SubtipoServicio_Drop", "ComparativoInfracciones");
-									});
-								})
-								.HtmlAttributes(new { style = "width:100%;" })
-								)
-						</div>
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Tipo licencia:</label>
-						@(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatTipoLicencia)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<label>Municipio:</label>
-						<div id="divTramo">
-							@(Html.Kendo().DropDownListFor(f => f.idMunicipio).Filter(FilterType.Contains)
-								.BindTo((SelectList)ViewBag.CatMunicipios)
-								.OptionLabel("-- Seleccione --")
-								.HtmlAttributes(new { style = "width:100%;" })
-								)
-						</div>
-					</div>
-				</div>
-				<div class="form-group col-md-4 my-3">
-					<div class="controlForm">
-						<div class="controlButton">
-							<button class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
-						</div>
-					</div>
-				</div>
-			</div>
+			
 		</form>
-		<div id="Resultados">
-			<partial name="_ComparativoInfraccionesResultados" model="@ViewBag.ComparativoInfraccionesResumen" />
-		</div>
+		
 
 	</section>
 
@@ -309,6 +181,15 @@
 
 <script>
     function submitSearch() {
+        var año1 = $("#año1").val()
+        var año2 = document.getElementById("año2").value
+        
+        if (año1 === "" && año2 === "") {
+
+            sitteg_warning("Debe ingresar años de busqueda.");
+            return
+        }
+       
         var Mydata = $("#frmComparativoInfracciones").serialize();
         //console.log(Mydata);
         showLoading();

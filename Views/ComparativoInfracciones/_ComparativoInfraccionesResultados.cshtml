@@ -166,7 +166,7 @@
 								.Name("gridDesgloseTotalDeInfracciones")
 								.Columns(columns =>
 								{
-									columns.Bound(c => c.numeroMotivo).Title("Año").Width(50);
+									columns.Bound(c => c.numeroMotivo).Title("Con motivos").Width(50);
 									columns.Bound(p => p.totalInfracciones).Title("Total Infracciones").Width(50).ClientFooterTemplate("Total : #=sum#");
 									columns.Bound(p => p.totalContabiliza).Title("Total contabiliza").Width(50)
 									.ClientFooterTemplate("Total : #=sum#");

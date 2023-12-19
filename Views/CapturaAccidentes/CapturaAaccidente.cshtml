@@ -45,7 +45,7 @@
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
-					@(Html.Kendo().DatePickerFor(t => t.Fecha)
+					@(Html.Kendo().DatePickerFor(t => t.Fecha).Max(DateTime.Now)
 						.Label(l => l.Content("Fecha:"))
 						.Format("dd/MM/yyyy")
 						.Culture("es-ES")
@@ -56,10 +56,10 @@
 			</div>
 			<div class="col-auto">
 				<div class="controlForm mb-3 mt-1">
-					@(Html.Kendo().TimePickerFor(t => t.Hora)
+					@(Html.Kendo().TimePickerFor(t => t.Hora).Max(DateTime.Now)
 						.Label(l => l.Content("Hora:"))
 						.Format("hh:mm:ss")
-						.Culture("es-ES")
+						.Culture("es-ES").Interval(1)
 						.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
 						)
 					@* <label>@Model.FechaFormateada - @Model.Hora</label> *@

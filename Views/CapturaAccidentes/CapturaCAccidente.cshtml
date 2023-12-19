@@ -45,7 +45,7 @@
                         .Label(l => l.Content("Daños al camino:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños al camino")
                         .Enable(!ViewBag.EsSoloLectura) 
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        .HtmlAttributes(new { style = "width: 100%"})
                         )
 
                 </div>
@@ -56,7 +56,7 @@
                         .Label(l => l.Content("Daños a la carga:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños a la carga")
                         .Enable(!ViewBag.EsSoloLectura) 
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        .HtmlAttributes(new { style = "width: 100%" })
                         )
 
                 </div>
@@ -67,7 +67,7 @@
                         .Label(l => l.Content("Daños a propietarios:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños a los propietarios")
                             .Enable(!ViewBag.EsSoloLectura)
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        .HtmlAttributes(new { style = "width: 100%"})
                         )
 
                 </div>
@@ -79,7 +79,7 @@
                         .Label(l => l.Content("Otros daños:"))
                         .Placeholder("Ingresa el monto al que ascienden los daños bajo el concepto de otros")
                             .Enable(!ViewBag.EsSoloLectura)
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                        .HtmlAttributes(new { style = "width: 100%" })
                         )
 
                 </div>
@@ -332,7 +332,7 @@
                             .Messages(c => c.Checked("Si").Unchecked("No"))
                             .HtmlAttributes(new { data_valor = 1 }))
                             <div id="campoTexto" style="display:none">
-                        <label for="OtrosTextBox">Descripción de prendas</label>
+                        <label for="OtrosTextBox">Descripción de otros</label>
                         @(Html.Kendo().TextBoxFor(t => t.OtrosTexto)
                             .HtmlAttributes(new { style ="width: 40%", id = "OtrosTexto" }) // Inicialmente oculto
                                 .Enable(!ViewBag.EsSoloLectura)

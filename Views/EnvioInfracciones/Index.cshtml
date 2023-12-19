@@ -83,6 +83,18 @@
 
 <script>
 	function busquedaInfracciones() {
+
+		var fechaI = $("#FechaInicio").val()
+		var fechaF = $("#FechaFin").val()
+
+
+		if (fechaI === "" || fechaF === ""){
+			sitteg_warning('Se requieren Fecha Inicio y Fecha Fin para filtrar.');
+			return
+		}
+
+
+
 		var myData = $("#busquedaInfraccionForm").serialize();
 		showLoading();
 		$.ajax({

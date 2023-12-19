@@ -99,7 +99,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             vehiculoBusquedaModel.isFromUpdate = true;
             vehiculosModel.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
-            return View("Index", vehiculoBusquedaModel);
+
+            vehiculoBusquedaModel.Vehiculo.ErrorRepube = "No";
+            vehiculoBusquedaModel.Vehiculo.showclose = false;
+
+
+
+            return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
         }
 
         public JsonResult Entidades_Read()

@@ -1231,7 +1231,7 @@
                 ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-primary" onclick="backInicio()"">Aceptar</button>
                 <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
             </div>
         </div>
@@ -1431,7 +1431,7 @@ function submitCreateMoral() {
     }
 
     var generoBool = $("#generoSwitch").prop("checked");
-    $("#idGenero").val(generoBool ? 1 : 0);
+    $("#idGenero").val(generoBool ? 1 : 2);
 
     var Mydata = $("#personaFisicaForm").serialize();
     showLoading();
@@ -1543,6 +1543,12 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
        }
  function cerraModalMoral(){
         $('#addMoral').modal('hide');
+       }
+       function backInicio(){
+                   $('#confirmacionModal').modal('show');
+                       $('.modal-backdrop').remove();
+            document.getElementById("sec0").style.display = "block";
+           document.getElementById("VehiculoLocalizado").style.display = "none";
        }
 
 </script>

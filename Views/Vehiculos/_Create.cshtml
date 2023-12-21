@@ -480,12 +480,12 @@
 
         <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
 
-@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
-*@        
+     @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+        
         
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
-    </form>
+  </form>
 
 </section>
 
@@ -1496,8 +1496,11 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                 success: function (result) {
                     console.log("hd", result)
                     sitteg_success('Elemento guardado correctamente')
-                   document.getElementById("sec0").style.display = "block";
-                   document.getElementById("VehiculoLocalizado").style.display = "none";
+                    if (result.esEdicion) {
+                        window.location = '/Vehiculos/Editar';
+                        } else {
+                            window.location = '/Vehiculos/Index';
+                        }
                     hideLoading();
                 },
                 error: function (xhr, status) {
@@ -1519,7 +1522,6 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
         $('#confirmarCerrar').on('click', function () {
             $('#confirmacionModal').modal('hide');
-            window.close(); 
         });
     }
 
@@ -1542,11 +1544,19 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
  function cerraModalMoral(){
         $('#addMoral').modal('hide');
        }
-       function backInicio(){
-                   $('#confirmacionModal').modal('show');
-                       $('.modal-backdrop').remove();
-            document.getElementById("sec0").style.display = "block";
-           document.getElementById("VehiculoLocalizado").style.display = "none";
-       }
+      
+       function backInicio() {
+    $('#confirmacionModal').modal('hide');
+    $('.modal-backdrop').remove();
+    
+    var urlActual = window.location.pathname;
+
+    if (urlActual.toLowerCase().includes('/vehiculos/index')) {
+        window.location = '/Vehiculos/Index';
+    } else if (urlActual.toLowerCase().includes('/vehiculos/editarvehiculo')) {
+        window.location = '/Vehiculos/Editar';
+    }
+}
+
 
 </script>

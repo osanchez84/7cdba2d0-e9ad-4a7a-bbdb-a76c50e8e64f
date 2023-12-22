@@ -103,9 +103,7 @@
                 </div>
             </div>
         </div>
-      
-        @if(Model.showclose){
-            <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+        <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
                 <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="cerrarModalV()">
                     @(Html.Kendo().Button()
@@ -115,12 +113,6 @@
                 </div>
             </div>
         </div>
-
-        }
-
-        
-
-
     </div>
     <div class="row">
         <div class="col-8 pe-0">
@@ -243,7 +235,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
-                        .DateInput()                        
+                       // .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -252,7 +244,8 @@
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        //.Value(dateVigencia)                        
+                        //.Value(dateVigencia)
+                        .DateInput()
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -486,12 +479,12 @@
 
         <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
 
-@*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
-*@        
+     @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
+        
         
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
-    </form>
+  </form>
 
 </section>
 
@@ -742,7 +735,7 @@
 
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombre)
                                 .Placeholder("Ingresa Nombre")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%"})
                                 )
                         </div>
                     </div>
@@ -753,7 +746,7 @@
                                 .Placeholder("Ingresa Teléfono")
                                 .HtmlAttributes(new { style = "width: 100%" ,onkeypress = "return validarNumero(event)"})
                                 )
-                        <div id="errorTelefono" style="color: red;"></div>
+                        @*<div id="errorTelefono" style="color: red;"></div>*@
                         </div>
                     </div>
 
@@ -818,7 +811,7 @@
                             <label>Colonia <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.colonia)
                                 .Placeholder("Ingresa colonia")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -827,7 +820,7 @@
                             <label>Calle <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Placeholder("Ingresa calle")
-                                .HtmlAttributes(new { style = "width: 100%",required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
 
                         </div>
@@ -837,7 +830,7 @@
                             <label>Número <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Placeholder("Ingresa número")
-                                .HtmlAttributes(new { style = "width: 100%",required = "required" })
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
@@ -918,6 +911,8 @@
         </div>
     </div>
 </div>
+
+
 <div class="modal fade modalCustom" id="addFisico" aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
@@ -995,7 +990,7 @@
                                 )
 
                         </div>
-                          <div id="errorContainerPersona_RFCFisico" class="error-container"></div>
+                          @*<div id="errorContainerPersona_RFCFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -1011,14 +1006,14 @@
                         <div class="controlForm mb-3">
                             <label>Fecha de nacimiento <b>(obligatorio)</b></label>
                             <span>
-                                @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
+                                @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento).Max(DateTime.Now)
                                     .Format("dd/MM/yyyy")
                                     .Culture("es-ES")
-                                   .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                   .HtmlAttributes(new { style = "width: 100%" })
                                     )
                             </span>
                         </div>
-                         <div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>
+                         @*<div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -1046,7 +1041,7 @@
                                 .Placeholder("Ingresa un Teléfono")
                                 .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico",onkeypress = "return validarNumero(event)" })
                                 )
-                        <div id="errorTelefonoFisico" style="color: red;"></div>
+                        @*<div id="errorTelefonoFisico" style="color: red;"></div>*@
                         </div>
                     </div>
 
@@ -1089,11 +1084,11 @@
                             <label>Colonia <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.colonia)
                                 .Placeholder("Ingresa una colonia")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required",id="coloniaFisico" })
+                                .HtmlAttributes(new { style = "width: 100%", id="coloniaFisico" })
                                 )
 
                         </div>
-                       <div id="errorContainerPersona_PersonaDireccion_coloniaFisico" class="error-container"></div>
+                       @*<div id="errorContainerPersona_PersonaDireccion_coloniaFisico" class="error-container"></div>*@
                     </div>
 
                     <div class="col-12 col-md-6 col-lg-6">
@@ -1101,22 +1096,22 @@
                             <label>Calle <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
                                 .Placeholder("Ingresa una calle")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required",id="calleFisico" })
+                                .HtmlAttributes(new { style = "width: 100%", id="calleFisico" })
                                 )
 
                         </div>
-                         <div id="errorContainerPersona_calleFisico" class="error-container"></div>
+                         @*<div id="errorContainerPersona_calleFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <div class="controlForm my-3">
                             <label>Número <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
                                 .Placeholder("Ingresa un número interior")
-                                .HtmlAttributes(new { style = "width: 100%", required = "required",id="numeroFisico"})
+                                .HtmlAttributes(new { style = "width: 100%",id="numeroFisico"})
                                 )
 
                         </div>
-                        <div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>
+                        @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -1319,23 +1314,44 @@
 function submitCreateMoral() {
     var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
     
-    var idTelefono = $("#Persona_PersonaDireccion_telefono");
-    var idTelefonoValue = idTelefono.val();
-    
-    if (idTelefonoValue === null || idTelefonoValue === "") {
-        idTelefono.prop("disabled", true);
-    }
-
-    idTelefono.off('blur');
-
-
+    var tel = $("#Persona_PersonaDireccion_telefono").val();
+    var correo = $("#Persona_PersonaDireccion_correo").val();
+   
     $("#idCatTipoServicio").prop("disabled",true)
 
     $("#hdnIdCatTipoPersona").prop("disabled",true)
+    var controlsValidate = [];
+    var isValid = true;
 
+    controlsValidate.push({ 'controlName': 'Persona_nombre' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
 
+    // INPUTS
+    if (!isControlsValid(controlsValidate)) { isValid = false; }
+    if (tel != "" && tel != undefined) {
+            $('#Persona_PersonaDireccion_telefono').removeClass("errorData");
+            if (!isValidPhone(tel)) {
+                $('#Persona_PersonaDireccion_telefono').addClass("errorData");
+                isValid = false;
+            }
+    }
+        
+    if (correo != "" && correo != undefined) {
+        $('#correoInfraccion').removeClass("errorData");
+        if (!isValidEmail(correo)) {
+            $('#correoInfraccion').addClass("errorData");
+            isValid = false;
+        }
+    }
 
-    if (validator.validate()) {
+    if (!isValid) {
+	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+        return;
+    }
+
+    if (isValid) {
         var formData = $("#frmCreateMoral").serialize();
         showLoading();
         $.ajax({
@@ -1384,6 +1400,21 @@ function submitCreateMoral() {
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
+        var controlsValidate = [];
+        var isValid = true;
+
+        // DROP DOWN LIST
+        controlsValidate=[];
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'ddlMarcas' });
+        //controlsValidate.push({ 'controlName': 'idSubmarca' });
+        controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+        if (!isValid) {
+	        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
         console.log(Mydata);
         showLoading();
         $.ajax({
@@ -1411,26 +1442,21 @@ function submitCreateMoral() {
     var calleValue = $("#calleFisico").val();            
      var numeroValue = $("#numeroFisico").val();
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
-     $('.error-container').empty();
+     
+    var controlsValidate = [];
+    var isValid = true;
 
-    if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-        if (!nombreValue) {
-            asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-        }
+    controlsValidate.push({ 'controlName': 'nombreFisico' });
+    controlsValidate.push({ 'controlName': 'coloniaFisico' });
+    controlsValidate.push({ 'controlName': 'calleFisico' });
+    controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+    controlsValidate.push({ 'controlName': 'numeroFisico' });
 
-        if (!coloniaValue) {
-            asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-        }
-        if (!calleValue) {
-            asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-        }
-        if (!numeroValue) {
-            asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-        }
-        if (!fechaNacimientoValue) {
-            asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-        }
+    // INPUTS
+    if (!isControlsValid(controlsValidate)) { isValid = false; }
 
+    if (!isValid) {
+	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
         return;
     }
 
@@ -1502,8 +1528,11 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                 success: function (result) {
                     console.log("hd", result)
                     sitteg_success('Elemento guardado correctamente')
-                   document.getElementById("sec0").style.display = "block";
-                   document.getElementById("VehiculoLocalizado").style.display = "none";
+                    if (result.esEdicion) {
+                        window.location = '/Vehiculos/Editar';
+                        } else {
+                            window.location = '/Vehiculos/Index';
+                        }
                     hideLoading();
                 },
                 error: function (xhr, status) {
@@ -1525,7 +1554,6 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
         $('#confirmarCerrar').on('click', function () {
             $('#confirmacionModal').modal('hide');
-            window.close(); 
         });
     }
 
@@ -1548,11 +1576,19 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
  function cerraModalMoral(){
         $('#addMoral').modal('hide');
        }
-       function backInicio(){
-                   $('#confirmacionModal').modal('show');
-                       $('.modal-backdrop').remove();
-            document.getElementById("sec0").style.display = "block";
-           document.getElementById("VehiculoLocalizado").style.display = "none";
-       }
+      
+       function backInicio() {
+    $('#confirmacionModal').modal('hide');
+    $('.modal-backdrop').remove();
+    
+    var urlActual = window.location.pathname;
+
+    if (urlActual.toLowerCase().includes('/vehiculos/index')) {
+        window.location = '/Vehiculos/Index';
+    } else if (urlActual.toLowerCase().includes('/vehiculos/editarvehiculo')) {
+        window.location = '/Vehiculos/Editar';
+    }
+}
+
 
 </script>

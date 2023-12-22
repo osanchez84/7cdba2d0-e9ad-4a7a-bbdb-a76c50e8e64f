@@ -1351,7 +1351,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo ,p.vigenciaLicencia ,
 						isnull(epd.nombreentidad,'')+' '+isnull(mpd.municipio,'')+' '+isnull(pd.colonia,'')+' '+ isnull(pd.calle,'')+' '+isnull(pd.numero,'') as direccion,
 						isnull(epdc.nombreentidad,'')+' '+isnull(mpdc.municipio,'')+' '+isnull(pdc.colonia,'')+' '+isnull(pdc.codigoPostal,'')+' '+ isnull(pdc.calle,'')+' '+isnull(pdc.numero,'') as direccionc,
-						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia
+						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,,v.numeroeconomico as numeroeconomico
                         FROM conductoresVehiculosAccidente AS cva 
 						INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo  
                         LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo  
@@ -1425,7 +1425,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.TipoLicencia = reader["tipoLicencia"].ToString();
 							vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
                             vehiculo.vigenciaLicencia = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? DateTime.MinValue : (DateTime)reader["vigenciaLicencia"];
-                            string montoVehiculoString = reader["montoVehiculo"].ToString();
+                            vehiculo.NumeroEconomico = reader["numeroeconomico"].GetType() == typeof(DBNull) ? "" : reader["numeroeconomico"].ToString();
+
+							string montoVehiculoString = reader["montoVehiculo"].ToString();
                             float montoVehiculo;
 
                             if (!string.IsNullOrEmpty(montoVehiculoString) && float.TryParse(montoVehiculoString, out montoVehiculo))

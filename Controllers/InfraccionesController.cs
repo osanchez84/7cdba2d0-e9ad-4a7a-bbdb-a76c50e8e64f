@@ -181,7 +181,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);            
+            var uma = _infraccionesService.getUMAValue();
+            InfraccionModel.Uma = uma;
             var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
             return File(report.File.ToArray(), "application/pdf", report.FileName);
         }

@@ -40,7 +40,6 @@
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm mb-3">
                             @(Html.Kendo().TextBoxFor(t => t.serie)
-                                .HtmlAttributes(new { style = "width: 80%" })
                                 .Label(l => l.Content("No de serie:"))
                                 .Placeholder("Ingresa el número de serie")
                                 .HtmlAttributes(new { style = "width: 100%"})
@@ -62,7 +61,6 @@
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm mb-3">
                     @(Html.Kendo().TextBoxFor(t => t.folioInventario)
-                            .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Folio de inventario:"))
                             .Placeholder("Ingresa el número folio")
                             .HtmlAttributes(new { style = "width: 100%" })
@@ -72,7 +70,7 @@
                 
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm mb-3">
-                <label>Marca</label>
+                <label>Marca:</label>
                 <span>
                         @(Html.Kendo().DropDownListFor(t => t.idMarca).Filter(FilterType.Contains)
                         .Label(l => l.Content("Marca:"))

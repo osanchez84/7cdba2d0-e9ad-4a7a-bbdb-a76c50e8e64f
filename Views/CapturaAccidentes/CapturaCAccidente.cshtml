@@ -335,21 +335,47 @@
                         <div id="campoArmasTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="ArmasTextBox">Descripción de armas</label>
                             @(Html.Kendo().TextBoxFor(t => t.ArmasTexto)
-                                .HtmlAttributes(new { style = "width: 40%", id = "ArmasTexto" }) 
+                                .HtmlAttributes(new { style = "width: 100%", id = "ArmasTexto" }) // Inicialmente oculto
+
                                 .Enable(!ViewBag.EsSoloLectura)
                                 )
                         </div>
-                        <div id="campoDrogasTexto" style="visibility: hidden;" class="controlForm mb-3">
-                            <label for="DrogasTextBox">Descripción de drogas</label>
-                            @(Html.Kendo().TextBoxFor(t => t.DrogasTexto)
-                                .HtmlAttributes(new { style = "width: 40%", id = "DrogasTexto" })
+                </div>
+            </div>
+            <div id="campoDrogasTexto" style="display:none" class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label for="DrogasTextBox">Descripción de drogas</label>
+                        @(Html.Kendo().TextBoxFor(t => t.DrogasTexto)
+                                .HtmlAttributes(new { style = "width: 100%", id = "DrogasTexto" }) // Inicialmente oculto
+
                                 .Enable(!ViewBag.EsSoloLectura)
                                 )
                         </div>
                         <div id="campoValoresTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="ValoresTextBox">Descripción de valores</label>
                         @(Html.Kendo().TextBoxFor(t => t.ValoresTexto)
-                            .HtmlAttributes(new { style = "width: 40%", id = "ValoresTexto" }) 
+                            .HtmlAttributes(new { style = "width: 100%", id = "ValoresTexto" }) // Inicialmente oculto
+                            .Enable(!ViewBag.EsSoloLectura)
+                                )
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label>Prendas</label>
+                    <div class="btnToggleActive">
+                          @(Html.Kendo().SwitchFor(t => t.PrendasBool)
+                            .Name("prendasSwitch")
+                            .Messages(c => c.Checked("Si").Unchecked("No"))
+                            .HtmlAttributes(new { data_valor = 1 }))
+                    </div>
+                </div>
+            </div>
+            <div id="campoPrendasTexto" style="display:none" class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm mb-3">
+                    <label for="PrendasTextBox">Descripción de prendas</label>
+                        @(Html.Kendo().TextBoxFor(t => t.PrendasTexto)
+                            .HtmlAttributes(new { style = "width: 100%", id = "PrendasTexto" }) // Inicialmente oculto
+
                             .Enable(!ViewBag.EsSoloLectura)
                             )
                         </div>

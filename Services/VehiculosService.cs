@@ -482,7 +482,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
                             model.paisManufactura = reader["paisManufactura"].ToString();
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
-
                             model.marca = reader["marcaVehiculo"].ToString();
                             model.submarca = reader["nombreSubmarca"].ToString();
                             model.tipoVehiculo = reader["tipoVehiculo"].ToString();

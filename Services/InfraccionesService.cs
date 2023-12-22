@@ -1074,8 +1074,39 @@ namespace GuanajuatoAdminUsuarios.Services
 				}
 			return model;
 		}
+		public decimal getUMAValue()
+		{
+			decimal value = 0;
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+					connection.Open();
+					const string SqlTransact =
+											@"select format(salario,'#.##') salario from catSalariosMinimos where idSalario=1";
 
-		public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion)
+					SqlCommand command = new SqlCommand(SqlTransact, connection);
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							value = Convert.ToDecimal(reader["salario"].ToString());
+						}
+					}
+
+				}
+				catch (Exception ex)
+				{
+
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return value;
+	}
+
+        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion)
 		{
 			InfraccionesReportModel model = new InfraccionesReportModel();
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1083,7 +1114,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-											@"SELECT inf.idInfraccion
+                                            @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
@@ -1137,7 +1168,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
                                             left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersona
-			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersonaInfraccion
+			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersona
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio
 			                                            left join catEntidades dirconductenti on dirconductenti.idEntidad = dirconduct.idEntidad
 			                                            left join catGeneros generoconduct on generoconduct.idGenero = conduct.idGenero

@@ -51,7 +51,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int  GuardarReponse(CrearMultasTransitoChild MT_CrearMultasTransito_res, int idInfraccion);
         public int ModificarEstatusInfraccion(int idInfraccion, int idEstatusInfraccion);
 
-
+        public decimal getUMAValue();
 
     }
 }

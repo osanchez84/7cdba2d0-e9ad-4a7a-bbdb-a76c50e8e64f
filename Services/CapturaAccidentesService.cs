@@ -1426,9 +1426,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno,  
                         p.apellidoMaterno,p.RFC,p.CURP, CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor,  
                         tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo ,p.vigenciaLicencia ,
-						isnull(pd.colonia,'')+' '+isnull(pd.codigoPostal,'')+' '+ isnull(pd.calle,'')+' '+isnull(pd.numero,'') as direccion,
-						isnull(pdc.colonia,'')+' '+isnull(pdc.codigoPostal,'')+' '+ isnull(pdc.calle,'')+' '+isnull(pdc.numero,'') as direccionc,
-						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia
+						isnull(epd.nombreentidad,'')+' '+isnull(mpd.municipio,'')+' '+isnull(pd.colonia,'')+' '+ isnull(pd.calle,'')+' '+isnull(pd.numero,'') as direccion,
+						isnull(epdc.nombreentidad,'')+' '+isnull(mpdc.municipio,'')+' '+isnull(pdc.colonia,'')+' '+isnull(pdc.codigoPostal,'')+' '+ isnull(pdc.calle,'')+' '+isnull(pdc.numero,'') as direccionc,
+						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,,v.numeroeconomico as numeroeconomico
                         FROM conductoresVehiculosAccidente AS cva 
 						INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo  
                         LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo  
@@ -1447,8 +1447,14 @@ namespace GuanajuatoAdminUsuarios.Services
                         LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona  
 						left join personasDirecciones pd on pd.idPersona=p.idPersona
 						left join personasDirecciones pdc on pdc.idPersona=pcv.idPersona
+						left join catmunicipios mpd on pd.idmunicipio=mpd.idmunicipio
+						left join catentidades epd on pd.identidad=epd.identidad
+						left join catmunicipios mpdc on pdc.idmunicipio=mpdc.idmunicipio
+						left join catentidades epdc on pdc.identidad=epdc.identidad
 						left join catGeneros GC on GC.idGenero=pcv.idGenero
 						left join catTipoLicencia tl on pcv.idTipoLicencia=tl.idTipoLicencia
+
+
                         WHERE cva.idAccidente = @idAccidente AND cva.idAccidente > 0 AND cva.estatus = 1;
                         ", connection);
 
@@ -1496,7 +1502,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.TipoLicencia = reader["tipoLicencia"].ToString();
 							vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
                             vehiculo.vigenciaLicencia = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? DateTime.MinValue : (DateTime)reader["vigenciaLicencia"];
-                            string montoVehiculoString = reader["montoVehiculo"].ToString();
+                            vehiculo.NumeroEconomico = reader["numeroeconomico"].GetType() == typeof(DBNull) ? "" : reader["numeroeconomico"].ToString();
+
+							string montoVehiculoString = reader["montoVehiculo"].ToString();
                             float montoVehiculo;
 
                             if (!string.IsNullOrEmpty(montoVehiculoString) && float.TryParse(montoVehiculoString, out montoVehiculo))

@@ -114,21 +114,25 @@
             </div>
         </div>
     </form>
-        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-            <div class="d-flex justify-content-between my-2 mx-auto mx-xl-2 p-0 flex-row">
-                <div class="col-auto btnOutline mx-2">
-                    <button type="button" onclick="cerrarMontos()">
-                        <h6 class="m-0 px-3"><b>Cerrar</b></h6>
-                    </button>
-                </div>
-                <div class="col-auto controlButton">
-                    @(Html.Kendo().Button()
-                        .Name("guardarCostos")
-                        .HtmlAttributes(new { @class = "btnPrimary" })
-                        .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
-                </div>
+
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="row justify-content-around">
+            <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <h6 class="m-0 px-3"><b>Cerrar</b></h6>
+                </button>
+            </div>
+            <div type="button" class="controlButton my-3" onclick="agregarCostos()">
+                @(Html.Kendo().Button()
+                    .Name("guardarCostos")
+                    .HtmlAttributes(new { @class = "btnPrimary" })
+                    .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
             </div>
         </div>
+        
+
+    </div>
+
 </section>
 <script>
     function agregarCostos(){

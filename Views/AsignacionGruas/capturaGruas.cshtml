@@ -58,26 +58,27 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-auto">
                             <div class="controlForm">
-                                <label>Se realizo Infracción</label>
+                                <label>Se realizo Infracción:</label>
                             </div>
-                        <div class="col-12">
-                            <div class="controlButton mb-5" onclick="modalInfraccion()">
-                                @(Html.Kendo().Button()
-                                    .Name("infraccion")
-                                    .HtmlAttributes(new { @class = "btnPrimary" })
-                                    .Content("<h5 class=\"m-0\"><b>SI</b></h5>"))
+                            <div class="row justify-content-around">
+                                <div class="col-auto">
+                                    <div class="controlButton mb-5" onclick="modalInfraccion()">
+                                        @(Html.Kendo().Button()
+                                            .Name("infraccion")
+                                            .HtmlAttributes(new { @class = "btnPrimary" })
+                                            .Content("<h5 class=\"m-0\"><b>SI</b></h5>"))
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="controlButton mb-5" onclick="modalVehiculos()">
+                                            @(Html.Kendo().Button()
+                                            .Name("noInfraccion")
+                                            .HtmlAttributes(new { @class = "btnPrimary" })
+                                            .Content("<h5 class=\"m-0\"><b>No</b></h5>"))
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                         <div class="col-12">
-                        <div class="controlButton mb-5" onclick="modalVehiculos()">
-                            @(Html.Kendo().Button()
-                              .Name("noInfraccion")
-                              .HtmlAttributes(new { @class = "btnPrimary" })
-                              .Content("<h5 class=\"m-0\"><b>No</b></h5>"))
-                        </div>
                     </div>
-                </div>
                </div>
   <div class="row px-4 mb-2 align-items-start" style="display:block" id="datosVehiculo">
         <div style="width: 50%; float: left;">

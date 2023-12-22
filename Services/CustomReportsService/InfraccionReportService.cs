@@ -396,7 +396,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 Paragraph tituloMotivoInfParagraph = new Paragraph("MOTIVOS DE INFRACCIÓN", _titleFont);
                 tituloMotivoInfParagraph.Alignment = Element.ALIGN_CENTER;
                 doc.Add(tituloMotivoInfParagraph);
-
+                var uma = ModelDataInfracciones.Uma;
                 int i = 1;
                 foreach (var item in ModelDataInfracciones.MotivosInfraccion)
                 {
@@ -414,12 +414,12 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 PdfPTable tableLayout = new PdfPTable(ColumnsNames.Count);
 
                 doc.Add(GenericTable(tableLayout, ModelDataInfracciones.MotivosInfraccion, ColumnsNames, ColumnsNames.Count));
-                doc = WritteTotalesMotivosInfraccion(doc, ModelDataInfracciones);
+                doc = WritteTotalesMotivosInfraccion(doc, ModelDataInfracciones,uma);
             }
             
             return doc;
         }
-        public Document WritteTotalesMotivosInfraccion(Document doc, InfraccionesReportModel ModelDataInfracciones)
+        public Document WritteTotalesMotivosInfraccion(Document doc, InfraccionesReportModel ModelDataInfracciones,decimal uma)
         {
             PdfPTable Invoicetable = new PdfPTable(3);
             Invoicetable.HorizontalAlignment = 0;
@@ -459,8 +459,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellBox("TOTAL (SALARIOS): ", totalSalarios.ToString(), Rectangle.BOX));
-                nested.AddCell(FieldCellBox("SALARIO MÍNIMO: ", "$ 61.38", Rectangle.BOX));
-                nested.AddCell(FieldCellBox("MONTO TOTAL: ", "$ "+ModelDataInfracciones.montoCalificacion, Rectangle.BOX));
+                nested.AddCell(FieldCellBox("UMA: ", uma.ToString(), Rectangle.BOX));
+                nested.AddCell(FieldCellBox("MONTO TOTAL: ", "$ "+(uma*totalSalarios).ToString(), Rectangle.BOX));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -477,6 +477,9 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
         }
         public Document BodyGarantía(Document doc, InfraccionesReportModel ModelDataInfracciones)
         {
+
+            var tipoGar = ModelDataInfracciones.Garantia?.garantia;
+
             RoundRectangle roundRectangle = new RoundRectangle();
 
             PdfPTable TableMain = new PdfPTable(1);
@@ -495,8 +498,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Garantía"));
                 nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia?.garantia));
-                nested.AddCell(FieldCellBox("Tipo placa: ", ModelDataInfracciones.Garantia?.tipoPlaca));
-                nested.AddCell(FieldCellBox("No. de placa: ", ModelDataInfracciones.Garantia?.numPlaca));
+                nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placas"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
+                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placas"? ModelDataInfracciones.placas:"-"));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -507,9 +510,9 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             {
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
-                nested.AddCell(FieldCellBox("Tipo licencia: ", ModelDataInfracciones.Garantia?.tipoLicencia));
-                nested.AddCell(FieldCellBox("No. de licencia: ", ModelDataInfracciones.Garantia?.numLicencia));
-                nested.AddCell(FieldCellBox("No. de tarjeta: ", ModelDataInfracciones.NumTarjetaCirculacion));//VALIDAR
+                nested.AddCell(FieldCellBox("Tipo licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.tipoLicencia:"-"));
+                nested.AddCell(FieldCellBox("No. de licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.numLicencia:"-"));
+                nested.AddCell(FieldCellBox("No. de tarjeta: ", tipoGar== "Tarjeta de circulación"? ModelDataInfracciones.NumTarjetaCirculacion:"-"));//VALIDAR
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

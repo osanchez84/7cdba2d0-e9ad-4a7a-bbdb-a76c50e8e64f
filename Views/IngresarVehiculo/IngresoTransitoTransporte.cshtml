@@ -36,9 +36,10 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
-                            <label>Marca</label>
+                            <label>Marca:</label>
                             @(Html.Kendo().DropDownListFor(t => t.idMarca).Filter(FilterType.Contains)
                                 .Label(l => l.Content("Marca:"))
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Marca")
@@ -56,7 +57,6 @@
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="controlForm my-3">
                             @(Html.Kendo().TextBoxFor(t => t.serie)
-                                .HtmlAttributes(new { style = "width: 80%" })
                                 .Label(l => l.Content("No. de serie:"))
                                 .Placeholder("Ingresa el número de serie")
                                 .HtmlAttributes(new { style = "width: 100%" })
@@ -67,7 +67,6 @@
                         <div class="controlForm mb-3">
                             <div class="controlForm my-3">
                                 @(Html.Kendo().TextBoxFor(t => t.folioInventario)
-                                    .HtmlAttributes(new { style = "width: 80%" })
                                     .Label(l => l.Content("Folio de inventario:"))
                                     .Placeholder("Ingresa el número folio")
                                     .HtmlAttributes(new { style = "width: 100%" })
@@ -79,7 +78,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                 <div class="controlForm mb-3">
-                    <label>Placas</label>
+                    <label>Placas:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(t => t.placa).Filter(FilterType.Contains)
                             .DataTextField("Text")

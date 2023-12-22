@@ -165,7 +165,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				conductor = s.PersonaInfraccion.nombreCompleto,
 				propietario = s.Vehiculo.Persona.nombreCompleto,
 				fechaAplicacion = s.fechaInfraccion,
-				garantia = s.NombreGarantia,
+				garantia = s.Garantia.garantia,
 				vehiculo = s.Vehiculo.fullVehiculo,
 				placas = s.Vehiculo.placas,
 				delegacion = s.delegacion,

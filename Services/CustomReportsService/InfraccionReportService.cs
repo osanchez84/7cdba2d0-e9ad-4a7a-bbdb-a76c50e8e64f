@@ -499,7 +499,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellTitleBox("Garantía"));
                 nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia?.garantia));
                 nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placas"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
-                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placas"? ModelDataInfracciones.Garantia?.numPlaca:"-"));
+                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placas"? ModelDataInfracciones.placas:"-"));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

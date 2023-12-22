@@ -227,13 +227,45 @@
     </section>
 </div>
 <script>
-    $(document).ready(function () {
-        var datePicker = $("#end").data("kendoDatePicker");
-        datePicker.value(null);
-    });
+    $(function () {
+        function checkDates() {
 
-    $(document).ready(function () {
-        var datePicker = $("#start").data("kendoDatePicker");
-        datePicker.value(null);
+            var startDate = $("#start")
+            var endDate = $("#end")
+            console.log(startDate.val(), endDate.val())
+            console.log(kendo.parseDate(endDate.val()) > kendo.parseDate(startDate.val()))
+            if (startDate.val() != '' && endDate.val() != '') {
+                if (kendo.parseDate(endDate.val()) < kendo.parseDate(startDate.val())) {
+                    sitteg_warning("La fecha final debe ser mayor a la fecha inicial.");
+                   // alert('La fecha final debe ser mayor a la fecha inicial');
+                    endDate.val(startDate.val());
+                }
+            }
+        }
+
+        var startDate = $("#start").kendoDatePicker({
+            change: checkDates
+        });
+        var endDate = $("#end").kendoDatePicker({
+            change: checkDates
+        });
+
+        $("#start").kendoValidator({
+            rules: {
+                date: function (input) {
+                    var d = kendo.parseDate(input.val());
+                    return d instanceof Date;
+                }
+            }
+        });
+
+        $("#end").kendoValidator({
+            rules: {
+                date: function (input) {
+                    var d = kendo.parseDate(input.val());
+                    return d instanceof Date;
+                }
+            }
+        });
     });
 </script>

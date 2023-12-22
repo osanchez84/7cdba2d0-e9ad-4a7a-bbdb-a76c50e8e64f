@@ -2404,7 +2404,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfranccion) = year(getdate())";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{

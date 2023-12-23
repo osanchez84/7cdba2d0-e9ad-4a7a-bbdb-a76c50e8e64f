@@ -417,28 +417,98 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(
-                                                        "SELECT cva.*, COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,cva.idTipoCarga,cva.poliza,ctc.tipoCarga,v.placas, v.tarjeta, v.serie, v.idMarcaVehiculo, " +
-                        "v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad, " +
-                        "cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno, " +
-                        "p.apellidoMaterno,pcv.RFC,pcv.CURP,CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor, " +
-                        "tc.tipoCarga,v.vigenciaTarjeta,v.otros,tp.tipoPersona, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo " +
-                        "FROM conductoresVehiculosAccidente AS cva INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
-                        "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
-                        "LEFT JOIN catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga " +
-                        "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
-                        "LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
-                        "LEFT JOIN personas AS p ON v.idPersona = p.idPersona " +
-                        "LEFT JOIN catColores AS c ON v.idColor = c.idColor " +
-                        "LEFT JOIN catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga " +
-                        "LEFT JOIN pensiones AS pen ON cva.idPension = pen.idPension " +
-                        "LEFT JOIN vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente " +
-                        "LEFT JOIN catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado " +
-                        "LEFT JOIN catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
-                        "LEFT JOIN accidentes AS acc ON cva.idAccidente = acc.idAccidente " +
-                        "LEFT JOIN catEntidades AS cent ON v.idEntidad = cent.idEntidad " +
-                        "LEFT JOIN personas AS pcv ON cva.idPersona = pcv.idPersona " +
-                        "LEFT JOIN catTipoPersona AS tp ON p.idCatTipoPersona = tp.idCatTipoPersona " +
-                        "WHERE cva.idAccidente = @idAccidente AND cva.idPersona = @idPersona AND cva.idVehiculo = @IdVehiculoInvolucrado AND cva.idAccidente > 0;", connection);
+                                                        @"SELECT
+                                                            cva.*,
+                                                            COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,
+                                                            cva.idTipoCarga,
+                                                            cva.poliza,
+                                                            ctc.tipoCarga,
+                                                            v.placas,
+                                                            v.tarjeta,
+                                                            v.serie,
+                                                            v.idMarcaVehiculo,
+                                                            v.idSubmarca,
+                                                            v.idEntidad,
+                                                            v.idTipoVehiculo,
+                                                            acc.numeroReporte,
+                                                            v.idPersona AS idPropietario,
+                                                            v.modelo,
+                                                            v.idColor,
+                                                            v.idCatTipoServicio,
+                                                            v.motor,
+                                                            v.capacidad,
+                                                            cm.marcaVehiculo,
+                                                            csv.nombreSubmarca,
+                                                            tv.tipoVehiculo,
+                                                            COALESCE(p.nombre, pcv.nombre) AS nombre,
+                                                            COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno,
+                                                            p.apellidoMaterno,
+	                                                        pdir.idEntidad AS IdEntidadPropetario,
+	                                                        pent.nombreEntidad AS EntidadPropietario,
+	                                                        pdir.idMunicipio AS IdMunicipioPropietario,
+	                                                        mun.municipio AS MunicipioPropietario,
+	                                                        pdir.colonia AS ColoniaPropietario,
+	                                                        pdir.calle AS CallePropietario,
+	                                                        pdir.numero AS NumeroPropietario,
+	                                                        pdir.telefono AS TelefonoPropietario,
+	                                                        pdir.correo AS CorreoPropietario,
+                                                            pcv.RFC,
+                                                            pcv.CURP,
+                                                            FORMAT(p.fechaNacimiento, 'dd/MM/yyyy') AS fechaNacimiento,
+                                                            c.color,
+                                                            ts.tipoServicio,
+                                                            pcv.nombre AS nombreConductor,
+                                                            pcv.apellidoPaterno AS apellidoPConductor,
+                                                            pcv.apellidoMaterno AS apellidoMConductor,
+                                                            tc.tipoCarga,
+                                                            v.vigenciaTarjeta,
+                                                            v.otros,
+                                                            tp.tipoPersona,
+                                                            pen.pension,
+                                                            ft.formaTraslado,
+                                                            cent.nombreEntidad,
+                                                            va.montoVehiculo
+                                                        FROM
+                                                            conductoresVehiculosAccidente AS cva
+                                                        INNER JOIN
+                                                            vehiculos AS v ON cva.idVehiculo = v.idVehiculo
+                                                        LEFT JOIN
+                                                            catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo
+                                                        LEFT JOIN
+                                                            catTiposcarga AS ctc ON cva.idTipoCarga = ctc.idTipoCarga
+                                                        LEFT JOIN
+                                                            catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca
+                                                        LEFT JOIN
+                                                            catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo
+                                                        LEFT JOIN
+                                                            personas AS p ON v.idPersona = p.idPersona
+                                                        LEFT JOIN
+                                                            catColores AS c ON v.idColor = c.idColor
+                                                        LEFT JOIN
+                                                            catTiposcarga AS tc ON cva.idTipoCarga = tc.idTipoCarga
+                                                        LEFT JOIN
+                                                            pensiones AS pen ON cva.idPension = pen.idPension
+                                                        LEFT JOIN
+                                                            vehiculosAccidente AS va ON cva.idVehiculo = va.idVehiculo AND cva.idAccidente = va.idAccidente
+                                                        LEFT JOIN
+                                                            catFormasTraslado AS ft ON cva.idFormaTraslado = ft.idFormaTraslado
+                                                        LEFT JOIN
+                                                            catTipoServicio AS ts ON v.idCatTipoServicio = ts.idCatTipoServicio
+                                                        LEFT JOIN
+                                                            accidentes AS acc ON cva.idAccidente = acc.idAccidente
+                                                        LEFT JOIN
+                                                            catEntidades AS cent ON v.idEntidad = cent.idEntidad
+                                                        LEFT JOIN
+                                                            personas AS pcv ON cva.idPersona = pcv.idPersona
+                                                        LEFT JOIN
+                                                            catTipoPersona AS tp ON p.idCatTipoPersona = tp.idCatTipoPersona
+                                                        LEFT JOIN
+                                                            personasDirecciones AS pdir ON pdir.idPersona = v.idPersona
+                                                        LEFT JOIN
+                                                            catEntidades AS pent ON pent.idEntidad = pdir.idEntidad
+                                                        LEFT JOIN
+                                                            catMunicipios AS mun ON mun.idMunicipio = pdir.idMunicipio
+                                                        WHERE cva.idAccidente = @idAccidente AND cva.idPersona = @idPersona AND cva.idVehiculo = @IdVehiculoInvolucrado AND cva.estatus > 0;", connection);
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
@@ -449,7 +519,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            involucrado.IdPropietarioInvolucrado = reader["idPersona"] != DBNull.Value ? Convert.ToInt32(reader["idPersona"].ToString()) : 0;
+                            involucrado.IdPropietarioInvolucrado = reader["idPropietario"] != DBNull.Value ? Convert.ToInt32(reader["idPropietario"].ToString()) : 0;
                             involucrado.IdAccidente = reader["idAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idAccidente"].ToString()) : 0;
                             involucrado.IdVehiculoInvolucrado = reader["idVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idVehiculo"].ToString()) : 0;
                             involucrado.IdTipoCarga = reader["IdTipoCarga"] != DBNull.Value ? Convert.ToInt32(reader["IdTipoCarga"].ToString()) : 0;
@@ -467,6 +537,13 @@ namespace GuanajuatoAdminUsuarios.Services
                             involucrado.Submarca = reader["nombreSubmarca"] != DBNull.Value ? reader["nombreSubmarca"].ToString() : string.Empty;
                             involucrado.TipoVehiculo = reader["tipoVehiculo"] != DBNull.Value ? reader["tipoVehiculo"].ToString() : string.Empty;
                             involucrado.PropietarioInvolucrado = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
+                            involucrado.EntidadPropietario = reader["EntidadPropietario"] != DBNull.Value ? reader["EntidadPropietario"].ToString() : string.Empty;
+                            involucrado.MunicipioPropietario = reader["MunicipioPropietario"] != DBNull.Value ? reader["MunicipioPropietario"].ToString() : string.Empty;
+                            involucrado.ColoniaPropietario = reader["ColoniaPropietario"] != DBNull.Value ? reader["ColoniaPropietario"].ToString() : string.Empty;
+                            involucrado.CallePropietario = reader["CallePropietario"] != DBNull.Value ? reader["CallePropietario"].ToString() : string.Empty;
+                            involucrado.NumeroPropietario = reader["NumeroPropietario"] != DBNull.Value ? reader["NumeroPropietario"].ToString() : string.Empty;
+                            involucrado.TelefonoPropietario = reader["TelefonoPropietario"] != DBNull.Value ? reader["TelefonoPropietario"].ToString() : string.Empty;
+                            involucrado.CorreoPropietario = reader["CorreoPropietario"] != DBNull.Value ? reader["CorreoPropietario"].ToString() : string.Empty;
                             involucrado.NumeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
                             involucrado.Modelo = reader["modelo"] != DBNull.Value ? reader["modelo"].ToString() : string.Empty;
                             involucrado.Motor = reader["motor"] != DBNull.Value ? reader["motor"].ToString() : string.Empty;

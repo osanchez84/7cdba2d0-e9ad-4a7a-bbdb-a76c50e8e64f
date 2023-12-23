@@ -777,6 +777,7 @@
                 }
 
                 var redirectTo = sessionStorage.getItem('redirectTo');
+                console.log("RED",redirectTo)
                 if (shouldGoBack && redirectTo) {
                     window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
                 }

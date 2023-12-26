@@ -79,10 +79,12 @@ function finishCancel(d) {
 }
 
 window.CancelTramite = (d) => {
+    console.log("ESTE ES",d)
+    $('#modalEliminar').data('id-to-delete', d);
 
-    var data = { id: d }
+    $('#modalEliminar').modal('show');
 
-    RemoveTramite(data, finishCancel)
+    //RemoveTramite(data, finishCancel)
 
 }
 

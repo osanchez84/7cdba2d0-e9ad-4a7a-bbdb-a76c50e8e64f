@@ -1114,7 +1114,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+											@"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
@@ -1160,6 +1160,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.lugarPago
                                             ,'' concepto
                                             ,inf.idGarantia
+											,inf.observaciones
                                             FROM infracciones inf 
                                             left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                             left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
@@ -1194,6 +1195,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					{
 						while (reader.Read())
 						{
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? default(string) : reader["observaciones"].ToString();
 							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
 							model.folioInfraccion = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());

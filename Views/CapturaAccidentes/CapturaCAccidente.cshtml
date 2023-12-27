@@ -41,46 +41,46 @@
            <div class="row px-4 mb-4 align-items-end">
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t => t.montoCamino)
-                        .Label(l => l.Content("Daños al camino:"))
-                        .Placeholder("Ingresa el monto al que ascienden los daños al camino")
-                        .Enable(!ViewBag.EsSoloLectura) 
-                        .HtmlAttributes(new { style = "width: 100%"})
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.montoCamino)
+                                .Label(l => l.Content("Daños al camino:"))
+                                .Placeholder("Ingresa el monto al que ascienden los daños al camino")
+                                .Enable(!ViewBag.EsSoloLectura)
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
 
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t => t.montoCarga)
-                        .Label(l => l.Content("Daños a la carga:"))
-                        .Placeholder("Ingresa el monto al que ascienden los daños a la carga")
-                        .Enable(!ViewBag.EsSoloLectura) 
-                        .HtmlAttributes(new { style = "width: 100%" })
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.montoCarga)
+                                .Label(l => l.Content("Daños a la carga:"))
+                                .Placeholder("Ingresa el monto al que ascienden los daños a la carga")
+                                .Enable(!ViewBag.EsSoloLectura)
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
 
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t => t.montoPropietarios)
-                        .Label(l => l.Content("Daños a propietarios:"))
-                        .Placeholder("Ingresa el monto al que ascienden los daños a los propietarios")
-                            .Enable(!ViewBag.EsSoloLectura)
-                        .HtmlAttributes(new { style = "width: 100%"})
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.montoPropietarios)
+                                .Label(l => l.Content("Daños a propietarios:"))
+                                .Placeholder("Ingresa el monto al que ascienden los daños a los propietarios")
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
 
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t => t.montoOtros)
-                        .Label(l => l.Content("Otros daños:"))
-                        .Placeholder("Ingresa el monto al que ascienden los daños bajo el concepto de otros")
-                            .Enable(!ViewBag.EsSoloLectura)
-                        .HtmlAttributes(new { style = "width: 100%" })
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.montoOtros)
+                                .Label(l => l.Content("Otros daños:"))
+                                .Placeholder("Ingresa el monto al que ascienden los daños bajo el concepto de otros")
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                )
 
                 </div>
             </div>
@@ -180,7 +180,7 @@
                     <partial name="_ListaVehiculosDaños" model="Model" esSoloLectura="@ViewBag.EsSoloLectura" />
             </div>
         </div>
-         
+
     </section>
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded pb-1">
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -228,24 +228,24 @@
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.Latitud)
-                        .Label(l => l.Content("Latitud:"))
-                        .Placeholder("Ingresa la latitud donde ocurrió el accidente.")
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
-                            .Enable(!esSoloLectura)                        
-                            )
-                            
+                        @(Html.Kendo().TextBoxFor(t => t.Latitud)
+                                .Label(l => l.Content("Latitud:"))
+                                .Placeholder("Ingresa la latitud donde ocurrió el accidente.")
+                                .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                                    .Enable(!esSoloLectura)
+                                    )
+
 
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.Longitud)
-                        .Label(l => l.Content("Longitud:"))
-                        .Placeholder("Ingresa la longitud donde ocurrió el accidente.")
-                        .HtmlAttributes(new { style = "width: 100%", type = "number" })
-                        .Enable(!ViewBag.EsSoloLectura)
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.Longitud)
+                                .Label(l => l.Content("Longitud:"))
+                                .Placeholder("Ingresa la longitud donde ocurrió el accidente.")
+                                .HtmlAttributes(new { style = "width: 100%", type = "number" })
+                                .Enable(!ViewBag.EsSoloLectura)
+                                )
 
                 </div>
             </div>
@@ -253,22 +253,22 @@
                 <div class="controlForm mb-3">
                     <label>Certificado de:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdCertificado)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                                .Filter(FilterType.Contains)
+                            @(Html.Kendo().DropDownListFor(t => t.IdCertificado)
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .OptionLabel("Selecciona una opción")
+                                        .Filter(FilterType.Contains)
 
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Hospitales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("Hospitales_Drop", "CapturaAccidentes");
+                                            });
+                                        })
+                                        .HtmlAttributes(new { style = "width:100%;" })
+                                        .Enable(!ViewBag.EsSoloLectura)
+                                        )
                     </span>
                 </div>
             </div>
@@ -288,9 +288,9 @@
                             <label>Armas</label>
                             <div class="btnToggleActive">
                                 @(Html.Kendo().SwitchFor(t => t.ArmasBool)
-                                    .Name("armasSwitch")
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1 }))
+                                        .Name("armasSwitch")
+                                        .Messages(c => c.Checked("Si").Unchecked("No"))
+                                        .HtmlAttributes(new { data_valor = 1 }))
                             </div>
                         </div>
 
@@ -298,36 +298,36 @@
                             <label>Drogas</label>
                             <div class="btnToggleActive">
                                 @(Html.Kendo().SwitchFor(t => t.DrogasBool)
-                                    .Name("drogasSwitch")
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1 }))
+                                        .Name("drogasSwitch")
+                                        .Messages(c => c.Checked("Si").Unchecked("No"))
+                                        .HtmlAttributes(new { data_valor = 1 }))
                             </div>
                         </div>
                          <div class="controlForm mb-3">
                             <label>Valores</label>
                             <div class="btnToggleActive">
-                                   @(Html.Kendo().SwitchFor(t => t.ValoresBool)
-                                .Name("valoresSwitch")
-                                .Messages(c => c.Checked("Si").Unchecked("No"))
-                                .HtmlAttributes(new { data_valor = 1}))
+                                @(Html.Kendo().SwitchFor(t => t.ValoresBool)
+                                 .Name("valoresSwitch")
+                                 .Messages(c => c.Checked("Si").Unchecked("No"))
+                                 .HtmlAttributes(new { data_valor = 1 }))
                             </div>
                         </div>
                         <div class="controlForm mb-3">
                             <label>Prendas</label>
                             <div class="btnToggleActive">
                                 @(Html.Kendo().SwitchFor(t => t.PrendasBool)
-                                    .Name("prendasSwitch")
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1}))
+                                        .Name("prendasSwitch")
+                                        .Messages(c => c.Checked("Si").Unchecked("No"))
+                                        .HtmlAttributes(new { data_valor = 1 }))
                             </div>
                         </div>
                         <div class="controlForm mb-3">
                             <label>Otros</label>
                             <div class="btnToggleActive">
                                 @(Html.Kendo().SwitchFor(t => t.OtrosBool)
-                                    .Name("otrosSwitch")
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1 }))
+                                        .Name("otrosSwitch")
+                                        .Messages(c => c.Checked("Si").Unchecked("No"))
+                                        .HtmlAttributes(new { data_valor = 1 }))
                             </div>
                         </div>
                     </div>
@@ -335,89 +335,63 @@
                         <div id="campoArmasTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="ArmasTextBox">Descripción de armas</label>
                             @(Html.Kendo().TextBoxFor(t => t.ArmasTexto)
-                                .HtmlAttributes(new { style = "width: 100%", id = "ArmasTexto" }) // Inicialmente oculto
-
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                    .HtmlAttributes(new { style = "width: 40%", id = "ArmasTexto" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                         </div>
-                </div>
-            </div>
-            <div id="campoDrogasTexto" style="display:none" class="col-12 col-md-6 col-lg-3">
-                <div class="controlForm mb-3">
-                    <label for="DrogasTextBox">Descripción de drogas</label>
-                        @(Html.Kendo().TextBoxFor(t => t.DrogasTexto)
-                                .HtmlAttributes(new { style = "width: 100%", id = "DrogasTexto" }) // Inicialmente oculto
-
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                        <div id="campoDrogasTexto" style="visibility: hidden;" class="controlForm mb-3">
+                            <label for="DrogasTextBox">Descripción de drogas</label>
+                            @(Html.Kendo().TextBoxFor(t => t.DrogasTexto)
+                                    .HtmlAttributes(new { style = "width: 40%", id = "DrogasTexto" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                         </div>
                         <div id="campoValoresTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="ValoresTextBox">Descripción de valores</label>
-                        @(Html.Kendo().TextBoxFor(t => t.ValoresTexto)
-                            .HtmlAttributes(new { style = "width: 100%", id = "ValoresTexto" }) // Inicialmente oculto
-                            .Enable(!ViewBag.EsSoloLectura)
-                                )
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="controlForm mb-3">
-                    <label>Prendas</label>
-                    <div class="btnToggleActive">
-                          @(Html.Kendo().SwitchFor(t => t.PrendasBool)
-                            .Name("prendasSwitch")
-                            .Messages(c => c.Checked("Si").Unchecked("No"))
-                            .HtmlAttributes(new { data_valor = 1 }))
-                    </div>
-                </div>
-            </div>
-            <div id="campoPrendasTexto" style="display:none" class="col-12 col-md-6 col-lg-3">
-                <div class="controlForm mb-3">
-                    <label for="PrendasTextBox">Descripción de prendas</label>
-                        @(Html.Kendo().TextBoxFor(t => t.PrendasTexto)
-                            .HtmlAttributes(new { style = "width: 100%", id = "PrendasTexto" }) // Inicialmente oculto
-
-                            .Enable(!ViewBag.EsSoloLectura)
-                            )
+                            @(Html.Kendo().TextBoxFor(t => t.ValoresTexto)
+                                    .HtmlAttributes(new { style = "width: 40%", id = "ValoresTexto" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                         </div>
                         <div id="campoPrendasTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="PrendasTextBox">Descripción de prendas</label>
                             @(Html.Kendo().TextBoxFor(t => t.PrendasTexto)
-                                .HtmlAttributes(new { style = "width: 40%", id = "PrendasTexto" }) 
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                    .HtmlAttributes(new { style = "width: 40%", id = "PrendasTexto" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                         </div>
                         <div id="campoTexto" style="visibility: hidden;" class="controlForm mb-3">
                             <label for="OtrosTextBox">Descripción de otros</label>
-                        @(Html.Kendo().TextBoxFor(t => t.OtrosTexto)
-                            .HtmlAttributes(new { style ="width: 40%", id = "OtrosTexto" }) 
-                                .Enable(!ViewBag.EsSoloLectura)
-                            )
+                            @(Html.Kendo().TextBoxFor(t => t.OtrosTexto)
+                                    .HtmlAttributes(new { style = "width: 40%", id = "OtrosTexto" })
+                                        .Enable(!ViewBag.EsSoloLectura)
+                                    )
                         </div>
                     </div>
                 </div>                     
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.entregaObjetos)
-                        .Label(l => l.Content("Entrega de objetos:"))
-                        .Placeholder("Ingresa los objetos que se entregaron")
-                        .HtmlAttributes(new { style = "width: 100%" })
-                         .Enable(!ViewBag.EsSoloLectura) 
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.entregaObjetos)
+                                .Label(l => l.Content("Entrega de objetos:"))
+                                .Placeholder("Ingresa los objetos que se entregaron")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                 .Enable(!ViewBag.EsSoloLectura)
+                                )
 
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.entregaOtros)
-                        .Label(l => l.Content("Entrega otros:"))
-                        .Placeholder("Ingresa la entrega de otros conceptos")
-                        .HtmlAttributes(new { style = "width: 100%" })
-                            .Enable(!ViewBag.EsSoloLectura)
-                        )
+                        @(Html.Kendo().TextBoxFor(t => t.entregaOtros)
+                                .Label(l => l.Content("Entrega otros:"))
+                                .Placeholder("Ingresa la entrega de otros conceptos")
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                )
 
                 </div>
             </div>
-        
+        </div>
 </section>
             <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded pb-1">
                 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -467,22 +441,22 @@
                         <label>Convenio</label>
                         <div class="btnToggleActive">
                         @(Html.Kendo().SwitchFor(t => t.convenioBool)
-                                .Name("convenioSwitch")
-                                .Checked(Model.EstadoConvenio == 1)
-                                .Messages(c => c.Checked("Si").Unchecked("No"))
-                                .HtmlAttributes(new { data_valor = 1 })
-                                )
+                                    .Name("convenioSwitch")
+                                    .Checked(Model.EstadoConvenio == 1)
+                                    .Messages(c => c.Checked("Si").Unchecked("No"))
+                                    .HtmlAttributes(new { data_valor = 1 })
+                                    )
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
                         <div id="convenioTexto" style="visibility: hidden;">
                             @(Html.Kendo().TextBoxFor(t => t.observacionesConvenio)
-                                .Label(l => l.Content("Observaciones de convenio:"))
-                                .Placeholder("Ingresa las observaciones")
-                                    .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                    .Label(l => l.Content("Observaciones de convenio:"))
+                                    .Placeholder("Ingresa las observaciones")
+                                        .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                             </div>
                         </div>
                     </div>
@@ -493,7 +467,7 @@
                         <div class="controlForm mb-3">
                             <label>A disposición de:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(t=>t.IdAutoridadDisposicion)
+                            @(Html.Kendo().DropDownListFor(t => t.IdAutoridadDisposicion)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
@@ -516,7 +490,7 @@
                         <div class="controlForm mb-3">
                             <label>Entregado a:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(t=>t.IdAutoridadEntrega)
+                            @(Html.Kendo().DropDownListFor(t => t.IdAutoridadEntrega)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Selecciona una opción")
@@ -553,12 +527,12 @@
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.consignacionHechos)
-                        .Label(l => l.Content("Procede la consignación de los hechos:"))
-                        .Placeholder("Ingresa el nombre de quien procede la consignación de los hechos")
-                        .HtmlAttributes(new { style = "width: 100%", })
-                         .Enable(!ViewBag.EsSoloLectura) 
-                        )
+                    @(Html.Kendo().TextBoxFor(t => t.consignacionHechos)
+                            .Label(l => l.Content("Procede la consignación de los hechos:"))
+                            .Placeholder("Ingresa el nombre de quien procede la consignación de los hechos")
+                            .HtmlAttributes(new { style = "width: 100%", })
+                             .Enable(!ViewBag.EsSoloLectura)
+                            )
 
         </div>
             </div>
@@ -566,46 +540,46 @@
                 <div class="controlForm mb-3">
                     <label>Entidad:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdEntidadCompetencia)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdEntidadCompetencia)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                .Filter(FilterType.Contains)
 
-                                .OptionLabel("Selecciona una opción")
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
                                     {
-                                    read.Action("Entidades_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Entidades_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                     </span>
                 </div>
-            
+
             </div>
           <div class="col-12 col-md-6 col-lg-4">
             <div class="controlForm mb-3">
                 <label>Ciudad de:</label>
                 <span>
-                    @(Html.Kendo().DropDownListFor(t => t.IdCiudad)
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdCiudad)
+                                    .Filter(FilterType.Contains)
 
-                        .DataTextField("Text")
-                        .DataValueField("Value")
-                        .OptionLabel("Selecciona una opción")
-                        .DataSource(source =>
-                        {
-                            source.Read(read =>
-                            {
-                                read.Action("Municipios_Drop", "CapturaAccidentes");
-                            });
-                        })
-                        .HtmlAttributes(new { style = "width:100%;" })
-                        .Enable(!ViewBag.EsSoloLectura)
-                        )
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una opción")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Municipios_Drop", "CapturaAccidentes");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                .Enable(!ViewBag.EsSoloLectura)
+                                )
                 </span>
             </div>
             </div>
@@ -625,33 +599,33 @@
                 <div class="controlForm mb-3">
                     <label>Elabora consignación:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdElaboraConsignacion)
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdElaboraConsignacion)
+                                .Filter(FilterType.Contains)
 
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
                                     {
-                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                     </span>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.numeroOficio)
-                        .Label(l => l.Content("Número de oficio:"))
-                        .Placeholder("Ingresa el número de oficio")
-                        .HtmlAttributes(new { style = "width: 100%"})
-                        .Enable(!ViewBag.EsSoloLectura)
-                        )
+                    @(Html.Kendo().TextBoxFor(t => t.numeroOficio)
+                            .Label(l => l.Content("Número de oficio:"))
+                            .Placeholder("Ingresa el número de oficio")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            .Enable(!ViewBag.EsSoloLectura)
+                            )
 
                 </div>
             </div>
@@ -659,7 +633,7 @@
                 <div class="controlForm mb-3">
                     <label>Agencia de ministerio que recibe:</label>
                     <span>
-                            @(Html.Kendo().DropDownListFor(t => t.IdAgenciaMinisterio)
+                        @(Html.Kendo().DropDownListFor(t => t.IdAgenciaMinisterio)
                             .Filter(FilterType.Contains)
 
                                 .DataTextField("Text")
@@ -682,12 +656,12 @@
                 <div class="controlForm mb-3">
                     <label>Recibe en ministerio:</label>
                     <span>
-                            @(Html.Kendo().TextBoxFor(t => t.RecibeMinisterio)
+                        @(Html.Kendo().TextBoxFor(t => t.RecibeMinisterio)
                                 .Placeholder("Ingresa el nombre de quien recibe en ministerio")
                                 .HtmlAttributes(new { style = "width: 100%", })
-                               .Enable(!ViewBag.EsSoloLectura) 
+                               .Enable(!ViewBag.EsSoloLectura)
                                 )
-                            
+
                     </span>
                 </div>
             </div>
@@ -716,22 +690,22 @@
                 <div class="controlForm mb-3">
                     <label>Elabora:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdElabora)
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdElabora)
+                                .Filter(FilterType.Contains)
 
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
                                     {
-                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                     </span>
                 </div>
             </div>
@@ -739,22 +713,22 @@
                 <div class="controlForm mb-3">
                     <label>Supervisor:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdSupervisa)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdSupervisa)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                .Filter(FilterType.Contains)
 
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
+                                    .DataSource(source =>
                                     {
-                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                     </span>
                 </div>
             </div>
@@ -762,22 +736,22 @@
                 <div class="controlForm mb-3">
                     <label>Autoriza:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(t=>t.IdAutoriza)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                            .Filter(FilterType.Contains)
+                        @(Html.Kendo().DropDownListFor(t => t.IdAutoriza)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                .Filter(FilterType.Contains)
 
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
+                                    .DataSource(source =>
                                     {
-                                        read.Action("Oficiales_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                            .Enable(!ViewBag.EsSoloLectura)
-                                )
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Oficiales_Drop", "CapturaAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;" })
+                                .Enable(!ViewBag.EsSoloLectura)
+                                    )
                     </span>
                 </div>
             </div>
@@ -790,13 +764,13 @@
                 <div class="row justify-content-around">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                     <div id="botnEnvio" class="controlButton" onclick="enviarDatos()" style="@(esSoloLectura ? "display:none;" : "")" >
-                            @(Html.Kendo().Button()
+                        @(Html.Kendo().Button()
                             .Name("Finalizar")
                                 .HtmlAttributes(new { @class = "btnPrimary px-5" })
                                 .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
                         </div>
                     <div id="botnReturn" class="controlButton" onclick="regresarBusqueda()" style="@(esSoloLectura ? "" : "display:none;")">
-                            @(Html.Kendo().Button()
+                        @(Html.Kendo().Button()
                             .Name("Finalizar")
                                 .HtmlAttributes(new { @class = "btnPrimary px-5" })
                                 .Content("<h5 class=\"m-0\"><b>Regresar a busqueda</b></h5>"))
@@ -817,7 +791,7 @@
         </div>
 </div>
 <script>
-   
+
     function mostrarModalAgregarInfraccion() {
         event.preventDefault();
         $.ajax({
@@ -858,7 +832,7 @@
         });
     }
 
-  
+
 
     $("#cambiarContenidoButton").click(function (event) {
         event.preventDefault(); 

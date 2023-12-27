@@ -283,8 +283,8 @@ namespace GuanajuatoAdminUsuarios.Services
 				                    MAX(veh.numeroEconomico) as numeroEconomico,
 				                    MAX(per.nombre) as nombre,
 				                    MAX(per.apellidoPaterno) as apellidoPaterno,
-				                    MAX(per.apellidoMaterno) as apellidoMaterno
-
+				                    MAX(per.apellidoMaterno) as apellidoMaterno,
+									MAX(ca.aplicacion) as aplicacion
                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
@@ -300,6 +300,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
+									left join catAplicacionInfraccion ca on ca.idAplicacion = inf.idAplicacion
                                     where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
 									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
@@ -349,6 +350,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
 							infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							infraccionModel.aplicacion = reader["aplicacion"].ToString();
 							infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
 							infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
 							infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
@@ -2437,7 +2439,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfranccion) = year(getdate())";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{

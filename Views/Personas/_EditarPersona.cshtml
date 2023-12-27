@@ -119,7 +119,7 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
-                <label>CURP <b>(obligatorio)</b>:</label>
+                <label>CURP:</label>
                 @(Html.Kendo().TextBoxFor(t => t.CURP)
                     .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
@@ -137,7 +137,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Género:</label>
+                <label>Género <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
@@ -146,7 +146,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Tipo persona:</label>
+                <label>Tipo persona <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
@@ -229,7 +229,7 @@
             <div class="controlForm">
                 <label>Código postal <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
             </div>
         </div>
@@ -239,7 +239,7 @@
             <div class="controlForm">
                 <label>Colonia <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -247,7 +247,7 @@
             <div class="controlForm">
                 <label>Calle <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -255,7 +255,7 @@
             <div class="controlForm">
                 <label>Número <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -314,7 +314,7 @@
         var isValid = true;
 
         controlsValidate.push({ 'controlName': 'nombre' });
-        controlsValidate.push({ 'controlName': 'CURP' });
+        //controlsValidate.push({ 'controlName': 'CURP' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
@@ -324,9 +324,11 @@
         if (!isControlsValid(controlsValidate)) { isValid = false; }
 
         //// DROP DOWN LIST
-        //controlsValidate = [];
-        //controlsValidate.push({ 'controlName': 'idGenero' });
-        //if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+        controlsValidate = [];
+        controlsValidate.push({ 'controlName': 'idGenero' });
+        controlsValidate.push({ 'controlName': 'idCatTipoPersona' });
+        
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
         if (!isValid) {
             sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');

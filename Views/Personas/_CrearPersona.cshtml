@@ -41,7 +41,7 @@
             <div class="controlForm">
                 <label>Fecha de nacimiento <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
-                    .HtmlAttributes(new { style = "width: 100%;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%;" })
                     .Culture("es-ES")
                     )
             </div>
@@ -75,7 +75,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Tipo persona:</label>
+                <label>Tipo persona: <b>(obligatorio)</b></label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
@@ -310,6 +310,8 @@
         // DROP DOWN LIST
         controlsValidate = [];
         controlsValidate.push({ 'controlName': 'idGenero' });
+        controlsValidate.push({ 'controlName': 'tipoPersona' });
+        
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
         if (!isValid) {

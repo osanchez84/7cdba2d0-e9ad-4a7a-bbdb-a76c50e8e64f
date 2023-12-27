@@ -283,8 +283,8 @@ namespace GuanajuatoAdminUsuarios.Services
 				                    MAX(veh.numeroEconomico) as numeroEconomico,
 				                    MAX(per.nombre) as nombre,
 				                    MAX(per.apellidoPaterno) as apellidoPaterno,
-				                    MAX(per.apellidoMaterno) as apellidoMaterno
-
+				                    MAX(per.apellidoMaterno) as apellidoMaterno,
+									MAX(ca.aplicacion) as aplicacion
                                     FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
@@ -300,6 +300,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
+									left join catAplicacionInfraccion ca on ca.idAplicacion = inf.idAplicacion
                                     where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
 									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
@@ -349,6 +350,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
 							infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+							infraccionModel.aplicacion = reader["aplicacion"].ToString();
 							infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
 							infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idPersonaInfraccion);
 							infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
@@ -1114,7 +1116,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+											@"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
@@ -1160,6 +1162,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.lugarPago
                                             ,'' concepto
                                             ,inf.idGarantia
+											,inf.observaciones
                                             FROM infracciones inf 
                                             left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                             left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
@@ -1194,6 +1197,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					{
 						while (reader.Read())
 						{
+							model.observaciones = reader["observaciones"] == System.DBNull.Value ? default(string) : reader["observaciones"].ToString();
 							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
 							model.folioInfraccion = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());

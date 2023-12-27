@@ -335,9 +335,6 @@ namespace GuanajuatoAdminUsuarios.Services
             return Vehiculo;
         }
 
-
-
-
         public int ActualizarConVehiculo(int idVehiculo, int idAccidente,int IdPersona, string Placa, string Serie)
         {
             int idVehiculoInsertado = 0;
@@ -1426,9 +1423,10 @@ namespace GuanajuatoAdminUsuarios.Services
                         cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno,  
                         p.apellidoMaterno,p.RFC,p.CURP, CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor,  
                         tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo ,p.vigenciaLicencia ,
-						isnull(epd.nombreentidad,'')+' '+isnull(mpd.municipio,'')+' '+isnull(pd.colonia,'')+' '+ isnull(pd.calle,'')+' '+isnull(pd.numero,'') as direccion,
-						isnull(epdc.nombreentidad,'')+' '+isnull(mpdc.municipio,'')+' '+isnull(pdc.colonia,'')+' '+isnull(pdc.codigoPostal,'')+' '+ isnull(pdc.calle,'')+' '+isnull(pdc.numero,'') as direccionc,
-						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,v.numeroeconomico as numeroeconomico
+						isnull(epd.nombreentidad,'') +', '+isnull(mpd.municipio,'') +', '+isnull(pd.colonia,'') +', '+ isnull(pd.calle,'') +', '+isnull(pd.numero,'') as direccion,
+						isnull(epdc.nombreentidad,'')+', '+isnull(mpdc.municipio,'')+', '+isnull(pdc.colonia,'')+', '+ isnull(pdc.calle,'')+', '+isnull(pdc.numero,'') as direccionc,
+						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,,v.numeroeconomico as numeroeconomico
+
                         FROM conductoresVehiculosAccidente AS cva 
 						INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo  
                         LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo  
@@ -1899,10 +1897,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                 {
-                    var nombre = @"
-hola
-";
-
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT " +
 											 "MAX(p.nombre) AS nombre, " +
@@ -1962,7 +1956,7 @@ hola
 											 "LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio " +
 											 "LEFT JOIN vehiculosAccidente AS va ON  va.idAccidente = a.idAccidente " +
 											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +
-											 "WHERE ia.idAccidente = @idAccidente group by ia.idPersona;", connection);
+                                             "WHERE ia.idAccidente = @idAccidente and ia.estatus = 1 group by ia.idPersona;", connection);
 
 
 
@@ -2050,6 +2044,66 @@ hola
             return ListaInvolucrados;
 
 
+        }
+        public int EditarInvolucrado(CapturaAccidentesModel model)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE AccidenteFactoresOpciones SET idFactor = @IdFactor, idFactorOpcion = @IdFactorOpcion  " +
+                                    "WHERE idAccidenteFactorOpcion = @IdAccidenteFactorOpcion";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                  //  command.Parameters.AddWithValue("@idFactor", IdFactorAccidente);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+        }
+        public int EliminarInvolucrado(int idAccidente)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE involucradosAccidente SET estatus = 0 WHERE idAccidente = @idAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
         }
         public int AgregarFechaHoraIngreso(FechaHoraIngresoModel model,int idAccidente)
 
@@ -2316,7 +2370,6 @@ hola
                 return descripcionCausa;
             }
         }
-
 
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente)
         {

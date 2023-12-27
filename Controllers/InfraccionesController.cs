@@ -33,6 +33,7 @@ using Org.BouncyCastle.Crypto;
 using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
+using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -292,6 +293,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
             var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
             var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
+            var CatAplicadoA = _catDictionary.GetCatalog("CatAplicadoA", "0");
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
@@ -299,6 +301,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+            ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
 
             return View(model);
 
@@ -334,20 +337,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
-            int idGarantia = 0;
+			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+			int idGarantia = 0;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
-                model.idGarantia = idGarantia;
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "insert Garantia", user);
+				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
-            }
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "Update", user);
+			}
 
-            model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+			model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
             var idVehiculo = model.idVehiculo;
             return Json(new { success = true, idInfraccion = idInfraccion, idVehiculo = idVehiculo });
@@ -359,7 +366,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
 
             var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(HttpContext.Session.GetInt32("IdDependencia"));
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 
             
 
@@ -1090,8 +1097,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
                 ViewBag.Pension = result;
+				var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+				var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+				_bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Pagar", "insert", user);
 
-                if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+				if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
                     _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
                     _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);

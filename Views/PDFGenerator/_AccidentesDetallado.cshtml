@@ -217,7 +217,7 @@
 					<td><p class="s5">@( string.Join( ",", Model.CausasDeterminantes.Select(s=> s.indice+" "+s.CausaAccidente).ToArray()))</p></td>
 					</tr>
 					<tr>
-					<td><p class="s2">@(string.IsNullOrEmpty(Model.CausasDeterminantes.First().DescripcionCausa) ? "S/C" : Model.CausasDeterminantes.First().DescripcionCausa)</p></td>
+					<td><p class="s2">@(Model.CausasDeterminantes == null || Model.CausasDeterminantes.Count() == 0 || string.IsNullOrEmpty(Model.CausasDeterminantes.First().DescripcionCausa) ? "S/C" : Model.CausasDeterminantes.First().DescripcionCausa)</p></td>
 					</tr>
 				
 			</tbody>

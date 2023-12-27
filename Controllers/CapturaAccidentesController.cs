@@ -1357,7 +1357,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(ListInvolucrados.ToDataSourceResult(request));
 		}
-		public ActionResult MostrarModalFechaHora(int IdPersona, string FechaIngreso)
+
+        public IActionResult EliminaInvolucrado(int IdAccidente)
+        {
+            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(IdAccidente);
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
+
+            return Json(ListInvolucrados);
+
+        }
+        public IActionResult EditarInvolucrado(CapturaAccidentesModel model)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var RegistroSeleccionado = _capturaAccidentesService.EditarInvolucrado(model);
+
+            var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
+
+            return Json(datosGrid);
+        }
+
+        public ActionResult MostrarModalFechaHora(int IdPersona, string FechaIngreso)
 		{
 
 			var model = new FechaHoraIngresoModel

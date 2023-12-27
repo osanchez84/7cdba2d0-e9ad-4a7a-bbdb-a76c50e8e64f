@@ -38,6 +38,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente);
         public int EliminarValorFactorYOpcion(int IdAccidenteFactorOpcion);
+        public int EliminarRegistroInfraccion(int IdInfraccion);
         public int EliminarCausaBD(int IdCausaAccidente,int idAccidente, int idAccidenteCausa);
         public int GuardarDescripcion(int idAccidente,string descripcionCausa);
         List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server= null);

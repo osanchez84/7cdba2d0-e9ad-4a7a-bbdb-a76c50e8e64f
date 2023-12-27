@@ -1728,12 +1728,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         "i.idEstatusInfraccion, "+
 						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
 						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
-                        "JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
-                        "JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
-                        "JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
-                        "JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                        "JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente;", connection);
+                        "LEFT JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
+                        "LEFT JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
+                        "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
+                        "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
 
 
 
@@ -2390,7 +2390,37 @@ hola
 
                 return datosFinales;
             } 
-        }  
+        }
+        public int EliminarRegistroInfraccion(int IdInfraccion)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infraccionesAccidente SET estatus = 0 " +
+                        "WHERE idInfraccion = @IdInfraccion";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@IdInfraccion", IdInfraccion);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
     }
 }
 

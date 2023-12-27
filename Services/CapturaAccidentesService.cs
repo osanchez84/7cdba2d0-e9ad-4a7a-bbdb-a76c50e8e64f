@@ -1687,12 +1687,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion)";
+                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion,estatus) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion, @estatus)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idVehiculo", IdVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idInfraccion", IdInfraccion);
+                    command.Parameters.AddWithValue("@estatus", 1);
 
                     command.ExecuteNonQuery();
                 }

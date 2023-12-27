@@ -338,7 +338,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
 			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario));
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 			int idGarantia = 0;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
@@ -366,7 +366,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
 
             var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario));
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 
             
 
@@ -1097,8 +1097,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 crearMultasRequestModel.ZMOTIVO3 = "";
                 var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
                 ViewBag.Pension = result;
+				var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+				var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+				_bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Pagar", "insert", user);
 
-                if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+				if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                 {
                     _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
                     _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);

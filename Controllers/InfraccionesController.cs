@@ -33,7 +33,7 @@ using Org.BouncyCastle.Crypto;
 using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {

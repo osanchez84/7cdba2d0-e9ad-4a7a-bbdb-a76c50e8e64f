@@ -292,6 +292,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
             var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
             var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
+            var CatAplicadoA = _catDictionary.GetCatalog("CatAplicadoA", "0");
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
@@ -299,6 +300,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+            ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
 
             return View(model);
 

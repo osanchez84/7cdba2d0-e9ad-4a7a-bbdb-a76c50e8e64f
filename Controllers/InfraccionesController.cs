@@ -33,6 +33,7 @@ using Org.BouncyCastle.Crypto;
 using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
+using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -334,20 +335,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
-            int idGarantia = 0;
+			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario));
+			int idGarantia = 0;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
-                model.idGarantia = idGarantia;
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "insert Garantia", user);
+				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
-            }
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "Update", user);
+			}
 
-            model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+			model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
             var idVehiculo = model.idVehiculo;
             return Json(new { success = true, idInfraccion = idInfraccion, idVehiculo = idVehiculo });
@@ -359,7 +364,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
 
             var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(HttpContext.Session.GetInt32("IdDependencia"));
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario));
 
             
 

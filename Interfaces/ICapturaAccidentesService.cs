@@ -57,6 +57,10 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         int AgregarDatosFinales(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue, int idAccidente, int convenioValue);
         int EliminarInvolucradoAcc(int IdVehiculoInvolucrado,int IdPropietarioInvolucrado,int IdAccidente);
+
+        public int EliminarInvolucrado(int idAccidente);
+
+        public int EditarInvolucrado(CapturaAccidentesModel model);
         public int RegistrarInfraccion(NuevaInfraccionModel model);
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);

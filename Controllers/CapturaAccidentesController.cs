@@ -1357,7 +1357,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(ListInvolucrados.ToDataSourceResult(request));
 		}
-		public ActionResult MostrarModalFechaHora(int IdPersona, string FechaIngreso)
+
+        public IActionResult EliminaInvolucrado(int IdAccidente)
+        {
+            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(IdAccidente);
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
+
+            return Json(ListInvolucrados);
+
+        }
+        public IActionResult EditarInvolucrado(CapturaAccidentesModel model)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var RegistroSeleccionado = _capturaAccidentesService.EditarInvolucrado(model);
+
+            var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
+
+            return Json(datosGrid);
+        }
+
+        public ActionResult MostrarModalFechaHora(int IdPersona, string FechaIngreso)
 		{
 
 			var model = new FechaHoraIngresoModel
@@ -1635,25 +1655,34 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult ajax_CrearPersona(PersonaModel model)
-        {
-            //var model = json.ToObject<Gruas2Model>();
-            //var errors = ModelState.Values.Select(s => s.Errors);
-            //if (ModelState.IsValid)
-            //{
-            int id = _personasService.CreatePersona(model);
-            //model.PersonaDireccion.idPersona = id;
-            //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
+		[HttpPost]
+		public IActionResult ajax_CrearPersona(PersonaModel model)
+		{
 
-            var modelList = _capturaAccidentesService.ObtenerConductorPorId(id);
-            return Json(modelList); 
-            //return RedirectToAction("Index");
-        }
+			int id = _personasService.CreatePersona(model);
+			var modelList = _capturaAccidentesService.ObtenerConductorPorId(id);
+			string formatoFecha = "dd/MM/yyyy"; 
+			if (DateTime.TryParseExact(modelList.FormatDateNacimiento, formatoFecha, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaNacimiento))
+				{
+					modelList.fechaNacimiento = fechaNacimiento;
+				}
+				else
+				{
+					modelList.fechaNacimiento = null;
+				}
+			var jsonSettings = new JsonSerializerSettings
+			{
+				DateFormatString = "dd/MM/yyyy", // Establece el formato de fecha deseado
+				Formatting = Formatting.None // Otra configuración de serialización si es necesaria
+			};
+
+			// Usa JsonResult con configuración personalizada de serialización
+			return new JsonResult(modelList, jsonSettings);
+		}
 
 
 
-        public JsonResult test()
+		public JsonResult test()
         {
             var catGeneros = _catDictionary.GetCatalog("CatGeneros", "0");
             var result = new SelectList(catGeneros.CatalogList, "Id", "Text");

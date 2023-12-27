@@ -611,7 +611,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             {
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
-                nested.AddCell(FieldCellBox("Concepto de infracción: ", ""));
+                nested.AddCell(FieldCellBox("Concepto de infracción: ", ModelDataInfracciones.observaciones));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

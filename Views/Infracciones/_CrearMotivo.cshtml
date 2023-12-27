@@ -9,7 +9,7 @@
                 @(Html.Kendo().DropDownListFor(m => m.idConcepto).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewData["CatConcepto"])
                     .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto", required = "required" }))
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto" }))
             </div>
         </div>
         <div class="form-group col-md-4">
@@ -18,7 +18,7 @@
                 <div id="divSubConcepto">
                     @(Html.Kendo().DropDownListFor(m => m.IdSubConcepto).Filter(FilterType.Contains)
                         .OptionLabel("-- Seleccione --")
-                        .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                        .HtmlAttributes(new { style = "width:100%;" }))
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.calificacionMinima)
                     .Label(l => l.Content("Calificación mínima <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMinima", required = "required", disabled="disabled" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMinima", disabled="disabled" })
                     )
             </div>
         </div>
@@ -46,7 +46,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.calificacionMaxima)
                     .Label(l => l.Content("Calificación máxima <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMaxima", required = "required", disabled = "disabled" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacionMaxima", disabled = "disabled" })
                     )
             </div>
         </div>
@@ -55,7 +55,7 @@
                 @(Html.Kendo().IntegerTextBoxFor(t => t.calificacion)
                     .Label(l => l.Content("Calificación <b>(obligatorio)</b>:"))
                     .Events(e => e.Change("onChange"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
             </div>
         </div>
@@ -91,9 +91,31 @@
 
 
         var validator = $("#frmCrearMotivos").kendoValidator().data('kendoValidator');
-        validator.validate();
+        //validator.validate();
+        var controlsValidate = [];
+        var isValid = true;
 
-        if (validator.validate()) {
+        controlsValidate.push({ 'controlName': 'calificacionMinima' });
+        controlsValidate.push({ 'controlName': 'calificacionMaxima' });
+        controlsValidate.push({ 'controlName': 'calificacion' });
+
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+
+        // DROP DOWN LIST
+        controlsValidate = [];
+        controlsValidate.push({ 'controlName': 'ddlConcepto' });
+        controlsValidate.push({ 'controlName': 'IdSubConcepto' });
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+
+        //if (validator.validate()) {
             var idInfraccion = $("#idInfraccion").val();
             $("#hndIdInfraccion").val(idInfraccion);
             var formData = $("#frmCrearMotivos").serialize();
@@ -117,11 +139,11 @@
                     hideLoading();
                 }
             });
-        }
-        else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+        //}
+        //else {
+        //    sitteg_info('Debe llenar los campos requeridos');
+        //    return;
+        //}
     }
 
 

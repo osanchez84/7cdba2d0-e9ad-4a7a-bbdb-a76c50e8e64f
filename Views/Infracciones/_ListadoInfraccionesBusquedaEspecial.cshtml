@@ -40,8 +40,12 @@
                 columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateCortecia(data) #").Title("Cortesía").Sortable(false).Width(90);
                 columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateEditar(data) #").Title("Ver Registro").Sortable(false).Width(90);
                 columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateMostrar(data)  #").Title("Mostrar").Sortable(false).Width(90);
-                columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateExportar(data)  #").Title("Eliminar").Sortable(false).Width(90);
-
+                columns.Template(
+                "<button class='btn btn - danger'>" +
+                "<h6 class='m-0 colorDanger' onclick='eliminarInfraccion(event)'>" +
+                "<i class='h5 icon-delete me-2'></i><b>Eliminar</b>" +
+                "</h6></button>"
+                ).Width(150);
             }).HtmlAttributes(new { style = "height:450" })
             .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
             
@@ -72,4 +76,14 @@
     </div>
 </div>
 
-
+<script>
+function eliminarInfraccion(){
+        var grid = $("#GridInf").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var idInfraccion = dataItem.idInfraccion
+        console.log("INFO", dataItem)
+        SetIdInfraccion(idInfraccion);
+        $('#modalEliminar').modal('show');
+}
+</script>

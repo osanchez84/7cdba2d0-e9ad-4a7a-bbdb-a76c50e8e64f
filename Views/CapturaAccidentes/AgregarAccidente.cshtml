@@ -189,6 +189,28 @@
     function guardarAccidente() {
 
         var Mydata = $("#nuevoAccidente1Form").serialize();
+        var controlsValidate = [];
+        var isValid = true;
+
+        controlsValidate.push({ 'controlName': 'Fecha' });
+        controlsValidate.push({ 'controlName': 'Hora' });
+        controlsValidate.push({ 'controlName': 'Kilometro' });
+
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+        // DROP DOWN LIST
+        controlsValidate = [];
+        controlsValidate.push({ 'controlName': 'IdMunicipio' });
+        controlsValidate.push({ 'controlName': 'IdCarretera' });
+        controlsValidate.push({ 'controlName': 'IdTramo' });
+        
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
         showLoading();
         $.ajax({
             url: '/CapturaAccidentes/GuardarUbicacionAccidente',

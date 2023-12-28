@@ -72,6 +72,19 @@
     function agregarClasificacion() {
 
         var Mydata = $("#agregarClasificacionForm").serialize();
+        var controlsValidate = [];
+        var isValid = true;
+
+        controlsValidate.push({ 'controlName': 'NombreClasificacion' });
+
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+
         console.log(Mydata);
         $('#agregarClasificacionAccidente').modal('hide');
         $('body').removeClass('model-open');

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -16,7 +17,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public bool ValorEstatusMotivosInfraccion { get; set; }
         public string estatusDesc { get; set; }
         public string fechaInicio { get; set; }
-        public string fechaFinVigencia { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime fechaFinVigencia { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime fechaInicioVigencia { get; set; }
 
 
     }

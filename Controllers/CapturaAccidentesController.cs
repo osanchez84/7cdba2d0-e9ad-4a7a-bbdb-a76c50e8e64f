@@ -151,7 +151,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			{
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-				var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
+                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
 				if (ListAccidentesModel.Count == 0)
 				{
 					return View("AgregarAccidente");

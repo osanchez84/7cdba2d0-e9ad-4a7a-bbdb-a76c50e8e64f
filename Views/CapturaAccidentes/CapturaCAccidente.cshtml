@@ -440,11 +440,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <label>Convenio</label>
                         <div class="btnToggleActive">
-<<<<<<< Updated upstream
-                        @(Html.Kendo().SwitchFor(t => t.convenioBool)
-=======
                             @(Html.Kendo().SwitchFor(t => t.convenioBool)
->>>>>>> Stashed changes
                                     .Name("convenioSwitch")
                                     .Checked(Model.EstadoConvenio == 1)
                                     .Messages(c => c.Checked("Si").Unchecked("No"))
@@ -456,19 +452,11 @@
                         <div class="controlForm mb-3">
                             <div id="convenioTexto" style="visibility: hidden;">
                                 @(Html.Kendo().TextBoxFor(t => t.observacionesConvenio)
-<<<<<<< Updated upstream
                                         .Label(l => l.Content("Observaciones de convenio:"))
                                         .Placeholder("Ingresa las observaciones")
                                             .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
                                         .Enable(!ViewBag.EsSoloLectura)
                                         )
-=======
-                                    .Label(l => l.Content("Observaciones de convenio:"))
-                                    .Placeholder("Ingresa las observaciones")
-                                        .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
-                                    .Enable(!ViewBag.EsSoloLectura)
-                                    )
->>>>>>> Stashed changes
                             </div>
                         </div>
                     </div>

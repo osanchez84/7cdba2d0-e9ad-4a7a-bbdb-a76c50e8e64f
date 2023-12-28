@@ -1687,12 +1687,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion)";
+                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion,estatus) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion, @estatus)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idVehiculo", IdVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idInfraccion", IdInfraccion);
+                    command.Parameters.AddWithValue("@estatus", 1);
 
                     command.ExecuteNonQuery();
                 }
@@ -1726,12 +1727,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         "i.idEstatusInfraccion, "+
 						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
 						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
-                        "JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
-                        "JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
-                        "JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
-                        "JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                        "JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente;", connection);
+                        "LEFT JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
+                        "LEFT JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
+                        "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
+                        "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
 
 
 
@@ -2443,7 +2444,37 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 return datosFinales;
             } 
-        }  
+        }
+        public int EliminarRegistroInfraccion(int IdInfraccion)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infraccionesAccidente SET estatus = 0 " +
+                        "WHERE idInfraccion = @IdInfraccion";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@IdInfraccion", IdInfraccion);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
     }
 }
 

@@ -151,7 +151,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			{
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-				var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
+                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
 				if (ListAccidentesModel.Count == 0)
 				{
 					return View("AgregarAccidente");
@@ -1740,6 +1742,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 			return RedirectToAction("Index");
 		}
-	}
+        public ActionResult ModalEliminarInfraccionDelAccidente(int IdInfraccion, string FolioInfraccion)
+        {
+            ViewBag.FolioInfraccion = FolioInfraccion;
+            return PartialView("_ModalEliminarInfraccion");
+        }
+        [HttpPost]
+        public IActionResult ajax_EliminarRegistroInfraccion(int IdInfraccion)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+            var RegistroSeleccionado = _capturaAccidentesService.EliminarRegistroInfraccion(IdInfraccion);
+
+            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
+
+            return Json(ListInfracciones);
+        }
+    }
 }
 

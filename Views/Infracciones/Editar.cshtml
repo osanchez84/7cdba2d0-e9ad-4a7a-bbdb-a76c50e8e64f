@@ -800,38 +800,44 @@
 		}
 	}
 
-	function serviceCrearInfraccion(idInfraccion) {
-		var shouldGoBack = false;
-		showLoading();
-		$.ajax({
-			url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
-			type: 'POST',
-			data: { idInfraccion: idInfraccion },
-			success: function (response) {
-				if (response.success) {
-					sitteg_success("Infracción actualizada en secretaria de finanzas.");
-					shouldGoBack = true;
-				} else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
-					sitteg_info("El registro fue actualizado en SITTEG.");
-					shouldGoBack = true;
-				} else {
-					sitteg_warning(response.message);
+function serviceCrearInfraccion(idInfraccion) {
+    var shouldGoBack = false;
+    showLoading();
+    $.ajax({
+        url: '@Url.Action("ServiceCrearInfraccion", "Infracciones")',
+        type: 'POST',
+        data: { idInfraccion: idInfraccion },
+        success: function (response) {
+            if (response.success) {
+                sitteg_success("Infracción actualizada en secretaría de finanzas.");
+                shouldGoBack = true;
+            } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
+                sitteg_info("El registro fue actualizado en SITTEG.");
+                shouldGoBack = true;
+            } else if (response.success === false && response.message === "Error: La longitud de la placa excede el límite permitido.") {
+                sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
+			    shouldGoBack = true;
+            } else {
+                sitteg_warning(response.message);
+            }
+
+            var redirectTo = sessionStorage.getItem('redirectTo');
+            console.log("RED", redirectTo);
+            if (shouldGoBack && redirectTo) {
+					setTimeout(function () {
+						window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
+					}, 2000);
 				}
 
-				var redirectTo = sessionStorage.getItem('redirectTo');
-				console.log("RED", redirectTo)
-				if (shouldGoBack && redirectTo) {
-					window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
-				}
+            hideLoading();
+        },
+        error: function (error) {
+            sitteg_warning('Lo sentimos, ha ocurrido un error.');
+            hideLoading();
+        }
+    });
+}
 
-				hideLoading();
-			},
-			error: function (error) {
-				sitteg_warning('Lo sentimos, ha ocurrido un error.');
-				hideLoading();
-			}
-		});
-	}
 
 
 

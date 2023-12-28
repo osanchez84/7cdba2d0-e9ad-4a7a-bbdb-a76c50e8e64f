@@ -115,7 +115,7 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Entidad:</label>
+                <label>Entidad <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -153,8 +153,8 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .Label(l => l.Content("Código postal <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .Label(l => l.Content("Código postal</b>:"))
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -164,7 +164,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
                     .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -172,7 +172,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
                     .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -180,7 +180,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
                     .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -299,7 +299,7 @@
 
         controlsValidate.push({ 'controlName': 'nombre' });
         controlsValidate.push({ 'controlName': 'fechaNacimiento' });
-        controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
+        //controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
@@ -311,6 +311,7 @@
         controlsValidate = [];
         controlsValidate.push({ 'controlName': 'idGenero' });
         controlsValidate.push({ 'controlName': 'tipoPersona' });
+        controlsValidate.push({ 'controlName': 'idEntidad' });
         
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 

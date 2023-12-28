@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina)
+        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina,int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
@@ -50,8 +50,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera  
                         LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo  
                         LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte
-                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
+                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3 AND acc.transito = @idDependencia;", connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -92,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina)
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia)
         {
             CapturaAccidentesModel accidente = new CapturaAccidentesModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -121,10 +122,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         JOIN catTramos AS t ON a.idTramo = t.idTramo 
                         JOIN estatus AS e ON a.estatus = e.estatus 
                         LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
-                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.transito = @idDependencia
                     ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -165,7 +167,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, int idDependencia)
         
         {
             int result = 0;
@@ -181,7 +183,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idEstatusReporte]
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
-                                        ,[estatus])
+                                        ,[estatus]
+                                        ,[transito])
                                 VALUES (
                                          @Hora
                                         ,@idOficina
@@ -193,7 +196,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@idEstatusReporte
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
-                                        ,@estatus);
+                                        ,@estatus
+                                        ,@idDependencia);
                                     SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -204,6 +208,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@Hora", SqlDbType.Time)).Value = (object)model.Hora ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@kilometro", SqlDbType.NVarChar)).Value = (object)model.Kilometro ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatusReporte", SqlDbType.Int)).Value = 1;
@@ -334,9 +339,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return Vehiculo;
         }
-
-
-
 
         public int ActualizarConVehiculo(int idVehiculo, int idAccidente,int IdPersona, string Placa, string Serie)
         {
@@ -1426,9 +1428,10 @@ namespace GuanajuatoAdminUsuarios.Services
                         cm.marcaVehiculo, csv.nombreSubmarca, tv.tipoVehiculo, COALESCE(p.nombre, pcv.nombre) AS nombre, COALESCE(p.apellidoPaterno, pcv.apellidoPaterno) AS apellidoPaterno,  
                         p.apellidoMaterno,p.RFC,p.CURP, CONVERT(varchar, p.fechaNacimiento, 103) AS fechaNacimiento, c.color, ts.tipoServicio, pcv.nombre AS nombreConductor, pcv.apellidoPaterno AS apellidoPConductor, pcv.apellidoMaterno AS apellidoMConductor,  
                         tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo ,p.vigenciaLicencia ,
-						isnull(epd.nombreentidad,'')+' '+isnull(mpd.municipio,'')+' '+isnull(pd.colonia,'')+' '+ isnull(pd.calle,'')+' '+isnull(pd.numero,'') as direccion,
-						isnull(epdc.nombreentidad,'')+' '+isnull(mpdc.municipio,'')+' '+isnull(pdc.colonia,'')+' '+isnull(pdc.codigoPostal,'')+' '+ isnull(pdc.calle,'')+' '+isnull(pdc.numero,'') as direccionc,
+						isnull(epd.nombreentidad,'') +', '+isnull(mpd.municipio,'') +', '+isnull(pd.colonia,'') +', '+ isnull(pd.calle,'') +', '+isnull(pd.numero,'') as direccion,
+						isnull(epdc.nombreentidad,'')+', '+isnull(mpdc.municipio,'')+', '+isnull(pdc.colonia,'')+', '+ isnull(pdc.calle,'')+', '+isnull(pdc.numero,'') as direccionc,
 						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,v.numeroeconomico as numeroeconomico
+
                         FROM conductoresVehiculosAccidente AS cva 
 						INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo  
                         LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo  
@@ -1689,12 +1692,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion)";
+                    string query = "INSERT INTO infraccionesAccidente (idVehiculo, idAccidente,idInfraccion,estatus) VALUES (@IdVehiculo, @idAccidente, @IdInfraccion, @estatus)";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@idVehiculo", IdVehiculo);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
                     command.Parameters.AddWithValue("@idInfraccion", IdInfraccion);
+                    command.Parameters.AddWithValue("@estatus", 1);
 
                     command.ExecuteNonQuery();
                 }
@@ -1723,17 +1727,18 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("SELECT ia.idInf_Acc, ia.idAccidente, ia.idVehiculo, " +
                         "v.idMarcaVehiculo, v.idSubmarca, v.placas, v.modelo, " +
                         "a.idEstatusReporte, " +
+                        "a.numeroReporte, " +
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
 						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
 						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
-                        "JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
-                        "JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
-                        "JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
-                        "JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
-                        "JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente;", connection);
+                        "LEFT JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
+                        "LEFT JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
+                        "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
+                        "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
+                        "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
 
 
 
@@ -1749,6 +1754,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							elemnto.IdInfAcc = Convert.IsDBNull(reader["IdInf_Acc"]) ? 0 : Convert.ToInt32(reader["IdInf_Acc"]);
                             elemnto.IdAccidente = Convert.IsDBNull(reader["IdAccidente"]) ? 0 : Convert.ToInt32(reader["IdAccidente"]);
                             elemnto.IdVehiculoInvolucrado = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
+                            elemnto.NumeroReporte = reader["numeroReporte"].ToString();
                             elemnto.Placa = reader["placas"].ToString();
                             elemnto.EstatusInfraccion = reader["estatusInfraccion"].ToString();
                             elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
@@ -1899,10 +1905,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                 {
-                    var nombre = @"
-hola
-";
-
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT " +
 											 "MAX(p.nombre) AS nombre, " +
@@ -1962,7 +1964,7 @@ hola
 											 "LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio " +
 											 "LEFT JOIN vehiculosAccidente AS va ON  va.idAccidente = a.idAccidente " +
 											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +
-											 "WHERE ia.idAccidente = @idAccidente group by ia.idPersona;", connection);
+                                             "WHERE ia.idAccidente = @idAccidente and ia.estatus = 1 group by ia.idPersona;", connection);
 
 
 
@@ -2050,6 +2052,66 @@ hola
             return ListaInvolucrados;
 
 
+        }
+        public int EditarInvolucrado(CapturaAccidentesModel model)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE AccidenteFactoresOpciones SET idFactor = @IdFactor, idFactorOpcion = @IdFactorOpcion  " +
+                                    "WHERE idAccidenteFactorOpcion = @IdAccidenteFactorOpcion";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                  //  command.Parameters.AddWithValue("@idFactor", IdFactorAccidente);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+        }
+        public int EliminarInvolucrado(int idAccidente)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE involucradosAccidente SET estatus = 0 WHERE idAccidente = @idAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
         }
         public int AgregarFechaHoraIngreso(FechaHoraIngresoModel model,int idAccidente)
 
@@ -2317,7 +2379,6 @@ hola
             }
         }
 
-
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente)
         {
 
@@ -2390,7 +2451,37 @@ hola
 
                 return datosFinales;
             } 
-        }  
+        }
+        public int EliminarRegistroInfraccion(int IdInfraccion)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infraccionesAccidente SET estatus = 0 " +
+                        "WHERE idInfraccion = @IdInfraccion";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@IdInfraccion", IdInfraccion);
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
     }
 }
 

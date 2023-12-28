@@ -67,8 +67,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idSubConcepto = reader["IdSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdSubConcepto"].ToString());
                             model.subConcepto = reader["subConcepto"].ToString();
                             model.ValorEstatusMotivosInfraccion = reader["ValorEstatusMotivosInfraccion"].ToString() == "inactivo" ? false :true;
-                            model.fechaInicio = reader["fechaInicio"] == System.DBNull.Value ? default(string) : Convert.ToString(reader["fechaInicio"].ToString());
-                            model.fechaFinVigencia = reader["fechaFinVigencia"] == System.DBNull.Value ? default(string) : Convert.ToString(reader["fechaFinVigencia"].ToString());
+                            model.fechaInicioVigencia = reader["fechaInicio"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInicio"]);
+                            model.fechaFinVigencia = reader["fechaFinVigencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaFinVigencia"]);
 
                             motivos.Add(model);
                         }
@@ -96,16 +96,18 @@ namespace GuanajuatoAdminUsuarios.Services
 	                            cmi.fundamento , 
 	                            cmi.calificacionMinima , 
 	                            cmi.calificacionMaxima , 
-	                            cmi.IdConcepto , 
+	                            cmi.IdConcepto ,
+                                cmi.fechaInicio ,
+                                cmi.fechaFinVigencia,
 	                            c.concepto ,
                                 cmi.idSubConcepto,
 	                            sc.subConcepto ,
-	                            e.estatusDesc as ValorEstatusMotivosInfraccion
+	                            e.estatusDesc
                             FROM 
                             catMotivosInfraccion cmi
-                            JOIN estatus e ON cmi.estatus = e.estatus
-                            JOIN catConceptoInfraccion c ON cmi.idConcepto = c.idConcepto
-                            JOIN catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto ";
+                            LEFT JOIN estatus e ON cmi.estatus = e.estatus
+                            LEFT JOIN catConceptoInfraccion c ON cmi.idConcepto = c.idConcepto
+                            LEFT JOIN catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto ";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -129,7 +131,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.concepto = reader["concepto"].ToString();
                             model.idSubConcepto = reader["IdSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdSubConcepto"].ToString());
                             model.subConcepto = reader["subConcepto"].ToString();
-                            model.ValorEstatusMotivosInfraccion = reader["ValorEstatusMotivosInfraccion"].ToString() == "inactivo" ? false : true;
+                            model.estatusDesc = reader["estatusDesc"] is DBNull ? string.Empty : reader["estatusDesc"].ToString();
+                            model.fechaInicioVigencia = reader["fechaInicio"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInicio"]);
+                            model.fechaFinVigencia = reader["fechaFinVigencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaFinVigencia"]);
 
                             motivos.Add(model);
                         }
@@ -203,7 +207,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , IdConcepto
                                 , calificacionMinima
                                 , calificacionMaxima
-                                , fundamento)
+                                , fundamento
+                                , fechaInicio
+                                , fechaFinVigencia)
                             VALUES(@nombre
                                 , @IdSubConcepto
                                 , @fechaActualizacion
@@ -212,7 +218,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , @IdConcepto
                                 , @calificacionMinima
                                 , @calificacionMaxima
-                                , @fundamento)";
+                                , @fundamento
+                                , @fechaInicioVigencia
+                                , @fechaFinalVigencia)";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -228,6 +236,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@calificacionMinima", motivo.CalificacionMinima);
                     command.Parameters.AddWithValue("@calificacionMaxima", motivo.CalificacionMaxima);
                     command.Parameters.AddWithValue("@fundamento", motivo.Fundamento);
+                    command.Parameters.AddWithValue("@fechaInicioVigencia", motivo.fechaInicioVigencia);
+                    command.Parameters.AddWithValue("@fechaFinalVigencia", motivo.fechaFinVigencia);
 
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);

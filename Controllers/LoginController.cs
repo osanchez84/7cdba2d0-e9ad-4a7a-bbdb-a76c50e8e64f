@@ -202,10 +202,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
-                            string idOficinaStr = json[0].clave_oficina;
-                            string idDependenciaStr = json[0].tipo_oficina;
+                            int espacioIndex = oficina.IndexOf(' ');
 
-                            if (int.TryParse(idOficinaStr, out int idOficina))
+                            if (espacioIndex >= 0)
+                            {
+                                string idDependenciaStr = oficina.Substring(0, espacioIndex);
+
+                                if (int.TryParse(idDependenciaStr, out int idDependencia))
+                                {
+                                    HttpContext.Session.SetInt32("IdDependencia", idDependencia);
+
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                             string idOficinaStr = json[0].clave_oficina;
+                           // string idDependenciaStr = json[0].tipo_oficina;
+                            string idUsuario = json[0].idUsuario;
+
+
+							if (int.TryParse(idOficinaStr, out int idOficina))
                             {
                                 HttpContext.Session.SetInt32("IdOficina", idOficina);
 
@@ -214,18 +232,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
 
                             }
-                            if (int.TryParse(idDependenciaStr, out int idDependencia))
-                            {
-                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
-
-                            }
-                            else
-                            {
-
-                            }
+                           
 
 
-                            await SignInUser(idOficina.ToString(),nombre);
+                            await SignInUser(idUsuario,nombre);
 
 
                             string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
@@ -241,7 +251,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);
-                                HttpContext.Session.SetInt32("IdDependencia", idDependencia);
+                               // HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
                             }

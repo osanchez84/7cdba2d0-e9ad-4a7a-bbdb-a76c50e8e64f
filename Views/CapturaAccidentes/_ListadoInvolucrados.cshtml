@@ -197,12 +197,14 @@
 		var row = $(event.target).closest("tr");
 		var dataItem = grid.dataItem(row);
 		var IdAccidente = dataItem.IdAccidente
+		var IdPersona = dataItem.IdPersona
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("EliminaInvolucrado", "CapturaAccidentes")',
 			type: 'POST',
 			data: { 
-				IdAccidente: IdAccidente
+				IdAccidente: IdAccidente,
+				IdPersona: IdPersona
 			},
 			success: (data) => {
 

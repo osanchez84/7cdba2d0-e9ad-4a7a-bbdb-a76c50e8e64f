@@ -1360,9 +1360,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(ListInvolucrados.ToDataSourceResult(request));
 		}
 
-        public IActionResult EliminaInvolucrado(int IdAccidente)
+        public IActionResult EliminaInvolucrado(int IdAccidente, int idPersona)
         {
-            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(IdAccidente);
+            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(idPersona);
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 

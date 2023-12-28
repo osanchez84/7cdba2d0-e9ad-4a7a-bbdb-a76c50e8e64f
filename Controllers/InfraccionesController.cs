@@ -118,7 +118,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
+                var x = User.FindFirst(CustomClaims.IdUsuario).Value;
+
+				InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
                 List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
                     //_infraccionesService.GetAllInfracciones(idOficina);
                 searchModel.ListInfracciones = listInfracciones;
@@ -135,6 +137,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_BuscarInfracciones(InfraccionesBusquedaModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
             var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
             if (listReporteAsignacion.Count == 0)
             {
@@ -364,7 +367,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		[HttpPost]
 		public ActionResult ajax_crearInfraccion(InfraccionesModel model, CrearMultasTransitoRequestModel requestMode)
 		{
-			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);
 
             var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
             var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);

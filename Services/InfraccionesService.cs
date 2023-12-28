@@ -2290,8 +2290,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         left join catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
                         left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
                         WHERE 
-                        inf.estatus= 1"
+                        inf.estatus= 1 {0}"
 			;
+			
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -2431,20 +2432,22 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList;
 		}
 
-		public bool ValidarFolio(string folioInfraccion)
+		public bool ValidarFolio(string folioInfraccion, int idDependencia)
 		{
 			int folio = 0;
+
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
-					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
+					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);			
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
 					{

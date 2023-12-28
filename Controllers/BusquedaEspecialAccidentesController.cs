@@ -113,7 +113,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var resultadoBusqueda = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina, idDependencia);
             return Json(resultadoBusqueda);
 
 
@@ -174,7 +176,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             };
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var ListTransitoModel = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var ListTransitoModel = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina, idDependencia);
             var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
             return File(result.Item1, "application/pdf", result.Item2);
         }
@@ -182,7 +186,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var accidenteEliminado = _busquedaEspecialAccidentesService.EliminarSeleccionado(idAccidente);
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina);
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina, idDependencia);
             return Json(resultadoBusqueda);
         }
 
@@ -213,8 +218,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_BusquedaAccidentes(BusquedaEspecialAccidentesModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina)
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina,idDependencia)
                                                 .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
                                                     && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)

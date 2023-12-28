@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<BusquedaAccidentesModel> GetAllAccidentes(int idOficina)
+        public List<BusquedaAccidentesModel> GetAllAccidentes(int idOficina, int idDependencia)
         {
             //
             List<BusquedaAccidentesModel> ListaAccidentes = new List<BusquedaAccidentesModel>();
@@ -56,13 +56,14 @@ namespace GuanajuatoAdminUsuarios.Services
                     "LEFT JOIN catOficiales AS ela ON a.idElabora = ela.idOficial " +
                     "LEFT JOIN catOficiales AS sup ON a.idSupervisa = sup.idOficial " +
                     "LEFT JOIN catOficiales AS aut ON a.idAutoriza = aut.idOficial " +
-                    "WHERE a.estatus=1 " +
+                    "WHERE a.estatus=1 AND a.transito= @idDependencia " +
                     "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                     "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,a.idEstatusReporte, ela.idOficial, sup.idOficial,aut.idOficial; ", connection);
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -119,7 +120,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
-        public List<BusquedaAccidentesModel> BusquedaAccidentes(BusquedaAccidentesModel model, int idOficina)
+        public List<BusquedaAccidentesModel> BusquedaAccidentes(BusquedaAccidentesModel model, int idOficina, int idDependencia)
         {
             //
             List<BusquedaAccidentesModel> ListaAccidentes = new List<BusquedaAccidentesModel>();
@@ -161,14 +162,15 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catOficiales AS ela ON a.idElabora = ela.idOficial " +
                         "LEFT JOIN catOficiales AS sup ON a.idSupervisa = sup.idOficial " +
                         "LEFT JOIN catOficiales AS aut ON a.idAutoriza = aut.idOficial " +
-                        "WHERE a.idOficinaDelegacion = @idOficina AND a.estatus=1 " +
+                        "WHERE a.transito = @idDependencia AND a.estatus=1 " +
                         "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                         "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,er.idEstatusReporte, ela.idOficial, sup.idOficial, aut.idOficial; ", connection);
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                   
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

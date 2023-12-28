@@ -135,7 +135,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 FROM infracciones inf
                 INNER JOIN infraccionesAccidente ia on ia.idInfraccion = inf.idInfraccion
                 INNER JOIN accidenteCausas ac on ac.idAccidente = ia.idAccidente
-                INNER JOIN catCausasAccidentes catac on catac.idCausaAccidente = ac.idAccidenteCausa
+                INNER JOIN catCausasAccidentes catac on catac.idCausaAccidente = ac.idCausaAccidente
                 left join catDependencias dep on inf.idDependencia= dep.idDependencia
                 left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
                 left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
@@ -152,7 +152,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
                 left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
                 left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                WHERE inf.estatus = 1 @WHERES
+                WHERE inf.estatus = 1 AND YEAR(inf.fechaInfraccion) in (2000,2023) 
                 GROUP BY catac.causaAccidente, YEAR(inf.fechaInfraccion)"
             ;
 

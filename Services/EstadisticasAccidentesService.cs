@@ -195,7 +195,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
         }
 
-        public List<BusquedaAccidentesModel> ObtenerAccidentes()
+        public List<BusquedaAccidentesModel> ObtenerAccidentes(int idDependencia)
         {
             //
             List<BusquedaAccidentesModel> ListaAccidentes = new List<BusquedaAccidentesModel>();
@@ -235,10 +235,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 LEFT JOIN catDelegaciones AS del ON acc.idOficinaDelegacion = del.idDelegacion
 										                        LEFT JOIN accidenteCausas AS accau ON acc.idAccidente = accau.idAccidente
 
-                                                                WHERE acc.estatus = 1
+                                                                WHERE acc.estatus = 1 AND acc.transito = @idDependencia
                                                                 GROUP BY acc.idAccidente;
                                                                 ", connection);
                     command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

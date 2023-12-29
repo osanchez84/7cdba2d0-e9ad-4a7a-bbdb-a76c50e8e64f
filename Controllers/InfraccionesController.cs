@@ -138,9 +138,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-
-
 			var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
             if (listReporteAsignacion.Count == 0)
             {
@@ -290,10 +287,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Editar(int idInfraccion, int id)
         {
-            int ids = id != 0 ? id : idInfraccion;
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(ids);
+            var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -319,10 +319,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarA(int idInfraccion, int id)
         {
-            int ids = id != 0 ? id : idInfraccion;
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccionAccidenteById(id);
+            var model = _infraccionesService.GetInfraccionAccidenteById(id, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.IdPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.IdCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -1001,9 +1004,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpGet]
         public ActionResult ajax_CortesiaInfraccion(int id)
-        {
-            //var model = _vehiculosService.GetVehiculoById(id);
-            var model = _infraccionesService.GetInfraccion2ById(id);
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			//var model = _vehiculosService.GetVehiculoById(id);
+			var model = _infraccionesService.GetInfraccion2ById(id, idDependencia);
             return PartialView("_Cortesia", model);
         }
 
@@ -1011,11 +1015,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_UpdateCortesiaInfraccion(InfraccionesModel model)
         {
 
-            var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
             if (modelInf == 1)
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                var listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
+                var listInfracciones = _infraccionesService.GetAllInfracciones(idOficina, idDependencia);
                 return PartialView("_ListadoInfracciones", listInfracciones);
                 //return Json(listInfracciones);
             }
@@ -1055,12 +1061,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult ServiceCrearInfraccion(int idInfraccion)
-        {
-            if (_appSettings.AllowWebServices)
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			if (_appSettings.AllowWebServices)
             {
                 try
                 {
-                    var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion);
+                    var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion, idDependencia);
                     var unicoMotivo = infraccionBusqueda.MotivosInfraccion?.FirstOrDefault();
                     int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
@@ -1429,8 +1437,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult test([DataSourceRequest] DataSourceRequest request , InfraccionesBusquedaEspecialModel model)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina, idDependencia);
 
             var result = listReporteAsignacion.ToDataSourceResult(request);
 
@@ -1440,10 +1450,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Mostrar(string id)
         {
-            int ids = Convert.ToInt32(id);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int ids = Convert.ToInt32(id);
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(ids);
+            var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             
 
 

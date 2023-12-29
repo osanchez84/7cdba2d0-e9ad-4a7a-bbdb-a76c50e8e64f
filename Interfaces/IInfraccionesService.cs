@@ -16,13 +16,13 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         
         public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid();
-        List<InfraccionesModel> GetAllInfracciones(int idOficina);
+        List<InfraccionesModel> GetAllInfracciones(int idOficina, int idDependencia);
         public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion);
         public List<InfraccionesModel> GetAllInfraccionesByReciboPago(string ReciboPago);
         List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model,int idOficina);
-        List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina);
+        List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina, int idDependencia);
 
-        InfraccionesModel GetInfraccionById(int IdInfraccion);
+        InfraccionesModel GetInfraccionById(int IdInfraccion, int idDependencia);
         public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion);
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
@@ -32,12 +32,12 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model);
         public int CrearMotivoInfraccion(MotivoInfraccionModel model);
         public int EliminarMotivoInfraccion(int idMotivoInfraccion);
-        public InfraccionesModel GetInfraccion2ById(int idInfraccion);
+        public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia);
 
         public bool CancelTramite(string id);
 
 
-        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion);
+        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia);
         
 		public bool ValidarFolio(string folioInfraccion, int idDependencia);
         public int CrearInfraccion(InfraccionesModel model, int idDependencia);

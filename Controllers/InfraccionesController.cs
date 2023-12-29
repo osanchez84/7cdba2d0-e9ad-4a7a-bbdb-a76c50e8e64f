@@ -318,9 +318,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
 
+
+            if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
+            {
+                HttpContext.Session.SetString("isedition", "0");
+            }
+            else
+            {
+				HttpContext.Session.SetString("isedition", "1");
+			}
+
+
+
+
             return View(model);
-
-
         }
 
         public ActionResult EditarA(int idInfraccion, int id)
@@ -355,6 +366,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
+
+			var isedition = HttpContext.Session.GetString("isedition");
+
+
 			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 			int idGarantia = 0;
@@ -362,19 +377,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
-				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "insert Garantia", user);
 				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
-				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "Update", user);
 			}
+
 
 			model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
-            var idVehiculo = model.idVehiculo;
+
+            if (isedition == "0")
+            {
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Crear2", "create 2 infraccion", user);
+
+			}
+			else
+            {
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "insert Garantia", user);
+
+			}
+
+			var idVehiculo = model.idVehiculo;
             return Json(new { success = true, idInfraccion = idInfraccion, idVehiculo = idVehiculo });
         }
 
@@ -400,7 +426,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
 
-                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR", "insert", user);
+                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
 
                 return Json(new { id = idInfraccion });
             }
@@ -961,6 +987,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var umas = _infraccionesService.GetUmas();
             ViewBag.Umas = umas;
             ViewBag.Totales = modelList.Sum(s => s.calificacion) * umas;
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            var isedition = HttpContext.Session.GetString("isedition");
+            if (isedition == "1")
+            {
+                _bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar2", "insert", user);
+
+            }
             return PartialView("_ListadoMotivos", modelList);
         }
 
@@ -1128,42 +1162,37 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     ViewBag.Pension = result;
                     var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                     var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                    _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Pagar", "insert", user);
 
                     if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                     {
                         _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
                         _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);
-
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrarcd", "WS", user);
                         return Json(new { success = true });
                     }
                     else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                     {
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrar", "WS", user);
                         return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
+
+
                     }
                     else if (result != null && result.MT_CrearMultasTransito_res != null && "A".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                     {
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrarer", "WS", user);
                         return Json(new { success = false, message = "Infraccion anteriormente registrada en finanzas", id = idInfraccion });
                     }
                     else
                     {
-                        // Asegúrate de que la excepción sea null o no sea de tipo SqlException
-                        if (result != null && result.MT_CrearMultasTransito_res != null)
-                        {
-                            return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = "Error: La longitud de la placa excede el límite permitido." });
-                        }
+                        return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
                     }
-                }
+
+                }                                
                 catch (SqlException ex)
                 {
-                    return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
-                }
-
+                return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
             }
+        }
 			return Json(new { success = false, message = "Infracción guardada, no enviada a finanzas", id = idInfraccion });
 
 		}

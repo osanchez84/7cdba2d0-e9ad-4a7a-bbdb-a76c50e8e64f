@@ -28,11 +28,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private readonly ICancelarInfraccionService _cancelarInfraccionService;
         private readonly IAnulacionDocumentoService _anulacionDocumentoService;
+		private readonly IBitacoraService _bitacoraServices;
 
-        public CancelarInfraccionController(ICancelarInfraccionService cancelarInfraccionService, IAnulacionDocumentoService anulacionDocumentoService)
+		public CancelarInfraccionController(ICancelarInfraccionService cancelarInfraccionService, IAnulacionDocumentoService anulacionDocumentoService, IBitacoraService bitacoraService)
         {
             _cancelarInfraccionService = cancelarInfraccionService;
             _anulacionDocumentoService = anulacionDocumentoService;
+            _bitacoraServices = bitacoraService;
         }
 
         public IActionResult Index(CancelarInfraccionModel cancelarInfraccionService)
@@ -80,7 +82,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             var ListInfraccionesModel = _cancelarInfraccionService.CancelarInfraccionBD(IdInfraccion, OficioRevocacion);
-            return View("CancelarInfraccion");
+
+			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+
+			_bitacoraServices.insertBitacora(IdInfraccion, ip, "CancelarInfraccion", "Cancelar", "delete", user);
+
+
+			return View("CancelarInfraccion");
         }
 
         public IActionResult AnulacionDocumento(string folio_infraccion, int idOficina)
@@ -96,7 +105,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             rootRequest.MT_Consulta_documento = mTConsultaDocumento;
              
             var result = _anulacionDocumentoService.CancelarMultasTransitoFinanzas(rootRequest);
-            ViewBag.Pension = result;
+
+			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+
+
+
+
+			ViewBag.Pension = result;
             return Json(result);
         }
 

@@ -116,10 +116,11 @@
 
     function comprobarRecibo(reciboValue) {
         showLoading();
+        var id = window.idInfrac
         $.ajax({
             url: '/RegistroReciboPago/ConsultarDocumento',
             type: 'POST',
-            data: { recibo: reciboValue },
+            data: { recibo: reciboValue,idInfracc :id },
             success: function (response) {
                 console.log("RES", response);
                 if(response === null){

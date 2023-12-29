@@ -733,7 +733,7 @@ $(document).ready(()=>{
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
 
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -754,7 +754,7 @@ $(document).ready(()=>{
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1028,7 +1028,7 @@ $(document).ready(()=>{
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidadFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1086,7 +1086,7 @@ $(document).ready(()=>{
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1262,6 +1262,12 @@ $(document).ready(()=>{
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
     if (!isControlsValid(controlsValidate)) { isValid = false; }
 
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidad' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipio' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
     $("#hdnidCatTipoServicio").prop("disabled",true)
     $('#Persona_telefono').removeClass("errorData");
     if (phone != "" && phone != undefined) {
@@ -1358,34 +1364,12 @@ $(document).ready(()=>{
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
     controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     if (!isControlsValid(controlsValidate)) { isValid = false; }
-    //var nombreValue = $("#Persona_nombreFisico").val();
-    //var RFCValue = $("#Persona_RFCFisico").val();
-    //var coloniaValue = $("#Persona_PersonaDireccion_coloniaFisico").val();           
-    //var calleValue = $("#Persona_PersonaDireccion_calleFisico").val();            
-    // var numeroValue = $("#Persona_PersonaDireccion_numeroFisico").val();
-    //var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
-    // $('.error-container').empty();
-
-    //if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-    //    if (!nombreValue) {
-    //        asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-    //    }
-
-    //    if (!coloniaValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!calleValue) {
-    //        asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!numeroValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!fechaNacimientoValue) {
-    //        asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-    //    }
-
-    //    return;
-    //}
+    
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidadFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipioFisico' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
     
     var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
     var email = $("#Persona_PersonaDireccion_correoFisico").val();

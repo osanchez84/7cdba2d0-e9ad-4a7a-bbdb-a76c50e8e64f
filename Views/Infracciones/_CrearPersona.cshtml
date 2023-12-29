@@ -78,7 +78,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Género:</label>
+                <label>Género <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
@@ -89,7 +89,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Tipo persona:</label>
+                <label>Tipo persona <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
@@ -129,7 +129,7 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Entidad:</label>
+                <label>Entidad <b>(obligatorio):</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -148,7 +148,7 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Municipio:</label>
+                <label>Municipio <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -167,7 +167,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .Label(l => l.Content("Código postal <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Código postal:"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;"})
                     )
             </div>
@@ -294,7 +294,7 @@
         // ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
         controlsValidate.push({ 'controlName': 'nombre' });
         controlsValidate.push({ 'controlName': 'fechaNacimiento' });
-        controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
+        //controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
@@ -307,6 +307,9 @@
         controlsValidate=[];
         controlsValidate.push({ 'controlName': 'idGenero' });
         controlsValidate.push({ 'controlName': 'idCatTipoPersona' });
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'idMunicipioFisico' });
+        
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
         var validator = $("#frmCrearPersona").kendoValidator().data('kendoValidator');
@@ -335,7 +338,7 @@
             return;
         }
 
-        if (validator.validate()) {
+        //if (validator.validate()) {
             showLoading();
             $("#btnSave").prop("disabled", true);
 
@@ -366,14 +369,14 @@
                     hideLoading();
                 }
             });
-        }
-        else {
-            $("#vigenciaLicenciaFisico").prop("disabled", false);
-            $("#idTipoLicencia").prop("disabled", true);
-            $("#numeroLicencia").prop("disabled", true);
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+        //}
+        //else {
+        //    $("#vigenciaLicenciaFisico").prop("disabled", false);
+        //    $("#idTipoLicencia").prop("disabled", true);
+        //    $("#numeroLicencia").prop("disabled", true);
+        //    sitteg_info('Debe llenar los campos requeridos');
+        //    return;
+        //}
     }
 
     $(document).ready(function () {

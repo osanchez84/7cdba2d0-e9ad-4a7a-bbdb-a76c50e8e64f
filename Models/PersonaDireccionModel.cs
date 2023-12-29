@@ -24,7 +24,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numero { get; set; }
         public string numeroFisico { get; set; }
 
-        public long telefono { get; set; }
+        public long? telefono { get; set; }
         public long telefonoFisico { get; set; }
        
         [EmailAddress(ErrorMessage = "El correo electrónico no es válido.")]

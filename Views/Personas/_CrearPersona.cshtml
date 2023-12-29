@@ -70,9 +70,9 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Fecha de nacimiento <b>(obligatorio)</b>:</label>
+                <label>Fecha de nacimiento:</label>
                 @(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
-                    .HtmlAttributes(new { style = "width: 100%;" })
+                    .HtmlAttributes(new { style = "width: 100%;", required = "required" })
                     .Culture("es-ES")
                     )
             </div>

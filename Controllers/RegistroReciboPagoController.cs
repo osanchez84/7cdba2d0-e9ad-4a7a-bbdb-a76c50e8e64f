@@ -26,16 +26,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private readonly IRegistroReciboPagoService _registroReciboPagoService;
         private readonly IConsultarDocumentoService _consultarDocumentoService;
-        
+        private readonly IBitacoraService _bitacoraServices;
+
         private readonly AppSettings _appSettings;
 
 
         public RegistroReciboPagoController(IRegistroReciboPagoService registroReciboPagoService, IConsultarDocumentoService consultarDocumentoService,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,IBitacoraService bitacoraService)
         {
             _registroReciboPagoService = registroReciboPagoService;
             _consultarDocumentoService = consultarDocumentoService; 
             _appSettings = appSettings.Value;
+            _bitacoraServices = bitacoraService;
+
 
         }
 
@@ -76,11 +79,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult GuardarReciboPago(string ReciboPago, float Monto, DateTime FechaPago, string LugarPago, int IdInfraccion)
         {
             var datosGuardados = _registroReciboPagoService.GuardarRecibo(ReciboPago, Monto, FechaPago, LugarPago, IdInfraccion);
+
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(IdInfraccion, ip, "Infraccion", "Pagar", "WS", user);
+
+
+
             return PartialView("RegistroReciboDePago");
 
         }
 
-        public IActionResult ConsultarDocumento(string recibo)
+        public IActionResult ConsultarDocumento(string recibo,string idInfracc)
         {
             if (_appSettings.AllowWebServices)
             {
@@ -95,6 +105,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var endPointName = "ConsultarDocumentoEndPoint";
                 var result = _consultarDocumentoService.ConsultarDocumento(rootRequest, endPointName);
                 ViewBag.Pension = result;
+
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora( Convert.ToInt32(idInfracc), ip, "Infraccion", "ConsultaP", "WS", user);
+
+
                 return Json(result);
             }
             else

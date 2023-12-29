@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina)
+        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina,int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
@@ -50,8 +50,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera  
                         LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo  
                         LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte
-                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
+                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3 AND acc.transito = @idDependencia;", connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -92,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina)
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia)
         {
             CapturaAccidentesModel accidente = new CapturaAccidentesModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -121,10 +122,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         JOIN catTramos AS t ON a.idTramo = t.idTramo 
                         JOIN estatus AS e ON a.estatus = e.estatus 
                         LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
-                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.idOficinaDelegacion = @idOficina
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.transito = @idDependencia
                     ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -165,7 +167,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, int idDependencia)
         
         {
             int result = 0;
@@ -181,7 +183,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idEstatusReporte]
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
-                                        ,[estatus])
+                                        ,[estatus]
+                                        ,[transito])
                                 VALUES (
                                          @Hora
                                         ,@idOficina
@@ -193,7 +196,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@idEstatusReporte
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
-                                        ,@estatus);
+                                        ,@estatus
+                                        ,@idDependencia);
                                     SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -204,6 +208,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@Hora", SqlDbType.Time)).Value = (object)model.Hora ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@kilometro", SqlDbType.NVarChar)).Value = (object)model.Kilometro ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatusReporte", SqlDbType.Int)).Value = 1;
@@ -1722,6 +1727,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("SELECT ia.idInf_Acc, ia.idAccidente, ia.idVehiculo, " +
                         "v.idMarcaVehiculo, v.idSubmarca, v.placas, v.modelo, " +
                         "a.idEstatusReporte, " +
+                        "a.numeroReporte, " +
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
@@ -1748,6 +1754,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							elemnto.IdInfAcc = Convert.IsDBNull(reader["IdInf_Acc"]) ? 0 : Convert.ToInt32(reader["IdInf_Acc"]);
                             elemnto.IdAccidente = Convert.IsDBNull(reader["IdAccidente"]) ? 0 : Convert.ToInt32(reader["IdAccidente"]);
                             elemnto.IdVehiculoInvolucrado = Convert.IsDBNull(reader["IdVehiculo"]) ? 0 : Convert.ToInt32(reader["IdVehiculo"]);
+                            elemnto.NumeroReporte = reader["numeroReporte"].ToString();
                             elemnto.Placa = reader["placas"].ToString();
                             elemnto.EstatusInfraccion = reader["estatusInfraccion"].ToString();
                             elemnto.folioInfraccion = reader["folioInfraccion"].ToString();

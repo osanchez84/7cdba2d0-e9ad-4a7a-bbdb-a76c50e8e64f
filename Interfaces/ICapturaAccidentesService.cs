@@ -7,10 +7,10 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ICapturaAccidentesService
     {
-         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina);
+         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina, int idDependencia);
 
-        public int GuardarParte1(CapturaAccidentesModel model, int idOficina);
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);
+        public int GuardarParte1(CapturaAccidentesModel model, int idOficina,int idDependencia);
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia);
 
         List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio);
 

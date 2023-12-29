@@ -101,7 +101,7 @@ var finish = (d) => {
         <td>${w.fecha + " " + w.hora}</td>
         <td>${w.nombre}</td>
 
-        <td>${w.operacion}</td>
+        <td>${w.operaciondesc}</td>
         <td>${w.desc}</td>
         <td>${w.ip}</td>
 

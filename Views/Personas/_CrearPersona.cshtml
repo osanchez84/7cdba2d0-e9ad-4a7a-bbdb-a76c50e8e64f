@@ -45,7 +45,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.nombre)
                     .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -97,16 +97,16 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Género:</label>
+                <label>Género <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
-                    .HtmlAttributes(new { style = "width:100%;", required = "required" }))
+                    .HtmlAttributes(new { style = "width:100%;" }))
             </div>
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Tipo persona:</label>
+                <label>Tipo persona <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
@@ -184,8 +184,8 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-                    .Label(l => l.Content("Código postal <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .Label(l => l.Content("Código postal:"))
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -195,7 +195,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
                     .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -203,7 +203,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
                     .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -211,7 +211,7 @@
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
                     .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
         </div>
@@ -310,25 +310,47 @@
         var idTipoPersonaValue = idTipoPersona.val();
         var Vigencia = $("#vigencia");
         var vigenciaValue = Vigencia.val();
+        var controlsValidate = [];
+        var isValid = true;
 
-        alert("pasoooo:" + vigenciaValue);
+        controlsValidate.push({ 'controlName': 'nombre' });
+        controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+        controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
+        controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
+        controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
 
-        if (idTelefonoValue === null || idTelefonoValue === "") {
-            idTelefono.prop("disabled", true);
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+
+        // DROP DOWN LIST
+        controlsValidate=[];
+        controlsValidate.push({ 'controlName': 'idGenero' });
+        controlsValidate.push({ 'controlName': 'tipoPersona' });
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+
+        if (!isValid) {
+	        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
         }
-        idTelefono.off('blur');
 
-        if (idTipoPersonaValue === null || idTipoPersonaValue === "") {
-            idTipoPersona.prop("disabled", true);
-        }
-        idTipoPersona.off('blur');
+        //if (idTelefonoValue === null || idTelefonoValue === "") {
+        //    idTelefono.prop("disabled", true);
+        //}
+        //idTelefono.off('blur');
 
-        if (vigenciaValue === null || vigenciaValue === "") {
-            Vigencia.prop("disabled", true);
-        }
-        Vigencia.off('blur');
+        //if (idTipoPersonaValue === null || idTipoPersonaValue === "") {
+        //    idTipoPersona.prop("disabled", true);
+        //}
+        //idTipoPersona.off('blur');
 
-        if (validator.validate()) {
+        //if (vigenciaValue === null || vigenciaValue === "") {
+        //    Vigencia.prop("disabled", true);
+        //}
+        //Vigencia.off('blur');
+
+        //if (validator.validate()) {
             var formData = $("#frmCrearPersona").serialize();
             showLoading();
             $.ajax({
@@ -356,14 +378,14 @@
                     hideLoading();
                 }
             });
-        }
-        else {
-            idTelefono.prop("disabled", false);
-            idTipoPersona.prop("disabled", false);
-            Vigencia.prop("disabled", false);
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
+        //}
+        //else {
+        //    idTelefono.prop("disabled", false);
+        //    idTipoPersona.prop("disabled", false);
+        //    Vigencia.prop("disabled", false);
+        //    sitteg_info('Debe llenar los campos requeridos');
+        //    return;
+        //}
     }
 function completarConLicencia() {
     var formData = $("#frmCrearPersona").serialize();

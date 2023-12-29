@@ -62,6 +62,7 @@
     function modalComprobacion(e) {
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         var Id = dataItem.IdInfraccion;
+        window.idInfrac=Id
         console.log(Id);
         showLoading();
         $.ajax({

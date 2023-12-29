@@ -762,7 +762,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
 
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
                                     .DataTextField("Text")
@@ -784,7 +784,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
                                     .DataTextField("Text")
@@ -1057,7 +1057,7 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
                                     .DataTextField("Text")
@@ -1114,7 +1114,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
                                     .DataTextField("Text")
@@ -1239,6 +1239,29 @@
 <script>
 
     $(document).ready(function () {
+        $("#Persona_apellidoPaterno").val(null);
+        $("#Persona_apellidoMaterno").val(null);
+        $("#nombreFisico").val(null);
+        $("#Persona_vigenciaLicencia").val(null);
+        $("#Persona_numeroLicencia").val(null);
+        $("#numeroFisico").val(null);
+        $("#correoFisico").val(null);
+        $("#telefonoFisico").val(null);
+        $("#Persona_fechaNacimiento").val(null);
+        $("#Persona_CURP").val(null);
+        $("#RFCFisico").val(null);
+        $("#calleFisico").val(null);
+        $("#coloniaFisico").val(null);
+        $("#idEntidadFisico").data("kendoDropDownList").text(""); 
+        $("#idMunicipioFisico").data("kendoDropDownList").text("");
+        $("#Persona_idTipoLicencia").data("kendoDropDownList").text("");
+
+        $("#Persona_RFC").val(null);
+        $("#Persona_nombre").val(null);
+        $("#Persona_PersonaDireccion_colonia").val(null);
+        $("#Persona_PersonaDireccion_calle").val(null);
+        $("#Persona_PersonaDireccion_numero").val(null);
+
          @if (ViewBag.ReporteRobo == true)
         {
 		<text>
@@ -1321,9 +1344,16 @@ function submitCreateMoral() {
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
-
+    
     // INPUTS
     if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'EntidadMoral' });
+    controlsValidate.push({ 'controlName': 'MunicipioMoral' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+    
     if (tel != "" && tel != undefined) {
             $('#Persona_PersonaDireccion_telefono').removeClass("errorData");
             if (!isValidPhone(tel)) {
@@ -1445,9 +1475,15 @@ function submitCreateMoral() {
     controlsValidate.push({ 'controlName': 'calleFisico' });
     controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     controlsValidate.push({ 'controlName': 'numeroFisico' });
-
     // INPUTS
     if (!isControlsValid(controlsValidate)) { isValid = false; }
+    
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'idEntidadFisico' });
+    controlsValidate.push({ 'controlName': 'idMunicipioFisico' });
+    
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
     if (!isValid) {
 	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');

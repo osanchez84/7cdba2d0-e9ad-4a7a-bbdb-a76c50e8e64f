@@ -33,16 +33,16 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreCompleto { get {
                 
                 return (nombre??"-") + " " + (apellidoPaterno??"-") + " " + (apellidoMaterno ?? "-"); } }
-        public int idCatTipoPersona { get; set; }
-        public string tipoPersona { get; set; }
-        public int idGenero { get; set; }
+        public int? idCatTipoPersona { get; set; }
+        public string? tipoPersona { get; set; }
+        public int? idGenero { get; set; }
         public string genero { get; set; }
         public DateTime? fechaNacimiento { get; set; }
         public int? idTipoLicencia { get; set; }
         public int? idTipoLicenciaInfraccion { get; set; }
         public string? telefonoInfraccion { get; set; }
         public string? tipoLicencia { get; set; }
-        public string telefono { get; set; }
+        public string? telefono { get; set; }
         public string correo { get; set; }
         public string correoInfraccion { get; set; }
         public bool generoBool { get; set; }

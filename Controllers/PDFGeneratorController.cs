@@ -160,8 +160,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		[HttpPost]
 		public ContentResult InfraccionesGeneral(InfraccionesBusquedaModel model)
 		{
+
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var modelList = _infraccionesService.GetAllInfracciones(model, idOficina);
+			var modelList = _infraccionesService.GetAllInfracciones(model, idOficina, idDependencia);
 			var pdfModel = modelList.Select(s => new InfraccionesGeneralPDFModel
 			{
 				folioInfraccion = s.folioInfraccion,

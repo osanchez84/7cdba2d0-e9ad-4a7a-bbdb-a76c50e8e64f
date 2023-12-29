@@ -360,6 +360,8 @@ namespace GuanajuatoAdminUsuarios.Services
 							//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
 
 							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+							infraccionModel.Garantia = infraccionModel.Garantia ?? new GarantiaInfraccionModel();
+							infraccionModel.Garantia.garantia = infraccionModel.Garantia.garantia ?? "";
 							infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
 							infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
@@ -1852,6 +1854,8 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.Garantia ?? new GarantiaInfraccionModel();
+							model.Garantia.garantia = model.Garantia.garantia ?? "";
 							model.umas = GetUmas();
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{

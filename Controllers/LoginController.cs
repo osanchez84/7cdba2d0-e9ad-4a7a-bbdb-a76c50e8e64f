@@ -221,6 +221,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                              string idOficinaStr = json[0].clave_oficina;
                            // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
+                            string TipoOfi = json[0].tipo_oficina;
 
 
 							if (int.TryParse(idOficinaStr, out int idOficina))
@@ -235,7 +236,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                            
 
 
-                            await SignInUser(idUsuario,nombre);
+                            await SignInUser(idUsuario,nombre,TipoOfi);
 
 
                             string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
@@ -293,13 +294,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        private async Task SignInUser(string idUsuario, string nombre)
+        private async Task SignInUser(string idUsuario, string nombre,string perfil)
         {
             var claims = new List<Claim>
             {
                 new Claim(CustomClaims.IdUsuario, idUsuario),
-                new Claim(CustomClaims.Nombre, nombre)
-            };           
+                new Claim(CustomClaims.Nombre, nombre),
+				new Claim(CustomClaims.Perfil, perfil)
+
+			};           
             
 
             var claimsIdentity = new ClaimsIdentity(

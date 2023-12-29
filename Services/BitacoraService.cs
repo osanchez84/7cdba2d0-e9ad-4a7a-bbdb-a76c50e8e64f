@@ -76,12 +76,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"select  BDIOPERACION,BDIFECHA,BDIHORA,BDIIP,b.folioInfraccion  from
+                    SqlCommand command = new SqlCommand(@"select  BDIOPERACION,BDIFECHA,BDIHORA,BDIIP,b.folioInfraccion
+                                            ,b.documento,b.monto from
                                             bitacoradeinfracciones a
 											join infracciones b on b.idInfraccion=BDIIDINFRACCION
 											where BDIIDINFRACCION=@id
 "
-					, connection);
+                    , connection);
 
 
                     command.Parameters.Add(new SqlParameter("@id", SqlDbType.Decimal)).Value = id;
@@ -98,8 +99,12 @@ namespace GuanajuatoAdminUsuarios.Services
                             hora = reader["BDIHORA"].ToString(),
                             ip = reader["BDIIP"].ToString(),
                             nombre= nombre,
-                            folio= reader["folioInfraccion"].ToString()
-						}) ;
+                            folio= reader["folioInfraccion"].ToString(),
+                            documento = reader["documento"].GetType() == typeof(DBNull)?"-": reader["documento"].ToString(),
+                            monto = reader["monto"].GetType() == typeof(DBNull) ? "-" : reader["monto"].ToString()
+
+
+                        }) ;
 
                     }
 

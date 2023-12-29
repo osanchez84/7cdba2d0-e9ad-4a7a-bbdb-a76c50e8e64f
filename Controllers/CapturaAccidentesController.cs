@@ -1299,7 +1299,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			if (ModelState.IsValid)
 			{
 
-				var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model);
+				var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
 				var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente,idInfraccion);
 				return Json(new { id = idInfraccion });
 			}

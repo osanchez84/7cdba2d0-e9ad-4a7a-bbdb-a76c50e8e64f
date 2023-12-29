@@ -1835,15 +1835,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                       idHospital = @idHospital,
                                       idInstitucionTraslado = @idInstitucionTraslado,
                                       idAsiento = @idAsiento,
-                                      idCinturon = @idCinturon
+                                      idCinturon = @idCinturon, 
+                                      estatus = @estatus
                                   WHERE idAccidente = @idAccidente
                                     AND idPersona = @idPersona
                                     AND idVehiculo = @idVehiculo";
 
                     string consultaInsert = @"INSERT INTO InvolucradosAccidente
-                                  (idAccidente, idPersona, idVehiculo, idTipoInvolucrado, idEstadoVictima, idHospital, idInstitucionTraslado, idAsiento, idCinturon)
+                                  (idAccidente, idPersona, idVehiculo, idTipoInvolucrado, idEstadoVictima, idHospital, idInstitucionTraslado, idAsiento, idCinturon,estatus)
                                   VALUES
-                                  (@idAccidente, @idPersona, @idVehiculo, @idTipoInvolucrado, @idEstadoVictima, @idHospital, @idInstitucionTraslado, @idAsiento, @idCinturon)";
+                                  (@idAccidente, @idPersona, @idVehiculo, @idTipoInvolucrado, @idEstadoVictima, @idHospital, @idInstitucionTraslado, @idAsiento, @idCinturon,@estatus)";
 
                     SqlCommand comandoExistencia = new SqlCommand(consultaExistencia, connection);
                     comandoExistencia.Parameters.AddWithValue("@idAccidente", idAccidente);
@@ -1866,6 +1867,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         comandoUpdate.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
                         comandoUpdate.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
                         comandoUpdate.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
+                        comandoUpdate.Parameters.AddWithValue("@estatus", 1);
 
                         result = comandoUpdate.ExecuteNonQuery();
                     }
@@ -1882,6 +1884,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         comandoInsert.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
                         comandoInsert.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
                         comandoInsert.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
+                        comandoInsert.Parameters.AddWithValue("@estatus", 1);
 
                         result = comandoInsert.ExecuteNonQuery();
                     }
@@ -2273,7 +2276,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int RegistrarInfraccion(NuevaInfraccionModel model)
+        public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
         {
             int result = 0;
             string strQuery = @"INSERT INTO infracciones
@@ -2292,7 +2295,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,idEstatusInfraccion
                                             ,fechaActualizacion
                                             ,actualizadoPor
-                                            ,estatus)
+                                            ,estatus
+                                            ,transito)
                                      VALUES (@fechaInfraccion
                                             ,@folioInfraccion
                                             ,@idOficial
@@ -2308,7 +2312,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,1
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
-                                            ,@estatus);SELECT SCOPE_IDENTITY()";
+                                            ,@estatus
+                                            ,@idDependencia);SELECT SCOPE_IDENTITY()";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -2328,6 +2333,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? 0;
                     command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa ?? "-";
                     command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta ?? "-";
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
 
 

@@ -62,7 +62,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int EliminarInvolucrado(int idAccidente);
 
         public int EditarInvolucrado(CapturaAccidentesModel model);
-        public int RegistrarInfraccion(NuevaInfraccionModel model);
+        public int RegistrarInfraccion(NuevaInfraccionModel model,int idDependencia);
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);
 

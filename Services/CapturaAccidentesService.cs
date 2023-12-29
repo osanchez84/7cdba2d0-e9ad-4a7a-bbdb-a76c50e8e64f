@@ -2152,10 +2152,14 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             int result = 0;
             string qryUpdate = "";
-            qryUpdate += !datosAccidente.montoCamino.Equals(null) ? " , montoCamino = @MontoCamino " : "";
-            qryUpdate += !datosAccidente.montoCarga.Equals(null) ? " , montoCarga = @MontoCarga " : "";
-            qryUpdate += !datosAccidente.montoPropietarios.Equals(null) ? " , montoPropietarios = @MontoPropietarios " : "";
-            qryUpdate += !datosAccidente.montoOtros.Equals(null) ? " , montoOtros = @MontoOtros " : "";
+            //  qryUpdate += !datosAccidente.montoCamino.Equals(null) ? " , montoCamino = @MontoCamino " : "";
+            //qryUpdate += !datosAccidente.montoCarga.Equals(null) ? " , montoCarga = @MontoCarga " : "";
+            // qryUpdate += !datosAccidente.montoPropietarios.Equals(null) ? " , montoPropietarios = @MontoPropietarios " : "";
+            //qryUpdate += !datosAccidente.montoOtros.Equals(null) ? " , montoOtros = @MontoOtros " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoCamino) ? " , montoCamino = @MontoCamino " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoCarga) ? " , montoCarga = @MontoCarga " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoPropietarios) ? " , montoPropietarios = @MontoPropietarios " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoOtros) ? " , montoOtros = @MontoOtros " : "";
             qryUpdate += !datosAccidente.Latitud.Equals(null) ? " , latitud = @Latitud " : "";
             qryUpdate += !datosAccidente.Longitud.Equals(null) ? " , longitud = @Longitud " : "";
             qryUpdate += !datosAccidente.IdCertificado.Equals(null) ? " , idCertificado = @IdCertificado " : "";
@@ -2199,10 +2203,14 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@MontoCamino", datosAccidente.montoCamino);
-                    command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga);
-                    command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios);
-                    command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros);
+                    command.Parameters.AddWithValue("@MontoCamino", datosAccidente.montoCamino ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros ?? (object)DBNull.Value);
+
+                    //command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga);
+                    //command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios);
+                    //command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros);
                     command.Parameters.AddWithValue("@Latitud", datosAccidente.Latitud);
                     command.Parameters.AddWithValue("@Longitud", datosAccidente.Longitud);
                     command.Parameters.AddWithValue("@IdCertificado", datosAccidente.IdCertificado);

@@ -11,19 +11,19 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
 
-        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina);
-        public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina);
+        public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina, int idDependencia);
+        public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina, int idDependencia);
 
         
-        public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid();
+        public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid(int idDependencia);
         List<InfraccionesModel> GetAllInfracciones(int idOficina, int idDependencia);
         public List<InfraccionesModel> GetAllInfraccionesByFolioInfraccion(string FolioInfraccion);
         public List<InfraccionesModel> GetAllInfraccionesByReciboPago(string ReciboPago);
-        List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model,int idOficina);
+        List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model,int idOficina, int idDependencia);
         List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina, int idDependencia);
 
         InfraccionesModel GetInfraccionById(int IdInfraccion, int idDependencia);
-        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion);
+        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion, int idDependencia);
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);

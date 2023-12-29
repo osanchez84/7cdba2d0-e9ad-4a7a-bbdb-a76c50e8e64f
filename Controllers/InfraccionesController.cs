@@ -135,10 +135,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpPost]
         public ActionResult ajax_BuscarInfracciones(InfraccionesBusquedaModel model)
-        {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-			var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
+        {
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+			var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina, idDependencia);
             if (listReporteAsignacion.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
@@ -179,6 +183,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
 
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
 			Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"folioInfraccion","Folio"},
@@ -188,7 +194,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);            
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion, idDependencia);            
             var uma = _infraccionesService.getUMAValue();
             InfraccionModel.Uma = uma;
             var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);

@@ -504,7 +504,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
                                                left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
-                                    where {0} inf.estatus=1 and inf.transito = idDependenciaPerfil and inf.idPersonaInfraccion is not null
+                                    where {0} inf.estatus=1 and inf.transito = @idDependenciaPerfil and inf.idPersonaInfraccion is not null
 									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);

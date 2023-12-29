@@ -219,8 +219,8 @@ $(document).ready(()=>{
                 @if (disableInput)
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        .Value(dateVigencia)
-                        .DateInput()
+                        .Value("")
+                     //   .DateInput()
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
@@ -228,8 +228,8 @@ $(document).ready(()=>{
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        .Value(dateVigencia)
-                        .DateInput()
+                        .Value("")
+                       // .DateInput()
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
@@ -449,7 +449,7 @@ $(document).ready(()=>{
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
         
-        <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnidCatTipoServicio">
+     <input type="hidden" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoServicio">
 @*        @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnidCatTipoServicio" })
 *@        
         
@@ -733,7 +733,7 @@ $(document).ready(()=>{
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
 
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -754,7 +754,7 @@ $(document).ready(()=>{
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1028,7 +1028,7 @@ $(document).ready(()=>{
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidadFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1086,7 +1086,7 @@ $(document).ready(()=>{
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
@@ -1152,8 +1152,7 @@ $(document).ready(()=>{
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia)
                                 .Culture("es-ES")
-                                    .DateInput()
-                                    )
+                                .Value(""))
 
                             </span>
                         </div>
@@ -1246,12 +1245,7 @@ $(document).ready(()=>{
 
     //});
 
-    $("#ddlCatTipoServicio").on("change", function () {
-        var value = $(this).val();
-        console.log(value);
-        $('#hdnidCatTipoServicio').val(value);
-
-    });
+ 
 
    function submitCreateMoral() {
     var controlsValidate = [];
@@ -1267,6 +1261,12 @@ $(document).ready(()=>{
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
     if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidad' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipio' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
     $("#hdnidCatTipoServicio").prop("disabled",true)
     $('#Persona_telefono').removeClass("errorData");
@@ -1364,34 +1364,12 @@ $(document).ready(()=>{
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
     controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     if (!isControlsValid(controlsValidate)) { isValid = false; }
-    //var nombreValue = $("#Persona_nombreFisico").val();
-    //var RFCValue = $("#Persona_RFCFisico").val();
-    //var coloniaValue = $("#Persona_PersonaDireccion_coloniaFisico").val();           
-    //var calleValue = $("#Persona_PersonaDireccion_calleFisico").val();            
-    // var numeroValue = $("#Persona_PersonaDireccion_numeroFisico").val();
-    //var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
-    // $('.error-container').empty();
-
-    //if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-    //    if (!nombreValue) {
-    //        asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-    //    }
-
-    //    if (!coloniaValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!calleValue) {
-    //        asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!numeroValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!fechaNacimientoValue) {
-    //        asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-    //    }
-
-    //    return;
-    //}
+    
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidadFisico' });
+    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipioFisico' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
     
     var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
     var email = $("#Persona_PersonaDireccion_correoFisico").val();
@@ -1468,6 +1446,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
+                    var idTipoSer = $('#hdnIdCatTipoServicio').val();
 
         if (validator.validate()) {
 
@@ -1500,6 +1479,12 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         }
 
     }
+        $("#ddlCatTipoServicio").on("change", function () {
+        var value = $(this).val();
+        console.log(value);
+        $('#hdnIdCatTipoServicio').val(value);
+
+    });
      function cerrarModalV() {
         $('#confirmacionModal').modal('show');
 

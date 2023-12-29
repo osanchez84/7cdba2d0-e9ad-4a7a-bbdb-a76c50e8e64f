@@ -38,7 +38,9 @@ namespace GuanajuatoAdminUsuarios.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaVencimiento { get; set; } = DateTime.Now;
 
-        public void CalcularFechas()
+		public string aplicacion { get; set; }
+
+		public void CalcularFechas()
         {
             // Agregar 10 d�as a la fecha de imposici�n para obtener la fecha de vencimiento
             fechaVencimiento = fechaInfraccion.AddDays(10);
@@ -88,6 +90,9 @@ namespace GuanajuatoAdminUsuarios.Models
     }
     public class InfraccionesReportModel : EntityModel
     {
+
+        public string observaciones { get; set; }
+        public decimal Uma { get; set; }
         public int idInfraccion { get; set; }
         public string folioInfraccion { get; set; }
         public DateTime fechaInfraccion { get; set; }

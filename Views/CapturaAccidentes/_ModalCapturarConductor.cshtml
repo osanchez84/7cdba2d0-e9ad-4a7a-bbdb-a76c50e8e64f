@@ -30,7 +30,7 @@
 			<div class="controlForm">
 				<label>Nombre <b>(obligatorio):</b></label>
 				@(Html.Kendo().TextBoxFor(t => t.nombre)
-					.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+					.HtmlAttributes(new { style = "width: 100%; height:58px;" })
 					)
 			</div>
 		</div>
@@ -58,13 +58,13 @@
 				<label>Fecha de nacimiento <b>(obligatorio)</b>:</label>
 				@(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
 .Culture("es-ES")
-					.HtmlAttributes(new { style = "width: 100%;", required = "required" })
+					.HtmlAttributes(new { style = "width: 100%;" })
 					)
 			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="controlForm">
-				<label>CURP <b>(obligatorio):</b></label>
+				<label>CURP </b></label>
 				@(Html.Kendo().TextBoxFor(t => t.CURP)
 					.HtmlAttributes(new { style = "width: 100%; height:58px;" })
 					)
@@ -92,12 +92,12 @@
 					)
 					.Filter(FilterType.StartsWith)
 					.OptionLabel("-- Seleccione --")
-					.HtmlAttributes(new { style = "width:100%;", required = "required" }))
+					.HtmlAttributes(new { style = "width:100%;"}))
 			</div>
 		</div>
 		<div class="col-md-6">
 			<div class="controlForm">
-				<label>Tipo persona:</label>
+				<label>Tipo persona <b>(obligatorio):</label>
 				@(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona)
 					.BindTo((SelectList)ViewBag.CatTipoPersona)
 
@@ -177,8 +177,8 @@
 		<div class="col-md-4">
 			<div class="controlForm">
 				@(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.codigoPostal)
-					.Label(l => l.Content("Codigo postal: <b>(obligatorio)</b>:"))
-					.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+					.Label(l => l.Content("Código postal:"))
+					.HtmlAttributes(new { style = "width: 100%; height:58px;" })
 					)
 			</div>
 		</div>
@@ -188,7 +188,7 @@
 			<div class="controlForm">
 				@(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
 					.Label(l => l.Content("Colonia: <b>(obligatorio)</b>:"))
-					.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+					.HtmlAttributes(new { style = "width: 100%; height:58px;" })
 					)
 			</div>
 		</div>
@@ -196,7 +196,7 @@
 			<div class="controlForm">
 				@(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
 					.Label(l => l.Content("Calle: <b>(obligatorio)</b>:"))
-					.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+					.HtmlAttributes(new { style = "width: 100%; height:58px;"})
 					)
 			</div>
 		</div>
@@ -204,7 +204,7 @@
 			<div class="controlForm">
 				@(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
 					.Label(l => l.Content("Número: <b>(obligatorio)</b>:"))
-					.HtmlAttributes(new { style = "width: 100%; height:58px;", required = "required" })
+					.HtmlAttributes(new { style = "width: 100%; height:58px;"})
 					)
 			</div>
 		</div>
@@ -216,7 +216,7 @@
 					.Label(l => l.Content("Teléfono:"))
 					.HtmlAttributes(new { style = "width: 100%; height:58px;", id = "telefono", onkeypress = "return validarNumero(event)" })
 					)
-				<div id="errorTelefono" style="color: red;"></div>
+				@*<div id="errorTelefono" style="color: red;"></div>*@
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -239,7 +239,7 @@
 			</div>
 			<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
 				<div class="controlButton">
-					<button class="btnPrimary px-3" onclick="btnCrearPersona()">
+					<button type="button" class="btnPrimary px-3" onclick="btnCrearPersona()">
 						<h5 class="m-0"><b>Guardar</b></h5>
 					</button>
 				</div>
@@ -252,7 +252,7 @@
 <script>
 	$(document).ready(function () {
 		var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
-		datePicker.value(null);
+		//datePicker.value(null);
 	});
 
 	$(document).ready(function () {
@@ -280,10 +280,36 @@
 	}
 
 	function btnCrearPersona() {
-		var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
+		//var validator = $("#frmCrearPersonaV").kendoValidator().data('kendoValidator');
 		$("#vigenciaLicencia").prop("disabled", true);
-		validator.validate();
-		if (validator.validate()) {
+
+		var controlsValidate = [];
+		var isValid = true;
+
+		controlsValidate.push({ 'controlName': 'nombre' });
+		controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+		//controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
+		controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
+		controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
+		controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
+
+		// INPUTS
+		if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+		// DROP DOWN LIST
+		controlsValidate=[];
+		controlsValidate.push({ 'controlName': 'idGenero' });
+		controlsValidate.push({ 'controlName': 'tipoPersona' });
+		if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+
+		if (!isValid) {
+			sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+			return;
+		}
+
+		//validator.validate();
+		//if (validator.validate()) {
 			var formData = $("#frmCrearPersonaV").serialize();
 			showLoading();
 			$.ajax({
@@ -309,12 +335,12 @@
 					hideLoading();
 				}
 			});
-		}
-		else {
-			$("#vigenciaLicencia").prop("disabled", false);
-			sitteg_info('Debe llenar los campos requeridos');
-			return;
-		}
+		//}
+		//else {
+		//	$("#vigenciaLicencia").prop("disabled", false);
+		//	sitteg_info('Debe llenar los campos requeridos');
+		//	return;
+		//}
 	}
 
 </script>

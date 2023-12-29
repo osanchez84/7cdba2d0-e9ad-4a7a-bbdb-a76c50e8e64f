@@ -79,10 +79,12 @@ function finishCancel(d) {
 }
 
 window.CancelTramite = (d) => {
+    console.log("ESTE ES",d)
+    $('#modalEliminar').data('id-to-delete', d);
 
-    var data = { id: d }
+    $('#modalEliminar').modal('show');
 
-    RemoveTramite(data, finishCancel)
+    //RemoveTramite(data, finishCancel)
 
 }
 
@@ -99,7 +101,7 @@ var finish = (d) => {
         <td>${w.fecha + " " + w.hora}</td>
         <td>${w.nombre}</td>
 
-        <td>${w.operacion}</td>
+        <td>${w.operaciondesc}</td>
         <td>${w.desc}</td>
         <td>${w.ip}</td>
 

@@ -55,15 +55,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 707;
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int IdModulo = 707;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina);
-                var modelListProMotivos = _infraccionesService.GetAllMotivosPorInfraccion(idOficina);
+                var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina, idDependencia);
+                var modelListProMotivos = _infraccionesService.GetAllMotivosPorInfraccion(idOficina, idDependencia);
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
                 var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
@@ -91,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.GridPorMotivos = modelListProMotivos;
 
 
-                var modelGridInfracciones = _infraccionesService.GetAllInfraccionesEstadisticasGrid();
+                var modelGridInfracciones = _infraccionesService.GetAllInfraccionesEstadisticasGrid(idDependencia);
 
                 ViewBag.GridInfracciones = modelGridInfracciones;
 

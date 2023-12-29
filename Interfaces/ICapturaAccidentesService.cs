@@ -7,10 +7,10 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ICapturaAccidentesService
     {
-         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina);
+         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina, int idDependencia);
 
-        public int GuardarParte1(CapturaAccidentesModel model, int idOficina);
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);
+        public int GuardarParte1(CapturaAccidentesModel model, int idOficina,int idDependencia);
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia);
 
         List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio);
 
@@ -38,6 +38,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         List<CapturaAccidentesModel> ObtenerDatosGridCausa(int idAccidente);
         public int EliminarValorFactorYOpcion(int IdAccidenteFactorOpcion);
+        public int EliminarRegistroInfraccion(int IdInfraccion);
         public int EliminarCausaBD(int IdCausaAccidente,int idAccidente, int idAccidenteCausa);
         public int GuardarDescripcion(int idAccidente,string descripcionCausa);
         List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server= null);
@@ -57,7 +58,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         int AgregarDatosFinales(DatosAccidenteModel datosAccidente, int armasValue, int drogasValue, int valoresValue, int prendasValue, int otrosValue, int idAccidente, int convenioValue);
         int EliminarInvolucradoAcc(int IdVehiculoInvolucrado,int IdPropietarioInvolucrado,int IdAccidente);
-        public int RegistrarInfraccion(NuevaInfraccionModel model);
+
+        public int EliminarInvolucrado(int idPersona);
+
+        public int EditarInvolucrado(CapturaAccidentesModel model);
+        public int RegistrarInfraccion(NuevaInfraccionModel model,int idDependencia);
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);
 

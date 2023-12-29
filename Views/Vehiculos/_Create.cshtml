@@ -477,10 +477,9 @@
         @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
         @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
 
-        <input type="text" disabled class="d-none" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoPersona">
+     <input type="hidden" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoServicio">
 
-     @Html.HiddenFor(m=> m.idCatTipoServicio, new { @id = "hdnIdCatTipoPersona" })
-        
+
         
         @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
@@ -763,7 +762,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
 
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
                                     .DataTextField("Text")
@@ -785,7 +784,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
                                     .DataTextField("Text")
@@ -1058,7 +1057,7 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
                                     .DataTextField("Text")
@@ -1115,7 +1114,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
                                     .DataTextField("Text")
@@ -1240,6 +1239,29 @@
 <script>
 
     $(document).ready(function () {
+        $("#Persona_apellidoPaterno").val(null);
+        $("#Persona_apellidoMaterno").val(null);
+        $("#nombreFisico").val(null);
+        $("#Persona_vigenciaLicencia").val(null);
+        $("#Persona_numeroLicencia").val(null);
+        $("#numeroFisico").val(null);
+        $("#correoFisico").val(null);
+        $("#telefonoFisico").val(null);
+        $("#Persona_fechaNacimiento").val(null);
+        $("#Persona_CURP").val(null);
+        $("#RFCFisico").val(null);
+        $("#calleFisico").val(null);
+        $("#coloniaFisico").val(null);
+        $("#idEntidadFisico").data("kendoDropDownList").text(""); 
+        $("#idMunicipioFisico").data("kendoDropDownList").text("");
+        $("#Persona_idTipoLicencia").data("kendoDropDownList").text("");
+
+        $("#Persona_RFC").val(null);
+        $("#Persona_nombre").val(null);
+        $("#Persona_PersonaDireccion_colonia").val(null);
+        $("#Persona_PersonaDireccion_calle").val(null);
+        $("#Persona_PersonaDireccion_numero").val(null);
+
          @if (ViewBag.ReporteRobo == true)
         {
 		<text>
@@ -1305,12 +1327,7 @@
 
     //});
 
-    $("#ddlCatTipoServicio").on("change", function () {
-        var value = $(this).val();
-        console.log(value);
-        $('#hdnIdCatTipoPersona').val(value);
-
-    });
+   
 function submitCreateMoral() {
     var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
     
@@ -1327,9 +1344,16 @@ function submitCreateMoral() {
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
-
+    
     // INPUTS
     if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'EntidadMoral' });
+    controlsValidate.push({ 'controlName': 'MunicipioMoral' });
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+    
     if (tel != "" && tel != undefined) {
             $('#Persona_PersonaDireccion_telefono').removeClass("errorData");
             if (!isValidPhone(tel)) {
@@ -1449,11 +1473,17 @@ function submitCreateMoral() {
     controlsValidate.push({ 'controlName': 'nombreFisico' });
     controlsValidate.push({ 'controlName': 'coloniaFisico' });
     controlsValidate.push({ 'controlName': 'calleFisico' });
-    controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+    controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     controlsValidate.push({ 'controlName': 'numeroFisico' });
-
     // INPUTS
     if (!isControlsValid(controlsValidate)) { isValid = false; }
+    
+    // DROP DOWN LIST
+    controlsValidate=[];
+    controlsValidate.push({ 'controlName': 'idEntidadFisico' });
+    controlsValidate.push({ 'controlName': 'idMunicipioFisico' });
+    
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
     if (!isValid) {
 	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
@@ -1513,12 +1543,13 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
-
+            var idTipoSer = $('#hdnIdCatTipoServicio').val();
         if (validator.validate()) {
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
+
+            console.log("Id servio: ", idTipoSer)
                console.log("dtaa: ", formData)
                showLoading();
             $.ajax({
@@ -1549,6 +1580,12 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         }
 
     }
+     $("#ddlCatTipoServicio").on("change", function () {
+        var value = $(this).val();
+        console.log(value);
+        $('#hdnIdCatTipoServicio').val(value);
+
+    });
     function cerrarModalV() {
         $('#confirmacionModal').modal('show');
 

@@ -63,6 +63,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Serie { get; set; }
         public string Placa { get; set; }
         public string Tarjeta { get; set; }
+        public string Otros { get; set; }
+
         public DateTime VigenciaTarjeta { get; set; }
         public string Marca { get; set; }
         public string Submarca { get; set; }
@@ -108,6 +110,13 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdFormaTrasladoInvolucrado { get; set; }
         public string VehiculoInvolucrado { get; set; }
         public string PropietarioInvolucrado { get; set; }
+        public string EntidadPropietario { get; set; }
+        public string MunicipioPropietario { get; set; }
+        public string ColoniaPropietario { get; set; }
+        public string CallePropietario { get; set; }
+        public string NumeroPropietario { get; set; }
+        public string TelefonoPropietario { get; set; }
+        public string CorreoPropietario { get; set; }
         public string FormaTrasladoInvolucrado { get; set; }
         public string Pension { get; set; }
         public string Motor { get; set; }

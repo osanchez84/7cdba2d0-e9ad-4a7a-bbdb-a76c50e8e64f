@@ -33,6 +33,8 @@ using Org.BouncyCastle.Crypto;
 using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
+using System.Data.SqlClient;
+//using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -116,7 +118,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
+                var x = User.FindFirst(CustomClaims.IdUsuario).Value;
+
+				InfraccionesBusquedaModel searchModel = new InfraccionesBusquedaModel();
                 List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
                     //_infraccionesService.GetAllInfracciones(idOficina);
                 searchModel.ListInfracciones = listInfracciones;
@@ -131,9 +135,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpPost]
         public ActionResult ajax_BuscarInfracciones(InfraccionesBusquedaModel model)
+
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+			var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina, idDependencia);
             if (listReporteAsignacion.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
@@ -172,7 +181,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdInfraccion)
         {
-            Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
+
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"folioInfraccion","Folio"},
             {"NombreConductor","Conductor"},
@@ -181,7 +194,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"NombreGarantia","Garantía"},
             {"delegacion","Delegación/Oficina"}
             };
-            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion);
+            var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion, idDependencia);            
+            var uma = _infraccionesService.getUMAValue();
+            InfraccionModel.Uma = uma;
             var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
             return File(report.File.ToArray(), "application/pdf", report.FileName);
         }
@@ -278,10 +293,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Editar(int idInfraccion, int id)
         {
-            int ids = id != 0 ? id : idInfraccion;
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(ids);
+            var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -290,6 +308,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
             var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
             var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
+            var CatAplicadoA = _catDictionary.GetCatalog("CatAplicadoA", "0");
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
@@ -297,18 +316,33 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+            ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
+
+
+            if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
+            {
+                HttpContext.Session.SetString("isedition", "0");
+            }
+            else
+            {
+				HttpContext.Session.SetString("isedition", "1");
+			}
+
+
+
 
             return View(model);
-
-
         }
 
         public ActionResult EditarA(int idInfraccion, int id)
         {
-            int ids = id != 0 ? id : idInfraccion;
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			int ids = id != 0 ? id : idInfraccion;
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccionAccidenteById(id);
+            var model = _infraccionesService.GetInfraccionAccidenteById(id, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.IdPersona;
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.IdCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -332,32 +366,53 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
-            int idGarantia = 0;
+
+			var isedition = HttpContext.Session.GetString("isedition");
+
+
+			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+			int idGarantia = 0;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
-                model.idGarantia = idGarantia;
+				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
                 var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
-            }
+			}
 
-            model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+			model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
-            var idVehiculo = model.idVehiculo;
+
+            if (isedition == "0")
+            {
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Crear2", "create 2 infraccion", user);
+
+			}
+			else
+            {
+				_bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar", "insert Garantia", user);
+
+			}
+
+			var idVehiculo = model.idVehiculo;
             return Json(new { success = true, idInfraccion = idInfraccion, idVehiculo = idVehiculo });
         }
 
 		[HttpPost]
 		public ActionResult ajax_crearInfraccion(InfraccionesModel model, CrearMultasTransitoRequestModel requestMode)
 		{
-			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion);
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);
 
             var ip =  HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(HttpContext.Session.GetInt32("IdDependencia"));
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 
             
 
@@ -369,9 +424,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 
-                var idInfraccion = _infraccionesService.CrearInfraccion(model);
+                var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
 
-                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR", "insert", user);
+                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
 
                 return Json(new { id = idInfraccion });
             }
@@ -386,7 +441,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_ValidarFolio(InfraccionesModel model)
         {
 
-            bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion);      
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);      
             
             return Json(new { id = idInfraccion });
       
@@ -930,6 +987,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var umas = _infraccionesService.GetUmas();
             ViewBag.Umas = umas;
             ViewBag.Totales = modelList.Sum(s => s.calificacion) * umas;
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            var isedition = HttpContext.Session.GetString("isedition");
+            if (isedition == "1")
+            {
+                _bitacoraServices.insertBitacora(model.idInfraccion, ip, "EditarInfraccion", "Editar2", "insert", user);
+
+            }
             return PartialView("_ListadoMotivos", modelList);
         }
 
@@ -979,9 +1044,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpGet]
         public ActionResult ajax_CortesiaInfraccion(int id)
-        {
-            //var model = _vehiculosService.GetVehiculoById(id);
-            var model = _infraccionesService.GetInfraccion2ById(id);
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			//var model = _vehiculosService.GetVehiculoById(id);
+			var model = _infraccionesService.GetInfraccion2ById(id, idDependencia);
             return PartialView("_Cortesia", model);
         }
 
@@ -989,11 +1055,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_UpdateCortesiaInfraccion(InfraccionesModel model)
         {
 
-            var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			var modelInf = _infraccionesService.ModificarInfraccionPorCortesia(model);
             if (modelInf == 1)
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                var listInfracciones = _infraccionesService.GetAllInfracciones(idOficina);
+                var listInfracciones = _infraccionesService.GetAllInfracciones(idOficina, idDependencia);
                 return PartialView("_ListadoInfracciones", listInfracciones);
                 //return Json(listInfracciones);
             }
@@ -1033,87 +1101,103 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult ServiceCrearInfraccion(int idInfraccion)
-        {
-            if (_appSettings.AllowWebServices)
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			if (_appSettings.AllowWebServices)
             {
-                var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion);
-                var unicoMotivo = infraccionBusqueda.MotivosInfraccion?.FirstOrDefault();
-                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                try
+                {
+                    var infraccionBusqueda = _infraccionesService.GetInfraccionById(idInfraccion, idDependencia);
+                    var unicoMotivo = infraccionBusqueda.MotivosInfraccion?.FirstOrDefault();
+                    int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
-                crearMultasRequestModel.CR1RFC = infraccionBusqueda.Persona?.RFC??"";
-                crearMultasRequestModel.CR1APAT = infraccionBusqueda.Persona?.apellidoPaterno??"";
-                crearMultasRequestModel.CR1AMAT = infraccionBusqueda.Persona?.apellidoMaterno ?? "";
-                crearMultasRequestModel.CR1NAME = infraccionBusqueda.Persona?.nombre ?? "";
-                crearMultasRequestModel.CR2NAME = "";
-                crearMultasRequestModel.CR1RAZON = "";
-                crearMultasRequestModel.CR2RAZON = "";
-                crearMultasRequestModel.CR3RAZON = "";
-                crearMultasRequestModel.CR4RAZON = "";
-                crearMultasRequestModel.BIRTHDT = "";
-                crearMultasRequestModel.CR1CALLE = infraccionBusqueda.lugarCalle;
-                crearMultasRequestModel.CR1NEXT = infraccionBusqueda.lugarNumero;
-                crearMultasRequestModel.CR1NINT = "";
-                crearMultasRequestModel.CR1ENTRE = "";
-                crearMultasRequestModel.CR2ENTRE = "";
-                crearMultasRequestModel.CR1COLONIA = infraccionBusqueda.lugarColonia;
-                crearMultasRequestModel.CR1LOCAL = "";
-                crearMultasRequestModel.CR1MPIO = infraccionBusqueda.municipio;
-                crearMultasRequestModel.CR1CP = "00000";
-                crearMultasRequestModel.CR1TELE = "";
-                crearMultasRequestModel.CR1EDO = "GTO";
-                crearMultasRequestModel.CR1EMAIL = "";
-                crearMultasRequestModel.XSEXF = "";
-                crearMultasRequestModel.XSEXM = "";
-                crearMultasRequestModel.LZONE = "";
-                crearMultasRequestModel.L_OFN_IOFICINA = "";
-                crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString("F2");
-                crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
-                crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
-                crearMultasRequestModel.INF_PROP = "";
-                crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion?.nombreCompleto??"";
-                crearMultasRequestModel.DOM_INFRACTOR = infraccionBusqueda.Persona?.PersonaDireccion.calle??"" + " " + infraccionBusqueda.Persona?.PersonaDireccion.numero??"" + ", " + infraccionBusqueda.Persona?.PersonaDireccion.colonia??"";
-                crearMultasRequestModel.NUM_PLACA = infraccionBusqueda.placasVehiculo;
-                crearMultasRequestModel.DOC_GARANTIA = "4";
-                crearMultasRequestModel.NOM_RESP_SOLI = "";
-                crearMultasRequestModel.DOM_RESP_SOLI = "";
-                if (infraccionBusqueda != null)
-                {
-                    string prefijo = (idOficina == 1) ? "TTO-PEC" : (idOficina == 2) ? "TTE-M" : "";
-                    crearMultasRequestModel.FOLIO_MULTA = prefijo + infraccionBusqueda.folioInfraccion;
-                }
-                crearMultasRequestModel.OBS_GARANT = "";
-                crearMultasRequestModel.ZMOTIVO1 = unicoMotivo?.Motivo??"";
-                crearMultasRequestModel.ZMOTIVO2 = "";
-                crearMultasRequestModel.ZMOTIVO3 = "";
-                var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
-                ViewBag.Pension = result;
+                    CrearMultasTransitoRequestModel crearMultasRequestModel = new CrearMultasTransitoRequestModel();
+                    crearMultasRequestModel.CR1RFC = infraccionBusqueda.Persona?.RFC ?? "";
+                    crearMultasRequestModel.CR1APAT = infraccionBusqueda.Persona?.apellidoPaterno ?? "";
+                    crearMultasRequestModel.CR1AMAT = infraccionBusqueda.Persona?.apellidoMaterno ?? "";
+                    crearMultasRequestModel.CR1NAME = infraccionBusqueda.Persona?.nombre ?? "";
+                    crearMultasRequestModel.CR2NAME = "";
+                    crearMultasRequestModel.CR1RAZON = "";
+                    crearMultasRequestModel.CR2RAZON = "";
+                    crearMultasRequestModel.CR3RAZON = "";
+                    crearMultasRequestModel.CR4RAZON = "";
+                    crearMultasRequestModel.BIRTHDT = "";
+                    crearMultasRequestModel.CR1CALLE = infraccionBusqueda.lugarCalle;
+                    crearMultasRequestModel.CR1NEXT = infraccionBusqueda.lugarNumero;
+                    crearMultasRequestModel.CR1NINT = "";
+                    crearMultasRequestModel.CR1ENTRE = "";
+                    crearMultasRequestModel.CR2ENTRE = "";
+                    crearMultasRequestModel.CR1COLONIA = infraccionBusqueda.lugarColonia;
+                    crearMultasRequestModel.CR1LOCAL = "";
+                    crearMultasRequestModel.CR1MPIO = infraccionBusqueda.municipio;
+                    crearMultasRequestModel.CR1CP = "00000";
+                    crearMultasRequestModel.CR1TELE = "";
+                    crearMultasRequestModel.CR1EDO = "GTO";
+                    crearMultasRequestModel.CR1EMAIL = "";
+                    crearMultasRequestModel.XSEXF = "";
+                    crearMultasRequestModel.XSEXM = "";
+                    crearMultasRequestModel.LZONE = "";
+                    crearMultasRequestModel.L_OFN_IOFICINA = "";
+                    crearMultasRequestModel.IMPORTE_MULTA = infraccionBusqueda.totalInfraccion.ToString("F2");
+                    crearMultasRequestModel.FEC_IMPOSICION = infraccionBusqueda.fechaInfraccion.ToString("yyyy-MM-dd");
+                    crearMultasRequestModel.FEC_VENCIMIENTO = infraccionBusqueda.fechaVencimiento.ToString("yyyy-MM-dd");
+                    crearMultasRequestModel.INF_PROP = "";
+                    crearMultasRequestModel.NOM_INFRACTOR = infraccionBusqueda.PersonaInfraccion?.nombreCompleto ?? "";
+                    crearMultasRequestModel.DOM_INFRACTOR = infraccionBusqueda.Persona?.PersonaDireccion.calle ?? "" + " " + infraccionBusqueda.Persona?.PersonaDireccion.numero ?? "" + ", " + infraccionBusqueda.Persona?.PersonaDireccion.colonia ?? "";
+                    crearMultasRequestModel.NUM_PLACA = infraccionBusqueda.placasVehiculo;
+                    crearMultasRequestModel.DOC_GARANTIA = "4";
+                    crearMultasRequestModel.NOM_RESP_SOLI = "";
+                    crearMultasRequestModel.DOM_RESP_SOLI = "";
+                    if (infraccionBusqueda != null)
+                    {
+                        string prefijo = (idOficina == 1) ? "TTO-PEC" : (idOficina == 2) ? "TTE-M" : "";
+                        crearMultasRequestModel.FOLIO_MULTA = prefijo + infraccionBusqueda.folioInfraccion;
+                    }
+                    crearMultasRequestModel.OBS_GARANT = "";
+                    crearMultasRequestModel.ZMOTIVO1 = unicoMotivo?.Motivo ?? "";
+                    crearMultasRequestModel.ZMOTIVO2 = "";
+                    crearMultasRequestModel.ZMOTIVO3 = "";
+                    var result = _crearMultasTransitoClientService.CrearMultasTransitoCall(crearMultasRequestModel);
+                    ViewBag.Pension = result;
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 
-                if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
-                {
-                    _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
-                    _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);
+                    if (result != null && result.MT_CrearMultasTransito_res != null && "S".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _infraccionesService.ModificarEstatusInfraccion(idInfraccion, (int)CatEnumerator.catEstatusInfraccion.Enviada);
+                        _infraccionesService.GuardarReponse(result.MT_CrearMultasTransito_res, idInfraccion);
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrarcd", "WS", user);
+                        return Json(new { success = true });
+                    }
+                    else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrar", "WS", user);
+                        return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
 
-                    return Json(new { success = true });
-                }
-                else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+
+                    }
+                    else if (result != null && result.MT_CrearMultasTransito_res != null && "A".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrarer", "WS", user);
+                        return Json(new { success = false, message = "Infraccion anteriormente registrada en finanzas", id = idInfraccion });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
+                    }
+
+                }                                
+                catch (SqlException ex)
                 {
-                    return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
-                }
-                else if (result != null && result.MT_CrearMultasTransito_res != null && "A".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
-                {
-                    return Json(new { success = false, message = "Infraccion anteriormente registrada en finanzas", id = idInfraccion });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
-                }
+                return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
             }
-            return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
-
         }
+			return Json(new { success = false, message = "Infracción guardada, no enviada a finanzas", id = idInfraccion });
 
-        public ActionResult ModalAgregarConductor()
+		}
+
+		public ActionResult ModalAgregarConductor()
         {
             return View("_ModalBusquedaPersonas");
         }
@@ -1388,8 +1472,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult test([DataSourceRequest] DataSourceRequest request , InfraccionesBusquedaEspecialModel model)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina, idDependencia);
 
             var result = listReporteAsignacion.ToDataSourceResult(request);
 
@@ -1399,10 +1485,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Mostrar(string id)
         {
-            int ids = Convert.ToInt32(id);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int ids = Convert.ToInt32(id);
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(ids);
+            var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             
 
 

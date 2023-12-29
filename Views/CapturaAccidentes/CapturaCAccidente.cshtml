@@ -441,6 +441,7 @@
                         <label>Convenio</label>
                         <div class="btnToggleActive">
                             @(Html.Kendo().SwitchFor(t => t.convenioBool)
+
                                     .Name("convenioSwitch")
                                     .Checked(Model.EstadoConvenio == 1)
                                     .Messages(c => c.Checked("Si").Unchecked("No"))
@@ -450,21 +451,22 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
-                            <div id="convenioTexto" style="visibility: hidden;">
-                                @(Html.Kendo().TextBoxFor(t => t.observacionesConvenio)
-                                        .Label(l => l.Content("Observaciones de convenio:"))
-                                        .Placeholder("Ingresa las observaciones")
-                                            .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
-                                        .Enable(!ViewBag.EsSoloLectura)
-                                        )
+
+                        <div id="convenioTexto" style="visibility: hidden;">
+                            @(Html.Kendo().TextBoxFor(t => t.observacionesConvenio)
+                                    .Label(l => l.Content("Observaciones de convenio:"))
+                                    .Placeholder("Ingresa las observaciones")
+                                        .HtmlAttributes(new { style = "width: 100%", id = "observacionesConvenio" })
+                                    .Enable(!ViewBag.EsSoloLectura)
+                                    )
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row px-4 my-4">
+                <div class="row px-4 mb-4">
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm mb-3">
+                        <div class="controlForm my-3">
                             <label>A disposición de:</label>
                             <span>
                             @(Html.Kendo().DropDownListFor(t => t.IdAutoridadDisposicion)

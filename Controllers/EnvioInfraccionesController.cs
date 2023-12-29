@@ -75,7 +75,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ajax_GuardarInfraccionesEnviadas(ModalEnvioModel model)
         {
-            if (_appSettings.AllowWebServices)
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			if (_appSettings.AllowWebServices)
             {
                 var guardarDatos = _envioInfraccionesService.GuardarEnvioInfracciones(model);
                 //return PartialView("Index");
@@ -88,7 +90,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     try
                     {
-                        var infraccionBusqueda = _infraccionesService.GetInfraccionById(infraccionId);
+                        var infraccionBusqueda = _infraccionesService.GetInfraccionById(infraccionId, idDependencia);
                         var unicoMotivo = infraccionBusqueda.MotivosInfraccion.FirstOrDefault();
                         int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 

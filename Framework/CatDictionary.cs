@@ -576,6 +576,22 @@ namespace GuanajuatoAdminUsuarios.Framework
                     }
                     break;
 
+                case "CatAplicadoA":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idAplicacion", "aplicacion" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catAplicacionInfraccion", campos)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idAplicacion"]),
+                                    Text = Convert.ToString(s["aplicacion"])
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
+                    }
+                    break;
+
                 default:
                     return catalogModel;
             }

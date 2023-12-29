@@ -3,6 +3,7 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -94,7 +95,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
-            var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var modelList = _estadisticasAccidentesService.ObtenerAccidentes(idDependencia)
                                                 .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
                                                     && w.IdOficial == (model.IdOficial > 0 ? model.IdOficial : w.IdOficial)

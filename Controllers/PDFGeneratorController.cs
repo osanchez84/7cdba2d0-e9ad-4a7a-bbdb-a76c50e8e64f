@@ -57,7 +57,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public async Task<FileResult> AccidentesDetallado(int idAccidente)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina, idDependencia);
 			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
 			var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 
@@ -119,8 +121,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ContentResult AccidentesGeneral(BusquedaAccidentesModel model)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-			var modelList = _busquedaAccidentesService.GetAllAccidentes(idOficina)
+            var modelList = _busquedaAccidentesService.GetAllAccidentes(idOficina, idDependencia)
 												.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
 													&& w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
 													&& w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
@@ -157,15 +160,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		[HttpPost]
 		public ContentResult InfraccionesGeneral(InfraccionesBusquedaModel model)
 		{
+
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var modelList = _infraccionesService.GetAllInfracciones(model, idOficina);
+			var modelList = _infraccionesService.GetAllInfracciones(model, idOficina, idDependencia);
 			var pdfModel = modelList.Select(s => new InfraccionesGeneralPDFModel
 			{
 				folioInfraccion = s.folioInfraccion,
 				conductor = s.PersonaInfraccion.nombreCompleto,
 				propietario = s.Vehiculo.Persona.nombreCompleto,
 				fechaAplicacion = s.fechaInfraccion,
-				garantia = s.NombreGarantia,
+				garantia = s.Garantia.garantia,
 				vehiculo = s.Vehiculo.fullVehiculo,
 				placas = s.Vehiculo.placas,
 				delegacion = s.delegacion,

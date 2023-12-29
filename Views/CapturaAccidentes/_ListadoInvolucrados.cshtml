@@ -1,4 +1,8 @@
-﻿<style>
+﻿@{
+	bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
+	string claseColor = esSoloLectura ? "colorDisabled" : "colorDanger";
+}
+<style>
 	.photo {
 		width: 140px;
 	}
@@ -108,8 +112,8 @@
 			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
 			"</td>" +
 			"<td class=''>" +
-			"<p><span class='description'><button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
-			"<p><span class='description'><button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn colorDanger'><h6 class='m-0 colorPrimary'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick='EditarRegistroInvolucrado()' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick='eliminarRegistroInvolucrado()' class='w-100 btn " + claseColor + "'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
 			"</td>" +
 			"</tr>"
 			)
@@ -147,8 +151,8 @@
 			"<p><span class='description'>Modelo : #: Modelo# </span></p>" +
 			"</td>" +
 			"<td class=''>" +
-			"<p><span class='description'><button onclick=\"editarAccidente('#= NoAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
-			"<p><span class='description'><button onclick=\"editarAccidente('#= NoAccidente #')\" class='w-100 btn colorDanger'><h6 class='m-0 colorPrimary'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick='EditarRegistroInvolucrado()' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button></span></p>" +
+			"<p><span class='description'><button onclick='eliminarRegistroInvolucrado()' class='w-100 btn " + claseColor + "'><i class='h5 icon-delete me-2'></i><b>Eliminar</b></h6></button></span></p>" +
 			"</td>" +
 			"</tr>"
 			)
@@ -181,8 +185,45 @@
 </div>
 
 
+
 <script>
 	$(document).ready(function () {
 		$("#gridInvolucradosTodo .k-grid table").addClass("table table-condensed");
 	  });
+
+	function eliminarRegistroInvolucrado() {
+		
+		var grid = $("#gridInvolucradosTodo").data("kendoGrid");
+		var row = $(event.target).closest("tr");
+		var dataItem = grid.dataItem(row);
+		var IdAccidente = dataItem.IdAccidente
+		var IdPersona = dataItem.IdPersona
+		showLoading();
+		$.ajax({
+			url: '@Url.Action("EliminaInvolucrado", "CapturaAccidentes")',
+			type: 'POST',
+			data: { 
+				IdAccidente: IdAccidente,
+				IdPersona: IdPersona
+			},
+			success: (data) => {
+
+
+				$("#gridInvolucradosTodo").data("kendoGrid").dataSource.data(data);
+
+				sitteg_success("Se ha modificado la información");
+
+				//$('#ModalBodyEliminar').html(data);
+				//$('#mostrarEliminarModal').modal('show');
+				hideLoading();
+			}, error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
+			}
+		});
+
+	}
+
+
+
 </script>

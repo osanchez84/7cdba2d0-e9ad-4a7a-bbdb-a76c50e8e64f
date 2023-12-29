@@ -301,8 +301,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
 									left join catAplicacionInfraccion ca on ca.idAplicacion = inf.idAplicacion
-                                    where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
-									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
+                                    where {0} inf.estatus=1  and inf.idPersonaInfraccion is not null " +
+									"GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
@@ -1187,8 +1187,7 @@ namespace GuanajuatoAdminUsuarios.Services
 						                                            LEFT JOIN personasDirecciones dirprop on dirprop.idPersona = propietario.idPersona
 						                                            left join catMunicipios dirpropmuni on dirpropmuni.idMunicipio = dirprop.idMunicipio
 						                                            left join catEntidades dirpropenti on dirpropenti.idEntidad = dirprop.idEntidad
-                                            WHERE inf.estatus = 1 
-                                            and inf.idInfraccion=@IdInfraccion";
+                                            WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
@@ -2463,7 +2462,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public int CrearInfraccion(InfraccionesModel model)
+		public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
 		{
 			int result = 0;
 
@@ -2488,7 +2487,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,idEstatusInfraccion
                                             ,fechaActualizacion
                                             ,actualizadoPor
-                                            ,estatus)
+                                            ,estatus
+										    ,transito)
                                      VALUES (@fechaInfraccion
                                             ,@folioInfraccion
                                             ,@idOficial
@@ -2509,7 +2509,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,1
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
-                                            ,@estatus);SELECT SCOPE_IDENTITY()";
+                                            ,@estatus
+											," + IdDependencia + ");SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -2538,6 +2539,8 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value =
 						!string.IsNullOrEmpty(model.NumTarjetaCirculacion) ? (object)model.NumTarjetaCirculacion : DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion;
+
+					command.Parameters.Add(new SqlParameter("IdDependencia", SqlDbType.Int)).Value = IdDependencia;
 
 					//command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
 					//command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;

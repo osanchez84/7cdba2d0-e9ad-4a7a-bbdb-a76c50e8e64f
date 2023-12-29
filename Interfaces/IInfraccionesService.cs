@@ -40,7 +40,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion);
         
 		public bool ValidarFolio(string folioInfraccion, int idDependencia);
-        public int CrearInfraccion(InfraccionesModel model);
+        public int CrearInfraccion(InfraccionesModel model, int idDependencia);
 
 		public int ModificarInfraccion(InfraccionesModel model);
         int ModificarInfraccionPorCortesia(InfraccionesModel model);

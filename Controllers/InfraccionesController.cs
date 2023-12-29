@@ -138,7 +138,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+
+			var listReporteAsignacion = _infraccionesService.GetAllInfracciones(model, idOficina);
             if (listReporteAsignacion.Count == 0)
             {
                 ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
@@ -177,7 +180,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public FileResult CreatePdfUnRegistro(int IdInfraccion)
         {
-            Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
+
+
+			Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {
             {"folioInfraccion","Folio"},
             {"NombreConductor","Conductor"},
@@ -384,7 +389,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 
-                var idInfraccion = _infraccionesService.CrearInfraccion(model);
+                var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
 
                 _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR", "insert", user);
 
@@ -401,7 +406,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_ValidarFolio(InfraccionesModel model)
         {
 
-            bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion);      
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);      
             
             return Json(new { id = idInfraccion });
       

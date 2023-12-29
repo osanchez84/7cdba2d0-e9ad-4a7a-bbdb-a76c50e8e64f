@@ -2084,7 +2084,7 @@ namespace GuanajuatoAdminUsuarios.Services
             }
 
         }
-        public int EliminarInvolucrado(int idAccidente)
+        public int EliminarInvolucrado(int idPersona)
         {
             int result = 0;
 
@@ -2093,11 +2093,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE involucradosAccidente SET estatus = 0 WHERE idAccidente = @idAccidente";
+                    string query = "UPDATE involucradosAccidente SET estatus = 0 WHERE idPersona = @idPersona";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idPersona", idPersona);
 
                     command.ExecuteNonQuery();
                 }

@@ -36,7 +36,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			_personasService = personasService;
 		}
 
-		public List<InfraccionesModel> GetAllInfracciones(int idOficina)
+		public List<InfraccionesModel> GetAllInfracciones(int idOficina, int idDependencia)
 		{
 			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
 			string strQuery = @"SELECT DISTINCT inf.idInfraccion
@@ -89,7 +89,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo 
-                                    WHERE  inf.idDelegacion = @idOficina AND inf.estatus= 1 GROUP BY inf.idInfraccion,inf.idOficial,inf.idDependencia
+                                    WHERE  inf.idDelegacion = @idOficina AND inf.transito = @idDependencia AND inf.estatus= 1 GROUP BY inf.idInfraccion,inf.idOficial,inf.idDependencia
 									,inf.idDelegacion
                                     ,inf.idVehiculo
                                     ,inf.idAplicacion
@@ -135,6 +135,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 					//command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -196,7 +197,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList;
 		}
 
-		public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model, int idOficina)
+		public List<InfraccionesModel> GetAllInfracciones(InfraccionesBusquedaModel model, int idOficina, int idDependencia)
 		{
 			List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -301,11 +302,12 @@ namespace GuanajuatoAdminUsuarios.Services
                                     left join personas per on veh.propietario = per.idPersona 
                                     left join personasInfracciones pInf on inf.idPersonaInfraccion = pInf.idPersonaInfraccion
 									left join catAplicacionInfraccion ca on ca.idAplicacion = inf.idAplicacion
-                                    where {0} inf.estatus=1 and inf.idPersonaInfraccion is not null
-									GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
+                                    where {0} inf.estatus=1  and inf.idPersonaInfraccion is not null " +
+									"GROUP BY inf.idInfraccion, inf.infraccionCortesia", sqlCondiciones);
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("@IdGarantia", SqlDbType.Int)).Value = (object)model.IdGarantia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("@IdTipoCortesia", SqlDbType.Int)).Value = (object)model.IdTipoCortesia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
@@ -392,7 +394,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-		public List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina)
+		public List<InfraccionesModel> GetAllInfraccionesBusquedaEspecial(InfraccionesBusquedaEspecialModel model, int idOficina, int idDependencia)
 		{
 			List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -485,7 +487,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				                    MAX(per.nombre) as nombre,
 				                    MAX(per.apellidoPaterno) as apellidoPaterno,
 				                    MAX(per.apellidoMaterno) as apellidoMaterno
-                                                                        FROM infracciones as inf
+                                    FROM infracciones as inf
                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
@@ -515,6 +517,8 @@ namespace GuanajuatoAdminUsuarios.Services
 						command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.oficinas ?? DBNull.Value;
 
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 					if (!string.IsNullOrEmpty(model.estatus))
 						command.Parameters.Add(new SqlParameter("@IdEstatus", SqlDbType.Int)).Value = (object)model.estatus ?? DBNull.Value;
@@ -928,7 +932,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-		public InfraccionesModel GetInfraccionById(int IdInfraccion)
+		public InfraccionesModel GetInfraccionById(int IdInfraccion, int idDependencia)
 		{
 			InfraccionesModel model = new InfraccionesModel();
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -998,9 +1002,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join personas per on inf.idPersona = per.idPersona
                                                     left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
                                                     left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                                    WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion";
+                                                    WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion and inf.transito = @idDependencia";
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
 					command.CommandType = CommandType.Text;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -1108,7 +1114,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return value;
 	}
 
-        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion)
+        public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion, int idDependencia)
 		{
 			InfraccionesReportModel model = new InfraccionesReportModel();
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1187,11 +1193,11 @@ namespace GuanajuatoAdminUsuarios.Services
 						                                            LEFT JOIN personasDirecciones dirprop on dirprop.idPersona = propietario.idPersona
 						                                            left join catMunicipios dirpropmuni on dirpropmuni.idMunicipio = dirprop.idMunicipio
 						                                            left join catEntidades dirpropenti on dirpropenti.idEntidad = dirprop.idEntidad
-                                            WHERE inf.estatus = 1 
-                                            and inf.idInfraccion=@IdInfraccion";
+                                            WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion and inf.transito = @idDependencia";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 					command.CommandType = CommandType.Text;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -1742,7 +1748,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public InfraccionesModel GetInfraccion2ById(int idInfraccion)
+		public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia	)
 		{
 			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
 			string strQuery = @"SELECT inf.idInfraccion
@@ -1783,7 +1789,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					           LEFT JOIN catMunicipios AS mun ON inf.idMunicipio = mun.idMunicipio
 				               LEFT JOIN personasDirecciones AS pdir ON inf.idPersonaInfraccion = pdir.idPersona
                                WHERE inf.estatus = 1
-                               AND idInfraccion = @idInfraccion";
+                               AND inf.idInfraccion = @idInfraccion and inf.transito = @idDependencia";
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -1793,6 +1799,8 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
@@ -1869,7 +1877,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList.FirstOrDefault();
 		}
 
-		public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion)
+		public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia)
 		{
 			List<NuevaInfraccionModel> modelList = new List<NuevaInfraccionModel>();
 			string strQuery = @"SELECT idInfraccion
@@ -1901,7 +1909,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,estatus
                                FROM infracciones
                                WHERE estatus = 1
-                               AND idInfraccion = @idInfraccion"
+                               AND idInfraccion = @idInfraccion AND transito = @idDependencia"
 			;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1912,6 +1920,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
@@ -2008,7 +2017,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return umas;
 		}
 
-		public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina)
+		public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina, int idDependencia)
 		{
 			List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
 			string strQuery = @"SELECT ci.nombre Motivo, COUNT(m.idMotivoInfraccion) Contador
@@ -2027,7 +2036,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                LEFT JOIN catMunicipios mun
                                ON inf.idMunicipio = mun.idMunicipio
                                 WHERE m.estatus = 1
-                               AND inf.estatus = 1 AND inf.idDelegacion = @idOficina
+                               AND inf.estatus = 1 AND inf.idDelegacion = @idOficina AND inf.transito = @idDependencia
 							   group by ci.nombre"
 		   ;
 
@@ -2039,6 +2048,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -2064,7 +2074,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			}
 			return modelList;
 		}
-		public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina)
+		public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccion(int idOficina,int idDependencia)
 		{
 			List<EstadisticaInfraccionMotivosModel> modelList = new List<EstadisticaInfraccionMotivosModel>();
 			string strQuery = @"SELECT numeroMotivos, COUNT(idInfraccion) AS CantidadInfracciones
@@ -2072,7 +2082,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         SELECT mi.idInfraccion, COUNT(mi.idMotivoInfraccion) AS numeroMotivos
                                         FROM infracciones i
                                         LEFT JOIN motivosInfraccion mi ON i.idInfraccion = mi.idInfraccion
-                                        WHERE i.idDelegacion = @idOficina AND i.estatus = 1
+                                        WHERE i.idDelegacion = @idOficina AND i.transito = @idDependencia AND i.estatus = 1
                                         GROUP BY mi.idInfraccion
                                     ) AS InfraccionesConMotivos
                                     GROUP BY numeroMotivos
@@ -2086,6 +2096,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -2216,7 +2227,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList;
 		}
 
-		public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid()
+		public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid(int idDependencia)
 		{
 			List<InfoInfraccion> modelList = new List<InfoInfraccion>();
 			string strQuery = @"SELECT DISTINCT inf.folioInfraccion as Folio
@@ -2290,8 +2301,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         left join catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
                         left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
                         WHERE 
-                        inf.estatus= 1"
+                        inf.estatus= 1 {0}"
 			;
+			
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -2431,20 +2443,22 @@ namespace GuanajuatoAdminUsuarios.Services
 			return modelList;
 		}
 
-		public bool ValidarFolio(string folioInfraccion)
+		public bool ValidarFolio(string folioInfraccion, int idDependencia)
 		{
 			int folio = 0;
+
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
-					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
+					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);			
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
 					{
@@ -2460,7 +2474,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public int CrearInfraccion(InfraccionesModel model)
+		public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
 		{
 			int result = 0;
 
@@ -2485,7 +2499,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,idEstatusInfraccion
                                             ,fechaActualizacion
                                             ,actualizadoPor
-                                            ,estatus)
+                                            ,estatus
+										    ,transito)
                                      VALUES (@fechaInfraccion
                                             ,@folioInfraccion
                                             ,@idOficial
@@ -2506,7 +2521,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,1
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
-                                            ,@estatus);SELECT SCOPE_IDENTITY()";
+                                            ,@estatus
+											," + IdDependencia + ");SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -2535,6 +2551,8 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value =
 						!string.IsNullOrEmpty(model.NumTarjetaCirculacion) ? (object)model.NumTarjetaCirculacion : DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion;
+
+					command.Parameters.Add(new SqlParameter("IdDependencia", SqlDbType.Int)).Value = IdDependencia;
 
 					//command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
 					//command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;

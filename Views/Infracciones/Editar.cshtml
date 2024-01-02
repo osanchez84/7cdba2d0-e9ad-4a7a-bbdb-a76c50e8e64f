@@ -814,7 +814,7 @@ function serviceCrearInfraccion(idInfraccion) {
             } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                 sitteg_info("El registro fue actualizado en SITTEG.");
                 shouldGoBack = true;
-            } else if (response.success === false && response.message === "Error: La longitud de la placa excede el límite permitido.") {
+				} else if (response.success === false && response.message === "Infraccion Guardada, no enviada") {
                 sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
 			    shouldGoBack = true;
             } else {

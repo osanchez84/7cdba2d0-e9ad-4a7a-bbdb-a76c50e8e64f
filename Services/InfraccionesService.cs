@@ -172,7 +172,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
@@ -359,7 +359,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 							//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
 
-							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idInfraccion);
 							infraccionModel.Garantia = infraccionModel.Garantia ?? new GarantiaInfraccionModel();
 							infraccionModel.Garantia.garantia = infraccionModel.Garantia.garantia ?? "";
 							infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
@@ -578,7 +578,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
 							//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);
 
-							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idGarantia);
+							infraccionModel.Garantia = infraccionModel.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)infraccionModel.idInfraccion);
 							infraccionModel.strIsPropietarioConductor = infraccionModel.Vehiculo == null ? "NO" : infraccionModel.Vehiculo.idPersona == infraccionModel.idPersona ? "SI" : "NO";
 							infraccionModel.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
@@ -747,7 +747,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
@@ -907,7 +907,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
@@ -1044,7 +1044,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 							model.umas = GetUmas();
@@ -1075,7 +1075,6 @@ namespace GuanajuatoAdminUsuarios.Services
 				}
 				catch (SqlException ex)
 				{
-					//Guardar la excepcion en algun log de errores
 
 				}
 				finally
@@ -1249,7 +1248,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGarantia"].ToString());
 
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.umas = GetUmas();
 
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
@@ -1351,7 +1350,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 		}
 
-		public GarantiaInfraccionModel GetGarantiaById(int idGarantia)
+		public GarantiaInfraccionModel GetGarantiaById(int idInfraccion)
 		{
 			List<GarantiaInfraccionModel> modelList = new List<GarantiaInfraccionModel>();
 			string strQuery = @"SELECT 
@@ -1378,7 +1377,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catTipoLicencia ctl
                                 on g.idTipoLicencia = ctl.idTipoLicencia
                                 AND ctl.estatus = 1
-                                WHERE g.idGarantia = @idGarantia";
+                                WHERE g.idInfraccion = @idInfraccion";
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -1387,7 +1386,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add(new SqlParameter("@idGarantia", SqlDbType.Int)).Value = (object)idGarantia ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
@@ -1544,10 +1543,11 @@ namespace GuanajuatoAdminUsuarios.Services
 			return result;
 		}
 
-		public int CrearGarantiaInfraccion(GarantiaInfraccionModel model)
+		public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInfraccion)
 		{
 			int result = 0;
-			string strQuery = @"INSERT INTO garantiasInfraccion VALUES(@idCatGarantia
+			string strQuery = @"INSERT INTO garantiasInfraccion VALUES(@idInfraccion
+																	  ,@idCatGarantia
                                                                       ,@idTipoPlaca
                                                                       ,@idTipoLicencia
                                                                       ,@numPlaca
@@ -1555,7 +1555,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                       ,@vehiculoDocumento
                                                                       ,@fechaActualizacion
                                                                       ,@actualizadoPor
-                                                                      ,@estatus);SELECT SCOPE_IDENTITY()";
+                                                                      ,@estatus
+																	 );SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -1563,18 +1564,20 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("idCatGarantia", SqlDbType.Int)).Value = (object)model.idCatGarantia ?? DBNull.Value;
 					int? idTipoPlaca = (model.idTipoPlaca != null) ? model.idTipoPlaca : 0;
 					command.Parameters.Add(new SqlParameter("idTipoPlaca", SqlDbType.Int)).Value = idTipoPlaca;
 					int? idTipoLicencia = (model.idTipoLicencia != null) ? model.idTipoLicencia : 0;
 					command.Parameters.Add(new SqlParameter("idTipoLicencia", SqlDbType.Int)).Value = idTipoLicencia;
-					command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("numPlaca", SqlDbType.NVarChar)).Value = (object)model.numPlaca ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("numLicencia", SqlDbType.NVarChar)).Value = (object)model.numLicencia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("vehiculoDocumento", SqlDbType.NVarChar)).Value = (object)model.vehiculoDocumento ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
-					result = Convert.ToInt32(command.ExecuteScalar());
+
+                    result = Convert.ToInt32(command.ExecuteScalar());
 				}
 				catch (SqlException ex)
 				{
@@ -1587,7 +1590,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			return result;
 		}
 
-		public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model)
+		public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model, int idInfraccion)
 		{
 			int result = 0;
 			string strQuery = @"UPDATE garantiasInfraccion SET  idCatGarantia = @idCatGarantia
@@ -1598,7 +1601,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                ,vehiculoDocumento = @vehiculoDocumento
                                                                ,fechaActualizacion = @fechaActualizacion
                                                                ,actualizadoPor = @actualizadoPor
-                                                               WHERE idGarantia = @idGarantia";
+                                                               WHERE idInfraccion = @idInfraccion";
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -1616,8 +1619,9 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 					command.Parameters.Add(new SqlParameter("idGarantia", SqlDbType.Int)).Value = model.idGarantia;
+                    command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object) idInfraccion;
 
-					result = command.ExecuteNonQuery();
+                    result = command.ExecuteNonQuery();
 				}
 				catch (SqlException ex)
 				{
@@ -1853,7 +1857,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.Garantia = model.Garantia ?? new GarantiaInfraccionModel();
 							model.Garantia.garantia = model.Garantia.garantia ?? "";
 							model.umas = GetUmas();
@@ -1958,7 +1962,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.IdVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.umas = GetUmas();
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{
@@ -2205,7 +2209,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idPersonaInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
+							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.umas = GetUmas();
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{

@@ -373,16 +373,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 			int idGarantia = 0;
+            int idInf = model.idInfraccion;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
-                idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
+                idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia,idInf);
 				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
-                var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
+                var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia, idInf);
 			}
 
 
@@ -1184,7 +1185,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
+                        return Json(new { success = false, message = "Infraccion Guardada, no enviada" });
                     }
 
                 }                                

@@ -1124,7 +1124,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-											@"SELECT inf.idInfraccion
+                                            @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
@@ -1171,11 +1171,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,'' concepto
                                             ,inf.idGarantia
 											,inf.observaciones
+											,isnull(ainf.aplicacion,'') aplicadaa
                                             FROM infracciones inf 
                                             left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                             left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                             left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
                                             left join catTramos catTra on inf.idTramo = catTra.idTramo
+											left join catAplicacionInfraccion ainf on ainf.idAplicacion = inf.idAplicacion
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
                                             left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersona
@@ -1251,8 +1253,10 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idGarantia);
 							model.umas = GetUmas();
+							model.AplicadaA = reader["aplicadaa"].GetType() == typeof(DBNull) ? "" : reader["aplicadaa"].ToString();
 
-							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
+
+                            if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{
 								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
 								model.concepto = model.MotivosInfraccion.FirstOrDefault().Concepto;

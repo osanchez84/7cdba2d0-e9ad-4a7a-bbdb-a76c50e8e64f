@@ -136,7 +136,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Estatus: ", ModelDataInfracciones.estatusInfraccion));             
                 nested.AddCell(FieldCellBox("Oficial: ", ModelDataInfracciones.nombreOficial.ToString()));
                 nested.AddCell(FieldCellBox("Municipio: ", ModelDataInfracciones.municipio));
-                nested.AddCell("");
+                nested.AddCell(FieldCellBox("Aplicada a: ",ModelDataInfracciones.AplicadaA));
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
                 nesthousing.Rowspan = 5;

@@ -1291,8 +1291,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.IdCarretera = (int)DatosAccidente.IdCarretera;
 			model.IdTramo = (int)DatosAccidente.IdTramo;
 			model.Kilometro = DatosAccidente.Kilometro;
-			var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.IdPersona);
-			model.idPersonaInfraccion = idPersonaInfraccion;
+			//var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.IdPersona);
+			//model.idPersonaInfraccion = idPersonaInfraccion;
 
 
 			var errors = ModelState.Values.Select(s => s.Errors);

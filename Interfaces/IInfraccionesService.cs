@@ -27,7 +27,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);
-        public int CrearPersonaInfraccion(int idPersona);
+        public int CrearPersonaInfraccion(int idInfraccion, int idPersona);
         public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInf);
         public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model, int idInf);
         public int CrearMotivoInfraccion(MotivoInfraccionModel model);

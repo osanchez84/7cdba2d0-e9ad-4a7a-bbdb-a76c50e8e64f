@@ -2284,7 +2284,36 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
+		public bool ValidarFolio(string folioInfraccion, int idDependencia)
+		{
+			int folio = 0;
+
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				connection.Open();
+
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
+
+				using (SqlCommand command = new SqlCommand(query, connection))
+				{
+
+					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
+					using (SqlDataReader reader = command.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+
+							folio = reader["Result"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["Result"]);
+						}
+					}
+				}
+			}
+			return folio > 0;
+		}
+		public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
         {
             int result = 0;
             string strQuery = @"INSERT INTO infracciones

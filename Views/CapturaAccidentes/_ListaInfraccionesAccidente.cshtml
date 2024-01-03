@@ -16,12 +16,12 @@
             columns.Bound(c => c.Vehiculo).Title("Vehiculo").Width(90);
             columns.Bound(c => c.folioInfraccion).Title("Infracción").Width(90);
             columns.Bound(c => c.EstatusInfraccion).Title("Estatus").Width(90);
-           /* columns.Template(
+            columns.Template(
                 "<button class='w-100 btn " + claseColorOtroBoton + "'>" +
                 "<h6 class='m-0' onclick='editarInfraccion(event)'>" +
                 "<i class='h5 icon-edit me-2'></i><b>Editar</b>" +
                 "</h6></button>"
-                ).Width(150);*/
+                ).Width(150);
            columns.Template(
                 "<button class='w-100 btn " + claseColorEliminar + "'>" +
                 "<h6 class='m-0' onclick='eliminarInfraccion(event)'>" +
@@ -90,6 +90,29 @@
                 hideLoading();
             }
         });
+    }
+
+    function editarInfraccion(event) {
+        event.preventDefault();
+
+        if ('@ViewBag.EsSoloLectura' === 'True') {
+            return;
+        }
+
+        var grid = $("#gridInfraccionesAccidente").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+        console.log("INFF", dataItem);
+        var IdInfraccion = dataItem.IdInfraccion;
+        var FolioInfraccion = dataItem.folioInfraccion;
+
+        showLoading();
+        sessionStorage.setItem('redirectTo', '/CapturaAccidentes/Editar/' + IdInfraccion + '?fromAcc=true');
+
+        window.setTimeout(function () {
+            window.location.href = '/Infracciones/Editar/' + IdInfraccion;
+            hideLoading();
+        }, 500);
     }
 
 </script>

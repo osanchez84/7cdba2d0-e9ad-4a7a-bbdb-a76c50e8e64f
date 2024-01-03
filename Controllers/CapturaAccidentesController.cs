@@ -1291,8 +1291,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.IdCarretera = (int)DatosAccidente.IdCarretera;
 			model.IdTramo = (int)DatosAccidente.IdTramo;
 			model.Kilometro = DatosAccidente.Kilometro;
-			var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.IdPersona);
-			model.idPersonaInfraccion = idPersonaInfraccion;
 
 
 			var errors = ModelState.Values.Select(s => s.Errors);
@@ -1304,6 +1302,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				if (!validarFolio)
 				{
 					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
+					var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.IdPersona);
 					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
 					return Json(new { id = idInfraccion });
 				}

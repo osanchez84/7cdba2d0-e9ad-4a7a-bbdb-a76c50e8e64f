@@ -419,15 +419,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (!validarFolio)
             {
-                var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.idPersona);
-                model.idPersonaInfraccion = idPersonaInfraccion;
+               // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
+				var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.idPersona);
 
-                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
+				_bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
 
                 return Json(new { id = idInfraccion });
             }

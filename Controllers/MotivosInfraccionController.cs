@@ -35,11 +35,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
             int IdModulo = 944;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
 
             return View(ListMotivosInfraccionModel);
             }
@@ -56,7 +57,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
             //return View("IndexModal");
             return View("Index", ListMotivosInfraccionModel);
         }
@@ -83,11 +86,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult EditarParcial(int IdCatMotivoInfraccion)
         {
             int IdModulo = 946;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion);
+                var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion, idDependencia);
                 
                 var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");
                 var catSubConcepto = _catDictionary.GetCatalog("CatSubConceptoInfraccion", motivosInfraccionsModel.idConcepto+"");
@@ -104,12 +108,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EliminarMotivoParcial(int IdCatMotivoInfraccion)
         {
-            var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion, idDependencia);
             return View("_Eliminar", motivosInfraccionsModel);
         }
         public JsonResult Categories_Read()
         {
-            var result = new SelectList(_motivoInfraccionService.GetCatMotivos(), "IdCatMotivoInfraccion", "Nombre");
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var result = new SelectList(_motivoInfraccionService.GetCatMotivos(idDependencia), "IdCatMotivoInfraccion", "Nombre");
             return Json(result);
         }
 
@@ -118,14 +126,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult CreatePartialMotivoModal(CatMotivosInfraccionModel model)
         {
-            var errors = ModelState.Values.Select(s => s.Errors);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Nombre");
             if (ModelState.IsValid)
             {
 
 
                 CreateMotivo(model);
-                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
                 return Json(ListMotivosInfraccionModel);
             }
             //SetDDLCategories();
@@ -136,7 +146,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult EditarParcialModal(CatMotivosInfraccionModel model)
         {
-            bool switchMotivosInfraccion = Request.Form["motivosInfraccionSwitch"].Contains("true");
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			bool switchMotivosInfraccion = Request.Form["motivosInfraccionSwitch"].Contains("true");
             model.estatus = switchMotivosInfraccion ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Nombre");
@@ -144,7 +156,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             { 
 
                 UpdateMotivo(model);
-                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
                 return Json(ListMotivosInfraccionModel);
             }
             return PartialView("_Editar");
@@ -153,14 +165,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult EliminarMotivoParcialModal(CatMotivosInfraccionModel model)
         {
-            var errors = ModelState.Values.Select(s => s.Errors);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var errors = ModelState.Values.Select(s => s.Errors);
             ModelState.Remove("Nombre");
             if (ModelState.IsValid)
             {
 
 
                 DeleteMotivo(model);
-                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
                 return Json(ListMotivosInfraccionModel);
             }
             return PartialView("_Eliminar");
@@ -169,13 +183,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult BuscarMotivoByID(int idCatMotivoInfraccion)
         {
-            CatMotivosInfraccionModel motivo = _motivoInfraccionService.GetMotivoByID(idCatMotivoInfraccion);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			CatMotivosInfraccionModel motivo = _motivoInfraccionService.GetMotivoByID(idCatMotivoInfraccion, idDependencia);
             return Json(motivo);  
         }
 
         public JsonResult GetMotInf([DataSourceRequest] DataSourceRequest request)
         {
-            var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos();
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
 
             return Json(ListMotivosInfraccionModel.ToDataSourceResult(request));
         }
@@ -190,18 +208,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public void CreateMotivo(CatMotivosInfraccionModel model)
         {
-            _motivoInfraccionService.CrearMotivo(model);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			_motivoInfraccionService.CrearMotivo(model, idDependencia);
         }
 
         public void UpdateMotivo(CatMotivosInfraccionModel model)
         {
-            _motivoInfraccionService.UpdateMotivo(model);
+
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			_motivoInfraccionService.UpdateMotivo(model, idDependencia);
 
         }
 
         public void DeleteMotivo(CatMotivosInfraccionModel model)
         {
-            _motivoInfraccionService.DeleteMotivo(model);
+
+			_motivoInfraccionService.DeleteMotivo(model);
         }
 
         /* private void SetDDLColores()

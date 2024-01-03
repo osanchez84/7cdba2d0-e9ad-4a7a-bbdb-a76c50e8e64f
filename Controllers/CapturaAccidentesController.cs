@@ -1299,9 +1299,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			if (ModelState.IsValid)
 			{
 
-				var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
-				var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente,idInfraccion);
-				return Json(new { id = idInfraccion });
+				bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);
+
+				if (!validarFolio)
+				{
+					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
+					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
+					return Json(new { id = idInfraccion });
+				}
+				else
+				{
+					return Json(new { id = 0, validacion = validarFolio });
+				}
 			}
 			return PartialView("_ModalCrearInfraccion");
 

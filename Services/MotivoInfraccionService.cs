@@ -20,7 +20,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public CatMotivosInfraccionModel GetMotivoByID(int IdCatMotivoInfraccion)
+        public CatMotivosInfraccionModel GetMotivoByID(int IdCatMotivoInfraccion, int idDependencia)
         {
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
@@ -41,7 +41,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             JOIN estatus e ON cmi.estatus = e.estatus
                             JOIN catConceptoInfraccion c ON cmi.idConcepto = c.idConcepto
                             JOIN catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto
-                            WHERE idCatMotivoInfraccion  = @idCatMotivoInfraccion";
+                            WHERE idCatMotivoInfraccion  = @idCatMotivoInfraccion AND transito = @idDependencia";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -51,7 +51,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idCatMotivoInfraccion", SqlDbType.Int)).Value = (object)IdCatMotivoInfraccion ?? DBNull.Value;
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					command.Parameters.Add(new SqlParameter("@idCatMotivoInfraccion", SqlDbType.Int)).Value = (object)IdCatMotivoInfraccion ?? DBNull.Value;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
@@ -87,7 +88,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return motivos.FirstOrDefault();
         }
 
-        public List<CatMotivosInfraccionModel> GetMotivos()
+        public List<CatMotivosInfraccionModel> GetMotivos(int idDependencia)
         {
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
@@ -107,7 +108,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             catMotivosInfraccion cmi
                             LEFT JOIN estatus e ON cmi.estatus = e.estatus
                             LEFT JOIN catConceptoInfraccion c ON cmi.idConcepto = c.idConcepto
-                            LEFT JOIN catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto ";
+                            LEFT JOIN catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto 
+                            WHERE transito = @idDependencia";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -116,8 +118,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.CommandType = CommandType.Text; 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    command.CommandType = CommandType.Text;
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
@@ -153,13 +156,13 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public List<CatMotivosInfraccionModel> GetCatMotivos()
+        public List<CatMotivosInfraccionModel> GetCatMotivos(int idDependencia)
         {
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
                             idCatMotivoInfraccion , nombre 
                             FROM 
-                            catMotivosInfraccion cmi ";
+                            catMotivosInfraccion cmi WHERE transito = @idDependencia";
 
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -169,7 +172,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
                     command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
@@ -194,7 +198,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return motivos;
         }
 
-        public int CrearMotivo(CatMotivosInfraccionModel motivo)
+        public int CrearMotivo(CatMotivosInfraccionModel motivo, int idDependencia)
         {
             int result = 0;
 
@@ -220,7 +224,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , @calificacionMaxima
                                 , @fundamento
                                 , @fechaInicioVigencia
-                                , @fechaFinalVigencia)";
+                                , @fechaFinalVigencia
+                                , @idDependencia)";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -229,8 +234,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
                     command.CommandType = CommandType.Text;
-                    command.CommandType = CommandType.Text; 
-                    command.Parameters.AddWithValue("@nombre", motivo.Nombre);
+                    command.CommandType = CommandType.Text;
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					command.Parameters.AddWithValue("@nombre", motivo.Nombre);
                     command.Parameters.AddWithValue("@IdSubConcepto", motivo.idSubConcepto);
                     command.Parameters.AddWithValue("@IdConcepto", motivo.idConcepto);
                     command.Parameters.AddWithValue("@calificacionMinima", motivo.CalificacionMinima);
@@ -259,7 +265,7 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public int UpdateMotivo(CatMotivosInfraccionModel motivo)
+        public int UpdateMotivo(CatMotivosInfraccionModel motivo, int idDependencia)
         {
             int result = 0;
             string strQuery = @"UPDATE catMotivosInfraccion
@@ -272,7 +278,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , calificacionMinima=@calificacionMinima
                                 , calificacionMaxima=@calificacionMaxima
                                 , fundamento=@fundamento
-                                WHERE idCatMotivoInfraccion=@idCatMotivoInfraccion ";
+                                , transito=@idDependencia
+                                WHERE idCatMotivoInfraccion=@idCatMotivoInfraccion";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -281,7 +288,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@idCatMotivoInfraccion", motivo.IdCatMotivoInfraccion);
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					command.Parameters.AddWithValue("@idCatMotivoInfraccion", motivo.IdCatMotivoInfraccion);
                     command.Parameters.AddWithValue("@nombre", motivo.Nombre);
                     command.Parameters.AddWithValue("@IdSubConcepto",motivo.idSubConcepto);
                     command.Parameters.AddWithValue("@IdConcepto",motivo.idConcepto);

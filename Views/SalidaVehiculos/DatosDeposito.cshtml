@@ -54,8 +54,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                        <div class="controlForm mb-3">
-                            <div class="controlForm my-3">
+                        <div class="controlForm my-3">
                                 @(Html.Kendo().TextBoxFor(t => t.diasResguardo)
                                     .HtmlAttributes(new { style = "max-width: 80%" }) 
                                     .Label(l => l.Content("Días de  resguardo:"))
@@ -65,10 +64,9 @@
 
                                     )
                             </div>
-                        </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                        <div class="controlForm mb-3">
+                        <div class="controlForm my-3">
                             <div>
                                 @(Html.Kendo().NumericTextBoxFor(t => t.costoDeposito)
                                     .HtmlAttributes(new { style = "max-width: 100%", })
@@ -86,7 +84,7 @@
                 <partial name="_ListadoGruas" model="Model" />
             </div>
 
-            <div>
+            <div class="row px-4 mb-4 align-items-end">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().NumericTextBoxFor(t => t.costoTotalTodasGruas)
@@ -100,34 +98,30 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 col-md-7">
+            <div class="row px-4 mb-4 align-items-end">
+                <div class="col-12 col-md-6 col-lg-4">
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().TextBoxFor(t => t.recibe)
-                            .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Recibe <b>(obligatorio:)"))
                             .Placeholder("Nombre de quien recibe")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-7">
+            
+                <div class="col-12 col-md-6 col-lg-4">
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().TextBoxFor(t => t.entrega)
-                            .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Entrega <b>(obligatorio:)"))
                             .Placeholder("Nombre de quien entrega")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
                 </div>
-            </div>   <div class="row">
-                <div class="col-12 col-md-7">
+            
+                <div class="col-12 col-md-6 col-lg-4">
                     <div class="controlForm my-3 selecciondeFecha">
                         @(Html.Kendo().TextBoxFor(t => t.observaciones)
-                            .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Observaciones:"))
                             .Placeholder("")
                             .HtmlAttributes(new { style = "width: 100%" })
@@ -136,7 +130,7 @@
                 </div>
             </div>
 
-            <div id="datosDepositoContainer">
+            <div class="my-3" id="datosDepositoContainer">
                 <div style="width: 50%; float: left;">
                     <h4 class="colorPrimary"><b>Vehículo</b></h4>
                     <p><b>Tipo de Vehículo:</b> <span id="tipoVehiculo">@{ if (Model.tipoVehiculo != null) { @Model.tipoVehiculo; } else { @("-"); } }</span></p>
@@ -205,9 +199,7 @@
             <div id="idDepContainer" style="display:none"></div>
         </form>
 
-    </section>
-    <section>
-
+    <div class="row px-4 mb-4 align-items-end  justify-content-center">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlButton my-3" onclick="guardarDatos()">
                 @(Html.Kendo().Button()
@@ -217,6 +209,7 @@
             </div>
 
         </div>
+    </div>
     </section>
 </div>
 <script>

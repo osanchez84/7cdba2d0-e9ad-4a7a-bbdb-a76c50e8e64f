@@ -438,15 +438,17 @@
                 </div>
                 <div class="row px-4">
                     <div class="col-12 col-md-6 col-lg-3">
-                        <label>Convenio</label>
-                        <div class="btnToggleActive">
-                            @(Html.Kendo().SwitchFor(t => t.convenioBool)
+                        <div class="controlForm mb-3">
+                            <label>Convenio</label>
+                            <div class="btnToggleActive">
+                                @(Html.Kendo().SwitchFor(t => t.convenioBool)
 
-                                    .Name("convenioSwitch")
-                                    .Checked(Model.EstadoConvenio == 1)
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1 })
-                                    )
+                                        .Name("convenioSwitch")
+                                        .Checked(Model.EstadoConvenio == 1)
+                                        .Messages(c => c.Checked("Si").Unchecked("No"))
+                                        .HtmlAttributes(new { data_valor = 1 })
+                                        )
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
@@ -466,7 +468,7 @@
 
                 <div class="row px-4 mb-4">
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
+                        <div class="controlForm mb-3">
                             <label>A disposición de:</label>
                             <span>
                             @(Html.Kendo().DropDownListFor(t => t.IdAutoridadDisposicion)

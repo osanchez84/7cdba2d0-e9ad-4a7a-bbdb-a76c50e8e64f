@@ -248,7 +248,7 @@
                 ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" onclick="cerrarModalPer()">Aceptar</button>
                 <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
             </div>
         </div>
@@ -434,14 +434,18 @@
     function cerrarModalP() {
         $('#confirmacionModal').modal('show');
 
-        // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
         $('#confirmarCerrar').on('click', function () {
             $('#confirmacionModal').modal('hide');
-            window.close(); // Cierra la ventana
+            window.close(); 
         });
     }
     function cerrarModalConductor() {
         $('#agregarConductorModal').modal('hide');
+
+    }
+    function cerrarModalPer(){
+     $('#modalCrearPersona').modal('hide');
+     $('#confirmacionModal').modal('hide');
 
     }
 </script>

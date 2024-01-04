@@ -1178,7 +1178,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             left join catTramos catTra on inf.idTramo = catTra.idTramo
 											left join catAplicacionInfraccion ainf on ainf.idAplicacion = inf.idAplicacion
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
-                                            left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
+                                            left join personasInfracciones pInf on pInf.idInfraccion = inf.idInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersona
 			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersona
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio

@@ -810,7 +810,7 @@ function serviceCrearInfraccion(idInfraccion) {
         success: function (response) {
             if (response.success) {
                 sitteg_success("Infracción actualizada en secretaría de finanzas.");
-                shouldGoBack = true;
+                shouldGoBack = false;
             } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                 sitteg_info("El registro fue actualizado en SITTEG.");
                 shouldGoBack = true;

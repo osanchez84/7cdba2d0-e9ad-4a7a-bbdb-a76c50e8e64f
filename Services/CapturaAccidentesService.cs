@@ -1622,7 +1622,7 @@ namespace GuanajuatoAdminUsuarios.Services
         
         
         }
-        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente)
+        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente, int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaVehiculosInfracciones = new List<CapturaAccidentesModel>();
@@ -1638,15 +1638,17 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
                         "LEFT JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
+                        "LEFT JOIN infraccionesAccidente AS infAcc ON i.idInfraccion = infAcc.idInfraccion " +
                         "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
                         "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
-                        "WHERE cva.idAccidente = @idAccidente " +
+                        "WHERE i.transito = @idDependencia AND infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
                         "AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -1714,7 +1716,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return infraccionAgregada;
         }
-        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente)
+        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente, int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaInfracciones = new List<CapturaAccidentesModel>();
@@ -1738,12 +1740,14 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 AND i.transito = @idDependencia;", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

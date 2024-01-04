@@ -1333,8 +1333,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 		public JsonResult ObtenerInfraccionesVehiculos([DataSourceRequest] DataSourceRequest request)
 		{
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var ListVehiculosInfracciones = _capturaAccidentesService.InfraccionesVehiculosAccidete(idAccidente);
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+			var ListVehiculosInfracciones = _capturaAccidentesService.InfraccionesVehiculosAccidete(idAccidente,idDependencia);
 
 			return Json(ListVehiculosInfracciones.ToDataSourceResult(request));
 		}
@@ -1349,9 +1350,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(InfraccionAccidente);
 		}
 		public JsonResult ObtInfraccionesAccidente([DataSourceRequest] DataSourceRequest request)
-		{
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
+        {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente,idDependencia);
 
 			return Json(ListInfracciones.ToDataSourceResult(request));
 		}
@@ -1765,10 +1767,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_EliminarRegistroInfraccion(int IdInfraccion)
         {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var RegistroSeleccionado = _capturaAccidentesService.EliminarRegistroInfraccion(IdInfraccion);
 
-            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
+            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente, idDependencia);
 
             return Json(ListInfracciones);
         }

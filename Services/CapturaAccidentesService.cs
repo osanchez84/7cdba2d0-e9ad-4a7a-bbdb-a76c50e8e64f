@@ -247,7 +247,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (!string.IsNullOrEmpty(Serie))
                     {
                         command = new SqlCommand(
-                       "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
+                        "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
+                        "p.CURP, p.RFC, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                         "FROM vehiculos v " +
                         "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
@@ -262,7 +263,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                     else if (!string.IsNullOrEmpty(Placa))
                     {
-                        command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
+                        command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
+                            "p.CURP, p.RFC,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                             "FROM vehiculos v " +
                             "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                             "left JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
@@ -309,6 +311,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.IdTipoVehiculo = Convert.IsDBNull(reader["IdTipoVehiculo"]) ? 0 : Convert.ToInt32(reader["IdTipoVehiculo"]);
                             vehiculo.IdCatTipoServicio = Convert.IsDBNull(reader["IdCatTipoServicio"]) ? 0 : Convert.ToInt32(reader["IdCatTipoServicio"]);
                             vehiculo.IdPersona = Convert.IsDBNull(reader["IdPersona"]) ? 0 : Convert.ToInt32(reader["IdPersona"]);
+                            vehiculo.RFC = reader["RFC"].ToString();
+                            vehiculo.CURP = reader["CURP"].ToString();
                             vehiculo.Marca = reader["marcaVehiculo"].ToString();
                             vehiculo.Submarca = reader["nombreSubmarca"].ToString();
                             vehiculo.Modelo = reader["Modelo"].ToString();

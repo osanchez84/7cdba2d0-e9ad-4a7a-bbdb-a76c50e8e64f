@@ -66,7 +66,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var ListClasificaciones = _capturaAccidentesService.ObtenerDatosGrid(idAccidente);
 			var ListFactores = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
 			var ListCausas = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
-			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
+			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente,idDependencia);
 
 			var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 

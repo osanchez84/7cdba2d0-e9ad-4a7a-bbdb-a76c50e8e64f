@@ -1622,7 +1622,7 @@ namespace GuanajuatoAdminUsuarios.Services
         
         
         }
-        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente)
+        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente, int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaVehiculosInfracciones = new List<CapturaAccidentesModel>();
@@ -1638,15 +1638,17 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
                         "LEFT JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
+                        "LEFT JOIN infraccionesAccidente AS infAcc ON i.idInfraccion = infAcc.idInfraccion " +
                         "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
                         "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
-                        "WHERE cva.idAccidente = @idAccidente " +
+                        "WHERE i.transito = @idDependencia AND infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
                         "AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -1714,7 +1716,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return infraccionAgregada;
         }
-        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente)
+        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente, int idDependencia)
         {
             //
             List<CapturaAccidentesModel> ListaInfracciones = new List<CapturaAccidentesModel>();
@@ -1738,12 +1740,14 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 AND i.transito = @idDependencia;", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -2152,10 +2156,14 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             int result = 0;
             string qryUpdate = "";
-            qryUpdate += !datosAccidente.montoCamino.Equals(null) ? " , montoCamino = @MontoCamino " : "";
-            qryUpdate += !datosAccidente.montoCarga.Equals(null) ? " , montoCarga = @MontoCarga " : "";
-            qryUpdate += !datosAccidente.montoPropietarios.Equals(null) ? " , montoPropietarios = @MontoPropietarios " : "";
-            qryUpdate += !datosAccidente.montoOtros.Equals(null) ? " , montoOtros = @MontoOtros " : "";
+            //  qryUpdate += !datosAccidente.montoCamino.Equals(null) ? " , montoCamino = @MontoCamino " : "";
+            //qryUpdate += !datosAccidente.montoCarga.Equals(null) ? " , montoCarga = @MontoCarga " : "";
+            // qryUpdate += !datosAccidente.montoPropietarios.Equals(null) ? " , montoPropietarios = @MontoPropietarios " : "";
+            //qryUpdate += !datosAccidente.montoOtros.Equals(null) ? " , montoOtros = @MontoOtros " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoCamino) ? " , montoCamino = @MontoCamino " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoCarga) ? " , montoCarga = @MontoCarga " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoPropietarios) ? " , montoPropietarios = @MontoPropietarios " : "";
+            qryUpdate += !string.IsNullOrEmpty(datosAccidente.montoOtros) ? " , montoOtros = @MontoOtros " : "";
             qryUpdate += !datosAccidente.Latitud.Equals(null) ? " , latitud = @Latitud " : "";
             qryUpdate += !datosAccidente.Longitud.Equals(null) ? " , longitud = @Longitud " : "";
             qryUpdate += !datosAccidente.IdCertificado.Equals(null) ? " , idCertificado = @IdCertificado " : "";
@@ -2199,10 +2207,14 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@MontoCamino", datosAccidente.montoCamino);
-                    command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga);
-                    command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios);
-                    command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros);
+                    command.Parameters.AddWithValue("@MontoCamino", datosAccidente.montoCamino ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros ?? (object)DBNull.Value);
+
+                    //command.Parameters.AddWithValue("@MontoCarga", datosAccidente.montoCarga);
+                    //command.Parameters.AddWithValue("@MontoPropietarios", datosAccidente.montoPropietarios);
+                    //command.Parameters.AddWithValue("@MontoOtros", datosAccidente.montoOtros);
                     command.Parameters.AddWithValue("@Latitud", datosAccidente.Latitud);
                     command.Parameters.AddWithValue("@Longitud", datosAccidente.Longitud);
                     command.Parameters.AddWithValue("@IdCertificado", datosAccidente.IdCertificado);
@@ -2276,7 +2288,36 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
+		public bool ValidarFolio(string folioInfraccion, int idDependencia)
+		{
+			int folio = 0;
+
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				connection.Open();
+
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
+
+				using (SqlCommand command = new SqlCommand(query, connection))
+				{
+
+					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
+					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
+					using (SqlDataReader reader = command.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+
+							folio = reader["Result"] == DBNull.Value ? default(int) : Convert.ToInt32(reader["Result"]);
+						}
+					}
+				}
+			}
+			return folio > 0;
+		}
+		public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
         {
             int result = 0;
             string strQuery = @"INSERT INTO infracciones
@@ -2330,7 +2371,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.Float)).Value = (object)model.Kilometro ?? 0;
                     command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.IdVehiculo ?? 0;
                     command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
-                    command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? 0;
+                    command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa ?? "-";
                     command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta ?? "-";
                     command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;

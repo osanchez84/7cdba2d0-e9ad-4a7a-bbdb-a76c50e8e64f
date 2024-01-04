@@ -2,6 +2,8 @@
 {
     public class GarantiaInfraccionModel : EntityModel
     {
+        public int? idInfraccion { get; set; }
+
         public int? idGarantia { get; set; }
         public int? idCatGarantia { get; set; }
         public int? idTipoPlaca { get; set; }

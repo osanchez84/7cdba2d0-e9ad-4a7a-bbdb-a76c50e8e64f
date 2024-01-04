@@ -1,4 +1,5 @@
-﻿using GuanajuatoAdminUsuarios.Models;
+﻿using Azure;
+using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -6,11 +7,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IMotivoInfraccionService
     {
 
-        public CatMotivosInfraccionModel GetMotivoByID(int IdCatMotivoInfraccion);
-        public List<CatMotivosInfraccionModel> GetMotivos();
-        public List<CatMotivosInfraccionModel> GetCatMotivos();
-        public int CrearMotivo(CatMotivosInfraccionModel motivo);
-        public int UpdateMotivo(CatMotivosInfraccionModel motivo);
+        public CatMotivosInfraccionModel GetMotivoByID(int IdCatMotivoInfraccion, int idDependencia);
+        public List<CatMotivosInfraccionModel> GetMotivos(int idDependencia);
+        public List<CatMotivosInfraccionModel> GetCatMotivos(int IdDependencia);
+        public int CrearMotivo(CatMotivosInfraccionModel motivo, int IdDependencia);
+        public int UpdateMotivo(CatMotivosInfraccionModel motivo, int IdDependencia);
         public int DeleteMotivo(CatMotivosInfraccionModel model);
     }
 }

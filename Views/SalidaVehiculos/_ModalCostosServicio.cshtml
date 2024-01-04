@@ -32,8 +32,7 @@
         <h5 class="px-4"><b>Proporciona los montos correspondientes</b></h5>
     </div>
     <form id="costosForm" class="row px-4 mb-4 align-items-end">
-        <div class="col-12">
-            <div class="row">
+        
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="controlForm my-3">
                         @Html.HiddenFor(m=>m.idDeposito)
@@ -67,8 +66,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <div class="controlForm mb-3">
-                        <div class="controlForm my-3">
+                    <div class="controlForm my-3">
                             @(Html.Kendo().NumericTextBoxFor(t => t.costoTotalPorGrua)
                                 .HtmlAttributes(new { style = "width: 80%" })
                                 .Label(l => l.Content("Costo Total:"))
@@ -77,10 +75,8 @@
                                 .HtmlAttributes(new { @readonly = "readonly" })
                                 )
                         </div>
-                    </div>
                 </div>
-            </div>
-        </div>
+
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm mb-3">
                 <span>
@@ -122,11 +118,13 @@
                     <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                 </button>
             </div>
-            <div type="button" class="controlButton my-3" onclick="agregarCostos()">
-                @(Html.Kendo().Button()
-                    .Name("guardarCostos")
-                    .HtmlAttributes(new { @class = "btnPrimary" })
-                    .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
+            <div class="col-auto">            
+                <div type="button" class="controlButton my-3" onclick="agregarCostos()">
+                    @(Html.Kendo().Button()
+                        .Name("guardarCostos")
+                        .HtmlAttributes(new { @class = "btnPrimary" })
+                        .Content("<h5 class=\"m-0\"><b>Guardar</b></h5>"))
+                </div>
             </div>
         </div>
         

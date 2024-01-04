@@ -1361,12 +1361,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.IdTramo = (int)DatosAccidente.IdTramo;
 			model.Kilometro = DatosAccidente.Kilometro;
 
-            //BITACORA
-            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-            _bitacoraServices.insertBitacora(idPersonaInfraccion, ip, "CapturaAccidente_PersonaInfraccion", "Insertar", "insert", user);
-
-            var errors = ModelState.Values.Select(s => s.Errors);
+			var errors = ModelState.Values.Select(s => s.Errors);
 			if (ModelState.IsValid)
 			{
 
@@ -1377,7 +1372,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
 					var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.IdPersona);
 					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
-					return Json(new { id = idInfraccion });
+
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(idPersonaInfraccion, ip, "CapturaAccidente_PersonaInfraccion", "Insertar", "insert", user);
+                    return Json(new { id = idInfraccion });
 				}
 				else
 				{

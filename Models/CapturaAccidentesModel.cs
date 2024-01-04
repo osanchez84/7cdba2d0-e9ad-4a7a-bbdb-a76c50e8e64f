@@ -155,7 +155,15 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idPersonaInvolucrado { get; set; }
         public string numeroLicencia { get; set; }
         public string CURP { get; set; }
-        public string CURPBusqueda { get; set; }
+
+        public string CURPyRFC
+        {
+            get
+            {
+                return CURP + "/" + RFC;
+            }
+        }
+    public string CURPBusqueda { get; set; }
         
         public string numeroLicenciaBusqueda { get; set; }
 

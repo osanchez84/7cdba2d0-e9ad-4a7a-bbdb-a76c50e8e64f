@@ -223,7 +223,7 @@
         <div class="row justify-content-around">
 
             <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                <button type="button" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" onclick=cerrarModalPersona()>
                     <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                 </button>
             </div>
@@ -256,30 +256,24 @@
         // Parsear el formData utilizando URLSearchParams
         var searchParams = new URLSearchParams(formData);
 
-        // Obtener el valor de "numeroLicencia" del formData
         var numeroLicencia = searchParams.get('numeroLicencia');
 
-        // Validar si el TextBox contiene información
         if (numeroLicencia.trim() !== "") {
-            // Enviar el valor al controlador mediante AJAX
             showLoading();
             $.ajax({
                 type: "POST",
                 url: "/Personas/BusquedaPorLicencia",
                 data: { numeroLicencia: numeroLicencia },
                 success: function (result) {
-                    // Manejar la respuesta del controlador si es necesario
                     console.log(result);
                     hideLoading();
                 },
                 error: function (error) {
-                    // Manejar errores en la solicitud AJAX
                     console.error(error);
                     hideLoading();
                 }
             });
         } else {
-            // Mostrar un mensaje de error o realizar acciones cuando el TextBox está vacío
             alert("El número de licencia es obligatorio.");
         }
     }
@@ -393,4 +387,8 @@
     $(document).ready(function () {
         $('#vigenciaLicenciaFisico').removeAttr("required");
     });
+
+    function cerrarModalPersona(){
+    $('#modalCrearPersona').modal('hide');
+    }
 </script>

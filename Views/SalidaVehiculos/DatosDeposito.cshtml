@@ -46,6 +46,7 @@
                         <div class="controlForm my-3">
                         <label>Fecha Salida <b>(obligatorio):</b></label>
                             @(Html.Kendo().DatePickerFor(t => t.fechaSalida)
+                          		.Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha salida:"))
                                 .Culture("es-ES")
                                 .HtmlAttributes(new { style = "width: 80%", id = "fechaSalida" })

@@ -240,6 +240,34 @@
     </div>
 </div>
 
+
+
+<div class="modal fade" id="modalUpdateFolio" tabindex="-1" role="dialog" aria-labelledby="modalUpdateFolioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarLabel">Actualizar Folio</h5>
+                <button type="button" onclick="cerrarModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-control">
+                    <label class="form-label">Folio: </label>
+                    <input type="text" class="form-control" id="newFolio" />
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+                <button type="button" class="btn btn-succes" onclick="ActualizarFolio()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts{
 
     <script src="~/js/Infracciones/BusquedaEspecial/BusquedaEspecial.js" type="module"></script>

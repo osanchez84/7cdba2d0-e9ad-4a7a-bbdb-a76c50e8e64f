@@ -75,7 +75,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly IRepuveService _repuveService;
-
+        private readonly IBitacoraService _bitacoraServices;
 
 
         private int idOficina = 0;
@@ -90,7 +90,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService, IOptions<AppSettings> appSettings,
 			ICatEntidadesService catEntidadesService,
 			IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-			, IRepuveService repuveService
+			, IRepuveService repuveService, IBitacoraService bitacoraService
 
 			)
 		{
@@ -129,7 +129,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			_catMarcasVehiculosService = catMarcasVehiculosService;
 			_catSubmarcasVehiculosService = catSubmarcasVehiculosService;
 			_repuveService = repuveService;
-		}
+            _bitacoraServices = bitacoraService;
+        }
 		/// <summary>
 		/// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
 		/// </summary>
@@ -248,7 +249,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
                 lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina,idDependencia);
-				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(lastInsertedId, ip, "CapturaAccidente_Ubicacion", "Insertar", "insert", user);
+
+                HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 
 			}
@@ -311,7 +318,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
 		{
 			var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado, IdAccidente);
-			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(involucradoEliminado, ip, "CapturaAccidente_EliminarInvolucrado", "Eliminar", "delete", user);
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 
 			return Json(ListVehiculosInvolucrados);
@@ -834,7 +846,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
-			HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idVehiculoInsertado, ip, "CapturaAccidente_AccidenteConVehiculo", "Actualizar", "update", user);
+
+            HttpContext.Session.SetInt32("idVehiculoInsertado", idVehiculoInsertado);
 			//return Json(IdPersona);
 			return Json(new { IdPersona = IdPersona, IdVehiculoH = IdVehiculo });
 		}
@@ -853,7 +871,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
 			var idVehiculoInsertado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente, IdPersona);
 
-			return Json(idVehiculoInsertado);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idVehiculoInsertado, ip, "CapturaAccidente_ConConductor", "Actualizar", "update", user);
+
+            return Json(idVehiculoInsertado);
 		}
 
 		[HttpPost]
@@ -861,7 +884,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
 			var idAccidenteActualizado = _capturaAccidentesService.ActualizaInfoAccidente(idAccidente, Fecha, Hora, IdMunicipio, IdCarretera, IdTramo, Kilometro);
-			return Json(idAccidenteActualizado);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idVehiculoInsertado, ip, "CapturaAccidente_InfoAccidente", "Actualizar", "update", user);
+
+            return Json(idAccidenteActualizado);
 		}
 
 		public IActionResult GuardarConductorVehiculo(int IdPersona,int idAuto)
@@ -870,7 +899,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var RegistroSeleccionado = _capturaAccidentesService.InsertarConductor(IdVehiculoI, idAccidente, IdPersona);
 
-			return Json(RegistroSeleccionado);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_ConductorVehiculo", "Insertar", "insert", user);
+
+            return Json(RegistroSeleccionado);
 		}
 		public ActionResult BuscarConductor(BusquedaInvolucradoModel model)
 		{
@@ -891,7 +925,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int IdVehiculo = HttpContext.Session.GetInt32("idVehiculoInsertado") ?? 0; // Obtener el valor de idVehiculoInsertado desde la variable de sesión
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
 			var RegistroSeleccionado = _capturaAccidentesService.GuardarComplementoVehiculo(model, IdVehiculo, idAccidente);
-			return RedirectToAction("ObtVehiculosInvol", "CapturaAccidentes");
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_ComplementoVehiculo", "Insertar", "insert", user);
+
+            return RedirectToAction("ObtVehiculosInvol", "CapturaAccidentes");
 		}
 		[HttpPost]
 		public IActionResult AgregarClasificacion(int IdClasificacionAccidente)
@@ -916,7 +956,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var clasificacionEliminada = _capturaAccidentesService.ClasificacionEliminar(IdAccidente);
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGrid(idAccidente);
 
-			return Json(datosGrid);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(clasificacionEliminada, ip, "CapturaAccidente_Clasificacion", "Eliminar", "delete", user);
+
+            return Json(datosGrid);
 
 		}
 		///////////////
@@ -1064,7 +1109,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var RegistroSeleccionado = _capturaAccidentesService.EliminarValorFactorYOpcion(IdAccidenteFactorOpcion);
 
-			var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_ValorFactorYOpcion", "Eliminar", "delete", user);
+
+            var datosGrid = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
 
 			return Json(datosGrid);
 		}
@@ -1075,7 +1125,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var RegistroSeleccionado = _capturaAccidentesService.AgregarValorCausa(IdCausaAccidente, idAccidente);
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
-			return Json(datosGrid);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_CausaNuevo", "Insertar", "insert", user);
+            return Json(datosGrid);
 		}
 		public IActionResult EditarCausa(int IdCausaAccidente, int idAccidenteCausa)
 		{
@@ -1089,6 +1143,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var RegistroSeleccionado = _capturaAccidentesService.EliminarCausaBD(IdCausaAccidente, idAccidente, idAccidenteCausa);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_CausaAccidente", "Eliminar", "delete", user);
             _capturaAccidentesService.RecalcularIndex(idAccidente);
             var datosGrid = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
 
@@ -1113,8 +1172,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var RegistroSeleccionado = _capturaAccidentesService.AgregarPersonaInvolucrada(idPersonaInvolucrado, idAccidente);
-
-			return PartialView("_ModalConductor");
+            
+			//BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_PersonaInvolucrada", "Insertar", "insert", user);
+            return PartialView("_ModalConductor");
 		}
 		public JsonResult ObtenerVehiculosInvolucrados([DataSourceRequest] DataSourceRequest request)
 		{
@@ -1234,7 +1297,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             _capturaAccidentesService.GuardarDescripcion(idAccidente, descripcionCausa);
-            DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idAccidente, ip, "CapturaAccidente_Descripcion", "Insertar", "insert", user);
+            
+			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
             ViewBag.EsSoloLectura = rOy;
 			return View("CapturaCAccidente", datosAccidente);
 
@@ -1292,7 +1361,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.IdTramo = (int)DatosAccidente.IdTramo;
 			model.Kilometro = DatosAccidente.Kilometro;
 
-
 			var errors = ModelState.Values.Select(s => s.Errors);
 			if (ModelState.IsValid)
 			{
@@ -1304,7 +1372,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
 					var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.IdPersona);
 					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
-					return Json(new { id = idInfraccion });
+
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(idPersonaInfraccion, ip, "CapturaAccidente_PersonaInfraccion", "Insertar", "insert", user);
+                    return Json(new { id = idInfraccion });
 				}
 				else
 				{
@@ -1324,6 +1397,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 				_capturaAccidentesService.AgregarMontoV(model);
 				int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(idAccidente, ip, "CapturaAccidente_Monto", "Insertar", "insert", user);
+                
 				var ListVehiculos = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 				return PartialView("_ListaVehiculosDaños", ListVehiculos);
 			}
@@ -1361,13 +1440,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado);
-			return Json(PersonaVehiculo);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(PersonaVehiculo, ip, "CapturaAccidente_RelacionPersonaVehiculo", "Insertar", "insert", user);
+
+            return Json(PersonaVehiculo);
 		}
 		public IActionResult ActualizarInfoInvolucrado(CapturaAccidentesModel model)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
 			var RegistroActualizado = _capturaAccidentesService.ActualizarInvolucrado(model, idAccidente);
-			return Json(RegistroActualizado);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroActualizado, ip, "CapturaAccidente_Involucrado", "Actualizar", "update", user);
+
+            return Json(RegistroActualizado);
 		}
 		public JsonResult ObtInvolucradosAccidente([DataSourceRequest] DataSourceRequest request)
 		{
@@ -1382,6 +1473,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(idPersona);
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(eliminarInvolucrado, ip, "CapturaAccidente_Involucrado", "Eliminar", "delete", user);
 
             return Json(ListInvolucrados);
 
@@ -1457,7 +1553,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //var personasMoralesModel = _personasService.GetAllPersonasMorales();
             var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
 
-            return PartialView("_ListPersonasMorales", modelList);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(IdPersonaMoral, ip, "CapturaAccidente_PersonaMoral", "Insertar", "insert", user);
+            
+			return PartialView("_ListPersonasMorales", modelList);
 		}
 
 
@@ -1485,7 +1586,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
 			var IdPersonaFisica = _personasService.CreatePersona(Persona);
-			if (IdPersonaFisica == 0)
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(IdPersonaFisica, ip, "CapturaAccidente_PersonaFisica", "Insertar", "insert", user);
+
+            if (IdPersonaFisica == 0)
 			{
 				throw new Exception("Ocurrio un error al dar de alta la persona");
 			}
@@ -1569,11 +1676,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			{
 				model.idSubmarca = model.idSubmarcaUpdated;
 				IdVehiculo = _vehiculosService.UpdateVehiculo(model);
-			}
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(IdVehiculo, ip, "CapturaAccidente_Vehiculo", "Actualizar", "update", user);
+            }
 			else if (model.encontradoEn == (int)EstatusBusquedaVehiculo.NoEncontrado)
 			{
 				IdVehiculo = _vehiculosService.CreateVehiculo(model);
-			}
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(IdVehiculo, ip, "CapturaAccidente_Vehiculo", "Insertar", "insert", user);
+            }
 
 			if (IdVehiculo != 0)
 			{
@@ -1652,7 +1769,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			try
 			{
-				_personasService.InsertarDesdeServicio(personaDatos);
+				var id = _personasService.InsertarDesdeServicio(personaDatos);
 				var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
 
                 CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
@@ -1662,8 +1779,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 involucrado.apellidoMaterno = datosTabla.apellidoMaterno;
                 involucrado.RFC = datosTabla.RFC;
                 involucrado.CURP = datosTabla.CURP;
-                involucrado.numeroLicencia = datosTabla.numeroLicencia; 
-                
+                involucrado.numeroLicencia = datosTabla.numeroLicencia;
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(id, ip, "CapturaAccidente_DesdeServicio", "Insertar", "insert", user);
+
                 return Json(involucrado);
             }
             catch (Exception ex)
@@ -1695,8 +1817,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				Formatting = Formatting.None // Otra configuración de serialización si es necesaria
 			};
 
-			// Usa JsonResult con configuración personalizada de serialización
-			return new JsonResult(modelList, jsonSettings);
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(id, ip, "CapturaAccidente_Persona", "Insertar", "insert", user);
+
+            // Usa JsonResult con configuración personalizada de serialización
+            return new JsonResult(modelList, jsonSettings);
 		}
 
 
@@ -1737,11 +1864,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				{
 					model.PersonaDireccion.idPersona = model.idPersona;
 					int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
-				}
+
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(idDireccion, ip, "CapturaAccidente_PersonaDireccion", "Insertar", "insert", user);
+                }
 				else
 				{
 					int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
-				}
+
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(idDireccion, ip, "CapturaAccidente_PersonaDireccion", "Actualizar", "update", user);
+                }
 				int id = _personasService.UpdatePersona(model);
 				var modelList = _personasService.GetPersonaById((int)model.idPersona);
                 var formattedModelList = new
@@ -1771,6 +1908,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var RegistroSeleccionado = _capturaAccidentesService.EliminarRegistroInfraccion(IdInfraccion);
 
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_RegistroSeleccionado", "Eliminar", "delete", user);
             var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente, idDependencia);
 
             return Json(ListInfracciones);

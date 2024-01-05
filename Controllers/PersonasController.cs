@@ -26,14 +26,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICatEntidadesService _catEntidadesService;
         private readonly ICatMunicipiosService _catMunicipiosService;
+        private readonly IBitacoraService _bitacoraServices;
         public PersonasController(ICatDictionary catDictionary, IPersonasService personasService, IHttpClientFactory httpClientFactory, ICatEntidadesService catEntidadesService
-            , ICatMunicipiosService catMunicipiosService)
+            , ICatMunicipiosService catMunicipiosService
+,            IBitacoraService bitacoraServices            )
         {
             _catDictionary = catDictionary;
             _personasService = personasService;
             _httpClientFactory = httpClientFactory;
             _catEntidadesService = catEntidadesService;
             _catMunicipiosService = catMunicipiosService;
+            _bitacoraServices = bitacoraServices;
         }
         public IActionResult Index()
         {
@@ -139,6 +142,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //if (ModelState.IsValid)
             //{
             int id = _personasService.CreatePersona(model);
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            //BITACORA
+            _bitacoraServices.insertBitacora(id, ip, "Personas_PersonaMoral", "Insertar", "Insert", user);
             //model.PersonaDireccion.idPersona = id;
             //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
@@ -185,6 +192,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
                 int id = _personasService.UpdatePersona(model);
                 var modelList = _personasService.GetPersonaById((int)model.idPersona);
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                
+                //BITACORA
+                _bitacoraServices.insertBitacora((int)model.idPersona, ip, "Personas_PersonaMoral", "Actualizar", "Update", user);
                 //var listPadronGruas = _concesionariosService.GetAllConcesionarios();
                 return Json(new { data = modelList });
             }
@@ -202,6 +214,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int idPersona = _personasService.InsertarDesdeServicio(personaDatos);
                 //var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
                 var datosTabla = _personasService.GetPersonaById(idPersona);
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(idPersona, ip, "Personas_DesdeServicio", "Insertar", "insert", user);
 
                 return Json(new { data = datosTabla });
             }

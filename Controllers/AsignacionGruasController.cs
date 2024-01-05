@@ -21,12 +21,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         private readonly IAsignacionGruasService _asignacionGruasService;
         private readonly IGruasService _gruasService;
+        private readonly IBitacoraService _bitacoraServices;
 
-        public AsignacionGruasController(IAsignacionGruasService asignacionGruasService, IGruasService gruasService)
+        public AsignacionGruasController(IAsignacionGruasService asignacionGruasService, IGruasService gruasService, IBitacoraService bitacoraServices)
 
         {
             _asignacionGruasService = asignacionGruasService;
             _gruasService = gruasService;
+            _bitacoraServices = bitacoraServices;
         }
         public IActionResult Index()
         {
@@ -96,6 +98,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
                 _asignacionGruasService.ActualizarDatos(selectedRowData, iDep);
+                
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_DatosVehiculo", "Actualizar", "Update", user);
                 return Ok(selectedRowData);
             }
             catch (Exception ex)
@@ -124,6 +131,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
             var DatosGruas = _asignacionGruasService.EditarDatosGrua(formData, abanderamiento, arrastre, salvamento);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_DatosGrua", "Actualizar", "Update", user);
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
             return Json(DatosTabla);
         }
@@ -137,13 +148,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_DatosGrua", "Insertar", "insert", user);
+
             return Json(DatosTabla);
         }
         public IActionResult AgregarObservaciones(AsignacionGruaModel formData)
         {
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
             var DatosTabla = _asignacionGruasService.AgregarObs(formData,iDep);
-
+            
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_Observaciones", "Insertar", "insert", user);
             return Json(DatosTabla);
         }
         [HttpPost]
@@ -162,7 +182,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
                     _asignacionGruasService.InsertarInventario(imageData, iDep, model.numeroInventario);
-
+                    
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_Inventario", "Insertar", "insert", user);
                     return Json(new { success = true, message = "Imagen e información guardadas exitosamente" });
                 }
                 else
@@ -194,6 +218,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var eliminarGrua = _asignacionGruasService.EliminarGrua(idAsignacion);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idAsignacion, ip, "AsignacionGruas_Grua", "Eliminar", "delete", user);
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             return Json(DatosTabla);

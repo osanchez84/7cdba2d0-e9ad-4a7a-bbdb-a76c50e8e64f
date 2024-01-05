@@ -25,15 +25,19 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Telerik.SvgIcons;
+using GuanajuatoAdminUsuarios.Interfaces;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     public class LoginController : BaseController
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public LoginController(IHttpClientFactory httpClientFactory)
+        private readonly IBitacoraService _bitacoraServices;
+        public LoginController(IHttpClientFactory httpClientFactory, IBitacoraService bitacoraService)
         {
             _httpClientFactory = httpClientFactory;
+            _bitacoraServices = bitacoraService;
         }
        /* [HttpPost]
         public async Task<IActionResult> ConsumirServicio(string usuario, string contrasena)
@@ -191,13 +195,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     string url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
 
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                   
                     HttpResponseMessage response = await client.GetAsync(url);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string content = await response.Content.ReadAsStringAsync();
                         dynamic json = JsonConvert.DeserializeObject(content);
-
+                        
                         if (json != null && json.Count > 0)
                         {
                             string nombre = json[0].nombre;
@@ -222,9 +228,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                            // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
                             string TipoOfi = json[0].tipo_oficina;
-
-
-							if (int.TryParse(idOficinaStr, out int idOficina))
+                            
+                            if (int.TryParse(idOficinaStr, out int idOficina))
                             {
                                 HttpContext.Session.SetInt32("IdOficina", idOficina);
 
@@ -233,12 +238,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
 
                             }
-                           
-
 
                             await SignInUser(idUsuario,nombre,TipoOfi);
 
-
+                            //BITACORA.
+                            //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                            _bitacoraServices.insertBitacora(Convert.ToDecimal(idUsuario), ip, "Login", "Acceso", "select", Convert.ToDecimal(idUsuario));
+                            
                             string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
@@ -258,6 +264,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             }
                         }
                     }
+
+                    
 
                     // En caso de respuestas inválidas o vacías, limpiar la variable de sesión
                     HttpContext.Session.Remove("IdsPermitidos");

@@ -40,7 +40,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly ICatTiposVehiculosService _catTiposVehiculosService;
         private readonly IRepuveService _repuveService;
-
+        private readonly IBitacoraService _bitacoraServices;
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
             IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
@@ -48,7 +48,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
            IOptions<AppSettings> appSettings, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService,
             ICatTiposVehiculosService catTiposVehiculosService
-        , IRepuveService repuveService
+        , IRepuveService repuveService,
+            IBitacoraService bitacoraService
             )
         {
             _vehiculosService = vehiculosService;
@@ -66,6 +67,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
             _catTiposVehiculosService = catTiposVehiculosService;
             _repuveService = repuveService;
+            _bitacoraServices = bitacoraService;
         }
 
         public IActionResult Index()
@@ -704,8 +706,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
         {
+
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+
+            _bitacoraServices.insertBitacora(IdPersonaMoral, ip, "VehiculosPersonaMoral", "Insertar", "Insert", user);
             //var personasMoralesModel = _personasService.GetAllPersonasMorales();
             var modelList = _personasService.ObterPersonaPorIDList(IdPersonaMoral); ;
 
@@ -736,7 +743,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
             var personaModel = _personasService.UpdatePersonaMoral(Persona);
             var personaEditada = _personasService.GetPersonaTypeById((int)Persona.idPersona);
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 
+            _bitacoraServices.insertBitacora((int)Persona.idPersona, ip, "PersonaMoral", "Actualizar", "Update", user);
             return Json(new { data = personaEditada });
         }
 

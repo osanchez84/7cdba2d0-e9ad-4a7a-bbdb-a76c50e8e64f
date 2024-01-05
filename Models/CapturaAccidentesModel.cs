@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [Required(ErrorMessage = "-El campo Kilómetro es obligatorio")]
         public string Kilometro { get; set; }
-		public string Colonia { get; set; }
+        public string Colonia { get; set; }
         public string Numero { get; set; }
         public string Calle { get; set; }
 
@@ -83,10 +83,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdTipoLicencia { get; set; }
         public int IdCatTipoPersona { get; set; }
         public DateTime? fechaNacimiento { get; set; }
-		public string FormatDateNacimiento { get; set; }
+        public string FormatDateNacimiento { get; set; }
 
-		public DateTime dateNacimiento { get; set; }
-		public string FechaNacimientoFormateada => fechaNacimiento.HasValue ? fechaNacimiento.Value.ToString("dd/MM/yyyy") : string.Empty;
+        public DateTime dateNacimiento { get; set; }
+        public string FechaNacimientoFormateada => fechaNacimiento.HasValue ? fechaNacimiento.Value.ToString("dd/MM/yyyy") : string.Empty;
 
         public DateTime vigenciaLicencia { get; set; }
         public string TipoPersona { get; set; }
@@ -123,18 +123,20 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Capacidad { get; set; }
         public string ConductorInvolucrado { get; set; }
         public int NoAccidente { get; set; }
-		
-		public int NumeroContinuo { get; set; }
+
+        public int NumeroContinuo { get; set; }
+
+        public string Cortesia { get; set; }
 
 
 
 
 
 
-		///////////
-		/////////////////MODEL CLASIFICACION//////////
-		///
-		public int? IdClasificacionAccidente { get; set; }
+        ///////////
+        /////////////////MODEL CLASIFICACION//////////
+        ///
+        public int? IdClasificacionAccidente { get; set; }
 
         public string NombreClasificacion { get; set; }
 
@@ -150,13 +152,13 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? IdCausaAccidente { get; set; }
         public int? IdCausaAccidenteEdit { get; set; }
         public string CausaAccidente { get; set; }
-        public string TipoCarga { get; set; }       
+        public string TipoCarga { get; set; }
         public string DescripcionCausa { get; set; }
         public int idPersonaInvolucrado { get; set; }
         public string numeroLicencia { get; set; }
         public string CURP { get; set; }
         public string CURPBusqueda { get; set; }
-        
+
         public string numeroLicenciaBusqueda { get; set; }
 
         public string RFC { get; set; }
@@ -165,7 +167,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombre { get; set; }
 
         public string nombreBusqueda { get; set; }
-        
+
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
         public string apellidoPaternoBusqueda { get; set; }
@@ -180,9 +182,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Cinturon { get; set; }
         public string Entidad { get; set; }
         public string Direccion { get; set; }
-		public string DireccionConductor { get; set; }
+        public string DireccionConductor { get; set; }
 
-		public string Telefono { get; set; }
+        public string Telefono { get; set; }
         public string Correo { get; set; }
 
 
@@ -198,7 +200,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdInfraccionAccidente { get; set; }
         public int IdInfraccion { get; set; }//Folio de infraccion
         public string EstatusInfraccion { get; set; }
-     
+
         public float montoVehiculo { get; set; }
         public int IdTipoInvolucrado { get; set; }
         public int IdEstadoVictima { get; set; }
@@ -265,7 +267,7 @@ namespace GuanajuatoAdminUsuarios.Models
                 "Grua: " + Grua + "\r\n\n " +
                 "Forma de Traslado: " + FormaTrasladoInvolucrado + "\r\n\n " +
                 "Tipo Vehiculo: " + TipoVehiculo;
-               
+
 
             }
         }

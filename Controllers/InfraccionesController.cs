@@ -444,7 +444,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);      
+			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion,idDependencia);      
             
             return Json(new { id = idInfraccion });
       

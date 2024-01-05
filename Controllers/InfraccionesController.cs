@@ -1524,6 +1524,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
+
+        public ActionResult UpdateFolio(string id,string folio)
+        {
+
+            var t = _infraccionesService.UpdateFolio(id, folio);
+
+            return Json(true);
+        }
+
+
+
+
     }
 }
 

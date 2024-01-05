@@ -1,5 +1,12 @@
 ﻿import { Loading } from '../Templates/Templates.js'
-import { GetData, RemoveData,getDataBit } from '../Peticiones/PeticionDatosGrid.js'
+import { GetData, RemoveData,getDataBit,updateFolio } from '../Peticiones/PeticionDatosGrid.js'
+
+
+
+export function FolioUpdate(id,data, callback) {
+    console.log("peticion")
+    updateFolio(id,data,callback)
+}
 
 export function GetDataGrid(t,callback) {
     GetData(t, callback)   

@@ -1758,6 +1758,43 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
+
+
+		public bool UpdateFolio(string id,string folio)
+		{
+
+            var result = false;
+
+            string queryString = @"update infracciones set folioinfraccion=@folio where idInfraccion=@id";
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)id ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)folio ?? DBNull.Value;
+                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    result = true;
+                }
+                catch (Exception e)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+            return result;
+
+        }
+
+
 		public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia	)
 		{
 			List<InfraccionesModel> modelList = new List<InfraccionesModel>();

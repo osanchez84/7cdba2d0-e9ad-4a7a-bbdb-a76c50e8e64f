@@ -65,8 +65,10 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int RegistrarInfraccion(NuevaInfraccionModel model,int idDependencia);
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);
+        public bool ValidarFolio(string folioInfraccion, int idDependencia);
 
 
-    }
+
+	}
 
 }

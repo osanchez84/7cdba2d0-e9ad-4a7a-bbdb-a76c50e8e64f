@@ -29,14 +29,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IMarcasVehiculos _marcaServices;
         private readonly ILiberacionVehiculoService _liberacionVehiculoService;
         private readonly IRepuveService _repuveService;
+        private readonly IBitacoraService _bitacoraServices;
 
         public LiberacionVehiculoController(IPlacaServices placaServices,
-            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService, IRepuveService repuveService)
+            IMarcasVehiculos marcaServices, ILiberacionVehiculoService liberacionVehiculoService, IRepuveService repuveService, IBitacoraService bitacoraService)
         {
             _placaServices = placaServices;
             _marcaServices = marcaServices;
             _liberacionVehiculoService = liberacionVehiculoService;
             _repuveService = repuveService;
+            _bitacoraServices = bitacoraService;
         }
 
 
@@ -103,6 +105,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 placa = model.Placa,
                 niv = model.Serie
             };
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(Id, ip, "LiberacionVehiculo_Liberacion", "Actualizar", "update", user);
+
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
             ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
             //model.FechaIngreso.ToString("dd/MM/yyyy");

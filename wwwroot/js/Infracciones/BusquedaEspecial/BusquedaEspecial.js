@@ -75,8 +75,8 @@ window.TemplateFolio = (data) => {
 
     return `<div class="d-flex justify-content-between">
     <div>${data.folioInfraccion}</div>
-    <button  class='w-100 btn' onclick="UpdateFolio('${data.idInfraccion}')"><h6 class='m-0 colorPrimary'><i class="icon icon-edit h4 m-0 mt-1 me-2"></i></button>
     </div>`
+    // <button  class='w-100 btn' onclick="UpdateFolio('${data.idInfraccion}')"><h6 class='m-0 colorPrimary'><i class="icon icon-edit h4 m-0 mt-1 me-2"></i></button>
 
 }
 

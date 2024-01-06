@@ -1697,9 +1697,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		{
 			int result = 0;
 			string strQuery = @"UPDATE motivosInfraccion
-                                SET fechaActualizacion = @fechaActualizacion
-                                    actualizadoPor = @actualizadoPor
-                                    estatus = @estatus)
+                                SET fechaActualizacion = @fechaActualizacion,
+                                    actualizadoPor = @actualizadoPor,
+                                    estatus = @estatus
                                 WHERE idMotivoInfraccion = @idMotivoInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{

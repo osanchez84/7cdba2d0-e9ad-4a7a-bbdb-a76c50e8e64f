@@ -1533,8 +1533,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(true);
         }
 
+        public ActionResult ModalEliminarMotivo(int idMotivoInfraccion, int idInfraccion,string Nombre)
+        {
+            ViewBag.idMotivoInfraccion = idMotivoInfraccion;
+            ViewBag.idInfraccion = idInfraccion;
+            ViewBag.Nombre = Nombre;
 
+            return PartialView("_ModalEliminarMotivo");
+        }
+        [HttpPost]
+        public IActionResult ajax_EliminarMotivo(int idMotivoInfraccion, int idInfraccion)
+        {
+            var MotivoEliminar = _infraccionesService.EliminarMotivoInfraccion(idMotivoInfraccion);
+    
+            var datosGrid = _infraccionesService.GetMotivosInfraccionByIdInfraccion(idInfraccion);
 
+            return Json(datosGrid);
+        }
 
     }
 }

@@ -301,5 +301,87 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return ListConcesionarios;
         }
+
+        public IEnumerable<Concesionarios2Model> GetConcecionariosBusqueda(int? idMunicipio, int idOficina, int? idDelegacion, int? idConcesionario)
+        {
+           
+            string strWhereidMunicipio = idMunicipio != null ? idMunicipio.ToString() : "c.idMunicipio";
+            string strWhereidDelegacion = idDelegacion != null ? $"c.idDelegacion = {idDelegacion}" : "";
+            string strWhereidConcesionario = idConcesionario != null ? $"c.idConcesionario = {idConcesionario}" : "";
+
+            List<Concesionarios2Model> ListConcesionarios = new List<Concesionarios2Model>();
+            string strQuery = @"SELECT 
+        c.idConcesionario,
+        c.concesionario,
+        c.idDelegacion,
+        c.idMunicipio,
+        c.alias,
+        c.razonSocial,
+        c.fechaActualizacion,
+        c.actualizadoPor,
+        c.estatus,
+        d.delegacion,
+        m.municipio
+    FROM concesionarios c
+    INNER JOIN catDelegaciones d ON c.idDelegacion = d.idDelegacion AND d.estatus = 1
+    INNER JOIN catMunicipios m ON c.idMunicipio = m.idMunicipio AND m.estatus = 1
+    WHERE c.estatus = 1";
+
+            if (idMunicipio != null)
+            {
+                strQuery += " AND c.idMunicipio = @idMunicipio";
+            }
+
+            if (idDelegacion != null)
+            {
+                strQuery += " AND c.idDelegacion = @idDelegacion";
+            }
+
+            if (idConcesionario != null)
+            {
+                strQuery += " AND c.idConcesionario = @idConcesionario";
+            }
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idDelegacion ?? (object)DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = idMunicipio ?? (object)DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idConcesionario", SqlDbType.Int)).Value = idConcesionario ?? (object)DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            Concesionarios2Model concesionarios = new Concesionarios2Model();
+                            concesionarios.idConcesionario = Convert.ToInt32(reader["idConcesionario"].ToString());
+                            concesionarios.nombre = reader["concesionario"].ToString();
+                            concesionarios.idDelegacion = Convert.ToInt32(reader["idDelegacion"].ToString());
+                            concesionarios.idMunicipio = Convert.ToInt32(reader["idMunicipio"].ToString());
+                            concesionarios.alias = reader["alias"].ToString();
+                            concesionarios.razonSocial = reader["razonSocial"].ToString();
+                            concesionarios.delegacion = reader["delegacion"].ToString();
+                            concesionarios.municipio = reader["municipio"].ToString();
+                            ListConcesionarios.Add(concesionarios);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                return ListConcesionarios;
+            }
+        }
     }
 }

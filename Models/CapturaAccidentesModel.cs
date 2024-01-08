@@ -251,9 +251,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public string ArmasTexto { get; set; }
         public string DelegacionOficina { get; set; }
         public int indice { get; set; }
+		public int numeroConsecutivo { get; set; }
+		
 
-
-        public string fullVehiculo
+		public string fullVehiculo
         {
             get
             {

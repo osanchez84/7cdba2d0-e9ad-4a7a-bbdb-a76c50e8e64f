@@ -236,8 +236,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda, StringComparison.OrdinalIgnoreCase))
                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
+			for (int i = 0; i < resultadoBusqueda.Count; i++)
+			{
+				resultadoBusqueda[i].Numero = i + 1;
+			}
 
-            return Json(resultadoBusqueda);
+			return Json(resultadoBusqueda);
 
         }
 

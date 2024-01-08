@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using static GuanajuatoAdminUsuarios.Framework.Catalogs.CatEnumerator;
 
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -33,6 +34,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
+                var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+                var catConcesionario = _catDictionary.GetCatalog("CatConcesionarios", "0");
+
+                ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+                ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+                ViewBag.CatConcesionario = new SelectList(catConcesionario.CatalogList, "Id", "Text");
                 var modelList = _concesionariosService.GetAllConcesionarios(idOficina);
                 return View(modelList);
             }
@@ -42,6 +50,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
+
+        [HttpGet]
+        public ActionResult ajax_BuscarConcesionario(int? idMunicipio, int? idDelegacion, int? idConcesionario)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listPadronGruas = _concesionariosService.GetConcecionariosBusqueda(idMunicipio, idOficina, idDelegacion, idConcesionario);
+
+            return PartialView("_ListadoConcesionarios", listPadronGruas);
+        }
+
 
         [HttpGet]
         public IActionResult ajax_ModalCrearConcesionario()

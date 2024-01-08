@@ -120,8 +120,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? idDelegacion { get; set; }
         public string folio { get; set; }
         public string propietario { get; set; }
+		 public int Numero { get; set; }
 
-        public string conductor { get; set; }
+		public string conductor { get; set; }
         public int? IdTipoVehiculo { get; set; }
         public int? IdTipoServicio { get; set; }
 		public int estatus { get; set; }

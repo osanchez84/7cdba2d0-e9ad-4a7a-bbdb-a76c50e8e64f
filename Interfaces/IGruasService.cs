@@ -16,7 +16,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public IEnumerable<Gruas2Model> GetAllGruas(int idOficina);
         public IEnumerable<Gruas2Model> GetGruasByIdConcesionario(int idConcesionario);
-        public IEnumerable<Gruas2Model> GetGruasToGrid(string placas, string noEconomico, int? idTipoGrua,int idOficina);
+        public IEnumerable<Gruas2Model> GetGruasToGrid(string placas, string noEconomico, int? idTipoGrua,int idOficina, int? idDelegacion, int? idConcesionario);
 
     }
 }

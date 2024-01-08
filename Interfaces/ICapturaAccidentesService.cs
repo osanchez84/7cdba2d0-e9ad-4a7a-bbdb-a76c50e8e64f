@@ -42,6 +42,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int EliminarCausaBD(int IdCausaAccidente,int idAccidente, int idAccidenteCausa);
         public int GuardarDescripcion(int idAccidente,string descripcionCausa);
         List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server= null);
+
         public int AgregarPersonaInvolucrada(int idPersonaInvolucrado, int idAccidente);
         List<CapturaAccidentesModel> VehiculosInvolucrados(int IdAccidente);
         CapturaAccidentesModel InvolucradoSeleccionado(int idAccidente,int IdVehiculoInvolucrado,int IdPropietarioInvolucrado);
@@ -66,6 +67,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);
         public bool ValidarFolio(string folioInfraccion, int idDependencia);
+
+		CapturaAccidentesModel ObtenerDetallePersona(int Id);
+		
+
+
 
 
 

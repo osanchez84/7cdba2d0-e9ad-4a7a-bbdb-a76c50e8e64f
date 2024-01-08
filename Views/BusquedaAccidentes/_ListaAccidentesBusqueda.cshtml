@@ -15,8 +15,8 @@
 			)*@
 			.Columns(columns =>
 			{
-				//columns.Bound(c => c.IdAccidente).Hidden();
-				columns.Bound(c => c.IdAccidente).Title("Número").Width(60);
+				columns.Bound(c => c.IdAccidente).Hidden();
+				columns.Bound(c => c.Numero).Title("Número").Width(60);
 				columns.Bound(c => c.numeroReporte).Title("Folio").Width(100);
 				columns.Bound(c => c.fecha).Title("Fecha").ClientTemplate("#= new Date(fecha).toLocaleDateString('en-GB') #").Width(100);
 				columns.Bound(c => c.hora).Title("Hora").Width(70);

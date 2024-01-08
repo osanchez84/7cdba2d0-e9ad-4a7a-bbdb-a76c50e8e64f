@@ -1,4 +1,4 @@
-﻿@model List<Concesionarios2Model>
+﻿@model Concesionarios2Model
 
 @{
 }
@@ -37,7 +37,69 @@
                 <h6 class="px-4 text-muted">Edita los concesionarios que lo requieran.</h6>
             </div>
         </div>
-        @*Table*@
+        <form id="concesionarioForm">
+        <div class="row align-items-end px-4">
+            <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
+                <label>Municipio</label>
+                    @(Html.Kendo().DropDownListFor(t => t.idMunicipio)
+                    .Filter(FilterType.Contains)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona un Municipio")
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipios"})
+                    .DataSource(source =>
+
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Municipios_Drop", "CapturaAccidentes");
+                        });
+                    }))
+            </div>
+            <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
+                  <label>Delegación</label>
+                    @(Html.Kendo().DropDownListFor(t => t.idDelegacion)
+                    .Filter(FilterType.Contains)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona una delegación")
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacion"})
+                    .DataSource(source =>
+
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Delegaciones_Drop", "CapturaAccidentes");
+                        });
+                    }))
+            </div>
+            <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
+                <label>Concesionario</label>
+                    @(Html.Kendo().DropDownListFor(t => t.idConcesionario)
+                    .Filter(FilterType.Contains)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Selecciona un concesionario")
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcesionario" })
+                    .DataSource(source =>
+
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Concesionarios_Drop", "CapturaAccidentes");
+                        });
+                    }))
+            </div>
+           </div>
+        </form>
+             <div class="col-12 my-3 col-md-6 col-lg-3">
+                <div class="controlButton">
+                    <button class="btnPrimary" type="button" onclick="ajax_Busqueda()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+
+                </div>
+            </div>
+          
+            @*Table*@
         <div id="listadoConcesionarios">
             <partial name="_ListadoConcesionarios" model="Model" />
         </div>
@@ -117,5 +179,9 @@
                 alert('Ocurrió un error en la solicitud AJAX.');
             }
         });
+    }
+
+    function ajax_Busqueda(){
+        alert ("SI")
     }
 </script>

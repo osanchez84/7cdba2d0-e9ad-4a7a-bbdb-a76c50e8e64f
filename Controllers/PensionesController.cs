@@ -20,13 +20,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private readonly IPensionesService _pensionesService;
         private readonly ICatDictionary _catDictionary;
-
+        private readonly IBitacoraService _bitacoraServices;
         public PensionesController(
             ICatDictionary catDictionary,
-            IPensionesService pensionesService)
+            IPensionesService pensionesService,
+            IBitacoraService bitacoraServices)
         {
             _pensionesService = pensionesService;
             _catDictionary = catDictionary;
+            _bitacoraServices = bitacoraServices;
         }
 
 
@@ -105,6 +107,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int idPension = _pensionesService.CrearPension(model);
                 List<Gruas2Model> gruasPensionesList = _pensionesService.GetGruasDisponiblesByIdPension(idPension, idOficina);
                 model.IdPension = idPension;
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+
+                //BITACORA
+                _bitacoraServices.insertBitacora(idPension, ip, "Pension", "Insertar", "Insert", user);
 
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
                 var catResponsablesPensiones = _catDictionary.GetCatalog("CatResponsablesPensiones", "0");
@@ -172,6 +179,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     int altaGruas = _pensionesService.CrearPensionGruas(model.IdPension, strListIdGruas);
                 }
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                
+                //BITACORA
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(idPension, ip, "Pension", "Actualizar", "Update", user);
 
                 List<PensionModel> pensionesList = _pensionesService.GetAllPensiones(idOficina);
                 return PartialView("_ListadoPensiones", pensionesList);

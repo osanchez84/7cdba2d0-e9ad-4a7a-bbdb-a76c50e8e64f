@@ -34,11 +34,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatTramosService _catTramosService;
         private readonly IPensionesService _pensionesService;
         private readonly IConcesionariosService _concesionariosService;
+        private readonly IBitacoraService _bitacoraServices;
 
 
         public DepositosController(IDepositosService catDepositosService, ICatTiposVehiculosService catTiposVehiculoService, ICatResponsablesPensiones catResponsablesPensiones, IOficiales oficialesService,ICatEntidadesService catEntidadesService, ICatMunicipiosService catMunicipiosService,
             ICatDescripcionesEventoService descripcionesEventoService, ICatTipoMotivoAsignacionService catTipoMotivoAsignacionService, ICatTipoUsuarioService catTipoUsuarioService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService, IPensionesService pensionesService,
-            IConcesionariosService concesionariosService)
+            IConcesionariosService concesionariosService, IBitacoraService bitacoraService)
         {
             _catDepositosService = catDepositosService;
             _catTiposVehiculoService = catTiposVehiculoService;
@@ -53,6 +54,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catTramosService = catTramosService;
             _pensionesService = pensionesService;
             _concesionariosService = concesionariosService;
+            _bitacoraServices = bitacoraService;
         }
     
         public IActionResult Depositos(int? Isol)
@@ -159,6 +161,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 // Es una actualización, así que actualiza los datos en la base de datos
                 // utilizando el ID 'Isol' para identificar la solicitud existente
                 var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol,model);
+                
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(registroActualizado, ip, "Depositos_EnviarSolicitudDeposito", "Actualizar", "update", user);
+                
                 return Ok(registroActualizado);
 
             }
@@ -166,12 +174,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 				var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina);
+
+                //BITACORA
+                //var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                //_bitacoraServices.insertBitacora(resultadoBusqueda, ip, "Depositos_EnviarSolicitudDeposito", "Insertar", "insert", user);
+
                 return Ok(resultadoBusqueda);
             }
         }
         public ActionResult ajax_EnviarComplementoSolicitud(SolicitudDepositoModel model)
         {
-         var complemntarRegistro = _catDepositosService.CompletarSolicitud(model);
+            var complemntarRegistro = _catDepositosService.CompletarSolicitud(model);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(complemntarRegistro, ip, "Depositos_CompletarSolicitud", "Insertar", "insert", user);
             return Ok();
         }
         public ActionResult ajax_ImportarInfoInfraccion(string folioBusquedaInfraccion)

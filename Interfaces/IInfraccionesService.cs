@@ -8,6 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IInfraccionesService
     {
+        bool UpdateFolio(string id, string folio);
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
 

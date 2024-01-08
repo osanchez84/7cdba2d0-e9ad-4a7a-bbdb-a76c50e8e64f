@@ -1,4 +1,4 @@
-﻿@model Concesionarios2Model
+﻿@model List<Concesionarios2Model>
 
 @{
 }
@@ -170,7 +170,7 @@
                 url: '@Url.Action("ajax_BuscarConcesionario")',
                 data: {
 
-                "idMunicipio": idMunicipio,
+                    "idMunicipio": idMunicipio,
                     "idDelegacion": idDelegacion,
                     "idConcesionario": idConcesionario
                 },

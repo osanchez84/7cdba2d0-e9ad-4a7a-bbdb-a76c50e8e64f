@@ -546,6 +546,42 @@ GROUP BY
 
 
         }
+
+
+
+        public bool UpdateFolio(string id, string folio)
+        {
+            var result = true;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE accidentes SET numeroreporte = @folio WHERE idAccidente = @idAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", id);
+                    command.Parameters.AddWithValue("@folio", folio);
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+
+        }
+
+
     }
  }
 

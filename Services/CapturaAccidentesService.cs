@@ -218,7 +218,19 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
-                    result = Convert.ToInt32(command.ExecuteScalar()); 
+                    result = Convert.ToInt32(command.ExecuteScalar());
+
+                    var newFolio = $"NRA{result}2023";
+
+                    SqlCommand command2 = new SqlCommand(@"
+                            update accidentes set numeroreporte=@folio where idAccidente=@id
+                                        ", connection);
+                    command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
+                    command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
+                    command2.CommandType = CommandType.Text;
+                    var r = command2.ExecuteReader(CommandBehavior.CloseConnection);
+
+
                     lastInsertedId = result; 
                 }
                 catch (SqlException ex)

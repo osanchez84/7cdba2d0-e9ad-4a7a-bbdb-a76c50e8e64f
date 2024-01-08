@@ -1068,9 +1068,12 @@ namespace GuanajuatoAdminUsuarios.Services
 								model.fechaNacimiento = DateTime.MinValue;
 							}
 
+							if (model.Garantia != null)
+								model.NombreGarantia = String.IsNullOrEmpty(model.Garantia.garantia) ? "" : model.Garantia.garantia;
+							else
+								model.NombreGarantia = null;
 
-							model.NombreGarantia = model.Garantia.garantia;
-						}
+                        }
 					}
 				}
 				catch (SqlException ex)

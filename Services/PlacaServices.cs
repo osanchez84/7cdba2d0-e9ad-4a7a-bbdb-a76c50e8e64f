@@ -30,7 +30,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from depositos where idDelegacion=@idDelegacion ", connection);
+                    SqlCommand command = new SqlCommand("Select * from depositos where idDelegacion=@idDelegacion", connection);
                     command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 

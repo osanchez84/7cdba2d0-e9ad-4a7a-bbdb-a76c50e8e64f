@@ -991,7 +991,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         "FROM AccidenteFactoresOpciones AS afo " +
                         "LEFT JOIN catFactoresAccidentes AS cfa ON afo.idFactor = cfa.idFactorAccidente " +
                         "LEFT JOIN catFactoresOpcionesAccidentes AS cfoa ON afo.idFactorOpcion = cfoa.idFactorOpcionAccidente " +
-                        "WHERE afo.idAccidente = @IdAccidente AND afo.estatus = 1 ", connection);
+                        "WHERE afo.idAccidente = @IdAccidente AND afo.estatus = 1 ORDER BY afo.fechaActualizacion DESC", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -1281,7 +1281,119 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
-        public List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server = null)
+
+
+
+
+
+		CapturaAccidentesModel ICapturaAccidentesService.ObtenerDetallePersona(int id)
+		{
+			CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(@"SELECT " +
+											 "MAX(p.nombre) AS nombre, " +
+											 "MAX(p.apellidoPaterno) AS apellidoPaterno, " +
+											 "MAX(p.apellidoMaterno) AS apellidoMaterno, " +
+											 "MAX(p.rfc) AS rfc, " +
+											 "MAX(p.curp) AS curp, " +
+											 "MAX(p.idTipoLicencia) AS idTipoLicencia, " +
+											 "MAX(CONVERT(varchar, p.fechaNacimiento, 103)) AS fechaNacimiento, " +
+											 "MAX(tl.tipoLicencia) AS tipoLicencia, " +
+											 "MAX(ia.idAccidente) AS idAccidente," +
+											 "MAX(ia.idPersona) AS idPersona, " +
+											 "MAX(ia.idVehiculo) AS idVehiculo, " +
+											 "MAX(v.idTipoVehiculo) AS idTipoVehiculo, " +
+											 "MAX(tv.tipoVehiculo) AS tipoVehiculo, " +
+											 "MAX(ia.idEstadoVictima) AS idEstadoVictima, " +
+											 "MAX(ev.estadoVictima) AS estadoVictima, " +
+											 "MAX(ia.idInstitucionTraslado) AS idInstitucionTraslado, " +
+											 "MAX(it.institucionTraslado) AS institucionTraslado, " +
+											 "MAX(ia.idHospital) AS idHospital, " +
+											 "MAX(h.nombreHospital) AS nombreHospital, " +
+											 "MAX(ia.idAsiento) AS idAsiento, " +
+											 "MAX(ia.fechaIngreso) AS fechaIngreso, " +
+											 "MAX(ia.horaIngreso) AS horaIngreso, " +
+											 "MAX(ca.asiento) AS asiento, " +
+											 "MAX(ia.idCinturon) AS idCinturon, " +
+											 "MAX(ev.EstadoVictima) AS EstadoVictima," +
+											 "MAX(v.modelo) AS modelo," +
+											 "MAX(v.placas) AS placas," +
+											 "MAX(cg.genero) AS genero," +
+											 "MAX(cm.marcaVehiculo) AS marcaVehiculo," +
+											 "MAX(csv.nombreSubmarca) AS nombreSubmarca," +
+											 "MAX(pd.telefono) AS telefono," +
+											 "MAX(pd.correo) AS correo," +
+											 "MAX(mun.municipio) AS municipio," +
+											 "MAX(e.nombreEntidad) AS nombreEntidad," +
+											 "MAX(concat (pd.colonia,' ', pd.calle,' ', pd.numero,' ', pd.codigoPostal)) as Direccion," +
+											 "MAX(va.idAccidente) AS NoAccidente," +
+											 "MAX(ct.tipoInvolucrado) AS tipoInvolucrado," +
+											 "MAX(cc.cinturon) AS cinturon " +
+											 "FROM involucradosAccidente ia " +
+											 "LEFT JOIN accidentes a ON ia.idAccidente = a.idAccidente " +
+											 "LEFT JOIN personas p ON ia.idPersona = p.idPersona " +
+											 "LEFT JOIN catTipoLicencia tl ON p.idTipoLicencia = tl.idTipoLicencia " +
+											 "LEFT JOIN vehiculos v ON ia.idVehiculo = v.idVehiculo " +
+											 "LEFT JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
+											 "LEFT JOIN catEstadoVictima ev ON ia.idEstadoVictima = ev.idEstadoVictima " +
+											 "LEFT JOIN catInstitucionesTraslado it ON ia.idInstitucionTraslado = it.idInstitucionTraslado " +
+											 "LEFT JOIN catHospitales h ON ia.idHospital = h.idHospital " +
+											 "LEFT JOIN catAsientos ca ON ia.idAsiento = ca.idAsiento " +
+											 "LEFT JOIN catCinturon cc ON ia.idCinturon = cc.idCinturon " +
+											 "LEFT JOIN catGeneros AS cg ON cg.idGenero = p.idGenero " +
+											 "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
+											 "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
+											 "LEFT JOIN catEntidades AS e ON v.idEntidad = e.idEntidad " +
+											 "LEFT JOIN personasDirecciones AS pd ON p.idPersona = pd.idPersona " +
+											 "LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio " +
+											 "LEFT JOIN vehiculosAccidente AS va ON  va.idAccidente = a.idAccidente " +
+											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +
+											 "WHERE p.idpersona = @idpersona and ia.estatus = 1 group by ia.idPersona;", connection);
+
+					command.Parameters.Add(new SqlParameter("@idpersona", SqlDbType.NVarChar)).Value = id;
+					command.CommandType = CommandType.Text;
+					using (
+						SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							involucrado.IdPersona = Convert.ToInt32(reader["idPersona"].ToString());
+							involucrado.nombre = reader["nombre"].ToString();
+							involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
+							involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
+							involucrado.RFC = reader["rfc"].ToString();
+							involucrado.CURP = reader["curp"].ToString();
+							involucrado.Calle = reader["curp"].ToString();
+							involucrado.numeroLicencia = reader["nombre"].ToString();
+							involucrado.Numero = reader["apellidoPaterno"].ToString();
+							involucrado.Colonia = reader["apellidoMaterno"].ToString();
+							involucrado.Correo = reader["rfc"].ToString();
+							involucrado.FormatDateNacimiento = reader["curp"].ToString();
+
+						}
+
+					}
+
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+			return involucrado;
+
+		}
+
+
+		public List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server = null)
         {
             //
             List<CapturaAccidentesModel> ListaInvolucrados = new List<CapturaAccidentesModel>();

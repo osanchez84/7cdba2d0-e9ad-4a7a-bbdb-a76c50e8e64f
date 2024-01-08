@@ -105,5 +105,35 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+
+        public string GetDelegacionOficinaById(int idOficina)
+        {
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT TOP 1 nombreOficina FROM catDelegacionesOficinasTransporte WHERE idOficinaTransporte = @IdOficina AND estatus = 1 ORDER BY nombreOficina ASC;", connection);
+                    command.Parameters.AddWithValue("@IdOficina", idOficina);
+                    command.CommandType = CommandType.Text;
+
+                    var nombreOficina = command.ExecuteScalar()?.ToString();
+
+                    return nombreOficina;
+                }
+                catch (SqlException ex)
+                {
+                    // Manejar la excepción, por ejemplo, escribir en un registro de errores
+                    // ex
+                    return null;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
     }
+
 }

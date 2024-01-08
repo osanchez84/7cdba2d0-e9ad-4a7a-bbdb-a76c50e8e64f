@@ -279,8 +279,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			return PartialView("_ModalEliminarInvolucrado");
 		}
+        public ActionResult ModalBorraRegistroPersona(int IdPersona, int IdAccidente)
+        {
+            return PartialView("_ModalEliminarPersonaInvolucrada");
+        }
 
-		public ActionResult MostrarModalConductor(int IdPersona, int IdVehiculo)
+        public ActionResult MostrarModalConductor(int IdPersona, int IdVehiculo)
 		{
 			ViewBag.IdVehiculo = IdVehiculo;
 			var ListConductor = _capturaAccidentesService.ObtenerConductorPorId(IdPersona);
@@ -1039,7 +1043,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalInvolucrado-Vehiculo");
         }
-        [HttpGet]
+
+		//public ActionResult MostrarDetalle(string Id)
+		//{
+		//	var ListInfraccionesModel = _CortesiasNoAplicadasService.ObtenerDetalleCortesiasNoAplicada(Id);
+		//	return PartialView("_DetalleCortesiasNoAplicadas", ListInfraccionesModel);
+
+		//}
+
+
+		public ActionResult ModalAgregarInvolucradoPersona(int Id)
+		{
+			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(Id);
+			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
+		}
+
+		[HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()
         {
             BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
@@ -1160,6 +1179,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
             return Json(ListInvolucradoModel);
         }
+
+
+
 
 
 		public IActionResult GuardarInvolucrado(int idPersonaInvolucrado)

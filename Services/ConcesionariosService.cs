@@ -240,7 +240,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
-        public IEnumerable<Concesionarios2Model> GetAllConcesionarios(int idOficina)
+        public List<Concesionarios2Model> GetAllConcesionarios(int idOficina)
         {
             List<Concesionarios2Model> ListConcesionarios = new List<Concesionarios2Model>();
             string strQuery = @"SELECT 

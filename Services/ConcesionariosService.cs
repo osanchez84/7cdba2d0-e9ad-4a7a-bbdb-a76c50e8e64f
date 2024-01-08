@@ -262,7 +262,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 INNER JOIN catMunicipios m
                                 on c.idMunicipio = m.idMunicipio 
                                 AND m.estatus = 1
-                                WHERE c.estatus = 1 AND c.idDelegacion = @idOficina";
+                                WHERE c.estatus = 1 AND c.idDelegacion = @idOficina
+                                ORDER BY fechaActualizacion DESC";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try

@@ -991,7 +991,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         "FROM AccidenteFactoresOpciones AS afo " +
                         "LEFT JOIN catFactoresAccidentes AS cfa ON afo.idFactor = cfa.idFactorAccidente " +
                         "LEFT JOIN catFactoresOpcionesAccidentes AS cfoa ON afo.idFactorOpcion = cfoa.idFactorOpcionAccidente " +
-                        "WHERE afo.idAccidente = @IdAccidente AND afo.estatus = 1 ", connection);
+                        "WHERE afo.idAccidente = @IdAccidente AND afo.estatus = 1 ORDER BY afo.fechaActualizacion DESC", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 

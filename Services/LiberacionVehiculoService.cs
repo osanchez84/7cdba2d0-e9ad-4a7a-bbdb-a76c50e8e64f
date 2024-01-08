@@ -43,7 +43,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             left join catSubmarcasVehiculos  subm on d.idSubmarca=subm.idSubmarca
                             left join vehiculos v ON v.placas = d.Placa
                             left join personas p ON p.idPersona = v.idPersona
-                            where d.liberado=0 and d.estatus=1 and d.idDelegacion = @idOficina";
+                            where d.liberado=0 and d.estatus=1 and d.idDelegacion = @idOficina
+                            ORDER BY d.fechaActualizacion DESC";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 

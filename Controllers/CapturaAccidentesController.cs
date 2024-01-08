@@ -137,9 +137,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public IActionResult BuscarAccidentesLista([DataSourceRequest] DataSourceRequest request)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina,idDependencia);
+            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
 			return Json(ListAccidentesModel.ToDataSourceResult(request));
 		}
 
@@ -153,9 +153,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			{
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+               // int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina, idDependencia);
+                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
 				if (ListAccidentesModel.Count == 0)
 				{
 					return View("AgregarAccidente");
@@ -246,16 +246,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+                //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina,idDependencia);
-
-                //BITACORA
-                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                _bitacoraServices.insertBitacora(lastInsertedId, ip, "CapturaAccidente_Ubicacion", "Insertar", "insert", user);
-
-                HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
+				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 
 			}
@@ -264,9 +258,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ActionResult CapturaAaccidente(bool? showE)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; 
-			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina, idDependencia);
+			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
             ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
             return View("CapturaAaccidente", AccidenteSeleccionado);
 		}
@@ -1313,10 +1307,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
             var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(IdVehiculo, idAccidente, IdInfraccion);
-			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina,idDependencia);
+			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
 
 			return View("CapturaCAccidente");
 		}
@@ -1355,7 +1349,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var DatosAccidente = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina,idDependencia);
+            var DatosAccidente = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
 			model.IdMunicipio = (int)DatosAccidente.IdMunicipio;
 			model.IdCarretera = (int)DatosAccidente.IdCarretera;
 			model.IdTramo = (int)DatosAccidente.IdTramo;
@@ -1369,7 +1363,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 				if (!validarFolio)
 				{
-					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model, idDependencia);
+					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model);
 					var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.IdPersona);
 					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
 
@@ -1412,9 +1406,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 		public JsonResult ObtenerInfraccionesVehiculos([DataSourceRequest] DataSourceRequest request)
 		{
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var ListVehiculosInfracciones = _capturaAccidentesService.InfraccionesVehiculosAccidete(idAccidente,idDependencia);
+			var ListVehiculosInfracciones = _capturaAccidentesService.InfraccionesVehiculosAccidete(idAccidente);
 
 			return Json(ListVehiculosInfracciones.ToDataSourceResult(request));
 		}
@@ -1430,9 +1424,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 		public JsonResult ObtInfraccionesAccidente([DataSourceRequest] DataSourceRequest request)
         {
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente,idDependencia);
+			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
 
 			return Json(ListInfracciones.ToDataSourceResult(request));
 		}
@@ -1904,15 +1898,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_EliminarRegistroInfraccion(int IdInfraccion)
         {
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var RegistroSeleccionado = _capturaAccidentesService.EliminarRegistroInfraccion(IdInfraccion);
 
-            //BITACORA
-            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-            _bitacoraServices.insertBitacora(RegistroSeleccionado, ip, "CapturaAccidente_RegistroSeleccionado", "Eliminar", "delete", user);
-            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente, idDependencia);
+            var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
 
             return Json(ListInfracciones);
         }

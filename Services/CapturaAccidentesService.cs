@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina,int idDependencia)
+        public List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina)
         {
             //
             List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
@@ -50,9 +50,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         LEFT JOIN catCarreteras AS car ON acc.idCarretera = car.idCarretera  
                         LEFT JOIN catTramos AS tra ON acc.idTramo = tra.idTramo  
                         LEFT JOIN catEstatusReporteAccidente AS er ON acc.idEstatusReporte = er.idEstatusReporte
-                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3 AND acc.transito = @idDependencia;", connection);
+                        WHERE acc.estatus = 1 AND acc.idOficinaDelegacion = @idOficina and acc.idEstatusReporte != 3;", connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
-                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+                    //command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -93,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia)
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina)
         {
             CapturaAccidentesModel accidente = new CapturaAccidentesModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -122,11 +122,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         JOIN catTramos AS t ON a.idTramo = t.idTramo 
                         JOIN estatus AS e ON a.estatus = e.estatus 
                         LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
-                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1 AND a.transito = @idDependencia
+                        WHERE a.idAccidente = @idAccidente AND a.estatus = 1
                     ", connection);
                     command.Parameters.Add(new SqlParameter("@idAccidente", SqlDbType.Int)).Value = idAccidente;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
-                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+                   // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -167,7 +167,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, int idDependencia)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
         
         {
             int result = 0;
@@ -184,7 +184,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus]
-                                        ,[transito])
+                                        )
                                 VALUES (
                                          @Hora
                                         ,@idOficina
@@ -197,7 +197,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus
-                                        ,@idDependencia);
+                                         );
                                     SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -208,7 +208,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@Hora", SqlDbType.Time)).Value = (object)model.Hora ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                   // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@kilometro", SqlDbType.NVarChar)).Value = (object)model.Kilometro ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatusReporte", SqlDbType.Int)).Value = 1;
@@ -218,8 +218,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
-                    result = Convert.ToInt32(command.ExecuteScalar()); // Valor de IdAccidente de este mismo registro
-                    lastInsertedId = result; // Almacena el valor en la variable lastInsertedId
+                    result = Convert.ToInt32(command.ExecuteScalar()); 
+                    lastInsertedId = result; 
                 }
                 catch (SqlException ex)
                 {
@@ -1626,7 +1626,7 @@ namespace GuanajuatoAdminUsuarios.Services
         
         
         }
-        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente, int idDependencia)
+        public List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente)
         {
             //
             List<CapturaAccidentesModel> ListaVehiculosInfracciones = new List<CapturaAccidentesModel>();
@@ -1647,14 +1647,14 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN infraccionesAccidente AS infAcc ON i.idInfraccion = infAcc.idInfraccion " +
                         "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
                         "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
-                        "WHERE i.transito = @idDependencia AND infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
+                        "WHERE infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
                         "AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
+                   // command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -1723,7 +1723,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return infraccionAgregada;
         }
-        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente, int idDependencia)
+        public List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente)
         {
             //
             List<CapturaAccidentesModel> ListaInfracciones = new List<CapturaAccidentesModel>();
@@ -1747,13 +1747,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 AND i.transito = @idDependencia;", connection);
+                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
 
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
+                   // command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -2304,13 +2304,13 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
 					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
-					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					//command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
 					{
@@ -2324,7 +2324,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			}
 			return folio > 0;
 		}
-		public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
+		public int RegistrarInfraccion(NuevaInfraccionModel model)
         {
             int result = 0;
             string strQuery = @"INSERT INTO infracciones
@@ -2361,7 +2361,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
                                             ,@estatus
-                                            ,@idDependencia);SELECT SCOPE_IDENTITY()";
+                                            );SELECT SCOPE_IDENTITY()";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -2381,7 +2381,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa ?? "-";
                     command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta ?? "-";
-                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+                   // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
 
 

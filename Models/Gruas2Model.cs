@@ -2,10 +2,14 @@
 {
     public class Gruas2Model : EntityModel
     {
+        
+            
         public int idDeposito { get; set; }
         public int idGrua { get; set; }
         public int idConcesionario { get; set; }
         public int idClasificacion { get; set; }
+        public int? idDelegacion { get; set; }
+        public int? idConcesionarioBusqueda { get; set; }
         public int idTipoGrua { get; set; }
         public int idSituacion { get; set; }
         public string noEconomico { get; set; }

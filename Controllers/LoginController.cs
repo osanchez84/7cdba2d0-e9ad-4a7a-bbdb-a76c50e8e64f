@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 using GuanajuatoAdminUsuarios.Interfaces;
 
 namespace GuanajuatoAdminUsuarios.Controllers

@@ -18,13 +18,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
         private readonly IGruasService _gruasService;
         private readonly IConcesionariosService _concesionariosService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+
         public PadronGruasController(ICatDictionary catDictionary,
                                      IGruasService gruasService,
-                                     IConcesionariosService concesionariosService)
+                                     IConcesionariosService concesionariosService,
+                                     ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
         {
             _catDictionary = catDictionary;
             _gruasService = gruasService;
             _concesionariosService = concesionariosService;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
         public IActionResult Index()
         {
@@ -37,7 +41,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //IEnumerable<Gruas2Model> listGruas = _gruasService.GetAllGruas(idOficina);
                 var listGruas = new List<Gruas2Model>();
                 var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
+                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+                var catConcesionario = _catDictionary.GetCatalog("CatConcesionarios", "0");
+
                 ViewBag.CatTipoGruas = new SelectList(catTipoGruas.CatalogList, "Id", "Text");
+                ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+                ViewBag.CatConcesionario = new SelectList(catConcesionario.CatalogList, "Id", "Text");
+
                 return View(listGruas);
             }
             else
@@ -46,12 +56,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Ok();
             }
         }
-
-        [HttpGet]
-        public ActionResult ajax_BuscarGruas(string placas, string noEconomico, int? idTipoGrua)
+        public JsonResult Delegaciones_Drop()
+        {
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
+            return Json(result);
+        }
+        public JsonResult Concecionarios_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina);
+            var result = new SelectList(_concesionariosService.GetConcesionarios(idOficina), "IdConcesionario", "Concesionario");
+            return Json(result);
+        }
+        [HttpGet]
+        public ActionResult ajax_BuscarGruas(string placas, string noEconomico, int? idTipoGrua, int? idDelegacion, int? idConcesionario)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina, idDelegacion, idConcesionario);
 
             return PartialView("_ListadoGruas", listPadronGruas);
         }

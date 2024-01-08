@@ -59,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             gruasConcesionario.capacidad = reader["capacidad"] is DBNull ? string.Empty : reader["capacidad"].ToString();
                             gruasConcesionario.TipoGrua = reader["TipoGrua"] is DBNull ? string.Empty : reader["TipoGrua"].ToString();
                             gruasConcesionario.operadorGrua = reader["operadorGrua"] is DBNull ? string.Empty : reader["operadorGrua"].ToString();
-                            
+
 
                             GruasConcesionariosList.Add(gruasConcesionario);
 
@@ -132,7 +132,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            GruasModel gruaModel = new GruasModel(); 
+                            GruasModel gruaModel = new GruasModel();
                             gruaModel.IdGrua = Convert.ToInt32(reader["IdGrua"].ToString());
                             gruaModel.Placas = reader["Placas"].ToString();
                             gruaModel.noEconomico = reader["noEconomico"].ToString();
@@ -529,8 +529,14 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListGruas;
         }
 
-        public IEnumerable<Gruas2Model> GetGruasToGrid(string placas, string noEconomico, int? idTipoGrua,int idOficina)
+        public IEnumerable<Gruas2Model> GetGruasToGrid(string placas, string noEconomico, int? idTipoGrua, int idOficina, int? idDelegacion, int? idConcesionario)
         {
+            string strWherePlacas = !string.IsNullOrEmpty(placas) ? string.Format("'{0}'", placas) : "g.placas";
+            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{0}'", noEconomico) : "g.noEconomico";
+            string strWhereidTipoGrua = idTipoGrua != null ? idTipoGrua.ToString() : "g.idTipoGrua";
+            string strWhereidDelegacion = idDelegacion != null ? $"c.idDelegacion = {idDelegacion}" : "";
+            string strWhereidConcesionario = idConcesionario != null ? $"g.idConcesionario = {idConcesionario}" : "";
+
             List<Gruas2Model> ListGruas = new List<Gruas2Model>();
             string strQuery = @"SELECT
                                  g.idGrua
@@ -562,24 +568,30 @@ namespace GuanajuatoAdminUsuarios.Services
 								on g.idConcesionario = c.idConcesionario AND c.estatus = 1
 								INNER JOIN catMunicipios cm
 								on c.idMunicipio = cm.idMunicipio AND c.estatus = 1
-                                WHERE g.estatus = 1
-                                AND g.placas = {0}
-                                AND c.idDelegacion = @idOficina
-                                AND g.noEconomico = {1}
-                                AND g.idTipoGrua = {2}";
-
-            string strWherePlacas = !string.IsNullOrEmpty(placas) ? string.Format("'{0}'", placas) : "g.placas";
-            string strWhereNoEconomico = !string.IsNullOrEmpty(noEconomico) ? string.Format("'{0}'", noEconomico) : "g.noEconomico";
-            string strWhereidTipoGrua = idTipoGrua != null ? idTipoGrua.ToString() : "g.idTipoGrua";
-            strQuery = string.Format(strQuery, strWherePlacas, strWhereNoEconomico, strWhereidTipoGrua);
+                                 WHERE
+        g.estatus = 1
+        AND (g.placas = @placas OR @placas IS NULL)
+        AND (c.idDelegacion = @idDelegacion OR @idDelegacion IS NULL)
+        AND (g.noEconomico = @noEconomico OR @noEconomico IS NULL)
+        AND (g.idTipoGrua = @idTipoGrua OR @idTipoGrua IS NULL)
+        " + (string.IsNullOrEmpty(strWhereidDelegacion) ? "" : "AND " + strWhereidDelegacion) + @"
+        " + (string.IsNullOrEmpty(strWhereidConcesionario) ? "" : "AND " + strWhereidConcesionario);
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
                 try
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idDelegacion ?? (object)DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTipoGrua", SqlDbType.Int)).Value = idTipoGrua ?? (object)DBNull.Value;
+
+                    command.Parameters.Add(new SqlParameter("@idConcesionario", SqlDbType.Int)).Value = idConcesionario ?? (object)DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@placas", SqlDbType.NVarChar)).Value = string.IsNullOrEmpty(placas) ? (object)DBNull.Value : placas;
+                    command.Parameters.Add(new SqlParameter("@noEconomico", SqlDbType.NVarChar)).Value = string.IsNullOrEmpty(noEconomico) ? (object)DBNull.Value : noEconomico;
+
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -613,7 +625,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Close();
                 }
-            return ListGruas;
+                return ListGruas;
+            }
         }
     }
 }

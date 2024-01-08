@@ -1697,9 +1697,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		{
 			int result = 0;
 			string strQuery = @"UPDATE motivosInfraccion
-                                SET fechaActualizacion = @fechaActualizacion
-                                    actualizadoPor = @actualizadoPor
-                                    estatus = @estatus)
+                                SET fechaActualizacion = @fechaActualizacion,
+                                    actualizadoPor = @actualizadoPor,
+                                    estatus = @estatus
                                 WHERE idMotivoInfraccion = @idMotivoInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -2501,13 +2501,13 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
 					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);			
-					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					//command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
 					{

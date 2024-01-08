@@ -1,4 +1,4 @@
-﻿@model List<Concesionarios2Model>
+﻿@model Concesionarios2Model
 
 @{
 }
@@ -79,8 +79,7 @@
                 <h6 class="px-4 text-muted">Edita los concesionarios que lo requieran.</h6>
             </div>
         </div>
-          
-            @*Table*@
+        @*Table*@
         <div id="listadoConcesionarios">
             <partial name="_ListadoConcesionarios" model="Model" />
         </div>
@@ -161,9 +160,8 @@
             }
         });
     }
-
-    function ajax_Busqueda(){
-        var idMunicipio = $("#ddlMunicipios").val();
+     function ajax_Busqueda(){
+            var idMunicipio = $("#ddlMunicipios").val();
             var idDelegacion = $("#ddlDelegaciones").val();
             var idConcesionario = $("#ddlConcesionario").val();
             showLoading();

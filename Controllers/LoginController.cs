@@ -197,7 +197,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 using (HttpClient client = new HttpClient(handler))
                 {
-                    string url = $"https://10.16.157.142:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
+                    string url = $"https://10.16.158.31:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
 
                     var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                    

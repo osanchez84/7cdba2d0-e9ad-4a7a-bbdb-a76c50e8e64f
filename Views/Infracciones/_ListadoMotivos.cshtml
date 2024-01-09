@@ -8,27 +8,40 @@
     </div>
 </div>
 <div class="col-12 rounded gridCustom">
-    @(Html.Kendo().Grid(Model)
-        .Name("gridMotivosInfraccion")
-        .Columns(columns =>
-        {
-            columns.Bound(c => c.idInfraccion).Hidden();
-            columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
-            columns.Bound(p => p.Nombre).Title("Motivo");
-            columns.Bound(p => p.Fundamento).Title("Fundamento legal");
-            columns.Bound(p => p.CalificacionMinima).Title("Calif. Min.");
-            columns.Bound(c => c.CalificacionMaxima).Title("Calif. Max.");
-            columns.Bound(c => c.calificacion).Title("Calificación").ClientFooterTemplate("Total : #=sum#");
+    @(
+        Html.Kendo().Grid(Model)
+            .Name("gridMotivosInfraccion")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.idInfraccion).Hidden();
+                columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
+                columns.Bound(p => p.Nombre).Title("Motivo");
+                columns.Bound(p => p.Fundamento).Title("Fundamento legal");
+                columns.Bound(p => p.CalificacionMinima).Title("Calif. Min.");
+                columns.Bound(c => c.CalificacionMaxima).Title("Calif. Max.");
+                columns.Bound(c => c.calificacion).Title("Calificación").ClientFooterTemplate("Total : #=sum#");
            @* columns.Bound(c => c.calificacion)
             .Title("Calificación")
-            .ClientTemplate("<input type='text' class='numeric-input' value='#= calificacion #' />")
-            .EditorTemplateName("NumericTextBox")
-            .ClientFooterTemplate("Total : #=sum#");*@
+            .ClientTemplate(
+            "<input type='text' class='numeric-input' " +
+            "data-role='numerictextbox' " +
+            "data-decimals='2' " +
+            "data-step='1' " +
+            "data-format='n0' " +
+            "data-min='#= CalificacionMinima || 0 #' " +
+            "data-max='#= CalificacionMaxima || 0 #' " +
+            "data-spinners='true' " +
+            "value='#= calificacion #' />"
+            )
+    .ClientFooterTemplate("Total : #=sum#");*@
+
+
+
             @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
     "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
     ).Title("Acciones").Sortable(false).Width(100);*@
             columns.Template(
-    "<button class='w-100 btn colorDanger'>" +
+    "<button type ='button' class='w-100 btn colorDanger'>" +
     "<h6 class='m-0' onclick='eliminarMotivo(event)'>" +
     "<i class='h5 icon-delete me-2'></i><b>Eliminar</b>" +
     "</h6></button>"
@@ -89,7 +102,8 @@
     </div>
 </div>
  <script>
-    function eliminarMotivo(event) {    
+    function eliminarMotivo(event) {   
+        e.preventDefault();
         var grid = $("#gridMotivosInfraccion").data("kendoGrid");
         var row = $(event.target).closest("tr");
         var dataItem = grid.dataItem(row);

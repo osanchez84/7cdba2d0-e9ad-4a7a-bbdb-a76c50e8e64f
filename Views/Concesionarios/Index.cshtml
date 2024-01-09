@@ -1,4 +1,4 @@
-﻿@model Concesionarios2Model
+﻿@model List<Concesionarios2Model>
 
 @{
 }
@@ -31,75 +31,55 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        <div class="row justify-content-between mb-1 titleCustom">
-            <div class="col-12 col-md-auto mt-4 mb-2">
-                <h5 class="px-4"><b>Listado de concesionarios</b></h5>
-                <h6 class="px-4 text-muted">Edita los concesionarios que lo requieran.</h6>
-            </div>
-        </div>
-        <form id="concesionarioForm">
+     
+        <br/>
+        <div id="concesionarioForm">
         <div class="row align-items-end px-4">
             <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
                 <label>Municipio</label>
-                    @(Html.Kendo().DropDownListFor(t => t.idMunicipio)
-                    .Filter(FilterType.Contains)
-                    .DataTextField("Text")
-                    .DataValueField("Value")
-                    .OptionLabel("Selecciona un Municipio")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipios"})
-                    .DataSource(source =>
-
-                    {
-                        source.Read(read =>
-                        {
-                            read.Action("Municipios_Drop", "CapturaAccidentes");
-                        });
-                    }))
-            </div>
-            <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
-                  <label>Delegación</label>
-                    @(Html.Kendo().DropDownListFor(t => t.idDelegacion)
-                    .Filter(FilterType.Contains)
-                    .DataTextField("Text")
-                    .DataValueField("Value")
-                    .OptionLabel("Selecciona una delegación")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacion"})
-                    .DataSource(source =>
-
-                    {
-                        source.Read(read =>
-                        {
-                            read.Action("Delegaciones_Drop", "CapturaAccidentes");
-                        });
-                    }))
-            </div>
+                    @(Html.Kendo().DropDownList()
+                        .Name("idMunicipio")
+                        .BindTo((SelectList)ViewBag.CatMunicipios)
+                        .OptionLabel("-- Seleccione --")
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipios" })
+                        .Filter(FilterType.Contains))
+                </div>
             <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
-                <label>Concesionario</label>
-                    @(Html.Kendo().DropDownListFor(t => t.idConcesionario)
-                    .Filter(FilterType.Contains)
-                    .DataTextField("Text")
-                    .DataValueField("Value")
-                    .OptionLabel("Selecciona un concesionario")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcesionario" })
-                    .DataSource(source =>
+                    <label>Delegación:</label>
+                    @(Html.Kendo().DropDownList()
+                        .Name("idDelegacion")
+                        .BindTo((SelectList)ViewBag.CatDelegaciones)
+                        .OptionLabel("-- Seleccione --")
 
-                    {
-                        source.Read(read =>
-                        {
-                            read.Action("Concesionarios_Drop", "CapturaAccidentes");
-                        });
-                    }))
-            </div>
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
+                        .Filter(FilterType.Contains))
+                </div>
+
+                <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
+                    <label>Concesionario:</label>
+                    @(Html.Kendo().DropDownList()
+                        .Name("idConcesionario")
+                        .BindTo((SelectList)ViewBag.CatConcesionario)
+                        .OptionLabel("-- Seleccione --")
+
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlConcesionario" })
+                        .Filter(FilterType.Contains))
+                </div>
            </div>
-        </form>
+        </div>
              <div class="col-12 my-3 col-md-6 col-lg-3">
                 <div class="controlButton">
                     <button class="btnPrimary" type="button" onclick="ajax_Busqueda()">  <h5 class="m-0"><b>Buscar</b></h5></button>
 
                 </div>
             </div>
-          
-            @*Table*@
+        <div class="row justify-content-between mb-1 titleCustom">
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h5 class="px-4"><b>Listado de concesionarios</b></h5>
+                <h6 class="px-4 text-muted">Edita los concesionarios que lo requieran.</h6>
+            </div>
+        </div>
+        @*Table*@
         <div id="listadoConcesionarios">
             <partial name="_ListadoConcesionarios" model="Model" />
         </div>
@@ -180,8 +160,27 @@
             }
         });
     }
+     function ajax_Busqueda(){
+            var idMunicipio = $("#ddlMunicipios").val();
+            var idDelegacion = $("#ddlDelegaciones").val();
+            var idConcesionario = $("#ddlConcesionario").val();
+            showLoading();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ajax_BuscarConcesionario")',
+                data: {
 
-    function ajax_Busqueda(){
-        alert ("SI")
-    }
+                    "idMunicipio": idMunicipio,
+                    "idDelegacion": idDelegacion,
+                    "idConcesionario": idConcesionario
+                },
+                success: function (data) {
+                $("#listadoConcesionarios").html(data);
+                    hideLoading();
+                },
+                error: function (xhr, status) {
+                    hideLoading();
+                }
+            });
+        }
 </script>

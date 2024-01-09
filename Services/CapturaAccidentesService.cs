@@ -2042,8 +2042,10 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
 
-                {
-                    connection.Open();
+				{
+					int numeroConsecutivo = 1;
+
+					connection.Open();
                     SqlCommand command = new SqlCommand("SELECT " +
 											 "MAX(p.nombre) AS nombre, " +
 											 "MAX(p.apellidoPaterno) AS apellidoPaterno, " +
@@ -2170,10 +2172,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                 involucrado.HoraIngreso = default(TimeSpan);
                             }
 
+							involucrado.numeroConsecutivo = numeroConsecutivo;
 
-                            ListaInvolucrados.Add(involucrado);
-
-                        }
+							ListaInvolucrados.Add(involucrado);
+							numeroConsecutivo++;
+						}
 
                     }
 

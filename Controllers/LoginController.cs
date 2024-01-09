@@ -212,11 +212,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
-                            int espacioIndex = oficina.IndexOf(' ');
-
-                            if (espacioIndex >= 0)
-                            {
-                                string idDependenciaStr = oficina.Substring(0, espacioIndex);
+                           string idDependenciaStr = json[0].tipo_oficina;
 
                                 if (int.TryParse(idDependenciaStr, out int idDependencia))
                                 {
@@ -226,8 +222,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 else
                                 {
 
-                                }
-                            }
+                                }                           
                              string idOficinaStr = json[0].clave_oficina;
                            // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
@@ -242,9 +237,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
 
                             }
-                            
-                            var nombreOficina = _catDelegacionesOficinasTransporteService.GetDelegacionOficinaById(idOficina);
-                            await SignInUser(idUsuario,nombre,TipoOfi, nombreOficina);
+
+                            //var nombreOficina = json[0].oficina;//_catDelegacionesOficinasTransporteService.GetDelegacionOficinaById(idOficina);
+                            await SignInUser(idUsuario,nombre,TipoOfi, oficina);
 
                             //BITACORA.
                             //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);

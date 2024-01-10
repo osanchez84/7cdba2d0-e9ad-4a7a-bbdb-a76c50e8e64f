@@ -93,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View();
         }
 
-        public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
+       public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
@@ -131,6 +131,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_EstadisticasAccidentes", lista2);
 
         }
-       
-    }
+		/*public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+			var modelList = _estadisticasAccidentesService.AccidentesPorVehiculo()
+												.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+													&& w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
+													&& w.IdOficial == (model.IdOficial > 0 ? model.IdOficial : w.IdOficial)
+													&& w.idCarretera == (model.idCarretera > 0 ? model.idCarretera : w.idCarretera)
+													&& w.idTramo == (model.idTramo > 0 ? model.idTramo : w.idTramo)
+													&& w.idClasificacionAccidente == (model.idClasificacionAccidente > 0 ? model.idClasificacionAccidente : w.idClasificacionAccidente)
+													&& w.idTipoLicencia == (model.idTipoLicencia > 0 ? model.idTipoLicencia : w.idTipoLicencia)
+													&& w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
+													&& w.idFactorAccidente == (model.idFactorAccidente > 0 ? model.idFactorAccidente : w.idFactorAccidente)
+													&& w.IdTipoVehiculo == (model.IdTipoVehiculo > 0 ? model.IdTipoVehiculo : w.IdTipoVehiculo)
+													&& w.IdTipoServicio == (model.IdTipoServicio > 0 ? model.IdTipoServicio : w.IdTipoServicio)
+													&& w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
+													&& w.idFactorOpcionAccidente == (model.idFactorOpcionAccidente > 0 ? model.idFactorOpcionAccidente : w.idFactorOpcionAccidente)
+													&& ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
+													&& ((model.hora == TimeSpan.Zero && w.hora != TimeSpan.Zero) || model.hora == w.hora)
+													).ToList();
+
+		
+
+			return PartialView("_ListadoAccidentesPorVehiculo", modelList);
+
+		}*/
+	}
 }

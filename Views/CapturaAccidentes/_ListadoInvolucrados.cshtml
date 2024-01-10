@@ -69,6 +69,7 @@
 			.Name("gridInvolucradosTodo").Groupable()
 			.Columns(columns =>
 			{
+				columns.Template(" ").Width(40).Title("Número");
 				columns.Template(" ").Width(140).Title("Detalles");
 				columns.Template(" ").Width(140).Title("Datos persona");
 				columns.Template(" ").Width(140).Title("Domicilio persona");
@@ -77,9 +78,12 @@
 				@*columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 		columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100); *@
 
-			}).HtmlAttributes(new { style = "height:500px" })
+			}).HtmlAttributes(new { style = "height:500px" })		
 			.ClientRowTemplate(
 			"<tr data-uid='#: uid #'>" +
+			"<td class='Número'>" +
+			"<p><span class='description'>#: numeroConsecutivo# </span></p>" +
+			"</td>" +
 			"<td class='Detalles'>" +
 			"<p><span class='description'>Participacion : #: ConductorInvolucrado# </span></p>" +
 			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
@@ -119,6 +123,9 @@
 			)
 			.ClientAltRowTemplate(
 			"<tr data-uid='#: uid #'>" +
+			"<td class='Número'>" +
+			"<p><span class='description'>#: numeroConsecutivo# </span></p>" +
+			"</td>" +
 			"<td class='Detalles'>" +
 			"<p><span class='description'>Participacion : #: ConductorInvolucrado# </span></p>" +
 			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +

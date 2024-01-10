@@ -51,8 +51,8 @@
                     var idsPermitidos = data;
                     $(".nav-item").each(function () {
                         var id = parseInt($(this).data("id"));
-                        if (!idsPermitidos.includes(id)) {
-                            $(this).hide();
+                     if (!(idsPermitidos.includes(id) || $(this).hasClass("always-visible"))) {                            
+                    $(this).hide();
                         }
                     });
                     hideLoading();
@@ -181,14 +181,14 @@
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Ingresar vehículo (Pensión)</p>
                                         </a>
-                                    </li>  <li class="nav-item active" data-id= "306">
+                                    </li>  
+                                    <li class="nav-item active" data-id= "306">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/SalidaVehiculos/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Salida de vehículo (Pensión)</p>
                                         </a>
                                     </li>
-                                    </li>
-                                    <li class="nav-item active" data-id="307">
+                                    <li class="nav-item active" data-id="307">                                       
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/BusquedaDeposito/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Busqueda depósito (Pensión)</p>
@@ -504,12 +504,13 @@
                             <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Configuraciones") ? "show active" : "")" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
                                 <ul class="navbar-nav mt-4">
 
-                                    <li class="nav-item active" data-id="300">
+                                   <li class="nav-item always-visible">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/">
                                             <i class="icon icon-salir h5 m-0 mt-1 me-2"></i>
                                             <p class="m-0 text-start text-break">Cerrar sesión</p>
                                         </a>
                                     </li>
+
                                 </ul>
                             </div>
 

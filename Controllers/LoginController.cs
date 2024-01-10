@@ -302,14 +302,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        private async Task SignInUser(string idUsuario, string nombre,string perfil,string nombreOficina)
+        private async Task SignInUser(string idUsuario, string nombre,string perfil,string oficina)
         {
             var claims = new List<Claim>
             {
                 new Claim(CustomClaims.IdUsuario, idUsuario),
                 new Claim(CustomClaims.Nombre, nombre),
 				new Claim(CustomClaims.Perfil, perfil),
-                new Claim(CustomClaims.NombreOficina, nombreOficina)
+                new Claim(CustomClaims.NombreOficina, oficina)
 
             };           
             

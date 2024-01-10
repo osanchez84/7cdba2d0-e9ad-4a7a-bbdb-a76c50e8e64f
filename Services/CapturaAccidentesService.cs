@@ -2451,7 +2451,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			}
 			return folio > 0;
 		}
-		public int RegistrarInfraccion(NuevaInfraccionModel model)
+		public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia)
         {
             int result = 0;
             string strQuery = @"INSERT INTO infracciones
@@ -2488,6 +2488,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
                                             ,@estatus
+                                            ,@idDependencia
                                             );SELECT SCOPE_IDENTITY()";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -2508,7 +2509,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.IdPersona ?? 0;
                     command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Placa ?? "-";
                     command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Tarjeta ?? "-";
-                   // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
 
 

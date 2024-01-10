@@ -87,7 +87,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     @(Html.Kendo().TextBoxFor(t => t.FolioSolicitud)
                         .Label(l => l.Content("Folio de Solicitud:"))
                         .Placeholder("Ingresa folio de solicitud")
@@ -98,7 +98,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     @(Html.Kendo().TextBoxFor(t => t.FolioInfraccion)
                         .Label(l => l.Content("Folio de Infracción:"))
                         .Placeholder("Ingresa folio de infracción:")
@@ -108,7 +108,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     @(Html.Kendo().TextBoxFor(t => t.Propietario)
                         .Label(l => l.Content("Propietario del Vehículo:"))
                         .Placeholder("Ingresa propietario del vehículo:")
@@ -118,7 +118,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     @(Html.Kendo().TextBoxFor(t => t.NumeroEconomico)
                         .Label(l => l.Content("No. Económico:"))
                         .Placeholder("Ingresa No. Económico")
@@ -254,7 +254,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     <label>Fecha de Ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso).Max(DateTime.Now)
                         .Format("dd/MM/yyyy")
@@ -274,7 +274,7 @@
 
 
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="controlForm my-3">
+                <div class="controlForm mb-3">
                     <label>Fecha Hasta:</label>
 
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngresoFin).Max(DateTime.Now)
@@ -304,8 +304,8 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="controlButton my-3">
-                    <button class="btnPrimary" type="button" onclick="downLoadPdfFiltered()">  <h5 class="m-0"><i class='icon-data m-0'></i>&nbsp;&nbsp<b>Reporte</b></h5></button>
+                <div class=" btnOutline btnOutlinePrimary controlButton my-3">
+                    <button class=" " type="button" onclick="downLoadPdfFiltered()">  <h5 class="m-0"><i class='icon-data m-0'></i>&nbsp;&nbsp<b>Reporte</b></h5></button>
 
                     @*<button type="button" class='btnPrimary'>@Html.ActionLink("Reporte",  "CreatePdf","TransitoTransporte", new{Placas=Model.Placas}, new {@class="m-0"})</button>*@
 

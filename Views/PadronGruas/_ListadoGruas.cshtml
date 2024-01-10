@@ -5,7 +5,7 @@
 <br />
 <br />
 <div class="row">
- 
+ <div class="col-12 mb-4 px-4 rounded gridCustom">
     @*<column template="<button data-bs-toggle=modal data-bs-target=\#editVehiculo class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>" width="100" />*@
     
         @(Html.Kendo().Grid(Model)
@@ -22,7 +22,7 @@
                 columns.Bound(c => c.capacidad).Title("Capacidad").Width(90);
                 //columns.Command(c => c.Custom("Editar").Click("editar")).Width(100);
             }).HtmlAttributes(new { style = "height:350" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Top).PageSizes(true))
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource
@@ -43,6 +43,7 @@
             })
             )
     </div>
+</div>
 @*<div>
      @(Html.Kendo().Grid(Model)
         .Name("Grid2")

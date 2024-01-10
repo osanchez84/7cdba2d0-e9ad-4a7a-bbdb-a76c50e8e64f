@@ -34,7 +34,7 @@
 				).Title("Consultar").Sortable(false).Width(90);*/
 
 			}).HtmlAttributes(new { style = "height:550px" })
-			.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+			.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
 			.Sortable()
 			.Scrollable(scr => scr.Height(350))
 			.DataSource(dataSource => dataSource

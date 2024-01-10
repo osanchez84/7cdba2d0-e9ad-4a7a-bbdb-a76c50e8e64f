@@ -76,7 +76,7 @@
                 columns.Bound(c => c.HoraServicioFormateada).Title("Hora de servicio").Width(150).Format("{0:HH:mm}"); ;
 
             }).HtmlAttributes(new { style = "height:550px" })
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource

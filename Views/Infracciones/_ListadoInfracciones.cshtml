@@ -8,7 +8,7 @@
 			@ViewBag.NoResultsMessage
 		</div>
 	}
-	<div class="col-12 mb-4 px-4 rounded">
+	<div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @*<div class="col-12 mb-4 px-4 rounded gridCustom">*@
         @(
@@ -52,7 +52,9 @@
 				columns.Bound(p => p.idInfraccion).ClientTemplate(
 				"<button onclick=\"ShowUpdate('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
 				).Title("Editar").Sortable(false).Width(90);
-
+				columns.Bound(p => p.idInfraccion).ClientTemplate(
+				"<button onclick=\"ConsultarInfraccion('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
+				).Title("Mostrar").Sortable(false).Width(90);
 				@*columns.Bound(p => p.idInfraccion).ClientTemplate(
 		"<button onclick=\"ShowDetail('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>"
 		).Title("Ver").Sortable(false).Width(90);*@
@@ -185,5 +187,21 @@
 		return titulo;
 	}
 
+	function ConsultarInfraccion(Id) {
+		showLoading();
+		$.ajax({
+			url: '/Infracciones/MostrarInfraccion',
+			type: 'POST',
+			data: { Id: Id },
+			success: function (result) {
 
+				window.location = '/Infracciones/Editar?id=' + Id + '&showE=true'; 
+				hideLoading();
+			},
+			error: function () {
+				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				hideLoading();
+			}
+		});
+	}
 </script>

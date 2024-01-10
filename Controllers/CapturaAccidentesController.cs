@@ -1385,7 +1385,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 				if (!validarFolio)
 				{
-					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model);
+					var idInfraccion = _capturaAccidentesService.RegistrarInfraccion(model,idDependencia);
 					var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.IdPersona);
 					var InfraccionAccidente = _capturaAccidentesService.RelacionAccidenteInfraccion(model.IdVehiculo, idAccidente, idInfraccion);
 

@@ -25,6 +25,7 @@
         <h6 class="px-4 text-muted">Agregue los motivos de la infracción.</h6>
     </div>
 </div>
+
 <div class="col-12 rounded gridCustom">
     @(
         Html.Kendo().Grid(Model)
@@ -49,6 +50,7 @@
             "# if(esSoloLectura) { # disabled='disabled' # } #" +
             "/>"
             ).Title("Calificación").Width(150);
+
 
             @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
     "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"

@@ -39,7 +39,7 @@
                 @*columns.Template(@<text></text>).ClientTemplate("<input type='checkbox' #= IsAdmin ? checked='checked':'' # class='chkbx' />");*@
                 @*columns.Command(c => c.Custom("Editar").Click("editar")).Width(100);*@
             }).HtmlAttributes(new { style = "height:350" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Top).PageSizes(true))
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource

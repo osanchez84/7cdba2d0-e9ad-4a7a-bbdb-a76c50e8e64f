@@ -30,7 +30,7 @@
                 columns.Bound(c => c.Placas).Title("Placas").Width(90);
                 columns.Bound(c => c.TipoGrua).Title("Tipo de grúa").Width(90);
             }).HtmlAttributes(new { style = "height:350" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Top).PageSizes(true))
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource

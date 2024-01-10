@@ -8,6 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IInfraccionesService
     {
+        bool UpdateFolio(string id, string folio);
         public decimal GetUmas();
         public List<InfraccionesModel> GetAllInfracciones2();
 
@@ -27,9 +28,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
         public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);
-        public int CrearPersonaInfraccion(int idPersona);
-        public int CrearGarantiaInfraccion(GarantiaInfraccionModel model);
-        public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model);
+        public int CrearPersonaInfraccion(int idInfraccion, int idPersona);
+        public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInf);
+        public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model, int idInf);
         public int CrearMotivoInfraccion(MotivoInfraccionModel model);
         public int EliminarMotivoInfraccion(int idMotivoInfraccion);
         public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia);

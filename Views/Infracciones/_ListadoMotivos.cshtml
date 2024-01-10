@@ -1,5 +1,23 @@
 ﻿@model List<MotivosInfraccionVistaModel>
+@{
+    
+    bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
+    string claseColorEliminar = esSoloLectura ? "colorDisabled" : "colorDanger";
+    string claseColorOtroBoton = esSoloLectura ? "colorDisabled" : "colorPrimary";
+}
+<script>
+        $(document).ready(function () {
+            var esSoloLectura = @(ViewBag.EsSoloLectura ? "true" : "false");
 
+            if (esSoloLectura) {
+                $(".custom-button").addClass("colorDisabled");
+            } else {
+                $(".custom-button").addClass("colorPrimary");
+            }
+        });
+
+    var esSoloLectura = @Html.Raw(esSoloLectura.ToString().ToLower());
+</script>
 
 <div class="row justify-content-between my-2 mb-1 titleCustom">
     <div class="offset-1 col-12 mt-4 mb-2">
@@ -7,20 +25,42 @@
         <h6 class="px-4 text-muted">Agregue los motivos de la infracción.</h6>
     </div>
 </div>
-<div class="col-12 mb-4 px-4 rounded gridCustom">
-    @(Html.Kendo().Grid(Model)
-        .Name("gridInfraccionesPersonas")
-        .Columns(columns =>
-        {
-            columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
-            columns.Bound(p => p.Nombre).Title("Motivo");
-            columns.Bound(p => p.Fundamento).Title("Fundamento legal");
-            columns.Bound(p => p.CalificacionMinima).Title("Calif. Min.");
-            columns.Bound(c => c.CalificacionMaxima).Title("Calif. Max.");
-            columns.Bound(c => c.calificacion).Title("Calificación").ClientFooterTemplate("Total : #=sum#");
+
+<div class="col-12 rounded gridCustom">
+    @(
+        Html.Kendo().Grid(Model)
+            .Name("gridMotivosInfraccion")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.idInfraccion).Hidden();
+                columns.Bound(c => c.idMotivoInfraccion).Title("Clave motivo");
+                columns.Bound(p => p.Nombre).Title("Motivo");
+                columns.Bound(p => p.Fundamento).Title("Fundamento legal");
+                columns.Bound(p => p.CalificacionMinima).Title("Calif. Min.");
+                columns.Bound(c => c.CalificacionMaxima).Title("Calif. Max.");
+            columns.Template(
+            "<input type='number' " +
+            "name='calificacionEditor_#=calificacion#' " +
+            "class='k-input' " +
+            "style='width: 100%;' " +
+            "value='#=calificacion#' " +
+            "data-bind='value:calificacion' " +
+            "min='#=CalificacionMinima#' " +
+            "max='#=CalificacionMaxima#' " +
+            "# if(esSoloLectura) { # disabled='disabled' # } #" +
+            "/>"
+            ).Title("Calificación").Width(150);
+
+
             @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
     "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
     ).Title("Acciones").Sortable(false).Width(100);*@
+            columns.Template(
+        "<button type ='button' class='w-100 btn " + claseColorEliminar + "'>" +
+        "<h6 class='m-0' onclick='eliminarMotivo(event)'>" +
+        "<i class='h5 icon-delete me-2'></i><b>Eliminar</b>" +
+        "</h6></button>"
+    ).Width(150);
         }).HtmlAttributes(new { style = "height:auto" })
         .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
         .Sortable()
@@ -68,3 +108,40 @@
         }
     }
 </label>
+<div class="modal fade modalCustom" id="EliminarMotivoModal" aria-labelledby="agregarVehiculoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodyEliminarMotivo">
+            </div>
+        </div>
+    </div>
+</div>
+ <script>
+    function eliminarMotivo(event) { 
+        if ('@ViewBag.EsSoloLectura' === 'True') {
+            return;
+        }
+        event.preventDefault();
+        var grid = $("#gridMotivosInfraccion").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var idMotivoInfraccion = dataItem.idMotivoInfraccion;
+        var idInfraccion = dataItem.idInfraccion;
+        var Nombre = dataItem.Nombre;
+
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ModalEliminarMotivo", "Infracciones")',
+            type: 'POST',
+            data: { idMotivoInfraccion: idMotivoInfraccion, idInfraccion: idInfraccion, Nombre : Nombre },
+            success: function (data) {
+                $('#ModalBodyEliminarMotivo').html(data);
+                $('#EliminarMotivoModal').modal('show');
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
+        });
+    }
+ </script>

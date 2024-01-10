@@ -1,5 +1,8 @@
 ﻿@model InfraccionesModel
+@{
+		bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
 
+}
 
 <div class="mainContainer bg-light">
 	<section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -42,7 +45,7 @@
 			<div class="col-md-4 auto">
 				<div class="row">
 					<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-						<button href="#" id="btnEditarInfraccion" onclick="btnEditarInfraccion()">
+						<button href="#" id="btnEditarInfraccion" onclick="btnEditarInfraccion()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
 							<h6 class="m-0 d-flex align-items-center"><i class="icon-addInfracion h5 mb-0 me-2"></i><b>Guardar infracción</b></h6>
 						</button>
 					</div>
@@ -164,6 +167,7 @@
 										@(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
 											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
 											.Format("dd/MM/yyyy HH:mm")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%", required = "required" })
 											)
 									</div>
@@ -175,6 +179,7 @@
 										@(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
 											.Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
 											.Placeholder("Ingresa folio")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%", required = "required" })
 											)
 									</div>
@@ -185,6 +190,7 @@
 										@(Html.Kendo().DropDownListFor(m => m.idOficial).Filter(FilterType.Contains)
 											.BindTo((SelectList)ViewBag.CatOficiales)
 											.OptionLabel("-- Seleccione --")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width:100%;", required = "required" })
 											)
 										@Html.ValidationMessageFor(x => x.idOficial)
@@ -196,6 +202,7 @@
 										@(Html.Kendo().DropDownListFor(m => m.idMunicipio).Filter(FilterType.Contains)
 											.BindTo((SelectList)ViewBag.CatMunicipios)
 											.OptionLabel("-- Seleccione --")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width:100%;", required = "required" })
 											)
 									</div>
@@ -228,6 +235,7 @@
 										@(Html.Kendo().DropDownListFor(m => m.idCarretera).Filter(FilterType.Contains)
 											.BindTo((SelectList)ViewBag.CatCarreteras)
 											.OptionLabel("-- Seleccione --")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
 											)
 									</div>
@@ -239,6 +247,7 @@
 											@(Html.Kendo().DropDownListFor(f => f.idTramo).Filter(FilterType.Contains)
 												.BindTo((SelectList)ViewBag.CatTramos)
 												.OptionLabel("-- Seleccione --")
+												.Enable(!ViewBag.EsSoloLectura)
 												.HtmlAttributes(new { style = "width:100%;", required = "required" })
 												)
 										</div>
@@ -248,6 +257,7 @@
 									<div class="controlForm">
 										@(Html.Kendo().TextBoxFor(t => t.kmCarretera)
 											.Label(l => l.Content("Kilómetro: <b>(obligatorio)</b>:"))
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%; height:58px;" })
 											)
 									</div>
@@ -259,6 +269,7 @@
 										@(Html.Kendo().TextBoxFor(t => t.lugarCalle)
 											.Label(l => l.Content("Calle: "))
 											.Placeholder("Ingresa calle")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%" })
 											)
 									</div>
@@ -268,6 +279,7 @@
 										@(Html.Kendo().TextBoxFor(t => t.lugarNumero)
 											.Label(l => l.Content("Número:"))
 											.Placeholder("Ingresa número")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%" })
 											)
 									</div>
@@ -277,6 +289,7 @@
 										@(Html.Kendo().TextBoxFor(t => t.lugarColonia)
 											.Label(l => l.Content("Colonia:"))
 											.Placeholder("Ingresa colonia")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%" })
 											)
 									</div>
@@ -286,6 +299,7 @@
 										@(Html.Kendo().TextBoxFor(t => t.lugarEntreCalle)
 											.Label(l => l.Content("Entre calle: "))
 											.Placeholder("Ingresa entre calle")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width: 100%" })
 											)
 									</div>
@@ -426,6 +440,7 @@
 													@(Html.Kendo().DropDownListFor(m => m.idAplicacion).Filter(FilterType.Contains)
 														.BindTo((SelectList)ViewBag.CatAplicadoA)
 														.OptionLabel("-- Seleccione --")
+														.Enable(!ViewBag.EsSoloLectura)
 														.HtmlAttributes(new { style = "width:100%;", required = "required" })
 														)
 													@Html.ValidationMessageFor(x => x.idAplicacion)
@@ -438,6 +453,7 @@
 														.Rows(4)
 														.Label(l => l.Content("Observaciones generales:"))
 														.Placeholder("Ingresa observaciones")
+														.Enable(!ViewBag.EsSoloLectura)
 														.HtmlAttributes(new { style = "width: 100%" })
 														)
 												</div>
@@ -468,7 +484,7 @@
 								<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
 									<div class="row">
 										<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-											<button type="button" id="btnNuevoMotivo" onclick="btnModalCrearMotivo()">
+											<button type="button" id="btnNuevoMotivo" onclick="btnModalCrearMotivo()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
 												<h6 class="m-0 d-flex align-items-center"><i class="icon-addCausas h5 mb-0 me-2"></i><b>Agregar nuevo motivo</b></h6>
 											</button>
 										</div>
@@ -477,7 +493,7 @@
 							</div>
 							<div class="row my-4 px-4">
 								<div id="listadoMotivos">
-									<partial name="_ListadoMotivos" model="Model.MotivosInfraccion" />
+									<partial name="_ListadoMotivos" model="Model.MotivosInfraccion" esSoloLectura="@ViewBag.EsSoloLectura" />
 								</div>
 							</div>
 
@@ -509,6 +525,7 @@
 										@(Html.Kendo().DropDownListFor(m => m.Garantia.idCatGarantia).Filter(FilterType.Contains)
 											.BindTo((SelectList)ViewBag.CatGarantias)
 											.OptionLabel("-- Seleccione --")
+											.Enable(!ViewBag.EsSoloLectura)
 											.HtmlAttributes(new { style = "width:100%;", id = "ddlTipoGarantia", required = "required" }))
 									</div>
 								</div>
@@ -539,7 +556,7 @@
 									</div>
 									<div class="row">
 										<div class="col-12 col-md-8 mx-md-auto col-lg-5 btnOutline btnOutlinePrimary">
-											<button type="button" class="btnPrimary px-3" id="btnNuevoMotivo" onclick="enviarImagen()">
+											<button type="button" class="btnPrimary px-3" id="btnNuevoMotivo" onclick="enviarImagen()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
 												<h5><b>Subir Inventario</b></h5>
 											</button>
 										</div>
@@ -557,6 +574,7 @@
 												@(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoPlaca).Filter(FilterType.Contains)
 													.BindTo((SelectList)ViewBag.CatTipoPlaca)
 													.OptionLabel("-- Seleccione --")
+													.Enable(!ViewBag.EsSoloLectura)
 													.HtmlAttributes(new { style = "width:100%;" }))
 											</div>
 										</div>
@@ -588,6 +606,7 @@
 												@(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia).Filter(FilterType.Contains)
 													.BindTo((SelectList)ViewBag.CatTipoLicencia)
 													.OptionLabel("-- Seleccione --")
+													.Enable(!ViewBag.EsSoloLectura)
 													.HtmlAttributes(new { style = "width:100%;" }))
 											</div>
 										</div>
@@ -597,6 +616,7 @@
 													.Label(l => l.Content("Número licencia:"))
 													.Placeholder("Ingresa licencia")
 													.Events(s => s.Change("updateNumLic"))
+													.Enable(!ViewBag.EsSoloLectura)
 													.HtmlAttributes(new { style = "width: 100%", id = "numLicGar" })
 													)
 											</div>
@@ -814,7 +834,7 @@ function serviceCrearInfraccion(idInfraccion) {
             } else if (response.success === false && response.message === "Registro actualizado en SITTEG") {
                 sitteg_info("El registro fue actualizado en SITTEG.");
                 shouldGoBack = true;
-            } else if (response.success === false && response.message === "Error: La longitud de la placa excede el límite permitido.") {
+				} else if (response.success === false && response.message === "Infraccion Guardada, no enviada") {
                 sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
 			    shouldGoBack = true;
             } else {

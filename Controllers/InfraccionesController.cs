@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
 using System.Data.SqlClient;
+using static System.Formats.Asn1.AsnWriter;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -291,8 +292,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        public ActionResult Editar(int idInfraccion, int id)
-        {
+        public ActionResult Editar(int idInfraccion, int id, bool? showE= false)
+
+		{
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
@@ -317,9 +319,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
+			ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
 
-
-            if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
+			if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
             {
                 HttpContext.Session.SetString("isedition", "0");
             }
@@ -373,16 +375,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 			var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
 			int idGarantia = 0;
+            int idInf = model.idInfraccion;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.placasVehiculo;
-                idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia);
+                idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia,idInf);
 				model.idGarantia = idGarantia;
             }
             else
             {
                 model.Garantia.idGarantia = model.idGarantia;
-                var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia);
+                var result = _infraccionesService.ModificarGarantiaInfraccion(model.Garantia, idInf);
 			}
 
 
@@ -418,15 +421,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             if (!validarFolio)
             {
-                var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)model.idPersona);
-                model.idPersonaInfraccion = idPersonaInfraccion;
+               // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
+				var idPersonaInfraccion = _infraccionesService.CrearPersonaInfraccion((int)idInfraccion, (int)model.idPersona);
 
-                _bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
+				_bitacoraServices.insertBitacora(idInfraccion, ip, "crearInfraccion", "CREAR1", "insert", user);
 
                 return Json(new { id = idInfraccion });
             }
@@ -443,7 +446,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);      
+			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion,idDependencia);      
             
             return Json(new { id = idInfraccion });
       
@@ -1184,7 +1187,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Ha ocurrido un error intenta más tarde" });
+                        return Json(new { success = false, message = "Infraccion Guardada, no enviada" });
                     }
 
                 }                                
@@ -1523,6 +1526,39 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-    }
+
+        public ActionResult UpdateFolio(string id,string folio)
+        {
+
+            var t = _infraccionesService.UpdateFolio(id, folio);
+
+            return Json(true);
+        }
+
+        public ActionResult ModalEliminarMotivo(int idMotivoInfraccion, int idInfraccion,string Nombre)
+        {
+            ViewBag.idMotivoInfraccion = idMotivoInfraccion;
+            ViewBag.idInfraccion = idInfraccion;
+            ViewBag.Nombre = Nombre;
+
+            return PartialView("_ModalEliminarMotivo");
+        }
+        [HttpPost]
+        public IActionResult ajax_EliminarMotivo(int idMotivoInfraccion, int idInfraccion)
+        {
+            var MotivoEliminar = _infraccionesService.EliminarMotivoInfraccion(idMotivoInfraccion);
+    
+            var datosGrid = _infraccionesService.GetMotivosInfraccionByIdInfraccion(idInfraccion);
+
+            return Json(datosGrid);
+        }
+		public ActionResult MostrarInfraccion(bool modoSoloLectura, int Id)
+		{
+			ViewBag.ModoSoloLectura = modoSoloLectura;
+
+			return RedirectToAction("Editar", new { modoSoloLectura = true, idInfraccion = Id });
+		}
+
+	}
 }
 

@@ -1,4 +1,26 @@
 ﻿
+
+
+export function updateFolio(id,data, Succes, Fail) {
+
+
+    console.log("entra pet")
+    $.ajax({
+        url: './UpdateFolio',
+        type: 'POST',
+        data: {id:id,folio:data},
+        success: Succes || function (result) {
+            console.log(result);
+        },
+        error: Fail || function (result) {
+            console.log(result);
+        }
+    });
+
+}
+
+
+
 export function GetData(data, Succes, Fail) {
     //showLoading();
     $.ajax({
@@ -17,6 +39,9 @@ export function GetData(data, Succes, Fail) {
 
 
 }
+
+
+
 
 
 export function getDataBit(data, Succes, Fail) {

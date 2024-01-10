@@ -67,6 +67,27 @@
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlTipoGrua" })
                     .Filter(FilterType.Contains))
             </div>
+             <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
+                <label>Delegación:</label>
+                @(Html.Kendo().DropDownList()
+                    .Name("idDelegacion")
+                    .BindTo((SelectList)ViewBag.CatDelegaciones)
+                    .OptionLabel("-- Seleccione --")
+
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
+                    .Filter(FilterType.Contains))
+            </div>
+            
+            <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
+                <label>Concesionario:</label>
+                @(Html.Kendo().DropDownList()
+                    .Name("idConcesionario")
+                    .BindTo((SelectList)ViewBag.CatConcesionario)
+                    .OptionLabel("-- Seleccione --")
+
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlConcesionario" })
+                    .Filter(FilterType.Contains))
+            </div>
 
 
             <div class="col-12 my-3 col-md-6 col-lg-3">
@@ -152,19 +173,11 @@
     }
 
     function submitSearch() {
-
         var placas = $("#txtPlacas").val();
         var noEconomico = $("#txtNoEconomico").val();
         var idTipoGrua = $("#ddlTipoGrua").val();
-        //console.log(Mydata);
-        //$.ajax({
-        //    url: '@Url.Action("ajax_BuscarPadron")',
-        //    type: 'POST',
-        //    data: Mydata,
-        //    success: function (result) {
-        //        $("#listadoGruas").html(result);
-        //    }
-        //});
+        var idDelegacion = $("#ddlDelegaciones").val();
+        var idConcesionario = $("#ddlConcesionario").val();
         showLoading();
         $.ajax({
             type: "GET",
@@ -173,6 +186,8 @@
                 "placas": placas,
                 "noEconomico": noEconomico,
                 "idTipoGrua": idTipoGrua,
+                "idDelegacion": idDelegacion,
+                "idConcesionario": idConcesionario
             },
             success: function (data) {
                 $("#listadoGruas").html(data);
@@ -183,6 +198,7 @@
             }
         });
     }
+
 </script>
 
 

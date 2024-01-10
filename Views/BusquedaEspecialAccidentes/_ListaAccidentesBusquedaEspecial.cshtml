@@ -6,7 +6,8 @@
             .Name("gridBusquedaEspecialAccidentes")
             .Columns(columns =>
             {
-                columns.Bound(c => c.IdAccidente).Title("Número").Width(60);
+                columns.Bound(c => c.IdAccidente).Hidden();
+                columns.Bound(c => c.Numero).Title("Número").Width(60);
                 columns.Bound(c => c.numeroReporte)
                     .Title("Folio")
                     .Width(100)

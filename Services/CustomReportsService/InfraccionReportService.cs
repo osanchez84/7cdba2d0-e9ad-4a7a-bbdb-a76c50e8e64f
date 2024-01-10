@@ -136,7 +136,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Estatus: ", ModelDataInfracciones.estatusInfraccion));             
                 nested.AddCell(FieldCellBox("Oficial: ", ModelDataInfracciones.nombreOficial.ToString()));
                 nested.AddCell(FieldCellBox("Municipio: ", ModelDataInfracciones.municipio));
-                nested.AddCell("");
+                nested.AddCell(FieldCellBox("",""));
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
                 nesthousing.Rowspan = 5;
@@ -356,7 +356,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Aplicación"));
-                nested.AddCell(FieldCellBox("Infracción aplicada a: ", ""));//PENDIENTE!!!
+                nested.AddCell(FieldCellBox("Infracción aplicada a: ", ModelDataInfracciones.AplicadaA));//PENDIENTE!!!
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

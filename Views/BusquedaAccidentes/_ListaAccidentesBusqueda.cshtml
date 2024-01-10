@@ -15,7 +15,8 @@
 			)*@
 			.Columns(columns =>
 			{
-				columns.Bound(c => c.IdAccidente).Title("Número").Width(60);
+				columns.Bound(c => c.IdAccidente).Hidden();
+				columns.Bound(c => c.Numero).Title("Número").Width(60);
 				columns.Bound(c => c.numeroReporte).Title("Folio").Width(100);
 				columns.Bound(c => c.fecha).Title("Fecha").ClientTemplate("#= new Date(fecha).toLocaleDateString('en-GB') #").Width(100);
 				columns.Bound(c => c.hora).Title("Hora").Width(70);
@@ -26,6 +27,9 @@
 				columns.Bound(p => p.IdAccidente).ClientTemplate(
 				"<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
 				).Title("Exportar").Sortable(false).Width(90);
+				columns.Bound(p => p.IdAccidente).ClientTemplate(
+				"<button onclick=\"mostrarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
+				).Title("Mostrar").Sortable(false).Width(90);
 				columns.Bound(p => p.IdAccidente).ClientTemplate(
 				"<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
 				).Title("Editar").Sortable(false).Width(90);
@@ -166,21 +170,21 @@
 		});
 	}
 
-	function consultarAccidente(idAccidente) {
+	function mostrarAccidente(idAccidente) {
 		showLoading();
 		$.ajax({
-			url: '/CapturaAccidentes/ConsultaAccidente',
+			url: '/CapturaAccidentes/SetLastInsertedIdEdit',
 			type: 'POST',
 			data: { idAccidente: idAccidente },
 			success: function (result) {
-				window.location.href = '/CapturaAccidentes/CapturaAaccidente?modoSoloLectura=true';
+
+				window.location.href = '/CapturaAccidentes/CapturaAaccidente/?showE=true'
 				hideLoading();
 			},
 			error: function () {
 				sitteg_warning("Ocurrio un error al procesar su solicitud.");
 				hideLoading();
 			}
-
 		});
 	}
 

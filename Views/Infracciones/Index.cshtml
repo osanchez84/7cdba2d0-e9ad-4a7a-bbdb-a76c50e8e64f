@@ -287,7 +287,7 @@
     function downLoadPdfFiltered() {
         var Mydata = $("#frmSearch").serialize();
         var fileName = "ReporteGeneralInfracciones.pdf";
-        showLoading();
+       showLoading();
         $.ajax({
             type: "POST",
             url: '@Url.Action("InfraccionesGeneral","PDFGenerator")',
@@ -295,6 +295,7 @@
             //contentType: "application/json; charset=utf-8",
             //dataType: "text",
             success: function (r) {
+                hideLoading();
                 var bytes = Base64ToBytes(r);
                 var blob = new Blob([bytes], { type: "application/octetstream" });
                 var isIE = false || !!document.documentMode;

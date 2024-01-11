@@ -6,17 +6,9 @@
     string claseColorOtroBoton = esSoloLectura ? "colorDisabled" : "colorPrimary";
 }
 <script>
-        $(document).ready(function () {
-            var esSoloLectura = @(ViewBag.EsSoloLectura ? "true" : "false");
+    
 
-            if (esSoloLectura) {
-                $(".custom-button").addClass("colorDisabled");
-            } else {
-                $(".custom-button").addClass("colorPrimary");
-            }
-        });
-
-    var esSoloLectura = @Html.Raw(esSoloLectura.ToString().ToLower());
+    var esSoloLecturaGrid = @Html.Raw(esSoloLectura.ToString().ToLower());
 </script>
 
 <div class="row justify-content-between my-2 mb-1 titleCustom">
@@ -39,18 +31,19 @@
                 columns.Bound(p => p.CalificacionMinima).Title("Calif. Min.");
                 columns.Bound(c => c.CalificacionMaxima).Title("Calif. Max.");
             columns.Template(
+            "<div style='height: 120px;'>" + // Ajusta la altura según tus necesidades
             "<input type='number' " +
             "name='calificacionEditor_#=calificacion#' " +
             "class='k-input' " +
-            "style='width: 100%;' " +
+            "style='width: 100%; height: 100%;' " +
             "value='#=calificacion#' " +
             "data-bind='value:calificacion' " +
             "min='#=CalificacionMinima#' " +
             "max='#=CalificacionMaxima#' " +
-            "# if(esSoloLectura) { # disabled='disabled' # } #" +
-            "/>"
-            ).Title("Calificación").Width(150);
-
+            "# if(esSoloLecturaGrid) { # disabled='disabled' # } #" +
+            "/>" +
+            "</div>"
+            ).Title("Calificación").Width(190);
 
             @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
     "<button onclick=\"btnModalEditarConcesionario('#= idMotivoInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"

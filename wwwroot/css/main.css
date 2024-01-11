@@ -982,7 +982,9 @@ h3 b, h4 b, h5 b, h6 b, label b {
 .controlForm .k-formatted-value {
     width: 100%;
 }
-
+.k-numeric-wrap {
+    font-size: 150%; /* Ajusta el tamaño de los spinners según tus necesidades */
+}
     .controlForm .k-picker-wrap, .controlForm .k-picker-wrap input, .controlForm .k-datetimepicker input, .controlForm .k-timepicker input, .controlForm .k-formatted-value {
         border: none;
         height: 100%;

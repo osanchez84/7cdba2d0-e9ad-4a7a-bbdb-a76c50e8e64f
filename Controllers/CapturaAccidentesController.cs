@@ -1052,9 +1052,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		//}
 
 
-		public ActionResult ModalAgregarInvolucradoPersona(int Id)
+		public ActionResult ModalAgregarInvolucradoPersona(int IdPersona)
 		{
-			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(Id);
+			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
 			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
 		}
 

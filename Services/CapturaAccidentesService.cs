@@ -1549,7 +1549,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
-                    connection.Open();
+					int numeroConsecutivo = 1;
+
+					connection.Open();
                     SqlCommand command = new SqlCommand(@"
                        SELECT cva.*, COALESCE(cva.idPersona, pcv.idPersona) AS idConductor,cva.idTipoCarga,cva.poliza,ctc.tipoCarga,v.placas, v.tarjeta, v.serie, v.idMarcaVehiculo,  
                         v.idSubmarca,v.idEntidad, v.idTipoVehiculo,acc.numeroReporte,v.idPersona AS idPropietario, v.modelo, v.idColor, v.idCatTipoServicio, v.motor, v.capacidad,  
@@ -1646,10 +1648,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             {
                                 vehiculo.montoVehiculo = 0.0f; 
                             }
+							vehiculo.numeroConsecutivo = numeroConsecutivo;
 
-                            ListaVehiculosInvolucrados.Add(vehiculo);
-
-                        }
+							ListaVehiculosInvolucrados.Add(vehiculo);
+							numeroConsecutivo++;
+						}
 
                     }
 

@@ -425,11 +425,22 @@
 													<div class="checkbox">
 														<label>Infracción de cortesía: </label>
 														<div class="btnToggleActive">
+														@if(ViewBag.EsSoloLectura != null && ViewBag.EsSoloLectura)
+														{
+														
 															@Html.HiddenFor(m => m.cortesiaInt, new { id = "idCortesia" })
 															@(Html.Kendo().SwitchFor(m => m.infraccionCortesia)
-																.HtmlAttributes(new { id = "cortesiaSwitch" })
+																.HtmlAttributes(new { id = "cortesiaSwitch",@readonly ="readonly" })
 																.Messages(c => c.Checked("SI").Unchecked("NO"))
 																)
+														}
+														else{
+																	@Html.HiddenFor(m => m.cortesiaInt, new { id = "idCortesia" })
+																	@(Html.Kendo().SwitchFor(m => m.infraccionCortesia)
+																		.HtmlAttributes(new { id = "cortesiaSwitch" })
+																		.Messages(c => c.Checked("SI").Unchecked("NO"))
+																		)
+														}
 														</div>
 													</div>
 												</div>

@@ -45,6 +45,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 					HttpResponseMessage response = await client.GetAsync(url);
 
+					if (response.IsSuccessStatusCode)
+					{
+						string content = await response.Content.ReadAsStringAsync();
+						dynamic json = JsonConvert.DeserializeObject(content);
 
 					return Json(url);
 				}

@@ -1308,26 +1308,16 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					SqlCommand command = new SqlCommand(@"SELECT " +
+											 "MAX(ia.idPersona) AS idPersona," +
 											 "MAX(p.nombre) AS nombre, " +
 											 "MAX(p.apellidoPaterno) AS apellidoPaterno, " +
 											 "MAX(p.apellidoMaterno) AS apellidoMaterno, " +
 											 "MAX(p.rfc) AS rfc, " +
 											 "MAX(p.curp) AS curp, " +
-											 "MAX(p.idTipoLicencia) AS idTipoLicencia, " +
-											 "MAX(CONVERT(varchar, p.fechaNacimiento, 103)) AS fechaNacimiento, " +
-											 "MAX(tl.tipoLicencia) AS tipoLicencia, " +
-											 "MAX(ia.idAccidente) AS idAccidente," +
-											 "MAX(ia.idPersona) AS idPersona, " +
-											 "MAX(ia.idVehiculo) AS idVehiculo, " +
-											 "MAX(v.idTipoVehiculo) AS idTipoVehiculo, " +
+											 "MAX(CONVERT(varchar, p.fechaNacimiento, 103)) AS fechaNacimiento, " +											 
 											 "MAX(tv.tipoVehiculo) AS tipoVehiculo, " +
 											 "MAX(ia.idEstadoVictima) AS idEstadoVictima, " +
-											 "MAX(ev.estadoVictima) AS estadoVictima, " +
-											 "MAX(ia.idInstitucionTraslado) AS idInstitucionTraslado, " +
-											 "MAX(it.institucionTraslado) AS institucionTraslado, " +
-											 "MAX(ia.idHospital) AS idHospital, " +
-											 "MAX(h.nombreHospital) AS nombreHospital, " +
-											 "MAX(ia.idAsiento) AS idAsiento, " +
+											 "MAX(ev.estadoVictima) AS estadoVictima, " +											
 											 "MAX(ia.fechaIngreso) AS fechaIngreso, " +
 											 "MAX(ia.horaIngreso) AS horaIngreso, " +
 											 "MAX(ca.asiento) AS asiento, " +
@@ -1345,6 +1335,10 @@ namespace GuanajuatoAdminUsuarios.Services
 											 "MAX(concat (pd.colonia,' ', pd.calle,' ', pd.numero,' ', pd.codigoPostal)) as Direccion," +
 											 "MAX(va.idAccidente) AS NoAccidente," +
 											 "MAX(ct.tipoInvolucrado) AS tipoInvolucrado," +
+											 "MAX(p.numeroLicencia) AS numeroLicencia," +
+											 "MAX(pd.colonia) AS colonia," +
+                                             "MAX(pd.numero) AS numero,"  +
+                                             "MAX(pd.calle) AS calle," +
 											 "MAX(cc.cinturon) AS cinturon " +
 											 "FROM involucradosAccidente ia " +
 											 "LEFT JOIN accidentes a ON ia.idAccidente = a.idAccidente " +
@@ -1380,12 +1374,12 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
 							involucrado.RFC = reader["rfc"].ToString();
 							involucrado.CURP = reader["curp"].ToString();
-							involucrado.Calle = reader["curp"].ToString();
-							involucrado.numeroLicencia = reader["nombre"].ToString();
-							involucrado.Numero = reader["apellidoPaterno"].ToString();
-							involucrado.Colonia = reader["apellidoMaterno"].ToString();
-							involucrado.Correo = reader["rfc"].ToString();
-							involucrado.FormatDateNacimiento = reader["curp"].ToString();
+							involucrado.Calle = reader["calle"].ToString();
+							involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
+							involucrado.Numero = reader["numero"].ToString();
+							involucrado.Colonia = reader["colonia"].ToString();
+							involucrado.Correo = reader["correo"].ToString();
+							involucrado.FormatDateNacimiento = reader["fechaNacimiento"].ToString();
 
 						}
 
@@ -2087,6 +2081,7 @@ namespace GuanajuatoAdminUsuarios.Services
 											 "MAX(concat (pd.colonia,' ', pd.calle,' ', pd.numero,' ', pd.codigoPostal)) as Direccion," +
 											 "MAX(va.idAccidente) AS NoAccidente," +
 											 "MAX(ct.tipoInvolucrado) AS tipoInvolucrado," +
+											 "MAX(p.numeroLicencia) AS numeroLicencia," +
 											 "MAX(cc.cinturon) AS cinturon " +
 											 "FROM involucradosAccidente ia " +
 											 "LEFT JOIN accidentes a ON ia.idAccidente = a.idAccidente " +

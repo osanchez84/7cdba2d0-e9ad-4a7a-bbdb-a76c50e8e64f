@@ -41,6 +41,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatTiposVehiculosService _catTiposVehiculosService;
         private readonly IRepuveService _repuveService;
         private readonly IBitacoraService _bitacoraServices;
+        private readonly ICatSubtipoServicio _subtipoServicio;
 
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
             IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
@@ -49,7 +50,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService,
             ICatTiposVehiculosService catTiposVehiculosService
         , IRepuveService repuveService,
-            IBitacoraService bitacoraService
+            IBitacoraService bitacoraService,
+            ICatSubtipoServicio subtipoServicio
             )
         {
             _vehiculosService = vehiculosService;
@@ -68,6 +70,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catTiposVehiculosService = catTiposVehiculosService;
             _repuveService = repuveService;
             _bitacoraServices = bitacoraService;
+            _subtipoServicio = subtipoServicio;
         }
 
         public IActionResult Index()
@@ -102,8 +105,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculoBusquedaModel.isFromUpdate = true;
             vehiculosModel.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
 
+
             vehiculoBusquedaModel.Vehiculo.ErrorRepube = "No";
             vehiculoBusquedaModel.Vehiculo.showclose = false;
+            vehiculoBusquedaModel.Vehiculo.showSubTipo = (vehiculoBusquedaModel.Vehiculo.idCatTipoServicio == 1 || vehiculoBusquedaModel.Vehiculo.idCatTipoServicio == 5) ? true : false;
 
 
 
@@ -794,6 +799,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 return null;
             }
+        }
+
+        public JsonResult SubTipoServicios_Read()
+        {
+            var catEntidades = _catDictionary.GetCatalog("CatSubtipoServicio", "0");
+            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
+            return Json(result);
+        }
+
+        public JsonResult GetSubtipoPorTipo(int idTipoServicio)
+        {
+            var result = new SelectList(_subtipoServicio.GetSubtipoPorTipo(idTipoServicio), "idSubTipoServicio", "subTipoServicio");
+            return Json(result);
         }
 
     }

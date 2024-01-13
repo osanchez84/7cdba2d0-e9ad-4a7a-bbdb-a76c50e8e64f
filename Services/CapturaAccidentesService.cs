@@ -20,6 +20,7 @@ using System.Windows.Input;
 using Microsoft.IdentityModel.Tokens;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Globalization;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1633,7 +1634,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("(SELECT v.idVehiculo, v.placas, propietario.idPersona AS propietario, i.folioInfraccion, i.fechaInfraccion,i.idInfraccion,i.idPersona,i.idPersonaInfraccion, conductor.idPersona AS conductor, ent.nombreEntidad, " +
-                        "propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
+						"propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
                         "FROM conductoresVehiculosAccidente AS cva " +
                         "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
@@ -1664,8 +1665,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             elemnto.Propietario = reader["propietario_nombre"].ToString() + " " + reader["propietario_apellidoPaterno"].ToString() + " " + reader["propietario_apellidoMaterno"].ToString();
                             elemnto.EntidadRegistro = reader["nombreEntidad"].ToString();
 
-
-                            ListaVehiculosInfracciones.Add(elemnto);
+							ListaVehiculosInfracciones.Add(elemnto);
 
                         }
 
@@ -1733,14 +1733,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
-						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
+						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion, ISNULL(gr.garantia,'') garantia " +
 						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
                         "LEFT JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
                         "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 AND i.transito = @idDependencia;", connection);
+						"LEFT JOIN garantiasInfraccion AS gi ON gi.idInfraccion = ia.idInfraccion " +
+						"LEFT JOIN catGarantias AS gr ON gr.idGarantia = gi.idCatGarantia " +
+						"WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 AND i.transito = @idDependencia;", connection);
 
 
 
@@ -1762,8 +1764,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             elemnto.Placa = reader["placas"].ToString();
                             elemnto.EstatusInfraccion = reader["estatusInfraccion"].ToString();
                             elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
-                           // elemnto.EstatusReporte = reader["estatusReporte"].ToString();
-                            elemnto.Vehiculo = $"{reader["marcaVehiculo"]} {reader["nombreSubmarca"]} {reader["placas"]} {reader["modelo"]}";
+                            elemnto.garantia = reader["garantia"].ToString();
+							// elemnto.EstatusReporte = reader["estatusReporte"].ToString();
+							elemnto.Vehiculo = $"{reader["marcaVehiculo"]} {reader["nombreSubmarca"]} {reader["placas"]} {reader["modelo"]}";
 
 
 

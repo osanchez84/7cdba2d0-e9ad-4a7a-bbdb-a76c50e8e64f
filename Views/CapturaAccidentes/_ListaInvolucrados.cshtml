@@ -1,103 +1,97 @@
 ﻿
 <div class="row">
-<div class="col-12 mb-4 px-4 rounded gridCustom">
-    @(
-        Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
-        .Name("gridVehiculosInvolucrados")
-        .Columns(columns =>
-        {
-            columns.Select().Width(50).ClientHeaderTemplate(" ");
-            columns.Bound(c => c.IdPersona).Hidden();
-            columns.Bound(c => c.IdVehiculo).Hidden();
-            columns.Bound(c => c.IdVehiculoInvolucrado).Title("No. de Vehículo").Width(100);
-            columns.Bound(c => c.Placa).Title("Placas").Width(100);
-            columns.Bound(c => c.Tarjeta).Title("Tarjeta").Width(100);
-            columns.Bound(c => c.Serie).Title("Serie").Width(100);
-            columns.Bound(c => c.Marca).Title("Marca").Width(100);
-            columns.Bound(c => c.Color).Title("Color").Width(100);
-            columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(100);
-            columns.Bound(c => c.Modelo).Title("Tipo/Modelo").Width(100);
-            columns.Bound(c => c.FormaTrasladoInvolucrado).Title("Forma de translado").Width(100); 
-            columns.Bound(c => c.Pension).Title("Pensión").Width(100);
-           
+	<div class="col-12 mb-4 px-4 rounded gridCustom">
+		@(
+			Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
+			.Name("gridVehiculosInvolucrados")
+			.Columns(columns =>
+			{
+				columns.Select().Width(50).ClientHeaderTemplate(" ");
+				columns.Bound(c => c.IdPersona).Hidden();
+				columns.Bound(c => c.IdVehiculo).Hidden();
+				columns.Bound(c => c.numeroConsecutivo).Title("No. de Vehículo").Width(100);
+				columns.Bound(c => c.Placa).Title("Placas").Width(100);
+				columns.Bound(c => c.Tarjeta).Title("Tarjeta").Width(100);
+				columns.Bound(c => c.Serie).Title("Serie").Width(100);
+				columns.Bound(c => c.Marca).Title("Marca").Width(100);
+				columns.Bound(c => c.Submarca).Title("SubMarca").Width(100);
+				columns.Bound(c => c.Modelo).Title("Tipo/Modelo").Width(100);
+				columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(100);
+			})
+			.Sortable()
+			.Groupable()
+			.Scrollable()
+			.Pageable()
+			.DataSource(dataSource => dataSource
+			.Ajax()
+			.Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
+			.PageSize(5)
+			.Model(model => model.Id(p => p.IdPersona))
+			)
+			.ToolBar(t => t.Search())
+			.Search(s =>
+			{
+				s.Field(c => c.IdVehiculoInvolucrado);
+				s.Field(c => c.Tarjeta);
+				s.Field(c => c.Fecha);
+				s.Field(c => c.Placa);
+				s.Field(c => c.Serie);
+				s.Field(c => c.Marca);
+				s.Field(c => c.Submarca);
+				s.Field(c => c.PropietarioInvolucrado);
+				s.Field(c => c.Modelo);
 
-        })
-        .Sortable()
-        .Groupable()
-        .Scrollable()
-        .Pageable()
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .Read(read => read.Action("ObtVehiculosInvol", "CapturaAccidentes"))
-        .PageSize(5)
-            .Model(model => model.Id(p => p.IdPersona))
-        )
-            .ToolBar(t => t.Search())
-            .Search(s =>
-            {
-                s.Field(c => c.IdVehiculoInvolucrado);
-                s.Field(c => c.Tarjeta);
-                s.Field(c => c.Fecha);
-                s.Field(c => c.Placa);
-                s.Field(c => c.Serie);
-                s.Field(c => c.Marca);
-                s.Field(c => c.Color);
-                s.Field(c => c.PropietarioInvolucrado);
-                s.Field(c => c.Modelo);
-                s.Field(c => c.FormaTrasladoInvolucrado);
-                s.Field(c => c.Pension);
-
-            })
-        )
-</div>
+			})
+			)
+	</div>
 </div>
 
 <script>
 
-    $(document).ready(function () {
-        var grid = $("#gridVehiculosInvolucrados").data("kendoGrid");
-        grid.tbody.on("click", ".k-checkbox", onClickInfraccionesVehiculo);
-        function onClickInfraccionesVehiculo(e) {
-
-          
-
-            var gridI = $("#gridVehiculosInvolucrados").data("kendoGrid");
-            var row = $(e.target).closest("tr");
-            var dataItem = gridI.dataItem(row);
-            var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado;
-            obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado);
-            if (row.hasClass("k-selected")) {
-                setTimeout(function (e) {
-                    gridI.clearSelection();
-                })
-            } else {
-                gridI.clearSelection();
-            };
-        };
-    });
+	$(document).ready(function () {
+		var grid = $("#gridVehiculosInvolucrados").data("kendoGrid");
+		grid.tbody.on("click", ".k-checkbox", onClickInfraccionesVehiculo);
+		function onClickInfraccionesVehiculo(e) {
 
 
-    function obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado) {
 
-        var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
-        $('#idPersonaHidden').val(idPersona);
-        $('#idVehiculoHidden').val(IdVehiculoInvolucrado);
-        showLoading();
-        $.ajax({
-            url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
-            type: 'POST',
-            data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
-            success: function (response) {
-                sitteg_success("Se ha actualizado la información del vehículo");
-                hideLoading();
-                // $("#tablaHospitales").html(result);
+			var gridI = $("#gridVehiculosInvolucrados").data("kendoGrid");
+			var row = $(e.target).closest("tr");
+			var dataItem = gridI.dataItem(row);
+			var IdVehiculoInvolucrado = dataItem.IdVehiculoInvolucrado;
+			obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado);
+			if (row.hasClass("k-selected")) {
+				setTimeout(function (e) {
+					gridI.clearSelection();
+				})
+			} else {
+				gridI.clearSelection();
+			};
+		};
+	});
 
-            },
-            error: function (error) {
-                hideLoading();
-            }
-        });
-    }
+
+	function obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado) {
+
+		var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
+		$('#idPersonaHidden').val(idPersona);
+		$('#idVehiculoHidden').val(IdVehiculoInvolucrado);
+		showLoading();
+		$.ajax({
+			url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
+			type: 'POST',
+			data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
+			success: function (response) {
+				sitteg_success("Se ha actualizado la información del vehículo");
+				hideLoading();
+				// $("#tablaHospitales").html(result);
+
+			},
+			error: function (error) {
+				hideLoading();
+			}
+		});
+	}
 
 
 </script>

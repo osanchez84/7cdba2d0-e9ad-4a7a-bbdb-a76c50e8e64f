@@ -7,10 +7,10 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ICapturaAccidentesService
     {
-         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina, int idDependencia);
+         List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina);
 
-        public int GuardarParte1(CapturaAccidentesModel model, int idOficina,int idDependencia);
-        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina, int idDependencia);
+        public int GuardarParte1(CapturaAccidentesModel model, int idOficina);
+        public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);
 
         List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio);
 
@@ -42,15 +42,16 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int EliminarCausaBD(int IdCausaAccidente,int idAccidente, int idAccidenteCausa);
         public int GuardarDescripcion(int idAccidente,string descripcionCausa);
         List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server= null);
+
         public int AgregarPersonaInvolucrada(int idPersonaInvolucrado, int idAccidente);
         List<CapturaAccidentesModel> VehiculosInvolucrados(int IdAccidente);
         CapturaAccidentesModel InvolucradoSeleccionado(int idAccidente,int IdVehiculoInvolucrado,int IdPropietarioInvolucrado);
         CapturaAccidentesModel ObtenerConductorPorId(int IdPersona);
         public int GuardarComplementoVehiculo(CapturaAccidentesModel model,int IdVehiculo,int idAccidente);
         int AgregarMontoV(MontoModel model);
-        List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente, int idDependencia);
+        List<CapturaAccidentesModel> InfraccionesVehiculosAccidete(int idAccidente);
         public int RelacionAccidenteInfraccion(int IdVehiculo,int idAccidente,int IdInfraccion);
-        List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente, int idDependencia);
+        List<CapturaAccidentesModel> InfraccionesDeAccidente(int idAccidente);
        public int RelacionPersonaVehiculo(int IdPersona,int idAccidente,int IdVehiculoInvolucrado);
         public int ActualizarInvolucrado(CapturaAccidentesModel model,int idAccidente);
         List<CapturaAccidentesModel> InvolucradosAccidente(int idAccidente);
@@ -62,11 +63,18 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int EliminarInvolucrado(int idPersona);
 
         public int EditarInvolucrado(CapturaAccidentesModel model);
-        public int RegistrarInfraccion(NuevaInfraccionModel model,int idDependencia);
+        public int RegistrarInfraccion(NuevaInfraccionModel model, int idDependencia);
         public string ObtenerDescripcionCausaDesdeBD(int idAccidente);
         public DatosAccidenteModel ObtenerDatosFinales(int idAccidente);
+        public bool ValidarFolio(string folioInfraccion, int idDependencia);
+
+		CapturaAccidentesModel ObtenerDetallePersona(int Id);
+		
 
 
-    }
+
+
+
+	}
 
 }

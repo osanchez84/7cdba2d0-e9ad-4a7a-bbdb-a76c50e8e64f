@@ -230,7 +230,19 @@ namespace GuanajuatoAdminUsuarios.Framework
 							.OrderBy(s => s.Text)
 							.ToList();
 					break;
-				case "CatOficiales":
+                case "CatConcesionarios":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idConcesionario", "concesionario" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("concesionarios", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idConcesionario"]),
+                                Text = Convert.ToString(s["concesionario"])
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
+                    break;
+                case "CatOficiales":
 					catalogModel.CatalogName = catalog;
 					campos = new string[] { "idOficial", "nombre", "apellidoPaterno", "apellidoMaterno" };
 					catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catOficiales", campos)

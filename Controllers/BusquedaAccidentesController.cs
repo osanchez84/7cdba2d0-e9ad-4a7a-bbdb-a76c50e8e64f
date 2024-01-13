@@ -67,9 +67,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult GetAllAccidentes([DataSourceRequest] DataSourceRequest request)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina, idDependencia);
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina);
 
             return Json(resultadoBusqueda.ToDataSourceResult(request));
         }
@@ -128,9 +128,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina, idDependencia)
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina)
                                                 .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
                                                     && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
@@ -146,8 +146,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda, StringComparison.OrdinalIgnoreCase))
                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
+			for (int i = 0; i < resultadoBusqueda.Count; i++)
+			{
+				resultadoBusqueda[i].Numero = i + 1;
+			}
 
-            return Json(resultadoBusqueda);
+			return Json(resultadoBusqueda);
 
         }
     }

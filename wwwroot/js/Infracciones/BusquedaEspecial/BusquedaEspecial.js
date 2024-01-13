@@ -1,4 +1,4 @@
-﻿import { AddLoading, GetDataGrid, RemoveTramite,getListBit } from './Funcionality/ConexxionPeticiones.js'
+﻿import { AddLoading, GetDataGrid, RemoveTramite, getListBit, FolioUpdate } from './Funcionality/ConexxionPeticiones.js'
 
 $(document).ready(() => {
 
@@ -69,6 +69,47 @@ window.TemplateMostrar = (d) => {
     </form>`
 }
 
+
+window.TemplateFolio = (data) => {
+    window.idInfraccion = data.idInfraccion
+
+    return `<div class="d-flex justify-content-between">
+    <div>${data.folioInfraccion}</div>
+    </div>`
+    // <button  class='w-100 btn' onclick="UpdateFolio('${data.idInfraccion}')"><h6 class='m-0 colorPrimary'><i class="icon icon-edit h4 m-0 mt-1 me-2"></i></button>
+
+}
+
+
+window.UpdateFolio = (id) => {
+
+    $('#modalUpdateFolio').data('updateFolio',id);
+
+    $('#modalUpdateFolio').modal('show');
+
+    //FolioUpdate(id,finishUpdateFolio)
+
+}
+window.cerrarModal = () => {
+    $('#modalUpdateFolio').modal('hide');
+
+}
+window.ActualizarFolio = () => {
+
+    var data = $("#newFolio").val()
+    var id = $('#modalUpdateFolio').data('updateFolio')
+
+    FolioUpdate(id,data, finishUpdateFolio)
+}
+
+
+function finishUpdateFolio(d) {
+    console.log("hola")
+    var grd = $("#GridInf").data("kendoGrid")
+    grd.dataSource.read()
+    $('#modalUpdateFolio').modal('hide');
+
+}
 
 function finishCancel(d) {
 

@@ -22,5 +22,13 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? ActualizadoPor { get; set; }
         public int Estatus { get; set; }
 
+        public class CalificacionEditorModel
+        {
+            public decimal? calificacion { get; set; }
+            public decimal CalificacionMinima { get; set; }
+            public decimal CalificacionMaxima { get; set; }
+        }
+
+
     }
 }

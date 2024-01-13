@@ -37,7 +37,7 @@
                 columns.Bound(c => c.Delegacion).Title("Delegación").Width(120);
                 columns.Bound(c => c.numeroIventario).Title("Inventario").Width(120);
             }).HtmlAttributes(new { style = "height:350" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Top).PageSizes(true))
+            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource

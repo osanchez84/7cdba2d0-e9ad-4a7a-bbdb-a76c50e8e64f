@@ -6,7 +6,8 @@
             .Name("gridBusquedaEspecialAccidentes")
             .Columns(columns =>
             {
-                columns.Bound(c => c.IdAccidente).Title("Número").Width(60);
+                columns.Bound(c => c.IdAccidente).Hidden();
+                columns.Bound(c => c.Numero).Title("Número").Width(60);
                 columns.Bound(c => c.numeroReporte)
                     .Title("Folio")
                     .Width(100)
@@ -37,7 +38,7 @@
 
 
             }).HtmlAttributes(new { style = "height:550px" })
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Top))
+            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
             .Sortable()
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource

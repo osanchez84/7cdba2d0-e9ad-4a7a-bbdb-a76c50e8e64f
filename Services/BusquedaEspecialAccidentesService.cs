@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 _sqlClientConnectionBD = sqlClientConnectionBD;
             }
-            public List<BusquedaEspecialAccidentesModel> BusquedaAccidentes(BusquedaEspecialAccidentesModel model, int idOficina, int idDependencia)
+            public List<BusquedaEspecialAccidentesModel> BusquedaAccidentes(BusquedaEspecialAccidentesModel model, int idOficina)
             {
                 //
                 List<BusquedaEspecialAccidentesModel> ListaAccidentes = new List<BusquedaEspecialAccidentesModel>();
@@ -71,7 +71,6 @@ FROM
 WHERE 
     a.idOficinaDelegacion = @idOficina
     AND a.estatus != 0
-    AND a.transito = @idDependencia
     AND (
         (@fechaInicio IS NULL OR @fechaFin IS NULL OR (a.fecha BETWEEN @fechaInicio AND @fechaFin))
         OR vea.placa = @placasBusqueda
@@ -116,7 +115,7 @@ GROUP BY
                         command.CommandType = CommandType.Text;
                         command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
                         command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                        command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                       // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
                         command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
                         command.Parameters.Add(new SqlParameter("@idEstatusReporte", SqlDbType.Int)).Value = (object)model.idEstatusReporte ?? DBNull.Value;
                         command.Parameters.Add(new SqlParameter("@oficioBusqueda", SqlDbType.NVarChar)).Value = (object)model.folioBusqueda != null ? model.folioBusqueda.ToUpper() : DBNull.Value;
@@ -174,7 +173,7 @@ GROUP BY
 
 
             }
-            public List<BusquedaAccidentesPDFModel> BusquedaAccidentes(BusquedaAccidentesPDFModel model, int idOficina,int idDependencia)
+            public List<BusquedaAccidentesPDFModel> BusquedaAccidentes(BusquedaAccidentesPDFModel model, int idOficina)
             {
                 //
                 List<BusquedaAccidentesPDFModel> ListaAccidentes = new List<BusquedaAccidentesPDFModel>();
@@ -222,7 +221,7 @@ GROUP BY
                             "OR UPPER(cond.apellidoPaterno) = @conductorBusqueda " +
                             "OR UPPER(cond.apellidoMaterno) = @conductorBusqueda " +
                             "OR vea.serie = @serieBusqueda)" +
-                            "AND a.idOficinaDelegacion = @idOficina AND a.transito = @idDependencia" +
+                            "AND a.idOficinaDelegacion = @idOficina " +
                            "AND ((@fechaInicio IS NULL AND @fechaFin IS NULL) OR (a.fecha BETWEEN @fechaInicio AND @fechaFin)) " +
                         "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                             "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,er.idEstatusReporte, ela.idOficial, sup.idOficial, aut.idOficial; ", connection);
@@ -231,7 +230,7 @@ GROUP BY
                         command.CommandType = CommandType.Text;
                         command.Parameters.Add(new SqlParameter("@fechaInicio", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
                         command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                        command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                       // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
                         command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
                         command.Parameters.Add(new SqlParameter("@oficioBusqueda", SqlDbType.NVarChar)).Value = (object)model.folio != null ? model.folioBusqueda.ToUpper() : DBNull.Value;
                         command.Parameters.Add(new SqlParameter("@idDelegacionBusqueda", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
@@ -446,7 +445,7 @@ GROUP BY
                 return result;
             }
         }
-        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes(int idOficina, int idDependencia)
+        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes(int idOficina)
         {
             //
             List<BusquedaEspecialAccidentesModel> ListaAccidentes = new List<BusquedaEspecialAccidentesModel>();
@@ -483,14 +482,14 @@ GROUP BY
                         "LEFT JOIN catOficiales AS ela ON a.idElabora = ela.idOficial " +
                         "LEFT JOIN catOficiales AS sup ON a.idSupervisa = sup.idOficial " +
                         "LEFT JOIN catOficiales AS aut ON a.idAutoriza = aut.idOficial " +
-                        "WHERE a.estatus=1 AND a.transito = @idDependencia " +
+                        "WHERE a.estatus=1 " +
                         "GROUP BY a.idAccidente, a.numeroReporte, a.fecha, a.hora, a.idMunicipio, a.idTramo, a.idCarretera, a.idElabora, a.idSupervisa,a. idAutoriza,a.kilometro,a.idOficinaDelegacion, " +
                         "mun.municipio, car.carretera, tra.tramo, er.estatusReporte,a.idEstatusReporte, ela.idOficial, sup.idOficial,aut.idOficial; ", connection);
 
 
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                   // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection)) 
                     {
@@ -547,6 +546,42 @@ GROUP BY
 
 
         }
+
+
+
+        public bool UpdateFolio(string id, string folio)
+        {
+            var result = true;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE accidentes SET numeroreporte = @folio WHERE idAccidente = @idAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", id);
+                    command.Parameters.AddWithValue("@folio", folio);
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+
+        }
+
+
     }
  }
 

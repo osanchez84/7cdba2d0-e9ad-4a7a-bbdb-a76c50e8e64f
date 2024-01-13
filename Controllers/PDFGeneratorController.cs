@@ -57,16 +57,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public async Task<FileResult> AccidentesDetallado(int idAccidente)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+           // int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina, idDependencia);
+            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
 			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
 			var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 
 			var ListClasificaciones = _capturaAccidentesService.ObtenerDatosGrid(idAccidente);
 			var ListFactores = _capturaAccidentesService.ObtenerDatosGridFactor(idAccidente);
 			var ListCausas = _capturaAccidentesService.ObtenerDatosGridCausa(idAccidente);
-			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente,idDependencia);
+			var ListInfracciones = _capturaAccidentesService.InfraccionesDeAccidente(idAccidente);
 
 			var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 
@@ -123,7 +123,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var modelList = _busquedaAccidentesService.GetAllAccidentes(idOficina, idDependencia)
+            var modelList = _busquedaAccidentesService.GetAllAccidentes(idOficina)
 												.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
 													&& w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
 													&& w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)

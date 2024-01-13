@@ -1181,7 +1181,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             left join catTramos catTra on inf.idTramo = catTra.idTramo
 											left join catAplicacionInfraccion ainf on ainf.idAplicacion = inf.idAplicacion
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
-                                            left join personasInfracciones pInf on pInf.idPersonaInfraccion = inf.idPersonaInfraccion
+                                            left join personasInfracciones pInf on pInf.idInfraccion = inf.idInfraccion
                                             left join personas conduct on conduct.idPersona = inf.idPersona
 			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersona
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio
@@ -1700,9 +1700,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		{
 			int result = 0;
 			string strQuery = @"UPDATE motivosInfraccion
-                                SET fechaActualizacion = @fechaActualizacion
-                                    actualizadoPor = @actualizadoPor
-                                    estatus = @estatus)
+                                SET fechaActualizacion = @fechaActualizacion,
+                                    actualizadoPor = @actualizadoPor,
+                                    estatus = @estatus
                                 WHERE idMotivoInfraccion = @idMotivoInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -1759,6 +1759,43 @@ namespace GuanajuatoAdminUsuarios.Services
 
 			return result;
 		}
+
+
+
+
+		public bool UpdateFolio(string id,string folio)
+		{
+
+            var result = false;
+
+            string queryString = @"update infracciones set folioinfraccion=@folio where idInfraccion=@id";
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)id ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)folio ?? DBNull.Value;
+                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    result = true;
+                }
+                catch (Exception e)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+
+            return result;
+
+        }
 
 
 		public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia	)
@@ -2467,13 +2504,13 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) and transito = @idDependencia";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate())";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
 					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);			
-					command.Parameters.AddWithValue("@idDependencia", idDependencia);
+					//command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
 					{

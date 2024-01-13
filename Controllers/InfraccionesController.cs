@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Authorization;
 using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
 using System.Data.SqlClient;
+using static System.Formats.Asn1.AsnWriter;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -291,8 +292,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        public ActionResult Editar(int idInfraccion, int id)
-        {
+        public ActionResult Editar(int idInfraccion, int id, bool? showE= false)
+
+		{
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
@@ -317,9 +319,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
+			ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
 
-
-            if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
+			if ((model.MotivosInfraccion == null  || model.MotivosInfraccion.Count()==0)||(model.idGarantia==null || model.idGarantia==0))
             {
                 HttpContext.Session.SetString("isedition", "0");
             }
@@ -444,7 +446,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);      
+			bool idInfraccion = _infraccionesService.ValidarFolio(model.folioInfraccion,idDependencia);      
             
             return Json(new { id = idInfraccion });
       
@@ -1524,6 +1526,39 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-    }
+
+        public ActionResult UpdateFolio(string id,string folio)
+        {
+
+            var t = _infraccionesService.UpdateFolio(id, folio);
+
+            return Json(true);
+        }
+
+        public ActionResult ModalEliminarMotivo(int idMotivoInfraccion, int idInfraccion,string Nombre)
+        {
+            ViewBag.idMotivoInfraccion = idMotivoInfraccion;
+            ViewBag.idInfraccion = idInfraccion;
+            ViewBag.Nombre = Nombre;
+
+            return PartialView("_ModalEliminarMotivo");
+        }
+        [HttpPost]
+        public IActionResult ajax_EliminarMotivo(int idMotivoInfraccion, int idInfraccion)
+        {
+            var MotivoEliminar = _infraccionesService.EliminarMotivoInfraccion(idMotivoInfraccion);
+    
+            var datosGrid = _infraccionesService.GetMotivosInfraccionByIdInfraccion(idInfraccion);
+
+            return Json(datosGrid);
+        }
+		public ActionResult MostrarInfraccion(bool modoSoloLectura, int Id)
+		{
+			ViewBag.ModoSoloLectura = modoSoloLectura;
+
+			return RedirectToAction("Editar", new { modoSoloLectura = true, idInfraccion = Id });
+		}
+
+	}
 }
 

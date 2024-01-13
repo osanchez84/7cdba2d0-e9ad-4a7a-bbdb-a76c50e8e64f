@@ -402,6 +402,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 ac.numeroReporte		as Numreporteaccidente
                 ,ac.fecha				as Fecha
                 ,ac.hora				as Hora
+                ,ac.idMunicipio         as idMunicipio
                 ,(ROW_NUMBER() OVER (PARTITION BY ac.idAccidente Order by ac.idAccidente))					as NumVeh							
                 ,veh.placas				as PlacasVeh
                 ,veh.serie				as SerieVeh
@@ -467,7 +468,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             ListadoAccidentesPorVehiculoModel model = new ListadoAccidentesPorVehiculoModel();
-                            model.Numreporteaccidente = reader["Numreporteaccidente"] == System.DBNull.Value ? default(string) : reader["Numreporteaccidente"].ToString();
+							model.idMunicipio = reader["idMunicipio"] != DBNull.Value ? Convert.ToInt32(reader["idMunicipio"]) : 0;
+							model.Numreporteaccidente = reader["Numreporteaccidente"] == System.DBNull.Value ? default(string) : reader["Numreporteaccidente"].ToString();
                             model.NumVeh = reader["NumVeh"] == System.DBNull.Value ? default(string) : reader["NumVeh"].ToString();
                             model.PlacasVeh = reader["PlacasVeh"] == System.DBNull.Value ? default(string) : reader["PlacasVeh"].ToString();
                             model.SerieVeh = reader["SerieVeh"] == System.DBNull.Value ? default(string) : reader["SerieVeh"].ToString();

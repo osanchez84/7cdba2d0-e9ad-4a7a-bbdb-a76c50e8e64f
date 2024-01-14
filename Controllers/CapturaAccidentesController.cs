@@ -76,6 +76,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly IRepuveService _repuveService;
         private readonly IBitacoraService _bitacoraServices;
+        private readonly ICatSubtipoServicio _subtipoServicio;
 
 
         private int idOficina = 0;
@@ -90,9 +91,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService, IOptions<AppSettings> appSettings,
 			ICatEntidadesService catEntidadesService,
 			IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-			, IRepuveService repuveService, IBitacoraService bitacoraService
+			, IRepuveService repuveService, IBitacoraService bitacoraService,
+            ICatSubtipoServicio subtipoServicio
 
-			)
+            )
 		{
 			_capturaAccidentesService = capturaAccidentesService;
 			_catMunicipiosService = catMunicipiosService;
@@ -130,6 +132,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			_catSubmarcasVehiculosService = catSubmarcasVehiculosService;
 			_repuveService = repuveService;
             _bitacoraServices = bitacoraService;
+            _subtipoServicio = subtipoServicio;
         }
 		/// <summary>
 		/// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////

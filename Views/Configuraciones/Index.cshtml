@@ -90,6 +90,9 @@
 				"NuevaContrasena" : NuevaContrasena
 			},
 			success: function (result) {
+				Contrasena = $("#Contrasena").val('');
+				NuevaContrasena = $("#NuevaContrasena").val('');
+				ConfirmarContrasena = $("#ConfirmarContrasena").val('');
 				sitteg_success('La contraseña se actualizo exitosamente.');
 				hideLoading();
 			},

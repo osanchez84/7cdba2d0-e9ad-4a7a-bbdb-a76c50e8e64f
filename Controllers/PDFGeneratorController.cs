@@ -176,7 +176,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				vehiculo = s.Vehiculo.fullVehiculo,
 				placas = s.Vehiculo.placas,
 				delegacion = s.delegacion,
-				estatusInfraccion = s.estatusInfraccion
+				estatusInfraccion = s.estatusInfraccion,
+				aplicacion=s.aplicacion
 			}).ToList();
 			Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
 			{
@@ -189,9 +190,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				{"vehiculo","Vehículo"},
 				{"placas","Placas"},
 				{"delegacion","Delegación"},
-				{ "estatusInfraccion", "Estatus"}
+				{ "estatusInfraccion", "Estatus"},
+				{ "aplicacion","Aplicadoa"}
 			};
-			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", 9, ColumnsNames, pdfModel);
+			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", 10, ColumnsNames, pdfModel);
 			byte[] bytes = result.Item1.ToArray();
 			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
 			return Content(base64);

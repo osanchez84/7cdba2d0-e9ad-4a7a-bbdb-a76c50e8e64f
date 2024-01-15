@@ -90,8 +90,8 @@
             .Sortable()
             .Scrollable(scr => scr.Enabled(true))
             .Scrollable(scr => scr.Height(500))
-           
-            .ToolBar(t => t.Search())
+
+            .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.Folio);

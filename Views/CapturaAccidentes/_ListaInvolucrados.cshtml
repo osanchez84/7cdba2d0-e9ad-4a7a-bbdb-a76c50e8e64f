@@ -28,7 +28,7 @@
 			.PageSize(5)
 			.Model(model => model.Id(p => p.IdPersona))
 			)
-			.ToolBar(t => t.Search())
+			.ToolBar(t => t.Search().Text("Buscar..."))
 			.Search(s =>
 			{
 				s.Field(c => c.IdVehiculoInvolucrado);

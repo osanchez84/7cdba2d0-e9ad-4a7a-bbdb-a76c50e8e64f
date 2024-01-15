@@ -76,6 +76,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
         private readonly IRepuveService _repuveService;
         private readonly IBitacoraService _bitacoraServices;
+        private readonly ICatSubtipoServicio _subtipoServicio;
 
 
         private int idOficina = 0;
@@ -90,9 +91,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			ICotejarDocumentosClientService cotejarDocumentosClientService, IPersonasService personasService, IVehiculosService vehiculosService, IOptions<AppSettings> appSettings,
 			ICatEntidadesService catEntidadesService,
 			IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-			, IRepuveService repuveService, IBitacoraService bitacoraService
+			, IRepuveService repuveService, IBitacoraService bitacoraService,
+            ICatSubtipoServicio subtipoServicio
 
-			)
+            )
 		{
 			_capturaAccidentesService = capturaAccidentesService;
 			_catMunicipiosService = catMunicipiosService;
@@ -130,6 +132,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			_catSubmarcasVehiculosService = catSubmarcasVehiculosService;
 			_repuveService = repuveService;
             _bitacoraServices = bitacoraService;
+            _subtipoServicio = subtipoServicio;
         }
 		/// <summary>
 		/// //PRIMERA SECCION DE CAPTURA ACCIDENTE//////////
@@ -244,11 +247,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			else
 			{
 
-
+				var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina,nombreOficina);
 				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 
@@ -1052,9 +1055,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		//}
 
 
-		public ActionResult ModalAgregarInvolucradoPersona(int Id)
+		public ActionResult ModalAgregarInvolucradoPersona(int IdPersona)
 		{
-			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(Id);
+			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
 			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
 		}
 
@@ -1067,6 +1070,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return PartialView("_ModalAgregarInvolucrado");
 		}
+
+		[HttpGet]
+		public IActionResult SubmodalBuscarInvolucradoPersona()
+		{
+			BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+			var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+			ViewBag.ModeInvolucrado = ListInvolucradoModel;
+
+			return PartialView("_ModalAgregarInvolucradoPersona");
+		}
+
 		public ActionResult ModalAgregarComplemeto()
 		{
 			return PartialView("_ModalComplementoVehiculo");

@@ -645,8 +645,23 @@ namespace GuanajuatoAdminUsuarios.Framework
 								.ToList();
 					}
 					break;
+                case "CatSubtipoServicio":
+                    if (int.TryParse(parameter, out intId))
+                    {
+                        catalogModel.CatalogName = catalog;
+                        campos = new string[] { "idSubtipoServicio", "servicio" };
+                        catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catSubtipoServicio", campos)
+                                .Select(s => new SystemCatalogListModel()
+                                {
+                                    Id = Convert.ToInt32(s["idSubtipoServicio"]),
+                                    Text = Convert.ToString(s["servicio"])
+                                })
+                                .OrderBy(s => s.Text)
+                                .ToList();
+                    }
+                    break;
 
-				default:
+                default:
 					return catalogModel;
 			}
 			return catalogModel;

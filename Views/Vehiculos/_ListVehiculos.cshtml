@@ -1,14 +1,15 @@
 ﻿@model List<VehiculoModel>
 
-<div class="row mb-1 titleCustom">
-    <div class="col-12 col-md-auto mt-4 mb-2">
-        <h5 class="px-4"><b>Listado de vehículos</b></h5>
-        <h6 class="px-4 text-muted">Edita los datos de vehículo.</h6>
-    </div>
-</div>
+
 <div class="row">
 
     <div class="col-12 mb-4 px-4 rounded gridCustom">
+        <div class="row mb-1 titleCustom">
+            <div class="col-12 col-md-auto mt-4 mb-2">
+                <h5 class="px-4"><b>Listado de vehículos</b></h5>
+                <h6 class="px-4 text-muted">Edita los datos de vehículo.</h6>
+            </div>
+        </div>
         @(Html.Kendo().Grid(Model)
             .Name("Grid")
             .Columns(columns =>
@@ -27,7 +28,7 @@
                 columns.Bound(c => c.modelo).Title("Modelo").Width(90);
                 columns.Bound(c => c.color).Title("Color").Width(90);
                 columns.Bound(c => c.entidadRegistro).Title("Entidad").Width(90);
-                columns.Bound(c => c.tipoServicio).Title("Tipo Servicio").Width(90);
+                columns.Bound(c => c.subTipoServicio).Title("SubTipo Servicio").Width(90);
                 columns.Bound(c => c.numeroEconomico).Title("Numero económico").Width(90);
 
 
@@ -43,7 +44,7 @@
             .Ajax()
             .ServerOperation(false)
             )
-            .ToolBar(t => t.Search())
+            .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.placas);
@@ -57,7 +58,7 @@
                 s.Field(c => c.modelo);
                 s.Field(c => c.color);
                 s.Field(c => c.entidadRegistro);
-                s.Field(c => c.tipoServicio);
+                s.Field(c => c.subTipoServicio);
                 s.Field(c => c.numeroEconomico);
 
 

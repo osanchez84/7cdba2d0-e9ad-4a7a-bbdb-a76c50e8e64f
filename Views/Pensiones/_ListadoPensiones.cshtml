@@ -61,7 +61,7 @@
             .ServerOperation(false)
             .Group(groups => groups.Add(p => p.Pension))
             )
-            .ToolBar(t => t.Search())
+            .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.estatusDesc);

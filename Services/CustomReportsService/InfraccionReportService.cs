@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 using iText = iTextSharp.text;
 
 namespace GuanajuatoAdminUsuarios.Services.CustomReportsService

@@ -200,39 +200,39 @@
 <script>
 	function submitSearch() {
 		var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
-		//console.log(Mydata);
 		showLoading();
+
 		$.ajax({
 			url: '@Url.Action("ajax_BusquedaAccidentes")',
 			type: 'POST',
 			data: Mydata,
 			success: function (result) {
 				$("#estadisticasInfracciones").html(result);
-		     showLoading();
+
 				$.ajax({
 					data: Mydata,
 					url: '@Url.Action("ajax_BusquedaParaTablas")',
 					type: 'POST',
-					dataType: 'json',  
+					dataType: 'json',
 					success: function (result) {
 						$("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
 						$("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
-						hideLoading();
 					},
 					error: function () {
 						sitteg_warning("Ocurrió un error al obtener estadísticas.");
+					},
+					complete: function () {
 						hideLoading();
 					}
 				});
-
-				hideLoading();
 			},
 			error: function () {
-				sitteg_warning("Ocurrió un error en la busqueda intente de nuevo mas tarde.");
+				sitteg_warning("Ocurrió un error en la búsqueda, inténtelo de nuevo más tarde.");
 				hideLoading();
 			}
 		});
 	}
+
 
 	$("#ddlFactores").on("change", function () {
 		var value = $(this).val();

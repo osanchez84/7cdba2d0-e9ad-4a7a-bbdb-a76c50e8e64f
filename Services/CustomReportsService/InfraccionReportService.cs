@@ -430,7 +430,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             PdfPTable Invoicetable = new PdfPTable(3);
             Invoicetable.HorizontalAlignment = 1;
             Invoicetable.WidthPercentage = 100;
-            Invoicetable.SetWidths(new float[] { 400f, 200f, 200f });  // then set the column's __relative__ widths
+            Invoicetable.SetWidths(new float[] { 410f, 100f, 90f });  // then set the column's __relative__ widths
             Invoicetable.DefaultCell.Border = Rectangle.NO_BORDER;
 
             {

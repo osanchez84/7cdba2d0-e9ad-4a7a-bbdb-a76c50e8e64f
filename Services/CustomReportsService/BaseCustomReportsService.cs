@@ -69,14 +69,15 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             if (ColumnsNames.Count == size)
             {
 
-                float[] headers = new float[(size)];
-                var porcentHeader = (float)100 / size;
-                for (int i = 0; i < size; i++)
-                {
-                    headers[i] = porcentHeader;
-                }
+				//float[] headers = new float[(size)];
+				//var porcentHeader = (float)100 / size;
+				//for (int i = 0; i < size; i++)
+				//{
+				//    headers[i] = porcentHeader;
+				//}
 
-                tableLayout.SetWidths(headers);
+				tableLayout.SetWidths(new float[] { 70f, 240f, 200f, 90f });
+				//tableLayout.SetWidths(headers);
                 tableLayout.WidthPercentage = 100;
                 tableLayout.HeaderRows = 1;
                 tableLayout.SpacingBefore = 2f;

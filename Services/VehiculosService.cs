@@ -420,10 +420,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
                                 ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona
                                 ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
-                                ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.tipoServicio
+                                ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.servicio
                                 ,catE.nombreEntidad, catC.color,p.nombre
                                 ,p.apellidoPaterno
                                 ,p.apellidoMaterno  
+                                ,'' TipoServicio
                                 FROM vehiculos v
                                 LEFT JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
                                 LEFT JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
@@ -490,6 +491,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.color = reader["color"].ToString();
                             model.entidadRegistro = reader["nombreEntidad"].ToString();
                             model.tipoServicio = reader["tipoServicio"].ToString();
+                            model.subTipoServicio = reader["servicio"].ToString();
                             model.Persona.nombre = reader["nombre"].ToString();
                             model.Persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             model.Persona.apellidoMaterno = reader["apellidoMaterno"].ToString(); model.motor = reader["motor"].ToString();

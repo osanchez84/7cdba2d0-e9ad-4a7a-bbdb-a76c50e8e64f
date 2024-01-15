@@ -110,10 +110,10 @@
 					<div class="controlForm">
 						<label>Tipo licencia:</label>
 				@(Html.Kendo().DropDownListFor(m => m.idTipoLicencia).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatTipoLicencia)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
-							)
+								.BindTo((SelectList)ViewBag.CatTipoLicencia)
+								.OptionLabel("-- Seleccione --")
+								.HtmlAttributes(new { style = "width:100%;" })
+								)
 					</div>
 				</div>-->
 				<div class="form-group col-12 col-md-6 col-lg-3">
@@ -153,8 +153,8 @@
 						@(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
 							.Format("dd/MM/yyyy")
 							.Culture("es-ES")
-							.HtmlAttributes(new { style = "width: 100%", title = "datepicker",id="start" })
-							.Events(e => e.Change("validarFecha")) 							)
+							.HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
+							.Events(e => e.Change("validarFecha")))
 					</div>
 					<div id="mensajeError1" style="color: red;"></div>
 				</div>
@@ -164,7 +164,7 @@
 						@(Html.Kendo().DatePickerFor(t => t.FechaFin).Max(DateTime.Now)
 							.Format("dd/MM/yyyy")
 							.Culture("es-ES")
-							.HtmlAttributes(new { style = "width: 100%", title = "datepicker", id="end" }))
+							.HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" }))
 					</div>
 				</div>
 
@@ -185,20 +185,19 @@
 				</div>
 			</div>
 		</form>
-			<div id="estadisticasInfracciones">
-				<partial name="_EstadisticasAccidentes" model="@ViewBag.Estadisticas" />
-			</div>
-			<div class="row my-4 px-4" id="GridAccidentesPorAccidente">
-				<partial name="_ListadoAccidentesPorAccidente" model="@ViewBag.ListadoAccidentesPorAccidente" />
-			</div>
-			<div class="row my-4 px-4" id="GridAccidentesPorVehiculo">
-				<partial name="_ListadoAccidentesPorVehiculo" model="@ViewBag.ListadoAccidentesPorVehiculo" />
-			</div>
+		<div id="estadisticasInfracciones">
+			<partial name="_EstadisticasAccidentes" model="@ViewBag.Estadisticas" />
+		</div>
+		<div class="row my-4 px-4" id="GridAccidentesPorAccidente">
+			<partial name="_ListadoAccidentesPorAccidente" model="@ViewBag.ListadoAccidentesPorAccidente" />
+		</div>
+		<div class="row my-4 px-4" id="GridAccidentesPorVehiculo">
+			<partial name="_ListadoAccidentesPorVehiculo" model="@ViewBag.ListadoAccidentesPorVehiculo" />
+		</div>
 	</section>
 </div>
 
 <script>
-
 	function submitSearch() {
 		var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
 		//console.log(Mydata);
@@ -209,14 +208,31 @@
 			data: Mydata,
 			success: function (result) {
 				$("#estadisticasInfracciones").html(result);
+		     showLoading();
+				$.ajax({
+					data: Mydata,
+					url: '@Url.Action("ajax_BusquedaParaTablas")',
+					type: 'POST',
+					dataType: 'json',  
+					success: function (result) {
+						$("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
+						$("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
+						hideLoading();
+					},
+					error: function () {
+						sitteg_warning("Ocurrió un error al obtener estadísticas.");
+						hideLoading();
+					}
+				});
+
 				hideLoading();
-			}, error: function () {
-				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+			},
+			error: function () {
+				sitteg_warning("Ocurrió un error en la busqueda intente de nuevo mas tarde.");
 				hideLoading();
 			}
 		});
 	}
-
 
 	$("#ddlFactores").on("change", function () {
 		var value = $(this).val();
@@ -245,7 +261,7 @@
 		if (fechaInicio > currentDate || (fechaInicio && fechaFin && fechaFin < fechaInicio)) {
 			if (fechaInicio > currentDate) {
 				mostrarMensajeError("La fecha de inicio no puede ser futura. Por favor, seleccione una fecha válida.");
-				 fechaInicioPicker.value(null); 
+				fechaInicioPicker.value(null);
 			} else {
 				mostrarMensajeError("La fecha de fin no puede ser anterior a la fecha de inicio.");
 				fechaFinPicker.value(null);

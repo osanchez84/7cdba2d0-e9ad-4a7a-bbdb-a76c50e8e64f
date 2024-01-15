@@ -26,16 +26,16 @@ namespace GuanajuatoAdminUsuarios.Models
         ///Model Regreso/////
         ///
 
-        public int idMunicipio { get; set; }
+        public int? idMunicipio { get; set; }
         public int? idCarretera { get; set; }
         public int? idTramo { get; set; }
         public string estatusReporte { get; set; }
         public int idPersona { get; set; }
         public int idVehiculo { get; set; }
-        public int idClasificacionAccidente { get; set; }
-        public int idCausaAccidente { get; set; }
-        public int idFactorAccidente { get; set; }
-        public int idFactorOpcionAccidente { get; set; }
+        public int? idClasificacionAccidente { get; set; }
+        public int? idCausaAccidente { get; set; }
+        public int? idFactorAccidente { get; set; }
+        public int? idFactorOpcionAccidente { get; set; }
         public float montoCamino { get; set; }
         public float montoPropietarios { get; set; }
         public float montoOtros { get; set; }

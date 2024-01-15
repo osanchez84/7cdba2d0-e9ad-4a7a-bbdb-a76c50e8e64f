@@ -212,7 +212,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         {
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
-                           string idDependenciaStr = json[0].tipo_oficina;
+                            string idDependenciaStr = json[0].tipo_oficina;
 
                                 if (int.TryParse(idDependenciaStr, out int idDependencia))
                                 {

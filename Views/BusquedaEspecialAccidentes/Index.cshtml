@@ -342,8 +342,20 @@
             type: "POST",
             data: { id: id,folio:data },
             success: function (data) {
-                window.location.reload()
-                hideLoading();
+
+                if(data){
+
+                    window.location.reload()
+                    hideLoading();
+                }
+                else{
+                    sitteg_warning("Este folio ya existe")
+                        
+                    setTimeout(()=>{
+                        window.location.reload()
+                        hideLoading();
+                    },250)
+                }
             },
             error: function (xhr, status, error) {
                 console.log("EE", error)

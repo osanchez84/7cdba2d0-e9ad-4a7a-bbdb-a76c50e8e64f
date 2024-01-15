@@ -13,7 +13,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<BusquedaEspecialAccidentesModel> ObtenerTodosAccidentes(int idOficina);
 
         bool UpdateFolio(string id, string folio);
-
+        bool validarFolio(string folio);
 
 
     }

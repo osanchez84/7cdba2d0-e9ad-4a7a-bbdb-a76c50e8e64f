@@ -582,6 +582,50 @@ GROUP BY
         }
 
 
+
+
+        public bool validarFolio(string folio)
+        {
+            var result = false;
+            var count = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "select count(*) as result from  accidentes where numeroreporte = @folio ";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@folio", folio);
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                
+                        while (reader.Read())
+                        {
+                            count = (int)reader["result"];
+                        }
+                    
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                result = count == 0;
+
+                return result;
+            }
+
+
+        }
+
+
     }
  }
 

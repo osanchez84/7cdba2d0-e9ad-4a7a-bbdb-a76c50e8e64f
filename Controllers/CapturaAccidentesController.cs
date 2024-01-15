@@ -247,11 +247,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			else
 			{
 
-
+				var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina,nombreOficina);
 				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 

@@ -251,10 +251,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult UpdateFolio(string id,string folio)
         {
 
-
-            var fol = _busquedaEspecialAccidentesService.UpdateFolio(id,folio);
-
-            return Json(true);
+            var t = _busquedaEspecialAccidentesService.validarFolio(folio);
+            if (t)
+            {
+                var fol = _busquedaEspecialAccidentesService.UpdateFolio(id, folio);
+            }
+            return Json(t);
         }
 
 

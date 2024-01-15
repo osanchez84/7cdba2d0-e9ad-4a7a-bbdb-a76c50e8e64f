@@ -168,7 +168,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, string nombreOficina = "NRA")
         
         {
             int result = 0;
@@ -221,7 +221,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     result = Convert.ToInt32(command.ExecuteScalar());
 
-                    var newFolio = $"NRA{result}2023";
+                    var ofi = nombreOficina.Trim().Substring(0, 3).ToUpper();
+
+                    var newFolio = $"{ofi}{result}2023";
 
                     SqlCommand command2 = new SqlCommand(@"
                             update accidentes set numeroreporte=@folio where idAccidente=@id

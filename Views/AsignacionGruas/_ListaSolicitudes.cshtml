@@ -41,7 +41,7 @@
             .Read(read => read.Action("Index", "AsignacionGruas"))
             .PageSize(5).Model(model => model.Id(p => p.FolioSolicitud))
             )
-            .ToolBar(t => t.Search())
+            .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.FolioSolicitud);

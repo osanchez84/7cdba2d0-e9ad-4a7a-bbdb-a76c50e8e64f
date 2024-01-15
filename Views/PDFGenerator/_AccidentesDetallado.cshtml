@@ -400,6 +400,7 @@
 			</tr>
 		</table>
 		<br /><br />
+
 		<table class="table">
 			<thead>
 				<tr style="background-color:#e7e7e7">
@@ -432,7 +433,7 @@
 						{
 							<tr>
 								<td rowspan="@rowspan"><p class="s2">@contadorVehiculo</p></td>
-								<td rowspan="@rowspan"><p class="s2">@item.folioInfraccion</p></td>
+								<td rowspan="@rowspan"><p class="s2">@item.folioInfraccion (@item.garantia)</p></td>
 								<td><p class="s2">@motivo</p></td>
 							</tr>
 							contadorInfracciones++;
@@ -449,7 +450,7 @@
 				{
 					<tr>
 						<td><p class="s2">@contadorVehiculo</p></td>
-						<td><p class="s2">@item.folioInfraccion</p></td>
+						<td><p class="s2">@item.folioInfraccion (@item.garantia)</p></td>
 						<td><p class="s2">---</p></td>
 					</tr>
 				}

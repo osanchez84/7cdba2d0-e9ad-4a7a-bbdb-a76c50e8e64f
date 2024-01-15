@@ -281,24 +281,6 @@ namespace GuanajuatoAdminUsuarios.Models
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        public string garantia { get; set; }
     }
 }

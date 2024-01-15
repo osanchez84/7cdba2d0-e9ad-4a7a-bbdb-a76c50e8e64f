@@ -34,7 +34,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,v.modelo
                                 ,v.idColor
                                 ,v.idEntidad
-                                ,v.idCatTipoServicio
+                                ,v.idSubtipoServicio
                                 ,v.propietario
                                 ,v.numeroEconomico
                                 ,v.paisManufactura
@@ -59,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								,ce.nombreEntidad
 								,cv.tipoVehiculo
 								,cc.color
-                                ,catTS.tipoServicio
+                                ,catTS.servicio
                                 FROM vehiculos v
 								LEFT JOIN catColores cc
 								on v.idColor = cc.idColor AND cc.estatus = 1
@@ -73,7 +73,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								on v.idMarcaVehiculo = cmv.idMarcaVehiculo and cmv.estatus = 1
 								LEFT JOIN catSubmarcasVehiculos csv
 								on v.idSubmarca = csv.idSubmarca and csv.estatus = 1
-                                LEFT JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
+                                LEFT JOIN catSubtipoServicio catTS on v.idSubtipoServicio = catTS.idSubtipoServicio 
                                 WHERE v.estatus = 1
                                 order by v.idVehiculo desc";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -102,9 +102,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.modelo = reader["modelo"].ToString();
                             model.idColor = Convert.ToInt32(reader["idColor"].ToString());
                             model.idEntidad = Convert.ToInt32(reader["idEntidad"].ToString());
-                            model.idCatTipoServicio = Convert.ToInt32(reader["idCatTipoServicio"].ToString());
+                            model.idSubtipoServicio = reader["idSubtipoServicio"].GetType() == typeof(DBNull) ? 0 : Convert.ToInt32(reader["idSubtipoServicio"].ToString());
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
-                            model.tipoServicio = reader["tipoServicio"].ToString();
+                            model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ?  "" : reader["servicio"].ToString();
                             model.fechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = Convert.ToInt32(reader["estatus"].ToString());
@@ -188,6 +188,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								,ce.nombreEntidad
 								,cv.tipoVehiculo
 								,cc.color
+                                ,v.idSubtipoServicio
                                 FROM vehiculos v
 								LEFT JOIN catColores cc
 								on v.idColor = cc.idColor AND cc.estatus = 1
@@ -257,6 +258,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.poliza = reader["poliza"].ToString();
                             model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
                             model.otros = reader["otros"].ToString();
+                            model.idSubtipoServicio = reader["idSubtipoServicio"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idSubtipoServicio"].ToString());
                             modelList.Add(model);
                         }
                     }
@@ -403,7 +405,7 @@ namespace GuanajuatoAdminUsuarios.Services
             sqlCondiciones += (object)modelSearch.idMarca == null ? "" : " v.idMarcaVehiculo = @idMarca AND \n";
             sqlCondiciones += (object)modelSearch.idSubMarca == null ? "" : " v.idSubMarca = @idSubMarca AND \n";
             sqlCondiciones += (object)modelSearch.idTipoVehiculo == null ? "" : " v.idTipoVehiculo = @idTipoVehiculo AND \n";
-            sqlCondiciones += (object)modelSearch.idTipoServicio == null ? "" : " v.idCatTipoServicio = @idTipoServicio AND \n";
+            sqlCondiciones += (object)modelSearch.idSubtipoServicio == null ? "" : " v.idSubtipoServicio = @idSubTipoServicio AND \n";
             sqlCondiciones += (object)modelSearch.idColor == null ? "" : " v.idColor = @idColor AND \n";
 
             if (sqlCondiciones.Length > 0)
@@ -426,7 +428,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
                                 LEFT JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
                                 LEFT JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
-                                LEFT JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
+                                LEFT JOIN catSubtipoServicio catTS on v.idSubtipoServicio = catTS.idSubtipoServicio 
                                 LEFT JOIN personas p on v.idPersona = p.idPersona 
                                 LEFT JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
                                 LEFT JOIN catColores catC on v.idColor = catC.idColor  
@@ -453,7 +455,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = (object)modelSearch.idMarca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idSubMarca", SqlDbType.Int)).Value = (object)modelSearch.idSubMarca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)modelSearch.idTipoVehiculo ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idTipoServicio", SqlDbType.Int)).Value = (object)modelSearch.idTipoServicio ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idSubTipoServicio", SqlDbType.Int)).Value = (object)modelSearch.idSubtipoServicio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)modelSearch.idColor ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -544,6 +546,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,poliza
                                 ,carga
                                 ,otros
+                                ,idSubtipoServicio
                                 ) VALUES (
                                 @placas
                                 ,@serie
@@ -568,6 +571,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,@poliza
                                 ,@carga
                                 ,@otros
+                                ,@idSubtipoServicio
                                 );select CAST (SCOPE_IDENTITY() As int)";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -602,7 +606,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)model.poliza ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@carga", SqlDbType.Int)).Value = (object)model.cargaInt ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)model.otros ?? DBNull.Value;
-
+                    command.Parameters.Add(new SqlParameter("@idSubtipoServicio", SqlDbType.Int)).Value = (object)model.idSubtipoServicio ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
                     result = Convert.ToInt32(command.ExecuteScalar());
                     //result = command.ExecuteNonQuery();
@@ -647,6 +651,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 ,poliza			   = @poliza
                                 ,carga			   = @carga
                                 ,otros			   = @otros
+                                ,idSubtipoServicio = @idSubtipoServicio
                                 where idVehiculo= @idVehiculo
                                 ";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -679,6 +684,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)model.poliza ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@carga", SqlDbType.Bit)).Value = (object)model.carga ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)model.otros ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idSubtipoServicio", SqlDbType.Int)).Value = (object)model.idSubtipoServicio ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
                     //result = Convert.ToInt32(command.ExecuteScalar());

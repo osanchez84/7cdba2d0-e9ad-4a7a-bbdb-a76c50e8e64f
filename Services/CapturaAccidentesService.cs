@@ -20,6 +20,7 @@ using System.Windows.Input;
 using Microsoft.IdentityModel.Tokens;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Globalization;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1792,8 +1793,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             elemnto.EntidadRegistro = reader["nombreEntidad"].ToString();
                             elemnto.Cortesia = reader["TipoCortesia"].ToString();
 
-
-                            ListaVehiculosInfracciones.Add(elemnto);
+							ListaVehiculosInfracciones.Add(elemnto);
 
                         }
 
@@ -1861,14 +1861,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         "i.folioInfraccion, " +
                         "cei.estatusInfraccion, " +
                         "i.idEstatusInfraccion, "+
-						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion " +
+						"mv.marcaVehiculo, sv.nombreSubmarca, i.idInfraccion, ISNULL(gr.garantia,'') garantia " +
 						"FROM infraccionesAccidente AS ia JOIN vehiculos AS v ON ia.idVehiculo = v.idVehiculo " +
                         "LEFT JOIN accidentes AS a ON ia.idAccidente = a.idAccidente " +
                         "LEFT JOIN infracciones AS i ON ia.idInfraccion = i.idInfraccion " +
                         "LEFT JOIN catEstatusInfraccion AS cei ON cei.idEstatusInfraccion = i.idEstatusInfraccion " +
                         "LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "LEFT JOIN catSubmarcasVehiculos AS sv ON v.idSubmarca = sv.idSubmarca " +
-                        "WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0;", connection);
+						"LEFT JOIN garantiasInfraccion AS gi ON gi.idInfraccion = ia.idInfraccion " +
+						"LEFT JOIN catGarantias AS gr ON gr.idGarantia = gi.idCatGarantia " +
+						"WHERE ia.idAccidente = @idAccidente AND ia.estatus != 0 ;", connection);
 
 
 
@@ -1890,8 +1892,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             elemnto.Placa = reader["placas"].ToString();
                             elemnto.EstatusInfraccion = reader["estatusInfraccion"].ToString();
                             elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
-                           // elemnto.EstatusReporte = reader["estatusReporte"].ToString();
-                            elemnto.Vehiculo = $"{reader["marcaVehiculo"]} {reader["nombreSubmarca"]} {reader["placas"]} {reader["modelo"]}";
+                            elemnto.garantia = reader["garantia"].ToString();
+							// elemnto.EstatusReporte = reader["estatusReporte"].ToString();
+							elemnto.Vehiculo = $"{reader["marcaVehiculo"]} {reader["nombreSubmarca"]} {reader["placas"]} {reader["modelo"]}";
 
 
 

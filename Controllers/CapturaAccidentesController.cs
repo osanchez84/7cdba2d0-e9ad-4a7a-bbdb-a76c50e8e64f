@@ -1067,6 +1067,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return PartialView("_ModalAgregarInvolucrado");
 		}
+
+		[HttpGet]
+		public IActionResult SubmodalBuscarInvolucradoPersona()
+		{
+			BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+			var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+			ViewBag.ModeInvolucrado = ListInvolucradoModel;
+
+			return PartialView("_ModalAgregarInvolucradoPersona");
+		}
+
 		public ActionResult ModalAgregarComplemeto()
 		{
 			return PartialView("_ModalComplementoVehiculo");

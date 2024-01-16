@@ -248,7 +248,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Dependencias_Read()
         {
-            var result = new SelectList(_dependeciaService.GetDependencias(), "IdDependencia", "NombreDependencia");
+            var result = new SelectList(_dependeciaService.GetDependencias(), "IdOficinaTransporte", "nombreOficina");
             return Json(result);
         }
 

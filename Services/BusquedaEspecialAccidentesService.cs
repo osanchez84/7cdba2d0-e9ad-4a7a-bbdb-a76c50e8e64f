@@ -445,7 +445,7 @@ GROUP BY
                 return result;
             }
         }
-        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes(int idOficina)
+        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes()
         {
             //
             List<BusquedaEspecialAccidentesModel> ListaAccidentes = new List<BusquedaEspecialAccidentesModel>();
@@ -488,7 +488,7 @@ GROUP BY
 
 
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                   // command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                    // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection)) 

@@ -424,6 +424,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.idDependencia = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);

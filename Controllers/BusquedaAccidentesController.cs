@@ -69,7 +69,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina);
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes();
 
             return Json(resultadoBusqueda.ToDataSourceResult(request));
         }
@@ -130,7 +130,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes(idOficina)
+            var resultadoBusqueda = _busquedaAccidentesService.GetAllAccidentes()
                                                 .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
                                                     && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)

@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<BusquedaAccidentesModel> GetAllAccidentes(int idOficina)
+        public List<BusquedaAccidentesModel> GetAllAccidentes()
         {
             //
             List<BusquedaAccidentesModel> ListaAccidentes = new List<BusquedaAccidentesModel>();
@@ -62,7 +62,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                    //command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                    // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

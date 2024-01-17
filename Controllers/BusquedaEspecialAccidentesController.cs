@@ -51,12 +51,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            // int IdModulo = 800;
-            //string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            // List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            // if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            // {
-            return View();
+            int? idOficina = HttpContext.Session.GetInt32("IdOficina");
+            BusquedaEspecialAccidentesModel modelo = new BusquedaEspecialAccidentesModel
+            {
+                IdDelegacionBusqueda = idOficina ?? 0,
+            };
+            return View(modelo);
            // }
            /* else
             {
@@ -187,7 +187,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var accidenteEliminado = _busquedaEspecialAccidentesService.EliminarSeleccionado(idAccidente);
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina);
+            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes();
             return Json(resultadoBusqueda);
         }
 
@@ -220,8 +220,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var resultadoBusqueda = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes(idOficina)
-                                                .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+            var resultadoBusquedaEspecial = _busquedaEspecialAccidentesService.ObtenerTodosAccidentes()
+                                                  .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                     && w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
                                                     && w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
                                                     && w.idTramo == (model.IdTramoBusqueda > 0 ? model.IdTramoBusqueda : w.idTramo)
@@ -236,12 +236,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    && (string.IsNullOrEmpty(model.conductorBusqueda) || w.conductor.Contains(model.conductorBusqueda, StringComparison.OrdinalIgnoreCase))
                                                    && ((model.FechaInicio == default(DateTime) && model.FechaFin == default(DateTime)) || (w.fecha >= model.FechaInicio && w.fecha <= model.FechaFin))
                                                     ).ToList();
-			for (int i = 0; i < resultadoBusqueda.Count; i++)
-			{
-				resultadoBusqueda[i].Numero = i + 1;
-			}
+            for (int i = 0; i < resultadoBusquedaEspecial.Count; i++)
+            {
+                resultadoBusquedaEspecial[i].Numero = i + 1;
+            }
 
-			return Json(resultadoBusqueda);
+            return Json(resultadoBusquedaEspecial);
 
         }
 

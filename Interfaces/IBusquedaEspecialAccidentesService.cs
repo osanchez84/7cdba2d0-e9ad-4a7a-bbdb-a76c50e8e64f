@@ -10,7 +10,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public BusquedaAccidentesPDFModel ObtenerAccidentePorId(int idAccidente);
         List<BusquedaEspecialAccidentesModel> ObtenerAccidentes(BusquedaEspecialAccidentesModel model);
         public int EliminarSeleccionado(int idAccidente);
-        List<BusquedaEspecialAccidentesModel> ObtenerTodosAccidentes(int idOficina);
+        List<BusquedaEspecialAccidentesModel> ObtenerTodosAccidentes();
 
         bool UpdateFolio(string id, string folio);
         bool validarFolio(string folio);

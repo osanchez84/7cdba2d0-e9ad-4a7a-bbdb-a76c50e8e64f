@@ -35,6 +35,8 @@ using GuanajuatoAdminUsuarios.Services.CustomReportsService;
 using Org.BouncyCastle.Asn1.X509.SigI;
 using System.Data.SqlClient;
 using static System.Formats.Asn1.AsnWriter;
+using iTextSharp.tool.xml.html;
+using Kendo.Mvc;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -67,7 +69,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         private readonly AppSettings _appSettings;
-
+        private string resultValue = string.Empty;
 
         public InfraccionesController(
             IEstatusInfraccionService estatusInfraccionService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
@@ -269,25 +271,85 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-           // var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
-            //var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            var vehiculosList = _vehiculosService.GetAllVehiculos();
-            var personasList = _personasService.GetAllPersonas();
+            //var vehiculosList = _vehiculosService.GetAllVehiculos();
+            //var personasList = _personasService.GetAllPersonas();
            
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
-            //ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
-            //ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
-            ViewBag.Vehiculos = vehiculosList;
-            ViewBag.Personas = personasList;
+            //ViewBag.Vehiculos = vehiculosList;
+
             return View(new InfraccionesModel());
         }
 
+        public ActionResult GetAllVehiculosPagination([DataSourceRequest] DataSourceRequest request)
+        {
+            filterValue(request.Filters);
 
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page - 1;
+            pagination.PageSize = 10;
+            pagination.Filter = resultValue;
 
+            var vehiculosList = _vehiculosService.GetAllVehiculosPagination(pagination);
+            var total = 0;
+            if (vehiculosList.Count() > 0)
+                total = vehiculosList.ToList().FirstOrDefault().total;
 
+            request.PageSize = 10;
+            var result = new DataSourceResult()
+            {
+                Data = vehiculosList,
+                Total = total
+            };
 
+            return Json(result);
+        }
+
+        public ActionResult GetAllPersonasPagination([DataSourceRequest] DataSourceRequest request)
+        {
+            filterValue(request.Filters);
+
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page-1;
+            pagination.PageSize = 10;
+            pagination.Filter = resultValue;
+
+            var personasList = _personasService.GetAllPersonasPagination(pagination);
+            var total = 0;
+            if (personasList.Count()>0)
+                total = personasList.ToList().FirstOrDefault().total;
+
+            request.PageSize = 10;
+            var result = new DataSourceResult()
+            {
+                Data = personasList,
+                Total = total
+            };
+
+            return Json(result);
+        }
+
+        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+        {
+            if (filters.Any())
+            {
+                foreach (var filter in filters)
+                {
+                    var descriptor = filter as FilterDescriptor;
+                    if (descriptor != null)
+                    {
+                        resultValue = descriptor.Value.ToString();
+                        break;
+                    }
+                    else if (filter is CompositeFilterDescriptor)
+                    {
+                        if (resultValue=="")
+                            filterValue(((CompositeFilterDescriptor)filter).FilterDescriptors);
+                    }
+                }
+            }
+        }
 
 
 

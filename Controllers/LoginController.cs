@@ -214,16 +214,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             string oficina = json[0].oficina;
                             string idDependenciaStr = json[0].tipo_oficina;
 
-                                if (int.TryParse(idDependenciaStr, out int idDependencia))
+                            if (int.TryParse(idDependenciaStr, out int idDependencia))
+                            {
+                                if (idDependencia == 2)
                                 {
-                                    HttpContext.Session.SetInt32("IdDependencia", idDependencia);
-
+                                    HttpContext.Session.SetInt32("IdDependencia", 0);
                                 }
                                 else
                                 {
-
-                                }                           
-                             string idOficinaStr = json[0].clave_oficina;
+                                    HttpContext.Session.SetInt32("IdDependencia", idDependencia);
+                                }
+                            }
+                            else
+                            {
+                                // Manejo para el caso en que no se pueda convertir a entero
+                            }
+                            string idOficinaStr = json[0].clave_oficina;
                            // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
                             string TipoOfi = json[0].tipo_oficina;

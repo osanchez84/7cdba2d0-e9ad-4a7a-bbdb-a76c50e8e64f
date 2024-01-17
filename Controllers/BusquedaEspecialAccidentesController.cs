@@ -51,12 +51,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            // int IdModulo = 800;
-            //string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            // List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            // if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            // {
-            return View();
+            int? idOficina = HttpContext.Session.GetInt32("IdOficina");
+            BusquedaEspecialAccidentesModel modelo = new BusquedaEspecialAccidentesModel
+            {
+                IdDelegacionBusqueda = idOficina ?? 0,
+            };
+            return View(modelo);
            // }
            /* else
             {

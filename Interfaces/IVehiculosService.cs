@@ -6,6 +6,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IVehiculosService
     {
         public IEnumerable<VehiculoModel> GetAllVehiculos();
+        public IEnumerable<VehiculoModel> GetAllVehiculosPagination(Pagination pagination);
         List<VehiculoModel> GetVehiculos(VehiculoBusquedaModel modelSearch);
         public VehiculoModel GetVehiculoById(int idVehiculo);
         public VehiculoModel GetVehiculoToAnexo(VehiculoBusquedaModel model);

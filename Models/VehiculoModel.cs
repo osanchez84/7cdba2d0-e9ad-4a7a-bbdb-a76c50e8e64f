@@ -71,6 +71,6 @@ namespace GuanajuatoAdminUsuarios.Models
 
         //public virtual PersonaModel PersonaUpdate { get; set; }
         public bool? showSubTipo { get; set; } = false;
-
+        public int total { get; set; }
     }
 }

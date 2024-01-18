@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Drawing;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -702,6 +703,94 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
             return result;
+        }
+
+
+        // HMG - 16 01 2024
+        /// <summary>
+        /// Paginado para la carga de vehículos
+        /// </summary>
+        /// <param name="pagination">Objeto con el numero de pagina y registros a regresar</param>
+        /// <returns></returns>
+        public IEnumerable<VehiculoModel> GetAllVehiculosPagination(Pagination pagination)
+        {
+            List<VehiculoModel> modelList = new List<VehiculoModel>();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    int numeroSecuencial = 1;
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("usp_ObtieneTodosLosVehiculos", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                        if (pagination.Filter.Trim() != "")
+                            cmd.Parameters.AddWithValue("@Filter", pagination.Filter);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                VehiculoModel model = new VehiculoModel();
+                                model.Persona = new PersonaModel();
+                                model.idVehiculo = Convert.ToInt32(reader["idVehiculo"]);
+                                model.placas = reader["placas"].ToString();
+                                model.serie = reader["serie"].ToString();
+                                model.tarjeta = reader["tarjeta"].ToString();
+                                model.vigenciaTarjeta = reader["vigenciaTarjeta"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                                model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"].ToString());
+                                model.idSubmarca = Convert.ToInt32(reader["idSubmarca"].ToString());
+                                model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"].ToString());
+                                model.modelo = reader["modelo"].ToString();
+                                model.idColor = Convert.ToInt32(reader["idColor"].ToString());
+                                model.idEntidad = Convert.ToInt32(reader["idEntidad"].ToString());
+                                model.idSubtipoServicio = reader["idSubtipoServicio"].GetType() == typeof(DBNull) ? 0 : Convert.ToInt32(reader["idSubtipoServicio"].ToString());
+                                model.numeroEconomico = reader["numeroEconomico"].ToString();
+                                model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ? "" : reader["servicio"].ToString();
+                                model.fechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                                model.actualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
+                                model.estatus = Convert.ToInt32(reader["estatus"].ToString());
+                                model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
+                                model.Persona.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : (int)reader["idPersona"];
+                                model.Persona.numeroLicencia = reader["numeroLicencia"].ToString();
+                                model.Persona.CURP = reader["CURP"].ToString();
+                                model.Persona.RFC = reader["RFC"].ToString();
+                                model.motor = reader["motor"].ToString();
+                                model.Persona.nombre = reader["nombre"].ToString();
+                                model.Persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                                model.Persona.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                                model.Persona.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                                model.Persona.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
+                                model.Persona.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
+                                model.Persona.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                                model.marca = reader["marcaVehiculo"].ToString();
+                                model.submarca = reader["nombreSubmarca"].ToString();
+                                model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                                model.entidadRegistro = reader["nombreEntidad"].ToString();
+                                model.color = reader["color"].ToString();
+                                model.propietario = model.Persona.nombre + " " + model.Persona.apellidoPaterno + " " + model.Persona.apellidoMaterno;
+                                model.NumeroSecuencial = numeroSecuencial;
+                                model.total = Convert.ToInt32(reader["Total"]);
+                                modelList.Add(model);
+                                numeroSecuencial++;
+
+                            }
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return modelList;
         }
 
     }

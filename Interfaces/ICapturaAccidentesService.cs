@@ -69,8 +69,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public bool ValidarFolio(string folioInfraccion, int idDependencia);
 
 		CapturaAccidentesModel ObtenerDetallePersona(int Id);
-		
+		CapturaAccidentesModel DatosInvolucradoEdicion(int Id);
 
+		
 
 
 

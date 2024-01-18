@@ -98,7 +98,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
                 _asignacionGruasService.ActualizarDatos(selectedRowData, iDep);
-                
+                selectedRowData.Placa = string.IsNullOrEmpty(selectedRowData.Placa) ? "-" : selectedRowData.Placa;
+                selectedRowData.Serie = string.IsNullOrEmpty(selectedRowData.Serie) ? "-" : selectedRowData.Serie;
+                selectedRowData.Tarjeta = string.IsNullOrEmpty(selectedRowData.Tarjeta) ? "-" : selectedRowData.Tarjeta;
+                selectedRowData.Marca = string.IsNullOrEmpty(selectedRowData.Marca) ? "-" : selectedRowData.Marca;
+                selectedRowData.Submarca = string.IsNullOrEmpty(selectedRowData.Submarca) ? "-" : selectedRowData.Submarca;
+                selectedRowData.Modelo = string.IsNullOrEmpty(selectedRowData.Modelo) ? "-" : selectedRowData.Modelo;
+                selectedRowData.Propietario = string.IsNullOrEmpty(selectedRowData.Propietario) ? "-" : selectedRowData.Propietario;
+                selectedRowData.CURP = string.IsNullOrEmpty(selectedRowData.CURP) ? "-" : selectedRowData.CURP;
+                selectedRowData.RFC = string.IsNullOrEmpty(selectedRowData.RFC) ? "-" : selectedRowData.RFC;
+
+
                 //BITACORA
                 var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                 var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);

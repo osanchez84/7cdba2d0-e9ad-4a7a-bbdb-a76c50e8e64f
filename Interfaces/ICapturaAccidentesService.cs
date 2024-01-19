@@ -8,6 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface ICapturaAccidentesService
     {
          List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina);
+        List<CapturaAccidentesModel> ObtenerAccidentesPagination(int idOficina, Pagination pagination);
 
         public int GuardarParte1(CapturaAccidentesModel model, int idOficina);
         public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);

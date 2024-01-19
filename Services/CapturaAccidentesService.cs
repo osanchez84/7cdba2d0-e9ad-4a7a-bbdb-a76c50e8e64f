@@ -2719,6 +2719,66 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
+
+
+        public List<CapturaAccidentesModel> ObtenerAccidentesPagination(int idOficina, Pagination pagination)
+        {
+            List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("usp_ObtieneTodosLosAccidentes", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                        cmd.Parameters.AddWithValue("@IdOficina", idOficina);
+                        if (pagination.Filter.Trim() != "")
+                            cmd.Parameters.AddWithValue("@Filter", pagination.Filter);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                CapturaAccidentesModel accidente = new CapturaAccidentesModel();
+                                accidente.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
+                                accidente.NumeroReporte = reader["NumeroReporte"].ToString();
+                                accidente.Fecha = Convert.ToDateTime(reader["Fecha"].ToString());
+                                accidente.Hora = reader.GetTimeSpan(reader.GetOrdinal("Hora"));
+                                accidente.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+                                accidente.IdCarretera = Convert.ToInt32(reader["IdCarretera"].ToString());
+                                accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
+                                accidente.idEstatusReporte = Convert.ToInt32(reader["idEstatusReporte"].ToString());
+                                accidente.EstatusReporte = reader["estatusReporte"].ToString();
+                                accidente.Municipio = reader["Municipio"].ToString();
+                                accidente.Tramo = reader["Tramo"].ToString();
+                                accidente.Carretera = reader["Carretera"].ToString();
+                                accidente.Total = Convert.ToInt32(reader["Total"]);
+                                ListaAccidentes.Add(accidente);
+
+                            }
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                return ListaAccidentes;
+
+            }
+        }
+
     }
 }
 

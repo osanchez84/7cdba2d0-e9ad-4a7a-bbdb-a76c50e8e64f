@@ -33,6 +33,7 @@ using System.Globalization;
 using GuanajuatoAdminUsuarios.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using static iTextSharp.tool.xml.html.table.TableRowElement;
+using Kendo.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -82,8 +83,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private int idOficina = 0;
 		private int lastInsertedId = 0;
 		private int idVehiculoInsertado = 0;
+        private string resultValue = string.Empty;
 
-		public CapturaAccidentesController(ICapturaAccidentesService capturaAccidentesService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
+        public CapturaAccidentesController(ICapturaAccidentesService capturaAccidentesService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
 			ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
 			ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
 			ICatEstadoVictimaService catEstadoVictimaService, ICatHospitalesService catHospitalesService, ICatInstitucionesTrasladoService catIsntitucionesTraslado, ICatAsientoService catAsientoservice, ICatCinturon catCinturon, ICatAutoridadesDisposicionService catAutoridadesDisposicionservice,
@@ -146,19 +148,49 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(ListAccidentesModel.ToDataSourceResult(request));
 		}
 
-		public IActionResult Index(CapturaAccidentesModel capturaAccidentesService)
+        public IActionResult BuscarAccidentesListaPagination([DataSourceRequest] DataSourceRequest request)
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            filterValue(request.Filters);
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page - 1;
+            pagination.PageSize = 10;
+            pagination.Filter = resultValue;
+
+            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
+            request.PageSize = 10;
+            var total = 0;
+            if (ListAccidentesModel.Count() > 0)
+                total = ListAccidentesModel.ToList().FirstOrDefault().Total;
+
+            var result = new DataSourceResult()
+            {
+                Data = ListAccidentesModel,
+                Total = total
+            };
+
+            return Json(result);
+        }
+
+        public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
 		{
 			int IdModulo = 800;
-			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            //filterValue(request.Filters);
+
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page - 1;
+            pagination.PageSize = 1;
+            pagination.Filter = resultValue;
+
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
 			List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
 			ViewBag.EsSoloLectura = false;
 			if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
 
 			{
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-               // int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-
-                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentes(idOficina);
+                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
 				if (ListAccidentesModel.Count == 0)
 				{
 					return View("AgregarAccidente");
@@ -176,7 +208,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 		}
 
-		public ActionResult NuevoAccidente()
+        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+        {
+            if (filters.Any())
+            {
+                foreach (var filter in filters)
+                {
+                    var descriptor = filter as FilterDescriptor;
+                    if (descriptor != null)
+                    {
+                        resultValue = descriptor.Value.ToString();
+                        break;
+                    }
+                    else if (filter is CompositeFilterDescriptor)
+                    {
+                        if (resultValue == "")
+                            filterValue(((CompositeFilterDescriptor)filter).FilterDescriptors);
+                    }
+                }
+            }
+        }
+
+        public ActionResult NuevoAccidente()
 		{
 			return View("AgregarAccidente");
 		}

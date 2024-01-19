@@ -329,9 +329,15 @@ namespace GuanajuatoAdminUsuarios.Services
             if (recibido.idFactorOpcionAccidente > 0)
                 condicionesFiltro.Add($"facAccSub.idFactorOpcion = {recibido.idFactorOpcionAccidente}");
 
-            if (recibido.FechaInicio != default(DateTime) && recibido.FechaFin != default(DateTime))
-				condicionesFiltro.Add($"ac.fecha >= '{recibido.FechaInicio.ToString("yyyy-MM-dd")}' AND ac.fecha <= '{recibido.FechaFin.ToString("yyyy-MM-dd")}'");
+			if (recibido.FechaInicio.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha >= '{recibido.FechaInicio.Value.ToString("yyyy-MM-dd")}'");
+			}
 
+			if (recibido.FechaFin.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha <= '{recibido.FechaFin.Value.ToString("yyyy-MM-dd")}'");
+			}
 			if (recibido.hora != TimeSpan.Zero)
                 condicionesFiltro.Add($"ac.hora = '{recibido.hora}'");
 
@@ -599,9 +605,17 @@ namespace GuanajuatoAdminUsuarios.Services
             if (model.idFactorOpcionAccidente > 0)
                 condicionesFiltro.Add($"factAcc.idFactorOpcion = {model.idFactorOpcionAccidente}");
 
-            if (model.FechaInicio != default(DateTime) && model.FechaFin != default(DateTime))
-			condicionesFiltro.Add($"ac.fecha >= '{model.FechaInicio.ToString("yyyy-MM-dd")}' AND ac.fecha <= '{model.FechaFin.ToString("yyyy-MM-dd")}'");
+			if (model.FechaInicio.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha >= '{model.FechaInicio.Value.ToString("yyyy-MM-dd")}'");
+			}
 
+			if (model.FechaFin.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha <= '{model.FechaFin.Value.ToString("yyyy-MM-dd")}'");
+			}
+
+	
 			if (model.hora != TimeSpan.Zero)
                 condicionesFiltro.Add($"ac.hora = '{model.hora}'");
 

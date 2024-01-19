@@ -329,127 +329,150 @@ namespace GuanajuatoAdminUsuarios.Services
             if (recibido.idFactorOpcionAccidente > 0)
                 condicionesFiltro.Add($"facAccSub.idFactorOpcion = {recibido.idFactorOpcionAccidente}");
 
-            if (recibido.FechaInicio != default(DateTime) && recibido.FechaFin != default(DateTime))
-				condicionesFiltro.Add($"ac.fecha >= '{recibido.FechaInicio.ToString("yyyy-MM-dd")}' AND ac.fecha <= '{recibido.FechaFin.ToString("yyyy-MM-dd")}'");
+			if (recibido.FechaInicio.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha >= '{recibido.FechaInicio.Value.ToString("yyyy-MM-dd")}'");
+			}
 
+			if (recibido.FechaFin.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha <= '{recibido.FechaFin.Value.ToString("yyyy-MM-dd")}'");
+			}
 			if (recibido.hora != TimeSpan.Zero)
                 condicionesFiltro.Add($"ac.hora = '{recibido.hora}'");
 
 			string condicionesSql = string.Join(" AND ", condicionesFiltro);
 
             string strQuery = @"SELECT DISTINCT
-                                    ac.idAccidente,
-                                    ac.numeroReporte AS Numreporteaccidente,
-                                    ac.fecha AS Fecha,
-                                    ac.hora AS Hora,
-                                    ac.idMunicipio AS idMunicipio,
-                                    ac.idOficinaDelegacion AS idOficinaDelegacion,
-                                    ac.idElabora AS idOficial,
-                                    ac.idCarretera AS idCarretera,
-                                    ac.idTramo AS idTramo,
-                                    accCau.idCausaAccidente AS idCausaAccidente,
-                                    ac.idClasificacionAccidente AS idClasificacionAccidente,
-                                    del.delegacion AS Delegacion,
-                                    mun.municipio,
-                                    car.carretera,
-                                    tram.tramo,
-                                    ac.kilometro,
-                                    ac.latitud,
-                                    ac.longitud,
-                                    veh.vehiculos AS Vehiculo,
-                                    veh.idTipoVehiculo AS idTipoVehiculo,
-                                    veh.idTipoServicio AS idTipoServicio,
-                                    CONCAT(ofic.nombre, ' ', ofic.apellidoPaterno, ' ', ofic.apellidoMaterno) AS NombredelOficial,
-                                    ac.montoCamino AS Dañosalcamino,
-                                    ac.montoCarga AS Dañosacarga,
-                                    ac.montoPropietarios AS Dañosapropietario,
-                                    ac.montoOtros AS Otrosdaños,
-                                    inv.Lesionados AS Lesionados,
-                                    inv.Muertos AS Muertos,
-                                    (
-                                        SELECT DISTINCT
-                                            STUFF((
-                                                      SELECT ' ' + CHAR(13) + CHAR(10) + CONCAT(facAccSub.idFactor,':',facAccSub.idFactorOpcion,':',fac.factorAccidente, ': ', facOp.factorOpcionAccidente)
-                                                        FROM AccidenteFactoresOpciones facAccSub
-                                                        LEFT JOIN catFactoresAccidentes fac ON fac.idFactorAccidente = facAccSub.idFactor
-                                                        LEFT JOIN catFactoresOpcionesAccidentes facOp ON facOp.idFactorAccidente = facAccSub.idFactorOpcion AND facAccSub.estatus = 1
-                                                        WHERE facAccSub.idAccidente = ac.idAccidente
-                                                        FOR XML PATH(''), TYPE
-                                            ).value('.', 'VARCHAR(MAX)'), 1, 3, '') AS FactoresOpciones
-                                    ) AS Factores,
-                                    cauac.causaAccidente AS Causas,
-                                    ac.descripcionCausas AS CausasDescripcion
-                                 
-                                FROM 
-                                    accidentes ac 
-                                LEFT JOIN 
-                                    catDelegaciones del ON del.idDelegacion = ac.idOficinaDelegacion
-                                LEFT JOIN 
-                                    catMunicipios mun ON mun.idMunicipio = ac.idMunicipio
-                                LEFT JOIN 
-                                    catCarreteras car ON car.idCarretera = ac.idCarretera
-                                LEFT JOIN 
-                                    catTramos tram ON tram.idTramo = ac.idTramo
-                                LEFT JOIN 
-                                    catOficiales ofic ON ofic.idOficial = ac.idElabora
-                                LEFT JOIN 
-                                    accidenteCausas accCau ON accCau.idAccidente = ac.idAccidente 
-                                LEFT JOIN 
-                                    catCausasAccidentes cauac ON cauac.idCausaAccidente = accCau.idCausaAccidente 
-                                LEFT JOIN 
-                                    (
-                                        SELECT 
-                                            idAccidente,
-                                            STRING_AGG(Vehiculos, ' \r\n') AS vehiculos,
-                                            MAX(idTipoVehiculo) AS idTipoVehiculo, 
-                                            MAX(idCatTipoServicio) AS idTipoServicio
-                                        FROM 
-                                            (
-                                                SELECT 
-                                                    ac.idAccidente,
-                                                    veh.idTipoVehiculo,  
-                                                    veh.idCatTipoServicio,
-                                                    CONCAT(
-                                                        'Vehículo ', 
-                                                        ROW_NUMBER() OVER (PARTITION BY ac.idAccidente ORDER BY ac.idAccidente),
-                                                        ': ', 
-                                                        mv.marcaVehiculo, ' ', 
-                                                        sm.nombreSubmarca, ' ', 
-                                                        veh.modelo, ', TIPO: ', 
-                                                        tv.tipoVehiculo, ', Servicio: ', 
-                                                        ts.tipoServicio, ', Placa: ', 
-                                                        veh.placas, ', Serie: ', 
-                                                        veh.serie
-                                                    ) AS Vehiculos
-                                                FROM 
-                                                    accidentes ac
-                                                    LEFT JOIN vehiculosAccidente vehacc ON vehacc.idAccidente = ac.idAccidente AND vehacc.estatus = 1 
-                                                    LEFT JOIN vehiculos veh ON veh.idVehiculo = vehacc.idVehiculo
-                                                    LEFT JOIN catMarcasVehiculos mv ON mv.idMarcaVehiculo = veh.idMarcaVehiculo
-                                                    LEFT JOIN catSubmarcasVehiculos sm ON sm.idSubmarca = veh.idSubmarca
-                                                    LEFT JOIN catEntidades e ON e.idEntidad = veh.idEntidad
-                                                    LEFT JOIN catColores cc ON cc.idColor = veh.idColor
-                                                    LEFT JOIN catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
-                                                    LEFT JOIN catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
-                                            ) AS veh
-                                        GROUP BY 
-                                            idAccidente
-                                    ) veh ON veh.idAccidente = ac.idAccidente
-                                LEFT JOIN 
-                                    (
-                                        SELECT 
-                                            acc.idAccidente,
-                                            COUNT(CASE WHEN invacc.idEstadoVictima = 1 THEN invacc.idEstadoVictima END) AS Lesionados,
-                                            COUNT(CASE WHEN invacc.idEstadoVictima = 2 THEN invacc.idEstadoVictima END) AS Muertos
-                                        FROM 
-                                            accidentes acc
-                                        INNER JOIN 
-                                            involucradosAccidente invacc ON invacc.idAccidente = acc.idAccidente
-                                        GROUP BY 
-                                            acc.idAccidente
-                                    ) inv ON inv.idAccidente = ac.idAccidente
-                                WHERE 
-                                    ac.estatus <> 0 ";
+                                        ac.idAccidente,
+                                        ac.numeroReporte AS Numreporteaccidente,
+                                        CONVERT(varchar, ac.fecha, 103) AS Fecha,
+                                        ac.hora AS Hora,
+                                        ac.idMunicipio AS idMunicipio,
+                                        ac.idOficinaDelegacion AS idOficinaDelegacion,
+                                        ac.idElabora AS idOficial,
+                                        ac.idCarretera AS idCarretera,
+                                        ac.idTramo AS idTramo,
+                                        ac.idClasificacionAccidente AS idClasificacionAccidente,
+                                        del.delegacion AS Delegacion,
+                                        mun.municipio,
+                                        car.carretera,
+                                        tram.tramo,
+                                        ac.kilometro,
+                                        ac.latitud,
+                                        ac.longitud,
+                                        veh.vehiculos AS Vehiculo,
+                                        veh.idTipoVehiculo AS idTipoVehiculo,
+                                        veh.idTipoServicio AS idTipoServicio,
+                                        CONCAT(ofic.nombre, ' ', ofic.apellidoPaterno, ' ', ofic.apellidoMaterno) AS NombredelOficial,
+                                        ac.montoCamino AS Dañosalcamino,
+                                        ac.montoCarga AS Dañosacarga,
+                                        ac.montoPropietarios AS Dañosapropietario,
+                                        ac.montoOtros AS Otrosdaños,
+                                        inv.Lesionados AS Lesionados,
+                                        inv.Muertos AS Muertos,
+                                        Factores.FactoresOpciones,
+                                        Causas.CausasAccidente,
+                                        ac.descripcionCausas AS CausasDescripcion
+                                    FROM 
+                                        accidentes ac 
+                                    LEFT JOIN 
+                                        catDelegaciones del ON del.idDelegacion = ac.idOficinaDelegacion
+                                    LEFT JOIN 
+                                        catMunicipios mun ON mun.idMunicipio = ac.idMunicipio
+                                    LEFT JOIN 
+                                        catCarreteras car ON car.idCarretera = ac.idCarretera
+                                    LEFT JOIN 
+                                        catTramos tram ON tram.idTramo = ac.idTramo
+                                    LEFT JOIN 
+                                        catOficiales ofic ON ofic.idOficial = ac.idElabora
+                                    LEFT JOIN 
+                                        accidenteCausas accCau ON accCau.idAccidente = ac.idAccidente 
+                                    LEFT JOIN 
+                                        catCausasAccidentes cauac ON cauac.idCausaAccidente = accCau.idCausaAccidente 
+                                    LEFT JOIN 
+                                        (
+                                            SELECT 
+                                                idAccidente,
+                                                STUFF((
+                                                    SELECT CHAR(13) + CHAR(10) + CONCAT(fac.factorAccidente, '/', facOp.factorOpcionAccidente) + ';'
+                                                    FROM AccidenteFactoresOpciones facAccSub
+                                                    LEFT JOIN catFactoresAccidentes fac ON fac.idFactorAccidente = facAccSub.idFactor
+                                                    LEFT JOIN catFactoresOpcionesAccidentes facOp ON facOp.idFactorOpcionAccidente = facAccSub.idFactorOpcion
+                                                    WHERE facAccSub.idAccidente = Accidentes.idAccidente AND facAccSub.estatus = 1
+                                                    FOR XML PATH(''), TYPE
+                                                ).value('.', 'VARCHAR(MAX)'), 1, 1, '') AS FactoresOpciones
+                                            FROM accidentes AS Accidentes
+                                            GROUP BY idAccidente
+                                        ) AS Factores ON Factores.idAccidente = ac.idAccidente
+                                    LEFT JOIN 
+                                        (
+                                            SELECT 
+                                                idAccidente,
+                                                STUFF((
+                                                    SELECT CHAR(13) + CHAR(10) + CONCAT(cauac.causaAccidente, ':') + ','
+                                                    FROM accidenteCausas accCau
+                                                    LEFT JOIN catCausasAccidentes cauac ON cauac.idCausaAccidente = accCau.idCausaAccidente
+                                                    WHERE accCau.idAccidente = Accidentes.idAccidente
+                                                    FOR XML PATH(''), TYPE
+                                                ).value('.', 'VARCHAR(MAX)'), 1, 1, '') AS CausasAccidente
+                                            FROM accidentes AS Accidentes
+                                            GROUP BY idAccidente
+                                        ) AS Causas ON Causas.idAccidente = ac.idAccidente
+                                    LEFT JOIN 
+                                        (
+                                            SELECT 
+                                                idAccidente,
+                                                STRING_AGG(Vehiculos, ';') AS vehiculos,
+                                                MAX(idTipoVehiculo) AS idTipoVehiculo, 
+                                                MAX(idCatTipoServicio) AS idTipoServicio
+                                            FROM 
+                                                (
+                                                    SELECT 
+                                                        ac.idAccidente,
+                                                        veh.idTipoVehiculo,  
+                                                        veh.idCatTipoServicio,
+                                                        CONCAT(
+                                                            '  Vehículo ', 
+                                                            ROW_NUMBER() OVER (PARTITION BY ac.idAccidente ORDER BY ac.idAccidente),
+                                                            ':  ', 
+                                                            mv.marcaVehiculo, ' ', 
+                                                            sm.nombreSubmarca, ' ', 
+                                                            veh.modelo, ', TIPO: ', 
+                                                            tv.tipoVehiculo, ', Servicio: ', 
+                                                            ts.tipoServicio, ', Placa: ', 
+                                                            veh.placas, ', Serie: ', 
+                                                            veh.serie
+                                                        ) AS Vehiculos
+                                                    FROM 
+                                                        accidentes ac
+                                                        LEFT JOIN vehiculosAccidente vehacc ON vehacc.idAccidente = ac.idAccidente AND vehacc.estatus = 1 
+                                                        LEFT JOIN vehiculos veh ON veh.idVehiculo = vehacc.idVehiculo
+                                                        LEFT JOIN catMarcasVehiculos mv ON mv.idMarcaVehiculo = veh.idMarcaVehiculo
+                                                        LEFT JOIN catSubmarcasVehiculos sm ON sm.idSubmarca = veh.idSubmarca
+                                                        LEFT JOIN catEntidades e ON e.idEntidad = veh.idEntidad
+                                                        LEFT JOIN catColores cc ON cc.idColor = veh.idColor
+                                                        LEFT JOIN catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
+                                                        LEFT JOIN catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
+                                                ) AS veh
+                                            GROUP BY 
+                                                idAccidente
+                                        ) veh ON veh.idAccidente = ac.idAccidente
+                                    LEFT JOIN 
+                                        (
+                                            SELECT 
+                                                acc.idAccidente,
+                                                COUNT(CASE WHEN invacc.idEstadoVictima = 1 THEN invacc.idEstadoVictima END) AS Lesionados,
+                                                COUNT(CASE WHEN invacc.idEstadoVictima = 2 THEN invacc.idEstadoVictima END) AS Muertos
+                                            FROM 
+                                                accidentes acc
+                                            INNER JOIN 
+                                                involucradosAccidente invacc ON invacc.idAccidente = acc.idAccidente
+                                            GROUP BY 
+                                                acc.idAccidente
+                                        ) inv ON inv.idAccidente = ac.idAccidente
+                                    WHERE 
+                                        ac.estatus <> 0 ";
 
 			                        if (!string.IsNullOrWhiteSpace(condicionesSql))
 			                        {
@@ -475,7 +498,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.idCarretera = reader["idCarretera"] != DBNull.Value ? Convert.ToInt32(reader["idCarretera"]) : 0;
 							model.idTramo = reader["idTramo"] != DBNull.Value ? Convert.ToInt32(reader["idTramo"]) : 0;
 							model.idClasificacionAccidente = reader["idClasificacionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idClasificacionAccidente"]) : 0;
-							model.idCausaAccidente = reader["idCausaAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idCausaAccidente"]) : 0;
+							//model.idCausaAccidente = reader["idCausaAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idCausaAccidente"]) : 0;
 							//model.idFactorAccidente = reader["idFactorAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorAccidente"]) : 0;
 							//model.idFactorOpcionAccidente = reader["idFactorOpcionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorOpcionAccidente"]) : 0;
 							model.IdTipoVehiculo = reader["idTipoVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idTipoVehiculo"]) : 0;
@@ -498,8 +521,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.Otrosdaños = reader["Otrosdaños"] == System.DBNull.Value ? default(string) : reader["Otrosdaños"].ToString();
                             model.Lesionados = reader["Lesionados"] == System.DBNull.Value ? default(string) : reader["Lesionados"].ToString();
                             model.Muertos = reader["Muertos"] == System.DBNull.Value ? default(string) : reader["Muertos"].ToString();
-                            model.FactoresOpciones = reader["Factores"] == System.DBNull.Value ? default(string) : reader["Factores"].ToString();
-                            model.Causas = reader["Causas"] == System.DBNull.Value ? default(string) : reader["Causas"].ToString();
+                            model.FactoresOpciones = reader["FactoresOpciones"] == System.DBNull.Value ? default(string) : reader["FactoresOpciones"].ToString();
+                            model.Causas = reader["CausasAccidente"] == System.DBNull.Value ? default(string) : reader["CausasAccidente"].ToString();
                             model.CausasDescripcion = reader["CausasDescripcion"] == System.DBNull.Value ? default(string) : reader["CausasDescripcion"].ToString();
 							if (!string.IsNullOrEmpty(model.FactoresOpciones))
 							{
@@ -582,9 +605,17 @@ namespace GuanajuatoAdminUsuarios.Services
             if (model.idFactorOpcionAccidente > 0)
                 condicionesFiltro.Add($"factAcc.idFactorOpcion = {model.idFactorOpcionAccidente}");
 
-            if (model.FechaInicio != default(DateTime) && model.FechaFin != default(DateTime))
-			condicionesFiltro.Add($"ac.fecha >= '{model.FechaInicio.ToString("yyyy-MM-dd")}' AND ac.fecha <= '{model.FechaFin.ToString("yyyy-MM-dd")}'");
+			if (model.FechaInicio.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha >= '{model.FechaInicio.Value.ToString("yyyy-MM-dd")}'");
+			}
 
+			if (model.FechaFin.HasValue)
+			{
+				condicionesFiltro.Add($"ac.fecha <= '{model.FechaFin.Value.ToString("yyyy-MM-dd")}'");
+			}
+
+	
 			if (model.hora != TimeSpan.Zero)
                 condicionesFiltro.Add($"ac.hora = '{model.hora}'");
 

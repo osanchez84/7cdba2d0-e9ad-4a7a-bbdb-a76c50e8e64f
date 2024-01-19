@@ -14,7 +14,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public List<IngresoVehiculosModel> ObtenerDepositos(IngresoVehiculosModel model)
+        public List<IngresoVehiculosModel> ObtenerDepositos(IngresoVehiculosModel model, int idPension)
         {
             List<IngresoVehiculosModel> modelList = new List<IngresoVehiculosModel>();
             string strQuery = @"SELECT d.idDeposito,d.idVehiculo,d.numeroInventario,
@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
                                     WHERE d.idMarca = @idMarca OR d.serie = @serie OR d.numeroInventario = @numeroInventario
-                                    OR d.placa = @placa";
+                                    OR d.placa = @placa AND d.idPension = @idPension";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -38,6 +38,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = (object)model.idDeposito ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
+
                     command.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = (object)model.idMarca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@serie", SqlDbType.VarChar)).Value = (object)model.serie ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@numeroInventario", SqlDbType.VarChar)).Value = (object)model.folioInventario ?? DBNull.Value;

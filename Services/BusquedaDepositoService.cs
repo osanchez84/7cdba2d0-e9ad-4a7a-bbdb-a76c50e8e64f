@@ -15,7 +15,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public List<BusquedaDepositoModel> ObtenerTodosDepositos( )
+        public List<BusquedaDepositoModel> ObtenerTodosDepositos( int idPension)
         {
             List<BusquedaDepositoModel> modelList = new List<BusquedaDepositoModel>();
             string strQuery = @"SELECT d.idDeposito,d.idSolicitud,d.idInfraccion,d.idVehiculo,d.fechaIngreso,
@@ -31,15 +31,18 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN serviciosDepositos AS sd ON sd.idDeposito = d.idDeposito
                                     LEFT JOIN gruasAsignadas AS ga ON ga.idDeposito = d.idDeposito
                                     LEFT JOIN gruas AS g ON g.idGrua = ga.idGrua
-                                    LEFT JOIN pensiones AS pen ON pen.idPension = d.idPension";
+                                    LEFT JOIN pensiones AS pen ON pen.idPension = d.idPension
+                                    WHERE d.idPension = @idPension";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+
             {
                 try
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
@@ -76,7 +79,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
 
         }
-        public List<BusquedaDepositoModel> ObtenerDepositos(BusquedaDepositoModel model)
+        public List<BusquedaDepositoModel> ObtenerDepositos(BusquedaDepositoModel model, int idPension)
         {
             List<BusquedaDepositoModel> modelList = new List<BusquedaDepositoModel>();
             string strQuery = @"SELECT d.idDeposito,d.idSolicitud,d.idInfraccion,d.idVehiculo,d.fechaIngreso,
@@ -96,7 +99,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     WHERE inf.folioInfraccion = @folioInfraccion OR p.nombre LIKE '%' + @nombre + '%'
                                    OR p.apellidoPaterno LIKE '%' + @apellidoPaterno + '%'
                                    OR p.apellidoMaterno LIKE '%' + @apellidoMaterno + '%'
-                                   OR placa LIKE '%' + @placa + '%'";
+                                   OR placa LIKE '%' + @placa + '%' AND d.idPension = @idPension";
 
                                 if (model.fechaIngreso != DateTime.MinValue)
                                 {
@@ -118,6 +121,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.VarChar)).Value = (object)model.propietario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.VarChar)).Value = (object)model.propietario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.VarChar)).Value = (object)model.propietario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.VarChar)).Value = (object)idPension ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

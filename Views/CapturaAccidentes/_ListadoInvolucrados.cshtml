@@ -227,7 +227,7 @@
 		var row = $(event.target).closest("tr");
 		var dataItem = grid.dataItem(row);
 		var IdPersona = dataItem.IdPersona
-		console.log(IdPersona);
+		console.log(dataItem);
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("ModalAgregarInvolucradoPersona", "CapturaAccidentes")',

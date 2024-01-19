@@ -3,6 +3,10 @@
     var nombreOficina = User.FindFirst(CustomClaims.NombreOficina);
 
     var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
+    var nombrePension = User.FindFirst(CustomClaims.Pension);
+    var tipoOficina = User.FindFirst(CustomClaims.TipoOficina);
+
+
 
 }
 <!DOCTYPE html>
@@ -69,14 +73,23 @@
 </head>
 <body>
     <main class="container-fluid">
-        <div style="background: #000f9f;" class="row justify-content-center gx-5 card-header">
-            <div class="col-auto">
-                <h6 class="m-0 text-light fw-bold">@nombreUsuario</h6>
+             <div style="background: #000f9f;" class="row justify-content-center gx-5 card-header">
+                <div class="col-auto">
+                    <h6 class="m-0 text-light fw-bold">@nombreUsuario</h6>
+                </div>
+                <div class="col-auto">
+                    @if (tipoOficina?.Value != "3")
+                {
+                    <h6 class="m-0 text-light fw-bold">@nombreOficina</h6>
+                }
             </div>
             <div class="col-auto">
-                <h6 class="m-0 text-light fw-bold">@nombreOficina</h6>
+                @if (tipoOficina?.Value == "3")
+                {
+                    <h6 class="m-0 text-light fw-bold">@nombrePension</h6>
+                }
             </div>
-        </div>
+            </div>
         <div class="row minH100">
             <nav id="nav" class="navPrincipal">
                 <div class="row h-100">

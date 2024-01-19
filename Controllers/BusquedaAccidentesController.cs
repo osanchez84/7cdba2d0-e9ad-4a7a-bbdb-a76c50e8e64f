@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kendo.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -29,6 +30,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
 
         private int idOficina = 0;
+        private string resultValue = string.Empty;
+
 
         public BusquedaAccidentesController(IBusquedaAccidentesService busquedaAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService,
@@ -154,5 +157,51 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(resultadoBusqueda);
 
         }
+
+        public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
+        {
+           // filterValue(request.Filters);
+
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page -1;
+            pagination.PageSize = 10;
+           // pagination.Filter = resultValue;
+
+            var accidentesList = _busquedaAccidentesService.GetAllAccidentesPagination(pagination, model);
+            var total = 0;
+            if (accidentesList.Count() > 0)
+                total = accidentesList.ToList().FirstOrDefault().total;
+
+            request.PageSize = 10;
+            var result = new DataSourceResult()
+            {
+                Data = accidentesList,
+                Total = total
+            };
+
+            return Json(result);
+        }
+
+        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+        {
+            if (filters.Any())
+            {
+                foreach (var filter in filters)
+                {
+                    var descriptor = filter as FilterDescriptor;
+                    if (descriptor != null)
+                    {
+                        resultValue = descriptor.Value.ToString();
+                        break;
+                    }
+                    else if (filter is CompositeFilterDescriptor)
+                    {
+                        if (resultValue == "")
+                            filterValue(((CompositeFilterDescriptor)filter).FilterDescriptors);
+                    }
+                }
+            }
+        }
+
     }
 }

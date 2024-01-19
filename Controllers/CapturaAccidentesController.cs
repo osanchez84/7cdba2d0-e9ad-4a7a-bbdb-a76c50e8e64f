@@ -1060,6 +1060,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
 			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
 		}
+		public ActionResult NuevoInvolucradoPersona(int IdPersona)
+		{
+			var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion (IdPersona);
+			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
+		}
 
 		[HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()

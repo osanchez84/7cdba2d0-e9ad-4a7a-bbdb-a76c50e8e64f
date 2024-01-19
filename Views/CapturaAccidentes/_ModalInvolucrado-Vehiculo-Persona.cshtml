@@ -8,7 +8,7 @@
 					<i class="icon-involucrado h1 colorPrimary"></i>
 				</div>
 				<div class="col-md-9 my-3">
-					<h2 class="m-0 h3"><b>Datos de persona Involucrada</b></h2>
+					<h2 class="m-0 h3"><b>Datos de persona Involucradaxxxxxxxxxxxxxxx</b></h2>
 				</div>
 				<div class="col-auto">
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -159,7 +159,7 @@
 						<div class="controlForm my-3">
 							<label>Tipo <b>(obligatorio)</b>:</label>
 							<span>
-								<input type="hidden" id="idPersonaInput" name="idPersona" />
+							@Html.HiddenFor(model => model.IdPersona, new { id = "idPersonaInput1" })
 								@Html.HiddenFor(model => model.IdVehiculo, new { id = "idVehiculoHidden" })
 								@(Html.Kendo().DropDownListFor(t => t.IdTipoInvolucrado)
 									.DataTextField("Text")
@@ -368,8 +368,9 @@
 	}
 
 	function agregarComplementos() {
-		var idPersona = $("#idPersonaInput").val();
+		var idPersona = $("#idPersonaInput1").val();
 		if (idPersona === "") {
+			console.log("VALP",idPersona)
 			sitteg_warning("Debe seleccionar una persona involucrada");
 			return;
 			var Mydata = $("#complementoInvolucradoForm").serialize();
@@ -423,11 +424,9 @@
 			data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
 			success: function (response) {
 				sitteg_success("Se ha actualizado la información");
-				// Resto del código
 				hideLoading();
 			},
 			error: function (xhr, status, error) {
-				// Manejo del error
 				hideLoading();
 			}
 		});

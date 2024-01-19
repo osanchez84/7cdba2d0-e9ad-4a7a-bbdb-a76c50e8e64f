@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public List<SalidaVehiculosModel> ObtenerIngresos(SalidaVehiculosModel model)
+        public List<SalidaVehiculosModel> ObtenerIngresos(SalidaVehiculosModel model, int idPension)
         {
             List<SalidaVehiculosModel> modelList = new List<SalidaVehiculosModel>();
             string strQuery = @"SELECT d.idDeposito,d.idVehiculo,d.numeroInventario,d.idSolicitud,
@@ -38,7 +38,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
 	                                LEFT JOIN pensiones AS pen ON d.idPension = pen.idPension
                                     WHERE d.idMarca = @idMarca OR d.serie = @serie OR d.numeroInventario = @numeroInventario
-                                    OR d.placa = @placa";
+                                    OR d.placa = @placa AND d.idPension = @idPension";
                                     if (model.fechaIngreso != DateTime.MinValue)
                                     {
                                         strQuery += " OR fechaIngreso = @fechaIngreso";
@@ -51,6 +51,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = (object)model.idDeposito ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = (object)model.idMarca ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@serie", SqlDbType.VarChar)).Value = (object)model.serie ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@numeroInventario", SqlDbType.VarChar)).Value = (object)model.folioInventario ?? DBNull.Value;
@@ -96,7 +97,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
 
         }
-        public SalidaVehiculosModel DetallesDeposito(int iDp)
+        public SalidaVehiculosModel DetallesDeposito(int iDp, int idPension)
         {
             SalidaVehiculosModel model = new SalidaVehiculosModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -129,9 +130,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                             LEFT JOIN gruasAsignadas AS ga ON d.idDeposito = ga.idDeposito
                                             LEFT JOIN gruas AS g ON ga.idGrua = g.idGrua
 										    LEFT JOIN catTipoGrua AS ctg ON g.idTipoGrua = ctg.IdTipoGrua
-											WHERE d.idDeposito = @idDeposito";
+											WHERE d.idDeposito = @idDeposito AND d.idPension = @idPension";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDp;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

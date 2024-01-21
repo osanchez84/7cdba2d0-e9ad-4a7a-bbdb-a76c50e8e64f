@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc;

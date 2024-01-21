@@ -33,7 +33,7 @@
 												<div class="controlForm">
 													@(Html.Kendo().TextBoxFor(t => t.NuevaContrasena)
 														.Label(l => l.Content("Nueva contraseña:"))
-														.Placeholder("Nueva conraseña")
+														.Placeholder("Nueva contraseña")
 														.HtmlAttributes(new { style = "width: 100%", required = "required", placeholder = "Password", Type = "password" })
 														)
 												</div>
@@ -81,7 +81,10 @@
 	function btnActualizar() {
 
 		var NuevaContrasena = $("#NuevaContrasena").val();
+		var ConfirmarContrasena = $("#ConfirmarContrasena").val();
 		showLoading();
+
+		if (NuevaContrasena == ConfirmarContrasena){ 
 
 		$.ajax({
 			url: '@Url.Action("ActualizarContra", "Configuraciones")',
@@ -101,7 +104,11 @@
 				hideLoading();
 			}
 		});
-
+		}
+		else{
+			sitteg_warning('La contraseña nueva no coinciden');
+			hideLoading();
+		}
 	}
 </script>
 

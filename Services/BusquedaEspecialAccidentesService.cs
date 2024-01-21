@@ -445,7 +445,7 @@ GROUP BY
                 return result;
             }
         }
-        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes(int idOficina)
+        public List<BusquedaEspecialAccidentesModel>ObtenerTodosAccidentes()
         {
             //
             List<BusquedaEspecialAccidentesModel> ListaAccidentes = new List<BusquedaEspecialAccidentesModel>();
@@ -488,7 +488,7 @@ GROUP BY
 
 
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                   // command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                    // command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection)) 
@@ -574,6 +574,50 @@ GROUP BY
                 {
                     connection.Close();
                 }
+
+                return result;
+            }
+
+
+        }
+
+
+
+
+        public bool validarFolio(string folio)
+        {
+            var result = false;
+            var count = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "select count(*) as result from  accidentes where numeroreporte = @folio ";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@folio", folio);
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                
+                        while (reader.Read())
+                        {
+                            count = (int)reader["result"];
+                        }
+                    
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                result = count == 0;
 
                 return result;
             }

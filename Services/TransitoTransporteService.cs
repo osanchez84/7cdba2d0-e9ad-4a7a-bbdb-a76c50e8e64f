@@ -286,7 +286,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdDependenciaTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Estatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaInico", SqlDbType.DateTime)).Value = (model.FechaIngreso == DateTime.MinValue) ? DBNull.Value : (object)model.FechaIngreso;
+                    command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = (model.FechaIngreso == DateTime.MinValue) ? DBNull.Value : (object)model.FechaIngreso;
                     command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (model.FechaIngresoFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaIngresoFin;
 
                     command.CommandType = CommandType.Text;

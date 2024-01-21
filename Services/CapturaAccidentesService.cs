@@ -168,7 +168,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina)
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, string nombreOficina = "NRA")
         
         {
             int result = 0;
@@ -221,7 +221,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     result = Convert.ToInt32(command.ExecuteScalar());
 
-                    var newFolio = $"NRA{result}2023";
+                    var ofi = nombreOficina.Trim().Substring(0, 3).ToUpper();
+
+                    var newFolio = $"{ofi}{result}2023";
 
                     SqlCommand command2 = new SqlCommand(@"
                             update accidentes set numeroreporte=@folio where idAccidente=@id
@@ -1361,6 +1363,58 @@ namespace GuanajuatoAdminUsuarios.Services
 											 "LEFT JOIN vehiculosAccidente AS va ON  va.idAccidente = a.idAccidente " +
 											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +
 											 "WHERE p.idpersona = @idpersona and ia.estatus = 1 group by ia.idPersona;", connection);
+
+					command.Parameters.Add(new SqlParameter("@idpersona", SqlDbType.NVarChar)).Value = id;
+					command.CommandType = CommandType.Text;
+					using (
+						SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							involucrado.IdPersona = Convert.ToInt32(reader["idPersona"].ToString());
+							involucrado.nombre = reader["nombre"].ToString();
+							involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
+							involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
+							involucrado.RFC = reader["rfc"].ToString();
+							involucrado.CURP = reader["curp"].ToString();
+							involucrado.Calle = reader["calle"].ToString();
+							involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
+							involucrado.Numero = reader["numero"].ToString();
+							involucrado.Colonia = reader["colonia"].ToString();
+							involucrado.Correo = reader["correo"].ToString();
+							involucrado.FormatDateNacimiento = reader["fechaNacimiento"].ToString();
+
+						}
+
+					}
+
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+			return involucrado;
+
+		}
+
+		CapturaAccidentesModel ICapturaAccidentesService.DatosInvolucradoEdicion(int id)
+		{
+			CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(@"SELECT p.idPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,p.RFC,p.CURP
+                                                        ,p.numeroLicencia,p.fechaNacimiento,pd.calle,pd.numero,pd.colonia,pd.correo
+                                                        From personas p
+                                                        LEFT JOIN personasDirecciones AS pd ON pd.idPersona = p.idPersona
+                                                        WHERE p.idPersona = @idpersona", connection);
 
 					command.Parameters.Add(new SqlParameter("@idpersona", SqlDbType.NVarChar)).Value = id;
 					command.CommandType = CommandType.Text;

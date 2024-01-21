@@ -294,12 +294,12 @@
         };
         showLoading();
         $.ajax({
-            url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
+            url: '/BusquedaAccidentes/GetAccidentesBusquedaPagination',
             type: 'GET',
             data: data,
             success: function (data) {
                 var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
-                grid.dataSource.data(data);
+                //grid.dataSource.data(data);
                 grid.refresh();
                 hideLoading();
             },

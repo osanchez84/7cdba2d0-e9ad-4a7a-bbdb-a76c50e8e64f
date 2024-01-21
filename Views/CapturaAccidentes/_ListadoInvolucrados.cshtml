@@ -165,7 +165,7 @@
 			.Read(read => read.Action("ObtInvolucradosAccidente", "CapturaAccidentes"))
 			.PageSize(5).Model(model => model.Id(p => p.nombre))
 			)
-			.ToolBar(t => t.Search())
+			.ToolBar(t => t.Search().Text("Buscar..."))
 			.Search(s =>
 			{
 				s.Field(c => c.nombre);
@@ -227,7 +227,7 @@
 		var row = $(event.target).closest("tr");
 		var dataItem = grid.dataItem(row);
 		var IdPersona = dataItem.IdPersona
-		console.log(IdPersona);
+		console.log(dataItem);
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("ModalAgregarInvolucradoPersona", "CapturaAccidentes")',

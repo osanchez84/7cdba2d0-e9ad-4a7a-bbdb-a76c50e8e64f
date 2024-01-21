@@ -47,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListOficialessModel = GetOficiales();
+            var ListOficialessModel = _oficialesService.GetOficiales();
             //return View("IndexModal");
             return View("Index", ListOficialessModel);
         }
@@ -114,7 +114,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
 
                 _oficialesService.SaveOficial(model);
-                var ListOficialesModel = GetOficiales();
+                var ListOficialesModel = _oficialesService.GetOficiales();
                 return Json(ListOficialesModel);
             }
 
@@ -132,7 +132,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
 
                 _oficialesService.UpdateOficial(model);
-                var ListOficialesModel = GetOficiales();
+                var ListOficialesModel = _oficialesService.GetOficiales();
                 return Json(ListOficialesModel);
             }
 
@@ -148,7 +148,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
 
                 DeleteOficial(model);
-                var ListOficialesModel = GetOficiales();
+                var ListOficialesModel = _oficialesService.GetOficiales();
                 return Json(ListOficialesModel);
             }
 
@@ -157,7 +157,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult GetOficialess([DataSourceRequest] DataSourceRequest request)
         {
-            var ListOficialesModel = GetOficiales();
+            var ListOficialesModel = _oficialesService.GetOficiales();
 
             return Json(ListOficialesModel.ToDataSourceResult(request));
         }

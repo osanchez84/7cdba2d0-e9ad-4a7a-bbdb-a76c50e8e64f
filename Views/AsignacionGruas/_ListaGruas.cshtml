@@ -71,7 +71,7 @@
             .Read(read => read.Action("GruasAsignadasTabla", "AsignacionGruas"))
             .PageSize(5).Model(model => model.Id(p => p.fullGrua))
             )
-            .ToolBar(t => t.Search())
+            .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.fullGrua);
@@ -87,7 +87,7 @@
     </div>
 
     <div class="modal fade modalCustom" id="eliminarGruaModal"  aria-labelledby="eliminarGruaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body" id="ModalBodyEliminarGrua">
                 </div>

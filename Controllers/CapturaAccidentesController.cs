@@ -300,11 +300,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			else
 			{
 
-
+				var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
 				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina);
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina,nombreOficina);
 				HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId); 
 				return Json(new { success = true });
 
@@ -1113,16 +1113,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
 			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
 		}
+		public ActionResult NuevoInvolucradoPersona(int IdPersona)
+		{
+			var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion (IdPersona);
+			return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
+		}
 
 		[HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()
         {
             BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-            var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
-            ViewBag.ModeInvolucrado = ListInvolucradoModel;
+            //var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            //ViewBag.ModeInvolucrado = ListInvolucradoModel;
 
 			return PartialView("_ModalAgregarInvolucrado");
 		}
+
+		[HttpGet]
+		public IActionResult SubmodalBuscarInvolucradoPersona()
+		{
+			BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+			var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+			ViewBag.ModeInvolucrado = ListInvolucradoModel;
+
+			return PartialView("_ModalAgregarInvolucradoPersona");
+		}
+
 		public ActionResult ModalAgregarComplemeto()
 		{
 			return PartialView("_ModalComplementoVehiculo");

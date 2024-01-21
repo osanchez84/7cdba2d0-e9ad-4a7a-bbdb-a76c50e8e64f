@@ -65,15 +65,22 @@
 
 			}).HtmlAttributes(new { style = "height:450" })
 			.Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
-			.DataSource(dataSource => dataSource
+@*			.DataSource(dataSource => dataSource
 			.Ajax())
 			.Sortable()
 			.Scrollable(scr => scr.Height(350))
 			.DataSource(dataSource => dataSource
 			.Ajax()
-			.ServerOperation(false)
+			.ServerOperation(false)*@
+			.EnableCustomBinding(true)
+			.DataSource(dataSource => dataSource
+			.Ajax()
+			.Read("GetAllBuscarInfraccionesPagination", "Infracciones")
+			.PageSize(10)
 			)
-			.ToolBar(t => t.Search())
+			.Scrollable(scr => scr.Height(350)
+			)
+			@*.ToolBar(t => t.Search())
 			.Search(s =>
 			{
 				s.Field(c => c.folioInfraccion);
@@ -85,7 +92,7 @@
 				s.Field(c => c.delegacion);
 				s.Field(c => c.estatusInfraccion);
 
-			})
+			})*@
 			)
 		@*</div>*@
 

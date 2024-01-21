@@ -56,7 +56,7 @@
 
             .Sortable()
             .Scrollable(scr => scr.Height(350))
-            .ToolBar(t => t.Search())
+            @*.ToolBar(t => t.Search())
             .Search(s =>
             {
                 s.Field(c => c.folioInfraccion);
@@ -70,7 +70,7 @@
 
 
 
-            })
+            })*@
             )
         @*</div>*@
     </div>

@@ -2,7 +2,9 @@
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Utils;
+using Kendo.Mvc;
 using Kendo.Mvc.Infrastructure.Implementation;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +35,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatEstatusReporteService _catEstatusReporteService;
 
         private int idOficina = 0;
+        private string resultValue = string.Empty;
+        public static BusquedaEspecialAccidentesModel AccidentesEspecialNewModel = new BusquedaEspecialAccidentesModel();
 
         public BusquedaEspecialAccidentesController(IBusquedaEspecialAccidentesService busquedaEspecialAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService, IPdfGenerator pdfService,
@@ -215,7 +219,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_ModalEditarFolio", viewModel);
         }
 
-        public IActionResult ajax_BusquedaAccidentes(BusquedaEspecialAccidentesModel model)
+     /*   public IActionResult ajax_BusquedaAccidentes(BusquedaEspecialAccidentesModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
@@ -243,7 +247,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(resultadoBusquedaEspecial);
 
-        }
+        }*/
 
 
 
@@ -258,7 +262,57 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             return Json(t);
         }
+        public IActionResult ajax_BusquedaEspecialAccidentes([DataSourceRequest] DataSourceRequest request, BusquedaEspecialAccidentesModel model)
+        {
+            AccidentesEspecialNewModel = model;
+            return PartialView("_ListaAccidentesBusquedaEspecial", new List<BusquedaEspecialAccidentesModel>());
+        }
+        public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaEspecialAccidentesModel model)
+        {
+            // filterValue(request.Filters);
 
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page - 1;
+            pagination.PageSize = 10;
+            // pagination.Filter = resultValue;
+            if (AccidentesEspecialNewModel == null)
+                AccidentesEspecialNewModel = model;
+
+            var accidentesList = _busquedaEspecialAccidentesService.GetAllAccidentesPagination(pagination, AccidentesEspecialNewModel);
+            var total = 0;
+            if (accidentesList.Count() > 0)
+                total = accidentesList.ToList().FirstOrDefault().total;
+
+            request.PageSize = 10;
+            var result = new DataSourceResult()
+            {
+                Data = accidentesList,
+                Total = total
+            };
+
+            return Json(result);
+        }
+
+        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+        {
+            if (filters.Any())
+            {
+                foreach (var filter in filters)
+                {
+                    var descriptor = filter as FilterDescriptor;
+                    if (descriptor != null)
+                    {
+                        resultValue = descriptor.Value.ToString();
+                        break;
+                    }
+                    else if (filter is CompositeFilterDescriptor)
+                    {
+                        if (resultValue == "")
+                            filterValue(((CompositeFilterDescriptor)filter).FilterDescriptors);
+                    }
+                }
+            }
+        }
 
 
     }

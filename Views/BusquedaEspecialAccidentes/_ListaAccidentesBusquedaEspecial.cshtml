@@ -36,7 +36,6 @@
                 ).Title("Eliminar").Sortable(false).Width(90);
             }).HtmlAttributes(new { style = "height:550px" })
             .EnableCustomBinding(true)
-            .AutoBind(false)
             .DataSource(dataSource => dataSource
             .Ajax()
             .Read("GetAccidentesBusquedaPagination", "BusquedaEspecialAccidentes")

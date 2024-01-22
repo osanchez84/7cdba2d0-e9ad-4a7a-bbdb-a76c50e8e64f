@@ -264,12 +264,39 @@
 
 <script>
 
+    //function submitSearch() {
+    //    var data = $("#frmSearch").serialize();
+    //    showLoading();
+    //    //console.log(Mydata);
+    //    var grid = $("#GridInf").data("kendoGrid");
+    //    var dataSource = grid.dataSource;
+    //    dataSource.data([]);//clear out old data
+    //    //dataSource.data(result.Data);//add new data
+    //    //grid.setDataSource(result.Data);//set the new data as the grids new datasource
+    //    dataSource.sync();//refresh grid
+
+    //    $.ajax({
+    //        url: './GetBuscarInfraccionesNormal',
+    //        type: 'POST',
+    //        data: data,
+    //        success: function(result) {
+    //            dataSource.sync();
+    //            hideLoading();
+    //        },
+    //        error: function (result) {
+    //            console.log(result);
+    //            hideLoading();
+    //        }
+    //    });
+    //}
+
+
     function submitSearch() {
         var Mydata = $("#frmSearch").serialize();
         showLoading();
         //console.log(Mydata);
         $.ajax({
-            url: '@Url.Action("ajax_BuscarInfracciones")',
+            url: '@Url.Action("GetBuscarInfraccionesNormal")',
             type: 'POST',
             data: Mydata,
             success: function (result) {

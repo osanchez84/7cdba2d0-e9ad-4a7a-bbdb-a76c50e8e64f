@@ -28,8 +28,8 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-        .Read(read => read.Action("BuscarAccidentesLista", "CapturaAccidentes"))
-            .PageSize(5).Model(model => model.Id(p => p.IdAccidente))
+        .Read(read => read.Action("BuscarAccidentesListaPagination", "CapturaAccidentes"))
+            .PageSize(10).Model(model => model.Id(p => p.IdAccidente))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
@@ -38,9 +38,6 @@
             s.Field(c => c.Municipio);
             s.Field(c => c.Carretera);
             s.Field(c => c.Tramo);
-         
-
-
             })
 
             .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)

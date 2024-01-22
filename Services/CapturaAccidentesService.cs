@@ -1401,6 +1401,58 @@ namespace GuanajuatoAdminUsuarios.Services
 
 		}
 
+		CapturaAccidentesModel ICapturaAccidentesService.DatosInvolucradoEdicion(int id)
+		{
+			CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(@"SELECT p.idPersona,p.nombre,p.apellidoPaterno,p.apellidoMaterno,p.RFC,p.CURP
+                                                        ,p.numeroLicencia,p.fechaNacimiento,pd.calle,pd.numero,pd.colonia,pd.correo
+                                                        From personas p
+                                                        LEFT JOIN personasDirecciones AS pd ON pd.idPersona = p.idPersona
+                                                        WHERE p.idPersona = @idpersona", connection);
+
+					command.Parameters.Add(new SqlParameter("@idpersona", SqlDbType.NVarChar)).Value = id;
+					command.CommandType = CommandType.Text;
+					using (
+						SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							involucrado.IdPersona = Convert.ToInt32(reader["idPersona"].ToString());
+							involucrado.nombre = reader["nombre"].ToString();
+							involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
+							involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
+							involucrado.RFC = reader["rfc"].ToString();
+							involucrado.CURP = reader["curp"].ToString();
+							involucrado.Calle = reader["calle"].ToString();
+							involucrado.numeroLicencia = reader["numeroLicencia"].ToString();
+							involucrado.Numero = reader["numero"].ToString();
+							involucrado.Colonia = reader["colonia"].ToString();
+							involucrado.Correo = reader["correo"].ToString();
+							involucrado.FormatDateNacimiento = reader["fechaNacimiento"].ToString();
+
+						}
+
+					}
+
+				}
+				catch (SqlException ex)
+				{
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+			return involucrado;
+
+		}
+
 
 		public List<CapturaAccidentesModel> BusquedaPersonaInvolucrada(BusquedaInvolucradoModel model, string server = null)
         {
@@ -2667,6 +2719,66 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
+
+
+        public List<CapturaAccidentesModel> ObtenerAccidentesPagination(int idOficina, Pagination pagination)
+        {
+            List<CapturaAccidentesModel> ListaAccidentes = new List<CapturaAccidentesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("usp_ObtieneTodosLosAccidentes", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                        cmd.Parameters.AddWithValue("@IdOficina", idOficina);
+                        if (pagination.Filter.Trim() != "")
+                            cmd.Parameters.AddWithValue("@Filter", pagination.Filter);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                CapturaAccidentesModel accidente = new CapturaAccidentesModel();
+                                accidente.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
+                                accidente.NumeroReporte = reader["NumeroReporte"].ToString();
+                                accidente.Fecha = Convert.ToDateTime(reader["Fecha"].ToString());
+                                accidente.Hora = reader.GetTimeSpan(reader.GetOrdinal("Hora"));
+                                accidente.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+                                accidente.IdCarretera = Convert.ToInt32(reader["IdCarretera"].ToString());
+                                accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
+                                accidente.idEstatusReporte = Convert.ToInt32(reader["idEstatusReporte"].ToString());
+                                accidente.EstatusReporte = reader["estatusReporte"].ToString();
+                                accidente.Municipio = reader["Municipio"].ToString();
+                                accidente.Tramo = reader["Tramo"].ToString();
+                                accidente.Carretera = reader["Carretera"].ToString();
+                                accidente.Total = Convert.ToInt32(reader["Total"]);
+                                ListaAccidentes.Add(accidente);
+
+                            }
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                return ListaAccidentes;
+
+            }
+        }
+
     }
 }
 

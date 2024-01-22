@@ -111,26 +111,26 @@
                 </span>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 col-md-6">
                         <div class="controlForm my-3">
                             <label>Fecha inicio de vigencia</label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.fechaInicioVigencia)
                                     //.Max(DateTime.Now)
                                     .Culture("es-ES")
-                                    .HtmlAttributes(new { style = "width: 50%"})
+                                    .HtmlAttributes(new { style = "width: 100%"})
                                     )
                             </span>
                         </div>
                     </div>
-        <div class="col-12">
+        <div class="col-12 col-md-6">
             <div class="controlForm my-3">
                <label>Fecha final de vigencia</label>
                 <span>
                     @(Html.Kendo().DatePickerFor(t => t.fechaFinVigencia)
                         //.Max(DateTime.Now)
                         .Culture("es-ES")
-                        .HtmlAttributes(new { style = "width: 50" })
+                        .HtmlAttributes(new { style = "width: 100%" })
                         )
                 </span>
             </div>

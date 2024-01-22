@@ -34,27 +34,19 @@
                  columns.Bound(p => p.IdAccidente).ClientTemplate(
                 "<button onclick=\"eliminarAccidente('#= IdAccidente #', '#= numeroReporte #')\" class='w-100 btn'><h6 class='m-0 colorDanger'><i class='icon-delete me-2'></i><b>Eliminar</b></h6></button>"
                 ).Title("Eliminar").Sortable(false).Width(90);
-               
-
-
             }).HtmlAttributes(new { style = "height:550px" })
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
-            .Sortable()
-            .Scrollable(scr => scr.Height(350))
+            .EnableCustomBinding(true)
             .DataSource(dataSource => dataSource
             .Ajax()
-            .ServerOperation(false)
+            .Read("GetAccidentesBusquedaPagination", "BusquedaEspecialAccidentes")
+            .PageSize(10)
+            .Events(events => events.Error("handleError"))
             )
-            .ToolBar(t => t.Search().Text("Buscar..."))
-            .Search(s =>
-            {
-                s.Field(c => c.fecha);
-                s.Field(c => c.hora);
-                s.Field(c => c.municipio);
-                s.Field(c => c.carretera);
-                s.Field(c => c.tramo);
-                s.Field(c => c.estatusReporte);
-            })
+
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .Sortable()
+            .Scrollable(scr => scr.Enabled(true))
+            @*.ToolBar(t => t.Custom().Text("Buscar...").Name("search"))*@
             )
 
     </div>
@@ -142,5 +134,8 @@
         });
     }
 
-    
+    function handleError(e) {
+        console.log("Error en la solicitud al servidor:", e.errors); // Puedes personalizar el manejo de errores según tus necesidades
+    }
+
 </script>

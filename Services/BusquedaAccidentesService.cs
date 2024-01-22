@@ -491,8 +491,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
 						cmd.Parameters.AddWithValue("@IdMunicipio", model.idMunicipio);
 						cmd.Parameters.AddWithValue("@IdSupervisa", model.idSupervisa);
-						cmd.Parameters.AddWithValue("@IdCarretera", model.idCarretera);
-						cmd.Parameters.AddWithValue("@IdTramo", model.idTramo);
+						cmd.Parameters.AddWithValue("@IdCarretera", model.IdCarreteraBusqueda);
+						cmd.Parameters.AddWithValue("@IdTramo", model.IdTramoBusqueda);
 						cmd.Parameters.AddWithValue("@IdElabora", model.idElabora);
 						cmd.Parameters.AddWithValue("@IdAutoriza", model.idAutoriza);
 						cmd.Parameters.AddWithValue("@IdEstatusAccidente", model.idEstatusReporte);
@@ -563,7 +563,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 accidente.hora = reader["hora"] != DBNull.Value ? TimeSpan.Parse(reader["hora"].ToString()) : TimeSpan.MinValue;
                                 accidente.NumeroSecuencial = Convert.IsDBNull(reader["rowIndex"]) ? 0 : Convert.ToInt32(reader["rowIndex"]); 
 
-                              // accidente.total = Convert.ToInt32(reader["Total"]);
+                               accidente.total = Convert.ToInt32(reader["Total"]);
 
                                 modelList.Add(accidente);
 

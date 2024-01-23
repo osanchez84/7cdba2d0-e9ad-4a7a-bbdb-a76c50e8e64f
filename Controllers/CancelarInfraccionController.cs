@@ -39,7 +39,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CancelarInfraccionModel cancelarInfraccionService)
         {
-            int IdModulo = 704;
+            int IdModulo = 410;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))

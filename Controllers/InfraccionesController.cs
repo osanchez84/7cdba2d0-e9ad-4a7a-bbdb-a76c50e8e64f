@@ -118,7 +118,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 700;
+            int IdModulo = 460;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
@@ -258,17 +258,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Crear()
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-            var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            //var vehiculosList = _vehiculosService.GetAllVehiculos();
-            //var personasList = _personasService.GetAllPersonas();
+            int IdModulo = 401;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
+                var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
+                //var vehiculosList = _vehiculosService.GetAllVehiculos();
+                //var personasList = _personasService.GetAllPersonas();
 
-            ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
-            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
-            //ViewBag.Vehiculos = vehiculosList;
+                ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
+                ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+                //ViewBag.Vehiculos = vehiculosList;
 
-            return View(new InfraccionesModel());
+                return View(new InfraccionesModel());
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         public ActionResult GetAllVehiculosPagination([DataSourceRequest] DataSourceRequest request)
@@ -381,45 +392,56 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult Editar(int idInfraccion, int id, bool? showE = false)
 
         {
-
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-
-            int ids = id != 0 ? id : idInfraccion;
-
-            int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
-            var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
-            model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
-            var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
-            var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
-            var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
-            var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
-            var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
-            var CatAplicadoA = _catDictionary.GetCatalog("CatAplicadoA", "0");
-            ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
-            ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
-            ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
-            ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
-            ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
-            ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
-            ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
-            ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
-
-            if ((model.MotivosInfraccion == null || model.MotivosInfraccion.Count() == 0) || (model.idGarantia == null || model.idGarantia == 0))
+            int IdModulo = 470;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
             {
-                HttpContext.Session.SetString("isedition", "0");
+
+                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+                int ids = id != 0 ? id : idInfraccion;
+
+                int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
+                var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
+                model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
+                var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
+                var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
+                var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+                var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
+                var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+                var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
+                var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
+                var CatAplicadoA = _catDictionary.GetCatalog("CatAplicadoA", "0");
+                ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
+                ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
+                ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
+                ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
+                ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+                ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
+                ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+                ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
+                ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
+
+                if ((model.MotivosInfraccion == null || model.MotivosInfraccion.Count() == 0) || (model.idGarantia == null || model.idGarantia == 0))
+                {
+                    HttpContext.Session.SetString("isedition", "0");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("isedition", "1");
+                }
+
+
+
+
+                return View(model);
             }
             else
             {
-                HttpContext.Session.SetString("isedition", "1");
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
-
-
-
-
-            return View(model);
         }
 
         public ActionResult EditarA(int idInfraccion, int id)
@@ -1512,10 +1534,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult BusquedaEspecial()
         {
+            int IdModulo = 480;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                var t = User.FindFirst(CustomClaims.Nombre).Value;
 
-            var t = User.FindFirst(CustomClaims.Nombre).Value;
-
-            return View("BusquedaEspecial");
+                return View("BusquedaEspecial");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
 

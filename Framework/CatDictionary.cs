@@ -429,6 +429,7 @@ namespace GuanajuatoAdminUsuarios.Framework
 							.OrderBy(s => s.Text)
 							.ToList();
 					break;
+
 				case "CatResponsablesPensiones":
 					catalogModel.CatalogName = catalog;
 					campos = new string[] { "idResponsable", "responsable" };

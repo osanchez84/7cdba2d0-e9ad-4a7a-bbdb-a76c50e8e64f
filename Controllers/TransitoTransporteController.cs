@@ -40,11 +40,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
-            List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
-            searchModel.ListTransitoTransporte = listTransitoTransporte;
-            return View(searchModel);
+            int IdModulo = 201;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
+                List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
+                searchModel.ListTransitoTransporte = listTransitoTransporte;
+                return View(searchModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         [HttpGet]

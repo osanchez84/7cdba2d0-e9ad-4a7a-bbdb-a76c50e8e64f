@@ -116,12 +116,7 @@
             $('#modalBodyCrearConcesionario').html('');
         });
 
-        $("#modalEditarConcesionario").on("show.bs.modal shown.bs.modal", function (e) {
-            $("body").removeClass("modal-open").find(".modal-backdrop").remove();
-        });
-        $("#modalEditarConcesionario").on('hide.bs.modal', function () {
-            $('#modalBodyCrearConcesionario').html('');
-        });
+
     });
 
     function btnModalCrearConcesionario() {

@@ -270,19 +270,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
                             string vectorString = listaRespuestas.FirstOrDefault()?.Vector;
+                            string autorizacionesString = listaRespuestas.FirstOrDefault()?.autorizaciones;
+
                             if (!string.IsNullOrEmpty(vectorString))
                             {
                                 List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                                 string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
-
+                                List<int> listaPermisos = autorizacionesString.Split(',').Select(int.Parse).ToList();
+                                string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
                                 // Guardar la lista en la variable de sesión
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
+                                HttpContext.Session.SetString("Autorizaciones", listaPermisosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);
                                // HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
                             }
+
+                        
                         }
                     }
 

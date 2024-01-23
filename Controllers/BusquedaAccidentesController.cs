@@ -31,7 +31,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private int idOficina = 0;
         private string resultValue = string.Empty;
-
+        public static BusquedaAccidentesModel AccidentesNuevoModel = new BusquedaAccidentesModel();
 
         public BusquedaAccidentesController(IBusquedaAccidentesService busquedaAccidentesService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IOficiales oficialesService,
@@ -49,7 +49,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            int IdModulo = 800;
+            int IdModulo = 601;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
@@ -128,7 +128,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
              var resultadoBusqueda = _busquedaAccidentesService.BusquedaAccidentes(model, idOficina);
              return Json(resultadoBusqueda);
          }*/
-        public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
+     /*   public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
@@ -156,8 +156,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(resultadoBusqueda);
 
+        }*/
+        public IActionResult ajax_BusquedaAccidentes([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
+        {
+            AccidentesNuevoModel = model;
+            return PartialView("_ListaAccidentesBusqueda", new List<BusquedaAccidentesModel>());
         }
-
         public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
         {
            // filterValue(request.Filters);
@@ -165,9 +169,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page -1;
             pagination.PageSize = 10;
-           // pagination.Filter = resultValue;
+            // pagination.Filter = resultValue;
+            if (AccidentesNuevoModel == null)
+                AccidentesNuevoModel = model;
 
-            var accidentesList = _busquedaAccidentesService.GetAllAccidentesPagination(pagination, model);
+            var accidentesList = _busquedaAccidentesService.GetAllAccidentesPagination(pagination, AccidentesNuevoModel);
             var total = 0;
             if (accidentesList.Count() > 0)
                 total = accidentesList.ToList().FirstOrDefault().total;

@@ -57,7 +57,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			int IdModulo = 707;
+			int IdModulo = 430;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))

@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-
+using Newtonsoft.Json;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -59,7 +59,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     
         public IActionResult Depositos(int? Isol)
         {
-            if (Isol.HasValue)
+            int IdModulo = 260;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+                if (Isol.HasValue)
             {
                
                 var solicitud = _catDepositosService.ObtenerSolicitudPorID(Isol.Value);
@@ -68,6 +73,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
             {
                 return View("Depositos");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
         public IActionResult Ubicacion(int Isol)

@@ -44,7 +44,7 @@
 			.Read("GetAccidentesBusquedaPagination", "BusquedaAccidentes")
 			.PageSize(10)
 			)
-			.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+			.Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
 			.Sortable()
 			.Scrollable(scr => scr.Enabled(true))
 			@*.ToolBar(t => t.Custom().Text("Buscar...").Name("search"))*@

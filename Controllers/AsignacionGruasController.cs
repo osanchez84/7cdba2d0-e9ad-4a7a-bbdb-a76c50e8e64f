@@ -32,14 +32,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            /* int IdModulo = 800;
-             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);*/
-            //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
+            int IdModulo = 220;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
 
-            var q =User.FindFirst(CustomClaims.Nombre).Value;
+                var q = User.FindFirst(CustomClaims.Nombre).Value;
 
-            return View();
+                return View();
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
         public IActionResult ajax_BuscarSolicitudes(AsignacionGruaModel model)
         {

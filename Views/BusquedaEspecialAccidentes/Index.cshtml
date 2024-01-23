@@ -249,7 +249,7 @@
         </div>
         <div class="row">
             <div class="col-12 mb-4 px-4 rounded">
-                <div id="tablaBusquedaAccidentes">
+                <div id="tablaBusquedaEspAccidentes">
                     <partial name="_ListaAccidentesBusquedaEspecial" model="Model" />
                 </div>
 
@@ -278,13 +278,11 @@
         };
         showLoading();
         $.ajax({
-            url: '/BusquedaEspecialAccidentes/ajax_BusquedaAccidentes',
+            url: '/BusquedaEspecialAccidentes/ajax_BusquedaEspecialAccidentes',
             type: 'GET',
             data: data,
-            success: function (data) {
-                var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
-                grid.dataSource.data(data);
-                grid.refresh();
+            success: function (result) {
+                $("#tablaBusquedaEspAccidentes").html(result);
                 hideLoading();
             },
             error: function () {

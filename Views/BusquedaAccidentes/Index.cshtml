@@ -297,14 +297,12 @@
             url: '/BusquedaAccidentes/GetAccidentesBusquedaPagination',
             type: 'GET',
             data: data,
-            success: function (data) {
-                var grid = $("#gridBusquedaAccidentes").data("kendoGrid");
-                //grid.dataSource.data(data);
-                grid.refresh();
+            success: function (result) {
+                $("#tablaBusquedaAccidentes").html(result);
                 hideLoading();
             },
             error: function () {
-                sitteg_warning("Ocurrieron los siguientes errores");
+                sitteg_warning("Ocurrió un error");
                 hideLoading();
             }
         });

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using static GuanajuatoAdminUsuarios.Models.PadronDepositosGruasModel;
@@ -42,12 +43,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            PadronDepositosGruasBusquedaModel searchModel = new PadronDepositosGruasBusquedaModel();
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int IdModulo = 210;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                PadronDepositosGruasBusquedaModel searchModel = new PadronDepositosGruasBusquedaModel();
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
-            searchModel.ListPadronDepositosGruas = listPadronDepositosGruas;
-            return View(searchModel);
+                List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
+                searchModel.ListPadronDepositosGruas = listPadronDepositosGruas;
+                return View(searchModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
+            }
         }
 
         [HttpPost]

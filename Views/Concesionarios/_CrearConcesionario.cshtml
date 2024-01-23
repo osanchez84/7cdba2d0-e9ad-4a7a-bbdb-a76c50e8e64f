@@ -46,13 +46,11 @@
     </div>
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
-            <label>Delegación <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownList()
-                .Name("idDelegacion")
+            <label for="shipTo">Delegación <b>(obligatorio):</b> </label>
+            @(Html.Kendo().DropDownListFor(f => f.idDelegacion).Filter(FilterType.Contains)
                 .BindTo((SelectList)ViewBag.CatDelegaciones)
                 .OptionLabel("-- Seleccione --")
-                .Filter(FilterType.Contains)
-                .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" }))
+                .HtmlAttributes(new { style = "width:100%;" }))
         </div>
     </div>
     <div class="col-12 col-md-6">

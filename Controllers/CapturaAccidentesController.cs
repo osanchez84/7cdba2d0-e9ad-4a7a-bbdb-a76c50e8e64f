@@ -175,7 +175,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
 		{
-			int IdModulo = 800;
+			int IdModulo = 630;
             //filterValue(request.Filters);
 
             Pagination pagination = new Pagination();

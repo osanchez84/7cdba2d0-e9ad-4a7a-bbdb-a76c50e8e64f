@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         public IActionResult ModificacionVehiculos()
         {
-            int IdModulo = 200;
+            int IdModulo = 250;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
             if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))

@@ -55,18 +55,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            int? idOficina = HttpContext.Session.GetInt32("IdOficina");
+            int IdModulo = 610;
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            {
+                int? idOficina = HttpContext.Session.GetInt32("IdOficina");
             BusquedaEspecialAccidentesModel modelo = new BusquedaEspecialAccidentesModel
             {
                 IdDelegacionBusqueda = idOficina ?? 0,
             };
             return View(modelo);
-           // }
-           /* else
+
+            }
+            else
             {
                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }*/
+            }
         }
         public JsonResult Delegaciones_Drop()
         {

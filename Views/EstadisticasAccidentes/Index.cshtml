@@ -207,24 +207,28 @@
 			type: 'POST',
 			data: Mydata,
 			success: function (result) {
-				$("#estadisticasInfracciones").html(result);
-
-				$.ajax({
-					data: Mydata,
-					url: '@Url.Action("ajax_BusquedaParaTablas")',
-					type: 'POST',
-					dataType: 'json',
-					success: function (result) {
-						$("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
-						$("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
-					},
-					error: function () {
-						sitteg_warning("Ocurrió un error al obtener estadísticas.");
-					},
-					complete: function () {
-						hideLoading();
-					}
-				});
+				console.log("SD",result)
+				if (result.includes("no tiene permisos")) {
+					sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+					hideLoading();
+				} else {
+					$.ajax({
+						data: Mydata,
+						url: '@Url.Action("ajax_BusquedaParaTablas")',
+						type: 'POST',
+						dataType: 'json',
+						success: function (result) {
+							$("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
+							$("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
+						},
+						error: function () {
+							sitteg_warning("Ocurrió un error al obtener estadísticas.");
+						},
+						complete: function () {
+							hideLoading();
+						}
+					});
+				}
 			},
 			error: function () {
 				sitteg_warning("Ocurrió un error en la búsqueda, inténtelo de nuevo más tarde.");
@@ -232,6 +236,7 @@
 			}
 		});
 	}
+
 
 
 	$("#ddlFactores").on("change", function () {

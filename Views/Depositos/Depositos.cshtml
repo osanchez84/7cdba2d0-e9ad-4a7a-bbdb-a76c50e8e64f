@@ -700,9 +700,14 @@
                 type: 'GET',
                 data: Mydata,
                 success: function (data) {
+                    if (data.includes("no tiene permisos")) {
+                        sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+                        hideLoading();
+                    } else {
                     $("#folioPlaceholder").text(data);
                     $("#solicitudModal").modal('show');
                     hideLoading();
+                    }
                 },
                 error: function () {
                     sitteg_warning("Ocurrió un error, inténtelo de nuevo más tarde");

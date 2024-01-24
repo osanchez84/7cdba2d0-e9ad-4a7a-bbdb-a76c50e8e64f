@@ -53,11 +53,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 620;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+
                 // var modelList = _infraccionesService.GetAllAccidentes2()
                 //.GroupBy(g => g.municipio)
                 // .Select(s => new EstadisticaAccidentesMotivosModel() { Motivo = s.Key.ToString(), Contador = s.Count() }).ToList();
@@ -98,19 +94,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //ViewBag.ListadoAccidentesPorVehiculo = _estadisticasAccidentesService.AccidentesPorVehiculo();
 
                 return View();
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
         }
 
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             //int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
-
-            var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
+            int IdModulo = 621;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
                                                            .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                                && w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
                                                                && w.IdOficial == (model.IdOficial > 0 ? model.IdOficial : w.IdOficial)
@@ -142,8 +136,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     ).ToList();
 
             return PartialView("_EstadisticasAccidentes", lista2);
-
-
+            }
+            else
+            {
+                TempData["NoPermisos"] = true;
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public IActionResult ajax_BusquedaParaTablas(BusquedaAccidentesModel model)

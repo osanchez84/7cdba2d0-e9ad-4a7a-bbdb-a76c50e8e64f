@@ -29,19 +29,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 320;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+
                 return View();
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
         public JsonResult GetAllDepositos([DataSourceRequest] DataSourceRequest request)
         {
             int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
@@ -52,12 +42,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult ajax_BusquedaDepositos(BusquedaDepositoModel model)
         {
-            int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
+            int IdModulo = 321;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
 
             var listaDepositos = _busquedaDepositoService.ObtenerDepositos(model, idPension);
             return Json(listaDepositos);
-        }
-        public ActionResult ModalDetalleGrua(int Id)
+            }   
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+             }
+         }
+public ActionResult ModalDetalleGrua(int Id)
         {
             var model = _gruasService.GetGruasConcesionariosByIdCocesionario(Id);
 

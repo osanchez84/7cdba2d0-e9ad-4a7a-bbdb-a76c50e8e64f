@@ -282,8 +282,13 @@
             type: 'GET',
             data: data,
             success: function (result) {
+                if (result.includes("no tiene permisos")) {
+                    sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+                    hideLoading();
+                } else {
                 $("#tablaBusquedaEspAccidentes").html(result);
                 hideLoading();
+                }
             },
             error: function () {
                 sitteg_warning("Ocurrieron los siguientes errores");

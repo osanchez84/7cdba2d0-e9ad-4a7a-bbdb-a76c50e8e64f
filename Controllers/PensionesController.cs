@@ -36,47 +36,48 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 270;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+   
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
                 List<PensionModel> pensionesList = _pensionesService.GetAllPensiones(idOficina);
             var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
             return View(pensionesList);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
+ 
         }
 
         [HttpGet]
         public ActionResult ajax_BuscarPensiones(string pension, int? idDelegacion)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-            var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idOficina);
-            if (ListPensionesModel.Count == 0)
+            int IdModulo = 271;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
-                ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idOficina);
+                if (ListPensionesModel.Count == 0)
+                {
+                    ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+                }
+                return PartialView("_ListadoPensiones", ListPensionesModel);
             }
-            return PartialView("_ListadoPensiones", ListPensionesModel);
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+         }
 
-        }
 
-
-        [HttpPost]
+            [HttpPost]
         public ActionResult ajax_ModalCrearPension()
         {
-            int IdModulo = 401;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 273;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             var catResponsablesPensiones = _catDictionary.GetCatalog("CatResponsablesPensiones", "0");
@@ -135,10 +136,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_ModalEditarPension(int idPension)
         {
-            int IdModulo = 402;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 275;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 

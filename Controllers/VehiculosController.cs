@@ -4,10 +4,12 @@ using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,18 +87,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Editar()
         {
-            var vehiculosModel = _vehiculosService.GetAllVehiculos();
+           // var vehiculosModel = _vehiculosService.GetAllVehiculos();
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+           // vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
             return View(vehiculoBusquedaModel);
         }
 
         public ActionResult EditarVehiculo(int id)
         {
-            var vehiculosModel = _vehiculosService.GetVehiculoById(id);
+            int IdModulo = 602;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var vehiculosModel = _vehiculosService.GetVehiculoById(id);
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = vehiculosModel;
             vehiculoBusquedaModel.Vehiculo.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -113,6 +120,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public JsonResult Entidades_Read()
@@ -494,7 +507,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
 
-            var vehiculosModel = new VehiculoModel();
+                var vehiculosModel = new VehiculoModel();
 
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
 
@@ -687,9 +700,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
         {
-            var vehiculosModel = _vehiculosService.GetVehiculos(model);
-            return PartialView("_ListVehiculos", vehiculosModel);
+            int IdModulo = 202;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var vehiculosModel = _vehiculosService.GetVehiculos(model);
+                return PartialView("_ListVehiculos", vehiculosModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
+        
 
 
         [HttpPost]

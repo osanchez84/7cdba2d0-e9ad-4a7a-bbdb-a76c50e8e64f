@@ -56,9 +56,12 @@
             type: 'POST',
             data: { idAccidente: idAccidente },
             success: function (result) {
-
+                if (result.includes("no tiene permisos")) {
+                    sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+                    hideLoading();
+                }else{
                 window.location.href = '/CapturaAccidentes/CapturaAaccidente/?showE=false'
-
+                }
             },
 
         });

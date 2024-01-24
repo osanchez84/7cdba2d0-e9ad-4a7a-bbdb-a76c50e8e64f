@@ -32,30 +32,29 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 220;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+           
                 //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
-
                 var q = User.FindFirst(CustomClaims.Nombre).Value;
-
-                return View();
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
+                return View();                    
         }
         public IActionResult ajax_BuscarSolicitudes(AsignacionGruaModel model)
         {
-            var resultadoSolicitudes = _asignacionGruasService.BuscarSolicitudes(model);
+            int IdModulo = 220;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var resultadoSolicitudes = _asignacionGruasService.BuscarSolicitudes(model);
 
-            return Json(resultadoSolicitudes);
+                return Json(resultadoSolicitudes);
+            }
+
+            else
+            {
+                return Json(new { error = "El usuario no tiene permisos suficientes para esta acción." });
+            }           
         }
-        public IActionResult DatosGruas(int iSo, int iPg)
+            public IActionResult DatosGruas(int iSo, int iPg)
         {
             HttpContext.Session.SetInt32("iSo", iSo);
             HttpContext.Session.SetInt32("iPg", iPg);

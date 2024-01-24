@@ -32,11 +32,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 280;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+         
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //IEnumerable<Gruas2Model> listGruas = _gruasService.GetAllGruas(idOficina);
                 var listGruas = new List<Gruas2Model>();
@@ -49,12 +45,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatConcesionario = new SelectList(catConcesionario.CatalogList, "Id", "Text");
 
                 return View(listGruas);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return Ok();
-            }
+            
         }
         public JsonResult Delegaciones_Drop()
         {
@@ -70,12 +61,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_BuscarGruas(string placas, string noEconomico, int? idTipoGrua, int? idDelegacion, int? idConcesionario)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina, idDelegacion, idConcesionario);
+            int IdModulo = 281;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina, idDelegacion, idConcesionario);
 
-            return PartialView("_ListadoGruas", listPadronGruas);
+                return PartialView("_ListadoGruas", listPadronGruas);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                return PartialView("ErrorPartial");
+            }
         }
-
 
         /// <summary>
         /// Accion que redirige a la vista
@@ -84,10 +85,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_create()
         {
-            int IdModulo = 501;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 283;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             var catClasificacionGruas = _catDictionary.GetCatalog("CatClasificacionGruas", "0");
@@ -127,10 +128,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_edit(int idGrua)
         {
-            int IdModulo = 502;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 285;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var model = _gruasService.GetGruaById(idGrua);

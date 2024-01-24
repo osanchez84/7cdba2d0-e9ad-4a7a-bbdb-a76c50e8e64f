@@ -22,10 +22,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            int IdModulo = 936;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1091;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var ListColoresModel = GetColores();
 
@@ -34,9 +34,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
             {
                 TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
+                return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
-
         }
 
         /// <summary>
@@ -65,10 +64,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarPacial()
         {
-            int IdModulo = 937;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1093;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 return PartialView("_Crear");
             }
@@ -81,10 +80,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarParcial(int Id)
         {
-            int IdModulo = 938;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1095;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var coloresModel = GetColorByID(Id);
             return View("_Editar", coloresModel);

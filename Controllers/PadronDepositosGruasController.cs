@@ -43,39 +43,42 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 210;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+           
                 PadronDepositosGruasBusquedaModel searchModel = new PadronDepositosGruasBusquedaModel();
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
-                searchModel.ListPadronDepositosGruas = listPadronDepositosGruas;
+               // List<PadronDepositosGruasModel> listPadronDepositosGruas = _padronDepositosGruasService.GetAllPadronDepositosGruas(idOficina);
+                //searchModel.ListPadronDepositosGruas = listPadronDepositosGruas;
                 return View(searchModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
+            
+          
         }
 
         [HttpPost]
         public ActionResult ajax_BuscarPadron(PadronDepositosGruasBusquedaModel model)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-            var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model,idOficina);
-            if (ListPadronDepositosGruas.Count == 0)
+            int IdModulo = 210;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
-                ViewBag.NoResultsMessage = "No se encontraron grúas que cumplan con los criterios de búsqueda.";
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+                var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model, idOficina);
+                if (ListPadronDepositosGruas.Count == 0)
+                {
+                    ViewBag.NoResultsMessage = "No se encontraron grúas que cumplan con los criterios de búsqueda.";
+                }
+
+                return PartialView("_ListadoPadron", ListPadronDepositosGruas);
             }
-
-            return PartialView("_ListadoPadron", ListPadronDepositosGruas);
-
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
+
 
         public JsonResult Municipios_Read()
         {

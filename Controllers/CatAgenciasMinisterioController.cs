@@ -31,10 +31,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             DBContextInssoft dbContext = new DBContextInssoft();
             public IActionResult Index()
         {
-            int IdModulo = 956;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1141;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var ListAgenciasMinisterioModel = GetAgenciasministerio();
 
@@ -42,25 +42,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
-
         }
 
 
 
 
-            #region Modal Action
-       
+        #region Modal Action
 
-            [HttpPost]
+
+        [HttpPost]
             public ActionResult AgregarAgenciaMinisterioModal()
         {
-            int IdModulo = 957;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1143;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 SetDDLDelegaciones();
                 return PartialView("_Crear");
@@ -74,10 +73,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             public ActionResult EditarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {
-            int IdModulo = 958;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1145;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 SetDDLDelegaciones();
                 var agenciasMinisterioModel = GetAgenciaMinisterioByID(IdAgenciaMinisterio);

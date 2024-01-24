@@ -40,22 +40,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 201;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+         
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
-                List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
-                searchModel.ListTransitoTransporte = listTransitoTransporte;
+                //List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
+                //searchModel.ListTransitoTransporte = listTransitoTransporte;
                 return View(searchModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
+            
         }
 
         [HttpGet]
@@ -113,16 +104,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarTransito(TransitoTransporteBusquedaModel model)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-            var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model, idOficina);
-
-            if (ListTransitoModel.Count == 0)
+            int IdModulo = 202;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
-                ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
-            }
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model, idOficina);
+                if (ListTransitoModel.Count == 0)
+                {
+                    ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+                }
 
-            return PartialView("_ListadoTransitoTransporte", ListTransitoModel);
+                return PartialView("_ListadoTransitoTransporte", ListTransitoModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
 

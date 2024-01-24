@@ -30,10 +30,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
        
         public IActionResult Index()
         {
-            int IdModulo = 928;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1071;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var ListSubmarcasModel = _catSubmarcasVehiculosService.ObtenerSubarcas();
 
@@ -41,7 +41,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
@@ -50,10 +50,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarSubmarcaParcial()
         {
-            int IdModulo = 929;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1073;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 Marcas_Drop();
             return PartialView("_Crear");
@@ -67,10 +67,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarSubmarcaParcial(int IdSubmarca)
         {
-            int IdModulo = 930;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1075;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 Marcas_Drop();
             var submarcasModel = _catSubmarcasVehiculosService.GetSubmarcaByID(IdSubmarca);

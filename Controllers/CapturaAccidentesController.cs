@@ -174,8 +174,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
-		{
-			int IdModulo = 630;
+        {
             //filterValue(request.Filters);
 
             Pagination pagination = new Pagination();
@@ -183,30 +182,31 @@ namespace GuanajuatoAdminUsuarios.Controllers
             pagination.PageSize = 1;
             pagination.Filter = resultValue;
 
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-			List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-			ViewBag.EsSoloLectura = false;
-			if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
+            if (ListAccidentesModel.Count == 0)
+            {
+                int IdModulo = 633;
+                string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+                List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+                if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+                {
+                    return View("AgregarAccidente");
 
-			{
-				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
-				if (ListAccidentesModel.Count == 0)
-				{
-					return View("AgregarAccidente");
+                }
 
-				}
-				else
-				{
-					return View("CapturaAccidentes", ListAccidentesModel);
-				}
-			}
-			else
-			{
-				TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-				return RedirectToAction("Principal", "Inicio", new { area = "" });
-			}
-		}
+                else
+                {
+                    TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                    return PartialView("ErrorPartial");
+                }
+            }
+            else
+            {
+                return View("CapturaAccidentes", ListAccidentesModel);
+            }
+        }
+
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
@@ -230,9 +230,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public ActionResult NuevoAccidente()
-		{
-			return View("AgregarAccidente");
-		}
+        {
+            int IdModulo = 633;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                return Json(new { redirect = Url.Action("AgregarAccidente") });
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+        }
+        public ActionResult AgregarAccidente()
+        {
+            return View("AgregarAccidente");
+        }
+
         public JsonResult Entidades_Drop()
         {
             var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
@@ -1622,12 +1638,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 		public ActionResult SetLastInsertedIdEdit(bool modoSoloLectura,int idAccidente)
 		{
-			HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
+			int IdModulo = 635;
+			string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+			List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+			if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+			{
+				HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             ViewBag.ModoSoloLectura = modoSoloLectura;
 
             return RedirectToAction("CapturaAaccidente");
+		    }
+			else
+			{
+				TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+				return PartialView("ErrorPartial");
+			}
 		}
-        public IActionResult ConsultaAccidente(bool modoSoloLectura,int idAccidente)
+		public IActionResult ConsultaAccidente(bool modoSoloLectura,int idAccidente)
         {
             HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             ViewBag.ModoSoloLectura = modoSoloLectura;

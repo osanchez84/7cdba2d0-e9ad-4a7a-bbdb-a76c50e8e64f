@@ -49,11 +49,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            int IdModulo = 601;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+
                 int? idOficina = HttpContext.Session.GetInt32("IdOficina");
                 BusquedaAccidentesModel modelo = new BusquedaAccidentesModel
                 {
@@ -61,12 +57,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
                 return View(modelo);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+
         public JsonResult GetAllAccidentes([DataSourceRequest] DataSourceRequest request)
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -159,14 +150,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }*/
         public IActionResult ajax_BusquedaAccidentes([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
         {
-            AccidentesNuevoModel = model;
+           
+                AccidentesNuevoModel = model;
             return PartialView("_ListaAccidentesBusqueda", new List<BusquedaAccidentesModel>());
+          
         }
         public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
         {
-           // filterValue(request.Filters);
+    int IdModulo = 602;
+    string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+    List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+    if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+    {
+        // filterValue(request.Filters);
 
-            Pagination pagination = new Pagination();
+        Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page -1;
             pagination.PageSize = 10;
             // pagination.Filter = resultValue;
@@ -186,6 +184,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             };
 
             return Json(result);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)

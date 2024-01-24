@@ -26,10 +26,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            int IdModulo = 964;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1161;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var ListAutoridadesDisposicionModel = GetAutoridadesDisposicion();
 
@@ -122,10 +122,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarAutoridadDisposicionPacial()
         {
-            int IdModulo = 965;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1163;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 //SetDDLDependencias();
                 return PartialView("_Crear");
@@ -139,10 +139,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarAutoridadDisposicionParcial(int IdAutoridadDisposicion)
         {
-            int IdModulo = 966;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1165;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var autoridadesDisposicionModel = GetAutoridadDispByID(IdAutoridadDisposicion);
             return PartialView("_Editar", autoridadesDisposicionModel);

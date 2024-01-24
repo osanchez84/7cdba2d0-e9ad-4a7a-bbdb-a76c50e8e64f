@@ -55,11 +55,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region DropDowns
         public IActionResult Index()
         {
-            int IdModulo = 610;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+
                 int? idOficina = HttpContext.Session.GetInt32("IdOficina");
             BusquedaEspecialAccidentesModel modelo = new BusquedaEspecialAccidentesModel
             {
@@ -67,13 +63,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             };
             return View(modelo);
 
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
         }
+       
         public JsonResult Delegaciones_Drop()
         {
             var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
@@ -203,16 +194,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult ModalEliminarAccidente(int idAccidente, string numeroReporte)
         {
-
-            var viewModel = new EditarFolioModel
+            int IdModulo = 614;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var viewModel = new EditarFolioModel
             {
                 IdAccidente = idAccidente,
                 NumeroReporte = numeroReporte
             };
 
             return PartialView("_ModalEliminarAccidente", viewModel);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
-        
         public IActionResult ModalEditarFolio(int idAccidente, string numeroReporte)
         {
 
@@ -270,14 +270,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult ajax_BusquedaEspecialAccidentes([DataSourceRequest] DataSourceRequest request, BusquedaEspecialAccidentesModel model)
         {
-            AccidentesEspecialNewModel = model;
-            return PartialView("_ListaAccidentesBusquedaEspecial", new List<BusquedaEspecialAccidentesModel>());
+     
+                AccidentesEspecialNewModel = model;
+                return PartialView("_ListaAccidentesBusquedaEspecial", new List<BusquedaEspecialAccidentesModel>());
+            
+            
+          
         }
+        
         public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaEspecialAccidentesModel model)
         {
-            // filterValue(request.Filters);
+			int IdModulo = 611;
+			string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+			List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+			if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+			{
+				// filterValue(request.Filters);
 
-            Pagination pagination = new Pagination();
+				Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
             pagination.PageSize = 10;
             // pagination.Filter = resultValue;
@@ -298,8 +308,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(result);
         }
+			else
+			{
+				TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+				return PartialView("ErrorPartial");
+			}
+		}
 
-        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+		private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
             if (filters.Any())
             {

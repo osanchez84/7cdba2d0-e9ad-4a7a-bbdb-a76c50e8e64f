@@ -34,18 +34,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 310;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            { 
                 return View();
-        }
-         else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
         }
         public JsonResult Marcas_Read()
         {
@@ -62,12 +51,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult ajax_BusquedaIngresos(SalidaVehiculosModel model)
         {
-            int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
+            int IdModulo = 311;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
 
-            var listaDepositos = _salidaVehiculosService.ObtenerIngresos(model, idPension);
-            return Json(listaDepositos);
-        }
-        public IActionResult DatosDeposito(int iDp)
+                var listaDepositos = _salidaVehiculosService.ObtenerIngresos(model, idPension);
+                return Json(listaDepositos);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+         }
+            public IActionResult DatosDeposito(int iDp)
         {
             HttpContext.Session.SetInt32("idDeposito", iDp);
             int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;

@@ -34,22 +34,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 944;
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1111;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
+                
                 var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
 
             return View(ListMotivosInfraccionModel);
             }
             else
             {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
-
         }
 
 
@@ -57,22 +57,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-
-			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            int IdModulo = 1111;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 			var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
             //return View("IndexModal");
             return View("Index", ListMotivosInfraccionModel);
+        }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         [HttpPost]
         public ActionResult AgregarMotivoParcial()
         {
-            int IdModulo = 945;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
-                var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");
+                int IdModulo = 1113;
+                string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+                List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+                if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+                {
+                    var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");
                 ViewData["CatConcepto"] = new SelectList(catConcepto.CatalogList, "Id", "Text");
                 return View("_Crear");
             }
@@ -85,20 +95,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarParcial(int IdCatMotivoInfraccion)
         {
-            int IdModulo = 946;
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
-                var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion, idDependencia);
+                int IdModulo = 1115;
+                string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+                List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+                if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+                {
+                    var motivosInfraccionsModel = _motivoInfraccionService.GetMotivoByID(IdCatMotivoInfraccion, idDependencia);
                 
                 var catConcepto = _catDictionary.GetCatalog("CatConceptoInfraccion", "0");
                 var catSubConcepto = _catDictionary.GetCatalog("CatSubConceptoInfraccion", motivosInfraccionsModel.idConcepto+"");
                 ViewData["CatConcepto"] = new SelectList(catConcepto.CatalogList, "Id", "Text");
                 ViewData["CatSubConceptoInfraccion"] = new SelectList(catSubConcepto.CatalogList, "Id", "Text");
                 return View("_Editar", motivosInfraccionsModel);
-        }
+                 }
             else
             {
                 TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";

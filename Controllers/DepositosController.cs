@@ -58,12 +58,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
     
         public IActionResult Depositos(int? Isol)
-        {
-            int IdModulo = 260;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+        {      
                 if (Isol.HasValue)
             {
                
@@ -73,12 +68,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
             {
                 return View("Depositos");
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
+            }       
         }
         public IActionResult Ubicacion(int Isol)
         {
@@ -166,34 +156,48 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, SolicitudDepositoModel model)
         {
-            if (Isol.HasValue && Isol.Value > 0)
+            int IdModulo = 263;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
-                // Es una actualización, así que actualiza los datos en la base de datos
-                // utilizando el ID 'Isol' para identificar la solicitud existente
-                var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol,model);
-                
-                //BITACORA
-                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                _bitacoraServices.insertBitacora(registroActualizado, ip, "Depositos_EnviarSolicitudDeposito", "Actualizar", "update", user);
-                
-                return Ok(registroActualizado);
+                if (Isol.HasValue && Isol.Value > 0)
+                {
+                    // Es una actualización, así que actualiza los datos en la base de datos
+                    // utilizando el ID 'Isol' para identificar la solicitud existente
+                    var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol, model);
 
+                    //BITACORA
+                    var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    _bitacoraServices.insertBitacora(registroActualizado, ip, "Depositos_EnviarSolicitudDeposito", "Actualizar", "update", user);
+
+                    return Ok(registroActualizado);
+
+                }
+                else
+                {
+                    int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                    var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina);
+
+                    //BITACORA
+                    //var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                    //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                    //_bitacoraServices.insertBitacora(resultadoBusqueda, ip, "Depositos_EnviarSolicitudDeposito", "Insertar", "insert", user);
+
+                    return Ok(resultadoBusqueda);
+                }
             }
             else
             {
-				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-				var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina);
-
-                //BITACORA
-                //var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-                //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                //_bitacoraServices.insertBitacora(resultadoBusqueda, ip, "Depositos_EnviarSolicitudDeposito", "Insertar", "insert", user);
-
-                return Ok(resultadoBusqueda);
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
             }
-        }
-        public ActionResult ajax_EnviarComplementoSolicitud(SolicitudDepositoModel model)
+         }
+
+
+
+            public ActionResult ajax_EnviarComplementoSolicitud(SolicitudDepositoModel model)
         {
             var complemntarRegistro = _catDepositosService.CompletarSolicitud(model);
 

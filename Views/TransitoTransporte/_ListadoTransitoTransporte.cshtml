@@ -1,4 +1,9 @@
 ﻿@model List<TransitoTransporteModel>
+@{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+}
 <script>
     function ShowGruaPopUp(id) {
         $.ajax({
@@ -342,7 +347,8 @@
 			return titulo;
 		}
 		function generateExcel() {
-		var grid = $("#Grid").data("kendoGrid");
+		if ('@autorizaciones' && '@autorizaciones'.indexOf('202') !== -1) {
+	    var grid = $("#Grid").data("kendoGrid");
 		var pageSize = grid.dataSource._data.length;
 		var dataSourceTotal = grid.dataSource.total();
 		grid.dataSource.pageSize(dataSourceTotal);
@@ -351,6 +357,9 @@
 			setTimeout(function () {
 				grid.dataSource.pageSize(pageSize);
 			}, 300);
+		} else {
+			sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+		}
 		}
 
 		function datosSolicitud(){

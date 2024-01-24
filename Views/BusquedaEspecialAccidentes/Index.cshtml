@@ -328,22 +328,30 @@
     }
 
     function downLoadPdfFiltered() {
-        var data = {
-            FechaInicio: $('#dateInicio').val(),
-            FechaFin: $('#dateFinal').val(),
-            placa: $('#txtPlacas').val(),
-            serie: $('#txtSerie').val(),
-            folio: $('#txtFolio').val(),
-            idDelegacion: $('#ddlDelegacion').val(),
-            idCarretera: $('#ddlCarreteras').val(),
-            idTramo: parseInt($('#ddlTramos').val()),
-            propietario: $('#txtPropietarios').val(),
-            conductor: $('#txtConductores').val(),
-            IdOficial: $('#ddlOficiales').val(),
-        };
-        var json = JSON.stringify(data);
-        window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
+        if ('@autorizaciones' && '@autorizaciones'.indexOf('611') !== -1) {
+            var data = {
+                FechaInicio: $('#dateInicio').val(),
+                FechaFin: $('#dateFinal').val(),
+                placa: $('#txtPlacas').val(),
+                serie: $('#txtSerie').val(),
+                folio: $('#txtFolio').val(),
+                idDelegacion: $('#ddlDelegacion').val(),
+                idCarretera: $('#ddlCarreteras').val(),
+                idTramo: parseInt($('#ddlTramos').val()),
+                propietario: $('#txtPropietarios').val(),
+                conductor: $('#txtConductores').val(),
+                IdOficial: $('#ddlOficiales').val(),
+            };
+            var json = JSON.stringify(data);
+            window.location = '/BusquedaAccidentes/CreatePdf?data=' + json;
+            hideLoading();
+        } else {
+            sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+            hideLoading();
+        }
+        hideLoading(); // Debería estar fuera del bloque else para asegurarse de que se ejecute siempre
     }
+
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#ddlCarreteras").data("kendoDropDownList").value();
         showLoading();

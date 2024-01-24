@@ -55,6 +55,8 @@
 
 
         function downLoadPdfFiltered() {
+        if ('@autorizaciones' && '@autorizaciones'.indexOf('202') !== -1) {
+
             var data = {
                 Placas: $('#txtPlacas').val(),
                 FolioSolicitud: $('#txtFolioSolicitud').val(),
@@ -72,6 +74,10 @@
             };
             var json = JSON.stringify(data);
             window.location = '/TransitoTransporte/CreatePdf?data=' + json;
+        }
+         else {
+        sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+              }
         }
 
     </script>

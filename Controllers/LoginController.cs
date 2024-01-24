@@ -266,7 +266,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
                             _bitacoraServices.insertBitacora(Convert.ToDecimal(idUsuario), ip, "Login", "Acceso", "select", Convert.ToDecimal(idUsuario));
                             
-                            string delegacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
+                            string delacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
                             string vectorString = listaRespuestas.FirstOrDefault()?.Vector;

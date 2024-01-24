@@ -155,8 +155,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (response) {
-                if (response.error) {
-                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                if (response.includes("no tiene permisos")) {
+                    sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
+                    hideLoading();
                 } else {
                     $('#modalBodyCrearConcesionario').html(response);
                 $('#modalCrearConcesionario').modal('show');
@@ -172,8 +173,9 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (response) {
-                if (response.includes("ErrorPartial")) {
+                if (response.includes("no tiene permisos")) {
                     sitteg_warning("El usuario no tienen los permisos para esta acción");
+                    hideLoading();
                 } else {
                     $('#modalBodyCrearConcesionario').html(response);
                     $('#modalCrearConcesionario').modal('show');

@@ -700,7 +700,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
         {
-            int IdModulo = 202;
+            int IdModulo = 251;
             string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
             List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
             if (listaPermisos != null && listaPermisos.Contains(IdModulo))

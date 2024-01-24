@@ -72,11 +72,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculo(LiberacionVehiculoBusquedaModel model)
         {
-            int IdModulo = 230;
+           /* int IdModulo = 230;
             string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
             List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
             if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+            {*/
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var ListVehiculosModel = _liberacionVehiculoService.GetDepositos(model, idOficina);
 
@@ -86,12 +86,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
                 return PartialView("_ListadoVehiculos", ListVehiculosModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return PartialView("ErrorPartial");
-            }
+            /* }
+             else
+             {
+                 TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                 return PartialView("ErrorPartial");
+             }*/
         }
 
 

@@ -75,7 +75,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
                 return PartialView("_CrearConcesionario", new Concesionarios2Model());
             }
-            else
+        else
             {
                 TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
                 return PartialView("ErrorPartial");
@@ -112,12 +112,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
                     return PartialView("_EditarConcesionario", model);
                 }
-                else
-                {
-                    TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                    return Json(new { error = true });
-                }
+                     else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
             }
+        }
 
             [HttpPost]
             public IActionResult ajax_EditarConcesionario(Concesionarios2Model model)

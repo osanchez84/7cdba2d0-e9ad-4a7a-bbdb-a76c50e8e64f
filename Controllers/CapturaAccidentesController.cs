@@ -174,7 +174,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
-		{
+        {
             //filterValue(request.Filters);
 
             Pagination pagination = new Pagination();
@@ -182,31 +182,31 @@ namespace GuanajuatoAdminUsuarios.Controllers
             pagination.PageSize = 1;
             pagination.Filter = resultValue;
 
-				int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
-			if (ListAccidentesModel.Count == 0)
-			{
-				int IdModulo = 633;
-				string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-				List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-				if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-				{
-					return View("AgregarAccidente");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var ListAccidentesModel = _capturaAccidentesService.ObtenerAccidentesPagination(idOficina, pagination);
+            if (ListAccidentesModel.Count == 0)
+            {
+                int IdModulo = 633;
+                string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+                List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+                if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+                {
+                    return View("AgregarAccidente");
 
-				}
+                }
 
-				else
-				{
-					TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-					return PartialView("ErrorPartial");
-				}
-			}
-			else
-			{
-				return View("CapturaAccidentes", ListAccidentesModel);
-			}
-		}
-			
+                else
+                {
+                    TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                    return PartialView("ErrorPartial");
+                }
+            }
+            else
+            {
+                return View("CapturaAccidentes", ListAccidentesModel);
+            }
+        }
+
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
@@ -230,20 +230,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
         public ActionResult NuevoAccidente()
-		{
-			int IdModulo = 633;
-			string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-			List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-			if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-			{
+        {
+            int IdModulo = 633;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
                 return Json(new { redirect = Url.Action("AgregarAccidente") });
             }
-			else
-			{
-				TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-				return PartialView("ErrorPartial");
-			}
-		}
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
+        }
         public ActionResult AgregarAccidente()
         {
             return View("AgregarAccidente");

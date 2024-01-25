@@ -42,22 +42,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult ajax_BusquedaDepositos(BusquedaDepositoModel model)
         {
-            int IdModulo = 321;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+
                 int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
 
             var listaDepositos = _busquedaDepositoService.ObtenerDepositos(model, idPension);
             return Json(listaDepositos);
             }   
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-             }
-         }
+
 public ActionResult ModalDetalleGrua(int Id)
         {
             var model = _gruasService.GetGruasConcesionariosByIdCocesionario(Id);

@@ -342,7 +342,6 @@
     }
 
     function downLoadPdfFiltered() {
-        if ('@autorizaciones' && '@autorizaciones'.indexOf('602') !== -1) {
             var Mydata = $("#busquedaAccidenteForm").serialize();
             var fileName = "ReporteGeneralAccidentes.pdf";
             showLoading();
@@ -380,7 +379,7 @@
                     hideLoading();
                 }
             });
-        } else {
+       
             sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
         }
         hideLoading();

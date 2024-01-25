@@ -98,11 +98,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarVehiculo(int id)
         {
-            int IdModulo = 602;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+          
                 var vehiculosModel = _vehiculosService.GetVehiculoById(id);
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = vehiculosModel;
@@ -121,12 +117,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+    
 
         public JsonResult Entidades_Read()
         {
@@ -700,21 +691,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
         {
-            int IdModulo = 251;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+           
                 var vehiculosModel = _vehiculosService.GetVehiculos(model);
                 return PartialView("_ListVehiculos", vehiculosModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
-        
+   
 
 
         [HttpPost]

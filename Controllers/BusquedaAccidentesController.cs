@@ -157,11 +157,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult GetAccidentesBusquedaPagination([DataSourceRequest] DataSourceRequest request, BusquedaAccidentesModel model)
         {
-    int IdModulo = 602;
-    string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-    List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-    if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-    {
+  
         // filterValue(request.Filters);
 
         Pagination pagination = new Pagination();
@@ -185,12 +181,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(result);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {

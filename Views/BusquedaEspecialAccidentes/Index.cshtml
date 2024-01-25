@@ -8,27 +8,35 @@
 <script>
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
+        var auth = @autorizaciones;
+
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡EL usuario no tiene acceso a esta opción!"
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
-                setTimeout(() => {
+                setTimeout(function () {
                     window.location.href = "/Principal";
                 }, 200);
+            } else {
+                // BUSQUEA
+                if (!auth.toString().includes("261")) {
+                    $("#BuscarEspecial").prop('disabled', true).css({ "opacity": "0.3" });
+                }        
+
+
             }
         } else {
             Swal.fire({
                 icon: "error",
-                title: "¡EL usuario no tiene acceso a esta opción!"
+                title: "¡El usuario no tiene acceso a esta opción!"
             });
-            setTimeout(() => {
+            setTimeout(function () {
                 window.location.href = "/Principal";
             }, 200);
         }
     });
-
 </script>
 <div class="mainContainer bg-light">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -256,7 +264,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3" onclick="buscarAccidente()">
                     @(Html.Kendo().Button()
-                        .Name("BuscarEstadistica")
+                        .Name("BuscarEspecial")
                         .HtmlAttributes(new { @class = "btnPrimary" })
                         .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
                 </div>
@@ -293,6 +301,22 @@
 
 </div>
 <script>
+    $(document).ready(function () {
+        var auth = @autorizaciones;
+        var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
+
+        if (!auth.toString().includes("611")) {
+            grid.hideColumn(9);
+        }
+        if (!auth.toString().includes("614")) {
+            grid.hideColumn(10);
+        }
+        if (!auth.toString().includes("616")) {
+            $("#btnFolio").prop('disabled', true).css({ "opacity": "0.3" });
+
+        }
+
+    });
     function buscarAccidente() {
         var data = {
             FechaInicio: $('#dateInicio').val(),

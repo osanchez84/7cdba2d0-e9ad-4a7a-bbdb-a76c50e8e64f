@@ -3,11 +3,15 @@ using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using iTextSharp.text;
+using Kendo.Mvc;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +47,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IBitacoraService _bitacoraServices;
         private readonly ICatSubtipoServicio _subtipoServicio;
 
+        private string resultValue = string.Empty;
+        public static VehiculoBusquedaModel vehModel = new VehiculoBusquedaModel();
         public VehiculosController(IVehiculosService vehiculosService, ICatDictionary catDictionary,
             IPersonasService personasService, HttpClient httpClientFactory, IConfiguration configuration,
            ICotejarDocumentosClientService cotejarDocumentosClientService, ICatTipoLicenciasService catTipoLicenciasService,
@@ -85,12 +91,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Editar()
         {
-            var vehiculosModel = _vehiculosService.GetAllVehiculos();
+            //var vehiculosModel = _vehiculosService.GetAllVehiculos();
+            //VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
+            //vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
+            //vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            //vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            //vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+            //return View(vehiculoBusquedaModel);
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+            vehiculoBusquedaModel.ListVehiculo = new List<VehiculoModel>();
+
             return View(vehiculoBusquedaModel);
         }
 
@@ -684,12 +697,87 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return 0; // O algún otro valor que indique que no es válido
             }
         }
-        [HttpPost]
-        public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
+
+        public IActionResult GetBuscarVehiculos([DataSourceRequest] DataSourceRequest request, VehiculoBusquedaModel model)
         {
-            var vehiculosModel = _vehiculosService.GetVehiculos(model);
-            return PartialView("_ListVehiculos", vehiculosModel);
+            vehModel = model;
+            return PartialView("_ListVehiculos", new List<VehiculoModel>());
         }
+
+
+        [HttpPost]
+        public IActionResult ajax_BuscarVehiculos([DataSourceRequest] DataSourceRequest request, VehiculoBusquedaModel model)
+        {
+            string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(251))
+            {
+                Pagination pagination = new Pagination();
+                pagination.PageIndex = request.Page - 1;
+                pagination.PageSize = 10;
+                pagination.Filter = resultValue;
+
+                model = vehModel;
+
+                var vehiculosModel = _vehiculosService.GetVehiculosPagination(model,pagination);
+                VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
+                vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
+                vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+                vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+                vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+                var total = 0;
+                if (vehiculoBusquedaModel.ListVehiculo.Count() > 0)
+                    total = vehiculoBusquedaModel.ListVehiculo.ToList().FirstOrDefault().total;
+
+                request.PageSize = 10;
+                var result = new DataSourceResult()
+                {
+                    Data = vehiculoBusquedaModel.ListVehiculo,
+                    Total = total
+                };
+
+                return Json(result);
+            }
+            else
+            {
+                var result = new DataSourceResult()
+                {
+                    Data = new List<VehiculoModel>(),
+                    Total = 0
+                };
+
+                return Json(result);
+            }
+
+        }
+
+        private void filterValue(IEnumerable<IFilterDescriptor> filters)
+        {
+            if (filters.Any())
+            {
+                foreach (var filter in filters)
+                {
+                    var descriptor = filter as FilterDescriptor;
+                    if (descriptor != null)
+                    {
+                        resultValue = descriptor.Value.ToString();
+                        break;
+                    }
+                    else if (filter is CompositeFilterDescriptor)
+                    {
+                        if (resultValue == "")
+                            filterValue(((CompositeFilterDescriptor)filter).FilterDescriptors);
+                    }
+                }
+            }
+        }
+
+        //public ActionResult ajax_BuscarVehiculos(VehiculoBusquedaModel model)
+        //{
+        //    var vehiculosModel = _vehiculosService.GetVehiculos(model);
+        //    return PartialView("_ListVehiculos", vehiculosModel);
+        //}
+
 
 
         [HttpPost]

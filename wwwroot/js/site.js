@@ -63,6 +63,7 @@ $(document).ready(function () {
     $(".navbar-nav li").on("click", function () {
         var dataId = $(this).attr("data-id");
         localStorage.setItem("menuId", dataId);
+        //alert("Id del menú: " + dataId);
     });
 
 });

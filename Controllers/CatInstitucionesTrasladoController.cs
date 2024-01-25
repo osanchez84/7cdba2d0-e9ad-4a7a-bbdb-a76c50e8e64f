@@ -27,18 +27,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            int IdModulo = 972;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1181;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var ListInstitucionesTrasladoModel = GetInstitucionesTraslado();
 
-            return View(ListInstitucionesTrasladoModel);
+                return View(ListInstitucionesTrasladoModel);
             }
             else
             {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
+                ViewData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
                 return RedirectToAction("Principal", "Inicio", new { area = "" });
             }
         }
@@ -46,8 +46,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        #region Modal Action
-        public ActionResult IndexModal()
+
+            #region Modal Action
+            public ActionResult IndexModal()
         {
             var ListInstitucionesTrasladoModel = GetInstitucionesTraslado();
             return View("Index", ListInstitucionesTrasladoModel);
@@ -56,10 +57,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarInstitucionTrasladoModal()
         {
-            int IdModulo = 973;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1183;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 return PartialView("_Crear");
             }
@@ -72,10 +73,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult EditarInstitucionTrasladoModal(int IdInstitucionTraslado)
         {
-            int IdModulo = 974;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
+            int IdModulo = 1185;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
             {
                 var institucionesTrasladoModel = GetInstitucionTrasladoByID(IdInstitucionTraslado);
             return PartialView("_Editar", institucionesTrasladoModel);

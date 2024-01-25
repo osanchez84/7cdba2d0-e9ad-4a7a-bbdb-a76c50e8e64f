@@ -91,25 +91,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Editar()
         {
-            //var vehiculosModel = _vehiculosService.GetAllVehiculos();
-            //VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
-            //vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
-            //vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
-            //vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            //vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
-            //return View(vehiculoBusquedaModel);
+           // var vehiculosModel = _vehiculosService.GetAllVehiculos();
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            vehiculoBusquedaModel.ListVehiculo = new List<VehiculoModel>();
-
+           // vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
             return View(vehiculoBusquedaModel);
         }
 
         public ActionResult EditarVehiculo(int id)
         {
-            var vehiculosModel = _vehiculosService.GetVehiculoById(id);
+            int IdModulo = 602;
+            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
+            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
+            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
+            {
+                var vehiculosModel = _vehiculosService.GetVehiculoById(id);
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = vehiculosModel;
             vehiculoBusquedaModel.Vehiculo.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -126,6 +124,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
+                return PartialView("ErrorPartial");
+            }
         }
 
         public JsonResult Entidades_Read()
@@ -507,7 +511,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
 
-            var vehiculosModel = new VehiculoModel();
+                var vehiculosModel = new VehiculoModel();
 
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
 
@@ -703,6 +707,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehModel = model;
             return PartialView("_ListVehiculos", new List<VehiculoModel>());
         }
+        
 
 
         [HttpPost]

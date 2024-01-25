@@ -44,14 +44,12 @@
                 type: 'GET',
                 data: Mydata,
                 success: function (data) {
-                    console.log("FDf",data)
-                    if (data.length === 0) {
-                  sitteg_warning("La busqueda no obtuvo resultados");
-                    }
-                    else{
-                    var grid = $("#gridBusquedaSolicitudes").data("kendoGrid");
-                    grid.dataSource.data(data);
-                    grid.refresh();
+                    if (data.error) {
+                        sitteg_warning(data.error);
+                    } else {
+                        var grid = $("#gridBusquedaSolicitudes").data("kendoGrid");
+                        grid.dataSource.data(data);
+                        grid.refresh();
                     }
                     hideLoading();
                 },

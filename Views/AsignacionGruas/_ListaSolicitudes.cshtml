@@ -14,7 +14,20 @@
                 <h6 class="px-4 text-muted">Edita o ajusta el listado de grúas.</h6>
             </div>
         </div>
-
+        <div class="row">
+            @if (ViewBag.NoResultsMessage != null)
+            {
+                <div class="alert alert-info">
+                    @ViewBag.NoResultsMessage
+                </div>
+            }
+             @if (ViewBag.NoAuth != null)
+            {
+                <div class="alert alert-info">
+                    @ViewBag.NoAuth
+                </div>
+            }
+        </div>
         @(
             Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.AsignacionGruaModel>()
             .Name("gridBusquedaSolicitudes")

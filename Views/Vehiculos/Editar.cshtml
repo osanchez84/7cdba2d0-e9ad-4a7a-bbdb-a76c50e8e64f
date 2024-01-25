@@ -1,5 +1,4 @@
-﻿@model VehiculoBusquedaModel
-
+@model VehiculoBusquedaModel
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();

@@ -61,22 +61,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_BuscarGruas(string placas, string noEconomico, int? idTipoGrua, int? idDelegacion, int? idConcesionario)
         {
-            int IdModulo = 281;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+           
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var listPadronGruas = _gruasService.GetGruasToGrid(placas, noEconomico, idTipoGrua, idOficina, idDelegacion, idConcesionario);
 
                 return PartialView("_ListadoGruas", listPadronGruas);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return PartialView("ErrorPartial");
-            }
-        }
+     
 
         /// <summary>
         /// Accion que redirige a la vista
@@ -85,11 +76,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_create()
         {
-            int IdModulo = 283;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+         
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
             var catClasificacionGruas = _catDictionary.GetCatalog("CatClasificacionGruas", "0");
             var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
@@ -100,12 +87,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatSituacionGruas = new SelectList(catSituacionGruas.CatalogList, "Id", "Text");
             return PartialView("_CrearGrua", new Gruas2Model());
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+    
 
         [HttpPost]
         public IActionResult ajax_createGrua(Gruas2Model model)
@@ -128,11 +110,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult ajax_edit(int idGrua)
         {
-            int IdModulo = 285;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+           
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var model = _gruasService.GetGruaById(idGrua);
                 var catConcesionarios = _concesionariosService.GetConcesionarios(idOficina).Where(w => w.IdConcesionario == model.idConcesionario);
@@ -147,12 +125,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewData["CatConcesionarios"] = new SelectList(catConcesionarios, "IdConcesionario", "Concesionario");
                 return PartialView("_EditarGrua", model);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+      
 
         [HttpPost]
         public IActionResult ajax_editGrua(Gruas2Model model)

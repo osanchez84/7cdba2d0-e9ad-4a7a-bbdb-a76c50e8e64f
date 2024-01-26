@@ -99,11 +99,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             //int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
-            int IdModulo = 621;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+        
                 var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
                                                            .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                                && w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
@@ -137,13 +133,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_EstadisticasAccidentes", lista2);
             }
-            else
-            {
-                TempData["NoPermisos"] = true;
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+      
 
         public IActionResult ajax_BusquedaParaTablas(BusquedaAccidentesModel model)
         {

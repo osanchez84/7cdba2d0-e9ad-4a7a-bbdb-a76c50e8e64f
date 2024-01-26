@@ -9,22 +9,35 @@
 <script>
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
+        var auth = @autorizaciones;
+
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡EL usuario no tiene acceso a esta opción!"
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
-                setTimeout(() => {
+                setTimeout(function () {
                     window.location.href = "/Principal";
                 }, 200);
+            } else {
+                // BUSQUEA
+                if (!auth.toString().includes("291")) {
+                    $("#btnBuscarConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+                //AGREGAR
+                if (!auth.toString().includes("293")) {
+                    $("#btnCrearConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+
+
             }
         } else {
             Swal.fire({
                 icon: "error",
-                title: "¡EL usuario no tiene acceso a esta opción!"
+                title: "¡El usuario no tiene acceso a esta opción!"
             });
-            setTimeout(() => {
+            setTimeout(function () {
                 window.location.href = "/Principal";
             }, 200);
         }
@@ -98,7 +111,7 @@
         </div>
              <div class="col-12 my-3 col-md-6 col-lg-3">
                 <div class="controlButton">
-                    <button class="btnPrimary" type="button" onclick="ajax_Busqueda()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    <button id="btnBuscarConcesionario" class="btnPrimary" type="button" onclick="ajax_Busqueda()">  <h5 class="m-0"><b>Buscar</b></h5></button>
 
                 </div>
             </div>
@@ -137,6 +150,17 @@
 
 
 <script>
+     $(document).ready(function () {
+        var auth = @autorizaciones;
+        var grid = $("#GridCon").data("kendoGrid");
+
+        if (!auth.toString().includes("295")) {
+            grid.hideColumn(5); 
+
+        }
+
+    });
+
     $(document).ready(function () {
         $("#modalCrearConcesionario").on("show.bs.modal shown.bs.modal", function (e) {
             $("body").removeClass("modal-open").find(".modal-backdrop").remove();

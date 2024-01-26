@@ -45,7 +45,7 @@
             <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                 <div class="row">
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <button onclick="agregarAccidente()" class="d-flex m-0 text-decoration-none me-2 icon-addAccidentes">Agregar nuevo accidente </button>
+                        <a href="@Url.Action("NuevoAccidente", "CapturaAccidentes")" class="d-flex m-0 text-decoration-none"><h6 class="m-0 d-flex align-items-center"> <i class="me-2 icon-addAccidentes"></i> <b>Agregar nuevo accidente</b></h6></a>
                     </div>
                 </div>
             </div>
@@ -75,19 +75,14 @@
 
 <script>
     function agregarAccidente() {
+
         $.ajax({
             url: `/CapturaAccidentes/NuevoAccidente`,
             type: 'POST',
             success: function (result) {
-                if (result.redirect) {
-                    window.location.href = result.redirect;
-                } else if (result.includes("no tiene permisos")) {
-                    sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
-                    hideLoading();
-                } else {
-                }
+
             },
-        });
+        })
     }
 
 </script>

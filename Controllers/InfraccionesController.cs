@@ -118,11 +118,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-            int IdModulo = 460;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+          
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var x = User.FindFirst(CustomClaims.IdUsuario).Value;
 
@@ -132,12 +128,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 searchModel.ListInfracciones = listInfracciones;
                 return View(searchModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+      
 
 
 
@@ -258,11 +249,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult Crear()
         {
-            int IdModulo = 401;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+           
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
                 var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
@@ -275,12 +262,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 return View(new InfraccionesModel());
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+       
 
         public ActionResult GetAllVehiculosPagination([DataSourceRequest] DataSourceRequest request)
         {
@@ -405,6 +387,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult Editar(int idInfraccion, int id, bool? showE = false)
 
         {
+          
+
                 int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
                 int ids = id != 0 ? id : idInfraccion;
@@ -440,6 +424,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
                 return View(model);
+ 
         }
 
         public ActionResult EditarA(int idInfraccion, int id)
@@ -1532,21 +1517,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult BusquedaEspecial()
         {
-            int IdModulo = 480;
-            string listaIdsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(IdModulo))
-            {
+          
                 var t = User.FindFirst(CustomClaims.Nombre).Value;
 
                 return View("BusquedaEspecial");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+      
 
 
         public JsonResult Overview_GetTerritories()

@@ -156,11 +156,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, SolicitudDepositoModel model)
         {
-            int IdModulo = 263;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+          
                 if (Isol.HasValue && Isol.Value > 0)
                 {
                     // Es una actualización, así que actualiza los datos en la base de datos
@@ -188,12 +184,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     return Ok(resultadoBusqueda);
                 }
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-         }
+        
 
 
 

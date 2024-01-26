@@ -57,11 +57,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarPadron(PadronDepositosGruasBusquedaModel model)
         {
-            int IdModulo = 210;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+       
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
                 var ListPadronDepositosGruas = _padronDepositosGruasService.GetPadronDepositosGruas(model, idOficina);
@@ -72,12 +68,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 return PartialView("_ListadoPadron", ListPadronDepositosGruas);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+  
 
 
         public JsonResult Municipios_Read()

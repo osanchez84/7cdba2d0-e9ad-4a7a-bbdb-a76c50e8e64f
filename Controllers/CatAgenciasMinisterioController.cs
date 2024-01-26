@@ -31,21 +31,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             DBContextInssoft dbContext = new DBContextInssoft();
             public IActionResult Index()
         {
-            int IdModulo = 1141;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+         
                 var ListAgenciasMinisterioModel = GetAgenciasministerio();
 
                 return View(ListAgenciasMinisterioModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+ 
 
 
 
@@ -55,39 +46,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpPost]
             public ActionResult AgregarAgenciaMinisterioModal()
-        {
-            int IdModulo = 1143;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+             {
+    
                 SetDDLDelegaciones();
                 return PartialView("_Crear");
-                    }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-          }
+              }
+   
 
             public ActionResult EditarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {
-            int IdModulo = 1145;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+       
                 SetDDLDelegaciones();
                 var agenciasMinisterioModel = GetAgenciaMinisterioByID(IdAgenciaMinisterio);
                 return PartialView("_Editar", agenciasMinisterioModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+
 
             public ActionResult EliminarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {

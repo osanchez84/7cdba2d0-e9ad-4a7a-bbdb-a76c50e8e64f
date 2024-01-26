@@ -23,56 +23,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catMarcasVehiculosService = catMarcasVehiculosService;
         }
         public IActionResult Index()
-        {
-            int IdModulo = 1061;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
-                var ListMarcasModel = _catMarcasVehiculosService.ObtenerMarcas();
-
+        {         
+            var ListMarcasModel = _catMarcasVehiculosService.ObtenerMarcas();
             return View(ListMarcasModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+         }      
         [HttpPost]
         public ActionResult AgregarPacial()
-        {
-            int IdModulo = 1063;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+        {         
                 return PartialView("_Crear");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+   
 
         [HttpPost]
         public ActionResult EditarParcial(int IdMarcaVehiculo)
         {
-            int IdModulo = 1065;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+       
                 var marcasVehiculosModel = _catMarcasVehiculosService.GetMarcaByID(IdMarcaVehiculo);
             return PartialView("_Editar", marcasVehiculosModel);
         }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-    }
-}
+
         [HttpPost]
         public ActionResult EliminarMarcaParcial(int IdMarcaVehiculo)
         {

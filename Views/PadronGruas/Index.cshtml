@@ -9,26 +9,40 @@
 <script>
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
+        var auth = @autorizaciones;
+
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡EL usuario no tiene acceso a esta opción!"
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
-                setTimeout(() => {
+                setTimeout(function () {
                     window.location.href = "/Principal";
                 }, 200);
+            } else {
+                // BUSQUEDA
+                if (!auth.toString().includes("281")) {
+                    $("#btnBuscarGrua").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+                //AGREGAR
+                if (!auth.toString().includes("283")) {
+                    $("#btnNuevaGrua").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+
+
             }
         } else {
             Swal.fire({
                 icon: "error",
-                title: "¡EL usuario no tiene acceso a esta opción!"
+                title: "¡El usuario no tiene acceso a esta opción!"
             });
-            setTimeout(() => {
+            setTimeout(function () {
                 window.location.href = "/Principal";
             }, 200);
         }
     });
+
 
 </script>
 <head>
@@ -121,7 +135,7 @@
 
             <div class="col-12 my-3 col-md-6 col-lg-3">
                 <div class="controlButton">
-                    <button class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    <button id="btnBuscarGrua" class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
 
                 </div>
             </div>

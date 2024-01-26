@@ -194,25 +194,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult ModalEliminarAccidente(int idAccidente, string numeroReporte)
         {
-            int IdModulo = 614;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
-                var viewModel = new EditarFolioModel
+
+            var viewModel = new EditarFolioModel
             {
                 IdAccidente = idAccidente,
                 NumeroReporte = numeroReporte
             };
 
             return PartialView("_ModalEliminarAccidente", viewModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
         }
+
         public IActionResult ModalEditarFolio(int idAccidente, string numeroReporte)
         {
 

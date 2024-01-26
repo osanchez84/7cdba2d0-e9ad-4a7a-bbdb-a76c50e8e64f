@@ -6,28 +6,42 @@
 }
 
 <script>
-        $(document).ready(function () {
-            var access = @listaIdsPermitidosJson;
-            if (access != undefined && access != '') {
-                if (!access.toString().includes(localStorage.getItem("menuId"))) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "¡EL usuario no tiene acceso a esta opción!"
-                    });
-                    setTimeout(() => {
-                        window.location.href = "/Principal";
-                    }, 200);
-                }
-            } else {
+    $(document).ready(function () {
+        var access = @listaIdsPermitidosJson; 
+        var auth = @autorizaciones;
+
+        if (access != undefined && access != '') {
+            if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡EL usuario no tiene acceso a esta opción!"
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
-                setTimeout(() => {
+                setTimeout(function () {
                     window.location.href = "/Principal";
                 }, 200);
+            } else {
+                // BUSQUEDA
+               if (!auth.toString().includes("202")) {
+                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
+               }
+                //IMPRIMIR
+                 if (!auth.toString().includes("203")) {
+                    $("#btnPDFTransito").prop('disabled', true).css({ "opacity": "0.3" });
+                    $("#btnExcelTransito").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+
             }
-        });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "¡El usuario no tiene acceso a esta opción!"
+            });
+            setTimeout(function () {
+                window.location.href = "/Principal";
+            }, 200);
+        }
+    });
+
 
 
 
@@ -55,7 +69,6 @@
 
 
         function downLoadPdfFiltered() {
-        if ('@autorizaciones' && '@autorizaciones'.indexOf('202') !== -1) {
 
             var data = {
                 Placas: $('#txtPlacas').val(),
@@ -74,10 +87,7 @@
             };
             var json = JSON.stringify(data);
             window.location = '/TransitoTransporte/CreatePdf?data=' + json;
-        }
-         else {
-        sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
-              }
+     
         }
 
     </script>
@@ -329,7 +339,7 @@
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3">
-                    <button class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    <button id="btnBuscar" class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
 
                     @* @(Html.Kendo().Button()
                     .Name("BuscarVehiculo")
@@ -339,8 +349,8 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
-                <div class=" btnOutline btnOutlinePrimary controlButton my-3">
-                    <button class=" " type="button" onclick="downLoadPdfFiltered()">  <h5 class="m-0"><i class='icon-data m-0'></i>&nbsp;&nbsp<b>Reporte</b></h5></button>
+                <div  class=" btnOutline btnOutlinePrimary controlButton my-3">
+                    <button id="btnPDFTransito" class=" " type="button" onclick="downLoadPdfFiltered()">  <h5 class="m-0"><i class='icon-data m-0'></i>&nbsp;&nbsp<b>Reporte</b></h5></button>
 
                     @*<button type="button" class='btnPrimary'>@Html.ActionLink("Reporte",  "CreatePdf","TransitoTransporte", new{Placas=Model.Placas}, new {@class="m-0"})</button>*@
 
@@ -366,4 +376,21 @@
         var datePicker = $("#start").data("kendoDatePicker");
         datePicker.value(null);
     });
+    $(document).ready(function () {
+        var auth = @autorizaciones; 
+        var grid = $("#Grid").data("kendoGrid");
+
+        if (!auth.toString().includes("203")) {
+            grid.hideColumn(9);
+        }
+
+        if (!auth.toString().includes("206")) {
+            grid.hideColumn(11);
+        }
+
+        if (!auth.toString().includes("205")) {
+            grid.hideColumn(12);
+        }
+    });
+
 </script>

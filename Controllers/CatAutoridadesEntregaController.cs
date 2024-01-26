@@ -27,21 +27,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            int IdModulo = 1171;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+     
                 var ListAutoridadesEntregaModel = GetAutoridadesEntrega();
 
             return View(ListAutoridadesEntregaModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+   
 
 
 
@@ -56,36 +47,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarAutoridadEntregaModal()
         {
-            int IdModulo = 1173;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+
                 return PartialView("_Crear");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-            }
+     
 
         public ActionResult EditarAutoridadEntregaModal(int IdAutoridadEntrega)
         {
-            int IdModulo = 1175;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+     
                 var autoridadesEntregaModel = GetAutoridadEntregaByID(IdAutoridadEntrega);
                 return PartialView("_Editar", autoridadesEntregaModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-            }
+  
 
         public ActionResult EliminarAutoridadEntregaModal(int IdAutoridadEntrega)
         {

@@ -28,56 +28,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            int IdModulo = 1041;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
-                var ListEntidadesModel = _catEntidadesService.ObtenerEntidades();
+
+            var ListEntidadesModel = _catEntidadesService.ObtenerEntidades();
 
             return View(ListEntidadesModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-
         }
         [HttpPost]
         public ActionResult MostrarModalAgregarEntidad()
         {
-            int IdModulo = 1043;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+       
                 return PartialView("_Crear");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+     
 
         public ActionResult EditarEntidadModal(int idEntidad)
         {
-            int IdModulo = 1045;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+          
                 var EntidadesModel = _catEntidadesService.ObtenerEntidadesByID(idEntidad);
             return PartialView("_Editar", EntidadesModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-
-        }
+    
 
         [HttpPost]
         public ActionResult AgregarEntidad(CatEntidadesModel model)

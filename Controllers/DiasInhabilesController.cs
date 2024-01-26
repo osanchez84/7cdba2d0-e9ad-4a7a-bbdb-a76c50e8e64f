@@ -20,21 +20,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         DBContextInssoft dbContext = new DBContextInssoft();
         public IActionResult Index()
         {
-            int IdModulo = 1121;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+         
                 var ListDiasInhabilesModel = GetDiasInhabiles();
 
             return View(ListDiasInhabilesModel);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return RedirectToAction("Principal", "Inicio", new { area = "" });
-            }
-        }
+        
 
         ///Crear metodo de update (post)
 
@@ -50,38 +41,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarParcialDiaInhabil()
         {
-            int IdModulo = 1123;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+         
                 Municipios_Drop();
             return PartialView("_Crear");
             }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+     
 
         public ActionResult EditarParcial(int IdDiaInhabil)
         {
-            int IdModulo = 1125;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+          
                 var diasInhabilesModel = GetDiaInhabilByID(IdDiaInhabil);
             Municipios_Drop();
             return View("_Editar", diasInhabilesModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
-        }
+         }
+       
 
         public ActionResult EliminarDiaInhabilParcial(int IdDiaInhabil)
         {

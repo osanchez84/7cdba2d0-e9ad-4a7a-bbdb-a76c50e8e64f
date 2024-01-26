@@ -29,7 +29,7 @@
             {
                 columns.Bound(c => c.estatusDesc).Title("Estatus").Width(90);
                 columns.Bound(c => c.IdPension).Width(20).Hidden();
-                columns.Bound(p => p.Pension).Hidden().ClientGroupHeaderTemplate("<label>Pensión: #=value#</label><button onclick='editarPensionByGrid()' class='btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>").Title("Pension").Width(150);
+                columns.Bound(p => p.Pension).Hidden().ClientGroupHeaderTemplate("<label>Pensión: #=value#</label><button id='btnEditarPension' onclick='editarPensionByGrid()' class='btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>").Title("Pension").Width(150);
                 columns.Bound(p => p.Permiso).Title("Permiso").Width(100);
                 columns.Bound(p => p.delegacion).Title("Delegación").Width(100);
                 columns.Bound(c => c.Direccion).Title("Dirección").Width(150);

@@ -54,11 +54,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarReporte(ReporteAsignacionBusquedaModel model)
         {
-            int IdModulo = 240;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+      
                 // Verifica si las fechas son nulas y asigna DateTime.MinValue si es el caso
                 if (model.FechaInicio == null)
                 {
@@ -79,12 +75,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return PartialView("_ListadoReporteAsignacion", listReporteAsignacion);
                
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return PartialView("ErrorPartial");
-            }
-        }
+   
 
     
 

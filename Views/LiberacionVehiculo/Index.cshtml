@@ -29,40 +29,7 @@
         }
     });
 
-    function activarBotonesPorId() {
-        var autorizaciones = '@autorizaciones';  
-        var idsBuscar = [202, 110, 120];  
-
-        var asociacionBotones = {
-            202: "busquedaLiberacion",
-            110: "OtroBoton",
-            120: "Boton3"
-        };
-
-        activarBotones(autorizaciones, idsBuscar, asociacionBotones);
-    }
-    function activarBotones(autorizaciones, ids, asociacionBotones) {
-        ids.forEach(function (id) {
-            var idStr = id.toString();
-
-            // Verificar si el ID está presente en autorizaciones
-            if (autorizaciones && autorizaciones.indexOf(idStr) !== -1) {
-                var idBoton = asociacionBotones[id];
-                activarBoton(idBoton);
-            }
-        });
-    }
-    function activarBoton(id) {
-        var boton = $('#' + id);
-        if (boton.length > 0) {
-            boton.prop('disabled', false);
-        }
-    }
-
-    $(document).ready(function () {
-        activarBotonesPorId();
-    });
-
+  
 
 </script>
 <head>
@@ -201,7 +168,7 @@
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3">
-                    <button id="busquedaLiberacion" class="btnPrimary" type="button" onclick="submitSearch()" disabled="disabled">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    <button id="busquedaLiberacion" class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
 
                     @* @(Html.Kendo().Button()
                     .Name("BuscarVehiculo")

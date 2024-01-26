@@ -104,11 +104,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarTransito(TransitoTransporteBusquedaModel model)
         {
-            int IdModulo = 202;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+          
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model, idOficina);
                 if (ListTransitoModel.Count == 0)
@@ -117,12 +113,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
                 return PartialView("_ListadoTransitoTransporte", ListTransitoModel);
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "El usuario no tiene permisos suficientes para esta acción.";
-                return PartialView("ErrorPartial");
-            }
+            
         }
 
 

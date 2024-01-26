@@ -98,11 +98,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpGet]
         public ActionResult ajax_UpdateLiberacion(int Id)
         {
-            int IdModulo = 235;
-            string listaPermisosJson = HttpContext.Session.GetString("Autorizaciones");
-            List<int> listaPermisos = JsonConvert.DeserializeObject<List<int>>(listaPermisosJson);
-            if (listaPermisos != null && listaPermisos.Contains(IdModulo))
-            {
+           
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var model = _liberacionVehiculoService.GetDepositoByID(Id, idOficina);
                 RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
@@ -121,13 +117,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //model.FechaIngreso.ToString("dd/MM/yyyy");
                 return PartialView("_UpdateLiberacion", model);
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Este usuario no tiene acceso a esta sección.";
-                return PartialView("ErrorPartial");
-            }
-
-        }
+       
 
         //public ActionResult UpdateLiberacion(LiberacionVehiculoModel model, IFormFile ImageAcreditacionPropiedad, IFormFile ImageAcreditacionPersonalidad, IFormFile ImageReciboPago)
         [HttpPost]

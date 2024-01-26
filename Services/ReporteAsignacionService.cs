@@ -200,12 +200,17 @@ namespace GuanajuatoAdminUsuarios.Services
                                         LEFT JOIN solicitudes sol ON dep.idsolicitud = sol.idsolicitud
                                         LEFT JOIN concesionarios con ON con.IdConcesionario = dep.IdConcesionario
                                         LEFT JOIN gruas g ON g.idConcesionario = con.idConcesionario
-                                        WHERE g.IdGrua = @IdGrua
-                                           OR pen.idPension = @IdPension
-                                           OR dep.fechaIngreso BETWEEN @FechaIngreso AND @FechaIngresoFin
-                                           OR UPPER(sol.evento) = @Evento AND dep.idDelegacion = @idOficina
-                                        GROUP BY dep.iddeposito, del.delegacion
-                                        ";
+                             WHERE  
+                                    dep.idDelegacion = CASE WHEN @idOficina IS NOT NULL THEN @idOficina ELSE dep.idDelegacion END
+                                    AND (g.IdGrua = CASE WHEN @IdGrua IS NOT NULL THEN @IdGrua ELSE g.IdGrua END
+                                    OR pen.idPension = CASE WHEN @IdPension IS NOT NULL THEN @IdPension ELSE pen.idPension END
+                                    OR (dep.fechaIngreso != '1753-01-01' AND dep.fechaIngreso != '9999-12-31' 
+                                        AND dep.fechaIngreso BETWEEN 
+                                            CASE WHEN @FechaIngreso IS NOT NULL THEN @FechaIngreso ELSE '1753-01-01' END 
+                                            AND 
+                                            CASE WHEN @FechaIngresoFin IS NOT NULL THEN @FechaIngresoFin ELSE '9999-12-31' END)
+                                    OR (UPPER(sol.evento) = CASE WHEN @Evento IS NOT NULL THEN @Evento ELSE UPPER(sol.evento) END))
+                                GROUP BY dep.iddeposito, del.delegacion";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdGrua", SqlDbType.Int)).Value = (object)model.IdGrua ?? DBNull.Value;

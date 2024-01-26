@@ -46,6 +46,8 @@ namespace GuanajuatoAdminUsuarios.Models
 		public int idFactorAccidente { get; set; }
 		public int IdTipoVehiculo { get; set; }
 		public int IdTipoServicio { get; set; }
+		public int IdSubtipoServicio { get; set; }
+
 		public int idFactorOpcionAccidente { get; set; }
 
 	}
@@ -96,6 +98,8 @@ namespace GuanajuatoAdminUsuarios.Models
 		public int idFactorAccidente { get; set; }
 		public int IdTipoVehiculo { get; set; }
 		public int IdTipoServicio { get; set; }
+		public int IdSubtipoServicio { get; set; }
+
 		public int idFactorOpcionAccidente { get; set; }
 
 

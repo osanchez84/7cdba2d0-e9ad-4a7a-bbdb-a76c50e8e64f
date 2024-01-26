@@ -73,6 +73,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var catCausasAccidentes = _catDictionary.GetCatalog("CatCausasAccidentes", "0");
                 var catFactoresAccidentes = _catDictionary.GetCatalog("CatFactoresAccidentes", "0");
                 var catFactoresOpcionesAccidentes = _catDictionary.GetCatalog("CatFactoresOpcionesAccidentes", "0");
+                var catSubtipoServicio = _catDictionary.GetCatalog("CatSubtipoServicioFilter", "0");
 
                 ViewBag.CatMotivosInfraccion = new SelectList(catMotivosInfraccion.CatalogList, "Id", "Text");
                 ViewBag.CatTipoServicio = new SelectList(catTipoServicio.CatalogList, "Id", "Text");
@@ -89,11 +90,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatCausasAccidentes = new SelectList(catCausasAccidentes.CatalogList, "Id", "Text");
                 ViewBag.CatFactoresAccidentes = new SelectList(catFactoresAccidentes.CatalogList, "Id", "Text");
                 ViewBag.CatFactoresOpcionesAccidentes = new SelectList(catFactoresOpcionesAccidentes.CatalogList, "Id", "Text");
-                // ViewBag.Estadisticas = modelList;
-                // ViewBag.ListadoAccidentesPorAccidente = _estadisticasAccidentesService.AccidentesPorAccidente();
-                //ViewBag.ListadoAccidentesPorVehiculo = _estadisticasAccidentesService.AccidentesPorVehiculo();
+                ViewBag.CatSubtipoServicio = new SelectList(catSubtipoServicio.CatalogList, "Id", "Text");
 
-                return View();
+            // ViewBag.Estadisticas = modelList;
+            // ViewBag.ListadoAccidentesPorAccidente = _estadisticasAccidentesService.AccidentesPorAccidente();
+            //ViewBag.ListadoAccidentesPorVehiculo = _estadisticasAccidentesService.AccidentesPorVehiculo();
+
+            return View();
         }
 
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
@@ -110,7 +113,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                                && w.idCausaAccidente == (model.idCausaAccidente > 0 ? model.idCausaAccidente : w.idCausaAccidente)
                                                                && w.idFactorAccidente == (model.idFactorAccidente > 0 ? model.idFactorAccidente : w.idFactorAccidente)
                                                                && w.IdTipoVehiculo == (model.IdTipoVehiculo > 0 ? model.IdTipoVehiculo : w.IdTipoVehiculo)
-                                                               && w.IdTipoServicio == (model.IdTipoServicio > 0 ? model.IdTipoServicio : w.IdTipoServicio)
+														       && w.IdSubtipoServicio == (model.IdSubtipoServicio > 0 ? model.IdSubtipoServicio : w.IdSubtipoServicio)
+															   && w.IdTipoServicio == (model.IdTipoServicio > 0 ? model.IdTipoServicio : w.IdTipoServicio)
                                                                && w.idFactorOpcionAccidente == (model.idFactorOpcionAccidente > 0 ? model.idFactorOpcionAccidente : w.idFactorOpcionAccidente)
                                                                && ((model.FechaInicio == null && model.FechaFin == null) ||
                                                                    (w.fecha >= (model.FechaInicio ?? DateTime.MinValue) &&

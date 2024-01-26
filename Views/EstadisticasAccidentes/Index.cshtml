@@ -122,8 +122,20 @@
 						@(Html.Kendo().DropDownListFor(m => m.IdTipoServicio).Filter(FilterType.Contains)
 							.BindTo((SelectList)ViewBag.CatTipoServicio)
 							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
+							.HtmlAttributes(new { style = "width:100%;", id = "ddlTipoServicio" })
 							)
+					</div>
+				</div>
+				<div class="form-group col-12 col-md-6 col-lg-3">
+					<div class="controlForm mb-3">
+						<label>Subtipo servicio:</label>
+						<div id="divSubtipo">
+						@(Html.Kendo().DropDownListFor(m => m.IdSubtipoServicio).Filter(FilterType.Contains)
+							.BindTo((SelectList)ViewBag.CatSubtipoServicio)
+							.OptionLabel("-- Seleccione --")
+							.HtmlAttributes(new { style = "width:100%;", id = "ddlSubtipoServicio" })
+							)
+						</div>
 					</div>
 				</div>
 				<div class="form-group col-12 col-md-6 col-lg-3">
@@ -273,6 +285,12 @@
 		var value = $(this).val();
 		_set_combo_catalog("CatFactoresOpcionesAccidentesByFilter", value, "idFactorOpcionAccidente", "false", "divFactorOpcion", "");
 		$('#idFactorAccidente').kendoDropDownList();
+
+	});
+	$("#ddlTipoServicio").on("change", function () {
+		var value = $(this).val();
+		_set_combo_catalog("CatSubtipoServicioFilter", value, "idSubtipoServicio", "false", "divSubtipo", "");
+		$('#IdTipoServicio').kendoDropDownList();
 
 	});
 	$(document).ready(function () {

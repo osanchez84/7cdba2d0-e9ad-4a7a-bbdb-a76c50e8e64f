@@ -224,6 +224,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 MAX(acc.hora) AS hora,
                                                                 MAX(veh.idVehiculo) AS idVehiculo,
                                                                 MAX(veh.idCatTipoServicio) AS idCatTipoServicio,
+                                                                MAX(veh.idSubtipoServicio) AS idSubtipoServicio,
                                                                 MAX(veh.idTipoVehiculo) AS idTipoVehiculo,
                                                                 MAX(accau.idCausaAccidente) AS idCausaAccidente
                                                                 FROM accidentes AS acc
@@ -261,8 +262,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.idFactorOpcionAccidente = reader["idFactorOpcionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorOpcionAccidente"]) : 0;
                             accidente.IdTipoVehiculo = reader["idTipoVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idTipoVehiculo"]) : 0;
                             accidente.IdTipoServicio = reader["idCatTipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idCatTipoServicio"]) : 0;
+							accidente.IdSubtipoServicio = reader["idSubtipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idSubtipoServicio"]) : 0;
 
-                            accidente.numeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
+							accidente.numeroReporte = reader["numeroReporte"] != DBNull.Value ? reader["numeroReporte"].ToString() : string.Empty;
                             accidente.fecha = reader["fecha"] != DBNull.Value ? Convert.ToDateTime(reader["fecha"]) : DateTime.MinValue;
                             accidente.hora = reader["hora"] != DBNull.Value ? reader.GetTimeSpan(reader.GetOrdinal("hora")) : TimeSpan.Zero;
 
@@ -323,7 +325,10 @@ namespace GuanajuatoAdminUsuarios.Services
             if (recibido.IdTipoServicio > 0)
                 condicionesFiltro.Add($"veh.IdTipoServicio = {recibido.IdTipoServicio}");
 
-            if (recibido.idCausaAccidente > 0)
+			if (recibido.IdSubtipoServicio > 0)
+				condicionesFiltro.Add($"veh.IdSubtipoServicio = {recibido.IdSubtipoServicio}");
+
+			if (recibido.idCausaAccidente > 0)
                 condicionesFiltro.Add($"accCau.idCausaAccidente = {recibido.idCausaAccidente}");
 
             if (recibido.idFactorOpcionAccidente > 0)
@@ -364,6 +369,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         veh.vehiculos AS Vehiculo,
                                         veh.idTipoVehiculo AS idTipoVehiculo,
                                         veh.idTipoServicio AS idTipoServicio,
+                                        veh.idSubtipoServicio AS idSubtipoServicio,
                                         CONCAT(ofic.nombre, ' ', ofic.apellidoPaterno, ' ', ofic.apellidoMaterno) AS NombredelOficial,
                                         ac.montoCamino AS Dañosalcamino,
                                         ac.montoCarga AS Dañosacarga,
@@ -425,7 +431,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                 idAccidente,
                                                 STRING_AGG(Vehiculos, ';') AS vehiculos,
                                                 MAX(idTipoVehiculo) AS idTipoVehiculo, 
-                                                MAX(idCatTipoServicio) AS idTipoServicio
+                                                MAX(idCatTipoServicio) AS idTipoServicio,
+                                                MAX(idSubtipoServicio) AS idSubtipoServicio
+
                                             FROM 
                                                 (
                                                     SELECT 
@@ -503,6 +511,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							//model.idFactorOpcionAccidente = reader["idFactorOpcionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorOpcionAccidente"]) : 0;
 							model.IdTipoVehiculo = reader["idTipoVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idTipoVehiculo"]) : 0;
 							model.IdTipoServicio = reader["idTipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idTipoServicio"]) : 0;
+							model.IdSubtipoServicio = reader["idSubtipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idSubtipoServicio"]) : 0;
 
 							model.Fecha = reader["Fecha"] == System.DBNull.Value ? default(string) : reader["Fecha"].ToString();
                             model.Hora = reader["Hora"] == System.DBNull.Value ? default(string) : reader["Hora"].ToString();
@@ -601,8 +610,10 @@ namespace GuanajuatoAdminUsuarios.Services
             if (model.IdTipoServicio > 0)
                 condicionesFiltro.Add($"veh.IdTipoServicio = {model.IdTipoServicio}");
 
+			if (model.IdSubtipoServicio > 0)
+				condicionesFiltro.Add($"veh.IdSubtipoServicio = {model.IdSubtipoServicio}");
 
-            if (model.idFactorOpcionAccidente > 0)
+			if (model.idFactorOpcionAccidente > 0)
                 condicionesFiltro.Add($"factAcc.idFactorOpcion = {model.idFactorOpcionAccidente}");
 
 			if (model.FechaInicio.HasValue)
@@ -637,6 +648,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 ,veh.placas				as PlacasVeh
                 ,veh.serie				as SerieVeh
                 ,veh.idTipoVehiculo     as idTipoVehiculo 
+                ,veh.idSubtipoServicio  as idSubtipoServicio
                 ,veh.idCatTipoServicio  as idTipoServicio
                 ,CONCAT(prop.nombre, ' ',prop.apellidoPaterno,' ',prop.apellidoMaterno)		as PropietarioVeh
                 ,tv.tipoVehiculo		as TipoVeh
@@ -719,6 +731,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							vehiculo.idFactorOpcionAccidente = reader["idFactorOpcionAccidente"] != DBNull.Value ? Convert.ToInt32(reader["idFactorOpcionAccidente"]) : 0;
 							vehiculo.IdTipoVehiculo = reader["idTipoVehiculo"] != DBNull.Value ? Convert.ToInt32(reader["idTipoVehiculo"]) : 0;
 							vehiculo.IdTipoServicio = reader["idTipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idTipoServicio"]) : 0;
+							vehiculo.IdSubtipoServicio = reader["idSubtipoServicio"] != DBNull.Value ? Convert.ToInt32(reader["idSubtipoServicio"]) : 0;
 
 							vehiculo.Numreporteaccidente = reader["Numreporteaccidente"] == System.DBNull.Value ? default(string) : reader["Numreporteaccidente"].ToString();
                             //vehiculo.NumVeh = reader["NumVeh"] == System.DBNull.Value ? default(string) : reader["NumVeh"].ToString();

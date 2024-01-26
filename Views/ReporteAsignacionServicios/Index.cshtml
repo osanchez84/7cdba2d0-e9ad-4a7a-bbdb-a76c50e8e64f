@@ -178,6 +178,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "start" })
+                        .ParseFormats(new[] { "dd/MM/yyyy", "dd-MM-yyyy" })  // Agrega los formatos que esperas recibir
                         )
 
                 </div>
@@ -235,6 +236,7 @@
                     @(Html.Kendo().DatePickerFor(t => t.FechaFin).Max(DateTime.Now)
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datepicker", id = "end" })
+                        .ParseFormats(new[] { "dd/MM/yyyy", "dd-MM-yyyy" })  // Agrega los formatos que esperas recibir
                         )
 
                 </div>
@@ -268,7 +270,7 @@
 
             var startDate = $("#start")
             var endDate = $("#end")
-            console.log(startDate.val(), endDate.val())
+            console.log("START",startDate.val(),"END", endDate.val())
             console.log(kendo.parseDate(endDate.val()) > kendo.parseDate(startDate.val()))
             if (startDate.val() != '' && endDate.val() != '') {
                 if (kendo.parseDate(endDate.val()) < kendo.parseDate(startDate.val())) {
@@ -287,6 +289,7 @@
         });
 
         $("#start").kendoValidator({
+            parseFormats: []  // Deshabilita la validación automática
             rules: {
                 date: function (input) {
                     var d = kendo.parseDate(input.val());
@@ -296,6 +299,7 @@
         });
 
         $("#end").kendoValidator({
+            parseFormats: []  // Deshabilita la validación automática
             rules: {
                 date: function (input) {
                     var d = kendo.parseDate(input.val());

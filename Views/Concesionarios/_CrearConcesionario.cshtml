@@ -47,10 +47,12 @@
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
             <label for="shipTo">Delegación <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownListFor(f => f.idDelegacion).Filter(FilterType.Contains)
+            @(Html.Kendo().DropDownList()
+            .Filter(FilterType.Contains)
+            .Name("idDelegacion")
                 .BindTo((SelectList)ViewBag.CatDelegaciones)
                 .OptionLabel("-- Seleccione --")
-                .HtmlAttributes(new { style = "width:100%;" }))
+                .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacionesCrear" }))
         </div>
     </div>
     <div class="col-12 col-md-6">
@@ -119,7 +121,7 @@
 
         // DROP DOWN LIST
         controlsValidate = [];
-        controlsValidate.push({ 'controlName': 'ddlDelegaciones' });
+        controlsValidate.push({ 'controlName': 'ddlDelegacionesCrear' });
         controlsValidate.push({ 'controlName': 'ddlMunicipio' });
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 

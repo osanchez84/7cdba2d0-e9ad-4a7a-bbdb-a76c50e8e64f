@@ -602,6 +602,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					//Guardar la excepcion en algun log de errores
 					//ex
+					throw ex;
 				}
 				finally
 				{
@@ -750,17 +751,22 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.strIsPropietarioConductor = model.Vehiculo == null ? "NO" : model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
 
-							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
+							model.NombreConductor = model.PersonaInfraccion.nombreCompleto == null ? "" : model.PersonaInfraccion.nombreCompleto;
 							model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
-							model.NombreGarantia = model.Garantia.garantia;
-							modelList.Add(model);
+							if (model.Garantia != null)
+								model.NombreGarantia = model.Garantia.garantia == null ? "" : model.Garantia.garantia;
+							else
+								model.NombreGarantia = "";
+
+                            modelList.Add(model);
 						}
 					}
 				}
-				catch (SqlException ex)
+				catch (Exception ex)
 				{
 					//Guardar la excepcion en algun log de errores
 					//ex
+					throw ex;
 				}
 				finally
 				{
@@ -912,16 +918,21 @@ namespace GuanajuatoAdminUsuarios.Services
 
 							model.NombreConductor = model.PersonaInfraccion.nombreCompleto;
 							model.NombrePropietario = model.Vehiculo == null ? "" : model.Vehiculo.Persona == null ? "" : model.Vehiculo.Persona.nombreCompleto;
-							model.NombreGarantia = model.Garantia.garantia;
-							modelList.Add(model);
+							if (model.Garantia != null)
+								model.NombreGarantia = model.Garantia.garantia == null ? "" : model.Garantia.garantia;
+                            else
+								model.NombreGarantia = "";
+
+                            modelList.Add(model);
 						}
 					}
 				}
 				catch (SqlException ex)
 				{
-					//Guardar la excepcion en algun log de errores
-					//ex
-				}
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                    throw ex;
+                }
 				finally
 				{
 					connection.Close();

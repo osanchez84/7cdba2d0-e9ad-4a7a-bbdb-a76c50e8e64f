@@ -9,20 +9,42 @@
 <script>
 
     $(document).ready(function () {
-        var access = @listaIdsPermitidosJson; 
+        var access = @listaIdsPermitidosJson;
+        var auth = @autorizaciones;
+
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡El usuario no tiene acceso a esta opción!",
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
                 setTimeout(() => {
                     window.location.href = "/Principal";
                 }, 200);
+            } else {
+                // BUSCAR - CONSULTAR
+                if (!auth.toString().includes("461")) {
+                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+                //IMPRIMIR
+                if (!auth.toString().includes("462")) {
+                    $("#btnPDFReporte").prop('disabled', true).css({ "opacity": "0.3" });
+                }
+                // AGREGAR
+                if (!auth.toString().includes("463")) {
+                    $("#btnGuardarInfraccion").prop('disabled', true).css({ "opacity": "0.3" });
+                }
             }
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "¡El usuario no tiene acceso a esta opción!"
+            });
+            setTimeout(() => {
+                window.location.href = "/Principal";
+            }, 200);
         }
     });
-
 
 </script>
 
@@ -253,7 +275,7 @@
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3">
-                    <button class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    <button class="btnPrimary" id="btnBuscar" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
                 </div>
             </div>
 
@@ -269,7 +291,7 @@
                         @* <button>
                         <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de infracción</b></h6>
                         </button>*@
-                        <button type="button" onclick="downLoadPdfFiltered()">
+                        <button type="button" id="btnPDFReporte" onclick="downLoadPdfFiltered()">
                             <h6 class="m-0 d-flex align-items-center"><i class="icon-pdf h5 mb-0 me-2"></i><b>PDF de reporte de infracción</b></h6>
                         </button>
                     </div>
@@ -279,6 +301,22 @@
         <div id="listadoInfracciones">
             <partial name="_ListadoInfracciones" model="Model.ListInfracciones" />
         </div>
+
+        <script>
+
+            $(document).ready(function () {
+                var auth = @autorizaciones;
+                var grid = $("#GridInf").data("kendoGrid");
+
+                if (!auth.toString().includes("465")) {
+                    grid.hideColumn(12);
+                }
+                if (!auth.toString().includes("462")) {
+                    grid.hideColumn(14);
+                }
+            });
+
+        </script>
     </section>
 
 </div>
@@ -335,7 +373,7 @@
     function downLoadPdfFiltered() {
         var Mydata = $("#frmSearch").serialize();
         var fileName = "ReporteGeneralInfracciones.pdf";
-       showLoading();
+        showLoading();
         $.ajax({
             type: "POST",
             url: '@Url.Action("InfraccionesGeneral","PDFGenerator")',

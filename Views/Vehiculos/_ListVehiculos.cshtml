@@ -1,15 +1,19 @@
 ﻿@model List<VehiculoModel>
 
 
+@*
+   <div class="row">
+
+   </div>
+*@
 <div class="row">
+    <div class="col-12 mb-4 px-4">
+        <h5><b>Listado de vehículos</b></h5>
+        <h6 class="text-muted">Edita los datos de vehículo.</h6>
+    </div>
 
     <div class="col-12 mb-4 px-4 rounded gridCustom">
-        <div class="row mb-1 titleCustom">
-            <div class="col-12 col-md-auto mt-4 mb-2">
-                <h5 class="px-4"><b>Listado de vehículos</b></h5>
-                <h6 class="px-4 text-muted">Edita los datos de vehículo.</h6>
-            </div>
-        </div>
+        
         @(Html.Kendo().Grid(Model)
             .Name("Grid")
             .Columns(columns =>
@@ -37,14 +41,16 @@
                 ).Title("Acciones").Sortable(false).Width(100);
 
             }).HtmlAttributes(new { style = "height:350" })
-            .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))
-            .Sortable()
-            .Scrollable(scr => scr.Height(350))
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .EnableCustomBinding(true)
             .DataSource(dataSource => dataSource
             .Ajax()
-            .ServerOperation(false)
+            .Read("ajax_BuscarVehiculos", "Vehiculos")
+            .PageSize(10)
             )
-            .ToolBar(t => t.Search().Text("Buscar..."))
+            .Scrollable(scr => scr.Height(350)
+            )
+            @*.ToolBar(t => t.Search().Text("Buscar..."))
             .Search(s =>
             {
                 s.Field(c => c.placas);
@@ -62,7 +68,7 @@
                 s.Field(c => c.numeroEconomico);
 
 
-            })
+            })*@
             )
 
         @(Html.Kendo().Tooltip()

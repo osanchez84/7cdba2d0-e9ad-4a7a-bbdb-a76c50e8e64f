@@ -1,6 +1,5 @@
 @model List<InfraccionesModel>
 
-
 <div class="row">
 	@if (ViewBag.NoResultsMessage != null)
 	{
@@ -54,7 +53,7 @@
 				).Title("Editar").Sortable(false).Width(90);
 				columns.Bound(p => p.idInfraccion).ClientTemplate(
 				"<button onclick=\"ConsultarInfraccion('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
-				).Title("Mostrar").Sortable(false).Width(90);
+				).Title("Mostrar").Sortable(false).Width(120);
 				@*columns.Bound(p => p.idInfraccion).ClientTemplate(
 		"<button onclick=\"ShowDetail('#= idInfraccion #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Ver</b></h6></button>"
 		).Title("Ver").Sortable(false).Width(90);*@
@@ -65,13 +64,6 @@
 
 			}).HtmlAttributes(new { style = "height:450" })
 			.Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
-@*			.DataSource(dataSource => dataSource
-			.Ajax())
-			.Sortable()
-			.Scrollable(scr => scr.Height(350))
-			.DataSource(dataSource => dataSource
-			.Ajax()
-			.ServerOperation(false)*@
 			.EnableCustomBinding(true)
 			.DataSource(dataSource => dataSource
 			.Ajax()

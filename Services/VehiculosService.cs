@@ -793,5 +793,105 @@ namespace GuanajuatoAdminUsuarios.Services
             return modelList;
         }
 
+
+        // HMG - 25 01 2024
+        /// <summary>
+        /// Paginado para la carga de vehículos - Modulo - Modificar vehículo
+        /// </summary>
+        /// <param name="pagination">Objeto con el numero de pagina y registros a regresar</param>
+        /// <returns></returns>
+        public List<VehiculoModel> GetVehiculosPagination(VehiculoBusquedaModel modelSearch, Pagination pagination)
+        {
+            List<VehiculoModel> ListVehiculos = new List<VehiculoModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    int numeroSecuencial = 1;
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("usp_ObtieneTodosLosVehiculosFiltros", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                        cmd.Parameters.AddWithValue("@idEntidad", modelSearch.IdEntidadBusqueda);
+                        cmd.Parameters.AddWithValue("@Serie", modelSearch.SerieBusqueda);
+                        cmd.Parameters.AddWithValue("@Placas", modelSearch.PlacasBusqueda);
+                        cmd.Parameters.AddWithValue("@Tarjeta", modelSearch.tarjeta);
+                        cmd.Parameters.AddWithValue("@Motor", modelSearch.motor);
+                        cmd.Parameters.AddWithValue("@Modelo", modelSearch.modelo);
+                        cmd.Parameters.AddWithValue("@NumeroEconomico", modelSearch.numeroEconomico);
+                        cmd.Parameters.AddWithValue("@Propietario", modelSearch.propietario);
+                        cmd.Parameters.AddWithValue("@idMarca", modelSearch.idMarca);
+                        cmd.Parameters.AddWithValue("@idSubMarca", modelSearch.idSubMarca);
+                        cmd.Parameters.AddWithValue("@idTipoVehiculo", modelSearch.idTipoVehiculo);
+                        cmd.Parameters.AddWithValue("@idSubTipoServicio", modelSearch.idSubtipoServicio);
+                        cmd.Parameters.AddWithValue("@idColor", modelSearch.idColor);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                VehiculoModel model = new VehiculoModel();
+                                model.Persona = new PersonaModel();
+                                model.idVehiculo = Convert.ToInt32(reader["idVehiculo"]);
+                                model.placas = reader["placas"].ToString();
+
+                                model.serie = reader["serie"].ToString();
+                                model.tarjeta = reader["tarjeta"].ToString();
+                                model.vigenciaTarjeta = reader["vigenciaTarjeta"] == DBNull.Value
+                                    ? (DateTime?)null
+                                    : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                                model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
+                                model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
+                                model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"]);
+
+                                model.modelo = reader["modelo"].ToString();
+                                model.idColor = Convert.ToInt32(reader["idColor"]);
+                                model.idEntidad = Convert.ToInt32(reader["idEntidad"]);
+                                model.idCatTipoServicio = Convert.ToInt32(reader["idCatTipoServicio"]);
+                                model.numeroEconomico = reader["numeroEconomico"].ToString();
+                                model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
+                                model.paisManufactura = reader["paisManufactura"].ToString();
+                                model.numeroEconomico = reader["numeroEconomico"].ToString();
+                                model.marca = reader["marcaVehiculo"].ToString();
+                                model.submarca = reader["nombreSubmarca"].ToString();
+                                model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                                model.color = reader["color"].ToString();
+                                model.entidadRegistro = reader["nombreEntidad"].ToString();
+                                model.tipoServicio = reader["tipoServicio"].ToString();
+                                model.subTipoServicio = reader["servicio"].ToString();
+                                model.Persona.nombre = reader["nombre"].ToString();
+                                model.Persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                                model.Persona.apellidoMaterno = reader["apellidoMaterno"].ToString(); model.motor = reader["motor"].ToString();
+                                model.propietario = model.Persona.nombre + " " + model.Persona.apellidoPaterno + " " + model.Persona.apellidoMaterno;
+                                model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
+                                model.poliza = reader["poliza"].ToString();
+                                model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
+                                model.otros = reader["otros"].ToString();
+                                model.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
+                                model.NumeroSecuencial = numeroSecuencial;
+                                model.total = Convert.ToInt32(reader["Total"]);
+                                ListVehiculos.Add(model);
+
+                                numeroSecuencial++;
+                            }
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return ListVehiculos;
+        }
+
     }
 }

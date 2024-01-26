@@ -323,27 +323,40 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-            Pagination pagination = new Pagination();
-            pagination.PageIndex = request.Page - 1;
-            pagination.PageSize = 10;
-            pagination.Filter = resultValue;
-
-            if (infraModel == null)
-                infraModel = model;
-
-            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesPagination(infraModel, idOficina, idDependencia, pagination);
-            var total = 0;
-            if (listReporteAsignacion.Count() > 0)
-                total = listReporteAsignacion.ToList().FirstOrDefault().Total;
-
-            request.PageSize = 10;
-            var result = new DataSourceResult()
+			string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
+			List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(461))
             {
-                Data = listReporteAsignacion,
-                Total = total
-            };
-            return Json(result);
+
+                Pagination pagination = new Pagination();
+                pagination.PageIndex = request.Page - 1;
+                pagination.PageSize = 10;
+                pagination.Filter = resultValue;
+
+                if (infraModel == null)
+                    infraModel = model;
+
+                var listReporteAsignacion = _infraccionesService.GetAllInfraccionesPagination(infraModel, idOficina, idDependencia, pagination);
+                var total = 0;
+                if (listReporteAsignacion.Count() > 0)
+                    total = listReporteAsignacion.ToList().FirstOrDefault().Total;
+
+                request.PageSize = 10;
+                var result = new DataSourceResult()
+                {
+                    Data = listReporteAsignacion,
+                    Total = total
+                };
+                return Json(result);
+            } else
+            {
+				var result = new DataSourceResult()
+				{
+					Data = new List<InfraccionesModel>(),
+					Total = 0
+				};
+				return Json(result);
+			}
         }
 
 
@@ -409,9 +422,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     HttpContext.Session.SetString("isedition", "1");
                 }
-
-
-
 
                 return View(model);
  
@@ -1561,30 +1571,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            //var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecial(model, idOficina, idDependencia);
-
-            //var result = listReporteAsignacion.ToDataSourceResult(request);
-
-            //return Json(result);
-
-            Pagination pagination = new Pagination();
-            pagination.PageIndex = request.Page - 1;
-            pagination.PageSize = 10;
-            pagination.Filter = resultValue;
-
-            var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecialPagination(model, idOficina, idDependencia, pagination);
-            var total = 0;
-            if (listReporteAsignacion.Count() > 0)
-                total = listReporteAsignacion.ToList().FirstOrDefault().Total;
-
-            request.PageSize = 10;
-            var result = new DataSourceResult()
+			string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
+			List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
+            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(481))
             {
-                Data = listReporteAsignacion,
-                Total = total
-            };
+                Pagination pagination = new Pagination();
+                pagination.PageIndex = request.Page - 1;
+                pagination.PageSize = 10;
+                pagination.Filter = resultValue;
 
-            return Json(result);
+                var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecialPagination(model, idOficina, idDependencia, pagination);
+                var total = 0;
+                if (listReporteAsignacion.Count() > 0)
+                    total = listReporteAsignacion.ToList().FirstOrDefault().Total;
+
+                request.PageSize = 10;
+                var result = new DataSourceResult()
+                {
+                    Data = listReporteAsignacion,
+                    Total = total
+                };
+
+                return Json(result);
+            } else
+            {
+				var result = new DataSourceResult()
+				{
+					Data = new List<InfraccionesModel>(),
+					Total = 0
+				};
+
+				return Json(result);
+			}
         }
 
 

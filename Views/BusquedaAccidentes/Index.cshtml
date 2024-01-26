@@ -14,7 +14,7 @@
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡EL usuario no tiene acceso a esta opción!",
+                    title: "¡El usuario no tiene acceso a esta opción!",
                 });
                 setTimeout(() => {
                     window.location.href = "/Principal";
@@ -23,7 +23,7 @@
         } else {
             Swal.fire({
                 icon: "error",
-                title: "¡EL usuario no tiene acceso a esta opción!"
+                title: "¡El usuario no tiene acceso a esta opción!"
             });
             setTimeout(() => {
                 window.location.href = "/Principal";

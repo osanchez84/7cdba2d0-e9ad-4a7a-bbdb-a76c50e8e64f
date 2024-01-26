@@ -2745,18 +2745,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             while (reader.Read())
                             {
                                 CapturaAccidentesModel accidente = new CapturaAccidentesModel();
-                                accidente.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
-                                accidente.NumeroReporte = reader["NumeroReporte"].ToString();
-                                accidente.Fecha = Convert.ToDateTime(reader["Fecha"].ToString());
-                                accidente.Hora = reader.GetTimeSpan(reader.GetOrdinal("Hora"));
-                                accidente.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
-                                accidente.IdCarretera = Convert.ToInt32(reader["IdCarretera"].ToString());
-                                accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
-                                accidente.idEstatusReporte = Convert.ToInt32(reader["idEstatusReporte"].ToString());
-                                accidente.EstatusReporte = reader["estatusReporte"].ToString();
-                                accidente.Municipio = reader["Municipio"].ToString();
-                                accidente.Tramo = reader["Tramo"].ToString();
-                                accidente.Carretera = reader["Carretera"].ToString();
+                                accidente.IdAccidente = reader["IdAccidente"] is DBNull ? 0 : Convert.ToInt32(reader["IdAccidente"]);
+                                accidente.NumeroReporte = reader["NumeroReporte"] is DBNull ? string.Empty : reader["NumeroReporte"].ToString();
+                                accidente.Fecha = reader["Fecha"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["Fecha"]);
+                                accidente.Hora = reader["Hora"] is DBNull ? TimeSpan.MinValue : reader.GetTimeSpan(reader.GetOrdinal("Hora"));
+                                accidente.IdMunicipio = reader["IdMunicipio"] is DBNull ? 0 : Convert.ToInt32(reader["IdMunicipio"]);
+                                accidente.IdCarretera = reader["IdCarretera"] is DBNull ? 0 : Convert.ToInt32(reader["IdCarretera"]);
+                                accidente.IdTramo = reader["IdTramo"] is DBNull ? 0 : Convert.ToInt32(reader["IdTramo"]);
+                                accidente.idEstatusReporte = reader["idEstatusReporte"] is DBNull ? 0 : Convert.ToInt32(reader["idEstatusReporte"]);
+                                accidente.EstatusReporte = reader["estatusReporte"] is DBNull ? string.Empty : reader["estatusReporte"].ToString();
+                                accidente.Municipio = reader["Municipio"] is DBNull ? string.Empty : reader["Municipio"].ToString();
+                                accidente.Tramo = reader["Tramo"] is DBNull ? string.Empty : reader["Tramo"].ToString();
+                                accidente.Carretera = reader["Carretera"] is DBNull ? string.Empty : reader["Carretera"].ToString();
                                 accidente.Total = Convert.ToInt32(reader["Total"]);
                                 ListaAccidentes.Add(accidente);
 

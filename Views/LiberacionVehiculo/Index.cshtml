@@ -37,7 +37,7 @@
         function submitSearch() {
 
             var Mydata = $("#frmSearch").serialize();
-            var controlsValidate = [];
+           /* var controlsValidate = [];
             var isValid = true;
 
             controlsValidate.push({ 'controlName': 'FechaIngreso' });
@@ -49,7 +49,7 @@
             if (!isValid) {
                 sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
                 return;
-            }
+            }*/
 
             showLoading();
             $.ajax({
@@ -145,7 +145,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
-                    <label> Fecha de ingreso <b>(obligatorio):</b></label>
+                    <label> Fecha de ingreso:</label>
                     @(Html.Kendo().DatePickerFor(t => t.FechaIngreso).Max(DateTime.Now)
                         .Format("dd/MM/yyyy")
                         .Culture("es-ES")
@@ -159,7 +159,7 @@
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.Folio)
 
-                        .Label(l => l.Content("Folio <b>(obligatorio):</b>"))
+                        .Label(l => l.Content("Folio:"))
                         .Placeholder("Ingresa el número de folio")
                         .HtmlAttributes(new { style = "width: 100%" })
                         )

@@ -276,10 +276,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
                                 List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                                 string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
-                                List<int> listaPermisos = autorizacionesString.Split(',').Select(int.Parse).ToList();
-                                string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
-                                // Guardar la lista en la variable de sesión
-                                HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
+								List<int> listaPermisos = new List<int>();
+
+								if (!string.IsNullOrEmpty(autorizacionesString))
+								{
+									string[] permisosArray = autorizacionesString.Split(',');
+
+									foreach (string permiso in permisosArray)
+									{
+										if (int.TryParse(permiso, out int resultado))
+										{
+											listaPermisos.Add(resultado);
+										}
+										else
+										{
+										
+											Console.WriteLine($"No se puede convertir '{permiso}' a un número entero.");
+										}
+									}
+								}
+
+								string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
+
+								// Guardar la lista en la variable de sesión
+								HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Autorizaciones", listaPermisosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);

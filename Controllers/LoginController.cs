@@ -276,30 +276,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
                                 List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                                 string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
-								List<int> listaPermisos = new List<int>();
+                                List<int> listaPermisos = autorizacionesString
+                                    .Split(',')
+                                    .Where(s => !string.IsNullOrWhiteSpace(s)) // Filtrar cadenas vacías o nulas
+                                    .Select(int.Parse)
+                                    .ToList();
 
-								if (!string.IsNullOrEmpty(autorizacionesString))
-								{
-									string[] permisosArray = autorizacionesString.Split(',');
+                                string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
 
-									foreach (string permiso in permisosArray)
-									{
-										if (int.TryParse(permiso, out int resultado))
-										{
-											listaPermisos.Add(resultado);
-										}
-										else
-										{
-										
-											Console.WriteLine($"No se puede convertir '{permiso}' a un número entero.");
-										}
-									}
-								}
+                                // Guardar la lista en la variable de sesión
+                                HttpContext.Session.SetString("IdsPermitidos", listaPermisosJson);
 
-								string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
-
-								// Guardar la lista en la variable de sesión
-								HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
+                                // Guardar la lista en la variable de sesión
+                                HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Autorizaciones", listaPermisosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);

@@ -1,8 +1,9 @@
 ﻿@model List<Concesionarios2Model>
-
 @{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 }
-
 
 <div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
@@ -29,3 +30,16 @@
             )
     </div>
 </div>
+
+                <script>
+    $(document).ready(function () {
+        var auth = @autorizaciones;
+        var grid = $("#GridCon").data("kendoGrid");
+
+        if (!auth.toString().includes("295")) {
+            grid.hideColumn(5);
+
+        }
+
+    });
+</script>

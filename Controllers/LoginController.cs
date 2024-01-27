@@ -272,10 +272,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             string vectorString = listaRespuestas.FirstOrDefault()?.Vector;
                             string autorizacionesString = listaRespuestas.FirstOrDefault()?.autorizaciones;
 
-                            if (!string.IsNullOrEmpty(vectorString))
-                            {
+                            
                                 List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                                 string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
+                            if (!string.IsNullOrEmpty(autorizacionesString))
+                            {
+
                                 List<int> listaPermisos = autorizacionesString
                                     .Split(',')
                                     .Where(s => !string.IsNullOrWhiteSpace(s)) // Filtrar cadenas vacías o nulas
@@ -295,6 +297,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                // HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
+                            }
+                            else
+                            {
+                                Console.WriteLine("VACIO");
                             }
 
                         

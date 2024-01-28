@@ -30,10 +30,11 @@
             )
     </div>
     <div class="col-12 col-xl-8">
-        <div class="demo-section wide">
+        <div class="demo-section wide" >
             @(Html.Kendo().Chart(Model)
                 .Name("chart")
-                .Title("Incidencias/ Motivos Infracciones")
+   
+                .Title("Incidencias / Motivos Infracciones")
                 .Subtitle("/Motivos Infracciones/")
                 .Legend(legend => legend
                 .Visible(true)
@@ -54,11 +55,20 @@
                 .Line(line => line.Visible(false))
                 .MajorGridLines(lines => lines.Visible(true))
                 )
+                 @*.ChartArea(height => height.Height(3000))*@
                 .Tooltip(tooltip => tooltip
                 .Visible(true) 
-                .Template("#= dataItem.Motivo #: #= value #")
+                @*.Template("#= dataItem.Motivo #: #= value #")*@
                 )
                 )
+                <script>
+                $(document).ready(function () {
+            var c = $("#chart");
+            c.css("height", "2200px")
+            .data("kendoChart").resize();
+                });
+            </script>
+
         </div>
     </div>
 </div>

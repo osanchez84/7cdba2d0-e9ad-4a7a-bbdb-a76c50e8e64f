@@ -231,8 +231,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             ReporteAsignacion.vehiculoTramo = reader["vehiculoTramo"] != DBNull.Value ? reader["vehiculoTramo"].ToString() : string.Empty;
                             ReporteAsignacion.vehiculoKm = reader["vehiculoKm"] != DBNull.Value ? reader["vehiculoKm"].ToString() : string.Empty;
                             ReporteAsignacion.fechaSolicitud = (DateTime)(reader["fechaSolicitud"] != DBNull.Value
-                                  ? Convert.ToDateTime(reader["fechaSolicitud"])
-                                  : (DateTime?)null);
+      ? Convert.ToDateTime(reader["fechaSolicitud"])
+      : (DateTime?)DateTime.MinValue);
 
                             ReporteAsignacion.evento = reader["evento"] != DBNull.Value ? reader["evento"].ToString() : string.Empty;
                             ReporteAsignacion.solicitanteNombre = reader["solicitanteNombre"] != DBNull.Value ? reader["solicitanteNombre"].ToString() : string.Empty;

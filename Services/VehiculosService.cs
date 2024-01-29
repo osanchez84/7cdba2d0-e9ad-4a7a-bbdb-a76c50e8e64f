@@ -253,7 +253,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.entidadRegistro = reader["nombreEntidad"].ToString();
                             model.color = reader["color"].ToString();
                             model.propietario = model.Persona.nombre + " " + model.Persona.apellidoPaterno + " " + model.Persona.apellidoMaterno;
-
+                            model.paisManufactura = reader["paisManufactura"].ToString();
                             model.motor = reader["motor"].ToString();
                             model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
                             model.poliza = reader["poliza"].ToString();

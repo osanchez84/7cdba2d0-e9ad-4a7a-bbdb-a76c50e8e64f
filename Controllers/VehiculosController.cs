@@ -164,7 +164,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult SubMarcas_Read()
         {
-            var catEntidades = _catDictionary.GetCatalog("SubMarcas_Read", "0");
+            var catEntidades = _catDictionary.GetCatalog("CatSubmarcasVehiculos", "0");
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             //var selected = result.Where(x => x.Value == Convert.ToString(idSubmarca)).First();
             //selected.Selected = true;

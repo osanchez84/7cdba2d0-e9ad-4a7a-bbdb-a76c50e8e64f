@@ -1,6 +1,12 @@
 ﻿@model List<VehiculoModel>
 
 
+@{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+}
+
 @*
    <div class="row">
 
@@ -77,6 +83,22 @@
             .Position(TooltipPosition.Top)
             .ContentHandler("tooltipContent")
             )
+
+
+        <script>
+
+            $(document).ready(function () {
+                var auth = @autorizaciones;
+                var grid = $("#Grid").data("kendoGrid");
+
+                //EDITAR
+                if (!auth.toString().includes("255")) {
+                    grid.hideColumn(16);
+                }
+
+            });
+
+        </script>
     </div>
 
 </div>

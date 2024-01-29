@@ -302,21 +302,7 @@
             <partial name="_ListadoInfracciones" model="Model.ListInfracciones" />
         </div>
 
-        <script>
-
-            $(document).ready(function () {
-                var auth = @autorizaciones;
-                var grid = $("#GridInf").data("kendoGrid");
-
-                if (!auth.toString().includes("465")) {
-                    grid.hideColumn(12);
-                }
-                if (!auth.toString().includes("462")) {
-                    grid.hideColumn(14);
-                }
-            });
-
-        </script>
+        
     </section>
 
 </div>

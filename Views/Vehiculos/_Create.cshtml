@@ -261,13 +261,13 @@
         </div>
 
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
-            <div class="controlForm my-3">
+            <div class="controlForm my-3">_Create
                 <label>Vigencia de tarjeta:</label>
                 @if (disableInput)
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value(dateVigencia)
-                       // .DateInput()                        
+                        .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -347,7 +347,6 @@
 
                     @(Html.Kendo().DropDownListFor(d => d.idSubmarca)
                                         .Filter(FilterType.Contains)
-
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
@@ -372,6 +371,7 @@
                                                 .Filter(FilterType.Contains)
 
                             .Filter(FilterType.Contains)
+
                             .HtmlAttributes(new { style = "width:100%;" })
                             )
 

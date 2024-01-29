@@ -1,8 +1,10 @@
-﻿<div class="row">
+﻿@model List<CatMotivosInfraccionModel>
+
+<div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @(
-            Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CatMotivosInfraccionModel>()
+            Html.Kendo().Grid(Model)
             .Name("gridCatMotivos")
             .Columns(columns =>
             {

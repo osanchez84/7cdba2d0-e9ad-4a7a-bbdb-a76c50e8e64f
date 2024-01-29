@@ -35,23 +35,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-                
-                var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
+            CatMotivosInfraccionModel searchModel = new CatMotivosInfraccionModel();
+            List<CatMotivosInfraccionModel> listMotivosInfraccion = _motivoInfraccionService.GetMotivos(idDependencia);
 
-            return View(ListMotivosInfraccionModel);
+            searchModel.ListMotivosInfraccion = listMotivosInfraccion;
+            return View(searchModel);
             }
  
 
         #region Modal Action
         public ActionResult IndexModal()
         {
-           
-                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
-            //return View("IndexModal");
-            return View("Index", ListMotivosInfraccionModel);
+
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            CatMotivosInfraccionModel searchModel = new CatMotivosInfraccionModel();
+            List<CatMotivosInfraccionModel> listMotivosInfraccion = _motivoInfraccionService.GetMotivos(idDependencia);
+
+            searchModel.ListMotivosInfraccion = listMotivosInfraccion;
+            return View(searchModel);
         }
-    
+
 
         [HttpPost]
         public ActionResult AgregarMotivoParcial()
@@ -204,9 +207,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
              ViewBag.Categories = new SelectList(dbContext.Color.ToList(), "IdColor", "color");
          }*/
 
-        
-        #endregion
 
+        #endregion
+       public ActionResult ajax_BuscarMotivos(CatMotivosInfraccionModel model)
+        {
+
+            int idDependencia = HttpContext.Session.GetInt32("IdDependencia") ?? 0;
+            var ListMotivos = _motivoInfraccionService.GetMotivosBusqueda(model, idDependencia);
+            if (ListMotivos.Count == 0)
+            {
+                ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+            }
+
+            return PartialView("_ListaMotivosInfraccion", ListMotivos);
+
+        }
 
 
     }

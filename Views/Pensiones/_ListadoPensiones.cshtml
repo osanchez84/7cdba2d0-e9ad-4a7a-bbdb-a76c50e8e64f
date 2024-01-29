@@ -1,5 +1,9 @@
 ﻿@model List<PensionModel>
-
+@{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+}
 <script>
     
 
@@ -117,6 +121,18 @@
         var titulo = e.target.context.dataset.title; 
         return titulo; 
     }
+
+      $(document).ready(function () {
+        var auth = @autorizaciones;
+        var grid = $("#GridP").data("kendoGrid");
+
+        if (!auth.toString().includes("275")) {
+           // grid.hideColumn(9); 
+            $("#btnEditarPension").prop('disabled', true).css({ "opacity": "0.3" });
+
+        }
+
+    });
 </script>
 
 

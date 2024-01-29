@@ -271,23 +271,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
                             string vectorString = listaRespuestas.FirstOrDefault()?.Vector;
                             string autorizacionesString = listaRespuestas.FirstOrDefault()?.autorizaciones;
+                            List<int> listaPermisos = autorizacionesString
+                                  .Split(',')
+                                  .Where(s => !string.IsNullOrWhiteSpace(s)) // Filtrar cadenas vacías o nulas
+                                  .Select(int.Parse)
+                                  .ToList();
 
-                            
-                                List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
+                            string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
+
+                            HttpContext.Session.SetString("IdsPermitidos", listaPermisosJson);
+
+                            List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
                                 string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
-                            if (!string.IsNullOrEmpty(autorizacionesString))
+                            if (!string.IsNullOrEmpty(listaIdsPermitidosJson))
                             {
 
-                                List<int> listaPermisos = autorizacionesString
-                                    .Split(',')
-                                    .Where(s => !string.IsNullOrWhiteSpace(s)) // Filtrar cadenas vacías o nulas
-                                    .Select(int.Parse)
-                                    .ToList();
-
-                                string listaPermisosJson = JsonConvert.SerializeObject(listaPermisos);
-
-                                // Guardar la lista en la variable de sesión
-                                HttpContext.Session.SetString("IdsPermitidos", listaPermisosJson);
+                              
 
                                 // Guardar la lista en la variable de sesión
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);

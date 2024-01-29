@@ -1,4 +1,9 @@
-﻿<div class="row">
+﻿@{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+}
+<div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @(
@@ -70,6 +75,23 @@
     </div>
     
 <script>
+    $(document).ready(function () {
+        var auth = @autorizaciones;
+        var grid = $("#gridBusquedaEspecialAccidentes").data("kendoGrid");
+
+        if (!auth.toString().includes("611")) {
+            grid.hideColumn(9);
+        }
+        if (!auth.toString().includes("614")) {
+            grid.hideColumn(10);
+        }
+        if (!auth.toString().includes("616")) {
+            $("#btnFolio").prop('disabled', true).css({ "opacity": "0.3" });
+
+        }
+
+    });
+
     function downLoadPdf(Id) {
         console.log("SI", Id)
         window.location = '/BusquedaAccidentes/CreatePdfUnRegistro?IdAccidente=' + Id;

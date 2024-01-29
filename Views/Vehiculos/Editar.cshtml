@@ -10,6 +10,8 @@
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
+
+        console.log(auth);
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({

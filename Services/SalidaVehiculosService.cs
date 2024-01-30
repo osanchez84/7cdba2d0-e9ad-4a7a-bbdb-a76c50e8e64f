@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -22,6 +23,15 @@ namespace GuanajuatoAdminUsuarios.Services
         public List<SalidaVehiculosModel> ObtenerIngresos(SalidaVehiculosModel model, int idPension)
         {
             List<SalidaVehiculosModel> modelList = new List<SalidaVehiculosModel>();
+            string condiciones = "";
+            condiciones += model.idMarca.HasValue ? $" AND d.idMarca = {model.idMarca}" : "";
+            condiciones += model.serie.IsNullOrEmpty() ? "" : " AND d.serie = @serie";
+            condiciones += model.folioInventario.IsNullOrEmpty() ? "" : " AND d.numeroInventario LIKE '%' + @numeroInventario + '%' ";
+            condiciones += model.placa.IsNullOrEmpty() ? "" : " AND d.placa = @placa";
+            if (model.fechaIngreso != DateTime.MinValue)
+            {
+                condiciones += " OR d.fechaIngreso = @fechaIngreso";
+            };
             string strQuery = @"SELECT d.idDeposito,d.idVehiculo,d.numeroInventario,d.idSolicitud,
 	                                    d.idMarca,d.placa,d.serie,d.idPension,d.fechaIngreso,
 	                                    v.modelo,v.idSubmarca,
@@ -31,18 +41,14 @@ namespace GuanajuatoAdminUsuarios.Services
 										pen.pension
                                     FROM depositos AS d
                                     LEFT JOIN vehiculos AS v ON d.idVehiculo = v.idVehiculo
-                                    LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo
-                                    LEFT JOIN catSubmarcasVehiculos AS smv ON v.idSubmarca = smv.idSubmarca
-								    LEFT JOIN catColores AS co ON v.idColor = co.idColor
+                                    LEFT JOIN catMarcasVehiculos AS mv ON d.idMarca = mv.idMarcaVehiculo
+                                    LEFT JOIN catSubmarcasVehiculos AS smv ON d.idSubmarca = smv.idSubmarca
+								    LEFT JOIN catColores AS co ON d.idColor = co.idColor
 					   		        LEFT JOIN personas AS per ON v.idPersona = per.idPersona
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
 	                                LEFT JOIN pensiones AS pen ON d.idPension = pen.idPension
-                                    WHERE d.idMarca = @idMarca OR d.serie = @serie OR d.numeroInventario = @numeroInventario
-                                    OR d.placa = @placa AND d.idPension = @idPension";
-                                    if (model.fechaIngreso != DateTime.MinValue)
-                                    {
-                                        strQuery += " OR fechaIngreso = @fechaIngreso";
-                                    }
+                                    WHERE d.idPension = @idPension" + condiciones;
+                                   
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try

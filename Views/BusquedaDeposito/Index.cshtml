@@ -45,7 +45,7 @@
                         <i class="icon-deposito h1 colorPrimary"></i>
                     </div>
                     <div class="col-auto my-3">
-                        <h2 class="m-0 h3"><b>Busqueda por Depósito</b></h2>
+                        <h2 class="m-0 h3"><b>Búsqueda por Depósito</b></h2>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.propietario)
                             .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Propietario del vehículo:"))
-                            .Placeholder("Ingresa el número folio")
+                            .Placeholder("Ingresa nombre del propietario")
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
@@ -137,8 +137,9 @@
             type: 'POST',
             data: Mydata,
             success: (data) => {
-                var grid = $("#gridBusquedaServicioDepositos").data("kendoGrid");
+                var grid = $("#gridBusquedaServicioDepositos2").data("kendoGrid");
                 grid.dataSource.data(data);
+                //grid.dataSource.page(1);
                 hideLoading();
             },
             error: function () {

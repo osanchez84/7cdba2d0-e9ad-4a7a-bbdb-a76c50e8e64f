@@ -355,7 +355,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     SqlCommand command = new SqlCommand(mergeQuery, connection);
 
-                    // Asigna los parámetros como lo hacías en tu consulta original
                     command.Parameters.AddWithValue("@idDeposito", model.idDeposito);
                     command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);
                     command.Parameters.AddWithValue("@fechaSalida", model.fechaSalida);

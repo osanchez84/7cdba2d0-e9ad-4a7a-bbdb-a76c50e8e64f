@@ -125,7 +125,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.Placa LIKE '%' + @Placa + '%' ";
                     condiciones += model.IdMarcaVehiculo.Equals(null) || model.IdMarcaVehiculo == 0 ? "" : " AND d.IdMarca = @IdMarca ";
                     condiciones += model.Serie.IsNullOrEmpty() ? "" : " AND d.Serie LIKE '%' + @Serie + '%' ";
-                    condiciones += model.Folio.IsNullOrEmpty() ? "" : " AND d.Folio LIKE '%' + @Folio + '%' ";
+                    condiciones += model.Folio.IsNullOrEmpty() ? "" : " AND sol.Folio LIKE '%' + @Folio + '%' ";
                     if (model.FechaIngreso.HasValue && model.FechaIngreso != DateTime.MinValue)
                     {
                         condiciones +=(" AND CAST(d.FechaIngreso AS DATE) = @FechaIngreso ");
@@ -136,80 +136,82 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     string SqlTransact = @"SELECT
-    d.IdDeposito,
-    MAX(d.IdSolicitud) AS IdSolicitud,
-    MAX(d.idDelegacion) AS idDelegacion,
-    MAX(d.IdMarca) AS IdMarca,
-    MAX(d.IdSubmarca) AS IdSubmarca,
-    MAX(d.IdPension) AS IdPension,
-    MAX(d.IdTramo) AS IdTramo,
-    MAX(d.IdColor) AS IdColor,
-    MAX(d.Serie) AS Serie,
-    d.Placa,
-    MAX(d.FechaIngreso) AS FechaIngreso,
-    MAX(sol.idCarreteraUbicacion) AS idCarreteraUbicacion,
-    MAX(d.Folio) AS Folio,
-    MAX(d.Km) AS Km,
-    MAX(d.Liberado) AS Liberado,
-    MAX(d.Autoriza) AS Autoriza,
-    MAX(car.carretera) AS carretera,
-    MAX(d.FechaActualizacion) AS FechaActualizacion,
-    MAX(d.ActualizadoPor) AS ActualizadoPor,
-    MAX(d.estatus) AS estatus,
-    sol.solicitanteNombre,
-    sol.solicitanteAp,
-    sol.solicitanteAm,
-    pen.pension,
-    del.delegacion,
-    col.color,
-    cTra.tramo,
-    m.marcaVehiculo,
-    subm.nombreSubmarca,
-    v.idPersona,
-    p.nombre,
-    p.apellidoPaterno,
-    p.apellidoMaterno
-FROM
-    depositos d
-LEFT JOIN
-    solicitudes sol ON d.idSolicitud = sol.idSolicitud
-LEFT JOIN
-    pensiones pen ON d.idPension = pen.idPension
-LEFT JOIN
-    catDelegaciones del ON d.idDelegacion = del.idDelegacion
-LEFT JOIN
-    catColores col ON d.idColor = col.idColor
-LEFT JOIN
-    catTramos cTra ON d.Idtramo = cTra.idTramo
-LEFT JOIN
-    catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
-LEFT JOIN
-    catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
-LEFT JOIN
-    vehiculos v ON v.placas = d.Placa
-LEFT JOIN
-    personas p ON p.idPersona = v.idPersona
-LEFT JOIN
-    catCarreteras car ON car.idCarretera = sol.idCarreteraUbicacion
-WHERE
-    d.liberado = 0 AND d.estatus = 1 AND d.idDelegacion = @idOficina" + condiciones +
-@" GROUP BY
-    d.IdDeposito,
-    sol.solicitanteNombre,
-    sol.solicitanteAp,
-    sol.solicitanteAm,
-    pen.pension,
-    del.delegacion,
-    col.color,
-    cTra.tramo,
-    m.marcaVehiculo,
-    subm.nombreSubmarca,
-    v.idPersona,
-    p.nombre,
-    p.apellidoPaterno,
-    p.apellidoMaterno,
-    d.Placa;
-";
+                                            d.IdDeposito,
+                                            MAX(d.IdSolicitud) AS IdSolicitud,
+                                            MAX(d.idDelegacion) AS idDelegacion,
+                                            MAX(d.IdMarca) AS IdMarca,
+                                            MAX(d.IdSubmarca) AS IdSubmarca,
+                                            MAX(d.IdPension) AS IdPension,
+                                            MAX(d.IdTramo) AS IdTramo,
+                                            MAX(d.IdColor) AS IdColor,
+                                            MAX(d.Serie) AS Serie,
+                                            d.Placa,
+                                            MAX(d.FechaIngreso) AS FechaIngreso,
+                                            MAX(sol.idCarreteraUbicacion) AS idCarreteraUbicacion,
+                                            MAX(d.Folio) AS Folio,
+                                            MAX(d.Km) AS Km,
+                                            MAX(d.Liberado) AS Liberado,
+                                            MAX(d.Autoriza) AS Autoriza,
+                                            MAX(car.carretera) AS carretera,
+                                            MAX(d.FechaActualizacion) AS FechaActualizacion,
+                                            MAX(d.ActualizadoPor) AS ActualizadoPor,
+                                            MAX(d.estatus) AS estatus,
+                                            sol.solicitanteNombre,
+                                            sol.solicitanteAp,
+                                            sol.solicitanteAm,
+                                            sol.folio,
+                                            pen.pension,
+                                            del.delegacion,
+                                            col.color,
+                                            cTra.tramo,
+                                            m.marcaVehiculo,
+                                            subm.nombreSubmarca,
+                                            v.idPersona,
+                                            p.nombre,
+                                            p.apellidoPaterno,
+                                            p.apellidoMaterno
+                                        FROM
+                                            depositos d
+                                        LEFT JOIN
+                                            solicitudes sol ON d.idSolicitud = sol.idSolicitud
+                                        LEFT JOIN
+                                            pensiones pen ON d.idPension = pen.idPension
+                                        LEFT JOIN
+                                            catDelegaciones del ON d.idDelegacion = del.idDelegacion
+                                        LEFT JOIN
+                                            catColores col ON d.idColor = col.idColor
+                                        LEFT JOIN
+                                            catTramos cTra ON d.Idtramo = cTra.idTramo
+                                        LEFT JOIN
+                                            catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
+                                        LEFT JOIN
+                                            catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
+                                        LEFT JOIN
+                                            vehiculos v ON v.placas = d.Placa
+                                        LEFT JOIN
+                                            personas p ON p.idPersona = v.idPersona
+                                        LEFT JOIN
+                                            catCarreteras car ON car.idCarretera = sol.idCarreteraUbicacion
+                                        WHERE
+                                            d.liberado = 0 AND d.estatus = 1 AND d.idDelegacion = @idOficina" + condiciones +
+                                        @" GROUP BY
+                                            d.IdDeposito,
+                                            sol.solicitanteNombre,
+                                            sol.solicitanteAp,
+                                            sol.solicitanteAm,
+                                            sol.folio,
+                                            pen.pension,
+                                            del.delegacion,
+                                            col.color,
+                                            cTra.tramo,
+                                            m.marcaVehiculo,
+                                            subm.nombreSubmarca,
+                                            v.idPersona,
+                                            p.nombre,
+                                            p.apellidoPaterno,
+                                            p.apellidoMaterno,
+                                            d.Placa;
+                                        ";
 
 
 
@@ -217,8 +219,7 @@ WHERE
                     command.Parameters.Add(new SqlParameter("@Placa", SqlDbType.NVarChar)).Value = (object)model.Placas ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdMarca", SqlDbType.Int)).Value = (object)model.IdMarcaVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)model.Serie ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.Date)).Value =
-                        (object)model.FechaIngreso ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.Date)).Value = (object)model.FechaIngreso ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Folio", SqlDbType.NVarChar)).Value = (object)model.Folio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 

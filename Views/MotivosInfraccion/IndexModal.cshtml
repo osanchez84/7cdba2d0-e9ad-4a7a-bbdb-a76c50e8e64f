@@ -32,7 +32,7 @@
 
     function submitSearch() {
         var Mydata = $("#formBuscarMotivo").serialize();
-        //console.log(Mydata);
+        console.log(Mydata);
         showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarMotivos")',
@@ -49,8 +49,19 @@
             }
         });
     }
-  
-    
+
+
+    function onDropDownChange() {
+        var selectedValue = $("#ddlVigencia").data("kendoDropDownList").value();
+        console.log("Valor seleccionado: " + selectedValue);
+
+        // Ocultar el div con el id "elementosFechas" si el valor seleccionado no es el valor por defecto
+        if (selectedValue !== "") {
+            $("#elementosFecha").hide();
+        } else {
+            $("#elementosFecha").show();
+        }
+    }
 </script>
 <div class="mainContainer bg-light">
 
@@ -107,8 +118,9 @@
 
                 </div>
             </div>
-            <!-- @*<div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
+                    <label>Vigencia:</label>
                 @(Html.Kendo().DropDownListFor(d => d.IdVigencia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
@@ -119,10 +131,12 @@
                         new SelectListItem { Text = "Vigentes", Value = "1" },
                         new SelectListItem { Text = "No vigentes", Value = "2" }
                         })
-                                )*@
+                            .Events(e => e.Change("onDropDownChange"))
+                                )
 
                 </div>
-            </div>-->
+            </div>
+            <div  class="row px-4 mb-4 align-items-end" id="elementosFecha">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
                         <label>Inicio de vigencia desde:</label>
@@ -165,6 +179,7 @@
                             )
                     </div>
             </div>
+                </div>
           </form>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3">

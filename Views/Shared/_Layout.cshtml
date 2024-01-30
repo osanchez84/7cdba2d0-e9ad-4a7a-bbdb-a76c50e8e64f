@@ -36,7 +36,6 @@
     <globalization culture="es-MX" uiCulture="es" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/kendo-ui-core/2014.1.416/js/cultures/kendo.culture.es-ES.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2023.3.1114/js/cultures/kendo.culture.es-ES.min.js"></script>
-
     @using System.Globalization
 
     <script type="text/javascript">
@@ -48,6 +47,11 @@
   <script>   
 
         $(document).ready(function () {
+            var _vehiculos=[230,201,260,220,280,210,240,300,310,320,270,290,250];
+            var _infracciones = [460,401,410,420,440,490,430,480,450];
+            var _accidentes =[630,601,610,620]
+            var _catalogos = [1140, 1160, 1170, 1001, 1210, 1190, 1090, 1220, 1020, 1120, 1040, 1200, 1240, 1230, 1180, 1060, 1110, 1030, 1050, 1130, 1100, 1070, 1150, 1080, 1010];
+            
             showLoading();
             $.ajax({
                 url: '@Url.Action("GetIdsPermitidos", "Login")', 
@@ -56,10 +60,56 @@
                     var idsPermitidos = data;
                     $(".nav-item").each(function () {
                         var id = parseInt($(this).data("id"));
-                     if (!(idsPermitidos.includes(id) || $(this).hasClass("always-visible"))) {                            
-                    $(this).hide();
+                        if (!(idsPermitidos.includes(id) || $(this).hasClass("always-visible"))) {                            
+                            $(this).hide();
                         }
                     });
+                                        
+                    let _vehiculoEncontrado = false;
+                    let _infraccionEncontrada = false;
+                    let _accidenteEncontrado =false;
+                     let _catalogoEncontrado =false;
+                    if (idsPermitidos.length<=0) {
+                        $("#nav-vehiculo-tab").prop('hidden', true);
+                        $("#nav-infraccion-tab").prop('hidden', true);
+                        $("#nav-accidentes-tab").prop('hidden', true);
+                        $("#nav-catalogo-tab").prop('hidden', true);
+                    } else {
+                        for (let i = 0; i < _vehiculos.length; i++) {
+                           if (idsPermitidos.includes(_vehiculos[i])) {
+                               _vehiculoEncontrado = true;
+                               break;
+                           } 
+                        }
+                        for (let i = 0; i < _infracciones.length; i++) {
+                            if (idsPermitidos.includes(_infracciones[i])) {
+                                _infraccionEncontrada = true;
+                                break;
+                            }
+                        }
+                        for (let i = 0; i < _accidentes.length; i++) {
+                            if (idsPermitidos.includes(_accidentes[i])) {
+                                _accidenteEncontrado = true;
+                                break;
+                            }
+                        }
+                        for (let i = 0; i < _catalogos.length; i++) {
+                            if (idsPermitidos.includes(_catalogos[i])) {
+                                _catalogoEncontrado = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!_vehiculoEncontrado)
+                            $("#nav-vehiculo-tab").prop('hidden', true);
+                        if (!_infraccionEncontrada)
+                            $("#nav-infraccion-tab").prop('hidden', true);
+                        if (!_accidenteEncontrado)
+                            $("#nav-accidentes-tab").prop('hidden', true);
+                        if (!_catalogoEncontrado)
+                            $("#nav-catalogo-tab").prop('hidden', true);
+                        
+                    }
                     hideLoading();
                 },
                 error: function (error) {

@@ -94,7 +94,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 condiciones += " OR d.fechaIngreso = @fechaIngreso";
             };
             string strQuery = @"SELECT d.idDeposito,d.idSolicitud,d.idInfraccion,d.idVehiculo,d.fechaIngreso,
-                                    d.idPension,d.idGrua,sol.fechaSolicitud,inf.folioInfraccion,v.placas,
+                                    d.idPension,d.idGrua,sol.fechaSolicitud,inf.folioInfraccion,d.placa,
                                     p.nombre,p.apellidoPaterno,p.apellidoMaterno,sd.fechaSalida,ga.idGrua,g.noEconomico,
                                     pen.pension
 
@@ -135,7 +135,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.idDeposito = reader["idDeposito"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idDeposito"].ToString());
                             deposito.fechaEvento = reader["fechaSolicitud"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaSolicitud"].ToString());
                             deposito.folioInfraccion = reader["folioInfraccion"].ToString();
-                            deposito.placa = reader["placas"].ToString();
+                            deposito.placa = reader["placa"].ToString();
                             deposito.nombre = reader["nombre"].ToString();
                             deposito.apellidoPaterno = reader["apellidoPaterno"].ToString();
                             deposito.apellidoMaterno = reader["apellidoMaterno"].ToString();

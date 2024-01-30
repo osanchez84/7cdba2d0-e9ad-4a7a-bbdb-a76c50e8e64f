@@ -154,7 +154,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_pensionesService.GetAllPensiones(idOficina), "IdPension", "Pension");
             return Json(result);
         }
-        public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, SolicitudDepositoModel model)
+        public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, [FromBody] SolicitudDepositoModel model)
         {
           
                 if (Isol.HasValue && Isol.Value > 0)

@@ -757,9 +757,9 @@
             showLoading();
             $.ajax({
                 url: '/Depositos/ajax_EnviarSolicitudDeposito',
-                type: 'POST', // Cambié a POST, ya que parece que estás enviando datos al servidor
-                contentType: 'application/json', // Asegura que los datos se envíen como JSON
-                data: JSON.stringify(Mydata), // Convierte los datos a una cadena JSON
+                type: 'POST', 
+                contentType: 'application/json', 
+                data: JSON.stringify(Mydata), 
                 success: function (data) {
                     
                     $("#folioPlaceholder").text(data);

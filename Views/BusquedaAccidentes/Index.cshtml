@@ -313,7 +313,7 @@
 
 <script>
     function buscarAccidente() {
-        var data = {
+        var _data = {
             FechaInicio: $('#FechaInicio').val(),
             FechaFin: $('#FechaFin').val(),
             placasBusqueda: $('#txtPlacas').val(),
@@ -326,12 +326,16 @@
             conductorBusqueda: $('#txtConductores').val(),
             IdOficialBusqueda: $('#ddlOficiales').val(),
             IdEstatusAccidente: $('#ddlEstatusAccidentes').val(),
+            fecha: $('#FechaFin').val()
         };
+
+        console.log(_data);
+
         showLoading();
         $.ajax({
             url: '/BusquedaAccidentes/ajax_BusquedaAccidentes',
-            type: 'GET',
-            data: data,
+            type: 'POST',
+            data: _data,
             success: function (result) {
                 $("#tablaBusquedaAccidentes").html(result);
                 hideLoading();

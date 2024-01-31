@@ -44,9 +44,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 return Json(resultadoSolicitudes);
             }
-            public IActionResult DatosGruas(int iSo, int iPg)
+            public IActionResult DatosGruas(string iSo, int iPg)
         {
-            HttpContext.Session.SetInt32("iSo", iSo);
+            HttpContext.Session.SetString("iSo", iSo);
             HttpContext.Session.SetInt32("iPg", iPg);
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;

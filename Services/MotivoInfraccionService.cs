@@ -384,6 +384,19 @@ namespace GuanajuatoAdminUsuarios.Services
                             condiciones += " AND mi.fechaFinVigencia <= @FinVigenciaHasta";
                         }
                     }
+                    if (model.IdVigencia != 0)
+                    {
+                        if (model.IdVigencia == 1)
+                        {
+                            condiciones += " AND GETDATE() BETWEEN mi.fechaInicio AND mi.fechaFinVigencia";
+                        }
+                        else if (model.IdVigencia == 2)
+                        {
+                            condiciones += " AND NOT (GETDATE() BETWEEN mi.fechaInicio AND mi.fechaFinVigencia)";
+                        }
+                    }
+
+
 
                     string SqlTransact =
                                 @"SELECT mi.idCatMotivoInfraccion, mi.nombre,mi.fundamento,mi.calificacionMinima,mi.calificacionMaxima,

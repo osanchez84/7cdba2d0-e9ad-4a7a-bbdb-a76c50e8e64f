@@ -44,42 +44,42 @@
     </script>
 
 
-  <script>   
+    <script>
 
         $(document).ready(function () {
-            var _vehiculos=[230,201,260,220,280,210,240,300,310,320,270,290,250];
-            var _infracciones = [460,401,410,420,440,490,430,480,450];
-            var _accidentes =[630,601,610,620]
+            var _vehiculos = [230, 201, 260, 220, 280, 210, 240, 300, 310, 320, 270, 290, 250];
+            var _infracciones = [460, 401, 410, 420, 440, 490, 430, 480, 450];
+            var _accidentes = [630, 601, 610, 620]
             var _catalogos = [1140, 1160, 1170, 1001, 1210, 1190, 1090, 1220, 1020, 1120, 1040, 1200, 1240, 1230, 1180, 1060, 1110, 1030, 1050, 1130, 1100, 1070, 1150, 1080, 1010];
-            
+
             showLoading();
             $.ajax({
-                url: '@Url.Action("GetIdsPermitidos", "Login")', 
+                url: '@Url.Action("GetIdsPermitidos", "Login")',
                 type: 'GET',
                 success: function (data) {
                     var idsPermitidos = data;
                     $(".nav-item").each(function () {
                         var id = parseInt($(this).data("id"));
-                        if (!(idsPermitidos.includes(id) || $(this).hasClass("always-visible"))) {                            
+                        if (!(idsPermitidos.includes(id) || $(this).hasClass("always-visible"))) {
                             $(this).hide();
                         }
                     });
-                                        
+
                     let _vehiculoEncontrado = false;
                     let _infraccionEncontrada = false;
-                    let _accidenteEncontrado =false;
-                     let _catalogoEncontrado =false;
-                    if (idsPermitidos.length<=0) {
+                    let _accidenteEncontrado = false;
+                    let _catalogoEncontrado = false;
+                    if (idsPermitidos.length <= 0) {
                         $("#nav-vehiculo-tab").prop('hidden', true);
                         $("#nav-infraccion-tab").prop('hidden', true);
                         $("#nav-accidentes-tab").prop('hidden', true);
                         $("#nav-catalogo-tab").prop('hidden', true);
                     } else {
                         for (let i = 0; i < _vehiculos.length; i++) {
-                           if (idsPermitidos.includes(_vehiculos[i])) {
-                               _vehiculoEncontrado = true;
-                               break;
-                           } 
+                            if (idsPermitidos.includes(_vehiculos[i])) {
+                                _vehiculoEncontrado = true;
+                                break;
+                            }
                         }
                         for (let i = 0; i < _infracciones.length; i++) {
                             if (idsPermitidos.includes(_infracciones[i])) {
@@ -99,7 +99,7 @@
                                 break;
                             }
                         }
-                        
+
                         if (!_vehiculoEncontrado)
                             $("#nav-vehiculo-tab").prop('hidden', true);
                         if (!_infraccionEncontrada)
@@ -108,7 +108,7 @@
                             $("#nav-accidentes-tab").prop('hidden', true);
                         if (!_catalogoEncontrado)
                             $("#nav-catalogo-tab").prop('hidden', true);
-                        
+
                     }
                     hideLoading();
                 },
@@ -123,12 +123,12 @@
 </head>
 <body>
     <main class="container-fluid">
-             <div style="background: #000f9f;" class="row justify-content-center gx-5 card-header">
-                <div class="col-auto">
-                    <h6 class="m-0 text-light fw-bold">@nombreUsuario</h6>
-                </div>
-                <div class="col-auto">
-                    @if (tipoOficina?.Value != "3")
+        <div style="background: #000f9f;" class="row justify-content-center gx-5 card-header">
+            <div class="col-auto">
+                <h6 class="m-0 text-light fw-bold">@nombreUsuario</h6>
+            </div>
+            <div class="col-auto">
+                @if (tipoOficina?.Value != "3")
                 {
                     <h6 class="m-0 text-light fw-bold">@nombreOficina</h6>
                 }
@@ -139,7 +139,7 @@
                     <h6 class="m-0 text-light fw-bold">@nombrePension</h6>
                 }
             </div>
-            </div>
+        </div>
         <div class="row minH100">
             <nav id="nav" class="navPrincipal">
                 <div class="row h-100">
@@ -198,7 +198,7 @@
                             <!-- ***************** -->
                             <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Depósitos") ? "show active" : "")" id="nav-vehiculo" role="tabpanel" aria-labelledby="nav-vehiculo-tab">
                                 <ul class="navbar-nav mt-4">
-                                    
+
                                     <li class="nav-item" data-id="230">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/LiberacionVehiculo/Index">
                                             <i class="icon icon-entrega h5 m-0 mt-1 me-2"></i>
@@ -220,7 +220,7 @@
                                             <p class="m-0 text-start text-break">Solicitud de depósito</p>
                                         </a>
                                     </li>
-                                     <li class="nav-item" data-id="220">
+                                    <li class="nav-item" data-id="220">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/AsignacionGruas/Index">
                                             <i class="icon icon-addGrua h4 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Captura grúas</p>
@@ -238,25 +238,25 @@
                                             <p class="m-0 text-start text-break">Padrón de depósitos y grúas</p>
                                         </a>
                                     </li>
-                                    <li class="nav-item active" data-id= "240">
-                                        <a class="nav-link d-flex justify-content-start align-items-center"  href="/ReporteAsignacionServicios/Index">
+                                    <li class="nav-item active" data-id="240">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="/ReporteAsignacionServicios/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Reporte de asignación de servicios</p>
                                         </a>
                                     </li>
-                                      <li class="nav-item active" data-id= "300">
+                                    <li class="nav-item active" data-id="300">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/IngresarVehiculo/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Ingresar vehículo (Pensión)</p>
                                         </a>
-                                    </li>   
-                                    <li class="nav-item active" data-id= "310">
+                                    </li>
+                                    <li class="nav-item active" data-id="310">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/SalidaVehiculos/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Salida de vehículo (Pensión)</p>
                                         </a>
                                     </li>
-                                    <li class="nav-item active" data-id="320">                                       
+                                    <li class="nav-item active" data-id="320">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/BusquedaDeposito/Index">
                                             <i class="icon icon-deposito h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Busqueda depósito (Pensión)</p>
@@ -276,7 +276,7 @@
                                         </a>
                                     </li>
 
-                                    
+
                                     <li class="nav-item active" data-id="250">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/Vehiculos/Index">
                                             <i class="icon icon-transito h5 m-0 me-2"></i>
@@ -297,10 +297,10 @@
                                             <p class="m-0 text-start text-break">Personas</p>
                                         </a>
                                     </li>
-                                    
-                                    
-                                    
-                                    
+
+
+
+
                                 </ul>
                             </div>
                             <!-- ***************** -->
@@ -334,7 +334,7 @@
                                             <p class="m-0 text-start text-break">Registro de recibo de pago</p>
                                         </a>
                                     </li>
-                                     <li class="nav-item active" data-id="440">
+                                    <li class="nav-item active" data-id="440">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/EnvioInfracciones/Index">
                                             <i class="icon icon-enviar h6 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Envío de infracciones</p>
@@ -365,10 +365,10 @@
                                             <p class="m-0 text-start text-break">Cortesías no aplicadas</p>
                                         </a>
                                     </li>
-                                    
+
                                 </ul>
                             </div>
-                            
+
                             <!-- ***************** -->
                             <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Accidentes") ? "show active" : "")" id="nav-accidentes" role="tabpanel" aria-labelledby="nav-accidentes-tab">
                                 <ul class="navbar-nav mt-4">
@@ -385,7 +385,7 @@
                                             <i class="icon icon-research h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Busqueda de accidentes</p>
                                         </a>
-                                    </li>   
+                                    </li>
                                     <li class="nav-item active" data-id="610">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/BusquedaEspecialAccidentes/Index">
                                             <i class="icon icon-research h5 m-0 me-2"></i>
@@ -397,7 +397,7 @@
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/EstadisticasAccidentes/Index">
                                             <i class="icon icon-estadisticas h5 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Estadísticas de accidentes</p>
-                                            </a>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -489,7 +489,7 @@
                                             <p class="m-0 text-start text-break">Hospitales</p>
                                         </a>
                                     </li>
-                                    
+
                                     <li class="nav-item active" data-id="1180">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/CatInstitucionesTraslado/Index">
                                             <i class="icon icon-traslado h4 m-0 me-2"></i>
@@ -535,7 +535,7 @@
                                             <p class="m-0 text-start text-break">UMAS</p>
                                         </a>
                                     </li>
-                                    
+
                                     <li class="nav-item active" data-id="1070">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/CatSubmarcasVehiculos/Index">
                                             <i class="icon icon-subMarcar h5 m-0 me-2"></i>
@@ -543,7 +543,7 @@
                                         </a>
                                     </li>
 
-                                    
+
 
                                     <li class="nav-item active" data-id="1150">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/TiposCarga/IndexModal">
@@ -572,7 +572,7 @@
                             <div class="tab-pane fade @((Accessor.HttpContext.Session.GetString("SelectedModulo") == "Configuraciones") ? "show active" : "")" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
                                 <ul class="navbar-nav mt-4">
 
-                                   <li class="nav-item always-visible">
+                                    <li class="nav-item always-visible">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/">
                                             <i class="icon icon-salir h5 m-0 mt-1 me-2"></i>
                                             <p class="m-0 text-start text-break">Cerrar sesión</p>
@@ -599,7 +599,7 @@
 
                 toggle.addEventListener('click', () => nav.classList.toggle('active'))
             </script>
-          
+
 
             @RenderBody()
             <script src="~/js/genericcomponents.js"></script>

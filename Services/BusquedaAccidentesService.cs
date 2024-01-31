@@ -502,23 +502,23 @@ namespace GuanajuatoAdminUsuarios.Services
 						cmd.Parameters.AddWithValue("@PropietarioBusqueda", model.propietarioBusqueda);      
                         cmd.Parameters.AddWithValue("@SerieBusqueda", model.serieBusqueda);
 						cmd.Parameters.AddWithValue("@ConductorBusqueda", model.conductorBusqueda);
-						if (model.FechaInicio != DateTime.MinValue)
+						if (model.FechaInicio != null)
 						{
                             cmd.Parameters.AddWithValue("@FechaInicio", model.FechaInicio);
                         }
                         else
 						{
-							cmd.Parameters.AddWithValue("@FechaInicio", null);
+							cmd.Parameters.AddWithValue("@FechaInicio", DBNull.Value);
 
 						}
 
-						if (model.FechaFin != DateTime.MinValue)
+						if (model.FechaFin != null)
 						{
                             cmd.Parameters.AddWithValue("@FechaFin", model.FechaFin);
                         }
                         else
 						{
-							cmd.Parameters.AddWithValue("@FechaFin", null);
+							cmd.Parameters.AddWithValue("@FechaFin", DBNull.Value);
 
 						}
 

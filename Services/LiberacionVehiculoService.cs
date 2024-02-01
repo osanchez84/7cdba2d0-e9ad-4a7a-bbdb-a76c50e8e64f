@@ -125,7 +125,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.Placa LIKE '%' + @Placa + '%' ";
                     condiciones += model.IdMarcaVehiculo.Equals(null) || model.IdMarcaVehiculo == 0 ? "" : " AND d.IdMarca = @IdMarca ";
                     condiciones += model.Serie.IsNullOrEmpty() ? "" : " AND d.Serie = @Serie";
-                    condiciones += model.Folio.IsNullOrEmpty() ? "" : " AND sol.Folio LIKE '%' + @Folio + '%' ";
+                    condiciones += model.Folio.IsNullOrEmpty() ? "" : " AND d.Folio LIKE '%' + @Folio + '%' ";
                     if (model.FechaIngreso.HasValue && model.FechaIngreso != DateTime.MinValue)
                     {
                         condiciones +=(" AND CAST(d.FechaIngreso AS DATE) = @FechaIngreso ");

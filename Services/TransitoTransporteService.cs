@@ -229,7 +229,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     string condiciones = "";
 
                     condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.placa LIKE '%' + @Placa + '%' ";
-                    condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND sol.folio LIKE '%' + @FolioSolicitud + '%' ";
+                    condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND d.folio LIKE '%' + @FolioSolicitud + '%' ";
                     condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
                     condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND veh.propietario LIKE '%' + @Propietario + '%' ";
                     condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";

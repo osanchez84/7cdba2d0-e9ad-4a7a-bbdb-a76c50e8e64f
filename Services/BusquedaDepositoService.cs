@@ -133,7 +133,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             BusquedaDepositoModel deposito = new BusquedaDepositoModel();
                             deposito.idDeposito = reader["idDeposito"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idDeposito"].ToString());
-                            deposito.fechaEvento = reader["fechaSolicitud"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaSolicitud"].ToString());
+                            deposito.fechaEvento = reader["fechaIngreso"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaIngreso"].ToString());
                             deposito.folioInfraccion = reader["folioInfraccion"].ToString();
                             deposito.placa = reader["placa"].ToString();
                             deposito.nombre = reader["nombre"].ToString();

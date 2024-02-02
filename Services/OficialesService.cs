@@ -30,7 +30,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from oficiales", connection);
+                    SqlCommand command = new SqlCommand("Select * from catOficiales", connection);
                     command.CommandType = CommandType.Text;
                     //sqlData Reader sirve para la obtencion de datos 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

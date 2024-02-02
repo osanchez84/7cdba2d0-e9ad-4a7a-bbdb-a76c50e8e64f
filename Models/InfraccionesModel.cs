@@ -52,6 +52,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string? lugarColonia { get; set; }
         public string? lugarEntreCalle { get; set; }
         public bool? infraccionCortesia { get; set; }
+        public string infraccionCortesiaString { get; set; }
+
         public int cortesiaInt { get; set; }
         public string NumTarjetaCirculacion { get; set; }
         public bool isPropietarioConductor { get; set; }

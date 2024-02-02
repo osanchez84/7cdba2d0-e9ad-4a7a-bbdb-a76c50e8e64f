@@ -1526,8 +1526,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
       
 
 
-        public JsonResult Overview_GetTerritories()
-        {
+        public JsonResult Overview_GetTerritories() 
+        { 
+        
 
             var Options = new List<CatalogModel>();
 

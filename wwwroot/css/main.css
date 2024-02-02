@@ -37,9 +37,9 @@ h3 b, h4 b, h5 b, h6 b, label b {
 
 
 @font-face {
-    font-family: 'SITTEG';
-    src: url('fonts/SITTEG.eot?uhec5i');
-    src: url('fonts/SITTEG.eot?uhec5i#iefix') format('embedded-opentype'), url('fonts/SITTEG.ttf?uhec5i') format('truetype'), url('fonts/SITTEG.woff?uhec5i') format('woff'), url('fonts/SITTEG.svg?uhec5i#SITTEG') format('svg');
+    font-family: 'RIAG';
+    src: url('fonts/RIAG.eot?uhec5i');
+    src: url('fonts/RIAG.eot?uhec5i#iefix') format('embedded-opentype'), url('fonts/RIAG.ttf?uhec5i') format('truetype'), url('fonts/RIAG.woff?uhec5i') format('woff'), url('fonts/RIAG.svg?uhec5i#RIAG') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -47,7 +47,7 @@ h3 b, h4 b, h5 b, h6 b, label b {
 
 [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'SITTEG' !important;
+    font-family: 'RIAG' !important;
     speak: never;
     font-style: normal;
     font-weight: normal;
@@ -1432,7 +1432,7 @@ input[type="radio"].toggle {
     .k-command-cell a::before {
         content: "\e904";
         display: block;
-        font-family: 'SITTEG' !important;
+        font-family: 'RIAG' !important;
         speak: never;
         font-style: normal;
         font-weight: normal;

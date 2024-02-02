@@ -94,20 +94,20 @@ namespace GuanajuatoAdminUsuarios.Services
                 condiciones += " OR d.fechaIngreso = @fechaIngreso";
             };
             string strQuery = @"SELECT d.idDeposito,d.idSolicitud,d.idInfraccion,d.idVehiculo,d.fechaIngreso,
-                                    d.idPension,d.idGrua,sol.fechaSolicitud,inf.folioInfraccion,d.placa,
-                                    p.nombre,p.apellidoPaterno,p.apellidoMaterno,sd.fechaSalida,ga.idGrua,g.noEconomico,
-                                    pen.pension
-
-                                    From depositos AS d
-                                    LEFT JOIN solicitudes AS sol ON sol.idSolicitud = d.idSolicitud
-                                    LEFT JOIN infracciones AS inf ON inf.idInfraccion = d.idInfraccion
-                                    LEFT JOIN vehiculos AS v ON v.idVehiculo = d.idVehiculo
-                                    LEFT JOIN personas AS p ON p.idPersona = v.idPersona
-                                    LEFT JOIN serviciosDepositos AS sd ON sd.idDeposito = d.idDeposito
-                                    LEFT JOIN gruasAsignadas AS ga ON ga.idDeposito = d.idDeposito
-                                    LEFT JOIN gruas AS g ON g.idGrua = ga.idGrua
-                                    LEFT JOIN pensiones AS pen ON pen.idPension = d.idPension
-                                    WHERE d.idPension = @idPension " + condiciones;
+                                        d.idPension,d.idGrua,sol.fechaSolicitud,inf.folioInfraccion,d.placa,
+                                        p.nombre,p.apellidoPaterno,p.apellidoMaterno,sd.fechaSalida,ga.idGrua,C.concesionario,
+                                        pen.pension
+                                        From depositos AS d
+                                        LEFT JOIN solicitudes AS sol ON sol.idSolicitud = d.idSolicitud
+                                        LEFT JOIN infracciones AS inf ON inf.idInfraccion = d.idInfraccion
+                                        LEFT JOIN vehiculos AS v ON v.idVehiculo = d.idVehiculo
+                                        LEFT JOIN personas AS p ON p.idPersona = v.idPersona
+                                        LEFT JOIN serviciosDepositos AS sd ON sd.idDeposito = d.idDeposito
+                                        LEFT JOIN gruasAsignadas AS ga ON ga.idDeposito = d.idDeposito
+                                        LEFT JOIN gruas AS g ON g.idGrua = ga.idGrua
+                                        LEFT JOIN pensiones AS pen ON pen.idPension = d.idPension
+										LEFT JOIN concesionarios as C ON C.idConcesionario = d.IdConcesionario
+                                        WHERE d.idPension = @idPension " + condiciones;
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -133,7 +133,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             BusquedaDepositoModel deposito = new BusquedaDepositoModel();
                             deposito.idDeposito = reader["idDeposito"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idDeposito"].ToString());
-                            deposito.fechaEvento = reader["fechaSolicitud"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaSolicitud"].ToString());
+                            deposito.fechaEvento = reader["fechaIngreso"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaIngreso"].ToString());
                             deposito.folioInfraccion = reader["folioInfraccion"].ToString();
                             deposito.placa = reader["placa"].ToString();
                             deposito.nombre = reader["nombre"].ToString();
@@ -142,7 +142,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.fechaIngreso = reader["fechaIngreso"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaIngreso"].ToString());
                             deposito.fechaSalida = reader["fechaSalida"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaSalida"].ToString());
                             deposito.pension = reader["pension"].ToString();
-                            deposito.grua = reader["noEconomico"].ToString();
+                            deposito.grua = reader["concesionario"].ToString();
 
 
 

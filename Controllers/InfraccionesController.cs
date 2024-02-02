@@ -72,7 +72,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly AppSettings _appSettings;
         private string resultValue = string.Empty;
         public static bool findValue { get; set; } = true;
-        public static InfraccionesBusquedaModel infraModel = new InfraccionesBusquedaModel();
+        public static InfraccionesBusquedaModel infraModel;
 
         public InfraccionesController(
             IEstatusInfraccionService estatusInfraccionService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
@@ -118,7 +118,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-          
+
+                infraModel = new InfraccionesBusquedaModel();
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var x = User.FindFirst(CustomClaims.IdUsuario).Value;
 

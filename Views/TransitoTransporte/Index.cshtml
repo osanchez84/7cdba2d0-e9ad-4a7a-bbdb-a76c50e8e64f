@@ -263,7 +263,7 @@
                         @(Html.Kendo().DropDownListFor(d => d.IdDependenciaTransito).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
-                            .OptionLabel("Seleccione Dependencia (TTO_TTE)...")
+                            .OptionLabel("Todas")
                             .HtmlAttributes(new { style = "width:100%;", Id = "txtDependenciaTransito" })
                             .Filter(FilterType.Contains)
                             .DataSource(source =>

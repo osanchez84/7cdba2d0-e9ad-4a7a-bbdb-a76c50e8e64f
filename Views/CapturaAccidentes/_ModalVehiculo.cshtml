@@ -181,7 +181,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="errorModalLabel">Vehículo no registrado en SITTEG</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Vehículo no registrado en RIAG</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cierraModal()">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -201,8 +201,8 @@
     <script>
 	function abrirModalVehiculo(partial) {
 		$('#ModalBodyVehiculoService').html(partial);
-		$('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a SITTEG");
-		$('#errorModal').modal('show');
+        $('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
+        $('#errorModal').modal('show');
 		//$('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
 		$('#VehiculoServiceModal').modal('show');
 

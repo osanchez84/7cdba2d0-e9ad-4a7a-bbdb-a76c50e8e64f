@@ -87,17 +87,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Concesionarios_Read()
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var result = new SelectList(_concesionariosService.GetConcesionarios(idOficina), "IdConcesionario", "Concesionario");
+            var result = new SelectList(_concesionariosService.GetAllConcesionariosConMunicipio(), "IdConcesionario", "Concesionario");
             return Json(result);
         }
 
         public JsonResult Deposito_Read()
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var result = new SelectList(_padronDepositosGruasService.GetPensiones(idOficina), "IdPension", "Pension");
+            var result = new SelectList(_padronDepositosGruasService.GetPensionesNoFilter(), "IdPension", "Pension");
             return Json(result);
         }
 

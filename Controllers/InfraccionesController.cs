@@ -1268,7 +1268,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     else if (result != null && result.MT_CrearMultasTransito_res != null && "E".Equals(result.MT_CrearMultasTransito_res.ZTYPE, StringComparison.OrdinalIgnoreCase))
                     {
                         _bitacoraServices.insertBitacora(idInfraccion, ip, "EditarInfraccion", "Registrar", "WS", user);
-                        return Json(new { success = false, message = "Registro actualizado en SITTEG", id = idInfraccion });
+                        return Json(new { success = false, message = "Registro actualizado en RIAG", id = idInfraccion });
 
 
                     }
@@ -1480,6 +1480,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var resultados = _vehiculosService.GetAllVehiculos();
             return PartialView("_ListadoVehiculos", resultados);
+        }
+        public ActionResult ajax_CrearVehiculo_Ejemplo2(VehiculoModel model)
+        {
+            var IdVehiculo = _vehiculosService.CreateVehiculo(model);
+
+            if (IdVehiculo != 0)
+            {
+
+                var Placa = model.placas;
+                var Serie = model.serie;
+                var folio = "";
+                var resultados = _vehiculosService.GetVehiculoById(IdVehiculo);
+
+                return Json(new { data = resultados });
+            }
+            else
+            {
+                return null;
+            }
         }
 
 

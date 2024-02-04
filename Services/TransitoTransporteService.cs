@@ -235,7 +235,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
                     condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND del.idDelegacion = @IdDelegacion ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND pen.idpension = @IdPension ";
-                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND CASE WHEN @Estatus = 2 AND d.liberado = 0 THEN 1 WHEN @Estatus = 3 AND d.liberado = 1 THEN 1 ELSE 1 END ";
+                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND d.estatusSolicitud = @idEstatus ";
                     condiciones += model.IdDependenciaGenera.Equals(null) || model.IdDependenciaGenera == 0 ? "" : " AND d.IdDependenciaGenera = @IdDependenciaGenera ";
                     condiciones += model.IdDependenciaTransito.Equals(null) || model.IdDependenciaTransito == 0 ? "" : " AND d.IdDependenciaTransito = @IdDependenciaTransito ";
                     condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito == 0 ? "" : " AND d.IdDependenciaNoTransito = @IdDependenciaNoTransito ";
@@ -295,7 +295,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdDependenciaGenera", SqlDbType.Int)).Value = (object)model.IdDependenciaGenera ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@Estatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = (model.FechaIngreso != null) ? (object)model.FechaIngreso : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (model.FechaIngresoFin != null) ? (object)model.FechaIngresoFin : DBNull.Value;
                     command.CommandType = CommandType.Text;

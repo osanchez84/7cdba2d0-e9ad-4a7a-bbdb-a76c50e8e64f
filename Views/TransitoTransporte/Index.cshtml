@@ -242,16 +242,15 @@
                         @(Html.Kendo().DropDownListFor(d => d.IdDependenciaGenera).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
-                            .OptionLabel("Seleccione TTO_TTE...")
+                            .OptionLabel("Todas")
                             .HtmlAttributes(new { style = "width:100%;", Id = "txtDependenciaGenera" })
                             .Filter(FilterType.Contains)
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("Dependencia_Read", "TransitoTransporte");
-                                });
-                            }))
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "Tránsito/Transporte", Value = "1" },
+                        new SelectListItem { Text = "Otras", Value = "0" }
+                        })
+                            )
                     </span>
                 </div>
             </div>
@@ -266,13 +265,12 @@
                             .OptionLabel("Todas")
                             .HtmlAttributes(new { style = "width:100%;", Id = "txtDependenciaTransito" })
                             .Filter(FilterType.Contains)
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("Dependencia_Read", "TransitoTransporte");
-                                });
-                            }))
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "De Movilidad", Value = "1" },
+                        new SelectListItem { Text = "De Tránsito", Value = "0" }
+                        })
+                            )
                     </span>
                 </div>
             </div>
@@ -291,7 +289,7 @@
                             {
                                 source.Read(read =>
                                 {
-                                    read.Action("Dependencia_Read", "TransitoTransporte");
+                                    read.Action("DependenciaEnvia_Read", "TransitoTransporte");
                                 });
                             }))
                     </span>

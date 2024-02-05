@@ -130,9 +130,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-        public JsonResult Dependencia_Read()
+        public JsonResult DependenciaEnvia_Read()
         {
-            var CatDependencias = _catDictionary.GetCatalog("CatDependencias", "0");
+            var CatDependencias = _catDictionary.GetCatalog("DependenciaEnvia_Read", "0");
             var result = new SelectList(CatDependencias.CatalogList, "Id", "Text");
             return Json(result);
         }

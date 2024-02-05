@@ -1048,8 +1048,9 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
 							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
 							model.municipio = reader["municipio"].ToString();
-							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
-							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
+                            //model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+                            model.infraccionCortesiaValue = reader["infraccionCortesia"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["infraccionCortesia"].ToString());
+                            model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
 							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
 							model.PersonaInfraccion = GetPersonaInfraccionById((int)model.idInfraccion);
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
@@ -1563,17 +1564,32 @@ namespace GuanajuatoAdminUsuarios.Services
 		public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInfraccion)
 		{
 			int result = 0;
-			string strQuery = @"INSERT INTO garantiasInfraccion VALUES(@idInfraccion
-																	  ,@idCatGarantia
-                                                                      ,@idTipoPlaca
-                                                                      ,@idTipoLicencia
-                                                                      ,@numPlaca
-                                                                      ,@numLicencia
-                                                                      ,@vehiculoDocumento
-                                                                      ,@fechaActualizacion
-                                                                      ,@actualizadoPor
-                                                                      ,@estatus
-																	 );SELECT SCOPE_IDENTITY()";
+			string strQuery = @"INSERT INTO garantiasInfraccion 
+								(
+									idInfraccion,           
+									idCatGarantia,           
+									idTipoPlaca,             
+									idTipoLicencia,
+									numPlaca,
+									numLicencia,            
+									vehiculoDocumento,       
+									fechaActualizacion,     
+									actualizadoPor,         
+									estatus                 
+								)
+								VALUES 
+								(
+									@idInfraccion,
+									@idCatGarantia,
+									@idTipoPlaca,
+									@idTipoLicencia,
+									@numPlaca,
+									@numLicencia,
+									@vehiculoDocumento,
+									@fechaActualizacion,
+									@actualizadoPor,
+									@estatus
+									 );SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -3018,8 +3034,10 @@ namespace GuanajuatoAdminUsuarios.Services
 								infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"]);
 								infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
 								infraccionModel.aplicacion = reader["aplicacion"].ToString();
-								//infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
-								infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idInfraccion);
+                                infraccionModel.infraccionCortesiaString = reader["nombreCortesia"].ToString();
+
+                                //infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
+                                infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idInfraccion);
 								infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
 
 								//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);

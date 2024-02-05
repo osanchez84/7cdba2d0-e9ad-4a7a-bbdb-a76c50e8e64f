@@ -168,6 +168,11 @@ namespace GuanajuatoAdminUsuarios.Services
             return accidente;
         }
 
+
+
+
+
+
         public int GuardarParte1(CapturaAccidentesModel model,int idOficina, string nombreOficina = "NRA")
         
         {
@@ -758,10 +763,10 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET idClasificacionAccidente = @IdClasificacionAccidente WHERE idAccidente = @idAccidente";
+                    string query = "asp_GenerateClasificacionAccidente";
 
                     SqlCommand command = new SqlCommand(query, connection);
-
+                    command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@IdClasificacionAccidente", IdClasificacionAccidente);
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -789,7 +794,14 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT a.*, ca.nombreClasificacion FROM accidentes a JOIN catClasificacionAccidentes ca ON a.idClasificacionAccidente = ca.idClasificacionAccidente WHERE a.idAccidente = @idAccidente AND a.idClasificacionAccidente > 0;", connection);
+                    SqlCommand command = new SqlCommand(@"
+                        SELECT a.*, ca.nombreClasificacion 
+                            FROM AccidenteClasificacion a 
+                            JOIN catClasificacionAccidentes ca ON a.idCatClasificacionAccidentes = ca.idClasificacionAccidente 
+                            WHERE a.idAccidente = @idAccidente 
+                            and a.estatus=1 
+
+                    ", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idAccidente", idAccidente);
 
@@ -798,8 +810,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             CapturaAccidentesModel clasificacion = new CapturaAccidentesModel();
-                            clasificacion.IdAccidente = Convert.ToInt32(reader["IdAccidente"].ToString());
-                            clasificacion.IdClasificacionAccidente = Convert.ToInt32(reader["IdClasificacionAccidente"].ToString());
+                            clasificacion.IdAccidente = Convert.ToInt32(reader["idAccidente"].ToString());
+                            clasificacion.IdClasificacionAccidente = Convert.ToInt32(reader["idCatClasificacionAccidentes"].ToString());
                             clasificacion.NombreClasificacion = reader["NombreClasificacion"].ToString();
 
 
@@ -863,7 +875,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
-        public int ClasificacionEliminar(int IdAccidente)
+        public int ClasificacionEliminar(int IdAccidente, int IdClasificacionAccidente)
         {
             int result = 0;
 
@@ -872,11 +884,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE accidentes SET idClasificacionAccidente = 0 WHERE idAccidente = @idAccidente";
+                    string query = @"UPDATE AccidenteClasificacion SET estatus = 0 WHERE idAccidente = @idAccidente and idCatClasificacionAccidentes=@claf";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", IdAccidente);
+                    command.Parameters.AddWithValue("@claf", IdClasificacionAccidente);
 
                     command.ExecuteNonQuery();
                 }

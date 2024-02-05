@@ -263,7 +263,7 @@
                     var t = dateVigencia.HasValue ? dateVigencia.Value.ToString("dd/MM/yyyy") : "";
                     @(                        
                         Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        .Value(t)                                                                        
+                        .Value("")                                                                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         

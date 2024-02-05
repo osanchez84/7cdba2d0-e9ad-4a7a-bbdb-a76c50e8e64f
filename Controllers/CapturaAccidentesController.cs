@@ -716,7 +716,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
-                    vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+                    vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "" : "No";
 
                     return await this.RenderViewAsync("_Create", vehiculosModel, true);
                 }
@@ -749,8 +749,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
                     };
 
-                    vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
-
+                    vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "" : "No";
+					vehiculoEncontrado.placas = model.PlacasBusqueda;
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado, true);
 
                 }

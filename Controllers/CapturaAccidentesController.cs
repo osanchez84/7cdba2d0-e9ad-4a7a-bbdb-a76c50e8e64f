@@ -348,11 +348,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		{
 			return PartialView("_ModalClasificacion");
 		}
-		public ActionResult ModalEliminarClasificacion(int IdAccidente)
+		public ActionResult ModalEliminarClasificacion(int IdAccidente, int idClasif)
 		{
-			var clasificacionesModel = _capturaAccidentesService.AccidentePorID(IdAccidente);
+            List<CapturaAccidentesModel> clasificacionesModel = _capturaAccidentesService.AccidentePorID(IdAccidente);
 
-			return PartialView("_ModalEliminarClasificacion");
+			clasificacionesModel[0].IdClasificacionAccidente = idClasif;
+
+
+            return PartialView("_ModalEliminarClasificacion");
 		}
 		public ActionResult ModalAnexo2()
 		{
@@ -999,10 +1002,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(ListClasificaciones.ToDataSourceResult(request));
 		}
 		[HttpPost]
-		public IActionResult EliminaClasificacion(int IdAccidente)
+		public IActionResult EliminaClasificacion(int IdAccidente,int IdClasificacionAccidente)
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-			var clasificacionEliminada = _capturaAccidentesService.ClasificacionEliminar(IdAccidente);
+			var clasificacionEliminada = _capturaAccidentesService.ClasificacionEliminar(IdAccidente, IdClasificacionAccidente);
 			var datosGrid = _capturaAccidentesService.ObtenerDatosGrid(idAccidente);
 
             //BITACORA

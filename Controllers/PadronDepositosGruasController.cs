@@ -77,11 +77,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(CatMunicipios.CatalogList, "Id", "Text");
             return Json(result);
         }
-        public JsonResult Municipios_Por_Delegacion_Drop()
+        public JsonResult Municipios_Guanajuato()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosGuanajuato(), "IdMunicipio", "Municipio");
             return Json(result);
         }
 

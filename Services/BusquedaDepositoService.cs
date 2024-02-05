@@ -92,6 +92,7 @@ namespace GuanajuatoAdminUsuarios.Services
             if (model.fechaIngreso != DateTime.MinValue)
             {
                 condiciones += " and d.fechaIngreso between @fechaIngresoIn   and  @fechaIngresoFn ";
+
             };
             condiciones += model.propietario.IsNullOrEmpty() ? "" : " AND (p.nombre + isnull(' '+p.apellidoPaterno,'')+ isnull(' '+p.apellidoMaterno,'')  like '%'+ @nombre + '%'  )";
 
@@ -123,6 +124,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         var ffin = model.fechaIngreso.AddDays(1);
                         command.Parameters.Add(new SqlParameter("@fechaIngresoIn", SqlDbType.DateTime)).Value = model.fechaIngreso;
                         command.Parameters.Add(new SqlParameter("@fechaIngresoFn", SqlDbType.DateTime)).Value = ffin;
+
                     }
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.VarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@placa", SqlDbType.VarChar)).Value = (object)model.placa ?? DBNull.Value;

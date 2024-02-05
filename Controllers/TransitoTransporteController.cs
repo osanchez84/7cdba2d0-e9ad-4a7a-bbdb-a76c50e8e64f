@@ -139,9 +139,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Estatus_Read()
         {
-            var directions = from EstatusTransitoTransporte d in Enum.GetValues(typeof(EstatusTransitoTransporte))
-                             select new { ID = (int)d, Name = d.ToString() };
-            var result = new SelectList(directions, "ID", "Name");
+            /* var directions = from EstatusTransitoTransporte d in Enum.GetValues(typeof(EstatusTransitoTransporte))
+                              select new { ID = (int)d, Name = d.ToString() };
+             var result = new SelectList(directions, "ID", "Name");*/
+            var CatEstatusTransitoTransporte = _catDictionary.GetCatalog("CatEstatusTransitoTransporte", "0");
+            var result = new SelectList(CatEstatusTransitoTransporte.CatalogList, "Id", "Text");
 
             //var result = new SelectList(_transitoTransporteService.GetPensiones(), "IdPension", "Pension");
             return Json(result);

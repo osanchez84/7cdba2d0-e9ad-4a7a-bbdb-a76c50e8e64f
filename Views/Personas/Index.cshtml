@@ -70,7 +70,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
                             .Label(l => l.Content("No. de licencia:"))
                             .Placeholder("Ingresa el número de licencia válido")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
                             .Label(l => l.Content("CURP:"))
                             .Placeholder("Ingresa el CURP del propietario")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
                             .Label(l => l.Content("RFC:"))
                             .Placeholder("Ingresa el RFC del propietario")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -99,7 +99,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
                             .Label(l => l.Content("Nombre(s):"))
                             .Placeholder("Ingresa el nombre(s) del propietario")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -109,7 +109,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
                             .Label(l => l.Content("Apellido paterno:"))
                             .Placeholder("Ingresa el apellido paterno")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -119,7 +119,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
                             .Label(l => l.Content("Apellido materno:"))
                             .Placeholder("Ingresa el apellido materno")
-                            .HtmlAttributes(new { style = "width: 100%" })
+                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -288,44 +288,61 @@
 
 
 
+           
     function buscarConductor() {
+        // Obtén los datos del formulario
+        var formData = $("#buscarConductorForm").serializeArray();
+
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+        });
+
         var grid = $("#gridPersonas").data("kendoGrid");
         grid.dataSource.data([]);
-        var Mydata = $("#buscarConductorForm").serialize();
+
         showLoading();
+
         $.ajax({
             url: '/Personas/BuscarPorParametro',
             type: 'POST',
-            data: Mydata,
-            success: function (response) {
-                if (response.tipo === "success") {
-                    mostrarModal(response.datos);
+            data: trimmedData,
+                success: function (response) {
+                    if (response.tipo === "success") {
+                        mostrarModal(response.datos);
+                        hideLoading();
+                    } else if (response.encontrada !== undefined && response.encontrada === false) {
+                        sitteg_warning("No se pudieron obtener resultados.");
+                    } else if (response.tipo === "warning") {
+                        sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
+                    } else {
+                        // Otro tipo de respuesta, si es necesario manejarla
+                    }
+
+                    var personasList = response.data;
+                    var grid = $("#gridPersonas").data("kendoGrid");
+                    grid.dataSource.data(personasList);
+
+                    if (personasList.count === 0 && response.tipo !== "success") {
+                        sitteg_warning("La búsqueda no arrojó resultados.");
+                        grid.dataSource.data([]);
+                    }
+
                     hideLoading();
-                } else if (response.encontrada !== undefined && response.encontrada === false) {
-                    sitteg_warning("No se pudieron obtener resultados.");
-                } else if (response.tipo === "warning") {
-                    sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
-                } else {
-                    // Otro tipo de respuesta, si es necesario manejarla
+                },
+                error: function (error) {
+                    sitteg_warning('Ocurrió un error en la búsqueda.');
+                    hideLoading();
                 }
+            });
+        }
 
-                var personasList = response.data;
-                var grid = $("#gridPersonas").data("kendoGrid");
-                grid.dataSource.data(personasList);
-
-                if (personasList.count === 0 && response.tipo !== "success") {
-                    sitteg_warning("La búsqueda no arrojó resultados.");
-                    grid.dataSource.data([]);
-                }
-
-                hideLoading();
-            },
-            error: function (error) {
-                sitteg_warning('Ocurrió un error en la búsqueda.');
-                hideLoading();
-            }
-        });
-    }
 
 
 

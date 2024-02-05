@@ -1854,6 +1854,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,inf.fechaActualizacion
                                       ,inf.actualizadoPor
                                       ,inf.estatus
+									  ,horaInfraccion	
 									  ,ofi.nombre AS nombreOficial
 									  ,ofi.apellidoPaterno AS apellidoPaternoOficial
 								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
@@ -1905,7 +1906,24 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.municipio = reader["municipio"].ToString();
 							model.telefono = reader["telefono"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+                            DateTime fechaInfraccion = model.fechaInfraccion;
+                            string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
+
+                            TimeSpan horaInfraccionTimeSpan;
+
+                            if (horaInfraccionString != null)
+                            {
+                                horaInfraccionTimeSpan = TimeSpan.ParseExact(horaInfraccionString, "hhmm", CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                horaInfraccionTimeSpan = TimeSpan.Zero;
+                            }
+
+                            DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;
+
+                            model.fechaInfraccion = fechaHoraInfraccion;
+                            model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
 							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
 							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
 							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
@@ -2578,6 +2596,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,fechaActualizacion
                                             ,actualizadoPor
                                             ,estatus
+											,horaInfraccion
 										    ,transito)
                                      VALUES (@fechaInfraccion
                                             ,@folioInfraccion
@@ -2600,7 +2619,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@fechaActualizacion
                                             ,@actualizadoPor
                                             ,@estatus
-											," + IdDependencia + ");SELECT SCOPE_IDENTITY()";
+											,@horaInfraccion
+											, " + IdDependencia + ");SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -2609,7 +2629,11 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
-					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
+                    DateTime fechaInfraccion = model.fechaInfraccion;
+                    TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
+                    int horaInfraccionInt = (horaInfraccion.Hours * 100) + horaInfraccion.Minutes;
+                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.Int)).Value = horaInfraccionInt;
+                    command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
 					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
 					command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
 					command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio;
@@ -2630,7 +2654,7 @@ namespace GuanajuatoAdminUsuarios.Services
 						!string.IsNullOrEmpty(model.NumTarjetaCirculacion) ? (object)model.NumTarjetaCirculacion : DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idEstatusInfraccion", SqlDbType.Int)).Value = (object)model.idEstatusInfraccion;
 
-					command.Parameters.Add(new SqlParameter("IdDependencia", SqlDbType.Int)).Value = IdDependencia;
+					command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = IdDependencia;
 
 					//command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia;
 					//command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;

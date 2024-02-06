@@ -165,7 +165,7 @@
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin registro en Registro Estatal de Infracciones y Accidentes</b></h5>
+                    <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro Estatal de Infracciones y Accidentes</b></h5>
                     <h6 class="px-4 text-muted">Vehículo no registrado en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
@@ -260,20 +260,20 @@
                 <label>Vigencia de tarjeta:</label>
                 @if (disableInput)
                 {
-                    @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
-                        .Value(dateVigencia)
-                        .DateInput()
-                        
+                    var t = dateVigencia.HasValue ? dateVigencia.Value.ToString("dd/MM/yyyy") : "";
+                    @(                        
+                        Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
+                        .Value("")                                                                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
-                        .Value("")
+                        
                         )
                 }
                 else
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.Value(dateVigencia)
-                        .DateInput()
+                        .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")

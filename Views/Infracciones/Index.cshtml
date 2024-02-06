@@ -177,13 +177,12 @@
                             .OptionLabel("Seleccione Dependencia...")
                             .HtmlAttributes(new { style = "width:100%;", Id = "ddlDependencia" })
                             .Filter(FilterType.Contains)
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("Dependencias_Read", "Infracciones");
-                                });
-                            }))
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "De Movilidad", Value = "0" },
+                        new SelectListItem { Text = "De Tránsito", Value = "1" }
+                        })
+                            )
                     </span>
                 </div>
             </div>

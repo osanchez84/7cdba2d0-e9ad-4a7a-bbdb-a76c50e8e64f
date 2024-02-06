@@ -158,7 +158,7 @@ $(document).ready(()=>{
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin registro en Registro Estatal de Infracciones y Accidentes</b></h5>
+                    <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro Estatal de Infracciones y Accidentes</b></h5>
                     <h6 class="px-4 text-muted">Vehículo no registrado en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
@@ -1528,16 +1528,23 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             console.log("Id vehiculo: ", idVeh)
             showLoading();
             $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo")',
+                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
                     $('#VehiculoServiceModal').modal('hide');
                     $('#agregarVehiculoModal').modal('hide');
-                    var gridVehiculos = $("#listadoVehiculos").html(result);
-                    hideLoading();
-                },
+                     var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
+                        if (result && result.data) {
+                            var dataArray = Array.isArray(result.data) ? result.data : [result.data];
+
+                            grid.dataSource.data(dataArray);
+                        } else {
+                            console.error("La respuesta no tiene la estructura esperada:", result);
+                        }
+                        hideLoading();
+                    },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)

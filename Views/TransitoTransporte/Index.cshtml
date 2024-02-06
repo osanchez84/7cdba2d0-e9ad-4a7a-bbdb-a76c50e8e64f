@@ -6,44 +6,6 @@
 }
 
 <script>
- /*   $(document).ready(function () {
-        var access = @listaIdsPermitidosJson; 
-        var auth = @autorizaciones;
-        console.log(auth);
-        if (access != undefined && access != '') {
-            if (!access.toString().includes(localStorage.getItem("menuId"))) {
-                Swal.fire({
-                    icon: "error",
-                    title: "¡El usuario no tiene acceso a esta opción!"
-                });
-                setTimeout(function () {
-                    window.location.href = "/Principal";
-                }, 200);
-            } else {
-                // BUSQUEDA
-               if (!auth.toString().includes("202")) {
-                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-               }
-                //IMPRIMIR
-                 if (!auth.toString().includes("203")) {
-                    $("#btnPDFTransito").prop('disabled', true).css({ "opacity": "0.3" });
-                    $("#btnExcelTransito").prop('disabled', true).css({ "opacity": "0.3" });
-                }
-
-            }
-        } else {
-            Swal.fire({
-                icon: "error",
-                title: "¡El usuario no tiene acceso a esta opción!"
-            });
-            setTimeout(function () {
-                window.location.href = "/Principal";
-            }, 200);
-        }
-    });*/
-
-
-
 
         function submitSearch() {
             var Mydata = $("#frmSearch").serialize();
@@ -245,7 +207,9 @@
                             .OptionLabel("Todas")
                             .HtmlAttributes(new { style = "width:100%;", Id = "txtDependenciaGenera" })
                             .Filter(FilterType.Contains)
+                            .Events(e => e.Change("OnChange"))
                             .BindTo(new List<SelectListItem>
+                            
                         {
                         new SelectListItem { Text = "Tránsito/Transporte", Value = "1" },
                         new SelectListItem { Text = "Otras", Value = "0" }
@@ -255,7 +219,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-6 col-lg-6" id="dataDep">
                 <div class="controlForm mb-3">
                     <label>Dependencia(TTO_TTE):</label>
                     <span>
@@ -275,7 +239,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-6 col-lg-6" id="dataEnv">
                 <div class="controlForm mb-3">
                     <label>Dependencia Envía:</label>
                     <span>
@@ -365,6 +329,43 @@
     </section>
 </div>
 <script>
+
+
+    function OnChange(data){
+        var val = data.sender.element.context.value
+        var Dep = document.getElementById("dataDep")
+        var Env = document.getElementById("dataEnv")
+        console.log(val+"")
+
+        if(val==="1"){
+            $(Dep).removeClass("d-none")
+            $(Env).addClass("d-none")
+
+            var test = $("#txtDependenciaNoTransito").data("kendoDropDownList");
+            test.text(test.options.optionLabel);
+            test.element.val(-1);
+            test.selectedIndex = -1;
+            test._oldIndex = 0;
+
+        }
+        else if(val==="0"){
+            console.log(val+"--")
+
+            var test = $("#txtDependenciaTransito").data("kendoDropDownList");
+            test.text(test.options.optionLabel);
+            test.element.val(-1);
+            test.selectedIndex = -1;
+            test._oldIndex = 0;
+
+            $(Dep).addClass("d-none")
+            $(Env).removeClass("d-none")            
+        }
+        else{
+            $(Dep).removeClass("d-none")
+            $(Env).removeClass("d-none")
+        }
+    }
+
     $(document).ready(function () {
         var datePicker = $("#end").data("kendoDatePicker");
         datePicker.value(null);

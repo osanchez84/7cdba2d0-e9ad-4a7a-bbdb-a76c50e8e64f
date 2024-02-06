@@ -86,6 +86,7 @@
         window.location = '/TransitoTransporte/CreatePdfUnRegistro?IdDeposito=' + Id;
     }
 </script>
+
 <div class="row">
     <div class="col-md-12">
         @if (ViewBag.NoResultsMessage != null)
@@ -124,8 +125,10 @@
                 .Columns(columns =>
                 {
                     columns.Bound(c => c.IdSolicitud).Hidden();
-                    columns.Bound(p => p.IdDeposito).Title("Número").Width(90);
-                    columns.Bound(p => p.fullSolicitudfolioInfraccion).Title("Fecha_Evento/Folio_Solicitud/Folio_Infracción").Width(190);
+                    columns.Bound(c => c.cons).Title("Número").Width(90);
+                    columns.Bound(p => p.IdDeposito).Hidden();//.Title("Número").Width(90);
+                    columns.Bound(p => p.fullSolicitudfolioInfraccion)/*.ClientTemplate("#=TemplateEvPolInf(data)#")*/.Title("Fecha_Evento/Folio_Solicitud/Folio_Infracción").Width(190);
+
                     columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(150);
                     columns.Bound(c => c.FechaIngreso).ClientTemplate("#= convertDate(FechaIngreso) #").Title("Fecha de ingreso").Width(110);
                     columns.Bound(c => c.FechaLiberacion).ClientTemplate("#= convertDate(FechaLiberacion) #").Title("Fecha de salida").Width(110);
@@ -434,4 +437,19 @@
         var idSolicitud = document.getElementById('hdnIdDeposito').value;
         window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?iSo=' + idSolicitud;
     }
+
+    function TemplateEvPolInf(data){
+
+
+        return `
+            <p><b>Fecha: </b>${data.FechaIngresoDesc}</p>
+        <p><b>test: </b>${data.colonia}</p>
+        <p><b>test: </b>${data.colonia}</p>
+                    
+        `
+    }
+
+
+
+
 </script>

@@ -12,11 +12,11 @@
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
-        if (access != undefined && access!=''){
+        if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
                     icon: "error",
-                    title: "¡El usuario no tiene acceso a esta opción!"                  
+                    title: "¡El usuario no tiene acceso a esta opción!"
                 });
                 setTimeout(() => {
                     window.location.href = "/Principal";
@@ -163,13 +163,7 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-between mb-1 titleCustom">
-            <div class="col-12 col-md-auto mt-4 mb-2">
-                <h5 class="px-4"><b>Listado de Personas</b></h5>
-                <h6 class="px-4 text-muted">Edita las personas que lo requieran.</h6>
-            </div>
-        </div>
-
+        
 
         @*Table*@
         <div id="listadoPersonas">
@@ -184,7 +178,7 @@
 <div class="modal fade modalCustom" id="modalCrearPersona" aria-labelledby="modalCrearPersona" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
         <div class="modal-content">
-       
+
             <div class="modal-body" id="modalBodyCrearPersona">
             </div>
         </div>
@@ -193,7 +187,7 @@
 <div class="modal fade modalCustom" id="modalEditarPersona" aria-labelledby="modalEditarPersona" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
         <div class="modal-content">
-       
+
             <div class="modal-body" id="modalBodyCrearPersona">
             </div>
         </div>
@@ -209,24 +203,23 @@
 <div class="modal fade modalCustom" id="modalEditarPersona" aria-labelledby="modalEditarPersona" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
-          
+
             <div class="modal-body" id="modalBodyEditarPersona">
             </div>
         </div>
     </div>
 </div>
-    <div class="modal fade modalCustom" id="detalleLicencias"  aria-labelledby="detalleLicenciasLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body" id="ModalBodyDetalleLicencias">
-                </div>
+<div class="modal fade modalCustom" id="detalleLicencias" aria-labelledby="detalleLicenciasLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodyDetalleLicencias">
             </div>
         </div>
     </div>
-
-
-
 </div>
+
+
+
 
 
 
@@ -294,10 +287,11 @@
         var Mydata = $("#buscarConductorForm").serialize();
         showLoading();
         $.ajax({
-            url: '/Personas/BuscarPorParametro',
+            url: '/Personas/BuscarPorParametroPaginado',
             type: 'POST',
             data: Mydata,
             success: function (response) {
+
                 if (response.tipo === "success") {
                     mostrarModal(response.datos);
                     hideLoading();
@@ -308,10 +302,13 @@
                 } else {
                     // Otro tipo de respuesta, si es necesario manejarla
                 }
-
+                console.log(response.data);
                 var personasList = response.data;
                 var grid = $("#gridPersonas").data("kendoGrid");
-                grid.dataSource.data(personasList);
+                grid.dataSource.data(response.data);
+                
+
+                //$("#listadoPersonas").html(response.data);
 
                 if (personasList.count === 0 && response.tipo !== "success") {
                     sitteg_warning("La búsqueda no arrojó resultados.");
@@ -345,26 +342,26 @@
         };
 
         const modalContent = `
-                <div class="modal-header">
-                    <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                    <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                    <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
-                    <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                    <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
-                    <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
-                    <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
-                </div>
-              <div class="modal-footer">
-                <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
-                <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
-              </div>
-            `;
+                    <div class="modal-header">
+                        <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
+                        <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
+                        <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+                        <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
+                        <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+                        <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
+                        <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
+                    </div>
+                  <div class="modal-footer">
+                    <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
+                  </div>
+                `;
 
         modal.querySelector('.modal-content').innerHTML = modalContent;
         const cerrarModalBtn = document.getElementById('cerrarModalBtn');
@@ -395,9 +392,9 @@
                 "PA-PERMISO AUTOMOVILISTA": 6,
                 "PD-PERMISO MOTOCICLISTA": 7,
 
-            }; 
-            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0; 
-            jsonData.id_tipo_licencia = tipoLicenciaNumero; 
+            };
+            const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
+            jsonData.id_tipo_licencia = tipoLicenciaNumero;
             showLoading();
             $.ajax({
                 type: 'POST',

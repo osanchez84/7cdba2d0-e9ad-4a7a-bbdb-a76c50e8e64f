@@ -7,7 +7,7 @@
     {
 
         <p>Folio: @(Model.FolioInfraccion ?? "-")</p>
-        <p>Monto Calificacion: @(Model.Monto.HasValue ? Model.Monto.ToString() : "-")</p>
+        <p>Monto Calificacion:$ @(Model.Monto.HasValue ? Model.Monto.ToString() : "-")</p>
 
 
     }
@@ -43,6 +43,7 @@
             @(Html.Kendo().TextBoxFor(m=>m.Monto)
                 .Label(l => l.Content("Monto:"))
                 .Placeholder("monto Pagado")
+                .Value("$" + Model.Monto)
                 .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly" })
                 )
 

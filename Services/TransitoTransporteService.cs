@@ -210,7 +210,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito == 0 ? "" : " AND d.IdDependenciaNoTransito = @IdDependenciaNoTransito ";
                     if (model.FechaIngreso != null || model.FechaIngresoFin != null)
                     {
-                        condiciones += " AND (";
+                        condiciones += @" AND (CONVERT(VARCHAR,d.fechaIngreso,112)
+                                           BETWEEN CONVERT(VARCHAR,ISNULL(@FechaInicio,d.fechaIngreso),112)
+                                            AND CONVERT(VARCHAR,ISNULL(@FechaFin,d.fechaIngreso),112)) ";
 
                         if (model.FechaIngreso != null && model.FechaIngresoFin != null)
                             condiciones += " fechaingreso between @FechaInicio and @FechaFin";
@@ -225,6 +227,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             condiciones += "1 = 1";
 
                         condiciones += ")";
+
                     }
 
 
@@ -272,6 +275,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdDependenciaTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
+
                     
 
 
@@ -290,6 +294,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                         else if (model.FechaIngresoFin != null)
                             command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
+
 
                     }
 

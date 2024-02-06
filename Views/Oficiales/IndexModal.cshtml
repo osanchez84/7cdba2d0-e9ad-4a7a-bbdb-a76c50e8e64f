@@ -160,8 +160,15 @@
             success: function (data) {
                 console.log(data);
                 var grid = $("#gridCatOficiales").data("kendoGrid");
-                grid.dataSource.data(data);
+
+                grid.dataSource.data([]);
+
+                for (var i = 0; i < data.length; i++) {
+                    grid.dataSource.add(data[i]);
+                }
+
                 grid.refresh();
+
                 hideLoading();
             },
             error: function (xhr, status) {

@@ -272,15 +272,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                           ApellidoMaterno = oficiales.ApellidoMaterno,
                                           IdOficina = oficiales.IdOficina,
                                           Estatus = oficiales.Estatus,
+                                          nombreOficina = oficiales.nombreOficina,
                                           // EstatusDesc = estatus.estatusDesc,
                                           // = diasInhabiles.Municipio
                                       }).ToList();
 
       
-             if (idDelegacion > 0)
+             if (idDelegacionFiltro > 0)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
-                                          where s.IdOficina == idDelegacion
+                                          where s.IdOficina == idDelegacionFiltro
                                           select s).ToList();
             }
 

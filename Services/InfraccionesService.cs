@@ -3107,8 +3107,8 @@ namespace GuanajuatoAdminUsuarios.Services
 		public List<InfraccionesModel> GetAllInfraccionesBusquedaEspecialPagination(InfraccionesBusquedaEspecialModel model, int idOficina, int idDependenciaPerfil, Pagination pagination)
 		{
 			List<InfraccionesModel> InfraccionesList = new List<InfraccionesModel>();
-			DateTime? fechasIni = string.IsNullOrEmpty(model.FechaInicio) ? null : DateTime.ParseExact(model.FechaInicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-			DateTime? fechasFin = string.IsNullOrEmpty(model.FechaFin) ? null : DateTime.ParseExact(model.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+			DateTime? fechasIni = string.IsNullOrEmpty(model.FechaInicio) ? null : DateTime.ParseExact(model.FechaInicio, "d/M/yyyy", CultureInfo.InvariantCulture);
+			DateTime? fechasFin = string.IsNullOrEmpty(model.FechaFin) ? null : DateTime.ParseExact(model.FechaFin, "d/M/yyyy", CultureInfo.InvariantCulture);
 			
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3131,10 +3131,11 @@ namespace GuanajuatoAdminUsuarios.Services
 						cmd.Parameters.AddWithValue("@Placas", (object)model.placas != null ? model.placas.ToUpper() : DBNull.Value);
 						cmd.Parameters.AddWithValue("@Propietario", (object)model.propietario != null ? model.propietario.ToUpper() : DBNull.Value);
 						cmd.Parameters.AddWithValue("@Conductor", (object)model.conductor != null ? model.conductor.ToUpper() : DBNull.Value);
-						cmd.Parameters.AddWithValue("@FechaInicio", (fechasIni==null) ? DBNull.Value : fechasIni);
-						cmd.Parameters.AddWithValue("@FechaFin", (fechasFin==null) ? DBNull.Value : fechasFin);
-
-						using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+						//cmd.Parameters.AddWithValue("@FechaInicio", (fechasIni==null) ? DBNull.Value : fechasIni);
+						//cmd.Parameters.AddWithValue("@FechaFin", (fechasFin==null) ? DBNull.Value : fechasFin);
+                        cmd.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.Date)).Value = model.FechaInicio;
+                        cmd.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.Date)).Value = model.FechaFin;
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
 						{
 							while (reader.Read())
 							{

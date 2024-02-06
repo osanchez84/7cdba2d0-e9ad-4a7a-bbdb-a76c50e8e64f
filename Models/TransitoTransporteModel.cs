@@ -7,6 +7,9 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class TransitoTransporteModel : EntityModel
 	{
+
+        public int cons { get; set; }
+
         #region Depositos
         public int IdDeposito { get; set; }
 
@@ -30,6 +33,8 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaIngreso { get; set; }
+
+        public string FechaIngresoDesc { get { return FechaIngreso.ToString("dd/MM/yyyy"); } }
 
         public DateTime FechaLiberacion { get; set; }
 

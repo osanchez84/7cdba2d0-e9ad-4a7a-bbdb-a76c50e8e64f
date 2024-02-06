@@ -117,11 +117,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         a.descripcionCausas, m.municipio, c.carretera, t.tramo, e.estatusDesc, 
                         ac.idCausaAccidente, d.nombreOficina,d.jefeOficina
                         FROM accidentes AS a                         
-                        JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio
-                        JOIN catDelegacionesOficinasTransporte as d on d.idOficinaTransporte= a.idOficinaDelegacion
-                        JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera 
-                        JOIN catTramos AS t ON a.idTramo = t.idTramo 
-                        JOIN estatus AS e ON a.estatus = e.estatus 
+                        left JOIN catMunicipios AS m ON a.idMunicipio = m.idMunicipio
+                        left JOIN catDelegacionesOficinasTransporte as d on d.idOficinaTransporte= a.idOficinaDelegacion
+                        left JOIN catCarreteras AS c ON a.idCarretera = c.idCarretera 
+                        left JOIN catTramos AS t ON a.idTramo = t.idTramo 
+                        left JOIN estatus AS e ON a.estatus = e.estatus 
                         LEFT JOIN accidenteCausas AS ac ON ac.idAccidente = a.idAccidente 
                         WHERE a.idAccidente = @idAccidente AND a.estatus = 1
                     ", connection);
@@ -228,7 +228,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     var ofi = nombreOficina.Trim().Substring(0, 3).ToUpper();
 
-                    var newFolio = $"{ofi}{result}2023";
+                    var newFolio = $"{ofi}{result}{DateTime.Now.Year}";
 
                     SqlCommand command2 = new SqlCommand(@"
                             update accidentes set numeroreporte=@folio where idAccidente=@id

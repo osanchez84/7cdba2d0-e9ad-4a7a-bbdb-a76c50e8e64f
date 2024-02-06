@@ -241,16 +241,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito == 0 ? "" : " AND d.IdDependenciaNoTransito = @IdDependenciaNoTransito ";
                     if (model.FechaIngreso != null || model.FechaIngresoFin != null)
                     {
-                        condiciones += " AND (";
+                        condiciones += @" AND (CONVERT(VARCHAR,d.fechaIngreso,112)
+                                           BETWEEN CONVERT(VARCHAR,ISNULL(@FechaInicio,d.fechaIngreso),112)
+                                            AND CONVERT(VARCHAR,ISNULL(@FechaFin,d.fechaIngreso),112)) ";
 
-                        if (model.FechaIngreso != null)
-                            condiciones += "CONVERT(date, ISNULL(d.fechaingreso, '19000101')) >= @FechaInicio";
-                        if (model.FechaIngreso != null && model.FechaIngresoFin != null)
-                            condiciones += " AND ";
-
-                        if (model.FechaIngresoFin != null)
-                            condiciones += "CONVERT(date, ISNULL(d.fechaingreso, '99991231')) <= @FechaFin";
-                        condiciones += ")";
+                   
                     }
 
 
@@ -295,31 +290,28 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
                     //command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = (model.FechaIngreso.Value.Date != null) ? (object)model.FechaIngreso : DBNull.Value;
+                    //command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (model.FechaIngresoFin.Value.Date != null) ? (object)model.FechaIngresoFin : DBNull.Value;
+
                     command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime));
 
                     if (model.FechaIngreso.HasValue)
                     {
-                        // Comparar solo la fecha, ignorando la hora
-                        DateTime fechaInicioSinHora = model.FechaIngreso.Value.Date;
-                        command.Parameters["@FechaInicio"].Value = fechaInicioSinHora;
+                        command.Parameters["@FechaInicio"].Value = model.FechaIngreso.Value.Date;
                     }
                     else
                     {
                         command.Parameters["@FechaInicio"].Value = DBNull.Value;
                     }
-
-                    //command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (model.FechaIngresoFin.Value.Date != null) ? (object)model.FechaIngresoFin : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime));
 
-                    if (model.FechaIngreso.HasValue)
+                    if (model.FechaIngresoFin.HasValue)
                     {
-                        // Comparar solo la fecha, ignorando la hora
-                        DateTime fechaFinSinHora = model.FechaIngreso.Value.Date;
-                        command.Parameters["@FechaFin"].Value = fechaFinSinHora;
+                        command.Parameters["@FechaFin"].Value = model.FechaIngresoFin.Value.Date;
                     }
                     else
                     {
                         command.Parameters["@FechaFin"].Value = DBNull.Value;
+
                     }
 
                     command.CommandType = CommandType.Text;

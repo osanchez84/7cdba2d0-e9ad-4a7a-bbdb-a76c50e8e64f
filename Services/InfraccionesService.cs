@@ -2631,8 +2631,10 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
                     DateTime fechaInfraccion = model.fechaInfraccion;
                     TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
-                    int horaInfraccionInt = (horaInfraccion.Hours * 100) + horaInfraccion.Minutes;
-                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.Int)).Value = horaInfraccionInt;
+
+                    string horaFormateada = horaInfraccion.ToString("hhmm");
+                    string horaInfraccionString = horaFormateada;
+                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.NVarChar)).Value = horaInfraccionString;
                     command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
 					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
 					command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;

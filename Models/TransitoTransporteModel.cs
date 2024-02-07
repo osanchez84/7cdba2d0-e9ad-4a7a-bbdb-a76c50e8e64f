@@ -202,7 +202,7 @@ namespace GuanajuatoAdminUsuarios.Models
                 "Infracción: " + FolioInfraccion + "\r\n\n " +
                 "Descripción del evento: " + evento + "\r\n\n " +
                 "Tipo usuario: " + tipoUsuario + "\r\n\n " +
-                "Propietario de la grua: " + Concesionario + "\r\n\n " +
+                "Propietario de la grua: " + propietario + "\r\n\n " +
                 "Oficial: " + fullOficial + "\r\n\n " +
                 "Motivo Asignación: " + motivoAsignacion;
             }

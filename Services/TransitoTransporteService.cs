@@ -238,10 +238,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                          del.delegacion, d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
                                          sol.solicitanteap, sol.solicitanteam, col.color, pen.pension, ctra.tramo,                       
                                          sol.fechasolicitud, sol.folio AS FolioSolicitud, inf.idinfraccion, inf.folioinfraccion,
-                                         veh.idvehiculo, veh.propietario, veh.numeroeconomico, veh.modelo,
+                                         veh.idvehiculo, veh.numeroeconomico, veh.modelo,
                                          con.IdConcesionario, con.concesionario, d.FechaLiberacion,
                                          d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
-                                         dep.idDependencia, dep.nombreDependencia
+                                         dep.idDependencia, dep.nombreDependencia,
+                                         CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario 
                                 FROM depositos d
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
@@ -253,6 +254,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN infracciones inf ON sol.idinfraccion = inf.idinfraccion
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
+                                LEFT JOIN personas per ON per.idPersona = d.idPropietario
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
                                 WHERE d.estatus != 0 and d.idDelegacion = @idOficina " + condiciones;
 
@@ -349,7 +351,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.IdDependenciaGenera = reader["IdDependenciaGenera"] is DBNull ? 0 : (int)reader["IdDependenciaGenera"];
                             transito.IdDependenciaTransito = reader["IdDependenciaTransito"] is DBNull ? 0 : (int)reader["IdDependenciaTransito"];
                             transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] is DBNull ? 0 : (int)reader["IdDependenciaNoTransito"];
-
+                            //transito.propietario  = reader["modelo"].ToString();
                             transitoList.Add(transito);
 
                         }

@@ -210,9 +210,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito == 0 ? "" : " AND d.IdDependenciaNoTransito = @IdDependenciaNoTransito ";
                     if (model.FechaIngreso != null || model.FechaIngresoFin != null)
                     {
-                        condiciones += @" AND (CONVERT(VARCHAR,d.fechaIngreso,112)
-                                           BETWEEN CONVERT(VARCHAR,ISNULL(@FechaInicio,d.fechaIngreso),112)
-                                            AND CONVERT(VARCHAR,ISNULL(@FechaFin,d.fechaIngreso),112)) ";
+                        condiciones += "and (";
 
                         if (model.FechaIngreso != null && model.FechaIngresoFin != null)
                             condiciones += " fechaingreso between @FechaInicio and @FechaFin";

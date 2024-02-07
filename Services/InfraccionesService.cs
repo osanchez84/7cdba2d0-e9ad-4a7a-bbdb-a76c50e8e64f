@@ -1907,7 +1907,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.telefono = reader["telefono"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             DateTime fechaInfraccion = model.fechaInfraccion;
-                            /*string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
+                            string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
 
                             TimeSpan horaInfraccionTimeSpan;
 
@@ -1920,9 +1920,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 horaInfraccionTimeSpan = TimeSpan.Zero;
                             }
 
-                            DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;*/
+                            DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;
 
-                           // model.fechaInfraccion = fechaHoraInfraccion;
+                            model.fechaInfraccion = fechaHoraInfraccion;
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
 							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
 							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
@@ -2631,8 +2631,10 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
                     DateTime fechaInfraccion = model.fechaInfraccion;
                     TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
-                    int horaInfraccionInt = (horaInfraccion.Hours * 100) + horaInfraccion.Minutes;
-                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.Int)).Value = horaInfraccionInt;
+
+                    string horaFormateada = horaInfraccion.ToString("hhmm");
+                    string horaInfraccionString = horaFormateada;
+                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.NVarChar)).Value = horaInfraccionString;
                     command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
 					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
 					command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;

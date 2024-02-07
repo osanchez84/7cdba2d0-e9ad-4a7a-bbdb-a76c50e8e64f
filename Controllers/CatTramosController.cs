@@ -32,10 +32,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-        
-                var ListTramosModel = _catTramosService.ObtenerTramos();
-                return View(ListTramosModel);
-            }
+               var ListTramosModel = _catTramosService.ObtenerTramos();
+            ViewBag.ListadoTramos = ListTramosModel;
+
+            return View();
+        }
       
 
         public JsonResult Carreteras_Drop(int idDelegacion)

@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <div id="tablaTramos">
-                    <partial name="_ListaTramos" model="Model" />
+                    <partial name="_ListaTramos" model="@ViewBag.ListadoTramos" />
                 </div>
             </div>
 
@@ -193,8 +193,7 @@
                     grid.dataSource.add(data[i]);
                 }
 
-                grid.refresh();
-
+                grid.dataSource.page(1);
                 hideLoading();
             },
             error: function (xhr, status) {

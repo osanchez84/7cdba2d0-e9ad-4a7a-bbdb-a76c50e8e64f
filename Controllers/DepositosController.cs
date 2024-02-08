@@ -177,9 +177,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 }
                 else
-                {
-                    int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                    var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina);
+            {
+                var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
+                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                    var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina,nombreOficina);
 
                     //BITACORA
                     //var ip = HttpContext.Connection.RemoteIpAddress.ToString();

@@ -55,7 +55,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[vehiculoInterseccion]  
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
-                                        ,[estatus])
+                                        ,[estatus]
+                                        ,[idServicioRequiere])
                                 VALUES (
                                         @fechaSolicitud
                                         ,@idTipoVehiculo
@@ -85,7 +86,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@interseccion
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
-                                        ,@estatus);
+                                        ,@estatus
+                                        ,@idServicioRequiere);
                                     SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -114,6 +116,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@idServicioRequiere", SqlDbType.Int)).Value = (object)model.idServicioRequiere ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
@@ -171,6 +174,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 SET fechaSolicitud = @fechaSolicitud,
                                     idTipoVehiculo = @idTipoVehiculo,
                                     idPropietarioGrua = @idPropietarioGrua,
+                                    idServicioRequiere = @idServicioRequiere,
                                     idOficial = @idOficial,
                                     idEvento = @idDescripcionEvento,
                                     idTipoUsuario = @idTipoUsuario,
@@ -201,6 +205,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietarioGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idServicioRequiere", SqlDbType.Int)).Value = (object)model.idServicioRequiere ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idDescripcionEvento", SqlDbType.Int)).Value = (object)model.idDescripcionEvento ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoUsuario", SqlDbType.Int)).Value = (object)model.idTipoUsuario ?? DBNull.Value;
@@ -467,6 +472,50 @@ namespace GuanajuatoAdminUsuarios.Services
             return model;
         }
 
+        public List<SolicitudDepositoModel> ObtenerServicios()
+
+        {
+            //
+            List<SolicitudDepositoModel> ListaServicios = new List<SolicitudDepositoModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT sr.idServicio,sr.nombreServicio, e.estatusdesc 
+                                                          FROM catServicioRequiere AS sr 
+                                                          LEFT JOIN estatus AS e ON sr.estatus = e.estatus
+                                                            WHERE sr.estatus = 1;", connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            SolicitudDepositoModel servicio = new SolicitudDepositoModel();
+                            servicio.idServicioRequiere = reader["idServicio"] != DBNull.Value ? Convert.ToInt32(reader["idServicio"]) : 0;
+                            servicio.servicioRequiere = reader["nombreServicio"] != DBNull.Value ? reader["nombreServicio"].ToString() : string.Empty;
+
+
+                            ListaServicios.Add(servicio);
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaServicios;
+
+
+        }
 
 
     }

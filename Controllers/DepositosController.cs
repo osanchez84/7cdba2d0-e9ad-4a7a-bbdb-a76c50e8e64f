@@ -131,6 +131,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catTipoUsuarioService.ObtenerTiposUsuario(), "idTipoUsuario", "tipoUsuario");
             return Json(result);
         }
+        public JsonResult Servicios_Drop()
+        {
+            var result = new SelectList(_catDepositosService.ObtenerServicios(), "idServicioRequiere", "servicioRequiere");
+            return Json(result);
+        }
         public JsonResult Motivos_Drop()
         {
             var result = new SelectList(_catTipoMotivoAsignacionService.ObtenerMotivos(), "idTipoAsignacion", "tipoAsignacion");

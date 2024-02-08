@@ -244,7 +244,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                          con.IdConcesionario, con.concesionario, d.FechaLiberacion,
                                          d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
                                          dep.idDependencia, dep.nombreDependencia,
-                                         CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario 
+                                         CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
+                                         ISNULL(evt.DescripcionEvento,'') Evento
                                 FROM depositos d
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
@@ -257,6 +258,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
                                 LEFT JOIN personas per ON per.idPersona = d.idPropietario
+                                LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
                                 WHERE d.estatus != 0 and d.idDelegacion = @idOficina " + condiciones;
 
@@ -353,7 +355,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.IdDependenciaGenera = reader["IdDependenciaGenera"] is DBNull ? 0 : (int)reader["IdDependenciaGenera"];
                             transito.IdDependenciaTransito = reader["IdDependenciaTransito"] is DBNull ? 0 : (int)reader["IdDependenciaTransito"];
                             transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] is DBNull ? 0 : (int)reader["IdDependenciaNoTransito"];
-                            //transito.propietario  = reader["modelo"].ToString();
+                            transito.evento  = reader["Evento"].ToString();
                             transitoList.Add(transito);
 
                         }

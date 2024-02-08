@@ -197,7 +197,7 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             get
             {
-                return @"Fecha: " + FechaSolicitud.ToString("dd/MM/yyyy") + "\r\n\n " +
+                return @"Fecha: " +  ((FechaSolicitud.Year<=1900) ? "" : FechaSolicitud.ToString("dd/MM/yyyy")) + "\r\n\n " +
                 "Solicitud: " + FolioSolicitud + "\r\n\n " +
                 "Infracción: " + FolioInfraccion + "\r\n\n " +
                 "Descripción del evento: " + evento + "\r\n\n " +

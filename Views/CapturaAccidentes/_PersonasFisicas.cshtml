@@ -16,7 +16,7 @@
 
 <div class="row my-4 px-4">
     <div class="col-12 rounded gridCustom">
-        @(Html.Kendo().Grid(Model)
+        @(Html.Kendo().Grid(Model) 
             .Name("gridPersonasFisicasAc")
             .Columns(columns =>
             {
@@ -29,7 +29,7 @@
                 columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
                 columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             }).HtmlAttributes(new { style = "height:250" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+            @*.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
             .Scrollable(scr => scr.Enabled(true))
             .Scrollable(scr => scr.Height(250))
@@ -37,16 +37,26 @@
             .Ajax()
             .ServerOperation(false)
             .PageSize(5)
+            )*@
+
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .EnableCustomBinding(false)
+            .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read("ajax_BuscarPersonasFiscasPagination", "CapturaAccidentes")
+            .PageSize(10)
+            )
+            .Scrollable(scr => scr.Height(350)
             )
             .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
-            .Search(s =>
+            @*.Search(s =>
             {
                 s.Field(c => c.nombreCompleto);
                 s.Field(c => c.CURP); 
                 s.Field(c => c.RFC);
                 s.Field(c => c.numeroLicencia);
 
-            })
+            })*@
             )
     </div>
 

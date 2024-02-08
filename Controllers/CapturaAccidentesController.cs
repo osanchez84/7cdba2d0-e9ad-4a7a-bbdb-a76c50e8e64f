@@ -34,6 +34,7 @@ using GuanajuatoAdminUsuarios.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using static iTextSharp.tool.xml.html.table.TableRowElement;
 using Kendo.Mvc;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -199,7 +200,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
-            if (filters.Any())
+			if (filters.Any())
             {
                 foreach (var filter in filters)
                 {
@@ -1649,16 +1650,47 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 
 
-
-
-
-
-		[HttpPost]
-		public ActionResult ajax_BuscarPersonasFiscas()
-		{
+        [HttpPost]
+        public ActionResult ajax_BuscarPersonasFiscas()
+        {
 			var personasFisicas = _personasService.GetAllPersonasFisicas();
 			return PartialView("_PersonasFisicas", personasFisicas);
 		}
+
+
+
+        [HttpPost]
+		public ActionResult ajax_BuscarPersonasFiscasPagination([DataSourceRequest] DataSourceRequest request)
+		{
+			try
+			{
+				filterValue(request.Filters);
+				Pagination pagination = new Pagination();
+				pagination.PageIndex = request.Page - 1;
+				pagination.PageSize = 10;
+				pagination.Filter = resultValue;
+
+				var personasFisicas = _personasService.GetAllPersonasFisicasPagination(pagination);
+				request.PageSize = 10;
+				var total = 0;
+				if (personasFisicas.Count() > 0)
+					total = personasFisicas.ToList().FirstOrDefault().total;
+
+				var result = new DataSourceResult()
+				{
+					Data = personasFisicas,
+                    Total = total
+                };
+
+				return Json(result);
+			}
+			catch
+			{
+				return null;
+            }
+        }
+
+
 
 		[HttpPost]
 		public ActionResult ajax_BuscarPersonaMoral(PersonaMoralBusquedaModel PersonaMoralBusquedaModel)

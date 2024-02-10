@@ -19,6 +19,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         IEnumerable<PersonaModel> GetAllPersonasMorales();
         IEnumerable<PersonaModel> GetAllPersonasFisicas();
+        IEnumerable<PersonaModel> GetAllPersonasFisicasPagination(Pagination pagination);
 
         IEnumerable<PersonaModel> GetAllPersonasMorales(PersonaMoralBusquedaModel model);
         int CreatePersonaMoral(PersonaModel model);

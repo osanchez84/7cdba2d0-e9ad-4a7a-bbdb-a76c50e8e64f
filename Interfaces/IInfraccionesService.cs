@@ -38,6 +38,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia);
 
         public bool CancelTramite(string id);
+        public int ActualizarEstatusCortesia(int idInfraccion,int  cortesiaInt);
 
 
         public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia);

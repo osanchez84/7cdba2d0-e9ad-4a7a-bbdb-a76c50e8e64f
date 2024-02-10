@@ -3210,7 +3210,48 @@ namespace GuanajuatoAdminUsuarios.Services
 			}
 			return InfraccionesList;
 		}
+        public int ActualizarEstatusCortesia(int idInfraccion, int cortesiaInt)
+        {
+            var result = 0;
 
-	}
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string updateQuery = "UPDATE infracciones SET infraccionCortesia = @cortesiaInt WHERE idInfraccion = @idInfraccion";
+
+                    SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
+
+                    updateCommand.Parameters.AddWithValue("@idInfraccion", idInfraccion);
+                    updateCommand.Parameters.AddWithValue("@cortesiaInt", cortesiaInt);
+                    updateCommand.ExecuteNonQuery();
+
+                    string selectQuery = "SELECT infraccionCortesia FROM infracciones WHERE idInfraccion = @idInfraccion";
+                    SqlCommand selectCommand = new SqlCommand(selectQuery, connection);
+                    selectCommand.Parameters.AddWithValue("@idInfraccion", idInfraccion);
+
+                    object infraccionCortesia = selectCommand.ExecuteScalar();
+                    if (infraccionCortesia != DBNull.Value)
+                    {
+                        result = (int)infraccionCortesia; // o cualquier otro tratamiento necesario
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // Manejar la excepción
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+
+            }
+
+
+        }
+    }
 }
 

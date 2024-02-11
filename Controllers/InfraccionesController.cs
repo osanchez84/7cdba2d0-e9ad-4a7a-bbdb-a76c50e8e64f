@@ -557,7 +557,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 niv = model.SerieBusqueda
             };
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus =="1";
             if (_appSettings.AllowWebServices)
             {
                 var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
@@ -722,7 +722,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
 
-            estatus = repuveConsRoboResponse.estatus == 1;
+            estatus = repuveConsRoboResponse.estatus =="1";
 
             return estatus;
         }

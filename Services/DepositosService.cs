@@ -17,7 +17,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina)
+        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string nombreOficina)
 
         {
             int result = 0;
@@ -112,8 +112,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@telefonoUsuario", SqlDbType.NVarChar)).Value = (object)model.telefonoUsuario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMotivoAsignacion", SqlDbType.Int)).Value = (object)model.idMotivoAsignacion ?? DBNull.Value;
-					//command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
-					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
+                    //command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@idServicioRequiere", SqlDbType.Int)).Value = (object)model.idServicioRequiere ?? DBNull.Value;
@@ -128,42 +128,61 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
-                    idSolicitudInsert = result; // Almacena el valor en la variable idSolicitudInsert
-                    folioSolicitud = ObtenerFolioSolicitud(connection, idSolicitudInsert);
-                }
+                    var ofi = nombreOficina.Trim().Substring(0, 3).ToUpper();
 
+                    var newFolio = $"{ofi}{result}{DateTime.Now.Year}";
+
+                    SqlCommand command2 = new SqlCommand(@"
+                            update solicitudes set folio=@folio where idSolicitud=@id
+                                        ", connection);
+                    command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
+                    command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
+                    command2.CommandType = CommandType.Text;
+                    int rowsAffected = command2.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return newFolio;
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo crear el folio.");
+                    }
+                }
                 catch (SqlException ex)
                 {
-                    return folioSolicitud;
-                }
 
+                    Console.WriteLine("Error de SQL: " + ex.Message);
+                    return null;
+                }
                 finally
                 {
+                    // Cerrar la conexión en el bloque finally
                     connection.Close();
                 }
             }
-            return folioSolicitud;
         }
-        private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
-        {
-            string folioSolicitud = "";
-            string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
-
-            using (SqlCommand cmd = new SqlCommand(query, connection))
+            private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
             {
-                cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
+                string folioSolicitud = "";
+                string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
 
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    if (reader.Read())
+                    cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        folioSolicitud = reader["folio"].ToString();
+                        if (reader.Read())
+                        {
+                            folioSolicitud = reader["folio"].ToString();
+                        }
                     }
                 }
-            }
 
-            return folioSolicitud;
-        }
+                return folioSolicitud;
+            }
+        
 
         public int ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
 
@@ -223,6 +242,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     command.ExecuteNonQuery();
+
                 }
                 catch (SqlException ex)
                 {

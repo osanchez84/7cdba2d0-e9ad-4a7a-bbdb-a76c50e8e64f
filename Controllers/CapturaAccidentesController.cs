@@ -1353,7 +1353,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 		public JsonResult Oficiales_Drop()
 		{
-			var oficiales = _oficialesService.GetOficialesActivos()
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficialesFiltrados(idOficina,idDependencia)
 				.Select(o => new
 				{
 					IdOficial = o.IdOficial,
@@ -1366,6 +1368,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
         public JsonResult CambiosDDLOficiales()
         {
+            
+
             var oficiales = _oficialesService.GetOficialesActivos()
                 .Select(o => new
                 {

@@ -1566,6 +1566,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 }
 
     function submitCreateVehiculo() {
+
         var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
 
@@ -1606,13 +1607,8 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }
-        else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
-
-    }
+        }       
+    
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);

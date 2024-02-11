@@ -83,11 +83,15 @@
     $(document).ready(function () {
         var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
         grid.tbody.on("click", ".k-checkbox", onClickPersonasFisicas);
+
         function onClickPersonasFisicas(e) {
             var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
+            console.log("ROW",dataItem)
+
             var idPersona = dataItem.idPersona;
+            console.log("IDP", idPersona)
             var idCatTipoPersona = dataItem.idCatTipoPersona;
             $("#ddlIdPersona").val(idPersona);
             $("#ddlIdCatTipoPersona").val(idCatTipoPersona);

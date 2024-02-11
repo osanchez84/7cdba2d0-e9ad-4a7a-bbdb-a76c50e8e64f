@@ -417,7 +417,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
 
-            estatus = repuveConsRoboResponse.estatus == 1;
+            estatus = repuveConsRoboResponse.estatus =="1";
 
             return estatus;
         }
@@ -519,21 +519,34 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
         {
+            try
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
 
+                if (SeleccionVehiculo.Count > 0)
+                {
+                    return Json(new { noResults = false, data = SeleccionVehiculo });
+                }
+                else
+                {
+                    var jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(model);
 
-            var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
-
-
-			if (SeleccionVehiculo.Count > 0)
-			{
-                return Json(new { noResults = false, data = SeleccionVehiculo });
+                    if (jsonPartialVehiculosByWebServices != null)
+                    {
+                        return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
+                    }
+                    else
+                    {
+                        return Json(new { noResults = true, data = new { } });
+                    }
+                }
             }
-
-			 
-					 var jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(model);
-					 return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });				 
-
+            catch (Exception ex)
+            {
+                return Json(new { noResults = true, error = "Se produjo un error al procesar la solicitud" });
+            }
         }
+
 
 
 
@@ -545,7 +558,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 niv = serie
             };
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
-            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
             string jsonPartialView = string.Empty;
 			VehiculoModel vehiculoEncontrado = null;
 			if (!string.IsNullOrEmpty(placa))

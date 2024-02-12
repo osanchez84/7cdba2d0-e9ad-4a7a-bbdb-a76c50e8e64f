@@ -15,6 +15,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Authorization;
 using Kendo.Mvc.UI;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using static GuanajuatoAdminUsuarios.Models.LicenciaTipoRespuesta;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -168,7 +169,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     Total = total
                 };
                 return Json(result);
-                //return Json(new { encontrada = true, data = result });
+
             }
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
@@ -199,7 +200,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     LicenciaRespuestaPersona respuesta = JsonConvert.DeserializeObject<LicenciaRespuestaPersona>(content);
-                    return Json(respuesta);
+
+                    return Json(new { encontrada = false, Data = respuesta.datos, message = respuesta.mensaje });
+                    //return Json(respuesta);
                 }
             }
             catch (Exception ex)

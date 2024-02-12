@@ -220,6 +220,7 @@
             type: 'POST',
             data: formData,
             success: function (response) {
+                console.log(response.data);
 
                 if (response.noResults) {
                     abrirModalVehiculo(response.data);

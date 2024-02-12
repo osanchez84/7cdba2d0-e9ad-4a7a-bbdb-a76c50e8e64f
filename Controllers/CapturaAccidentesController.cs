@@ -85,6 +85,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		private int lastInsertedId = 0;
 		private int idVehiculoInsertado = 0;
         private string resultValue = string.Empty;
+		private bool placaEncontrada = false;
+        private List<CapturaAccidentesModel> capturaAccidenteModel = new List<CapturaAccidentesModel>();
 
         public CapturaAccidentesController(ICapturaAccidentesService capturaAccidentesService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
 			ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
@@ -200,6 +202,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
+			if (filters == null)
+				return;
+
 			if (filters.Any())
             {
                 foreach (var filter in filters)
@@ -395,12 +400,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					//string jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(Placa, Serie);
 					//return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
 				}
-				return Json(new { noResults = false, data = SeleccionVehiculo });
+				return Json(new { noResults = false, data = SeleccionVehiculo, porWebService = false });
 			}
 			else
 			{
 				var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
-				return Json(new { noResults = false, data = SeleccionVehiculo });
+				return Json(new { noResults = true, data = SeleccionVehiculo, porWebService = false });
 
 			}
 		}
@@ -526,12 +531,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			if (SeleccionVehiculo.Count > 0)
 			{
-                return Json(new { noResults = false, data = SeleccionVehiculo });
+                return Json(new { noResults = false, data = SeleccionVehiculo, porWebService = false });
             }
 
-			 
-					 var jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(model);
-					 return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });				 
+			var jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(model);
+			return Json(new { noResults = true,  data = jsonPartialVehiculosByWebServices, porWebService =true });				 
 
         }
 
@@ -689,12 +693,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public async Task<string> AbrirModalVehiculo(VehiculoBusquedaModel model)
         {
             var vehiculosModel = new VehiculoModel();
-
+			
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
 
             ViewBag.ReporteRobo = ValidarRobo(repuveGralModel);
 
-            var allowSistem = _appSettings.AllowWebServices;
+            var allowSistem = _appSettings.AllowWebServicesRepuve;
 
 
             vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
@@ -726,11 +730,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
             }
 
-            if (allowSistem)
-            {
-                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault()??null;
+			if (allowSistem)
+			{
+				var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault() ?? null;
 				if (repuveConsGralResponse != null)
 				{
+					capturaAccidenteModel.Add(new CapturaAccidentesModel()
+					{
+						Placa = repuveConsGralResponse.placa,
+						Serie = repuveConsGralResponse.niv_padron,
+						Motor = repuveConsGralResponse.motor,
+						Color = repuveConsGralResponse.color,
+						Submarca = repuveConsGralResponse.submarca,
+						Modelo = repuveConsGralResponse.modelo,
+						Marca = repuveConsGralResponse.marca,
+						Tipo = repuveConsGralResponse.tipo_vehiculo,
+						Entidad = repuveConsGralResponse.entidad
+                    });
+
                     var vehiculoEncontrado = new VehiculoModel
                     {
                         placas = repuveConsGralResponse.placa,
@@ -745,9 +762,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         submarca = repuveConsGralResponse.submarca,
                         //idTipoVehiculo = idTipo,
                         modelo = repuveConsGralResponse.modelo,
+						tipoVehiculo = repuveConsGralResponse.tipo_vehiculo,
+						entidadRegistro = repuveConsGralResponse.entidad,
                         //capacidad = repuveConsGralResponse.c,
                         //carga = repuveConsGralResponse.ca,
-
+					
                         Persona = new PersonaModel(),
 
                         PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
@@ -755,8 +774,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "" : "No";
 					vehiculoEncontrado.placas = model.PlacasBusqueda;
+					placaEncontrada = true;
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado, true);
 
+                }
+				else
+				{
+                    placaEncontrada = false;
                 }
             }
 

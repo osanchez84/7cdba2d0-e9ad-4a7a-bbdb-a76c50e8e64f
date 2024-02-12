@@ -1607,7 +1607,8 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }       
+        }
+    }       
     
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
@@ -1637,6 +1638,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             datePicker.value(null);
         }
     });
+
        function cerraModalFisico(){
             $('#addFisico').modal('hide');
        }

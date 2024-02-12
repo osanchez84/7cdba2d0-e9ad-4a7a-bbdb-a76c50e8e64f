@@ -200,16 +200,17 @@
 
     <script>
 	function abrirModalVehiculo(partial) {
+    
+		$('#ModalBodyVehiculoService').html(partial);
+        //$('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
+        //$('#errorModal').modal('show');
         Swal.fire({
             icon: "error",
             title: "Vehículo no registrado en RIAG",
             text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
         });
-		//$('#ModalBodyVehiculoService').html(partial);
-  //      $('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
-  //      $('#errorModal').modal('show');
-		////$('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
-		//$('#VehiculoServiceModal').modal('show');
+		//$('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
+		$('#VehiculoServiceModal').modal('show');
 
 	}
 

@@ -139,7 +139,7 @@
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
                     ).Title("Descargar detalle").Sortable(false).Width(100);
-                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(100);
+                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(190);
 
                     columns.Bound(p => p.IdGrua).ClientTemplate(
                     "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"

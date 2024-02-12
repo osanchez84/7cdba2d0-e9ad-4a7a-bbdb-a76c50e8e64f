@@ -233,7 +233,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.colonia = reader["colonia"].ToString();
                             model.calle = reader["calle"].ToString();
                             model.numero = reader["numero"].ToString();
-                            model.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.telefono = reader["telefono"].ToString();
+
+                           // model.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.correo = reader["correo"].ToString();
                             model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
@@ -325,7 +327,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                            //model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -412,7 +416,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                           // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -500,7 +506,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                           // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -587,7 +595,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                            //model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -1740,7 +1750,9 @@ WHERE
                                 model.PersonaDireccion.colonia = reader["colonia"].ToString();
                                 model.PersonaDireccion.calle = reader["calle"].ToString();
                                 model.PersonaDireccion.numero = reader["numero"].ToString();
-                                model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                                model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                               // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                                 model.PersonaDireccion.correo = reader["correo"].ToString();
                                 model.total = Convert.ToInt32(reader["Total"]);
 

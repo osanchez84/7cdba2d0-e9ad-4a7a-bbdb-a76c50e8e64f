@@ -1608,10 +1608,12 @@ WHERE
         }
 
 
-        public List<PersonaModel> BusquedaPersonaPagination(PersonaModel model, Pagination pagination)
+        public List<PersonaModel> BusquedaPersonaPagination(PersonasModel model, Pagination pagination)
         {
             //
             List<PersonaModel> ListaPersonas = new List<PersonaModel>();
+            if (model.PersonaModel == null)
+                model.PersonaModel = new PersonaModel();
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -1620,26 +1622,26 @@ WHERE
                     connection.Open();
                     using (SqlCommand cmd = new SqlCommand("[usp_ObtieneBusquedaPersonas]", connection))
                     {
-                        if (model.CURPBusqueda != null)
-                            model.CURPBusqueda = model.CURPBusqueda.Trim();
-                        if (model.RFCBusqueda != null)
-                            model.RFCBusqueda = model.RFCBusqueda.Trim();
-                        if (model.nombreBusqueda != null)
-                            model.nombreBusqueda = model.nombreBusqueda.Trim();
-                        if (model.apellidoPaternoBusqueda != null)
-                            model.apellidoPaternoBusqueda = model.apellidoPaternoBusqueda.Trim();
-                        if (model.apellidoMaternoBusqueda != null)
-                            model.apellidoMaternoBusqueda = model.apellidoMaternoBusqueda.Trim();
+                        if (model.PersonaModel.CURPBusqueda != null)
+                            model.PersonaModel.CURPBusqueda = model.PersonaModel.CURPBusqueda.Trim();
+                        if (model.PersonaModel.RFCBusqueda != null)
+                            model.PersonaModel.RFCBusqueda = model.PersonaModel.RFCBusqueda.Trim();
+                        if (model.PersonaModel.nombreBusqueda != null)
+                            model.PersonaModel.nombreBusqueda = model.PersonaModel.nombreBusqueda.Trim();
+                        if (model.PersonaModel.apellidoPaternoBusqueda != null)
+                            model.PersonaModel.apellidoPaternoBusqueda = model.PersonaModel.apellidoPaternoBusqueda.Trim();
+                        if (model.PersonaModel.apellidoMaternoBusqueda != null)
+                            model.PersonaModel.apellidoMaternoBusqueda = model.PersonaModel.apellidoMaternoBusqueda.Trim();
 
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
                         cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
-                        cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicenciaBusqueda ?? DBNull.Value;
-                        cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.CURPBusqueda ?? DBNull.Value;
-                        cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.RFCBusqueda ?? DBNull.Value;
-                        cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombreBusqueda ?? DBNull.Value;
-                        cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoPaternoBusqueda ?? DBNull.Value;
-                        cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoMaternoBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.numeroLicenciaBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.CURPBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.RFCBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.nombreBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoPaternoBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoMaternoBusqueda ?? DBNull.Value;
                         using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             while (reader.Read())

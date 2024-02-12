@@ -1565,42 +1565,16 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
 }
 
-     function submitCreateVehiculo() {
-         if ($("#ddlIdPersona").val() == '') {
-            sitteg_info('Debe seleccionar una Persona');
-            return;
-        }
-
-    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
-
-    var controlsValidate = [];
-    var isValid = true;
-
-    var idEntidad = $("#idEntidad").val();
-    var idMarca = $("#ddlMarcas").val();
-    var idSubmarca = $("#idSubmarca").val();
-    var idTipoVehiculo = $("idTipoVehiculo").val();
-
-
-    controlsValidate.push({ 'controlName': 'idEntidad' });
-    controlsValidate.push({ 'controlName': 'ddlMarcas' });
-    controlsValidate.push({ 'controlName': 'idSubmarca' });
-    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-
-    // INPUTS
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
-
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }
+    function submitCreateVehiculo() {
 
         var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
 
+        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
+        validator.validate();
 
       
-       // if (validator.validate()) {
+        if (validator.validate()) {
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
@@ -1633,13 +1607,16 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }       
+        }      
+    } 
+    
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
         $('#hdnIdCatTipoServicio').val(value);
 
     });
+    
     function cerrarModalV() {
         $('#confirmacionModal').modal('show');
 

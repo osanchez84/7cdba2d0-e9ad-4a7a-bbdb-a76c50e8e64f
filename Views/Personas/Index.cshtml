@@ -1,4 +1,4 @@
-﻿@model PersonasModel
+@model PersonasModel
 
 
 @{
@@ -343,7 +343,7 @@
             success: function (response) {
                 
                 if (response.tipo === "success") {
-                    mostrarModal(response.datos);
+                    mostrarModal(response.Data);
                     hideLoading();
                     return;
                 }

@@ -1866,7 +1866,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					           LEFT JOIN catMunicipios AS mun ON inf.idMunicipio = mun.idMunicipio
 				               LEFT JOIN personasDirecciones AS pdir ON inf.idPersona = pdir.idPersona
                                WHERE inf.estatus = 1
-                               AND inf.idInfraccion = @idInfraccion and inf.transito = @idDependencia";
+                               AND inf.idInfraccion = @idInfraccion";
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{

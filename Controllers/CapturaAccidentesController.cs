@@ -422,7 +422,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
 
-            estatus = repuveConsRoboResponse.estatus == 1;
+            estatus = repuveConsRoboResponse.estatus =="1";
 
             return estatus;
         }
@@ -524,7 +524,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
         {
+            try
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
 
+                if (SeleccionVehiculo.Count > 0)
+                {
+                    return Json(new { noResults = false, data = SeleccionVehiculo });
+                }
+                else
+                {
+                    var jsonPartialVehiculosByWebServices = await AbrirModalVehiculo(model);
 
             var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
 
@@ -541,6 +551,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
+
         public async Task<string> AbrirModalVehiculo2(string placa, string serie)
 		{
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
@@ -549,7 +560,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 niv = serie
             };
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
-            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
             string jsonPartialView = string.Empty;
 			VehiculoModel vehiculoEncontrado = null;
 			if (!string.IsNullOrEmpty(placa))

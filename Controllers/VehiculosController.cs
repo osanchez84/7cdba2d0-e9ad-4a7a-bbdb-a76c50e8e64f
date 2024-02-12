@@ -198,7 +198,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
 
 
-            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == 1;
+            ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
 
             ///validar si esta habilitado el sp repuve
 			if (_appSettings.AllowWebServices)
@@ -399,7 +399,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
 
-            estatus = repuveConsRoboResponse.estatus == 1;
+            estatus = repuveConsRoboResponse.estatus == "1";
 
             return estatus;
         }

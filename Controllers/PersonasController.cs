@@ -1,4 +1,4 @@
-﻿using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -169,7 +169,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     Total = total
                 };
                 return Json(result);
-
             }
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia

@@ -194,7 +194,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string condiciones = "";
-                    condiciones += model.IdMunicipio.Equals(null) || model.IdMunicipio == 0 ? "" : " AND p.IdMunicipio = @IdMunicipio ";
+                    condiciones += model.IdMunicipio.Equals(null) || model.IdMunicipio == 0 ? "" : " AND c.IdMunicipio = @IdMunicipio ";
                     condiciones += model.IdConcesionario.Equals(null) || model.IdConcesionario == 0 ? "" : " AND c.idConcesionario = @IdConcesionario ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND p.idPension = @IdPension ";
                     condiciones += model.IdTipoGrua.Equals(null) || model.IdTipoGrua == 0 ? "" : " AND g.idTipoGrua = @IdTipoGrua ";

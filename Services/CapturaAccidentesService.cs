@@ -267,7 +267,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (!string.IsNullOrEmpty(Serie))
                     {
                         command = new SqlCommand(
-                        "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
+                        "SELECT TOP 200 v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
                         "p.CURP, p.RFC, p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                         "FROM vehiculos v " +
                         "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
@@ -277,13 +277,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
                         "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                         "LEFT JOIN personas p ON v.idPersona = p.idPersona " +
-                        "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%';", connection);
+                        "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%' ORDER BY v.idVehiculo DESC", connection);
 
                         command.Parameters.AddWithValue("@Serie", Serie);
                     }
                     else if (!string.IsNullOrEmpty(Placa))
                     {
-                        command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
+                        command = new SqlCommand("SELECT TOP 200 v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, " +
                             "p.CURP, p.RFC,p.nombre, p.apellidoPaterno, p.apellidoMaterno " +
                             "FROM vehiculos v " +
                             "left JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
@@ -293,7 +293,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             "left JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
                             "left JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "LEFT JOIN personas p ON v.idPersona = p.idPersona " +
-                            "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%';", connection);
+                            "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%' ORDER BY v.idVehiculo DESC", connection);
                         command.Parameters.AddWithValue("@Placa", Placa);
                     }
                     else if (!string.IsNullOrEmpty(Folio))

@@ -416,7 +416,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             }
 
-            string strQuery = string.Format(@"SELECT
+            string strQuery = string.Format(@"SELECT TOP 200
                                 v.idVehiculo, v.placas, v.serie, v.tarjeta, v.vigenciaTarjeta, v.idMarcaVehiculo
                                 ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
                                 ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona

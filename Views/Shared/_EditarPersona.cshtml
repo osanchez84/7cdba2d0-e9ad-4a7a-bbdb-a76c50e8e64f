@@ -297,11 +297,12 @@
 
 <script>
     function btnEditarPersona() {
-
-        var validator = $("#frmEditarPersona").kendoValidator().data('kendoValidator');
-        var idTelefono = $("#telefono");
-        var idTelefonoValue = idTelefono.val();
-        var idTipoPersona = $("#tipoPersona");
+        var isValid = true;
+        var controlsValidate = [];
+        //var validator = $("#frmEditarPersona").kendoValidator().data('kendoValidator');
+        //var idTelefono = $("#telefono");
+        //var idTelefonoValue = idTelefono.val();
+        //var idTipoPersona = $("#tipoPersona");
 
         controlsValidate.push({ 'controlName': 'nombre' });
         controlsValidate.push({ 'controlName': 'fechaNacimiento' });
@@ -312,11 +313,10 @@
         // INPUTS
         if (!isControlsValid(controlsValidate)) { isValid = false; }
 
-
         // DROP DOWN LIST
         controlsValidate = [];
         controlsValidate.push({ 'controlName': 'idGenero' });
-        controlsValidate.push({ 'controlName': 'tipoPersona' });
+        controlsValidate.push({ 'controlName': 'idCatTipoPersona' });
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
 

@@ -72,7 +72,12 @@ namespace GuanajuatoAdminUsuarios
                         options.SlidingExpiration = true;
                     });
 
-
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "RiagS";
+                options.IdleTimeout = TimeSpan.FromMinutes(40);
+                options.Cookie.IsEssential = true;
+            });
             services.AddHttpClient();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 

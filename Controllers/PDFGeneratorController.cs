@@ -89,10 +89,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.ParteAccidente = AccidenteSeleccionado;
 			model.ParteAccidenteComplemento = datosAccidente;
 			model.VehiculosInvolucrados = ListVehiculosInvolucrados;
+			
 			model.Clasificaciones = ListClasificaciones;
 			model.Factores = ListFactores;
 			model.CausasDeterminantes = ListCausas;
+
+			foreach (var invo in ListVehiculosInvolucrados)
+			{
+				foreach (var lst in ListInfracciones.Where(r => r.IdVehiculo == invo.IdVehiculo))
+				{
+					lst.numeroConsecutivo = invo.numeroConsecutivo;
+				}
+			}
 			model.Infracciones = ListInfracciones;
+			
+
 			model.ParteNombre = ParteNombre;
 			model.PartePuesto = PartePuesto;
 			model.ADisposicion = _catAutoridadesDisposicionservice.ObtenerAutoridadesActivas().Where(w => w.IdAutoridadDisposicion == datosAccidente.IdAutoridadDisposicion).Select(s => s.NombreAutoridadDisposicion).FirstOrDefault();

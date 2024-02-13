@@ -373,7 +373,7 @@
 			{
 				contadorVehiculo++;
 				<tr>
-					<td><p class="s2">@contadorVehiculo</p></td>
+					<td><p class="s2">@item.numeroConsecutivo</p></td>
 					<td><p class="s2">@item.Placa</p></td>
 					<td><p class="s2">@item.Serie</p></td>
 					<td><p class="s2">@item.Marca</p></td>
@@ -433,7 +433,7 @@
 						if (contadorInfracciones == 0)
 						{
 							<tr>
-								<td rowspan="@rowspan" style="width:10px!important"><p>@contadorVehiculo</p></td>
+								<td rowspan="@rowspan" style="width:10px!important"><p>@item.numeroConsecutivo</p></td>
 								<td rowspan="@rowspan" style="width:100px!important"><p>@item.folioInfraccion (@item.garantia)</p></td>
 								<td><p style="width:100px!important">@motivo</p></td>
 							</tr>
@@ -450,7 +450,7 @@
 				else
 				{
 					<tr>
-						<td><p style="width:10px!important">@contadorVehiculo</p></td>
+						<td><p style="width:10px!important">@item.numeroConsecutivo</p></td>
 						<td><p style="width:100px!important">@item.folioInfraccion (@item.garantia)</p></td>
 						<td><p  style="width:100px!important">---</p></td>
 					</tr>

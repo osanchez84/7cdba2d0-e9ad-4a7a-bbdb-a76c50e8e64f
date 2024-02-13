@@ -731,8 +731,13 @@
                     <div id="personasFisicasAcc">
                     </div>*@
 
+
+
+                    
+
                     <div id="ListPersonasFisicas">
-                        <partial name="_PersonasFisicas" model="Model.PersonasFisicas" />
+                        @*<partial name="_PersonasFisicas"  />*@
+
                     </div>
 
                 </div>
@@ -1321,9 +1326,16 @@
         }
 
         
+                $.ajax({
+            url: '@Url.Action("pruebapartial")',
+            type: 'POST',
+            success: function (result) {
+                console.log()
+                $("#ListPersonasFisicas").html(result);
+            }
+        });
 
-
-        buscarPersonasFisicas();
+        //buscarPersonasFisicas();
     });
     function validarNumero(event) {
             var charCode = (event.which) ? event.which : event.keyCode;

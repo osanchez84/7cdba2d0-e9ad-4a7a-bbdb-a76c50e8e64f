@@ -1,4 +1,12 @@
-﻿@model List<PersonaModel>
+﻿
+<script>
+    function onDataBound() {
+        var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
+        console.log("entro")
+        grid.tbody.on("click", "tr", onClickPersonasFisicas);
+    }
+
+    </script>
 
 <div class="row justify-content-between mb-1">
     <div class="col-12 col-lg-6 mt-4 mb-2">
@@ -16,29 +24,19 @@
 
 <div class="row my-4 px-4">
     <div class="col-12 rounded gridCustom">
-        @(Html.Kendo().Grid(Model) 
+        @(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.PersonaModel>()
             .Name("gridPersonasFisicasAc")
             .Columns(columns =>
             {
                 columns.Bound(c => c.idPersona).Hidden();
-                columns.Bound(c => c.idCatTipoPersona).Hidden();
-                columns.Select().ClientHeaderTemplate(" ");
+                columns.Bound(c => c.idCatTipoPersona).Hidden();                
                 columns.Bound(c => c.nombreCompleto).Title("Nombre");
                 columns.Bound(p => p.CURP).Title("CURP");
                 columns.Bound(p => p.RFC).Title("RFC");
                 columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
                 columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             }).HtmlAttributes(new { style = "height:250" })
-            @*.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
-            .Sortable()
-            .Scrollable(scr => scr.Enabled(true))
-            .Scrollable(scr => scr.Height(250))
-            .DataSource(dataSource => dataSource
-            .Ajax()
-            .ServerOperation(false)
-            .PageSize(5)
-            )*@
-
+            .Events(events => events.DataBound("onDataBound"))
             .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
             .EnableCustomBinding(false)
             .DataSource(dataSource => dataSource
@@ -49,15 +47,7 @@
             .Scrollable(scr => scr.Height(350)
             )
             .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
-            @*.Search(s =>
-            {
-                s.Field(c => c.nombreCompleto);
-                s.Field(c => c.CURP); 
-                s.Field(c => c.RFC);
-                s.Field(c => c.numeroLicencia);
-
-            })*@
-            )
+        )
     </div>
 
 </div>
@@ -80,32 +70,37 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+
+    function onClickPersonasFisicas(e) {
         var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
-        grid.tbody.on("click", ".k-checkbox", onClickPersonasFisicas);
+        var row = $(e.target).closest("tr");
+        console.log(row)
+        var dataItem = grid.dataItem(row);
+        console.log("ROW", dataItem)
 
-        function onClickPersonasFisicas(e) {
-            var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
-            var row = $(e.target).closest("tr");
-            var dataItem = grid.dataItem(row);
-            console.log("ROW",dataItem)
-
-            var idPersona = dataItem.idPersona;
-            console.log("IDP", idPersona)
-            var idCatTipoPersona = dataItem.idCatTipoPersona;
-            $("#ddlIdPersona").val(idPersona);
-            $("#ddlIdCatTipoPersona").val(idCatTipoPersona);
-            if (row.hasClass("k-selected")) {
-                setTimeout(function (e) {
-                    var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
-                    grid.clearSelection();
-                    var gridMoral = $("#gridPersonasMorales").data("kendoGrid");
-                    gridMoral.clearSelection();
-                })
-            } else {
+        var idPersona = dataItem.idPersona;
+        console.log("IDP", idPersona)
+        var idCatTipoPersona = dataItem.idCatTipoPersona;
+        $("#ddlIdPersona").val(idPersona);
+        $("#ddlIdCatTipoPersona").val(idCatTipoPersona);
+        if (row.hasClass("k-selected")) {
+            setTimeout(function (e) {
+                var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
                 grid.clearSelection();
-            };
+                var gridMoral = $("#gridPersonasMorales").data("kendoGrid");
+                gridMoral.clearSelection();
+            })
+        } else {
+            grid.clearSelection();
         };
+    };
+
+
+
+
+    $(document).ready(function () {
+    //    var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
+    //    grid.tbody.on("click", ".k-checkbox", onClickPersonasFisicas);        
     })
 
 </script>

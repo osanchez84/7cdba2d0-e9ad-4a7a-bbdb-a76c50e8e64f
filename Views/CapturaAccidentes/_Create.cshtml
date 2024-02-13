@@ -731,8 +731,13 @@
                     <div id="personasFisicasAcc">
                     </div>*@
 
+
+
+                    
+
                     <div id="ListPersonasFisicas">
-                        <partial name="_PersonasFisicas" model="Model.PersonasFisicas" />
+                        @*<partial name="_PersonasFisicas"  />*@
+
                     </div>
 
                 </div>
@@ -1321,9 +1326,16 @@
         }
 
         
+                $.ajax({
+            url: '@Url.Action("pruebapartial")',
+            type: 'POST',
+            success: function (result) {
+                console.log()
+                $("#ListPersonasFisicas").html(result);
+            }
+        });
 
-
-        buscarPersonasFisicas();
+        //buscarPersonasFisicas();
     });
     function validarNumero(event) {
             var charCode = (event.which) ? event.which : event.keyCode;
@@ -1573,7 +1585,9 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
         validator.validate();
 
-      
+      console.log("entro submit")
+      console.log(validator.validate())
+
         if (validator.validate()) {
 
             var formData = $("#frmCreateVehiculo").serialize();
@@ -1607,7 +1621,11 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }      
+        }
+        else{
+             sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
+                   
+        }
     } 
     
     $("#ddlCatTipoServicio").on("change", function () {

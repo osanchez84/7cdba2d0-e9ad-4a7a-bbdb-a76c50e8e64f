@@ -1509,19 +1509,37 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
 
     function submitCreateVehiculo() {
-        var carga = $("#cargaSwitch").prop("checked");
-        $("#idCarga").val(carga ? 1 : 0);
-       
-        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
-        validator.validate();
+   var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
-        if ($("#ddlIdPersona").val() == '') {
+    var controlsValidate = [];
+    var isValid = true;
+
+    var idEntidad = $("#idEntidad").val();
+    var idMarca = $("#ddlMarcas").val();
+    var idSubmarca = $("#idSubmarca").val();
+    var idTipoVehiculo = $("idTipoVehiculo").val();
+    var idPersona = $("#ddlIdPersona").val();
+     if ($("#ddlIdPersona").val() == '') {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
-        var idTipoSer = $('#hdnIdCatTipoServicio').val();
+         var carga = $("#cargaSwitch").prop("checked");
+        $("#idCarga").val(carga ? 1 : 0);
+         var idTipoSer = $('#hdnIdCatTipoServicio').val();
 
-        if (validator.validate()) {
+    controlsValidate.push({ 'controlName': 'idEntidad' });
+    controlsValidate.push({ 'controlName': 'ddlMarcas' });
+    controlsValidate.push({ 'controlName': 'idSubmarca' });
+    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
+    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
+
+    // INPUTS
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
+
+    if (!isValid) {
+	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+        return;
+    } 
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
@@ -1548,17 +1566,11 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
                     console.log(errmsg)
-                    hideLoading();
                     sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
+                    hideLoading();
                 }
             });
-        }
-        else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-        }
-
-    }
+        }       
         $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);

@@ -12,6 +12,25 @@
                 data: { idDeposito: idDeposito },
                 success: function (result) {
                     var datosContainer = $("#datosContainer");
+                    var fechaSolicitud = new Date(result.fechaSolicitud);
+
+                    var hora = fechaSolicitud.getHours();
+                    var minutos = fechaSolicitud.getMinutes();
+                    var segundos = fechaSolicitud.getSeconds();
+
+                    var horaFormateada = hora.toString().padStart(2, '0') + ":" + minutos.toString().padStart(2, '0');
+
+                    datosContainer.find("p:contains('Hora Solicitud')").html("<b>Hora Solicitud:</b> " + horaFormateada);
+
+                    var fechaFinal = new Date(result.fechaFinal);
+
+                    var horaFinal = fechaFinal.getHours();
+                    var minutosFinal = fechaFinal.getMinutes();
+                    var segundosFinal = fechaFinal.getSeconds();
+
+                    var horaFormateadaFinal = horaFinal.toString().padStart(2, '0') + ":" + minutosFinal.toString().padStart(2, '0');
+
+                    datosContainer.find("p:contains('Hora de término')").html("<b>Hora de término:</b> " + horaFormateadaFinal);
 
                     datosContainer.find("p:contains('Folio Inventario')").html("<b>Folio Inventario:</b> " + (result.folioInventario || "-"));
                     datosContainer.find("p:contains('Modelo')").html("<b>Modelo:</b> " + (result.modelo || "-"));
@@ -24,9 +43,9 @@
 
                     datosContainer.find("p:contains('Servicio:')").html("<b>Servicio:</b> " + (result.evento || "-"));
                     datosContainer.find("p:contains('Propietario Grua')").html("<b>Propietario Grua:</b> " + (result.propietarioGrua || "-"));
-                    datosContainer.find("p:contains('Hora Solicitud')").html("<b>Hora Solicitud:</b> " + (result.fechaSolicitud || "-"));
+                    //datosContainer.find("p:contains('Hora Solicitud')").html("<b>Hora Solicitud:</b> " + (result.fechaSolicitud || "-"));
 
-                    datosContainer.find("p:contains('Hora de término')").html("<b>Hora de término:</b> " + (result.fechaFinal || "-"));
+                   // datosContainer.find("p:contains('Hora de término')").html("<b>Hora de término:</b> " + (result.fechaFinal || "-"));
 
                     datosContainer.find("p:contains('Tramo')").html("<b>Tramo:</b> " + (result.tramo || "-"));
                     datosContainer.find("p:contains('Carretera')").html("<b>Carretera:</b> " + (result.carretera || "-"));

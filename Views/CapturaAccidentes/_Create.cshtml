@@ -1565,16 +1565,39 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
 }
 
-    function submitCreateVehiculo() {
+  function submitCreateVehiculo() {
+    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
-        var carga = $("#cargaSwitch").prop("checked");
+    var controlsValidate = [];
+    var isValid = true;
+
+    var idEntidad = $("#idEntidad").val();
+    var idMarca = $("#ddlMarcas").val();
+    var idSubmarca = $("#idSubmarca").val();
+    var idTipoVehiculo = $("idTipoVehiculo").val();
+    var idPersona = $("#ddlIdPersona").val();
+     if ($("#ddlIdPersona").val() == '') {
+            sitteg_info('Debe seleccionar una Persona');
+            return;
+        }
+         var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
+         var idTipoSer = $('#hdnIdCatTipoServicio').val();
 
-        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
-        validator.validate();
+    controlsValidate.push({ 'controlName': 'idEntidad' });
+    controlsValidate.push({ 'controlName': 'ddlMarcas' });
+    controlsValidate.push({ 'controlName': 'idSubmarca' });
+    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
+    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
 
-      
-        if (validator.validate()) {
+    // INPUTS
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
+
+    if (!isValid) {
+	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+        return;
+    }   
+       // if (validator.validate()) {
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
@@ -1607,8 +1630,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }      
-    } 
+        }       
     
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();

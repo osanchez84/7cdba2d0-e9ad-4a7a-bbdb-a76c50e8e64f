@@ -52,7 +52,7 @@
 				columns.Bound(c => c.montoVehiculo).Format("{0:0}").Title("Monto").Width(90);
 				//columns.Command(c => c.Custom("Agregar monto").Click("modalAgregarmonto")).Width(100);
 				columns.Template(
-				"<button class='w-100 btn " + claseColorOtroBoton + "'>" +
+				"<button class='w-100 btn " + claseColorOtroBoton + " ' type='button'>" +
 				"<h6 class='m-0' onclick='modalAgregarmonto(event)'>" +
 				"<i class='h5'></i><b>Agregar monto</b>" +
 				"</h6></button>"

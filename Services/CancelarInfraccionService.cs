@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT i.*, v.serie, e.estatusInfraccion, 
+                    SqlCommand command = new SqlCommand(@"SELECT TOP 200 i.*, v.serie, e.estatusInfraccion, 
                                                             CONCAT( pV.nombre,' ', pV.apellidoPaterno,' ', pV.apellidoMaterno)AS nombrePropietario,
                                                             CONCAT(pI.nombre,' ',pI.apellidoPaterno,' ', pI.apellidoMaterno)AS nombreConductor,
                                                             del.delegacion
@@ -39,7 +39,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
                                                             LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
 									                        LEFT JOIN catDelegaciones AS del ON del.idDelegacion = i.idDelegacion 
-                                                            WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%';", connection);
+                                                            WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ORDER BY i.idInfraccion DESC;", connection);
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

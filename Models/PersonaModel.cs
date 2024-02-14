@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -12,10 +13,14 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numeroLicenciaFisico { get; set; }
 
         public string CURP { get; set; }
+       
+        
+        [MinLength(10, ErrorMessage = "El CURO debe tener al menos 10 caracteres.")]
         public string CURPBusqueda { get; set; }
         public string CURPFisico { get; set; }
 
         public string RFC { get; set; }
+        [MinLength(10, ErrorMessage = "El RFC debe tener al menos 10 caracteres.")]
         public string RFCBusqueda { get; set; }
         public string RFCFisico { get; set; }
 

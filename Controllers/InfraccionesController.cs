@@ -557,6 +557,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
+                var request = JsonConvert.SerializeObject(model);
+                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - Request - " + request);
                 RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
                 {
                     placa = model.PlacasBusqueda,
@@ -564,11 +566,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo");
                 var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
+
                 ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
                 if (_appSettings.AllowWebServices)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
                     var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
+                    Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
+
                     vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                     vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                     vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
@@ -585,6 +591,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             var endPointName = "CotejarDatosEndPoint";
                             Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - CotejarDatos");
                             var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+                            Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - CotejarDatos - Response - " + JsonConvert.SerializeObject(result));
 
                             if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                             {
@@ -678,7 +685,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
                                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaGeneral - REPUVE");
                                 var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
-
+                                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaGeneral - REPUVE - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
 
                                 var vehiculoEncontrado = new VehiculoModel
                                 {
@@ -719,6 +726,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
                     var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
+                    Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(vehiculosModel));
+
                     vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                     vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                     vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
@@ -842,13 +851,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
+                var request = JsonConvert.SerializeObject(model);
+                Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
                 var vehiculosModel = new VehiculoModel();
 
                 RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
                 ViewBag.ReporteRobo = ValidarRobo(repuveGralModel);
 
-                var allowSistem = _appSettings.AllowWebServices;
+                var allowSistem = _appSettings.AllowWebServicesRepuve;
 
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVehiculoToAnexo");
                 vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
@@ -873,7 +884,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
                     if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                     {
-                        Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas");
+                        Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
                         vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
@@ -886,7 +897,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
                     var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
-
+                    Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
                     var vehiculoEncontrado = new VehiculoModel
                     {
                         placas = repuveConsGralResponse.placa,

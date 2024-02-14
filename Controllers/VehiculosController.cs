@@ -192,6 +192,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
+                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - Request - " + JsonConvert.SerializeObject(model));
                 RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
                 {
                     placa = model.PlacasBusqueda,
@@ -201,7 +202,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //verificar si tiene robo
                 Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo");
                 var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-
+                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
                 ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
 
@@ -211,6 +212,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     //base
                     Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
                     var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
+                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(vehiculosModel));
+
                     vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                     vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                     vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
@@ -228,6 +231,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             //finanzas
                             Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - CotejarDatos");
                             var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+                            Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - CotejarDatos - Response - " + JsonConvert.SerializeObject(result));
 
                             if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                             {
@@ -325,6 +329,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 //repube
                                 Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Repuve");
                                 var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Repuve - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
 
 
                                 var vehiculoEncontrado = new VehiculoModel
@@ -363,6 +368,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     //repuve
                     Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral");
                     var repuveConsGralResponse1 = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse1));
 
 
                     var vehiculoEncontrado1 = new VehiculoModel
@@ -394,6 +400,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     //base
                     Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
                     var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
+                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(vehiculosModel));
+
                     vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                     vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                     vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
@@ -523,7 +531,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             ViewBag.ReporteRobo = ValidarRobo(repuveGralModel);
 
-            var allowSistem = _appSettings.AllowWebServices;
+            var allowSistem = _appSettings.AllowWebServicesRepuve;
 
 
             vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);

@@ -576,7 +576,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
                     var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
-                    Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
+                    if (repuveConsRoboResponse != null)
+                        Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
                     vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                     vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
@@ -594,7 +595,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             var endPointName = "CotejarDatosEndPoint";
                             Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - CotejarDatos");
                             var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
-                            Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - CotejarDatos - Response - " + JsonConvert.SerializeObject(result));
+                            if (result!=null)
+                                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - CotejarDatos - Response - " + JsonConvert.SerializeObject(result));
 
                             if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                             {
@@ -688,7 +690,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
                                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaGeneral - REPUVE");
                                 var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
-                                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaGeneral - REPUVE - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
+                                if (repuveConsGralResponse != null)
+                                    Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaGeneral - REPUVE - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
 
                                 var vehiculoEncontrado = new VehiculoModel
                                 {

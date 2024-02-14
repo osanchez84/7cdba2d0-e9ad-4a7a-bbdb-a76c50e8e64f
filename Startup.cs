@@ -45,12 +45,14 @@ namespace GuanajuatoAdminUsuarios
 
             var mvcBuilder = services.AddControllersWithViews();
 
+            services.AddSingleton<ILoggerManager, LoggerManager>();
+
 #if DEBUG
             mvcBuilder.AddRazorRuntimeCompilation();
 #endif
             //Connection Strings
-            string connStringLicencias = Configuration.GetConnectionString("GUANAJUATO_ADMIN_USUARIOS_DEV");
-            string connStringIncidencias = Configuration.GetConnectionString("GUANAJUATO_INCIDENCIAS_MIG_DEV");
+            string connStringLicencias = Configuration.GetConnectionString("GUANAJUATO_ADMIN_USUARIOS_PRD");
+            string connStringIncidencias = Configuration.GetConnectionString("GUANAJUATO_ADMIN_USUARIOS_PRD");
 
             services.AddDbContext<GuanajuatoLicenciasContext>(options => options.UseSqlServer(connStringLicencias));
             services.AddScoped<DbContext, GuanajuatoLicenciasContext>();

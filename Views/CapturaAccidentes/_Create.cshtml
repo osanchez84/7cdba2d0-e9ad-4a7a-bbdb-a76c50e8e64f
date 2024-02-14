@@ -274,7 +274,7 @@
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         //.Value(dateVigencia)
-                        .DateInput()                        
+                      //  .DateInput()                        
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         .Value("")
@@ -1498,11 +1498,11 @@ function submitCreateMoral() {
 
     var controlsValidate = [];
     var isValid = true;
-    controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
+   // controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     controlsValidate.push({ 'controlName': 'nombreFisico' });
-    controlsValidate.push({ 'controlName': 'coloniaFisico' });
-    controlsValidate.push({ 'controlName': 'calleFisico' });
-    controlsValidate.push({ 'controlName': 'numeroFisico' });
+   // controlsValidate.push({ 'controlName': 'coloniaFisico' });
+   // controlsValidate.push({ 'controlName': 'calleFisico' });
+   // controlsValidate.push({ 'controlName': 'numeroFisico' });
 
     // INPUTS
     if (!isControlsValid(controlsValidate)) { isValid = false; }

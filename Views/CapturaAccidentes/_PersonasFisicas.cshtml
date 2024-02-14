@@ -2,8 +2,26 @@
 <script>
     function onDataBound() {
         var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
-        console.log("entro")
-        grid.tbody.on("click", "tr", onClickPersonasFisicas);
+      //  console.log("entro")
+       // grid.tbody.on("click", "tr", onClickPersonasFisicas);
+    }
+    function SelectedRow(){
+        var selectedRow = this.select();
+
+        if (selectedRow.length > 0) {
+            var dataItem = this.dataItem(selectedRow);
+            var idPersona = dataItem.idPersona;
+            var idCatTipoPersona = dataItem.idCatTipoPersona;
+
+
+            $("#ddlIdPersona").val(idPersona);
+            $("#ddlIdCatTipoPersona").val(idCatTipoPersona);
+        }
+
+    }
+
+    function DataPersonaFisica(){
+        return {id:5}
     }
 
     </script>
@@ -36,12 +54,16 @@
                 columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
                 columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             }).HtmlAttributes(new { style = "height:250" })
-            .Events(events => events.DataBound("onDataBound"))
+            .Events(events => events
+            .DataBound("onDataBound")
+            .Change("SelectedRow")
+            )
+            .Selectable(selectable => selectable.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
             .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
             .EnableCustomBinding(false)
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read("ajax_BuscarPersonasFiscasPagination", "CapturaAccidentes")
+            .Read(ev=>ev.Action("ajax_BuscarPersonasFiscasPagination", "CapturaAccidentes").Data("DataPersonaFisica"))
             .PageSize(10)
             )
             .Scrollable(scr => scr.Height(350)
@@ -74,13 +96,11 @@
     function onClickPersonasFisicas(e) {
         var grid = $("#gridPersonasFisicasAc").data("kendoGrid");
         var row = $(e.target).closest("tr");
-        console.log(row)
         var dataItem = grid.dataItem(row);
-        console.log("ROW", dataItem)
-
         var idPersona = dataItem.idPersona;
-        console.log("IDP", idPersona)
         var idCatTipoPersona = dataItem.idCatTipoPersona;
+        
+        
         $("#ddlIdPersona").val(idPersona);
         $("#ddlIdCatTipoPersona").val(idCatTipoPersona);
         if (row.hasClass("k-selected")) {

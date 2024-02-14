@@ -35,6 +35,7 @@ using Microsoft.AspNetCore.Authorization;
 using static iTextSharp.tool.xml.html.table.TableRowElement;
 using Kendo.Mvc;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -818,7 +819,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     };
 
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "" : "No";
-                    vehiculoEncontrado.placas = model.PlacasBusqueda;
+                    vehiculoEncontrado.placas = model.PlacasBusqueda?? vehiculoEncontrado.placas;
+                    vehiculoEncontrado.serie = model.SerieBusqueda ?? vehiculoEncontrado.serie;
+
                     placaEncontrada = true;
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado, true);
 
@@ -827,9 +830,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     placaEncontrada = false;
                 }
+            } else
+            {
+                Logger.Debug("CapturaAccidentes - AbrirModalVehiculo - REPUVE (BANDERA DESACTIVADA)");
             }
 
             vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+            vehiculosModel.placas = model.PlacasBusqueda ?? vehiculosModel.placas;
+            vehiculosModel.serie = model.SerieBusqueda ?? vehiculosModel.serie;
 
             return await this.RenderViewAsync("_Create", vehiculosModel, true);
         }
@@ -1733,7 +1741,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ajax_BuscarPersonasFiscasPagination([DataSourceRequest] DataSourceRequest request)
+        public ActionResult ajax_BuscarPersonasFiscasPagination([DataSourceRequest] DataSourceRequest request,int id=0)
         {
             try
             {

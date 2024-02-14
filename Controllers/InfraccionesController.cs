@@ -70,7 +70,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IBitacoraService _bitacoraServices;
         private readonly string _rutaArchivo;
 
-
         private readonly AppSettings _appSettings;
         private string resultValue = string.Empty;
         public static bool findValue { get; set; } = true;
@@ -739,7 +738,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
                   ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
                   : 0;
-
+     
             var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
                 ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
                 : 0;
@@ -827,7 +826,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
-
             var vehiculosModel = new VehiculoModel();
 
             RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);

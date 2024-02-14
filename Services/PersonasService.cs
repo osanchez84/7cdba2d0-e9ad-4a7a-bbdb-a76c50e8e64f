@@ -1098,7 +1098,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                 LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1
                                                 WHERE
                                                     (p.estatus = 1)
-                                                    AND (@numeroLicencia IS NULL OR p.numeroLicencia LIKE '%' + @numeroLicencia + '%')
+                                                    AND (@numeroLicencia IS NULL OR p.numeroLicencia = @numeroLicencia)
                                                     AND (@curp IS NULL OR p.CURP LIKE '%' + @curp + '%')
                                                     AND (@rfc IS NULL OR p.RFC LIKE '%' + @rfc + '%')
                                                     AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')

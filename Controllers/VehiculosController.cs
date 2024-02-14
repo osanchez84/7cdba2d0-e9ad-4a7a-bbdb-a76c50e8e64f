@@ -572,8 +572,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     motor = repuveConsGralResponse.motor,
                     //otros = repuveConsGralResponse.
                     color = repuveConsGralResponse.color,
-                    //idEntidad = idEntidad,
-                    //idMarcaVehiculo = idMarca,
+                   // Entidad = repuveConsGralResponse.entidad_expide,
+                    //MarcaVehiculo = repuveConsGralResponse.marca_padron,
                     //idSubmarca = idSubmarca,
                     submarca = repuveConsGralResponse.submarca,
                     //idTipoVehiculo = idTipo,

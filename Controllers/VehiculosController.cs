@@ -202,7 +202,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //verificar si tiene robo
                 Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo");
                 var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
+                if (repuveConsRoboResponse!=null)
+                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
                 ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
 

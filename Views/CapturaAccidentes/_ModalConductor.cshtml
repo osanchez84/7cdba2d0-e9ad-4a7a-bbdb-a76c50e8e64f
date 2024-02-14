@@ -530,6 +530,37 @@
         });
     }
     function buscarConductor() {
+         var licenciaBusqueda = $("#numeroLicenciaBusqueda").val().trim();
+        var rfcBusqueda = $("#RFCBusqueda").val().trim();
+        var curpBusqueda = $("#CURPBusqueda").val().trim();
+        var nombreBusqueda = $("#nombreBusqueda").val().trim();
+        var apellidoPaternoBusqueda = $("#apellidoPaternoBusqueda").val().trim();
+       
+        if (licenciaBusqueda !== "") {
+            if (licenciaBusqueda.length < 10) {
+                sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+        if (rfcBusqueda !== "") {
+            if (rfcBusqueda.length < 10) {
+                sitteg_warning("El RFC debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+
+        if (curpBusqueda !== "") {
+            if (curpBusqueda.length < 10) {
+                sitteg_warning("El CURP debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+
+        if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
+            (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
+            sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
+            return;
+        }
         var grid = $("#gridConductores").data("kendoGrid");
         grid.dataSource.data([]);
         var Mydata = $("#otroConductorForm").serialize();

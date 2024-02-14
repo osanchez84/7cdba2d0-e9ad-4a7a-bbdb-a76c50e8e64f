@@ -1,4 +1,4 @@
-using GuanajuatoAdminUsuarios.Interfaces;
+﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +72,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatCarreterasService _catCarreterasService;
         private readonly IBitacoraService _bitacoraServices;
         private readonly string _rutaArchivo;
-
 
         private readonly AppSettings _appSettings;
         private string resultValue = string.Empty;
@@ -764,7 +763,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
                   ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
                   : 0;
-
+     
             var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
                 ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
                 : 0;

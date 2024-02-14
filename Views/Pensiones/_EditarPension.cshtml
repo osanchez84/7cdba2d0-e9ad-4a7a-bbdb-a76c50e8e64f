@@ -62,10 +62,19 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Municipio:</label>
-                                    @(Html.Kendo().DropDownListFor(m => m.IdMunicipio).Filter(FilterType.Contains)
-                                        .BindTo((SelectList)ViewBag.CatMunicipios)
-                                        .OptionLabel("-- Seleccione --")
-                                        .HtmlAttributes(new { style = "width:100%;" }))
+                                    @(Html.Kendo().DropDownListFor(m => m.IdMunicipio).Filter(FilterType.Contains)                                                         
+                                                            .DataTextField("Text")
+                                                            .DataValueField("Value")
+                                                            .OptionLabel("Seleccione Municipio...")
+                                                            .HtmlAttributes(new { style = "width:100%;" })
+                                                            .Filter(FilterType.Contains)
+                                                            .DataSource(source =>
+                                                            {
+                                                                source.Read(read =>
+                                                                {
+                                                                    read.Action("Municipios_Guanajuato", "PadronDepositosGruas");
+                                                                });
+                                                            }))
                                 </div>
                             </div>
                             <div class="form-group col-md-4">

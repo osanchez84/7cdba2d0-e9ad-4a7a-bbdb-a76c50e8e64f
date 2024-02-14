@@ -1907,7 +1907,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.telefono = reader["telefono"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());
                             DateTime fechaInfraccion = model.fechaInfraccion;
-                            /*string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
+                            string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
 
                             TimeSpan horaInfraccionTimeSpan;
 
@@ -1920,9 +1920,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 horaInfraccionTimeSpan = TimeSpan.Zero;
                             }
 
-                            DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;*/
+                            DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;
 
-                           // model.fechaInfraccion = fechaHoraInfraccion;
+                            model.fechaInfraccion = fechaHoraInfraccion;
                             model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
 							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
 							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();

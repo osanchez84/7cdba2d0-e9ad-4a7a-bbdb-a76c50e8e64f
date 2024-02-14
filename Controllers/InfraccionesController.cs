@@ -48,6 +48,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [Authorize]
     public class InfraccionesController : BaseController
     {
+        private readonly ILoggerManager _logger;
+
         private readonly IEstatusInfraccionService _estatusInfraccionService;
         private readonly ITipoCortesiaService _tipoCortesiaService;
         private readonly IDependencias _dependeciaService;
@@ -90,7 +92,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ICapturaAccidentesService capturaAccidentesService,
             ICotejarDocumentosClientService cotejarDocumentosClientService, ICatMunicipiosService catMunicipiosService, ICatEntidadesService catEntidadesService,
            IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService
-            , IRepuveService repuveService, ICatCarreterasService catCarreterasService, IBitacoraService bitacoraService, IConfiguration configuration
+            , IRepuveService repuveService, ICatCarreterasService catCarreterasService, IBitacoraService bitacoraService, IConfiguration configuration, ILoggerManager logger
 
             )
         {
@@ -118,6 +120,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _repuveService = repuveService;
             _bitacoraServices = bitacoraService;
             _rutaArchivo = configuration.GetValue<string>("AppSettings:RutaArchivoInventarioInfracciones");
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -1232,7 +1235,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    _logger.LogError("Error al generar archivo en infracción",e);
                     return Json(new { success = false, message = "Ocurrió un error al guardar el archivo" });
                 }
 

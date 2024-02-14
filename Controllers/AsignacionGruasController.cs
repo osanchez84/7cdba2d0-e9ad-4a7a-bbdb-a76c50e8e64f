@@ -20,12 +20,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [Authorize]
     public class AsignacionGruasController : BaseController
     {
+        private readonly ILoggerManager _logger;
+
         private readonly IAsignacionGruasService _asignacionGruasService;
         private readonly IGruasService _gruasService;
         private readonly IBitacoraService _bitacoraServices;
         private readonly string _rutaArchivo;
 
-        public AsignacionGruasController(IAsignacionGruasService asignacionGruasService, IGruasService gruasService, IBitacoraService bitacoraServices, IConfiguration configuration)
+        public AsignacionGruasController(IAsignacionGruasService asignacionGruasService, IGruasService gruasService, IBitacoraService bitacoraServices, IConfiguration configuration, ILoggerManager logger)
 
         {
             _asignacionGruasService = asignacionGruasService;
@@ -211,6 +213,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error al generar archivo en deposito", ex);
                 return Json(new { success = false, message = $"Error al procesar los datos: {ex.Message}" });
             }
         }

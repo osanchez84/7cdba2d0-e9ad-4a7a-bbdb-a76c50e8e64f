@@ -569,7 +569,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo");
                 var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-                Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
+                if (repuveConsRoboResponse!=null)
+                    Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
                 ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
                 if (_appSettings.AllowWebServices)
@@ -857,7 +858,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
-                var request = JsonConvert.SerializeObject(model);
+               
+               var request = JsonConvert.SerializeObject(model);
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
                 var vehiculosModel = new VehiculoModel();
 

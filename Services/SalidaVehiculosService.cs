@@ -367,9 +367,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@diasResguardo", model.diasResguardo);
                     command.Parameters.AddWithValue("@costoDeposito", model.costoDeposito);
                     command.Parameters.AddWithValue("@costoTotalGruas", model.costoTotalTodasGruas);
-                    command.Parameters.AddWithValue("@nombreRecibe", model.recibe);
-                    command.Parameters.AddWithValue("@nombreEntrega", model.entrega);
-                    command.Parameters.AddWithValue("@observaciones", model.observaciones);
+                    command.Parameters.AddWithValue("@nombreRecibe", model.recibe != null ? model.recibe : DBNull.Value);
+                    command.Parameters.AddWithValue("@nombreEntrega", model.entrega != null ? model.entrega : DBNull.Value);
+                    command.Parameters.AddWithValue("@observaciones", model.observaciones != null ? model.observaciones : DBNull.Value);
                     command.Parameters.AddWithValue("@estatus", 1);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);

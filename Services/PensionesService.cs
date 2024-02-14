@@ -120,7 +120,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string SqlTransact = @"SELECT 
+                    string SqlTransact = @"SELECT TOP 200
                             p.idPension,
                             p.indicador,
                             p.pension,
@@ -147,7 +147,7 @@ namespace GuanajuatoAdminUsuarios.Services
                       LEFT JOIN gruas g on pg.idGrua = g.idGrua AND g.estatus = 1
                       LEFT JOIN concesionarios c on g.idConcesionario = c.idConcesionario AND c.estatus = 1
                       WHERE p.estatus = 1
-                      AND p.pension LIKE @strPension";
+                      AND p.pension LIKE @strPension ORDER BY p.idPension DESC";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.AddWithValue("@strPension", "%" + strPension + "%");

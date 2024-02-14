@@ -497,8 +497,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                     PersonaDireccion = new PersonaDireccionModel
                     {
-                        telefonoFisico = telefonoValido,
-                        telefono = telefonoValido,
+                        telefonoFisico = telefonoValido.ToString(),
+                        telefono = telefonoValido.ToString(),
                         colonia = vehiculoDireccionData.colonia,
                         coloniaFisico = vehiculoDireccionData.colonia,
                         calleFisico = vehiculoDireccionData.calle,
@@ -676,8 +676,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                             PersonaDireccion = new PersonaDireccionModel
                             {
-                                telefonoFisico = telefonoValido,
-                                telefono = telefonoValido,
+                                telefonoFisico = telefonoValido.ToString(),
+                                telefono = telefonoValido.ToString(),
                                 colonia = vehiculoDireccionData.colonia,
                                 coloniaFisico = vehiculoDireccionData.colonia,
                                 calleFisico = vehiculoDireccionData.calle,
@@ -758,7 +758,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             }
 
-            if (allowSistem && !string.IsNullOrEmpty(model.PlacasBusqueda))
+            if (allowSistem )
             {
                 CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
                 cotejarDatosRequestModel.Tp_folio = "4";
@@ -770,7 +770,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
-                    vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "" : "No";
+                    //vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "" : "No";
 
                     return await this.RenderViewAsync("_Create", vehiculosModel, true);
                 }
@@ -1765,6 +1765,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 return null;
             }
+        }
+
+
+
+        public IActionResult pruebapartial()
+        {
+
+            var q = PartialView("_PersonasFisicas");
+            return q;
         }
 
 

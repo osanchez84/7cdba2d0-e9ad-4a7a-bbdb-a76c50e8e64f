@@ -821,8 +821,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                     PersonaDireccion = new PersonaDireccionModel
                     {
-                        telefonoFisico = telefonoValido,
-                        telefono = telefonoValido,
+                        telefonoFisico = telefonoValido.ToString(),
+                        telefono = telefonoValido.ToString(),
                         colonia = vehiculoDireccionData.colonia,
                         coloniaFisico = vehiculoDireccionData.colonia,
                         calleFisico = vehiculoDireccionData.calle,
@@ -1391,7 +1391,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
-            Persona.PersonaDireccion.telefono = (String.IsNullOrEmpty(Persona.telefono)) ? 0 : Convert.ToInt64(Persona.telefono);
+            Persona.PersonaDireccion.telefono = String.IsNullOrEmpty(Persona.telefono) ? null : Persona.telefono;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
             if (IdPersonaMoral == 0)
                 return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud." });
@@ -1426,7 +1426,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             if (!string.IsNullOrEmpty(model.numeroLicenciaFisico)) model.numeroLicencia = model.numeroLicenciaFisico;
             if (model.idTipoLicenciaInfraccion != null) model.idTipoLicencia = model.idTipoLicenciaInfraccion;
-            if (!string.IsNullOrEmpty(model.telefonoInfraccion)) model.PersonaDireccion.telefono = Convert.ToInt64(model.telefonoInfraccion);
+            if (!string.IsNullOrEmpty(model.telefonoInfraccion))
+            {
+                model.PersonaDireccion.telefono = model.telefonoInfraccion;
+            }
             if (!string.IsNullOrEmpty(model.correoInfraccion)) model.PersonaDireccion.correo = model.correoInfraccion;
             if (model.vigenciaLicenciaFisico != null)
             {

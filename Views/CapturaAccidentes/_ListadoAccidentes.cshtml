@@ -29,6 +29,8 @@
             .DataSource(dataSource => dataSource
             .Ajax()
         .Read(read => read.Action("BuscarAccidentesListaPagination", "CapturaAccidentes"))
+            .Create(read => read.Action("BuscarAccidentesListaPagination", "CapturaAccidentes"))
+
             .PageSize(10).Model(model => model.Id(p => p.IdAccidente))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))

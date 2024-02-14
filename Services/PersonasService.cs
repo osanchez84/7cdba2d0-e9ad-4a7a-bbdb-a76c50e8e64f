@@ -234,7 +234,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.colonia = reader["colonia"].ToString();
                             model.calle = reader["calle"].ToString();
                             model.numero = reader["numero"].ToString();
-                            model.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.telefono = reader["telefono"].ToString();
+
+                           // model.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.correo = reader["correo"].ToString();
                             model.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
@@ -325,7 +327,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                            //model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -412,7 +416,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                           // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -500,7 +506,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                           // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -587,7 +595,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.PersonaDireccion.colonia = reader["colonia"].ToString();
                             model.PersonaDireccion.calle = reader["calle"].ToString();
                             model.PersonaDireccion.numero = reader["numero"].ToString();
-                            model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                            model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                            //model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                             model.PersonaDireccion.correo = reader["correo"].ToString();
 
                             modelList.Add(model);
@@ -1064,37 +1074,37 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
 
-                    const string SqlTransact = @"SELECT p.idPersona,
-       p.numeroLicencia,
-       p.CURP,
-       p.RFC,
-       p.nombre,
-       p.apellidoPaterno,
-       p.apellidoMaterno,
-       p.fechaActualizacion,
-       p.actualizadoPor,
-       p.estatus,
-       p.idCatTipoPersona,
-       p.idTipoLicencia,
-       p.fechaNacimiento,
-       p.idGenero,
-       p.vigenciaLicencia,
-       ctp.tipoPersona,
-       cl.tipoLicencia,
-       cg.genero
-FROM personas p
-LEFT JOIN catTipoPersona ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1
-LEFT JOIN catTipoLicencia cl ON p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
-LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1
-WHERE
-    (p.estatus = 1)
-    AND (@numeroLicencia IS NULL OR p.numeroLicencia LIKE '%' + @numeroLicencia + '%')
-    AND (@curp IS NULL OR p.CURP LIKE '%' + @curp + '%')
-    AND (@rfc IS NULL OR p.RFC LIKE '%' + @rfc + '%')
-    AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')
-    AND (@apellidoPaterno IS NULL OR p.apellidoPaterno LIKE '%' + @apellidoPaterno + '%')
-    AND (@apellidoMaterno IS NULL OR p.apellidoMaterno LIKE '%' + @apellidoMaterno + '%');
-";
+                    const string SqlTransact = @"SELECT TOP 200 p.idPersona,
+                                                       p.numeroLicencia,
+                                                       p.CURP,
+                                                       p.RFC,
+                                                       p.nombre,
+                                                       p.apellidoPaterno,
+                                                       p.apellidoMaterno,
+                                                       p.fechaActualizacion,
+                                                       p.actualizadoPor,
+                                                       p.estatus,
+                                                       p.idCatTipoPersona,
+                                                       p.idTipoLicencia,
+                                                       p.fechaNacimiento,
+                                                       p.idGenero,
+                                                       p.vigenciaLicencia,
+                                                       ctp.tipoPersona,
+                                                       cl.tipoLicencia,
+                                                       cg.genero
+                                                FROM personas p
+                                                LEFT JOIN catTipoPersona ctp ON p.idCatTipoPersona = ctp.idCatTipoPersona AND ctp.estatus = 1
+                                                LEFT JOIN catTipoLicencia cl ON p.idTipoLicencia = cl.idTipoLicencia AND cl.estatus = 1
+                                                LEFT JOIN catGeneros cg ON p.idGenero = cg.idGenero AND cg.estatus = 1
+                                                WHERE
+                                                    (p.estatus = 1)
+                                                    AND (@numeroLicencia IS NULL OR p.numeroLicencia LIKE '%' + @numeroLicencia + '%')
+                                                    AND (@curp IS NULL OR p.CURP LIKE '%' + @curp + '%')
+                                                    AND (@rfc IS NULL OR p.RFC LIKE '%' + @rfc + '%')
+                                                    AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')
+                                                    AND (@apellidoPaterno IS NULL OR p.apellidoPaterno LIKE '%' + @apellidoPaterno + '%')
+                                                    AND (@apellidoMaterno IS NULL OR p.apellidoMaterno LIKE '%' + @apellidoMaterno + '%')
+                                               ORDER BY p.idPersona DESC ";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicenciaBusqueda ?? DBNull.Value;
@@ -1729,7 +1739,6 @@ WHERE
                                 model.tipoLicencia = reader["tipoLicencia"].ToString();
                                 model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
                                 model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
-
                                 model.PersonaDireccion.idPersonasDirecciones = reader["idPersonasDirecciones"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonasDirecciones"].ToString());
                                 model.PersonaDireccion.idEntidad = reader["idEntidad"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idEntidad"].ToString());
                                 model.PersonaDireccion.idMunicipio = reader["idMunicipio"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idMunicipio"].ToString());
@@ -1740,7 +1749,9 @@ WHERE
                                 model.PersonaDireccion.colonia = reader["colonia"].ToString();
                                 model.PersonaDireccion.calle = reader["calle"].ToString();
                                 model.PersonaDireccion.numero = reader["numero"].ToString();
-                                model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
+                                model.PersonaDireccion.telefono = reader["telefono"].ToString();
+
+                               // model.PersonaDireccion.telefono = reader["telefono"] == System.DBNull.Value ? default(int) : Convert.ToInt64(reader["telefono"].ToString());
                                 model.PersonaDireccion.correo = reader["correo"].ToString();
                                 model.total = Convert.ToInt32(reader["Total"]);
 

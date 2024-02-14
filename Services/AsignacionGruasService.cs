@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -173,7 +173,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     if (!string.IsNullOrEmpty(Serie))
                     {
                         command = new SqlCommand(
-                       "SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno,p.CURP,p.RFC, " +
+                       "SELECT TOP 200 v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio, p.nombre, p.apellidoPaterno, p.apellidoMaterno,p.CURP,p.RFC, " +
                         "FROM vehiculos v " +
                         "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
                         "JOIN catSubmarcasVehiculos sm ON v.idSubmarca = sm.idSubmarca " +
@@ -182,13 +182,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
                         "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                         "JOIN personas p ON v.idPersona = p.idPersona " +
-                        "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%';", connection);
+                        "WHERE v.estatus = 1 AND v.serie LIKE '%' + @Serie + '%' ORDER BY v.idVehiculo DESC;", connection);
 
                         command.Parameters.AddWithValue("@Serie", Serie);
                     }
                     else if (!string.IsNullOrEmpty(Placa))
                     {
-                        command = new SqlCommand("SELECT v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno, " +
+                        command = new SqlCommand("SELECT TOP 200 v.*, mv.marcaVehiculo, sm.nombreSubmarca, e.nombreEntidad, cc.color, tv.tipoVehiculo, ts.tipoServicio,p.nombre, p.apellidoPaterno, p.apellidoMaterno, " +
                             "p.CURP,p.RFC " +
                             "FROM vehiculos v " +
                             "JOIN catMarcasVehiculos mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo " +
@@ -198,7 +198,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             "JOIN catTiposVehiculo tv ON v.idTipoVehiculo = tv.idTipoVehiculo " +
                             "JOIN catTipoServicio ts ON v.idCatTipoServicio = ts.idCatTipoServicio " +
                             "JOIN personas p ON v.idPersona = p.idPersona " +
-                            "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%';", connection);
+                            "WHERE v.estatus = 1 AND v.placas LIKE '%' + @Placa + '%' ORDER BY v.idVehiculo DESC;", connection);
                         command.Parameters.AddWithValue("@Placa", Placa);
                     }
 

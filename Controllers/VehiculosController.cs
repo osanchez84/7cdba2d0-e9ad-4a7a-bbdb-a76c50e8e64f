@@ -302,8 +302,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                         nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
                                         PersonaDireccion = new PersonaDireccionModel
                                         {
-                                            telefonoFisico = telefonoValido,
-                                            telefono = telefonoValido,
+                                            telefonoFisico = telefonoValido.ToString(),
+                                            telefono = telefonoValido.ToString(),
                                             colonia = vehiculoDireccionData.colonia,
                                             coloniaFisico = vehiculoDireccionData.colonia,
                                             calleFisico = vehiculoDireccionData.calle,

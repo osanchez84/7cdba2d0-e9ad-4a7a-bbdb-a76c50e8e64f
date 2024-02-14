@@ -35,6 +35,7 @@ using Microsoft.AspNetCore.Authorization;
 using static iTextSharp.tool.xml.html.table.TableRowElement;
 using Kendo.Mvc;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -827,6 +828,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 {
                     placaEncontrada = false;
                 }
+            } else
+            {
+                Logger.Debug("CapturaAccidentes - AbrirModalVehiculo - REPUVE (BANDERA DESACTIVADA)");
             }
 
             vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";

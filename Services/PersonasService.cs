@@ -1,6 +1,7 @@
 ﻿using Azure;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Util;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -244,8 +245,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    //Guardar la excepcion en algun log de errores
-                    //ex
+                    Logger.Error("PersonasService -  GetPersonaDireccionByIdPersona -" + ex.Message);
                 }
                 finally
                 {

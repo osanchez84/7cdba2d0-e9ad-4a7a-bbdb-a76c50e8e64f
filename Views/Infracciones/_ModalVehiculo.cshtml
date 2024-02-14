@@ -166,9 +166,18 @@
             data: { placa: placa },
             success: function (data) {
                 if (data.success) {
-                    $('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
-                    $('#errorModal').modal('show');
+                    //$('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
+                    //$('#errorModal').modal('show');
                     // $('#VehiculoServiceModal').modal('show');
+
+                    Swal.fire({
+                        icon: "info",
+                        title: "Vehículo no registrado en RIAG",
+                        text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        cancelButtonText: "Cerrar",
+                    });
                 } else {
                     $('#errorMessage').text("Complete o ingrese la información necesaria para agregar este vehículo en RIAG");
                     $('#errorModal').modal('show');
@@ -204,9 +213,18 @@
                 }
 
                 if (response.noResults) {
-                    alert("IF")
-                    $('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a RIAG");
-                    $('#errorModal').modal('show');
+                    //alert("IF")
+                    //$('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a RIAG");
+                    //$('#errorModal').modal('show');
+
+                    Swal.fire({
+                        icon: "info",
+                        title: "Vehículo no registrado en RIAG",
+                        text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        cancelButtonText: "Cerrar",
+                    });
                     $('#ModalBodyVehiculoService').html(response);
                     $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');

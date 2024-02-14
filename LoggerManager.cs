@@ -58,6 +58,11 @@ namespace GuanajuatoAdminUsuarios
         {
             _logger.Error(message, ex);
         }
+
+        public void LogWarning(string message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

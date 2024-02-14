@@ -166,7 +166,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     using (SqlDataReader reader = sqlCommand.ExecuteReader())
                     {
-                        if (reader.Read()) // Intenta leer un registro del resultado
+                        if (reader.Read())
                         {
                             result = Convert.ToInt32(reader["idMarcaVehiculo"]);
                         }
@@ -174,7 +174,6 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    // Manejo de errores y log
                     return result;
                 }
                 finally

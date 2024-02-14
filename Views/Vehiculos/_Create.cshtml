@@ -289,8 +289,8 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Marca<b>(obligatorio):</b></label>
-                @if (disableInput)
-                {
+                @if (Model.idMarcaVehiculo != 0)               
+                  {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo)
                         .DataTextField("Text")
                         .DataValueField("Value")
@@ -333,7 +333,7 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Sub-Marca <b>(obligatorio):</b></label>
-                @if (disableInput)
+                @if (Model.idMarcaVehiculo != 0)               
                 {
                     @*<div id="divSubmarca">
                 @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
@@ -384,7 +384,7 @@
             <div class="controlForm my-3">
                 <label>Tipo de vehículo <b>(obligatorio):</b></label>
 
-                @if (disableInput)
+                @if (Model.idTipoVehiculo != 0)
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idTipoVehiculo)
                         .DataTextField("Text")

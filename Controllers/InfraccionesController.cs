@@ -272,7 +272,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
-            pagination.PageSize = 10;
+            pagination.PageSize = (request.PageSize!=0) ? request.PageSize :  10;
             pagination.Filter = resultValue;
 
             var vehiculosList = _vehiculosService.GetAllVehiculosPagination(pagination);
@@ -280,7 +280,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (vehiculosList.Count() > 0)
                 total = vehiculosList.ToList().FirstOrDefault().total;
 
-            request.PageSize = 10;
+            request.PageSize = pagination.PageSize;
             var result = new DataSourceResult()
             {
                 Data = vehiculosList,
@@ -296,7 +296,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
-            pagination.PageSize = 10;
+            pagination.PageSize = (request.PageSize != 0) ? request.PageSize : 10;
             pagination.Filter = resultValue;
 
             var personasList = _personasService.GetAllPersonasPagination(pagination);
@@ -304,7 +304,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (personasList.Count() > 0)
                 total = personasList.ToList().FirstOrDefault().total;
 
-            request.PageSize = 10;
+            request.PageSize = pagination.PageSize;
             var result = new DataSourceResult()
             {
                 Data = personasList,
@@ -332,7 +332,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 Pagination pagination = new Pagination();
                 pagination.PageIndex = request.Page - 1;
-                pagination.PageSize = 10;
+                pagination.PageSize = (request.PageSize != 0) ? request.PageSize : 10;
                 pagination.Filter = resultValue;
 
                 if (infraModel == null)
@@ -343,7 +343,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 if (listReporteAsignacion.Count() > 0)
                     total = listReporteAsignacion.ToList().FirstOrDefault().Total;
 
-                request.PageSize = 10;
+                request.PageSize = pagination.PageSize;
                 var result = new DataSourceResult()
                 {
                     Data = listReporteAsignacion,
@@ -1672,7 +1672,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 Pagination pagination = new Pagination();
                 pagination.PageIndex = request.Page - 1;
-                pagination.PageSize = 10;
+                pagination.PageSize = (request.PageSize != 0) ? request.PageSize : 10;
                 pagination.Filter = resultValue;
 
                 var listReporteAsignacion = _infraccionesService.GetAllInfraccionesBusquedaEspecialPagination(model, idOficina, idDependencia, pagination);
@@ -1680,7 +1680,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 if (listReporteAsignacion.Count() > 0)
                     total = listReporteAsignacion.ToList().FirstOrDefault().Total;
 
-                request.PageSize = 10;
+                request.PageSize = pagination.PageSize;
                 var result = new DataSourceResult()
                 {
                     Data = listReporteAsignacion,

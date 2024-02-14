@@ -213,7 +213,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al generar archivo en infracción", ex);
+                _logger.LogError("Error al generar archivo en deposito", ex);
                 return Json(new { success = false, message = $"Error al procesar los datos: {ex.Message}" });
             }
         }

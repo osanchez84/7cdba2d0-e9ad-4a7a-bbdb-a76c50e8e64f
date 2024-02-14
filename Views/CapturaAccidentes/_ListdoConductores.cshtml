@@ -68,7 +68,9 @@
             .Scrollable(scr => scr.Height(350))
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("BuscarConductor", "CapturaAccidentes"))
+            .Read(read => read.Action("ajax_BuscarPersonasFiscasPagination", "CapturaAccidentes"))
+            .Create(read => read.Action("ajax_BuscarPersonasFiscasPagination", "CapturaAccidentes"))
+
             .ServerOperation(false)
             )
             .ToolBar(t => t.Search().Text("Buscar..."))

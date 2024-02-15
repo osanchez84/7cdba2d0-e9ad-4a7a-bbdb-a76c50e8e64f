@@ -280,7 +280,7 @@ $(document).ready(()=>{
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlMarcas" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -328,7 +328,7 @@ $(document).ready(()=>{
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlidSubmarcaDisabled" })
+                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "idSubmarca" })
                         .DataSource(source =>
                         {
                             source.Read(read =>

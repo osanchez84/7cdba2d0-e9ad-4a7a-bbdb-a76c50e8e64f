@@ -902,6 +902,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
                     var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
                     Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
+                    var idEntidad = !string.IsNullOrEmpty(repuveConsGralResponse.entidad_expide)
+                                    ? ObtenerIdEntidadDesdeBD(repuveConsGralResponse.entidad_expide)
+                                    : 0;
+                    var idTipoServicio = !string.IsNullOrEmpty(repuveConsGralResponse.tipo_uso_padron)
+                                   ? ObtenerIdTipoServicio(repuveConsGralResponse.tipo_uso_padron)
+                                   : 0;
                     var vehiculoEncontrado = new VehiculoModel
                     {
                         placas = repuveConsGralResponse.placa,
@@ -910,11 +916,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         motor = repuveConsGralResponse.motor,
                         //otros = repuveConsGralResponse.
                         color = repuveConsGralResponse.color,
-                        //idEntidad = idEntidad,
+                        idEntidad = idEntidad,
                         //idMarcaVehiculo = idMarca,
                         //idSubmarca = idSubmarca,
                         submarca = repuveConsGralResponse.submarca,
                         //idTipoVehiculo = idTipo,
+                        idCatTipoServicio = idTipoServicio,
                         modelo = repuveConsGralResponse.modelo,
                         //capacidad = repuveConsGralResponse.c,
                         //carga = repuveConsGralResponse.ca,
@@ -1033,6 +1040,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var tipoVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
 
             idTipo = tipoVehiculo.CatalogList.Where(w => categoria.ToLower().Contains(w.Text.ToLower())).Select(s => s.Id).FirstOrDefault();
+
+            return (idTipo);
+
+        }
+
+        private int ObtenerIdTipoServicio(string categoria)
+        {
+
+            int idTipo = 0;
+
+            var tipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
+
+            idTipo = tipoServicio.CatalogList.Where(w => categoria.ToLower().Contains(w.Text.ToLower())).Select(s => s.Id).FirstOrDefault();
 
             return (idTipo);
 

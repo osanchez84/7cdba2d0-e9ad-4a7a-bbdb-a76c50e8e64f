@@ -378,12 +378,12 @@
                     return;
                 }
                 var personasList = response.Data;
+                if(personasList != null){
                 var grid = $("#gridPersonas").data("kendoGrid");
                 grid.dataSource.data(response.Data);
                 grid.dataSource._total = response.Total;
-
-                console.log(personasList.length)
-                if (personasList.length == 0) {
+                }
+                else{    
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     var grid = $("#gridPersonas").data("kendoGrid");
                     grid.dataSource.data([]);

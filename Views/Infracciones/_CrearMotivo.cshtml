@@ -52,10 +52,10 @@
         </div>
         <div class="form-group col-md-4">
             <div class="controlForm">
-                @(Html.Kendo().IntegerTextBoxFor(t => t.calificacion)
+                @(Html.Kendo().TextBoxFor(t => t.calificacion)
                     .Label(l => l.Content("Calificación <b>(obligatorio)</b>:"))
                     .Events(e => e.Change("onChange"))
-                    .HtmlAttributes(new { style = "width: 100%; height:58px;"})
+                    .HtmlAttributes(new { style = "width: 100%; height:58px;", id = "calificacion" })
                     )
             </div>
         </div>
@@ -84,7 +84,7 @@
 
 <script>
 
-
+  
 
     function btnCrearMotivos() {
 
@@ -174,34 +174,59 @@
             $('#idCatMotivoInfraccion').kendoDropDownList();
         }
     }
-    
-    function _on_change_Motivo() {
-        var min = 0;
-        var max = 0;
-        var value = $("#idCatMotivoInfraccion").val();
-        var txtMin = $("#calificacionMinima").data("kendoTextBox");
-        var txtMax = $("#calificacionMaxima").data("kendoTextBox");
-         showLoading();
-        $.ajax({
-            url: '@Url.Action("BuscarMotivoByID","MotivosInfraccion")',
-            type: 'GET',
-            data: { idCatMotivoInfraccion: value }, 
-            success: function (result) {
-                min = result.CalificacionMinima;
-                max = result.CalificacionMaxima; 
-                 
-                txtMin.value(min);
-                txtMax.value(max);
-                 hideLoading();
-            },
-            error: function (xhr, status) {
-                var errmsg = xhr.responseText;
-                console.log(errmsg)
-                sitteg_warning('Lo sentimos, ha ocurrido un error.'+errmsg);
-                hideLoading();
-            }
-        });
+
+    function onChange() {
+    var min = parseInt($("#calificacionMinima").val() || "0");
+    var currentval = parseInt($("#calificacion").val() || "0");
+
+    if (currentval >= min) {
+    } else {
+        $("#calificacion").val(min);
+        sitteg_info("La calificación es menor");
     }
-     
+}
+
+
+        function _on_change_Motivo() {
+            var min = 0;
+            var max = 0;
+        var txtCalificacion = $("#calificacion").data("kendoTextBox");
+
+            var value = $("#idCatMotivoInfraccion").val();
+            var txtMin = $("#calificacionMinima").data("kendoTextBox");
+            var txtMax = $("#calificacionMaxima").data("kendoTextBox");
+
+            showLoading();
+            $.ajax({
+                url: '@Url.Action("BuscarMotivoByID","MotivosInfraccion")',
+                type: 'GET',
+                data: { idCatMotivoInfraccion: value },
+                success: function (result) {
+               
+                    min = result.CalificacionMinima;
+                    max = result.CalificacionMaxima;
+                    txtMin.value(min);
+                    txtMax.value(max);
+                if (txtCalificacion) {
+                    txtCalificacion.value(min);
+                } else {
+                    console.error("El componente de calificacion no se ha inicializado correctamente.");
+                }
+                hideLoading();
+                },
+                error: function (xhr, status) {
+                    var errmsg = xhr.responseText;
+                    console.log(errmsg)
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.' + errmsg);
+                    hideLoading();
+                }
+            });
+        }
+
+        $("#idCatMotivoInfraccion").change(_on_change_Motivo);
+
+        $("#calificacion").change(onChange);
+  
+
 
 </script>

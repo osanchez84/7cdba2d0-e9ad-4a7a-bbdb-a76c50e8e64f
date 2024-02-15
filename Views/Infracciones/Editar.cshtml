@@ -16,6 +16,8 @@
 		var access = @listaIdsPermitidosJson;
 		var auth = @autorizaciones;
 
+		alert("EDITAR");
+
 		if (access != undefined && access != '') {
 			if (!access.toString().includes(localStorage.getItem("menuId"))) {
 				Swal.fire({

@@ -350,7 +350,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							infraccionModel.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
 							infraccionModel.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
 							infraccionModel.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
-							infraccionModel.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
+							//infraccionModel.infraccionCortesiaValue = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"].ToString());
 							infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
 							infraccionModel.aplicacion = reader["aplicacion"].ToString();
 							//infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);

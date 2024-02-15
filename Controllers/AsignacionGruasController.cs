@@ -34,11 +34,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _bitacoraServices = bitacoraServices;
             _rutaArchivo = configuration.GetValue<string>("AppSettings:RutaArchivoInventarioDeposito");
         }
-        public IActionResult Index()
+        public IActionResult Index(string folio)
         {
            
                 //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
                 var q = User.FindFirst(CustomClaims.Nombre).Value;
+                ViewBag.FolioSolicitud= folio ?? "";
                 return View();                    
         }
         public IActionResult ajax_BuscarSolicitudes(AsignacionGruaModel model)
@@ -59,7 +60,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito==0?idDeposito: solicitud.IdDeposito);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
 
-            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
+            //var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             return View("capturaGruas", solicitud);
         }

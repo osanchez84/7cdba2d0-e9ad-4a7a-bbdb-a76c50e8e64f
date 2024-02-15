@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System;
 using System.Data.SqlClient;
-using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.Identity.Client;
-using System.Linq;
+using GuanajuatoAdminUsuarios.Util;
+using Logger = GuanajuatoAdminUsuarios.Util.Logger;
+
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -21,10 +22,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
         {
             int result = 0;
-            int idSolicitudInsert = 0;
-            string folioSolicitud = "";
-
-
 
             string strQuery = @"INSERT INTO solicitudes( 
                                         [fechaSolicitud]
@@ -440,6 +437,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,ci.idCatMotivoInfraccion,ci.nombre
                                                     ,catSubInf.idSubConcepto,catSubInf.subConcepto
                                                     ,catConInf.idConcepto,catConInf.concepto
+                                                    ,catEntidad.idEntidad as idEntidadUbicacion
                                                     FROM infracciones as inf
                                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
@@ -450,6 +448,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
                                                     left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                                     left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                                                    left join catEntidades catEntidad on catMun.idEntidad=catEntidad.idEntidad
                                                     left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
 												   INNER JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
@@ -477,13 +476,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.interseccion = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
                             model.folio = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
                             model.municipio = reader["municipio"].ToString();
+                            model.idEntidadUbicacion= reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
                           }
                     }
                 }
                 catch (SqlException ex)
                 {
                     //Guardar la excepcion en algun log de errores
-                    //ex
+                   Logger.Error("Error al obtener infracción por folio: "+ex);
                 }
                 finally
                 {

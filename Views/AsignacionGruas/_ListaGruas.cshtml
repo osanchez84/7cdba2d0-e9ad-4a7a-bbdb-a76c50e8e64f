@@ -4,7 +4,6 @@
         var row = $(event.target).closest("tr");
         var dataItem = grid.dataItem(row);
         var idAsignacion = dataItem.idAsignacion
-        console.log("Data clas", idAsignacion);
         showLoading();
         $.ajax({
             url: "/AsignacionGruas/ModalEliminarGrua",

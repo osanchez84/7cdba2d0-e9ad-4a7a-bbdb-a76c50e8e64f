@@ -356,11 +356,11 @@
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
                 }
 
-                var personasList = response.data;
-                var grid = $("#gridPersonas").data("kendoGrid");
-                grid.dataSource.data(personasList);
+                var personasList = response.datos;
+                //var grid = $("#gridPersonas").data("kendoGrid");
+                //grid.dataSource.data(personasList);
 
-                if (personasList.length === 0) {
+                if (personasList.length == 0) {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
                 }

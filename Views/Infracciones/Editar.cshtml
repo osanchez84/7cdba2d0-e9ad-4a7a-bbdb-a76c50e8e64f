@@ -13,6 +13,7 @@
 <script>
 
 	$(document).ready(function () {
+				
 		var access = @listaIdsPermitidosJson;
 		var auth = @autorizaciones;
 
@@ -756,6 +757,7 @@
 
 	$(document).ready(function () {
 		initialCharge();
+       
 	});
 
 	function initialCharge() {
@@ -1132,33 +1134,19 @@ function serviceCrearInfraccion(idInfraccion) {
 		return null;
 	}
 
+	
 
 	function onChange() {
-		var max = parseInt($("#calificacionMaxima").val() || "0")
-		var min = parseInt($("#calificacionMinima").val() || "0")
-		var currentval = parseInt($("#calificacion").val() || "0")
+    var min = parseInt($("#calificacionMinima").val() || "0");
+    var currentval = parseInt($("#calificacion").val() || "0");
 
+    if (currentval >= min) {
+    } else {
+        $("#calificacion").val(min);
+        sitteg_info("La calificación es menor");
+    }
+}
 
-		if (currentval <= max && currentval >= min) {
-
-		}
-		else if (currentval > max) {
-			$("#calificacion").val(max)
-			sitteg_info("La calificación es mayor")
-
-		} else if (currentval < min) {
-			$("#calificacion").val(min)
-			sitteg_info("La calificación es menor")
-
-		}
-		else {
-
-		}
-
-
-
-
-	}
 	function goBack() {
 		window.history.back();
 	}

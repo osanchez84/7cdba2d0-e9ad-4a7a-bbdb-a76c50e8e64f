@@ -346,7 +346,7 @@
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="controlForm my-3">
-                                        <label>Entidad:</label>
+                                        <label>Entidad <b>(obligatorio)</b>:</label>
                                         <span>
                                             @(Html.Kendo().DropDownListFor(m => m.idEntidad).Filter(FilterType.Contains)
                                                 .DataTextField("Text")
@@ -575,7 +575,7 @@
 
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="controlForm my-3">
-                        <label>Entidad:</label>
+                        <label>Entidad <b>(obligatorio)</b>:</label>
                         <span>
                             @(Html.Kendo().DropDownListFor(m => m.idEntidadUbicacion).Filter(FilterType.Contains)
                                 .DataTextField("Text")
@@ -709,22 +709,34 @@
     }
 
     function enviarSolicitud(){
-    
-
         var validator = $("#solicitudForm").kendoValidator().data('kendoValidator');
         var controlsValidate = [];
         var isValid = true;
 
-        controlsValidate.push({ 'controlName': 'fechaSolicitud' });
+           if($('#usuario-tab').attr('aria-selected')==='true'){
         controlsValidate.push({ 'controlName': 'nombreUsuario' });
         controlsValidate.push({ 'controlName': 'apellidoPaternoUsuario' });
         controlsValidate.push({ 'controlName': 'apellidoMaternoUsuario' });
+         }
+
+          controlsValidate.push({ 'controlName': 'fechaSolicitud' });
+
 
         // INPUTS
         if (!isControlsValid(controlsValidate)) { isValid = false; }
 
         // DROP DOWN LIST
         controlsValidate = [];
+
+               //Se valida si el tab de usuario está seleccionado, se agregan como obligatorios los campos del tab
+        if($('#usuario-tab').attr('aria-selected')==='true'){
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'idMunicipio' });
+         }
+        if($('#oficial-tab').attr('aria-selected')=='true'){
+             //En caso que se seleccione el tab de oficial se agrega el campo de motivo de asignacion como obligatorio
+              controlsValidate.push({ 'controlName': 'idMotivoAsignacion' });
+         }
         
         controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
         controlsValidate.push({ 'controlName': 'idOficial' });
@@ -732,18 +744,16 @@
         controlsValidate.push({ 'controlName': 'idTipoUsuario' });
         controlsValidate.push({ 'controlName': 'IdCarretera' });
         controlsValidate.push({ 'controlName': 'IdTramo' });
+        controlsValidate.push({ 'controlName': 'idEntidadUbicacion' });
         controlsValidate.push({ 'controlName': 'idMunicipioUbicacion' });
         controlsValidate.push({ 'controlName': 'idPensionUbicacion' });
-        controlsValidate.push({ 'controlName': 'idMunicipio' });
+
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-
-        //alert($("#fechaSolicitud").val());
         if (!isValid) {
             sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
             return;
         }
-
 
         if (isValid) {
             var Mydata = {
@@ -776,7 +786,6 @@
                 idPensionUbicacion: $('#idPensionUbicacion').val(),
                 interseccion: $('#interseccion').val(),
                 }
-                console.log("DATA", Mydata)
             showLoading();
             $.ajax({
                 url: '/Depositos/ajax_EnviarSolicitudDeposito',
@@ -802,7 +811,7 @@
         }
      }
     $("#goToAsignacion").on("click", function () {
-        window.location.href = "/AsignacionGruas/Index";
+        window.location.href = "/AsignacionGruas/Index?folio="+ $("#folioPlaceholder").text();
     });
 
     function carreteraDropDownChange() {
@@ -817,6 +826,7 @@
                 var TramosDropDown = $("#IdTramo").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
                 hideLoading();
+                $("#IdTramo").trigger("onFinishLoading");
             },
             error: function (xhr, status, error) {
                 hideLoading();
@@ -836,6 +846,7 @@
                 var MunicipiosDropDown = $("#idMunicipioUbicacion").data("kendoDropDownList");
                 MunicipiosDropDown.dataSource.data(data);
                 hideLoading();
+                  $("#idMunicipioUbicacion").trigger("onFinishLoading");
             },
             error: function (xhr, status, error) {
                 hideLoading();
@@ -863,7 +874,7 @@
                 hideLoading();
             },
             error: function () {
-                sitteg_warning("Ocurrioun error intente mas tarde");
+                sitteg_warning("Ocurrio un error intente mas tarde");
                 hideLoading();
             }
         });
@@ -871,7 +882,6 @@
 
     function buscarInfraccion() {
         var folioBusquedaInfraccion = $("#folioBusquedaInfraccion").val(); 
-        console.log(folioBusquedaInfraccion);
         showLoading();
         $.ajax({
             url: '/Depositos/ajax_ImportarInfoInfraccion',
@@ -880,27 +890,45 @@
                 folioBusquedaInfraccion: folioBusquedaInfraccion 
             },
             success: function (data) {
-                console.log("JJ", data)
+                 hideLoading();
+               if(data.idInfraccion==0){
+                  sitteg_warning("No se encontrarón datos de infracción para importar");
+                  return;
+               }
+
                 var selectedValueCar = data.IdCarretera;
                 var selectedValueTramo = data.IdTramo;
                 var selectedValueMun = data.idMunicipioUbicacion;
 
+                $('#IdTramo').on('onFinishLoading',function()
+                        {
+                          
+                            $("#IdTramo").data("kendoDropDownList").value(selectedValueTramo);
+                        });
+
+                 $('#idMunicipioUbicacion').on('onFinishLoading',function()
+                        {
+                          
+                            $("#idMunicipioUbicacion").data("kendoDropDownList").value(selectedValueMun);
+                        });
                 $("#numeroUbicacion").val(data.numeroUbicacion); 
                 $("#calleUbicacion").val(data.calleUbicacion);
                 $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion
                 $("#kilometroUbicacion").val(data.kilometroUbicacion);
 
                 $("#IdCarretera").data("kendoDropDownList").value(selectedValueCar);
+                 
                 $("#IdCarretera").data("kendoDropDownList").trigger("change");
 
-                $("#IdTramo").data("kendoDropDownList").value(selectedValueTramo);
-                $("#IdTramo").data("kendoDropDownList").trigger("change");
-
-                $("#idMunicipioUbicacion").data("kendoDropDownList").value(selectedValueMun);
-                $("#idMunicipioUbicacion").data("kendoDropDownList").trigger("change");
+                $("#idEntidadUbicacion").data("kendoDropDownList").value(data.idEntidadUbicacion);
+                $("#idEntidadUbicacion").data("kendoDropDownList").trigger("change");
 
                 $("#interseccion").val(data.interseccion);
-                hideLoading();
+
+                    $("#idPensionUbicacion").data("kendoDropDownList").value(data.idPensionUbicacion);
+
+                 sitteg_success("Se importaron los datos correctamente");
+               
             },
             error: function () {
                 sitteg_warning("Ocurrió un error, inténtelo más tarde");

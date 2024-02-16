@@ -186,7 +186,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-
         [HttpPost]
         public ActionResult ajax_BuscarVehiculo2(VehiculoBusquedaModel model)
         {
@@ -428,6 +427,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return estatus;
         }
 
+        /// <summary>
+        /// //CONSULTA SERVICIO FINANZAS PADRON ESTATAL
+        /// </summary>
+        /// <returns></returns>
 
         public VehiculoModel GetVEiculoModelFromFinanzas(RootCotejarDatosRes result)
         {

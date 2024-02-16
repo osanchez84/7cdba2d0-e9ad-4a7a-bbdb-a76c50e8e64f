@@ -206,7 +206,7 @@
             type: 'POST',
             data: formData,
             success: function (response) {
-
+                console.log("ejn", response)
                 if (response.success === false) {
                     sitteg_warning("No se encontraron resultados");
                     return;

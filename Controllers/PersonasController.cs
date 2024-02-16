@@ -200,7 +200,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     var content = await response.Content.ReadAsStringAsync();
                     LicenciaRespuestaPersona respuesta = JsonConvert.DeserializeObject<LicenciaRespuestaPersona>(content);
 
-                    return Json(new { encontrada = false, Data = respuesta.datos, message = respuesta.mensaje });
+                    return Json(new { encontrada = false, Data = respuesta.datos, tipo = respuesta.datos == null? "sin datos" : "success", message = respuesta.mensaje });
                     //return Json(respuesta);
                 }
             }

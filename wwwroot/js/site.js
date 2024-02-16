@@ -44,6 +44,7 @@ function isControlsValidDropDown(controlsValidate) {
     controlsValidate.forEach(x => {
         var element = $('#' + x.controlName);
         element.closest('.k-dropdown').removeClass("errorData");
+        console.log(x.controlName,element.val())
         if (element.val() === '' || element.val() === undefined) {
             element.closest('.k-dropdown').addClass("errorData");
             if (!isFirst) {

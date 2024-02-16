@@ -1,6 +1,6 @@
 ﻿@model VehiculoModel
 
-
+<hr />
 <div class="row my-4 px-4">
     <div class="form-group col-md-3">
         <div class="controlForm">
@@ -19,10 +19,11 @@
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
-            <label>Vigencia tarjeta:</label>&nbsp;@(Model.vigenciaTarjeta.HasValue?Model.vigenciaTarjeta.Value.ToString("dd/MM/yyyy"):"-")
+            <label>Vigencia tarjeta:</label>&nbsp;@(Model.vigenciaTarjeta.HasValue ? Model.vigenciaTarjeta.Value.ToString("dd/MM/yyyy") : "-")
         </div>
     </div>
 </div>
+
 <div class="row my-4 px-4">
     <div class="form-group col-md-3">
         <div class="controlForm">
@@ -92,4 +93,16 @@
             <p>@Model.Persona.nombreCompleto</p>
         </div>
     </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-4 justify-content-end">
+        <div class="row">
+            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                <button href="#" id="btnEditarVehiculo" onclick="btnEditarInfraccion()">
+                    <h6 class="m-0 d-flex align-items-center"><i class="icon-addInfracion h5 mb-0 me-2"></i><b>Editar datos de éste vehículo</b></h6>
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
+<hr />

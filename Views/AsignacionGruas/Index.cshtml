@@ -4,6 +4,7 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+    string folio = ViewBag.FolioSolicitud;
 }
 
 <script>
@@ -47,6 +48,9 @@
                     if (data.error) {
                         sitteg_warning(data.error);
                     } else {
+                        if(data.length===0){
+                             sitteg_warning("No se encontraron registros con este folio");
+                        }
                         var grid = $("#gridBusquedaSolicitudes").data("kendoGrid");
                         grid.dataSource.data(data);
                         grid.refresh();
@@ -94,7 +98,8 @@
                         @(Html.Kendo().TextBoxFor(t => t.FolioSolicitud)
                             .Label(l => l.Content("Folio:"))
                             .Placeholder("Ingresa folio")
-                            .HtmlAttributes(new { style = "width: 100%", Id = "txtFolio" })
+                            .HtmlAttributes(new { value=ViewBag.FolioSolicitud,style = "width: 100%", Id = "txtFolio" })
+                            
                             )
 
                     </div>

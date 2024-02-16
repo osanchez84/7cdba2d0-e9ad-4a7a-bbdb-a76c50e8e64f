@@ -41,6 +41,9 @@ using static GuanajuatoAdminUsuarios.Controllers.PDFExampleController;
 using Microsoft.Extensions.Configuration;
 using GuanajuatoAdminUsuarios.Util;
 using System.Globalization;
+using GuanajuatoAdminUsuarios.Helpers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using String = System.String;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -910,7 +913,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
         [HttpPost]
-        public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
+        public async  Task<string> ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
             try
             {
@@ -933,7 +936,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 if (vehiculosModel.idVehiculo > 0)
                 {
-                    return PartialView("_Create", vehiculosModel);
+                    return await this.RenderViewAsync("_Create", vehiculosModel,true);
 
                 }
 
@@ -953,7 +956,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
 
-                        return PartialView("_Create", vehiculosModel);
+                        return await this.RenderViewAsync("_Create", vehiculosModel,true);
                     }
                 }
 
@@ -1011,7 +1014,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
 
-                    return PartialView("_Create", vehiculoEncontrado);
+                    return await this.RenderViewAsync("_Create", vehiculoEncontrado,true);
 
                 }
                 else
@@ -1021,7 +1024,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
 
 
-                return PartialView("_Create", vehiculosModel);
+                return await this.RenderViewAsync("_Create", vehiculosModel,true);
             }
             catch (Exception ex)
             {
@@ -1493,7 +1496,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_CrearPersonaMoral(PersonaModel Persona)
         {
             Persona.idCatTipoPersona = (int)TipoPersona.Moral;
-            Persona.PersonaDireccion.telefono = String.IsNullOrEmpty(Persona.telefono) ? null : Persona.telefono;
+            Persona.PersonaDireccion.telefono = System.String.IsNullOrEmpty(Persona.telefono) ? null : Persona.telefono;
             var IdPersonaMoral = _personasService.CreatePersonaMoral(Persona);
             if (IdPersonaMoral == 0)
                 return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud." });

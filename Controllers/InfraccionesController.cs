@@ -414,6 +414,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
+            model.Persona = model.Persona ?? new PersonaModel();
+            model.Persona.PersonaDireccion = model.Persona.PersonaDireccion ?? new PersonaDireccionModel();
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");

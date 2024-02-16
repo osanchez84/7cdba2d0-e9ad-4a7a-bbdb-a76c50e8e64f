@@ -106,7 +106,7 @@
         </div>
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Tipo persona <b>(obligatorio)</b>:</label>
+                <label>Tipo persona:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idCatTipoPersona).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatTipoPersona)
                     .OptionLabel("-- Seleccione --")
@@ -146,7 +146,7 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Entidad:</label>
+                <label>Entidad <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -165,7 +165,7 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Municipio:</label>
+                <label>Municipio <b>(obligatorio)</b>:</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -314,20 +314,22 @@
         var isValid = true;
 
         controlsValidate.push({ 'controlName': 'nombre' });
-        controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+       // controlsValidate.push({ 'controlName': 'fechaNacimiento' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
         controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
 
         // INPUTS
-        if (!isControlsValid(controlsValidate)) { isValid = false; }
+        if (!isControlsValid(controlsValidate)) {  isValid = false; }
 
 
         // DROP DOWN LIST
         controlsValidate=[];
         controlsValidate.push({ 'controlName': 'idGenero' });
-        controlsValidate.push({ 'controlName': 'tipoPersona' });
-        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'idMunicipio' });
+        //controlsValidate.push({ 'controlName': 'tipoPersona' });
+        if (!isControlsValidDropDown(controlsValidate)) {  isValid = false; }
 
 
         if (!isValid) {

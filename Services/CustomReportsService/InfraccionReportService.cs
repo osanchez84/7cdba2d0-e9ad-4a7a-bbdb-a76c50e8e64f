@@ -108,7 +108,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellBox("Folio: ", ModelDataInfracciones.folioInfraccion));
                 nested.AddCell(FieldCellBox("Fecha: ", ModelDataInfracciones.fechaInfraccion.ToString("dd-MM-yyyy")));
-                nested.AddCell(FieldCellBox("Hora: ", ModelDataInfracciones.fechaInfraccion.ToString("HH:mm:ss")));
+                nested.AddCell(FieldCellBox("Hora: ", ModelDataInfracciones.horaInfraccion ));
                 nested.AddCell(FieldCellBox("Fecha de vencimiento: ", ModelDataInfracciones.fechaVencimiento.ToString("dd-MM-yyyy")));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);

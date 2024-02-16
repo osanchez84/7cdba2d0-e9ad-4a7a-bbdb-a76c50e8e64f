@@ -30,8 +30,7 @@ $(document).ready(()=>{
     }
  
 })
-
-
+ 
 
      function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
@@ -830,7 +829,7 @@ $(document).ready(()=>{
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                    .Events(e => e.Change("EntidadDropDownChangeV"))
+                                    //.Events(e => e.Change("EntidadDropDownChangeV"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -843,7 +842,7 @@ $(document).ready(()=>{
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
+                        <div id="divMunicipioMor" class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
@@ -855,7 +854,7 @@ $(document).ready(()=>{
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "Infracciones");
+                                            read.Action("Municipios_Read", "Infracciones");
                                         });
                                     })
                                     )
@@ -1125,7 +1124,7 @@ $(document).ready(()=>{
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                    .Events(e => e.Change("EntidadDropDownChangeFis"))
+                                   // .Events(e => e.Change("EntidadDropDownChangeFis"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1175,7 +1174,7 @@ $(document).ready(()=>{
                          @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
+                        <div id="divMunicipio" class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
@@ -1187,7 +1186,7 @@ $(document).ready(()=>{
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "Infracciones");
+                                            read.Action("Municipios_Read", "Infracciones");
                                         });
                                     })
                                     )
@@ -1327,6 +1326,21 @@ $(document).ready(()=>{
         $('#idSubmarca').kendoDropDownList();
 
     });
+
+     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
+        $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
+
+    });
+
+     $("#Persona_PersonaDireccion_idEntidad").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipio", "false", "divMunicipioMor", "");
+        $('#Persona_PersonaDireccion_idMunicipio').kendoDropDownList();
+
+    });
+
 
     //$("#idSubmarca").on("change", function () {
     //    var value = $(this).val();
@@ -1627,5 +1641,6 @@ function cerrarModalMoral(){
    $('#addMoral').modal('hide');
 
 }
+
 
 </script>

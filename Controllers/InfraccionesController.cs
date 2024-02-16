@@ -44,6 +44,7 @@ using System.Globalization;
 using GuanajuatoAdminUsuarios.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using String = System.String;
+using static iTextSharp.tool.xml.html.HTML;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -207,6 +208,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_estatusInfraccionService.GetEstatusInfracciones(), "idEstatusInfraccion", "estatusInfraccion");
             return Json(result);
         }
+
+        public JsonResult Municipios_Read()
+        {
+            var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+            var result = new SelectList(catMunicipios.CatalogList, "Id", "Text");
+            //var selected = result.Where(x => x.Value == Convert.ToString(idSubmarca)).First();
+            //selected.Selected = true;
+            return Json(result);
+        }
+
         public JsonResult Municipios_Por_Delegacion_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -808,7 +819,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 motor = vehiculoEncontradoData.no_motor,
                 otros = vehiculoEncontradoData.otros,
                 idColor = idColor,
-                //idEntidad = idEntidad,
+                idEntidad = idEntidad,
                 idMarcaVehiculo = idMarca,
                 idSubmarca = idSubmarca,
                 submarca = submarcaLimpio,
@@ -828,6 +839,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
                     generoBool = generoBool,
                     nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+                    RFC = vehiculoInterlocutorData.Nro_rfc,
+
 
                     PersonaDireccion = new PersonaDireccionModel
                     {
@@ -1041,9 +1054,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
+            int idMunicipio = 0;
+
+            var municipioStr = _catDictionary.GetCatalog("CatMunicipios", "0");
+
+            idMunicipio = municipioStr.CatalogList
+                            .Where(w => RemoveDiacritics(w.Text.ToLower()).Contains(RemoveDiacritics(municipio.ToLower())))
+                            .Select(s => s.Id)
+                            .FirstOrDefault();
             return (idMunicipio);
         }
+
+        
         private int ObtenerIdEntidadDesdeBD(string entidad)
         {
             var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);

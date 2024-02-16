@@ -202,16 +202,16 @@
         var formData = $("#buscarVehiculoForm").serialize();
         showLoading();
         $.ajax({
-            url: '@Url.Action("BuscarVehiculo")',
+            url: '@Url.Action("ajax_BuscarVehiculo")',
             type: 'POST',
             data: formData,
             success: function (response) {
-                console.log("ejn", response)
+
                 if (response.success === false) {
                     sitteg_warning("No se encontraron resultados");
                     return;
                 }
-                
+
                 if (response.noResults) {
                     //alert("IF")
                     //$('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a RIAG");
@@ -225,25 +225,24 @@
                         showConfirmButton: false,
                         cancelButtonText: "Cerrar",
                     });
-                    $('#ModalBodyVehiculoService').html(response.data);
+                    $('#ModalBodyVehiculoService').html(response);
                     $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
                 } else {
-                    $('#agregarVehiculoModal').modal('hide');
                     //$('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
                     //$('#errorModal').modal('show');
 
-                    //Swal.fire({
-                    //    icon: "info",
-                    //    title: "Vehículo no registrado en RIAG",
-                    //    text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
-                    //    showCancelButton: true,
-                    //    showConfirmButton: false,
-                    //    cancelButtonText: "Cerrar",
-                    //});
-                    //$('#ModalBodyVehiculoService').html(response.data);
-                    //$('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
-                    //$('#VehiculoServiceModal').modal('show');
+                    Swal.fire({
+                        icon: "info",
+                        title: "Vehículo no registrado en RIAG",
+                        text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
+                        showCancelButton: true,
+                        showConfirmButton: false,
+                        cancelButtonText: "Cerrar",
+                    });
+                    $('#ModalBodyVehiculoService').html(response);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#VehiculoServiceModal').modal('show');
                 }
                 hideLoading();
             },

@@ -17,8 +17,7 @@ using System.Globalization;
 using Azure;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ServiceModel.Channels;
-
-
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1840,7 +1839,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,inf.idCarretera
                                       ,inf.idPersona
                                       ,inf.idPersonaInfraccion
-                                      ,inf.placasVehiculo
+                                      ,ISNULL(inf.placasVehiculo,'') placasVehiculo 
                                       ,inf.folioInfraccion
                                       ,inf.fechaInfraccion
                                       ,inf.kmCarretera
@@ -1850,7 +1849,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,inf.lugarColonia
                                       ,inf.lugarEntreCalle
                                       ,inf.infraccionCortesia
-                                      ,inf.NumTarjetaCirculacion
+                                      ,ISNULL(inf.NumTarjetaCirculacion,'') NumTarjetaCirculacion
                                       ,inf.fechaActualizacion
                                       ,inf.actualizadoPor
                                       ,inf.estatus
@@ -1859,6 +1858,7 @@ namespace GuanajuatoAdminUsuarios.Services
 									  ,ofi.apellidoPaterno AS apellidoPaternoOficial
 								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
 									  ,car.carretera,tra.tramo,mun.municipio,pdir.telefono
+									  ,inf.fechaVencimiento
                                FROM infracciones AS inf
 							   LEFT JOIN catOficiales AS ofi ON inf.idOficial = ofi.idOficial
 							   LEFT JOIN catCarreteras AS car ON inf.idCarretera = car.idCarretera
@@ -1929,11 +1929,18 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.lugarNumero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
 							model.lugarColonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
 							model.lugarEntreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+							
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							if (model.Vehiculo != null)
 							{
 								model.idPropitario = model.Vehiculo.idPersona;
-							}
+								//if (reader["NumTarjetaCirculacion"].ToString() !="")
+								//  model.Vehiculo.tarjeta =  reader["NumTarjetaCirculacion"].ToString();
+								//if (reader["placasVehiculo"].ToString()!="")
+								//	model.Vehiculo.placas =  reader["placasVehiculo"].ToString();
+								//if (reader["fechaVencimiento"] != System.DBNull.Value)
+								//	model.Vehiculo.vigenciaTarjeta = Convert.ToDateTime(reader["fechaVencimiento"]);
+                            }
 							else
 							{
 								throw new Exception("Vehiculo es nulo, no se puede obtener datos.");
@@ -2686,44 +2693,23 @@ namespace GuanajuatoAdminUsuarios.Services
 			return result;
 		}
 
-
-		public int ModificarInfraccion(InfraccionesModel model)
+		/// <summary>
+		/// HMG 
+		/// ACTUALIZACIÓN A INFRACCION Y VEHICULO
+		/// </summary>
+		/// <param name="model"></param>
+		/// <param name="vehiculo"></param>
+		/// <returns></returns>
+		public int ModificarInfraccion(InfraccionesModel model, VehiculoModel vehiculo)
 		{
 			int result = 0;
-			string strQuery = @"UPDATE infracciones
-                                       SET idOficial = @idOficial
-                                          ,idDependencia = @idDependencia
-                                          ,idDelegacion = @idDelegacion
-                                          ,idGarantia = @idGarantia
-                                          ,idVehiculo = @idVehiculo
-                                          ,idAplicacion = @idAplicacion
-                                          ,idEstatusInfraccion = @idEstatusInfraccion
-                                          ,idMunicipio = @idMunicipio
-                                          ,idTramo = @idTramo
-                                          ,idCarretera = @idCarretera
-                                          ,idPersona = @idPersona
-                                          ,idPersonaInfraccion = @idPersonaInfraccion
-                                          ,placasVehiculo = @placasVehiculo
-                                          ,folioInfraccion = @folioInfraccion
-                                          ,fechaInfraccion = @fechaInfraccion
-                                          ,kmCarretera = @kmCarretera
-                                          ,observaciones = @observaciones
-                                          ,lugarCalle = @lugarCalle
-                                          ,lugarNumero = @lugarNumero
-                                          ,lugarColonia = @lugarColonia
-                                          ,lugarEntreCalle = @lugarEntreCalle
-                                          ,infraccionCortesia = @infraccionCortesia
-                                          ,NumTarjetaCirculacion = @NumTarjetaCirculacion
-                                          ,fechaActualizacion = @fechaActualizacion
-                                          ,actualizadoPor = @actualizadoPor
-                                          WHERE idInfraccion = @idInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand(strQuery, connection);
-					command.CommandType = CommandType.Text;
+					SqlCommand command = new SqlCommand("usp_UpdateInfraccionesVehiculos", connection);
+					command.CommandType = CommandType.StoredProcedure;
 					command.Parameters.Add(new SqlParameter("idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
 					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idDependencia", SqlDbType.Int)).Value = (object)model.idDependencia ?? DBNull.Value;
@@ -2738,7 +2724,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)vehiculo.placas ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera ?? DBNull.Value;
@@ -2748,19 +2734,28 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Int)).Value = (object)model.cortesiaInt ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.NumTarjetaCirculacion ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)vehiculo.tarjeta ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 
+                    command.Parameters.Add(new SqlParameter("vigenciaTarjeta", SqlDbType.DateTime2)).Value = (object)vehiculo.vigenciaTarjeta ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("motor", SqlDbType.NVarChar)).Value = (object)vehiculo.motor ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)vehiculo.numeroEconomico ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)vehiculo.otros ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)vehiculo.poliza ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@capacidad", SqlDbType.Int)).Value = (object)vehiculo.capacidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)vehiculo.idEntidad ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)vehiculo.idColor ?? DBNull.Value;
 
-					result = command.ExecuteNonQuery();
-					if (result > 0) // Si la actualización tuvo éxito
-					{
+                    result = command.ExecuteNonQuery();
+					//if (result > 0) // Si la actualización tuvo éxito
+					//{
 						return model.idInfraccion; // Retornar el idInfraccion
-					}
+					//}
 				}
 				catch (SqlException ex)
 				{
+					Logger.Debug("usp_UpdateInfraccionesVehiculos: " + ex.Message);
 					return result;
 				}
 				finally

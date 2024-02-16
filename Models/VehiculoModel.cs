@@ -50,6 +50,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? capacidad { get; set; }
         public string poliza { get; set; }
         public bool? carga { get; set; }
+        public string cargaTexto { get; set; }
         public int cargaInt { get; set; }
 		public int NumeroSecuencial { get; set; }
 		

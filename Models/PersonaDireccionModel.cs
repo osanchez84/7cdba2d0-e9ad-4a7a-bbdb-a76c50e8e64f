@@ -12,7 +12,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string entidad { get; set; }
         public int? idMunicipio { get; set; }
         public int? idMunicipioFisico { get; set; }
-
+        public int? idTipoPersona { get; set; }
         public string municipio { get; set; }
         public string codigoPostal { get; set; }
         public string colonia { get; set; }

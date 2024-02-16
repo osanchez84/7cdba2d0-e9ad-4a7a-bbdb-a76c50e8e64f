@@ -1938,7 +1938,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							{
 								throw new Exception("Vehiculo es nulo, no se puede obtener datos.");
 							};
-							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["infraccionCortesia"]);
+							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? false : ((int)reader["infraccionCortesia"])==1?false:true;
 							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
 							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
 							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);

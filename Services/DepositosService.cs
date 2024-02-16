@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System;
 using System.Data.SqlClient;
-using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.Identity.Client;
-using System.Linq;
+using GuanajuatoAdminUsuarios.Util;
+using Logger = GuanajuatoAdminUsuarios.Util.Logger;
+
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -21,10 +22,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
         {
             int result = 0;
-            int idSolicitudInsert = 0;
-            string folioSolicitud = "";
-
-
 
             string strQuery = @"INSERT INTO solicitudes( 
                                         [fechaSolicitud]
@@ -440,18 +437,21 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,ci.idCatMotivoInfraccion,ci.nombre
                                                     ,catSubInf.idSubConcepto,catSubInf.subConcepto
                                                     ,catConInf.idConcepto,catConInf.concepto
+                                                    ,catEntidad.idEntidad as idEntidadUbicacion,
+                                                    (select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
                                                     FROM infracciones as inf
                                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
                                                     left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
                                                     left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
-                                                    left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
+                                                    left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia and inf.idInfraccion=gar.idInfraccion
                                                     left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
                                                     left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
                                                     left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                                     left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                                                    left join catEntidades catEntidad on catMun.idEntidad=catEntidad.idEntidad
                                                     left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-												   INNER JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
+												    left JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
@@ -477,13 +477,15 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.interseccion = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
                             model.folio = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
                             model.municipio = reader["municipio"].ToString();
+                            model.idEntidadUbicacion= reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
+                            model.idPensionUbicacion= reader["idPensionUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idPensionUbicacion"].ToString());
                           }
                     }
                 }
                 catch (SqlException ex)
                 {
                     //Guardar la excepcion en algun log de errores
-                    //ex
+                   Logger.Error("Error al obtener infracción por folio: "+ex);
                 }
                 finally
                 {

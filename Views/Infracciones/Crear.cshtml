@@ -334,7 +334,7 @@
 											<i class="icon-edit-car h1 colorPrimary"></i>
 										</div>
 										<div class="col-auto my-3">
-											<h5 class="px-4"><b>Vehículo de la infracción agsdh</b></h5>
+											<h5 class="px-4"><b>Vehículo de la infracción</b></h5>
 											@*<h6 class="px-4 text-muted">Marque el vehículo que desea asociar.</h6>*@
 										</div>
 									</div>
@@ -593,19 +593,46 @@
 	});
 
 	function btnGuardarInfraccion() {
-		var validator = $("#frmCrearInfraccion").kendoValidator().data('kendoValidator');
-		validator.validate();
+		//var validator = $("#frmCrearInfraccion").kendoValidator().data('kendoValidator');
+		//validator.validate();
+		
+		var controlsValidate = [];
+		var isValid = true;
+
+		// ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
+		controlsValidate.push({ 'controlName': 'fechaInfraccion' });
+		controlsValidate.push({ 'controlName': 'folioInfraccion' });
+		controlsValidate.push({ 'controlName': 'kmCarretera' });
+
+		// INPUTS
+		if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+		// DROP DOWN LIST
+		controlsValidate = [];
+		controlsValidate.push({ 'controlName': 'idOficial' });
+		controlsValidate.push({ 'controlName': 'idMunicipio' });
+		controlsValidate.push({ 'controlName': 'ddlCarreteras' });
+		controlsValidate.push({ 'controlName': 'idTramo' });
+
+		if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+		if (!isValid) {
+			sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+			return;
+		}
+
 		if ($("#idVehiculo").val() == '') {
-			sitteg_info('Debe seleccionar un vehículo');
+			sitteg_warning('Debe seleccionar un vehículo');
 			return;
 		}
 
 		if ($("#idPersona").val() == '') {
-			sitteg_info('Debe seleccionar un conductor');
+			sitteg_warning('Debe seleccionar un conductor');
 			return;
 		}
+		
 
-		if (ValidarCrear()) {
+		//if (ValidarCrear()) {
 			var formData = $("#frmCrearInfraccion").serialize();
 			//var formData = new FormData();
 			//formData.delete('idDelegacion');
@@ -641,11 +668,11 @@
 			});
 
 
-		}
-		else {
-			sitteg_info('Debe llenar los campos requeridos');
-			return;
-		}
+		//}
+		//else {
+		//	sitteg_info('Debe llenar los campos requeridos');
+		//	return;
+		//}
 
 	}
 

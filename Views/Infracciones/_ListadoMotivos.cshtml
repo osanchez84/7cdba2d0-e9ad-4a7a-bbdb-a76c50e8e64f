@@ -39,7 +39,6 @@
             "value='#=calificacion#' " +
             "data-bind='value:calificacion' " +
             "min='#=CalificacionMinima#' " +
-            "max='#=CalificacionMaxima#' " +
             "# if(esSoloLecturaGrid) { # disabled='disabled' # } #" +
             "/>" +
             "<div class='spinner-controls'>" +
@@ -48,6 +47,7 @@
             "</div>" +
             "</div>"
             ).Title("Calificación").Width(190);
+
 
 
             @*columns.Bound(p => p.idMotivoInfraccion).ClientTemplate(
@@ -155,17 +155,17 @@
             validarAntesDeDecrementar(input);
         });
 
-        function validarAntesDeIncrementar(input) {
-            if ('@ViewBag.EsSoloLectura' === 'True') {
-                return;
-            }
-            var currentValue = parseInt(input.val(), 10);
-            var maxLimit = parseInt(input.attr('max'), 10);
+       function validarAntesDeIncrementar(input) {
+    if ('@ViewBag.EsSoloLectura' === 'True') {
+        return;
+    }
+    var currentValue = parseInt(input.val(), 10);
 
-            if (isNaN(currentValue) || currentValue < maxLimit) {
-                input.val(currentValue + 1);
-            }
-        }
+    if (!isNaN(currentValue)) {
+        input.val(currentValue + 1);
+    }
+}
+
 
         function validarAntesDeDecrementar(input) {
             if ('@ViewBag.EsSoloLectura' === 'True') {
@@ -179,7 +179,16 @@
             }
         }
     });
+   
+    $(document).on("change", ".custom-number-input .custom-input", function () {
+        var input = $(this);
+        var minValue = parseInt(input.attr("min"));
+        var enteredValue = parseInt(input.val());
 
+        if (!isNaN(minValue) && !isNaN(enteredValue) && enteredValue < minValue) {
+            input.val(minValue);
+        }
+    });
 </script>
 
 

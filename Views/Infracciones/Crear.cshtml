@@ -199,7 +199,15 @@
 										<label>Oficial <b>(obligatorio):</b></label>
 										@(Html.Kendo().DropDownList()
 											.Name("idOficial")
-											.BindTo((SelectList)ViewBag.CatOficiales)
+											.DataTextField("Text")
+											.DataValueField("Value")
+											.DataSource(source =>
+											{
+												source.Read(read =>
+												{
+													read.Action("OficialesDependencia_Drop", "Oficiales");
+												});
+											})
 											.OptionLabel("-- Seleccione --")
 											.Filter(FilterType.Contains)
 

@@ -134,10 +134,20 @@
                     <div class="controlForm">
                         <label>Oficial:</label>
                             @(Html.Kendo().DropDownListFor(f => f.idOficial)
-                            .BindTo((SelectList)ViewBag.CatOficiales).Filter(FilterType.Contains)
-                                .OptionLabel("-- Seleccione --")
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                )
+											.DataTextField("Text")
+											.DataValueField("Value")
+											.DataSource(source =>
+											{
+												source.Read(read =>
+												{
+													read.Action("OficialesDependencia_Drop", "Oficiales");
+												});
+											})
+											.OptionLabel("-- Seleccione --")
+											.Filter(FilterType.Contains)
+
+											.HtmlAttributes(new { style = "width:100%;"})
+											)
                     </div>
                 </div>
             
@@ -145,9 +155,19 @@
                     <div class="controlForm">
                         <label>Carretera:</label>
                         @(Html.Kendo().DropDownListFor(m => m.idCarretera).Filter(FilterType.Contains)
-                            .BindTo((SelectList)ViewBag.CatCarreteras)
-                            .OptionLabel("-- Seleccione --")
-                            .HtmlAttributes(new { style = "width:100%;" })
+                            .Label(l => l.Content("Carretera <b>(obligatorio)</b>:"))
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una Carretera")
+                            .Events(e => e.Change("carreteraDropDownChange"))
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("CarreterasPorDelegacion_Drop", "CatCarreteras");
+                                });
+                            })
                             )
                     </div>
                 </div>
@@ -155,9 +175,19 @@
                     <div class="controlForm">
                         <label>Tramo:</label>
                         @(Html.Kendo().DropDownListFor(m => m.idTramo).Filter(FilterType.Contains)
-                            .BindTo((SelectList)ViewBag.CatTramos)
-                            .OptionLabel("-- Seleccione --")
+                            .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona un Tramo")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Tramos_Drop", "ComparativoInfracciones");
+                                });
+                            })
                             .HtmlAttributes(new { style = "width:100%;" })
+                            .Filter(FilterType.Contains)
                             )
                     </div>
                 </div>
@@ -293,5 +323,24 @@
 			}
 		})
 	});
+    function carreteraDropDownChange() {
+        var carreteraDDValue = $("#idCarretera").data("kendoDropDownList").value();
+
+        showLoading();
+        $.ajax({
+            url: "/ComparativoInfracciones/Tramos_Drop",
+            type: "POST",
+            data: { carreteraDDValue: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#idTramo").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+                $("#idTramo").trigger("onFinishLoading");
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
 
 </script>

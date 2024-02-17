@@ -1,12 +1,14 @@
 ﻿@model List<PersonaModel>
 @*@using GuanajuatoAdminUsuarios.Models;*@
-
-<div class="row justify-content-between my-2 mb-1 titleCustom">
+@if (!ViewBag.EditarVehiculo != null && !ViewBag.EditarVehiculo)
+{
+    <div class="row justify-content-between my-2 mb-1 titleCustom">
     <div class="offset-1 col-12 mt-4 mb-2">
         <h5 class="px-4"><b>Listado de personas</b></h5>
         <h6 class="px-4 text-muted">Marque el conductor de la infracción.</h6>
     </div>
 </div>
+}
 
 <div class="col-12 mb-4 px-4 rounded gridCustom">
     @(Html.Kendo().Grid(Model)
@@ -40,11 +42,15 @@
     $(document).ready(function () {
         var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
         grid.tbody.on("click", ".k-checkbox", onClickPersonas);
+        
         function onClickPersonas(e) {
             var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
             var idPersona = dataItem.idPersona;
+            var nombre = dataItem.nombre + ' ' + dataItem.apellidoPaterno + ' ' + dataItem.apellidoMaterno;
+            $("#idPersona").val(idPersona);
+            $("#Persona_nombreCompleto").val(nombre);
             if (row.hasClass("k-selected")) {
                 setTimeout(function (e) {
                     var grid = $("#gridInfraccionesPersonas").data("kendoGrid");

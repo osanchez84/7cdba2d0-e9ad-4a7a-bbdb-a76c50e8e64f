@@ -276,7 +276,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
            // ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
             //ViewBag.Vehiculos = vehiculosList;
-
+            ViewBag.EditarVehiculo = false;
             return View(new InfraccionesModel());
         }
 
@@ -414,6 +414,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
+            model.Vehiculo.cargaTexto = (model.Vehiculo.carga == true) ? "Si" : "No";
             model.Persona = model.Persona ?? new PersonaModel();
             model.Persona.PersonaDireccion = model.Persona.PersonaDireccion ?? new PersonaDireccionModel();
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
@@ -433,6 +434,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
             ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
+            ViewBag.EditarVehiculo = true;
 
             if ((model.MotivosInfraccion == null || model.MotivosInfraccion.Count() == 0) || (model.idGarantia == null || model.idGarantia == 0))
             {
@@ -477,7 +479,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ajax_editarInfraccion(InfraccionesModel model)
+        public ActionResult ajax_editarInfraccion(InfraccionesModel model, VehiculoModel vehiculo)
         {
 
             var isedition = HttpContext.Session.GetString("isedition");
@@ -489,7 +491,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idInf = model.idInfraccion;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
-                model.Garantia.numPlaca = model.placasVehiculo;
+                model.Garantia.numPlaca = vehiculo.placas;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }
@@ -501,7 +503,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var idInfraccion = _infraccionesService.ModificarInfraccion(model);
+            var idInfraccion = _infraccionesService.ModificarInfraccion(model, vehiculo);
 
             if (isedition == "0")
             {
@@ -1264,6 +1266,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_detalleVehiculo(int idVehiculo)
         {
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
+            model.cargaTexto = (model.carga == true) ? "Si" : "No";
             return PartialView("_DetalleVehiculo", model);
         }
 

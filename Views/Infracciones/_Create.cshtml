@@ -157,6 +157,10 @@ $(document).ready(()=>{
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
+                     @if (Model.origenDatos!=null)
+                        {
+                         <h6 class="px-4"><b>Vehículo encontrado en el @Model.origenDatos</b></h6>
+                        }
                     <h6 class="px-4 text-muted">Vehículo sin captura en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
@@ -164,7 +168,6 @@ $(document).ready(()=>{
     }
 
     <form id="frmCreateVehiculo" class="row px-4 mb-4 align-items-end">
-
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Entidad de registro <b>(obligatorio):</b></label>

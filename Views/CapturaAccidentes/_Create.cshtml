@@ -26,7 +26,7 @@
 }
 
 <script>
-
+    var personaFisicaControlsValidate=[];
     $(document).ready(()=>{
 
     var t = "@mensaje"
@@ -1030,7 +1030,7 @@
                 <form id="personaFisicaForm" class="row px-4 mb-4 align-items-end">
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm mb-3">
-                            <label>Nombre <b>(obligatorio)</b>:</label>
+                            <label>Nombre (obligatorio):</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.nombre)
                                 .Placeholder("Ingresa el nombre(s)")
                                 .HtmlAttributes(new { style = "width: 100%",id="nombreFisico"})
@@ -1095,7 +1095,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
-                            <label>Sexo <b>(obligatorio)</b></label>
+                            <label>Sexo (obligatorio):</label>
                             <div class="btnToggleActive">
                                 @Html.HiddenFor(m => m.Persona.idGenero, new { id = "idGenero" })
                                 @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
@@ -1136,7 +1136,7 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad (obligatorio):</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
                                     .DataTextField("Text")
@@ -1159,7 +1159,7 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Colonia <b>(obligatorio)</b>:</label>
+                            <label>Colonia (obligatorio):</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.colonia)
                                 .Placeholder("Ingresa una colonia")
                                 .HtmlAttributes(new { style = "width: 100%", id="coloniaFisico" })
@@ -1182,9 +1182,9 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <div class="controlForm my-3">
-                            <label>Número <b>(obligatorio)</b>:</label>
+                            <label>Número (obligatorio):</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
-                                .Placeholder("Ingresa un número interior")
+                                .Placeholder("Ingresa un número")
                                 .HtmlAttributes(new { style = "width: 100%", id="numeroFisico"})
                                 )
 
@@ -1193,7 +1193,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                            <label>Municipio (obligatorio):</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
                                     .DataTextField("Text")
@@ -1496,44 +1496,11 @@ function submitCreateMoral() {
      var numeroValue = $("#numeroFisico").val();
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
 
-    var controlsValidate = [];
-    var isValid = true;
-   // controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
-    controlsValidate.push({ 'controlName': 'nombreFisico' });
-   // controlsValidate.push({ 'controlName': 'coloniaFisico' });
-   // controlsValidate.push({ 'controlName': 'calleFisico' });
-   // controlsValidate.push({ 'controlName': 'numeroFisico' });
 
-    // INPUTS
-    if (!isControlsValid(controlsValidate)) { isValid = false; }
-
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }
-
-     //$('.error-container').empty();
-
-    //if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-    //    if (!nombreValue) {
-    //        asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-    //    }
-
-    //    if (!coloniaValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!calleValue) {
-    //        asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!numeroValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!fechaNacimientoValue) {
-    //        asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-    //    }
-
-    //    return;
-    //}
+     if (!isControlsValidWithFocus(personaFisicaControlsValidate).isValid) { 
+         sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;   
+        }
 
     var generoBool = $("#generoSwitch").prop("checked");
     $("#idGenero").val(generoBool ? 1 : 2);
@@ -1663,16 +1630,26 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     $(document).ready(function () {
         var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
-    });
 
-    $(document).ready(function () {
-        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
-        var dateVigencia = datePicker.value();
+         var datePickerV = $("#vigenciaTarjeta").data("kendoDatePicker");
+        var dateVigencia = datePickerV.value();
 
         if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
-            datePicker.value(null);
+            datePickerV.value(null);
         }
+
+         // Se crea el arreglo de controles requeridos
+        personaFisicaControlsValidate.push({ 'controlName': 'nombreFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'idEntidadFisico', 'isDropDown': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'coloniaFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'calleFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'numeroFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'idMunicipioFisico', 'isDropDown': true });
+
+        //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
+        addOnLostFocusRequiredControls(personaFisicaControlsValidate);
     });
+
        function cerraModalFisico(){
             $('#addFisico').modal('hide');
        }

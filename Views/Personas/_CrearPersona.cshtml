@@ -1,5 +1,6 @@
 @model PersonaModel
 <script>
+var personControlsValidate=[];
     $(document).ready(function () {
         hideLoading();
         var datePicker = $("#vigenciaLicencia").data("kendoDatePicker");
@@ -44,7 +45,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.nombre)
-                    .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Nombre (obligatorio):"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -97,7 +98,7 @@
     <div class="row my-2">
         <div class="col-md-6">
             <div class="controlForm">
-                <label>Género <b>(obligatorio)</b>:</label>
+                <label>Género (obligatorio):</label>
                 @(Html.Kendo().DropDownListFor(m => m.idGenero).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewBag.CatGeneros)
                     .OptionLabel("-- Seleccione --")
@@ -146,7 +147,7 @@
     <div class="row my-2">
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Entidad <b>(obligatorio)</b>:</label>
+                <label>Entidad (obligatorio):</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -165,7 +166,7 @@
         </div>
         <div class="col-md-4">
             <div class="controlForm">
-                <label>Municipio <b>(obligatorio)</b>:</label>
+                <label>Municipio (obligatorio):</label>
                 @(Html.Kendo().DropDownListFor(m => m.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
@@ -194,7 +195,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
-                    .Label(l => l.Content("Colonia <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Colonia (obligatorio):"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -202,7 +203,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
-                    .Label(l => l.Content("Calle <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Calle (obligatorio):"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -210,7 +211,7 @@
         <div class="col-md-4">
             <div class="controlForm">
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
-                    .Label(l => l.Content("Número <b>(obligatorio)</b>:"))
+                    .Label(l => l.Content("Número (obligatorio):"))
                     .HtmlAttributes(new { style = "width: 100%; height:58px;" })
                     )
             </div>
@@ -310,31 +311,10 @@
         var idTipoPersonaValue = idTipoPersona.val();
         var Vigencia = $("#vigencia");
         var vigenciaValue = Vigencia.val();
-        var controlsValidate = [];
-        var isValid = true;
 
-        controlsValidate.push({ 'controlName': 'nombre' });
-       // controlsValidate.push({ 'controlName': 'fechaNacimiento' });
-        controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
-        controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });
-        controlsValidate.push({ 'controlName': 'PersonaDireccion_numero' });
-
-        // INPUTS
-        if (!isControlsValid(controlsValidate)) {  isValid = false; }
-
-
-        // DROP DOWN LIST
-        controlsValidate=[];
-        controlsValidate.push({ 'controlName': 'idGenero' });
-        controlsValidate.push({ 'controlName': 'idEntidad' });
-        controlsValidate.push({ 'controlName': 'idMunicipio' });
-        //controlsValidate.push({ 'controlName': 'tipoPersona' });
-        if (!isControlsValidDropDown(controlsValidate)) {  isValid = false; }
-
-
-        if (!isValid) {
-	        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-            return;
+        if (!isControlsValidWithFocus(personControlsValidate).isValid) { 
+         sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;   
         }
 
         //if (idTelefonoValue === null || idTelefonoValue === "") {
@@ -416,17 +396,24 @@ function completarConLicencia() {
     }
 }
     $(document).ready(function () {
-        var datePicker = $("#fechaNacimiento").data("kendoDatePicker");
-        datePicker.value(null);
-    });
-    $(document).ready(function () {
-        var datePicker = $("#vigencia").data("kendoDatePicker");
-        datePicker.value(null);
-    });
+        var datePickerF = $("#fechaNacimiento").data("kendoDatePicker");
+        var datePickerV = $("#vigencia").data("kendoDatePicker");
+        datePickerF.value(null);
+        datePickerV.value(null);
 
-
-    $(document).ready(function () {
         $('#vigencia').removeAttr("required");
+
+        // Se crea el arreglo de controles requeridos
+        personControlsValidate.push({ 'controlName': 'nombre', 'isInput': true });
+        personControlsValidate.push({ 'controlName': 'idGenero','isDropDown': true });
+        personControlsValidate.push({ 'controlName': 'idEntidad', 'isDropDown': true });
+        personControlsValidate.push({ 'controlName': 'idMunicipio', 'isDropDown': true });
+        personControlsValidate.push({ 'controlName': 'PersonaDireccion_colonia', 'isInput': true });
+        personControlsValidate.push({ 'controlName': 'PersonaDireccion_calle', 'isInput': true });
+        personControlsValidate.push({ 'controlName': 'PersonaDireccion_numero', 'isInput': true });
+
+        //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
+        addOnLostFocusRequiredControls(personControlsValidate);
     });
 
 

@@ -929,6 +929,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+                        //Se establece el origen de datos
+                        vehiculosModel.origenDatos="Padrón Estatal";
 
                         return await this.RenderViewAsync("_Create", vehiculosModel,true);
                     }
@@ -970,7 +972,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
-
+                    //Se establece el origen de datos
+                    vehiculoEncontrado.origenDatos="REPUVE";
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado,true);
 
                 }

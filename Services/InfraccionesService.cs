@@ -1140,6 +1140,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
+											,inf.horaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
                                             ,estIn.estatusInfraccion
                                             ,CONCAT(catOfi.nombre,'',catOfi.apellidoPaterno,' ', catOfi.apellidoMaterno) nombreOficial
@@ -1221,6 +1222,9 @@ namespace GuanajuatoAdminUsuarios.Services
 						while (reader.Read())
 						{
 							model.observaciones = reader["observaciones"] == System.DBNull.Value ? default(string) : reader["observaciones"].ToString();
+							model.horaInfraccion = reader["horaInfraccion"] == System.DBNull.Value ? default(string) : reader["horaInfraccion"].ToString();
+							
+							
 							model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
 							model.folioInfraccion = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
 							model.fechaInfraccion = reader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInfraccion"].ToString());

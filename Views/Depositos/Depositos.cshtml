@@ -919,10 +919,12 @@
         //Dependiendo la seleccion del solicitante son los campos requeridos
         $('#usuario-tab').click(()=>{
              requiredControlsUser();
+               addOnLostFocusRequiredControls(depositControlsValidate);
         })
 
         $('#oficial-tab').click(()=>{
              requiredControlsOfficer();
+               addOnLostFocusRequiredControls(depositControlsValidate);
         })
 
         //Se agregan los campos requeridos de inicio

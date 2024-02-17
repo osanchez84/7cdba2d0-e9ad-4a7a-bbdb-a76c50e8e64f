@@ -268,12 +268,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
+           // var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             //var vehiculosList = _vehiculosService.GetAllVehiculos();
             //var personasList = _personasService.GetAllPersonas();
 
-            ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
+           // ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
             //ViewBag.Vehiculos = vehiculosList;
 

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using GuanajuatoAdminUsuarios.Services;
 
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -18,19 +19,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
         private readonly IComparativoInfraccionesService _comparativoInfracciones;
         private readonly ICatSubtipoServicio _catSubtipoServicio;
+        private readonly ICatTramosService _catTramosService;
 
 
 
 
         public ComparativoInfraccionesController(ICatDictionary catDictionary, IComparativoInfraccionesService comparativoInfracciones,
-			 IEstadisticasService estadisticasService, ICatSubtipoServicio catSubtipoServicio)
+			 IEstadisticasService estadisticasService, ICatSubtipoServicio catSubtipoServicio,ICatTramosService catTramosService
+)
         {
             _catDictionary = catDictionary;
             _comparativoInfracciones = comparativoInfracciones;
 			_catSubtipoServicio = catSubtipoServicio;
+            _catTramosService = catTramosService;
 
 
-		}
+
+        }
 		// GET: ComparativoInfraccionesController
 		public ActionResult Index()
         {
@@ -39,10 +44,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
                 var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
-                var catTramos = _catDictionary.GetCatalog("CatTramos", "0");
+                //var catTramos = _catDictionary.GetCatalog("CatTramos", "0");
                 var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
                 var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
-                var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
+                //var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
                 var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
                 var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
                 var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
@@ -53,10 +58,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
                 ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
                 ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
-                ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
+               // ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
                 ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
                 ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-                ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
+                //ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
                 ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
                 ViewBag.ComparativoInfraccionesResumen = new ComparativoInfraccionesResumenModel();
                 return View(new ComparativoInfraccionesModel() {
@@ -79,6 +84,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult SubtipoServicio_Drop(int tipoServicioDDlValue)
         {
             var result = new SelectList(_catSubtipoServicio.GetSubtipoPorTipo(tipoServicioDDlValue), "idSubTipoServicio", "subTipoServicio");
+            return Json(result);
+        }
+
+        public JsonResult Tramos_Drop(int carreteraDDValue)
+        {
+            var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
             return Json(result);
         }
     }

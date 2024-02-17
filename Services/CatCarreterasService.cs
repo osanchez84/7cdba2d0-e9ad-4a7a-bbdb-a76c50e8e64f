@@ -169,8 +169,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT c.idCarretera,c.idOficinaTransporte,UPPER(c.carretera) AS carretera, " +
-                        "c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus WHERE c.idOficinaTransporte = @idOficina;\r\n", connection);
+                    SqlCommand command = new SqlCommand(@"SELECT c.idCarretera,c.idOficinaTransporte,UPPER(c.carretera) AS carretera,
+                                                        c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus 
+                                                        FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus 
+                                                        WHERE c.idOficinaTransporte = @idOficina OR c.idOficinaTransporte = 1 AND c.estatus = 1", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 

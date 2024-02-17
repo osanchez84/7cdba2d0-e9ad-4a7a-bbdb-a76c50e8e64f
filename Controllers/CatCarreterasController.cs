@@ -92,5 +92,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListCarreterasModel.ToDataSourceResult(request));
         }
+
+        public JsonResult CarreterasPorDelegacion_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var result = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+            return Json(result);
+        }
     }
 }

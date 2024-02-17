@@ -194,7 +194,7 @@
                             {
                                 source.Read(read =>
                                 {
-                                    read.Action("Oficiales_Drop", "Depositos");
+						             read.Action("OficialesDependencia_Drop", "Oficiales");
                                 });
                             })
                                 .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -541,7 +541,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Carreteras_Drop", "Depositos");
+                                        read.Action("CarreterasPorDelegacion_Drop", "CatCarreteras");
                                     });
                                 })
                                 )

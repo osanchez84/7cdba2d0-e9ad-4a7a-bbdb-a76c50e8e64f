@@ -27,15 +27,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IVehiculosService _vehiculosService;
         private readonly IPersonasService _personasService;
         private readonly IEstadisticasAccidentesService _estadisticasAccidentesService;
+		private readonly ICatTramosService _catTramosService;
 
-        public EstadisticasAccidentesController(
+
+		public EstadisticasAccidentesController(
             IEstatusInfraccionService estatusInfraccionService, IDelegacionesService delegacionesService,
             ITipoCortesiaService tipoCortesiaService, IDependencias dependeciaService, IGarantiasService garantiasService,
             IInfraccionesService infraccionesService, IPdfGenerator pdfService,
             ICatDictionary catDictionary,
             IVehiculosService vehiculosService,
             IPersonasService personasService,
-            IEstadisticasAccidentesService estadisticasAccidentesService
+            IEstadisticasAccidentesService estadisticasAccidentesService,
+            ICatTramosService catTramosService
 
            )
         {
@@ -50,7 +53,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _vehiculosService = vehiculosService;
             _personasService = personasService;
             _estadisticasAccidentesService = estadisticasAccidentesService;
-        }
+            _catTramosService = catTramosService;
+	}
         public IActionResult Index()
         {
 
@@ -152,5 +156,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 EstadisticasPorVehiculo = estadisticasPorVehiculo
             });
         }
-    }
+
+		public JsonResult Tramos_Drop(int carreteraDDValue)
+		{
+			var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+			return Json(result);
+		}
+	}
 }

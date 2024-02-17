@@ -81,9 +81,19 @@
 					<div class="controlForm mb-3">
 						<label>Oficial:</label>
 						@(Html.Kendo().DropDownListFor(f => f.IdOficial).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatOficiales)
+							.DataTextField("Text")
+							.DataValueField("Value")
+							.DataSource(source =>
+							{
+								source.Read(read =>
+								{
+									read.Action("OficialesDependencia_Drop", "Oficiales");
+								});
+							})
 							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" })
+							.Filter(FilterType.Contains)
+
+							.HtmlAttributes(new { style = "width:100%;", required = "required" })
 							)
 					</div>
 				</div>
@@ -91,18 +101,45 @@
 					<div class="controlForm mb-3">
 						<label>Carretera:</label>
 						@(Html.Kendo().DropDownListFor(m => m.idCarretera).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatCarreteras)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" }))
+							.Label(l => l.Content("Carretera:"))
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una Carretera")
+                                    .Events(e => e.Change("carreteraDropDownChange"))
+                                    .Filter(FilterType.Contains)
+
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("CarreterasPorDelegacion_Drop", "CatCarreteras");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;"})
+                                    .Filter(FilterType.Contains)
+                                    )
 					</div>
 				</div>
 				<div class="form-group col-12 col-md-6 col-lg-3">
 					<div class="controlForm mb-3">
 						<label>Tramo:</label>
 						@(Html.Kendo().DropDownListFor(m => m.idTramo).Filter(FilterType.Contains)
-							.BindTo((SelectList)ViewBag.CatTramos)
-							.OptionLabel("-- Seleccione --")
-							.HtmlAttributes(new { style = "width:100%;" }))
+							 .Label(l => l.Content("Tramo <b>(obligatorio)</b>:"))
+                                    .Filter(FilterType.Contains)
+
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona un Tramo")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Tramos_Drop", "EstadisticasAccidentes");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:100%;"})
+                                    .Filter(FilterType.Contains)
+                                    )
 					</div>
 				</div>
 				<div class="form-group col-12 col-md-6 col-lg-3">
@@ -339,5 +376,24 @@
 		var mensajeError = $("#mensajeError1");
 		mensajeError.text("");
 	}
+	 function carreteraDropDownChange() {
+        var carreteraDDValue = $("#idCarretera").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/EstadisticasAccidentes/Tramos_Drop",
+            type: "POST",
+            data: { carreteraDDValue: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#idTramo").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("EE", error)
+                hideLoading();
+            }
+        });
+    }
+
 
 </script>

@@ -1741,6 +1741,11 @@ td button, td .k-button {
     border-radius: 5px !important;
 }
 
+.activeData {
+    border: 1px solid #B0E0E6 !important;
+    border-radius: 5px !important;
+}
+
 .clearfix::after {
     content: "";
     display: table;

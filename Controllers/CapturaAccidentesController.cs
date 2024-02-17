@@ -1445,9 +1445,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult CambiosDDLOficiales()
         {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
 
-            var oficiales = _oficialesService.GetOficialesActivos()
+            var oficiales = _oficialesService.GetOficialesPorDependencia(idDependencia)
                 .Select(o => new
                 {
                     IdOficial = o.IdOficial,

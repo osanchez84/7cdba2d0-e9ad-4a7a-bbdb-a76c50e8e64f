@@ -30,6 +30,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idColor { get; set; }
         public int idEntidad { get; set; }
         public int idCatTipoServicio { get; set; }
+        public int? idTipoPersona { get; set; }
+
         public int idSubtipoServicio { get; set; }
         public string propietario { get; set; }
         public string numeroEconomico { get; set; }
@@ -50,6 +52,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? capacidad { get; set; }
         public string poliza { get; set; }
         public bool? carga { get; set; }
+        public string cargaTexto { get; set; }
         public int cargaInt { get; set; }
 		public int NumeroSecuencial { get; set; }
 		

@@ -30,8 +30,7 @@ $(document).ready(()=>{
     }
  
 })
-
-
+ 
 
      function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
@@ -277,7 +276,7 @@ $(document).ready(()=>{
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Marca <b>(obligatorio):</b></label>
-                @if (Model.idMarcaVehiculo != 0)               
+                @if (Model.idMarcaVehiculo != 0 && Model.idSubmarca !=0)               
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo).Filter(FilterType.Contains)
                         .DataTextField("Text")
@@ -316,7 +315,7 @@ $(document).ready(()=>{
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Sub-Marca <b>(obligatorio):</b></label>
-                @if (Model.idMarcaVehiculo != 0)               
+                @if (Model.idSubmarca != 0)               
                 {
                     @*<div id="divSubmarca">
                 @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
@@ -591,6 +590,24 @@ $(document).ready(()=>{
             </div>
             }          
     </div>
+@if (Model.idTipoPersona.HasValue)
+{
+    if (Model.idTipoPersona == 1)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+        </div>
+    }
+    else if (Model.idTipoPersona == 2)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
+        </div>
+    }
+}
+
 
 
     <section id="sec3" style="display:block">
@@ -815,7 +832,7 @@ $(document).ready(()=>{
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                    .Events(e => e.Change("EntidadDropDownChangeV"))
+                                    //.Events(e => e.Change("EntidadDropDownChangeV"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -828,7 +845,7 @@ $(document).ready(()=>{
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
+                        <div id="divMunicipioMor" class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
@@ -840,7 +857,7 @@ $(document).ready(()=>{
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "Infracciones");
+                                            read.Action("Municipios_Read", "Infracciones");
                                         });
                                     })
                                     )
@@ -1110,7 +1127,7 @@ $(document).ready(()=>{
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                    .Events(e => e.Change("EntidadDropDownChangeFis"))
+                                   // .Events(e => e.Change("EntidadDropDownChangeFis"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1160,7 +1177,7 @@ $(document).ready(()=>{
                          @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
+                        <div id="divMunicipio" class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
@@ -1172,7 +1189,7 @@ $(document).ready(()=>{
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "Infracciones");
+                                            read.Action("Municipios_Read", "Infracciones");
                                         });
                                     })
                                     )
@@ -1312,6 +1329,21 @@ $(document).ready(()=>{
         $('#idSubmarca').kendoDropDownList();
 
     });
+
+     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
+        $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
+
+    });
+
+     $("#Persona_PersonaDireccion_idEntidad").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipio", "false", "divMunicipioMor", "");
+        $('#Persona_PersonaDireccion_idMunicipio').kendoDropDownList();
+
+    });
+
 
     //$("#idSubmarca").on("change", function () {
     //    var value = $(this).val();
@@ -1612,5 +1644,6 @@ function cerrarModalMoral(){
    $('#addMoral').modal('hide');
 
 }
+
 
 </script>

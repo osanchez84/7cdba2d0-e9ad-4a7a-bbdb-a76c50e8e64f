@@ -643,3 +643,32 @@
 </body>
 
 </html>
+
+
+<script>
+
+
+    $(document).on("click", function (e) {
+
+
+        $.ajax({
+            url: "/Personas/TestSesion",
+            type: "POST",
+            data: "",
+            success: function (data) {
+
+            },
+            error: function (error) {
+                if (error.status == 401)
+                    window.location.href = '/';
+            }
+        });
+
+
+
+
+    });
+
+
+
+</script>

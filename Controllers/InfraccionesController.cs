@@ -849,7 +849,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     PersonaDireccion = new PersonaDireccionModel
                     {
                        
-                            telefono = vehiculoInterlocutorData.es_per_moral != null ? null : telefonoValido.ToString(),
+                            telefono = vehiculoInterlocutorData.es_per_moral != null ? telefonoValido.ToString() : null,
                             telefonoFisico = vehiculoInterlocutorData.es_per_fisica != null ? telefonoValido.ToString() : null,
                             colonia = vehiculoInterlocutorData.es_per_moral != null ? vehiculoDireccionData.colonia : null,
                             coloniaFisico = vehiculoInterlocutorData.es_per_fisica != null ? vehiculoDireccionData.colonia : null,

@@ -989,7 +989,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 }
 
-                if (allowSistem && !string.IsNullOrEmpty(model.PlacasBusqueda))
+                if (allowSistem )
                 {
                     CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
                     cotejarDatosRequestModel.Tp_folio = "4";

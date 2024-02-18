@@ -103,7 +103,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult AllMotivos_Drop(int idConcepto, int idSubconcepto)
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-            var result = new SelectList(_motivoInfraccionService.GetMotivosDropDown(idDependencia, idSubconcepto), "IdCatMotivoInfraccion", "Nombre");
+            var result = new SelectList(_motivoInfraccionService.GetMotivosDropDown(idDependencia, idSubconcepto, idConcepto), "IdCatMotivoInfraccion", "Nombre");
             return Json(result);
         }
 

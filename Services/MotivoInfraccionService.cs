@@ -447,7 +447,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return motivosList;
         }
-        public List<CatMotivosInfraccionModel> GetMotivosDropDown(int idDependencia, int idSubconcepto)
+        public List<CatMotivosInfraccionModel> GetMotivosDropDown(int idDependencia, int idSubconcepto,int idConcepto)
         {
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
@@ -473,14 +473,19 @@ namespace GuanajuatoAdminUsuarios.Services
                                     catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto 
                                 WHERE 
                                     cmi.transito = @idDependencia 
-                                    AND cmi.estatus = 1 
-                                    AND 
-                                    (
-                                        @idSubconcepto = 0 OR 
-                                        cmi.idSubConcepto = @idSubconcepto
-                                    )
+                                    AND cmi.estatus = 1  
+                                    {0}
                                 ";
 
+
+            if(idConcepto!=0 && idSubconcepto!=0)            
+               query= String.Format(query, "AND cmi.idConcepto=@Consepto and  cmi.idSubConcepto=@idSubconcepto");            
+            else if(idConcepto != 0)
+                query = String.Format(query, "AND cmi.idConcepto=@Consepto ");
+            else if (idSubconcepto != 0)
+                query = String.Format(query, "AND cmi.idSubConcepto=@idSubconcepto");
+            else
+                query = String.Format(query, "");
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -490,7 +495,13 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(query, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
+                    if(idSubconcepto!=0)
                     command.Parameters.AddWithValue("@idSubconcepto", idSubconcepto);
+                    if (idConcepto != 0)
+                        command.Parameters.AddWithValue("@Consepto", idConcepto);
+
+
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

@@ -502,8 +502,8 @@
                                                     @(Html.Kendo().TextAreaFor(t => t.observaciones)
                                                         .Resizable("none")
                                                         .Rows(4)
-                                                        .Label(l => l.Content("Observaciones generales:"))
-                                                        .Placeholder("Ingresa observaciones")
+                                                        .Label(l => l.Content("Concepto de Infracción"))
+                                                        .Placeholder("Ingresa Concepto")
                                                         .Enable(!ViewBag.EsSoloLectura)
                                                         .HtmlAttributes(new { style = "width: 100%" })
                                                         )
@@ -584,7 +584,7 @@
 
                             <div class="row px-4 mt-4 py-5 align-items-end">
                                 <div class="col-12 col-md-10 mx-md-auto text-center">
-                                    <h3><b>Adjunta una imagen del inventario del vehículo</b></h3>
+                                    <h3><b>Adjunta archivo</b></h3>
                                     <div class="row justify-content-center">
                                         <div class="drop-zone" ondrop="drophadler(event)" ondragover="dragOver(event)" ondragleave="gragend()">
                                             <div class="drop-zone__prompt">
@@ -608,7 +608,7 @@
                                     <div class="row">
                                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 btnOutline btnOutlinePrimary">
                                             <button type="button" class="btnPrimary px-3" id="btnNuevoMotivo" onclick="enviarImagen()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
-                                                <h5><b>Subir Inventario</b></h5>
+                                                <h5><b>Subir</b></h5>
                                             </button>
                                         </div>
                                     </div>

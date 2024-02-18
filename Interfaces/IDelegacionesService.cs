@@ -6,5 +6,6 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IDelegacionesService
     {
         List<Delegaciones> GetDelegaciones();
+        string getAbreviaturaMunicipio(int idDelegacion);
     }
 }

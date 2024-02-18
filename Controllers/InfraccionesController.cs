@@ -1065,7 +1065,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
                     //Se establece el origen de datos
-                    vehiculoEncontrado.origenDatos="REPUVE";
+                    vehiculoEncontrado.origenDatos=string.IsNullOrEmpty(vehiculoEncontrado.placas)?null:"REPUVE";
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado,true);
 
                 }

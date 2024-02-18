@@ -754,10 +754,14 @@
                 type: 'POST', 
                 contentType: 'application/json', 
                 data: JSON.stringify(Mydata), 
-                success: function (data) {
-                    
-                    $("#folioPlaceholder").text(data);
-                    $("#solicitudModal").modal('show');
+                success: function (response) {
+
+                    if(!response.success)
+                     sitteg_warning(response.message);
+                     else{
+                             $("#folioPlaceholder").text(response.data);
+                             $("#solicitudModal").modal('show');
+                    }
                     hideLoading();
                     
                 },

@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -47,6 +48,40 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Close();
                 }
             return delegaciones;
+        }
+
+
+        public string getAbreviaturaMunicipio(int idDelegacion)
+        {
+            string resultado = "";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new SqlCommand("select m.abreviatura as abreviatura  from delegaciones d left join catMunicipios m on d.idMunicipio=m.idMunicipio  where idDelegacion= @idDelegacion", connection);
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idDelegacion;
+                    sqlCommand.CommandType = CommandType.Text;
+
+                    using (SqlDataReader reader = sqlCommand.ExecuteReader())
+                    {
+                        if (reader.Read()) // Intenta leer un registro del resultado
+                        {
+                            // Obtiene el valor de la columna abreviatura
+                            resultado =reader["abreviatura"] == System.DBNull.Value ? string.Empty : reader["abreviatura"].ToString();
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                   Logger.Error("Error al obtener al abrevitura del municipio:"+ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return resultado;
         }
     }
 }

@@ -215,6 +215,8 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IGenericClient, GenericClient>();
 
+            services.AddScoped<ICatDependenciaEnviaService, CatDependenciaEnviaService>();
+
 
             services
                .AddControllersWithViews()

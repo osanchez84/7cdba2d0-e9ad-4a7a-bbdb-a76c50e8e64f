@@ -1,0 +1,105 @@
+@model GuanajuatoAdminUsuarios.Models.SolicitudDepositoOtraDependenciaModel
+        @{
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+}
+
+<script>
+    var depositControlsValidate=[];
+        $(document).ready(function () {
+            var access = @listaIdsPermitidosJson;
+            if (access != undefined && access != '') {
+                if (!access.toString().includes(localStorage.getItem("menuId"))) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "¡EL usuario no tiene acceso a esta opción!"
+                    });
+                    setTimeout(() => {
+                        window.location.href = "/Principal";
+                    }, 200);
+                }
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "¡EL usuario no tiene acceso a esta opción!"
+                });
+                setTimeout(() => {
+                    window.location.href = "/Principal";
+                }, 200);
+            }
+        });
+</script>
+<div class="mainContainer bg-light">
+    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+                <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-6 col-lg-5 col-xl-auto pe-0">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>1</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto p-0">
+                        <i class="icon-deposito h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Registro de solicitud de depósito para Otra Dependencia</b></h2>
+                    </div>
+                </div>
+            </div>    
+        </div>
+            <div class="row">
+            <div class="col-7 pe-0">
+                <div class="bgSuccess py-1"></div>
+            </div>
+            <div class="col-5 ps-0">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 my-4">
+                <h5 class="px-4"><b>Solicitud de depósito</b></h5>
+                <h6 class="px-4 text-muted">Se capturan los datos referentes al evento como fecha, motivo de ingreso.</h6>
+            </div>
+        </div>
+         <form id="solicitudForm">
+        <div class="row px-4 mt-3 mb-2 align-items-end">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+                <div class="controlForm my-3">
+                    <label>Fecha <b>(obligatorio)</b>:</label>
+                        @(Html.Kendo().DateTimePickerFor(t => t.fechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                            .HtmlAttributes(new { style = "width: 100%", 
+                            title = "datepicker", 
+                            required = "required" })
+                    )
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="controlForm my-3">
+                    <label>Envía vehículo <b>(obligatorio)</b>:</label>
+                    <span>
+                            @(Html.Kendo().DropDownListFor(t => t.idDependenciaEnvia).Filter(FilterType.Contains)
+                            .Label(l => l.Content("Envía vehículo:"))
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una opción")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("DependenciaEnvia_Drop", "DepositosOtraDependencia");
+                                });
+                            })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                            )
+                    </span>
+
+                </div>
+            </div>
+        </div>
+         </form>
+    </section>
+</div>

@@ -66,6 +66,8 @@ namespace GuanajuatoAdminUsuarios.Models
         /// </summary>
         public int? encontradoEn { get; set; }
 
+        public string? origenDatos { get; set; }
+
         public PersonaMoralBusquedaModel PersonaMoralBusquedaModel { get; set; }
 
         //public string RFC { get; set; }

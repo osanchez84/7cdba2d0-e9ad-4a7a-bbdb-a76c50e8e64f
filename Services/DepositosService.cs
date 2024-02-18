@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using Microsoft.Identity.Client;
 using GuanajuatoAdminUsuarios.Util;
 using Logger = GuanajuatoAdminUsuarios.Util.Logger;
+using System.Linq;
+using System.Reflection.Metadata;
 
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -392,8 +394,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+                     string SqlTransact =
+                                            @"SELECT TOP 1 inf.idInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -422,7 +424,6 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,inf.estatus
                                                     ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                                     ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
-                                                    ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
                                                     ,tipoP.idTipoPlaca, tipoP.tipoPlaca
                                                     ,tipoL.idTipoLicencia, tipoL.tipoLicencia
                                                     ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
@@ -432,13 +433,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,catCarre.idCarretera,catCarre.carretera
                                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
-                                                    ,motInf.idMotivoInfraccion,motInf.idMotivoInfraccion
-                                                    ,ci.nombre
-                                                    ,ci.idCatMotivoInfraccion,ci.nombre
-                                                    ,catSubInf.idSubConcepto,catSubInf.subConcepto
-                                                    ,catConInf.idConcepto,catConInf.concepto
-                                                    ,catEntidad.idEntidad as idEntidadUbicacion,
-                                                    (select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
+                                                    ,catEntidad.idEntidad as idEntidadUbicacion
+                                                    ,(select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
+                                                    ,(select top 1 e.idDescripcion  from depositos d left join solicitudes s on d.idSolicitud=s.idSolicitud left join catDescripcionesEvento e on s.idEvento=e.idDescripcion  left join infracciones i on d.idInfraccion=i.idInfraccion where i.idInfraccion=inf.idInfraccion order by d.idDeposito desc) as idDescripcionEvento
                                                     FROM infracciones as inf
                                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
@@ -450,15 +447,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                                     left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
                                                     left join catEntidades catEntidad on catMun.idEntidad=catEntidad.idEntidad
-                                                    left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-												    left JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
                                                     left join personas per on inf.idPersona = per.idPersona
-                                                    left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
-                                                    left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                                    WHERE inf.folioInfraccion=@folioInfraccion";
+                                                    WHERE inf.folioInfraccion=@folioInfraccion ORDER BY inf.fechaInfraccion desc";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioBusquedaInfraccion;
                     command.CommandType = CommandType.Text;
@@ -479,6 +472,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.municipio = reader["municipio"].ToString();
                             model.idEntidadUbicacion= reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
                             model.idPensionUbicacion= reader["idPensionUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idPensionUbicacion"].ToString());
+                            model.idTipoVehiculo= reader["idTipoVehiculo"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idTipoVehiculo"].ToString());
+                            model.idOficial= reader["idOficial"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idDescripcionEvento= reader["idDescripcionEvento"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idDescripcionEvento"].ToString());
                           }
                     }
                 }

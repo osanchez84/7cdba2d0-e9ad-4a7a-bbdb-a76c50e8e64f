@@ -44,7 +44,7 @@ function isControlsValidDropDown(controlsValidate) {
     controlsValidate.forEach(x => {
         var element = $('#' + x.controlName);
         element.closest('.k-dropdown').removeClass("errorData");
-        console.log(x.controlName,element.val())
+        console.log(x.controlName, element.val())
         if (element.val() === '' || element.val() === undefined) {
             element.closest('.k-dropdown').addClass("errorData");
             if (!isFirst) {
@@ -58,9 +58,77 @@ function isControlsValidDropDown(controlsValidate) {
     return isValid;
 }
 
+/**
+ * Valida controles si son requeridos y coloca
+ * el foco en el primer control con error
+ * @param {*} controlsValidate 
+ * @returns 
+ */
+function isControlsValidWithFocus(controlsValidate, withFocus = true) {
+    var isValid = true;
+    var firstElementWithError;
+
+    controlsValidate.forEach(x => {
+        var element = $('#' + x.controlName);
+        //Si el campo es un input remueve el estilo de error
+        if (x.isInput)
+            element.removeClass("errorData");
+        //Si el campo es tipo dropdown se remueve el estilo de error
+        if (x.isDropDown)
+            element.closest('.k-dropdown').removeClass("errorData");
+        if (element.val() === '' || element.val() === undefined) {
+            //Se agrega el estilo de error en caso no se haya encontrado un valor
+            if (x.isInput)
+                element.addClass("errorData");
+            if (x.isDropDown)
+                element.closest('.k-dropdown').addClass("errorData");
+            isValid = false;
+            if (!firstElementWithError)
+                firstElementWithError = x;
+
+        }
+    });
+
+    //En caso de existir un componente requerido con error y se debe establecer el foco
+    if (firstElementWithError && withFocus) {
+        //Si el control es de tipo input
+        if (firstElementWithError.isInput)
+            $('#' + firstElementWithError.controlName).focus();
+        //Si el control es de tipo dropdown se establece el foco y se expande la lista
+        if (firstElementWithError.isDropDown)
+            $('#' + firstElementWithError.controlName).focus().click();
+
+    }
+
+    return { isValid, firstElementWithError };
+}
+
+function addOnLostFocusRequiredControls(controlsValidate) {
+
+    controlsValidate.forEach(x => {
+        var element = $('#' + x.controlName);
+        element.on('focusout',()=>{
+            //Si el control no tiene valor se agrega el estilo de error
+            if (element.val() === '' || element.val() === undefined) {
+                if (x.isInput)
+                element.addClass("errorData");
+            if (x.isDropDown)
+                element.closest('.k-dropdown').addClass("errorData");
+            }
+            else{
+                        //Si el campo es un input remueve el estilo de error
+                if (x.isInput)
+                element.removeClass("errorData");
+            //Si el campo es tipo dropdown se remueve el estilo de error
+            if (x.isDropDown)
+                element.closest('.k-dropdown').removeClass("errorData");
+            }
+        })
+    });
+}
 
 $(document).ready(function () {
-   
+
     $(".navbar-nav li").on("click", function () {
         var dataId = $(this).attr("data-id");
         localStorage.setItem("menuId", dataId);

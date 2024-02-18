@@ -1294,7 +1294,9 @@ namespace GuanajuatoAdminUsuarios.Services
 
 		public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion)
 		{
-			List<MotivosInfraccionVistaModel> modelList = new List<MotivosInfraccionVistaModel>();
+            int numeroContinuo = 1;
+
+            List<MotivosInfraccionVistaModel> modelList = new List<MotivosInfraccionVistaModel>();
 			string strQuery = @"SELECT
                                 m.idMotivoInfraccion
                                 ,ci.nombre
@@ -1350,10 +1352,13 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.Motivo = reader["motivo"].ToString();
 							model.SubConcepto = reader["subConcepto"].ToString();
 							model.Concepto = reader["concepto"].ToString();
-							//model.concepto = reader["concepto"].ToString();
-							modelList.Add(model);
-						}
-					}
+                            //model.concepto = reader["concepto"].ToString();
+                            model.NumeroContinuo = numeroContinuo;
+                            modelList.Add(model);
+                            numeroContinuo++;
+
+                        }
+                    }
 				}
 				catch (SqlException ex)
 				{

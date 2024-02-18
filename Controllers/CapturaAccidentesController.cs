@@ -36,6 +36,7 @@ using static iTextSharp.tool.xml.html.table.TableRowElement;
 using Kendo.Mvc;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using GuanajuatoAdminUsuarios.Util;
+using System.Text;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -462,66 +463,75 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var cargaBool = ConvertirBool(vehiculoEncontradoData.carga);
             var generoBool = ConvertirGeneroBool(vehiculoInterlocutorData.es_per_fisica?.sexo);
 
-            var idTipo = !string.IsNullOrEmpty(vehiculoEncontradoData.categoria)
-             ? ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria)
-             : 0;
+			var idTipo = !string.IsNullOrEmpty(vehiculoEncontradoData.categoria)
+			  ? ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria)
+			  : 0;
+			var idTipoServicio = !string.IsNullOrEmpty(vehiculoEncontradoData.servicio)
+			? ObtenerIdTipoServicio(vehiculoEncontradoData.servicio)
+			: 0;
 
-            var vehiculoEncontrado = new VehiculoModel
-            {
-                placas = vehiculoEncontradoData.no_placa,
-                serie = vehiculoEncontradoData.no_serie,
-                tarjeta = vehiculoEncontradoData.no_tarjeta,
-                motor = vehiculoEncontradoData.no_motor,
-                otros = vehiculoEncontradoData.otros,
-                idColor = idColor,
-                idEntidad = idEntidad,
-                idMarcaVehiculo = idMarca,
-                idSubmarca = idSubmarca,
-                submarca = submarcaLimpio,
-                idTipoVehiculo = idTipo,
-                modelo = vehiculoEncontradoData.modelo,
-                capacidad = vehiculoEncontradoData.numpersona,
-                carga = cargaBool,
+			var vehiculoEncontrado = new VehiculoModel
+			{
+				placas = vehiculoEncontradoData.no_placa,
+				serie = vehiculoEncontradoData.no_serie,
+				tarjeta = vehiculoEncontradoData.no_tarjeta,
+				motor = vehiculoEncontradoData.no_motor,
+				otros = vehiculoEncontradoData.otros,
+				idColor = idColor,
+				idEntidad = idEntidad,
+				idMarcaVehiculo = idMarca,
+				idSubmarca = idSubmarca,
+				submarca = submarcaLimpio,
+				idTipoVehiculo = idTipo,
+				modelo = vehiculoEncontradoData.modelo,
+				capacidad = vehiculoEncontradoData.numpersona,
+				carga = cargaBool,
+				idCatTipoServicio = idTipoServicio,
+				idTipoPersona = vehiculoInterlocutorData.es_per_fisica != null ? 1 : 2,
 
-                Persona = new PersonaModel
-                {
-                    RFC = vehiculoInterlocutorData.Nro_rfc,
-                    RFCFisico = vehiculoInterlocutorData.Nro_rfc,
-                    CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
-                    nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
-                    apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
-                    apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
-                    fechaNacimiento = vehiculoInterlocutorData.es_per_fisica?.Fecha_nacimiento,
-                    generoBool = generoBool,
-
-                    nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
-                    PersonaDireccion = new PersonaDireccionModel
-                    {
-                        telefonoFisico = telefonoValido.ToString(),
-                        telefono = telefonoValido.ToString(),
-                        colonia = vehiculoDireccionData.colonia,
-                        coloniaFisico = vehiculoDireccionData.colonia,
-                        calleFisico = vehiculoDireccionData.calle,
-                        calle = vehiculoDireccionData.calle,
-                        numero = vehiculoDireccionData.nro_exterior,
-                        numeroFisico = vehiculoDireccionData.nro_exterior,
-                        idMunicipioFisico = idMunicipio,
-                        idMunicipio = idMunicipio,
-                    }
-                },
-
-                PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-                {
-                    PersonasMorales = new List<PersonaModel>()
-                }
-            };
-
-            return vehiculoEncontrado;
-
-        }
+				Persona = new PersonaModel
+				{
+					nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
+					apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
+					apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
+					fechaNacimiento = vehiculoInterlocutorData.es_per_fisica?.Fecha_nacimiento,
+					CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
+					generoBool = generoBool,
+					nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
+					RFC = vehiculoInterlocutorData.Nro_rfc,
 
 
-        public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
+					PersonaDireccion = new PersonaDireccionModel
+					{
+
+						telefono = vehiculoInterlocutorData.es_per_moral != null ? null : telefonoValido.ToString(),
+						telefonoFisico = vehiculoInterlocutorData.es_per_fisica != null ? telefonoValido.ToString() : null,
+						colonia = vehiculoInterlocutorData.es_per_moral != null ? vehiculoDireccionData.colonia : null,
+						coloniaFisico = vehiculoInterlocutorData.es_per_fisica != null ? vehiculoDireccionData.colonia : null,
+						calle = vehiculoInterlocutorData.es_per_moral != null ? vehiculoDireccionData.calle : null,
+						calleFisico = vehiculoInterlocutorData.es_per_fisica != null ? vehiculoDireccionData.calle : null,
+						numero = vehiculoInterlocutorData.es_per_moral != null ? vehiculoDireccionData.nro_exterior : null,
+						numeroFisico = vehiculoInterlocutorData.es_per_fisica != null ? vehiculoDireccionData.nro_exterior : null,
+						idMunicipio = vehiculoInterlocutorData.es_per_moral != null ? idMunicipio : null,
+						idMunicipioFisico = vehiculoInterlocutorData.es_per_fisica != null ? idMunicipio : null,
+						idEntidad = vehiculoInterlocutorData.es_per_moral != null ? idEntidad : null,
+						idEntidadFisico = vehiculoInterlocutorData.es_per_fisica != null ? idEntidad : null,
+					}
+				},
+
+				PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+				{
+					PersonasMorales = new List<PersonaModel>()
+				}
+			};
+
+			return vehiculoEncontrado;
+
+		}
+
+
+
+		public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
         {
             try
             {
@@ -848,9 +858,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
-            return (idMunicipio);
-        }
+			int idMunicipio = 0;
+
+			var municipioStr = _catDictionary.GetCatalog("CatMunicipios", "0");
+
+			idMunicipio = municipioStr.CatalogList
+							.Where(w => RemoveDiacritics(w.Text.ToLower()).Contains(RemoveDiacritics(municipio.ToLower())))
+							.Select(s => s.Id)
+							.FirstOrDefault();
+			return (idMunicipio);
+		}
         private int ObtenerIdEntidadDesdeBD(string entidad)
         {
             var idEntidad = _catEntidadesService.obtenerIdPorEntidad(entidad);
@@ -931,7 +948,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return (idTipo);
 
         }
-        private bool ConvertirGeneroBool(string sexo)
+		private int ObtenerIdTipoServicio(string servicio)
+		{
+			int servicioNumero = int.Parse(servicio.TrimStart('0'));
+			var idTipoVehiculo = _catDictionary.GetCatalog("CatTipoServicio", "0");
+
+			var tipoServicio = idTipoVehiculo.CatalogList.FirstOrDefault(item => item.Id == servicioNumero)?.Id;
+
+			return (int)tipoServicio;
+		}
+		private bool ConvertirGeneroBool(string sexo)
         {
             if (sexo == "2")
             {
@@ -963,8 +989,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return 0; // O algún otro valor que indique que no es válido
             }
         }
+		public static string RemoveDiacritics(string text)
+		{
+			var normalizedString = text.Normalize(NormalizationForm.FormD);
+			var stringBuilder = new StringBuilder();
 
-        public JsonResult ObtVehiculosInvol([DataSourceRequest] DataSourceRequest request)
+			foreach (var c in normalizedString)
+			{
+				var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+				if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+				{
+					stringBuilder.Append(c);
+				}
+			}
+
+			return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+		}
+		public JsonResult ObtVehiculosInvol([DataSourceRequest] DataSourceRequest request)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);

@@ -94,7 +94,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var result = new SelectList(_motivoInfraccionService.GetCatMotivos(idDependencia), "IdCatMotivoInfraccion", "Nombre");
             return Json(result);
         }
-
+        public JsonResult ObtenerSubconceptos(int idConceptoValue)
+        {
+            var result = new SelectList(_motivoInfraccionService.GetSubconceptos(idConceptoValue), "idSubConcepto", "subConcepto");
+            return Json(result);
+        }
+        
+        public JsonResult AllMotivos_Drop(int idConcepto, int idSubconcepto)
+        {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var result = new SelectList(_motivoInfraccionService.GetMotivosDropDown(idDependencia, idSubconcepto), "IdCatMotivoInfraccion", "Nombre");
+            return Json(result);
+        }
 
 
         [HttpPost]

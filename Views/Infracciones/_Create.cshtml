@@ -1604,8 +1604,9 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                     hideLoading();
                 }
             });
-        }       
-        $("#ddlCatTipoServicio").on("change", function () {
+    }
+        
+$("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
         $('#hdnIdCatTipoServicio').val(value);

@@ -929,6 +929,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+
+
+        public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
+        {
+            try
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
+
+                if (SeleccionVehiculo.Count > 0)
+                {
+                    return Json(new { noResults = false, data = SeleccionVehiculo });
+                }
+                else
+                {
+                    var jsonPartialVehiculosByWebServices = await ajax_BuscarVehiculo(model);
+
+                    if (jsonPartialVehiculosByWebServices != null)
+                    {
+                        return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
+                    }
+                    else
+                    {
+                        return Json(new { noResults = true, data = new { } });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { noResults = true, error = "Se produjo un error al procesar la solicitud", data = new { } });
+            }
+        }
+
         [HttpPost]
         public async  Task<string> ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {

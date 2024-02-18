@@ -46,7 +46,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 					IdOficial = o.IdOficial,
 					NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
 				});
-			oficiales = oficiales.Skip(1);
+			//oficiales = oficiales.Skip(1);
 			var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
 
 			return Json(result);

@@ -9,7 +9,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public CatMotivosInfraccionModel GetMotivoByID(int IdCatMotivoInfraccion, int idDependencia);
         public List<CatMotivosInfraccionModel> GetMotivos(int idDependencia);
-        public List<CatMotivosInfraccionModel> GetMotivosDropDown(int idDependencia, int idSubconcepto); 
+        public List<CatMotivosInfraccionModel> GetMotivosDropDown(int idDependencia, int idSubconcepto,int idConcepto); 
         public List<CatMotivosInfraccionModel> GetSubconceptos(int idConceptoValue);
         public List<CatMotivosInfraccionModel> GetCatMotivos(int IdDependencia);
         public int CrearMotivo(CatMotivosInfraccionModel motivo, int IdDependencia);

@@ -37,5 +37,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string CalleUbicacion { get; set; }
         public string NumeroUbicacion { get; set; }
         public string InterseccionUbicacion { get; set; }
+
+        public int IdEntidadBusqueda { get; set; }
+        public string PlacasBusqueda { get; set; }
+        public string SerieBusqueda { get; set; }
     }
 }

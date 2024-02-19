@@ -26,7 +26,7 @@
 }
 
 <script>
-
+    var personaFisicaControlsValidate=[];
     $(document).ready(()=>{
 
     var t = "@mensaje"
@@ -37,7 +37,7 @@
     }
  
 })
-
+ 
 
      function EntidadDDChangeAccFis() {
         var entidadDDlValue = $("#idEntidadFisico").data("kendoDropDownList").value();
@@ -150,14 +150,13 @@
             <div class="bg-light py-1"></div>
         </div>
     </div>
-
     @if (Model != null)
     {
-        @if (Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg)
+        @if (Model.idVehiculo >0)
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro Infracciones y Accidentes de Guanajuato</b></h5>
+                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
                     <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
                 </div>
             </div>
@@ -167,6 +166,10 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
+                     @if (Model.origenDatos!=null)
+                        {
+                         <h6 class="px-4"><b>Vehículo encontrado en el @Model.origenDatos</b></h6>
+                        }
                     <h6 class="px-4 text-muted">Vehículo sin captura en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
@@ -287,7 +290,7 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Marca <b>(obligatorio):</b></label>
-                @if (Model.idMarcaVehiculo != 0)               
+                @if (Model.idMarcaVehiculo != 0 && Model.idSubmarca !=0)               
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo)
                         .DataTextField("Text")
@@ -331,7 +334,7 @@
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Sub-Marca <b>(obligatorio):</b></label>
-                @if (Model.idMarcaVehiculo != 0)               
+                @if (Model.idMarcaVehiculo != 0 && Model.idSubmarca != 0)               
                 {
                     @*<div id="divSubmarca">
                 @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
@@ -618,7 +621,23 @@
             }      
 
     </div>
-
+    @if (Model.idTipoPersona.HasValue)
+{
+    if (Model.idTipoPersona == 1)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+        </div>
+    }
+    else if (Model.idTipoPersona == 2)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
+        </div>
+    }
+}
 
     <section id="sec3" style="display:block">
         <div class="col-12 col-md-8"></div>
@@ -850,7 +869,7 @@
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .Filter(FilterType.Contains)
-                                    .Events(e => e.Change("EntidadDropDownChangeAcc"))
+                                   // .Events(e => e.Change("EntidadDropDownChangeAcc"))
                                     .HtmlAttributes(new { style = "width:100%;", id="EntidadMoral" })
                                     .DataSource(source =>
                                     {
@@ -864,7 +883,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
+                        <div id="divMunicipioMor" class="controlForm my-3">
                             <label>Municipio:</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
@@ -877,7 +896,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "CapturaAccidentes");
+                                            read.Action("Municipios_Drop", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -1030,8 +1049,8 @@
                 <form id="personaFisicaForm" class="row px-4 mb-4 align-items-end">
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm mb-3">
-                            <label>Nombre <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.nombre)
+                            <label>Nombre (obligatorio):</label>
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.nombreFisico)
                                 .Placeholder("Ingresa el nombre(s)")
                                 .HtmlAttributes(new { style = "width: 100%",id="nombreFisico"})
                                 )
@@ -1042,7 +1061,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
                             <label>Apellido paterno:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoPaterno)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoPaternoFisico)
                                 .Placeholder("Ingresa el apellido paterno")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
@@ -1052,7 +1071,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
                             <label>Apellido materno:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoMaterno)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.apellidoMaternoFisico)
                                 .Placeholder("Ingresa el apellido materno")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
@@ -1062,7 +1081,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             <label>RFC:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.RFC)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.RFCFisico)
                                 .Placeholder("Ingresa un RFC válido")
                                 .HtmlAttributes(new { style = "width: 100%",id="RFCFisico" })
                                 )
@@ -1073,7 +1092,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             <label>CURP:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.CURP)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.CURPFisico)
                                 .Placeholder("Ingresa un CURP válido")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )
@@ -1095,7 +1114,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
-                            <label>Sexo <b>(obligatorio)</b></label>
+                            <label>Sexo (obligatorio):</label>
                             <div class="btnToggleActive">
                                 @Html.HiddenFor(m => m.Persona.idGenero, new { id = "idGenero" })
                                 @(Html.Kendo().SwitchFor(m => m.Persona.generoBool)
@@ -1115,7 +1134,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             <label>Teléfono:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefonoFisico)
                                 .Placeholder("Ingresa un Teléfono")
                                 .HtmlAttributes(new { style = "width: 100%",id="telefonoFisico",onkeypress = "return validarNumero(event)" })
                                 )
@@ -1126,7 +1145,7 @@
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
                             <label>Correo electrónico:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.correo)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.correoFisico)
                                 .Placeholder("Ingresa un correo electrónico:")
                                 .HtmlAttributes(new { style = "width: 100%",id="correoFisico"})
                                 )
@@ -1136,15 +1155,15 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Entidad:</label>
+                            <label>Entidad (obligatorio):</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad)
+                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidadFisico)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;",id="idEntidadFisico" })
                                     .Filter(FilterType.Contains)
-                                   .Events(e => e.Change("EntidadDDChangeAccFis"))
+                                  // .Events(e => e.Change("EntidadDDChangeAccFis"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1159,8 +1178,8 @@
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label>Colonia <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.colonia)
+                            <label>Colonia (obligatorio):</label>
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.coloniaFisico)
                                 .Placeholder("Ingresa una colonia")
                                 .HtmlAttributes(new { style = "width: 100%", id="coloniaFisico" })
                                 )
@@ -1172,7 +1191,7 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="controlForm my-3">
                             <label>Calle <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calle)
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.calleFisico)
                                 .Placeholder("Ingresa una calle")
                                 .HtmlAttributes(new { style = "width: 100%", id="calleFisico" })
                                 )
@@ -1182,9 +1201,9 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-2">
                         <div class="controlForm my-3">
-                            <label>Número <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numero)
-                                .Placeholder("Ingresa un número interior")
+                            <label>Número (obligatorio):</label>
+                            @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.numeroFisico)
+                                .Placeholder("Ingresa un número")
                                 .HtmlAttributes(new { style = "width: 100%", id="numeroFisico"})
                                 )
 
@@ -1192,10 +1211,10 @@
                         @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="controlForm my-3">
-                            <label>Municipio:</label>
+                        <div id="divMunicipio" class="controlForm my-3">
+                            <label>Municipio (obligatorio):</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio)
+                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
@@ -1206,7 +1225,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Municipios_Por_Entidad", "CapturaAccidentes");
+                                            read.Action("Municipios_Drop", "CapturaAccidentes");
                                         });
                                     })
                                     )
@@ -1260,10 +1279,10 @@
                         <div class="controlForm my-3">
                             <label>Fecha de vencimiento:</label>
                             <span>
-                                @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia).Format("dd/MM/yyyy")
-                                    .DateInput()
-                                    .Culture("es-ES")
-                                    )
+                               
+                                @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia)
+                                .Culture("es-ES")
+                                .Value(""))
 
                             </span>
                         </div>
@@ -1377,7 +1396,21 @@
         $('#idSubmarca').kendoDropDownList();
 
     });
+    
+   $("#idEntidadFisico").on("change", function () {
+        var value = $(this).val();
+         console.log("ENT", value)
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "idMunicipioFisico", "false", "divMunicipio", "");
+        $('#idMunicipioFisico').kendoDropDownList();
 
+    });
+
+     $("#EntidadMoral").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatMunicipiosByEntidad", value, "MunicipioMoral", "false", "divMunicipioMor", "");
+        $('#MunicipioMoral').kendoDropDownList();
+
+    });
     //$("#idSubmarca").on("change", function () {
     //    var value = $(this).val();
     //    console.log(value);
@@ -1496,44 +1529,11 @@ function submitCreateMoral() {
      var numeroValue = $("#numeroFisico").val();
     var fechaNacimientoValue = $("#Persona_fechaNacimiento").data("kendoDatePicker").value();
 
-    var controlsValidate = [];
-    var isValid = true;
-   // controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
-    controlsValidate.push({ 'controlName': 'nombreFisico' });
-   // controlsValidate.push({ 'controlName': 'coloniaFisico' });
-   // controlsValidate.push({ 'controlName': 'calleFisico' });
-   // controlsValidate.push({ 'controlName': 'numeroFisico' });
 
-    // INPUTS
-    if (!isControlsValid(controlsValidate)) { isValid = false; }
-
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }
-
-     //$('.error-container').empty();
-
-    //if (!nombreValue  || !coloniaValue || !calleValue || !numeroValue || !fechaNacimientoValue) {
-    //    if (!nombreValue) {
-    //        asignarMensajeError("errorContainerPersona_nombreFisico", "Este campo es obligatorio.");
-    //    }
-
-    //    if (!coloniaValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_coloniaFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!calleValue) {
-    //        asignarMensajeError("errorContainerPersona_calleFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!numeroValue) {
-    //        asignarMensajeError("errorContainerPersona_PersonaDireccion_numeroFisico", "Este campo es obligatorio.");
-    //    }
-    //    if (!fechaNacimientoValue) {
-    //        asignarMensajeError("errorContainerPersona_fechaNacimiento", "Este campo es obligatorio.");
-    //    }
-
-    //    return;
-    //}
+     if (!isControlsValidWithFocus(personaFisicaControlsValidate).isValid) { 
+         sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;   
+        }
 
     var generoBool = $("#generoSwitch").prop("checked");
     $("#idGenero").val(generoBool ? 1 : 2);
@@ -1663,16 +1663,26 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     $(document).ready(function () {
         var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
-    });
 
-    $(document).ready(function () {
-        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
-        var dateVigencia = datePicker.value();
+         var datePickerV = $("#vigenciaTarjeta").data("kendoDatePicker");
+        var dateVigencia = datePickerV.value();
 
         if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
-            datePicker.value(null);
+            datePickerV.value(null);
         }
+
+         // Se crea el arreglo de controles requeridos
+        personaFisicaControlsValidate.push({ 'controlName': 'nombreFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'idEntidadFisico', 'isDropDown': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'coloniaFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'calleFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'numeroFisico', 'isInput': true });
+        personaFisicaControlsValidate.push({ 'controlName': 'idMunicipioFisico', 'isDropDown': true });
+
+        //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
+        //addOnLostFocusRequiredControls(personaFisicaControlsValidate);
     });
+
        function cerraModalFisico(){
             $('#addFisico').modal('hide');
        }

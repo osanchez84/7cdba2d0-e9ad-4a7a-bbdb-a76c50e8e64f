@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using Microsoft.Identity.Client;
 using GuanajuatoAdminUsuarios.Util;
 using Logger = GuanajuatoAdminUsuarios.Util.Logger;
+using System.Linq;
+using System.Reflection.Metadata;
 
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -18,7 +20,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string nombreOficina)
+        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string nombreOficina, string abreviaturaMunicipio, int anio, int dependencia)
 
         {
             int result = 0;
@@ -125,9 +127,52 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
-                    var ofi = nombreOficina.Trim().Substring(0, 3).ToUpper();
 
-                    var newFolio = $"{ofi}{result}{DateTime.Now.Year}";
+                    //Se busca el ultimo consecutivo
+                    command = new SqlCommand("select id,consecutivo from foliosSolicitud where abreviaturaMunicipio =@abreviaturaMunicipio and anio=@anio and idDelegacion=@idDelegacion", connection)
+                    {
+                        CommandType = CommandType.Text
+                    };
+                    command.Parameters.Add(new SqlParameter("@abreviaturaMunicipio", SqlDbType.VarChar)).Value = abreviaturaMunicipio;
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.VarChar)).Value = anio;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.VarChar)).Value = idOficina;
+
+                    int consecutivo = -1;
+                    int idFolioSolicitud = -1;
+
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read()) // Intenta leer un registro del resultado
+                        {
+                            idFolioSolicitud = reader["id"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["id"]);
+                            consecutivo = reader["consecutivo"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["consecutivo"]);
+                        }
+                    }
+
+                    if (consecutivo == -1)
+                        throw new Exception("No se pudo crear el folio ya que no se encontraron registros con los datos de usuario");
+
+                    //Se incrementa en 1 el consecutivo
+                    consecutivo++;
+
+                    //Se completa con ceros a la izquierda
+                    string consecutivoConCeros = consecutivo.ToString("D5");
+                    string finalFolio = dependencia == (int)DependenciaEnum.PEC ? "-TTO" : "-TPTE";
+                    string anio2 = "/" + (anio % 100);
+
+                    string newFolio = $"{abreviaturaMunicipio}{consecutivoConCeros}{anio2}{finalFolio}";
+
+                    //Se actualiza el consecutivo en la tabla de foliosSolicitud
+                    command = new SqlCommand(@"update foliosSolicitud set consecutivo=@consecutivo where id=@id", connection);
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = idFolioSolicitud;
+                    command.Parameters.Add(new SqlParameter("@consecutivo", SqlDbType.Int)).Value = consecutivo;
+                    command.CommandType = CommandType.Text;
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected <= 0)
+                        throw new Exception("No se pudo crear el folio.");
+
+
 
                     SqlCommand command2 = new SqlCommand(@"
                             update solicitudes set folio=@folio where idSolicitud=@id
@@ -135,7 +180,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
                     command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
                     command2.CommandType = CommandType.Text;
-                    int rowsAffected = command2.ExecuteNonQuery();
+                    rowsAffected = command2.ExecuteNonQuery();
 
                     if (rowsAffected > 0)
                     {
@@ -159,32 +204,32 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
         }
-            private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
+        private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)
+        {
+            string folioSolicitud = "";
+            string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
+
+            using (SqlCommand cmd = new SqlCommand(query, connection))
             {
-                string folioSolicitud = "";
-                string query = "SELECT folio FROM solicitudes WHERE idSolicitud = @solicitudId";
+                cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
 
-                using (SqlCommand cmd = new SqlCommand(query, connection))
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.Add(new SqlParameter("@solicitudId", SqlDbType.Int)).Value = solicitudId;
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
-                        {
-                            folioSolicitud = reader["folio"].ToString();
-                        }
+                        folioSolicitud = reader["folio"].ToString();
                     }
                 }
-
-                return folioSolicitud;
             }
-        
+
+            return folioSolicitud;
+        }
+
 
         public int ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
 
         {
-            int idActual = Isol.GetValueOrDefault(); 
+            int idActual = Isol.GetValueOrDefault();
             string strQuery = @"
                                 UPDATE solicitudes
                                 SET fechaSolicitud = @fechaSolicitud,
@@ -279,7 +324,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             "LEFT JOIN catTiposUsuario AS tu ON sol.idTipoUsuario = tu.idTipoUsuario " +
                             "LEFT JOIN catEntidades AS ent ON sol.idEntidad = ent.idEntidad " +
                             "LEFT JOIN catMunicipios AS mun ON sol.idMunicipio = mun.idMunicipio " +
-                            "WHERE sol.idSolicitud = @Isol", connection) ;
+                            "WHERE sol.idSolicitud = @Isol", connection);
                     command.Parameters.Add(new SqlParameter("@Isol", SqlDbType.Int)).Value = Isol;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -357,7 +402,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.Parameters.AddWithValue("@idSolicitud", model.idSolicitud);
                     command.CommandType = CommandType.Text;
-                   
+
                     command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
@@ -385,15 +430,15 @@ namespace GuanajuatoAdminUsuarios.Services
             return resultado;
         }
 
-       public SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion)
-         {
+        public SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion)
+        {
             SolicitudDepositoModel model = new SolicitudDepositoModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {
                     connection.Open();
-                    const string SqlTransact =
-                                            @"SELECT inf.idInfraccion
+                    string SqlTransact =
+                                           @"SELECT TOP 1 inf.idInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -422,7 +467,6 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,inf.estatus
                                                     ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
                                                     ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
-                                                    ,gar.idGarantia,gar.numPlaca,gar.numLicencia,gar.vehiculoDocumento
                                                     ,tipoP.idTipoPlaca, tipoP.tipoPlaca
                                                     ,tipoL.idTipoLicencia, tipoL.tipoLicencia
                                                     ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
@@ -432,13 +476,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     ,catCarre.idCarretera,catCarre.carretera
                                                     ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
                                                     ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
-                                                    ,motInf.idMotivoInfraccion,motInf.idMotivoInfraccion
-                                                    ,ci.nombre
-                                                    ,ci.idCatMotivoInfraccion,ci.nombre
-                                                    ,catSubInf.idSubConcepto,catSubInf.subConcepto
-                                                    ,catConInf.idConcepto,catConInf.concepto
-                                                    ,catEntidad.idEntidad as idEntidadUbicacion,
-                                                    (select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
+                                                    ,catEntidad.idEntidad as idEntidadUbicacion
+                                                    ,(select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
+                                                    ,(select top 1 e.idDescripcion  from depositos d left join solicitudes s on d.idSolicitud=s.idSolicitud left join catDescripcionesEvento e on s.idEvento=e.idDescripcion  left join infracciones i on d.idInfraccion=i.idInfraccion where i.idInfraccion=inf.idInfraccion order by d.idDeposito desc) as idDescripcionEvento
                                                     FROM infracciones as inf
                                                     left join catDependencias dep on inf.idDependencia= dep.idDependencia
                                                     left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
@@ -450,15 +490,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
                                                     left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
                                                     left join catEntidades catEntidad on catMun.idEntidad=catEntidad.idEntidad
-                                                    left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-												    left JOIN catMotivosInfraccion ci on motInf.idCatMotivosInfraccion = ci.idCatMotivoInfraccion 
                                                     left join catTramos catTra on inf.idTramo = catTra.idTramo
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
                                                     left join personas per on inf.idPersona = per.idPersona
-                                                    left join catSubConceptoInfraccion catSubInf on ci.IdSubConcepto = catSubInf.idSubConcepto
-                                                    left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                                                    WHERE inf.folioInfraccion=@folioInfraccion";
+                                                    WHERE inf.folioInfraccion=@folioInfraccion ORDER BY inf.fechaInfraccion desc";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioBusquedaInfraccion;
                     command.CommandType = CommandType.Text;
@@ -477,15 +513,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.interseccion = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
                             model.folio = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
                             model.municipio = reader["municipio"].ToString();
-                            model.idEntidadUbicacion= reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
-                            model.idPensionUbicacion= reader["idPensionUbicacion"] == System.DBNull.Value ? default(int?) :Convert.ToInt32(reader["idPensionUbicacion"].ToString());
-                          }
+                            model.idEntidadUbicacion = reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
+                            model.idPensionUbicacion = reader["idPensionUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPensionUbicacion"].ToString());
+                            model.idTipoVehiculo = reader["idTipoVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoVehiculo"].ToString());
+                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idDescripcionEvento = reader["idDescripcionEvento"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDescripcionEvento"].ToString());
+                        }
                     }
                 }
                 catch (SqlException ex)
                 {
                     //Guardar la excepcion en algun log de errores
-                   Logger.Error("Error al obtener infracción por folio: "+ex);
+                    Logger.Error("Error al obtener infracción por folio: " + ex);
                 }
                 finally
                 {

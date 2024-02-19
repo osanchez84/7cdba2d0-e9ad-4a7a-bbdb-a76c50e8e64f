@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -36,9 +37,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
 
+		public JsonResult OficialesDependencia_Drop()
+		{
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var oficiales = _oficialesService.GetOficialesPorDependencia(idDependencia)
+				.Select(o => new
+				{
+					IdOficial = o.IdOficial,
+					NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+				});
+			//oficiales = oficiales.Skip(1);
+			var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
 
-        #region Modal Action
-        public ActionResult IndexModal()
+			return Json(result);
+		}
+		#region Modal Action
+		public ActionResult IndexModal()
         {
 
             var ListOficialesModel = _oficialesService.GetOficiales();
@@ -91,8 +105,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ModelState.Remove("Nombre");
             if (ModelState.IsValid)
             {
+                int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                _oficialesService.SaveOficial(model);
+                _oficialesService.SaveOficial(model,idDependencia);
                 var ListOficialesModel = _oficialesService.GetOficiales();
                 return Json(ListOficialesModel);
             }

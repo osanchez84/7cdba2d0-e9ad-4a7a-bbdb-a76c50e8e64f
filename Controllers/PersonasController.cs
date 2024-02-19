@@ -337,6 +337,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(new { error = "Error al guardar en la base de datos: " + ex.Message });
             }
         }
+
+        public async Task<IActionResult> TestSesion()
+        {
+            return Json("session activa");
+        }
+
     }
 }
 

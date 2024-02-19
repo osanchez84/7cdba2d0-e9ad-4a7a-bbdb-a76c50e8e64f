@@ -95,6 +95,7 @@ namespace GuanajuatoAdminUsuarios.Models
     public class InfraccionesReportModel : EntityModel
     {
 
+        public string horaInfraccion { get; set; }
         public string AplicadaA { get; set; }
         public string observaciones { get; set; }
         public decimal Uma { get; set; }

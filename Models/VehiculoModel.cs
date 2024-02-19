@@ -52,6 +52,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int? capacidad { get; set; }
         public string poliza { get; set; }
         public bool? carga { get; set; }
+        public string cargaTexto { get; set; }
         public int cargaInt { get; set; }
 		public int NumeroSecuencial { get; set; }
 		
@@ -64,6 +65,8 @@ namespace GuanajuatoAdminUsuarios.Models
         /// Estatus para saber si se encontro en Sitteg, Registro Estatal o no 
         /// </summary>
         public int? encontradoEn { get; set; }
+
+        public string? origenDatos { get; set; }
 
         public PersonaMoralBusquedaModel PersonaMoralBusquedaModel { get; set; }
 

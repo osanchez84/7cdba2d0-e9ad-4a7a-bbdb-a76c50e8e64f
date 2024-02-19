@@ -12,6 +12,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public int CalificacionMaxima { get; set; } 
         public int idCatMotivoInfraccion { get; set; }
         public int idInfraccion { get; set; }
+         public int NumeroContinuo { get; set; }
+
         public int? calificacion { get; set; }
         public string Motivo { get; set; }
         public int IdConcepto { get; set; }

@@ -28,7 +28,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
            
-                var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
+                var catMunicipios = _catDictionary.GetCatalog("CatMunicipiosByEntidad", "11");
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
                 var catConcesionario = _catDictionary.GetCatalog("CatConcesionarios", "0");
 

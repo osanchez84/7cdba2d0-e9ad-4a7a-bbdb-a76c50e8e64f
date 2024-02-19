@@ -164,7 +164,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Carreteras_Drop", "BusquedaAccidentes");
+                                            read.Action("CarreterasPorDelegacion_Drop", "CatCarreteras");
                                         });
                                     })
                                     .HtmlAttributes(new { style = "width:100%;", Id = "ddlCarreteras" })
@@ -251,7 +251,7 @@
                                     {
                                         source.Read(read =>
                                         {
-                                            read.Action("Oficiales_Drop", "CapturaAccidentes");
+									      read.Action("OficialesDependencia_Drop", "Oficiales");
                                         });
                                     })
                                     .HtmlAttributes(new { style = "width:100%;", Id = "ddlOficiales" })

@@ -258,6 +258,8 @@
 								</div>
 							</div>
 						</div>
+
+						<!-- *LUGAR *********************************-->
 						<div class="tab-pane tabCustomConteiner fade show" id="lugar-container" role="tabpanel" aria-labelledby="lugar-tab">
 							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
 								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -354,6 +356,8 @@
 								</div>
 							</div>
 						</div>
+
+						<!-- * VEHICULO****************************************** -->
 						<div class="tab-pane tabCustomConteiner fade show" id="vehiculo-container" role="tabpanel" aria-labelledby="vehiculo-tab">
 							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
 								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -410,6 +414,7 @@
 								</div>
 							</div>
 						</div>
+						<!-- * CONDUCTOR ****************************************************** -->
 						<div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
 							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
 								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -433,9 +438,31 @@
 								</div>
 								</div>*@
 							</div>
+
+
 							<div class="row my-4 px-4">
+
+					
+
+
 								<div id="detallePersonas">
 									<partial name="_DetallePersona" model="Model.Persona" />
+
+									<div class="row my-4 px-4">
+										<div class="form-group col-md-6">
+										</div>
+										<div class="col-md-2"></div>
+										<div class="col-md-4 justify-content-end">
+											<div class="row">
+												<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+													<button href="#" id="btnEditarVehiculo" onclick="btnEditarPersona()">
+														<h6 class="m-0 d-flex align-items-center"><i class="icon-addInfracion h5 mb-0 me-2"></i><b>Editar datos de la persona</b></h6>
+													</button>
+												</div>
+											</div>
+										</div>
+
+									</div>
 								</div>
 							</div>
 							<input type="hidden" id="hdnIdPersonaTemp" value="" />
@@ -1169,7 +1196,56 @@ function serviceCrearInfraccion(idInfraccion) {
 
 
 
+    function btnEditarPersona() {
+		
+        var idPersona = $("#idPersona").val();
+        var isValid = false;
 
+        if (!idPersona) {
+			sitteg_info('Debe haber preestablecido un conductor');
+			return;
+		} else {
+            isValid = true;
+        }
+
+		if (isValid) {
+            //console.log("entra");
+            var curp = $("#CURP").val();
+            var rfc = $("#RFC").val();
+            var fechaNacimiento = $("#fechaNacimiento").val();
+            var personaDireccionCalle = $("#PersonaDireccion_calle").val();
+            var personaDireccionNumero = $("#PersonaDireccion_numero").val();
+            var colonia = $("#PersonaDireccion_colonia").val();
+            var telefono = $("#PersonaDireccion_telefono").val();
+            var correo = $("#PersonaDireccion_correo").val();
+            var licencia = $("#numeroLicencia").val();
+            var vigenciaLicencia = $("#vigenciaLicencia").val();
+            var serial = {curp,rfc,fechaNacimiento,personaDireccionCalle,personaDireccionNumero,colonia,telefono,correo,licencia,vigenciaLicencia};
+            //console.log("serial",serial);
+			
+			showLoading();
+            
+			$.ajax({
+				url: '@Url.Action("ajax_EditarConductor")',
+				type: 'POST',
+				data: serial,
+				success: function (response) {
+					if (response.success) {
+						sitteg_success("Información Actualizada");
+					} else {
+						sitteg_warning(response.message);
+					}
+					hideLoading();
+				},
+				error: function (error) {
+					sitteg_warning('Lo sentimos, ha ocurrido un error.' );
+					hideLoading();
+				}
+			});
+		} else {
+			sitteg_info('No se encontró al condutor');
+		}
+	}
 </script>
 
 

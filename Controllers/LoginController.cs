@@ -36,18 +36,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IBitacoraService _bitacoraServices;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
-		private readonly IPensionesService _pensionesService;
+        private readonly IPensionesService _pensionesService;
+        private readonly IDelegacionesService _delegacionesService;
 
-		public LoginController(IHttpClientFactory httpClientFactory, IBitacoraService bitacoraService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
-		   IPensionesService pensionesService )
+        public LoginController(IHttpClientFactory httpClientFactory, IBitacoraService bitacoraService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService,
+           IPensionesService pensionesService, IDelegacionesService delegacionesService)
         {
             _httpClientFactory = httpClientFactory;
             _bitacoraServices = bitacoraService;
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
-			_pensionesService = pensionesService;
+            _pensionesService = pensionesService;
+            _delegacionesService = delegacionesService;
 
-		}
-		/* [HttpPost]
+        }
+        /* [HttpPost]
          public async Task<IActionResult> ConsumirServicio(string usuario, string contrasena)
          {
              try
@@ -185,13 +187,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                return View("ErrorView", oReply);
            }*/
-		[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> IniciarSesion(string usuario, string contrasena)
         {
             try
             {
                 HttpContext.Session.Clear();
-              
+
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
@@ -206,14 +208,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     string url = $"https://10.16.158.31:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
 
                     var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-                   
+
                     HttpResponseMessage response = await client.GetAsync(url);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string content = await response.Content.ReadAsStringAsync();
                         dynamic json = JsonConvert.DeserializeObject(content);
-                        
+
                         if (json != null && json.Count > 0)
                         {
                             string nombre = json[0].nombre;
@@ -236,22 +238,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 // Manejo para el caso en que no se pueda convertir a entero
                             }
                             string strIdPension = json[0].clave_pension;
-							if (int.TryParse(strIdPension, out int idPension))
-							{
-								HttpContext.Session.SetInt32("IdPension", idPension);
+                            if (int.TryParse(strIdPension, out int idPension))
+                            {
+                                HttpContext.Session.SetInt32("IdPension", idPension);
 
-							}
-							else
-							{
+                            }
+                            else
+                            {
 
-							}
-							string pension = _pensionesService.GetPensionLogin(idPension);
+                            }
+                            string pension = _pensionesService.GetPensionLogin(idPension);
 
-							string idOficinaStr = json[0].clave_oficina;
-                           // string idDependenciaStr = json[0].tipo_oficina;
+                            string idOficinaStr = json[0].clave_oficina;
+                            // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
                             string TipoOfi = json[0].tipo_oficina;
-                            
+
                             if (int.TryParse(idOficinaStr, out int idOficina))
                             {
                                 HttpContext.Session.SetInt32("IdOficina", idOficina);
@@ -261,13 +263,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             {
 
                             }
-							//var nombreOficina = json[0].oficina;//_catDelegacionesOficinasTransporteService.GetDelegacionOficinaById(idOficina);
-							await SignInUser(idUsuario,nombre,oficina,pension,TipoOfi);
+                            //var nombreOficina = json[0].oficina;//_catDelegacionesOficinasTransporteService.GetDelegacionOficinaById(idOficina);
+
+                            //Se obtiene la abreviatura del municipio asociado a la delegacion
+                            string abreviaturaMunicipio = _delegacionesService.getAbreviaturaMunicipio(idOficina);
+                            
+                            await SignInUser(idUsuario, nombre, oficina, pension, TipoOfi,abreviaturaMunicipio);
 
                             //BITACORA.
                             //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
                             _bitacoraServices.insertBitacora(Convert.ToDecimal(idUsuario), ip, "Login", "Acceso", "select", Convert.ToDecimal(idUsuario));
-                            
+
                             string delacion = Regex.Match(oficina, @"\|(.+)").Groups[1].Value.Trim();
 
                             List<RespuestaServicio> listaRespuestas = JsonConvert.DeserializeObject<List<RespuestaServicio>>(content);
@@ -284,18 +290,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             HttpContext.Session.SetString("IdsPermitidos", listaPermisosJson);
 
                             List<int> listaIdsPermitidos = vectorString.Split(',').Select(int.Parse).ToList();
-                                string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
+                            string listaIdsPermitidosJson = JsonConvert.SerializeObject(listaIdsPermitidos);
                             if (!string.IsNullOrEmpty(listaIdsPermitidosJson))
                             {
 
-                              
+
 
                                 // Guardar la lista en la variable de sesión
                                 HttpContext.Session.SetString("IdsPermitidos", listaIdsPermitidosJson);
                                 HttpContext.Session.SetString("Autorizaciones", listaPermisosJson);
                                 HttpContext.Session.SetString("Nombre", nombre);
                                 HttpContext.Session.SetString("Oficina", oficina);
-                               // HttpContext.Session.SetInt32("IdDependencia", idDependencia);
+                                // HttpContext.Session.SetInt32("IdDependencia", idDependencia);
 
                                 return Json(listaIdsPermitidosJson);
                             }
@@ -304,11 +310,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                 Console.WriteLine("VACIO");
                             }
 
-                        
+
                         }
                     }
 
-                    
+
 
                     // En caso de respuestas inválidas o vacías, limpiar la variable de sesión
                     HttpContext.Session.Remove("IdsPermitidos");
@@ -337,15 +343,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult GetIdsPermitidos()
         {
             var idsPermitidosJson = HttpContext.Session.GetString("IdsPermitidos");
-            
-            
+
+
             var idsPermitidos = JsonConvert.DeserializeObject<List<int>>(idsPermitidosJson) ?? new List<int>();
             return Json(idsPermitidos);
         }
 
 
 
-        private async Task SignInUser(string idUsuario, string nombre,string oficina,string pension, string TipoOfi)
+        private async Task SignInUser(string idUsuario, string nombre, string oficina, string pension, string TipoOfi,string abreviaturaMunicipio)
         {
             var claims = new List<Claim>
             {
@@ -355,9 +361,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 new Claim(CustomClaims.NombreOficina, oficina),
                 new Claim(CustomClaims.TipoOficina, TipoOfi),
                 new Claim(CustomClaims.Pension, pension),
+                new Claim(CustomClaims.AbreviaturaMunicipio, abreviaturaMunicipio),
 
-			};           
-            
+            };
+
 
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);

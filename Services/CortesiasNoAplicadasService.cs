@@ -41,9 +41,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
                                                         LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                                                         LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion  
-                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 3; ORDER BY i.idInfraccion DESC ", connection);
+                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2 ORDER BY i.idInfraccion DESC ", connection);
 
-                    command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
+                    command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion??"";
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -111,7 +111,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     LEFT JOIN garantiasInfraccion gi ON gi.idGarantia = g.idGarantia
                     LEFT JOIN catTipoPlaca AS tp ON tp.idTipoPlaca = gi.idTipoPlaca
                     LEFT JOIN catTipoLicencia AS tl ON tl.idTipoLicencia = pi.idTipoLicencia
-                    WHERE i.folioInfraccion like '%' + @id + '%' and i.infraccionCortesia = 3", connection);
+                    WHERE i.folioInfraccion like '%' + @id + '%' and i.infraccionCortesia = 2", connection);
                     command.Parameters.Add(new SqlParameter("@id", SqlDbType.NVarChar)).Value = id;
                     command.CommandType = CommandType.Text;
                     using (
@@ -193,7 +193,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand("Update infracciones set observaciones = @observaciones where folioInfraccion = @folioInfraccion", connection);
+					SqlCommand command = new SqlCommand("Update infracciones set observaciones = @observaciones,infraccionCortesia=3 where folioInfraccion = @folioInfraccion", connection);
 					command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioInfraccion;
 					command.Parameters.Add(new SqlParameter("@observaciones", SqlDbType.NVarChar)).Value = observaciones;
 

@@ -1469,7 +1469,6 @@ $(document).ready(()=>{
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_coloniaFisico' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calleFisico' });
     controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
-    controlsValidate.push({ 'controlName': 'Persona_fechaNacimiento' });
     if (!isControlsValid(controlsValidate)) { isValid = false; }
     
     // DROP DOWN LIST
@@ -1547,9 +1546,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
 
     var controlsValidate = [];
     var isValid = true;
-
-    var idEntidad = $("#idEntidad").val();
-    var idMarca = $("#ddlMarcas").val();
+    idMarca = $("#ddlMarcas").val();
     var idSubmarca = $("#idSubmarca").val();
     var idTipoVehiculo = $("idTipoVehiculo").val();
     var idPersona = $("#ddlIdPersona").val();

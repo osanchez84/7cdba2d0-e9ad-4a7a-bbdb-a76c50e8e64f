@@ -14,6 +14,8 @@ using System.Drawing;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -164,7 +166,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
           
                 if (Isol.HasValue && Isol.Value > 0)
                 {
-                    // Es una actualización, así que actualiza los datos en la base de datos
+                    // Es una actualizaciï¿½n, asï¿½ que actualiza los datos en la base de datos
                     // utilizando el ID 'Isol' para identificar la solicitud existente
                     var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol, model);
 
@@ -180,14 +182,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-                    var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina,nombreOficina);
+                string  abreviaturaMunicipio = User.FindFirst(CustomClaims.AbreviaturaMunicipio).Value;
+                int dependencia = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia"));
+
+                if(abreviaturaMunicipio.IsNullOrEmpty()){
+                     return Json(new { success = false, message= "La delegaciÃ³n del usuario no tiene asociado un municipio, no se puede generar el folio de la solicitud de depÃ³sito"});
+
+                }
+
+                var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina,nombreOficina,abreviaturaMunicipio,DateTime.Now.Year,dependencia);
 
                     //BITACORA
                     //var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                     //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
                     //_bitacoraServices.insertBitacora(resultadoBusqueda, ip, "Depositos_EnviarSolicitudDeposito", "Insertar", "insert", user);
 
-                    return Ok(resultadoBusqueda);
+                   return Json(new { success = true, data=resultadoBusqueda});
                 }
             }
         

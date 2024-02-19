@@ -69,8 +69,8 @@
         <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="controlForm my-3">
-                    <label>Fecha <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().DateTimePickerFor(t => t.fechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                    <label>Fecha (obligatorio):</label>
+                        @(Html.Kendo().DateTimePickerFor(t => t.FechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
                             .HtmlAttributes(new { style = "width: 100%", 
                             title = "datepicker", 
                             required = "required" })
@@ -79,10 +79,9 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                 <div class="controlForm my-3">
-                    <label>Envía vehículo <b>(obligatorio)</b>:</label>
+                    <label>Envía vehículo (obligatorio):</label>
                     <span>
-                            @(Html.Kendo().DropDownListFor(t => t.idDependenciaEnvia).Filter(FilterType.Contains)
-                            .Label(l => l.Content("Envía vehículo:"))
+                            @(Html.Kendo().DropDownListFor(t => t.IdDependenciaEnvia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .OptionLabel("Selecciona una opción")
@@ -99,7 +98,230 @@
 
                 </div>
             </div>
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="controlForm my-3">
+                    <label>Motivo de ingreso (obligatorio):</label>
+                    <span>
+                            @(Html.Kendo().DropDownListFor(t => t.IdTipoMotivoIngreso).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una opción")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("TipoMotivoIngreso_Drop", "DepositosOtraDependencia");
+                                });
+                            })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                            )
+                    </span>
+
+                </div>
+            </div>
+        </div>
+          <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-auto">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>2</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto p-0">
+                        <i class="icon-ubicacion h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Ubicación donde se recoge el vehículo</b></h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+         <div class="row">
+            <div class="col-8 pe-0">
+                <div class="bgSuccess py-1"></div>
+            </div>
+            <div class="col-4 ps-0">
+                <div class="bg-light py-1"></div>
+            </div>
+        </div>
+            <div class="row">
+            <div class="col-12 my-4">
+                <h5 class="px-4"><b>Datos de recolección</b></h5>
+                <h6 class="px-4 text-muted">Completa los datos solicitados de la recolección del vehículo.</h6>
+            </div>
+        </div>
+          <div class="row  justify-content-start px-4">
+        <div class="col-8 col-md-4 col-lg-2">
+                    <div class="controlForm my-3">
+                        <label>Municipio <b>(obligatorio)</b>:</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(t => t.IdMunicipioUbicacion).Filter(FilterType.Contains)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona un Municipio")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Municipios_Drop", "DepositosOtraDependencia");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                )
+                        </span>
+
+                    </div>
+                </div>
+                 <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+                        <label>Carretera (obligatorio):</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(t => t.IdCarretera).Filter(FilterType.Contains)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona una Carretera")
+                                .Events(e => e.Change("carreteraDropDownChange"))
+                                .HtmlAttributes(new { style = "width: 100%" })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Carreteras_Drop", "DepositosOtraDependencia");
+                                    });
+                                })
+                                )
+                        </span>
+
+                    </div>
+                </div>
+                  <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+                        <label>Tramo (obligatorio):</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(t => t.IdTramo).Filter(FilterType.Contains)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona un Tramo")
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Tramos_Drop", "DepositosOtraDependencia");
+                                    });
+                                })
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                .Filter(FilterType.Contains)
+                                )
+                        </span>
+                    </div>
+                </div>
+                 <div class="col-12 col-md-6 col-lg-2">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.KilometroUbicacion)
+                            .Label(l => l.Content("Kilómetro:"))
+                            .Placeholder("Ingresa el kilometro")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+
+ <div class="col-10 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.ColoniaUbicacion)
+                            .Label(l => l.Content("Colonia:"))
+                            .Placeholder("Ingresa la colonia")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                  <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.CalleUbicacion)
+                            .Label(l => l.Content("Calle:"))
+                            .Placeholder("Ingresa la calle")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                   <div class="col-8 col-md-4 col-lg-2">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.NumeroUbicacion)
+                            .Label(l => l.Content("Número:"))
+                            .Placeholder("Ingresa el número")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.InterseccionUbicacion)
+                            .Label(l => l.Content("Intersección:"))
+                            .Placeholder("Ingrese la intersección")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+  
+              </div>
+                      <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-auto pe-0">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>3</b>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-auto p-0">
+                        <i class="icon-car h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Captura de vehículo</b></h2>
+                    </div>
+                </div>
+            </div>
         </div>
          </form>
+            <div class="row ">
+            <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                <div class="controlButton my-3" onclick="enviarSolicitud()">
+                    @(Html.Kendo().Button()
+                        .Name("addVehiculoBtn")
+                        .HtmlAttributes(new { @class = "btnPrimary" })
+                        .Content("<h5 class=\"m-0\"><b>Finalizar registro</b></h5>"))
+                </div>
+            </div>
+        </div>
     </section>
 </div>
+
+<script>
+    function carreteraDropDownChange() {
+        var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/DepositosOtraDependencia/Tramos_Drop",
+            type: "POST",
+            data: { carreteraDDValue: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#IdTramo").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+                $("#IdTramo").trigger("onFinishLoading");
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+</script>

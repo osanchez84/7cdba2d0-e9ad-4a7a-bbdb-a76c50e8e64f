@@ -216,6 +216,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddScoped<IGenericClient, GenericClient>();
 
             services.AddScoped<ICatDependenciaEnviaService, CatDependenciaEnviaService>();
+            services.AddScoped<ICatTipoMotivoIngresoService, CatTipoMotivoIngresoService>();
 
 
             services

@@ -1,7 +1,7 @@
 /*
  * Descripción:
  * Proyecto: Services
- * Fecha de creación: Sunday, February 18th 2024 11:08:42 am
+ * Fecha de creación: Sunday, February 18th 2024 7:30:17 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
  * Última modificación: Sun Feb 18 2024
@@ -17,39 +17,41 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using GuanajuatoAdminUsuarios.Interfaces;
+using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
-    public class CatDependenciaEnviaService : ICatDependenciaEnviaService
+public class CatTipoMotivoIngresoService : ICatTipoMotivoIngresoService
+
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
-        public CatDependenciaEnviaService(ISqlClientConnectionBD sqlClientConnectionBD)
+        public CatTipoMotivoIngresoService(ISqlClientConnectionBD sqlClientConnectionBD)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CatDependenciaEnviaModel> ObtenerDependenciasEnviaActivas()
+        public List<CatTipoMotivoIngresoModel> ObtenerTiposMotivoIngresoActivos()
         {
-            List<CatDependenciaEnviaModel> ListaEntidades = new List<CatDependenciaEnviaModel>();
+            List<CatTipoMotivoIngresoModel> ListaTiposMotivosIngreso = new List<CatTipoMotivoIngresoModel>();
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("select idDependenciaEnvia as id, nombreDependencia as nombre from catDependenciasEnvian where estatus=1 order by nombreDependencia;", connection);
+                    SqlCommand command = new SqlCommand("select id as id, nombre as nombre from catTipoMotivoIngreso where estatus=1 order by nombre;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
-                            CatDependenciaEnviaModel entidad = new CatDependenciaEnviaModel
+                            CatTipoMotivoIngresoModel tipoMotivo = new CatTipoMotivoIngresoModel
                             {
                                 id = reader["id"] != DBNull.Value ? Convert.ToInt32(reader["id"]) : -1,
                                 nombre = reader["nombre"] != DBNull.Value ? reader["nombre"].ToString() : string.Empty
                             };
-                            ListaEntidades.Add(entidad);
+                            ListaTiposMotivosIngreso.Add(tipoMotivo);
 
                         }
 
@@ -58,13 +60,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-                    Logger.Error("Error al obtener Entidades Envian:" + ex);
+                    Logger.Error("Error al obtener tipos de motivos para ingreso de deposito:" + ex);
                 }
                 finally
                 {
                     connection.Close();
                 }
-            return ListaEntidades;
+            return ListaTiposMotivosIngreso;
         }
     }
 }

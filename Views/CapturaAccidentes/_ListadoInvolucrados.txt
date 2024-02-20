@@ -1,4 +1,4 @@
-ï»¿@{
+@{
 	bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
 	string claseColor = esSoloLectura ? "colorDisabled" : "colorDanger";
 }
@@ -30,8 +30,8 @@
 		color: #898989;
 	}
 	/* .k-grid-header .k-header {
-					padding: 10px 20px;
-				} */
+				padding: 10px 20px;
+			} */
 
 	#gridInvolucradosTodo td {
 		background: -moz-linear-gradient(top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%);
@@ -72,7 +72,7 @@
 				columns.Template(" ").Width(140).Title("Detalles");
 				columns.Template(" ").Width(140).Title("Datos persona");
 				columns.Template(" ").Width(140).Title("Domicilio persona");
-				columns.Template(" ").Width(140).Title("VehÃ­culo en que viajaba");
+				columns.Template(" ").Width(140).Title("Vehículo en que viajaba");
 				columns.Template(" ").Width(140).Title("");
 				columns.Bound(i => i.ConductorInvolucrado).Hidden();
 				columns.Bound(i => i.EstadoVictima).Hidden();
@@ -119,10 +119,10 @@
 			"<p><span class='description'>Licencia : #: TipoLicencia# </span></p>" +
 			"</td>" +
 			"<td class='DomicilioPersona'>" +
-			"<p><span class='description'>DirecciÃ³n : #: Direccion# </span></p>" +
+			"<p><span class='description'>Dirección : #: Direccion# </span></p>" +
 			"<p><span class='description'>Municipio : #: Municipio# </span></p>" +
 			"<p><span class='description'>Entidad : #: Entidad# </span></p>" +
-			"<p><span class='description'>TelÃ©fono : #: Telefono# </span></p>" +
+			"<p><span class='description'>Teléfono : #: Telefono# </span></p>" +
 			"<p><span class='description'>Correo : #: Correo# </span></p>" +
 			"</td>" +
 			"<td class='VehiculoViajaba'>" +
@@ -158,10 +158,10 @@
 			"<p><span class='description'>Licencia : #: TipoLicencia# </span></p>" +
 			"</td>" +
 			"<td class='DomicilioPersona'>" +
-			"<p><span class='description'>DirecciÃ³n : #: Direccion# </span></p>" +
+			"<p><span class='description'>Dirección : #: Direccion# </span></p>" +
 			"<p><span class='description'>Municipio : #: Municipio# </span></p>" +
 			"<p><span class='description'>Entidad : #: Entidad# </span></p>" +
-			"<p><span class='description'>TelÃ©fono : #: Telefono# </span></p>" +
+			"<p><span class='description'>Teléfono : #: Telefono# </span></p>" +
 			"<p><span class='description'>Correo : #: Correo# </span></p>" +
 			"</td>" +
 			"<td class='VehiculoViajaba'>" +

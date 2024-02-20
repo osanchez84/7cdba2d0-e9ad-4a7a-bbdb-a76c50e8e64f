@@ -27,7 +27,7 @@ namespace GuanajuatoAdminUsuarios.Components
         public async Task<IViewComponentResult> InvokeAsync()  
        {
             var modelo = new VehiculoPropietarioBusquedaModel();
-           return await Task.FromResult((IViewComponentResult) View(modelo));  
+           return await Task.FromResult((IViewComponentResult) View("VehiculoPropietario",modelo));  
        }  
     }
 }

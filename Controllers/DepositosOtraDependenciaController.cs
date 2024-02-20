@@ -1,10 +1,10 @@
 /*
  * Descripción:
- * Proyecto: Controllers
+ * Proyecto: Sistema de Infracciones y Accidentes
  * Fecha de creación: Sunday, February 18th 2024 9:40:13 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sun Feb 18 2024
+ * Última modificación: Tue Feb 20 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #endregion
         public IActionResult Depositos(int? Isol)
         {
-            return View("Depositos");
+            return View("DepositosOtraDependencia");
         }
 
         #region BusquedaCatalogos

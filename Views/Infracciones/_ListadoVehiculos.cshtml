@@ -54,13 +54,17 @@
             var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
+
             var idVehiculo = dataItem.idVehiculo;
             var idPersonaVehiculo = dataItem.idPersona;
+            
             $("#idVehiculo").val(idVehiculo);
             $("#placasVehiculo").val(dataItem.placas);
             $("#NumTarjetaCirculacion").val(dataItem.tarjeta);
             $("#hdnIdPersonaTemp").val(idPersonaVehiculo);
-            $("#divIsPropietarioConductor").show();
+           
+
+
             buscarVehiculo(idVehiculo);
             var isPropietarioConductor = $("#isPropietarioConductor").parent().attr('aria-checked');
             if (isPropietarioConductor === "true") {

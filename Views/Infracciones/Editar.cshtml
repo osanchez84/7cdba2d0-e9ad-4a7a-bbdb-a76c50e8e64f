@@ -392,7 +392,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detalleVehiculo">
-                                    <partial name="_DetalleVehiculo" model="Model.Vehiculo" />
+                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model.Vehiculo" />
                                 </div>
                             </div>
                             @*<div class="row my-4 px-4">
@@ -407,65 +407,35 @@
                             </div>
                         </div>
 
-
-
-
-						
-
-
-
-                        <!-- * CONDUCTOR ****************************************************** -->
-						<div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
-							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
-									<div class="row align-items-center justify-content-center justify-content-md-start">
-										<div class="col-auto">
-											<i class="icon-conductor h1 colorPrimary"></i>
-										</div>
-										<div class="col-auto my-3">
-											<h5 class="px-4"><b>Conductor de la infracción</b></h5>
-											@*<h6 class="px-4 text-muted">Marque la persona que desea asociar como conductor.</h6>*@
-										</div>
-									</div>
-								</div>
-								@*<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
-								<div class="row">
-								<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-								<button href="#" id="btnNuevoConductor" onclick="mostrarModal()">
-								<h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Agregar nuevo conductor</b></h6>
-								</button>
-								</div>
-								</div>
-								</div>*@
-							</div>
-
-
-							<div class="row my-4 px-4">
-
-					
-
-
-								<div id="detallePersonas">
-									<partial name="_DetallePersona" model="Model.Persona" />
-
-									<div class="row my-4 px-4">
-										<div class="form-group col-md-6">
-										</div>
-										<div class="col-md-2"></div>
-										<div class="col-md-4 justify-content-end">
-											<div class="row">
-												<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-													<button href="#" id="btnEditarVehiculo" onclick="btnEditarPersona()">
-														<h6 class="m-0 d-flex align-items-center"><i class="icon-addInfracion h5 mb-0 me-2"></i><b>Editar datos de la persona</b></h6>
-													</button>
-												</div>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<input type="hidden" id="hdnIdPersonaTemp" value="" />
+                        <div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
+                            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+                                <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
+                                    <div class="row align-items-center justify-content-center justify-content-md-start">
+                                        <div class="col-auto">
+                                            <i class="icon-conductor h1 colorPrimary"></i>
+                                        </div>
+                                        <div class="col-auto my-3">
+                                            <h5 class="px-4"><b>Conductor de la infracción</b></h5>
+                                            @*<h6 class="px-4 text-muted">Marque la persona que desea asociar como conductor.</h6>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+                                <div class="row">
+                                <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <button href="#" id="btnNuevoConductor" onclick="mostrarModal()">
+                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Agregar nuevo conductor</b></h6>
+                                </button>
+                                </div>
+                                </div>
+                                </div>*@
+                            </div>
+                            <div class="row my-4 px-4">
+                                <div id="detallePersonas">
+                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
+                                </div>
+                            </div>
+                            <input type="hidden" id="hdnIdPersonaTemp" value="" />
                             @*<div class="row my-4 px-4">
                             <div id="listadoPersonas">
                             <partial name="_ListadoPersonas" model="ViewBag.Personas" />
@@ -861,7 +831,7 @@
     function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         var idVehiculo = $("#idVehiculo").val();
-        var idPersona = $("#idPersona").val();
+        var idPersona = $("#idPersonaInfraccion").val();
         var cortesia = $("#cortesiaSwitch").prop("checked");
         var controlsValidate = [];
         var isValid = true;

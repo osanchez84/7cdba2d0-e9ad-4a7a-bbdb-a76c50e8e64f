@@ -937,7 +937,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
 
-                if (SeleccionVehiculo.Count > 0)
+                if (SeleccionVehiculo.Count < 0)
                 {
                     return Json(new { noResults = false, data = SeleccionVehiculo });
                 }
@@ -983,7 +983,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                 vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
 
-                if (vehiculosModel.idVehiculo > 0)
+                if (vehiculosModel.idVehiculo < 0)
                 {
                     return await this.RenderViewAsync("_Create", vehiculosModel,true);
 

@@ -19,55 +19,54 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-[Authorize]
-public class DepositosOtraDependenciaController : BaseController
+namespace GuanajuatoAdminUsuarios.Controllers
 {
-    private readonly ICatDependenciaEnviaService _catDependenciaEnviaService;
-    private readonly ICatTipoMotivoIngresoService _catTipoMotivoIngresoService;
-    private readonly ICatMunicipiosService _catMunicipiosService;
-    private readonly ICatCarreterasService _catCarreterasService;
-    private readonly ICatTramosService _catTramosService;
+    [Authorize]
+    public class DepositosOtraDependenciaController : BaseController
+    {
+        #region Variables
 
-    public DepositosOtraDependenciaController(ICatDependenciaEnviaService catDependenciaEnviaService, ICatTipoMotivoIngresoService catTipoMotivoIngresoService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService)
-    {
-        _catDependenciaEnviaService = catDependenciaEnviaService;
-        _catTipoMotivoIngresoService = catTipoMotivoIngresoService;
-        _catMunicipiosService = catMunicipiosService;
-        _catCarreterasService = catCarreterasService;
-        _catTramosService = catTramosService;
+        #endregion
 
-    }
-    public IActionResult Depositos(int? Isol)
-    {
-        return View("Depositos");
-    }
+        #region Constructor
+        public DepositosOtraDependenciaController()
+        {
+        }
+        #endregion
+        public IActionResult Depositos(int? Isol)
+        {
+            return View("Depositos");
+        }
 
-    public JsonResult DependenciaEnvia_Drop()
-    {
-        var result = new SelectList(_catDependenciaEnviaService.ObtenerDependenciasEnviaActivas(), "id", "nombre");
-        return Json(result);
-    }
+        #region BusquedaCatalogos
+        public JsonResult DependenciaEnvia_Drop([FromServices] ICatDependenciaEnviaService catDependenciaEnviaService)
+        {
+            var result = new SelectList(catDependenciaEnviaService.ObtenerDependenciasEnviaActivas(), "id", "nombre");
+            return Json(result);
+        }
 
-    public JsonResult TipoMotivoIngreso_Drop()
-    {
-        var result = new SelectList(_catTipoMotivoIngresoService.ObtenerTiposMotivoIngresoActivos(), "id", "nombre");
-        return Json(result);
-    }
+        public JsonResult TipoMotivoIngreso_Drop([FromServices] ICatTipoMotivoIngresoService catTipoMotivoIngresoService)
+        {
+            var result = new SelectList(catTipoMotivoIngresoService.ObtenerTiposMotivoIngresoActivos(), "id", "nombre");
+            return Json(result);
+        }
 
-    public JsonResult Municipios_Drop()
-    {
-        var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(CatEntidadesModel.GUANAJUATO), "IdMunicipio", "Municipio");
-        return Json(result);
-    }
-    public JsonResult Carreteras_Drop()
-    {
-        var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
-        return Json(result);
-    }
+        public JsonResult Municipios_Drop([FromServices] ICatMunicipiosService catMunicipiosService)
+        {
+            var result = new SelectList(catMunicipiosService.GetMunicipiosPorEntidad(CatEntidadesModel.GUANAJUATO), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+        public JsonResult Carreteras_Drop([FromServices] ICatCarreterasService catCarreterasService)
+        {
+            var result = new SelectList(catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            return Json(result);
+        }
 
-    public JsonResult Tramos_Drop(int carreteraDDValue)
-    {
-        var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
-        return Json(result);
+        public JsonResult Tramos_Drop([FromServices] ICatTramosService catTramosService, int carreteraDDValue)
+        {
+            var result = new SelectList(catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+            return Json(result);
+        }
+        #endregion
     }
 }

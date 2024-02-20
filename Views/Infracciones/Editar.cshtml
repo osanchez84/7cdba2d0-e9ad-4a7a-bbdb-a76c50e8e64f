@@ -406,6 +406,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
                             <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                                 <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -1226,7 +1227,56 @@
         $("#placas").focus();
     }
 
+    function btnEditarPersona() {
+		
+        var idPersona = $("#idPersona").val();
+        var isValid = false;
 
+        if (!idPersona) {
+			sitteg_info('Debe haber preestablecido un conductor');
+			return;
+		} else {
+            isValid = true;
+        }
+
+		if (isValid) {
+            //console.log("entra");
+            var curp = $("#CURP").val();
+            var rfc = $("#RFC").val();
+            var fechaNacimiento = $("#fechaNacimiento").val();
+            var personaDireccionCalle = $("#PersonaDireccion_calle").val();
+            var personaDireccionNumero = $("#PersonaDireccion_numero").val();
+            var colonia = $("#PersonaDireccion_colonia").val();
+            var telefono = $("#PersonaDireccion_telefono").val();
+            var correo = $("#PersonaDireccion_correo").val();
+            var licencia = $("#numeroLicencia").val();
+            var vigenciaLicencia = $("#vigenciaLicencia").val();
+            var serial = {curp,rfc,fechaNacimiento,personaDireccionCalle,personaDireccionNumero,colonia,telefono,correo,licencia,vigenciaLicencia};
+            //console.log("serial",serial);
+			
+			showLoading();
+            
+			$.ajax({
+				url: '@Url.Action("ajax_EditarConductor")',
+				type: 'POST',
+				data: serial,
+				success: function (response) {
+					if (response.success) {
+						sitteg_success("Información Actualizada");
+					} else {
+						sitteg_warning(response.message);
+					}
+					hideLoading();
+				},
+				error: function (error) {
+					sitteg_warning('Lo sentimos, ha ocurrido un error.' );
+					hideLoading();
+				}
+			});
+		} else {
+			sitteg_info('No se encontró al condutor');
+		}
+	}
     function SeleccionarPropietario() {
          $('#listadoPersonas').css('display', 'block');
     }

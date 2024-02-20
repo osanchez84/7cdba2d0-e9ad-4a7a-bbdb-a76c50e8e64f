@@ -1685,6 +1685,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+
         public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)
         {
             int IdVehiculo = 0;
@@ -1756,7 +1757,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-
+    [HttpPost]
+        public IActionResult ajax_EditarConductor(PersonaModel model)
+        {
+            int id = _personasService.UpdatePersona(model);
+            int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            return Json(new { success = true });
+        }
 
 
         #region Budqueda

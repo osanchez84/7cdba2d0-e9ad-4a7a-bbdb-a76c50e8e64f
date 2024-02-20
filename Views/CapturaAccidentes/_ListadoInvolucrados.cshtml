@@ -30,8 +30,8 @@
 		color: #898989;
 	}
 	/* .k-grid-header .k-header {
-			padding: 10px 20px;
-		} */
+				padding: 10px 20px;
+			} */
 
 	#gridInvolucradosTodo td {
 		background: -moz-linear-gradient(top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%);
@@ -74,12 +74,34 @@
 				columns.Template(" ").Width(140).Title("Domicilio persona");
 				columns.Template(" ").Width(140).Title("Vehículo en que viajaba");
 				columns.Template(" ").Width(140).Title("");
+				columns.Bound(i => i.ConductorInvolucrado).Hidden();
+				columns.Bound(i => i.EstadoVictima).Hidden();
+				columns.Bound(i => i.NombreHospital).Hidden();
+				columns.Bound(i => i.InstitucionTraslado).Hidden();
+				columns.Bound(i => i.Asiento).Hidden();
+				columns.Bound(i => i.Cinturon).Hidden();
+				columns.Bound(i => i.nombre).Hidden();
+				columns.Bound(i => i.RFC).Hidden();
+				columns.Bound(i => i.CURP).Hidden();
+				columns.Bound(i => i.Sexo).Hidden();
+				columns.Bound(i => i.TipoLicencia).Hidden();
+				columns.Bound(i => i.Direccion).Hidden();
+				columns.Bound(i => i.Municipio).Hidden();
+				columns.Bound(i => i.Entidad).Hidden();
+				columns.Bound(i => i.Telefono).Hidden();
+				columns.Bound(i => i.Correo).Hidden();
+				columns.Bound(i => i.IdAccidente).Hidden();
+				columns.Bound(i => i.Placa).Hidden();
+				columns.Bound(i => i.Marca).Hidden();
+				columns.Bound(i => i.Submarca).Hidden();
+				columns.Bound(i => i.TipoVehiculo).Hidden();
+				columns.Bound(i => i.Modelo).Hidden();
 				@*columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 		columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100); *@
 
-			}).HtmlAttributes(new { style = "height:500px" })		
+			}).HtmlAttributes(new { style = "height:500px" })
 			.ClientRowTemplate(
-			"<tr data-uid='#: uid #'>" +	
+			"<tr data-uid='#: uid #'>" +
 			"<td class='Detalles'>" +
 			"<p><span class='description'>Participacion : #: ConductorInvolucrado# </span></p>" +
 			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
@@ -168,7 +190,26 @@
 			.ToolBar(t => t.Search().Text("Buscar..."))
 			.Search(s =>
 			{
+				s.Field(c => c.ConductorInvolucrado);
+				s.Field(c => c.EstadoVictima);
+				s.Field(c => c.NombreHospital);
+				s.Field(c => c.InstitucionTraslado);
+				s.Field(c => c.Asiento);
+				s.Field(c => c.Cinturon);
 				s.Field(c => c.nombre);
+				s.Field(c => c.RFC);
+				s.Field(c => c.CURP);
+				s.Field(c => c.Sexo);
+				s.Field(c => c.TipoLicencia);
+				s.Field(c => c.Direccion);
+				s.Field(c => c.Municipio);
+				s.Field(c => c.Entidad);
+				s.Field(c => c.Telefono);
+				s.Field(c => c.Correo);
+				s.Field(c => c.Placa);
+				s.Field(c => c.Marca);
+				s.Field(c => c.Submarca);
+				s.Field(c => c.TipoVehiculo);
 			})
 			.Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
 			.Type(GridSelectionType.Row)
@@ -246,5 +287,5 @@
 		});
 	}
 
-	
+
 </script>

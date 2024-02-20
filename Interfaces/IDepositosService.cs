@@ -6,7 +6,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IDepositosService
     {
-        string GuardarSolicitud(SolicitudDepositoModel model,int idOficina,string nombreOficina);
+        string GuardarSolicitud(SolicitudDepositoModel model,int idOficina,string nombreOficina,string abreviaturaMunicipio,int anio,int dependencia);
         SolicitudDepositoModel ObtenerSolicitudPorID(int Isol);
         int ActualizarSolicitud(int? Isol,SolicitudDepositoModel model);
         int CompletarSolicitud(SolicitudDepositoModel model);

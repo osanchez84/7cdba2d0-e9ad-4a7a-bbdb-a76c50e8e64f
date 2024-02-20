@@ -447,6 +447,124 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return motivosList;
         }
+        public List<CatMotivosInfraccionModel> GetMotivosDropDown(int idDependencia, int idSubconcepto,int idConcepto)
+        {
+            List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
+            string query = @"SELECT 
+                                    cmi.idCatMotivoInfraccion,
+                                    cmi.nombre,
+                                    cmi.fundamento,
+                                    cmi.calificacionMinima,
+                                    cmi.calificacionMaxima,
+                                    cmi.IdConcepto,
+                                    cmi.fechaInicio,
+                                    cmi.fechaFinVigencia,
+                                    c.concepto,
+                                    cmi.idSubConcepto,
+                                    sc.subConcepto,
+                                    e.estatusDesc
+                                FROM 
+                                    catMotivosInfraccion cmi
+                                LEFT JOIN 
+                                    estatus e ON cmi.estatus = e.estatus
+                                LEFT JOIN 
+                                    catConceptoInfraccion c ON cmi.idConcepto = c.idConcepto
+                                LEFT JOIN 
+                                    catSubConceptoInfraccion sc ON cmi.idSubConcepto = sc.idSubConcepto 
+                                WHERE 
+                                    cmi.transito = @idDependencia 
+                                    AND cmi.estatus = 1  
+                                    {0}
+                                ";
+
+
+            if(idConcepto!=0 && idSubconcepto!=0)            
+               query= String.Format(query, "AND cmi.idConcepto=@Consepto and  cmi.idSubConcepto=@idSubconcepto");            
+            else if(idConcepto != 0)
+                query = String.Format(query, "AND cmi.idConcepto=@Consepto ");
+            else if (idSubconcepto != 0)
+                query = String.Format(query, "AND cmi.idSubConcepto=@idSubconcepto");
+            else
+                query = String.Format(query, "");
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@idDependencia", idDependencia);
+
+                    if(idSubconcepto!=0)
+                    command.Parameters.AddWithValue("@idSubconcepto", idSubconcepto);
+                    if (idConcepto != 0)
+                        command.Parameters.AddWithValue("@Consepto", idConcepto);
+
+
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatMotivosInfraccionModel model = new CatMotivosInfraccionModel();
+                            model.IdCatMotivoInfraccion = reader["idCatMotivoInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivoInfraccion"].ToString());
+                            model.Nombre = reader["nombre"].ToString();
+                           
+                            motivos.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return motivos;
+        }
+
+        public List<CatMotivosInfraccionModel> GetSubconceptos(int idConceptoValue)
+        {
+            List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
+            string query = @"SELECT sc.idSubConcepto,sc.subConcepto FROM catSubConceptoInfraccion sc
+                            WHERE idConcepto = @idConcepto AND sc.estatus = 1";
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@idConcepto", idConceptoValue);
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatMotivosInfraccionModel model = new CatMotivosInfraccionModel();
+                            model.idSubConcepto = reader["idSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idSubConcepto"].ToString());
+                            model.subConcepto = reader["subConcepto"].ToString();
+                            motivos.Add(model);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return motivos;
+        }
 
     }
 }

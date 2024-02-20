@@ -393,7 +393,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detalleVehiculo">
-                                    <partial name="_DetalleVehiculo" model="Model.Vehiculo" />
+                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model.Vehiculo" />
                                 </div>
                             </div>
                             @*<div class="row my-4 px-4">
@@ -407,6 +407,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
                             <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                                 <div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -432,7 +433,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
-                                    <partial name="_DetallePersona" model="Model.Persona" />
+                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
                                 </div>
                             </div>
                             <input type="hidden" id="hdnIdPersonaTemp" value="" />
@@ -503,8 +504,8 @@
                                                     @(Html.Kendo().TextAreaFor(t => t.observaciones)
                                                         .Resizable("none")
                                                         .Rows(4)
-                                                        .Label(l => l.Content("Observaciones generales:"))
-                                                        .Placeholder("Ingresa observaciones")
+                                                        .Label(l => l.Content("Concepto de Infracción"))
+                                                        .Placeholder("Ingresa Concepto")
                                                         .Enable(!ViewBag.EsSoloLectura)
                                                         .HtmlAttributes(new { style = "width: 100%" })
                                                         )
@@ -585,7 +586,7 @@
 
                             <div class="row px-4 mt-4 py-5 align-items-end">
                                 <div class="col-12 col-md-10 mx-md-auto text-center">
-                                    <h3><b>Adjunta una imagen del inventario del vehículo</b></h3>
+                                    <h3><b>Adjunta archivo</b></h3>
                                     <div class="row justify-content-center">
                                         <div class="drop-zone" ondrop="drophadler(event)" ondragover="dragOver(event)" ondragleave="gragend()">
                                             <div class="drop-zone__prompt">
@@ -609,7 +610,7 @@
                                     <div class="row">
                                         <div class="col-12 col-md-8 mx-md-auto col-lg-5 btnOutline btnOutlinePrimary">
                                             <button type="button" class="btnPrimary px-3" id="btnNuevoMotivo" onclick="enviarImagen()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
-                                                <h5><b>Subir Inventario</b></h5>
+                                                <h5><b>Subir</b></h5>
                                             </button>
                                         </div>
                                     </div>
@@ -831,7 +832,7 @@
     function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         var idVehiculo = $("#idVehiculo").val();
-        var idPersona = $("#idPersona").val();
+        var idPersona = $("#idPersonaInfraccion").val();
         var cortesia = $("#cortesiaSwitch").prop("checked");
         var controlsValidate = [];
         var isValid = true;
@@ -1234,7 +1235,56 @@
         $("#placas").focus();
     }
 
+    function btnEditarPersona() {
+		
+        var idPersona = $("#idPersona").val();
+        var isValid = false;
 
+        if (!idPersona) {
+			sitteg_info('Debe haber preestablecido un conductor');
+			return;
+		} else {
+            isValid = true;
+        }
+
+		if (isValid) {
+            //console.log("entra");
+            var curp = $("#CURP").val();
+            var rfc = $("#RFC").val();
+            var fechaNacimiento = $("#fechaNacimiento").val();
+            var personaDireccionCalle = $("#PersonaDireccion_calle").val();
+            var personaDireccionNumero = $("#PersonaDireccion_numero").val();
+            var colonia = $("#PersonaDireccion_colonia").val();
+            var telefono = $("#PersonaDireccion_telefono").val();
+            var correo = $("#PersonaDireccion_correo").val();
+            var licencia = $("#numeroLicencia").val();
+            var vigenciaLicencia = $("#vigenciaLicencia").val();
+            var serial = {curp,rfc,fechaNacimiento,personaDireccionCalle,personaDireccionNumero,colonia,telefono,correo,licencia,vigenciaLicencia};
+            //console.log("serial",serial);
+			
+			showLoading();
+            
+			$.ajax({
+				url: '@Url.Action("ajax_EditarConductor")',
+				type: 'POST',
+				data: serial,
+				success: function (response) {
+					if (response.success) {
+						sitteg_success("Información Actualizada");
+					} else {
+						sitteg_warning(response.message);
+					}
+					hideLoading();
+				},
+				error: function (error) {
+					sitteg_warning('Lo sentimos, ha ocurrido un error.' );
+					hideLoading();
+				}
+			});
+		} else {
+			sitteg_info('No se encontró al condutor');
+		}
+	}
     function SeleccionarPropietario() {
          $('#listadoPersonas').css('display', 'block');
     }

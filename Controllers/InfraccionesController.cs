@@ -268,14 +268,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-           // var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-            var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            //var vehiculosList = _vehiculosService.GetAllVehiculos();
-            //var personasList = _personasService.GetAllPersonas();
-
-           // ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
-            //ViewBag.Vehiculos = vehiculosList;
             ViewBag.EditarVehiculo = false;
             ViewBag.Regreso= 1;
             return View(new InfraccionesModel());
@@ -850,7 +843,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     PersonaDireccion = new PersonaDireccionModel
                     {
                        
-                            telefono = vehiculoInterlocutorData.es_per_moral != null ? null : telefonoValido.ToString(),
+                            telefono = vehiculoInterlocutorData.es_per_moral != null ? telefonoValido.ToString() : null,
                             telefonoFisico = vehiculoInterlocutorData.es_per_fisica != null ? telefonoValido.ToString() : null,
                             colonia = vehiculoInterlocutorData.es_per_moral != null ? vehiculoDireccionData.colonia : null,
                             coloniaFisico = vehiculoInterlocutorData.es_per_fisica != null ? vehiculoDireccionData.colonia : null,
@@ -930,6 +923,38 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+
+
+        public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
+        {
+            try
+            {
+                var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
+
+                if (SeleccionVehiculo.Count > 0)
+                {
+                    return Json(new { noResults = false, data = SeleccionVehiculo });
+                }
+                else
+                {
+                    var jsonPartialVehiculosByWebServices = await ajax_BuscarVehiculo(model);
+
+                    if (jsonPartialVehiculosByWebServices != null)
+                    {
+                        return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
+                    }
+                    else
+                    {
+                        return Json(new { noResults = true, data = new { } });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { noResults = true, error = "Se produjo un error al procesar la solicitud", data = new { } });
+            }
+        }
+
         [HttpPost]
         public async  Task<string> ajax_BuscarVehiculo(VehiculoBusquedaModel model)
         {
@@ -958,7 +983,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 }
 
-                if (allowSistem && !string.IsNullOrEmpty(model.PlacasBusqueda))
+                if (allowSistem )
                 {
                     CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
                     cotejarDatosRequestModel.Tp_folio = "4";
@@ -973,6 +998,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+                        //Se establece el origen de datos
+                        vehiculosModel.origenDatos="Padrón Estatal";
 
                         return await this.RenderViewAsync("_Create", vehiculosModel,true);
                     }
@@ -1031,7 +1058,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
-
+                    //Se establece el origen de datos
+                    vehiculoEncontrado.origenDatos=string.IsNullOrEmpty(vehiculoEncontrado.placas)?null:"REPUVE";
                     return await this.RenderViewAsync("_Create", vehiculoEncontrado,true);
 
                 }
@@ -1658,6 +1686,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+
         public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)
         {
             int IdVehiculo = 0;
@@ -1729,7 +1758,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-
+    [HttpPost]
+        public IActionResult ajax_EditarConductor(PersonaModel model)
+        {
+            int id = _personasService.UpdatePersona(model);
+            int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            return Json(new { success = true });
+        }
 
 
         #region Budqueda

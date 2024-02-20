@@ -346,6 +346,7 @@
             type: 'POST',
             data: Mydata,
             success: function (response) {
+                console.log("response: ",response);
                 if (response.tipo == "success") {
                     mostrarModal(response.datos);
                 } else if (response.encontrada != undefined) {
@@ -356,14 +357,14 @@
                     sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
                 }
 
-                var personasList = response.datos;
-                //var grid = $("#gridPersonas").data("kendoGrid");
-                //grid.dataSource.data(personasList);
-
+                var personasList = response.data;
+                var grid = $("#gridPersonas").data("kendoGrid");
+                grid.dataSource.data(personasList);
+                if (personasList!= null) {
                 if (personasList.length == 0) {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     grid.dataSource.data([]);
-                }
+                }}
                 hideLoading();
             },
             error: function (error) {

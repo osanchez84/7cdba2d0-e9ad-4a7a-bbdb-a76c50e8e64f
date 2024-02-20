@@ -1,24 +1,78 @@
 ﻿@model MotivoInfraccionModel
 
+<script>
+    function filtroMotivos() {
+
+        var idConcepto = $("#ddlConcepto").val(); // Obtener el valor seleccionado del dropdown de Concepto
+        var idSubconcepto = $("#IdSubConcepto").val(); // Obtener el valor seleccionado del dropdown de Subconcepto
+
+        return {
+            idConcepto: idConcepto,
+            idSubconcepto: idSubconcepto
+        };
+    }
+    function onChangeConcepto() {
+        
+        var idConceptoValue = $("#ddlConcepto").data("kendoDropDownList").value();
+        console.log("CON", idConceptoValue)
+        showLoading();
+        $.ajax({
+            url: "/MotivosInfraccion/ObtenerSubconceptos",
+            type: "POST",
+            data: { idConceptoValue: idConceptoValue },
+            success: function (data) {
+                var SubconceptosDD = $("#IdSubConcepto").data("kendoDropDownList");
+                SubconceptosDD.dataSource.data(data);
+                var ddlidCatMotivoInfraccion = $("#idCatMotivoInfraccion").data("kendoDropDownList");
+                ddlidCatMotivoInfraccion.dataSource.read();
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+
+    function onChangeSubconcepto(){
+        var ddlidCatMotivoInfraccion = $("#idCatMotivoInfraccion").data("kendoDropDownList");
+        ddlidCatMotivoInfraccion.dataSource.read();
+
+    }
+    </script>
 <form id="frmCrearMotivos" class="row px-4 mb-4 align-items-end justify-content-center">
     @Html.HiddenFor(m=> m.idInfraccion, new { id = "hndIdInfraccion"}) 
     <div class="row my-4">
         <div class="col-12 col-md-4">
             <div class="controlForm">
-                <label>Concepto <b>(obligatorio)</b>:</label>
+                <label>Concepto:</label>
                 @(Html.Kendo().DropDownListFor(m => m.idConcepto).Filter(FilterType.Contains)
                     .BindTo((SelectList)ViewData["CatConcepto"])
                     .OptionLabel("-- Seleccione --")
+                    .Events(e => e.Change("onChangeConcepto"))
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlConcepto" }))
             </div>
         </div>
         <div class="form-group col-md-4">
             <div class="controlForm">
-                <label>Subconcepto <b>(obligatorio)</b>:</label>
+                <label>Subconcepto:</label>
                 <div id="divSubConcepto">
                     @(Html.Kendo().DropDownListFor(m => m.IdSubConcepto).Filter(FilterType.Contains)
-                        .OptionLabel("-- Seleccione --")
-                        .HtmlAttributes(new { style = "width:100%;" }))
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .OptionLabel("Selecciona un Subconcepto")
+                        .Filter(FilterType.Contains)
+                        .Events(e => e.Change("onChangeSubconcepto"))
+
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("ObtenerSubconceptos", "MotivosInfraccion");
+                            });
+                        })
+                        .HtmlAttributes(new { style = "width:100%;" })
+                        .Filter(FilterType.Contains)
+                        )
                 </div>
             </div>
         </div>
@@ -27,8 +81,21 @@
                 <label>Motivo:</label>
                 <div id="divCatMotivo">
                     @(Html.Kendo().DropDownListFor(m => m.idCatMotivoInfraccion).Filter(FilterType.Contains)
-                        .OptionLabel("-- Seleccione --")
-                        .HtmlAttributes(new { style = "width:100%;" }))
+                        .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona un Motivo")
+                            .Filter(FilterType.Contains)
+
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("AllMotivos_Drop", "MotivosInfraccion").Data("filtroMotivos");
+                                });
+                            })
+                        .HtmlAttributes(new { style = "width:100%;"})
+                            .Filter(FilterType.Contains)
+                            )
                 </div>
             </div>
         </div>
@@ -84,7 +151,6 @@
 
 <script>
 
-  
 
     function btnCrearMotivos() {
 
@@ -105,8 +171,8 @@
 
         // DROP DOWN LIST
         controlsValidate = [];
-        controlsValidate.push({ 'controlName': 'ddlConcepto' });
-        controlsValidate.push({ 'controlName': 'IdSubConcepto' });
+       // controlsValidate.push({ 'controlName': 'ddlConcepto' });
+       // controlsValidate.push({ 'controlName': 'IdSubConcepto' });
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
 
@@ -147,33 +213,34 @@
     }
 
 
-    $("#ddlConcepto").on("change", function () {
+    /*$("#ddlConcepto").on("change", function () {
         var value = $(this).val();
         var ddlIdSubConcepto = $("#IdSubConcepto").data("kendoDropDownList");
         var ddlidCatMotivoInfraccion = $("#idCatMotivoInfraccion").data("kendoDropDownList");
-        if (ddlIdSubConcepto != undefined){
+
+        if (ddlIdSubConcepto != undefined) {
             ddlIdSubConcepto.dataSource.data([]);
         }
-            
-        if (ddlidCatMotivoInfraccion != undefined) {
+    
+       /* if (ddlidCatMotivoInfraccion != undefined) {
             ddlidCatMotivoInfraccion.dataSource.data([]);
-        }
+            ddlidCatMotivoInfraccion.dataSource.read();
+        }*/
 
-        var functionName = "_on_change_SubConcepto";
+    /*   var functionName = "_on_change_SubConcepto";
         _set_combo_catalog("CatSubConceptoInfraccion", value, "IdSubConcepto", "false", "divSubConcepto", functionName);
     });
 
+
     function _on_change_SubConcepto() {
-        var value = $("#IdSubConcepto").val(); 
-        if (value == "") {
-            $("#idCatMotivoInfraccion option[value!='']").remove();
-        }
-        else { 
+        var value = $("#IdSubConcepto").val();
+        console.log("SUB", value);
+       
             var functionName = "_on_change_Motivo";
             _set_combo_catalog("CatMotivosInfraccion", value, "idCatMotivoInfraccion", "false", "divCatMotivo", functionName);
             $('#idCatMotivoInfraccion').kendoDropDownList();
-        }
-    }
+    }*/
+
 
     function onChange() {
     var min = parseInt($("#calificacionMinima").val() || "0");
@@ -187,43 +254,48 @@
 }
 
 
-        function _on_change_Motivo() {
-            var min = 0;
-            var max = 0;
+    function _on_change_Motivo() {
+        var min = 0;
+        var max = 0;
         var txtCalificacion = $("#calificacion").data("kendoTextBox");
 
-            var value = $("#idCatMotivoInfraccion").val();
-            var txtMin = $("#calificacionMinima").data("kendoTextBox");
-            var txtMax = $("#calificacionMaxima").data("kendoTextBox");
+        var value = $("#idCatMotivoInfraccion").val();
+        var txtMin = $("#calificacionMinima").data("kendoTextBox");
+        var txtMax = $("#calificacionMaxima").data("kendoTextBox");
 
-            showLoading();
-            $.ajax({
-                url: '@Url.Action("BuscarMotivoByID","MotivosInfraccion")',
-                type: 'GET',
-                data: { idCatMotivoInfraccion: value },
-                success: function (result) {
-               
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("BuscarMotivoByID","MotivosInfraccion")',
+            type: 'GET',
+            data: { idCatMotivoInfraccion: value },
+            success: function (result) {
+                console.log("RE", result)
+                if (result != null) {
                     min = result.CalificacionMinima;
                     max = result.CalificacionMaxima;
                     txtMin.value(min);
                     txtMax.value(max);
-                if (txtCalificacion) {
-                    txtCalificacion.value(min);
+                    if (txtCalificacion) {
+                        txtCalificacion.value(min);
+                    } else {
+                        console.error("El componente de calificación no se ha inicializado correctamente.");
+                    }
                 } else {
-                    console.error("El componente de calificacion no se ha inicializado correctamente.");
+                    console.error("El resultado de la llamada AJAX es nulo.");
                 }
                 hideLoading();
-                },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.' + errmsg);
-                    hideLoading();
-                }
-            });
-        }
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.' + errmsg);
+                hideLoading();
+            }
+        });
+    }
 
-        $("#idCatMotivoInfraccion").change(_on_change_Motivo);
+
+       $("#idCatMotivoInfraccion").change(_on_change_Motivo);
 
         $("#calificacion").change(onChange);
   

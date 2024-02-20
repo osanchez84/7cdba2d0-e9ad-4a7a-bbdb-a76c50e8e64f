@@ -6,6 +6,7 @@
 }
 
 <script>
+    var depositControlsValidate=[];
         $(document).ready(function () {
             var access = @listaIdsPermitidosJson;
             if (access != undefined && access != '') {
@@ -710,52 +711,13 @@
 
     function enviarSolicitud(){
         var validator = $("#solicitudForm").kendoValidator().data('kendoValidator');
-        var controlsValidate = [];
-        var isValid = true;
 
-           if($('#usuario-tab').attr('aria-selected')==='true'){
-        controlsValidate.push({ 'controlName': 'nombreUsuario' });
-        controlsValidate.push({ 'controlName': 'apellidoPaternoUsuario' });
-        controlsValidate.push({ 'controlName': 'apellidoMaternoUsuario' });
-         }
-
-          controlsValidate.push({ 'controlName': 'fechaSolicitud' });
-
-
-        // INPUTS
-        if (!isControlsValid(controlsValidate)) { isValid = false; }
-
-        // DROP DOWN LIST
-        controlsValidate = [];
-
-               //Se valida si el tab de usuario está seleccionado, se agregan como obligatorios los campos del tab
-        if($('#usuario-tab').attr('aria-selected')==='true'){
-        controlsValidate.push({ 'controlName': 'idEntidad' });
-        controlsValidate.push({ 'controlName': 'idMunicipio' });
-         }
-        if($('#oficial-tab').attr('aria-selected')=='true'){
-             //En caso que se seleccione el tab de oficial se agrega el campo de motivo de asignacion como obligatorio
-              controlsValidate.push({ 'controlName': 'idMotivoAsignacion' });
-         }
         
-        controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-        controlsValidate.push({ 'controlName': 'idOficial' });
-        controlsValidate.push({ 'controlName': 'idDescripcionEvento' });
-        controlsValidate.push({ 'controlName': 'idTipoUsuario' });
-        controlsValidate.push({ 'controlName': 'IdCarretera' });
-        controlsValidate.push({ 'controlName': 'IdTramo' });
-        controlsValidate.push({ 'controlName': 'idEntidadUbicacion' });
-        controlsValidate.push({ 'controlName': 'idMunicipioUbicacion' });
-        controlsValidate.push({ 'controlName': 'idPensionUbicacion' });
-
-        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
-
-        if (!isValid) {
-            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-            return;
+        if (!isControlsValidWithFocus(depositControlsValidate).isValid) { 
+         sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;   
         }
 
-        if (isValid) {
             var Mydata = {
                 //fechaSolicitud: $('#fechaSolicitud').val(),
                 fechaSolicitud: kendo.toString($("#fechaSolicitud").data("kendoDateTimePicker").value(), "yyyy-MM-ddTHH:mm:ss"),
@@ -792,10 +754,14 @@
                 type: 'POST', 
                 contentType: 'application/json', 
                 data: JSON.stringify(Mydata), 
-                success: function (data) {
-                    
-                    $("#folioPlaceholder").text(data);
-                    $("#solicitudModal").modal('show');
+                success: function (response) {
+
+                    if(!response.success)
+                     sitteg_warning(response.message);
+                     else{
+                             $("#folioPlaceholder").text(response.data);
+                             $("#solicitudModal").modal('show');
+                    }
                     hideLoading();
                     
                 },
@@ -804,11 +770,7 @@
                     hideLoading();
                 }
             });
-        } else {
-            sitteg_info('Debe llenar los campos requeridos');
-            return;
-
-        }
+        
      }
     $("#goToAsignacion").on("click", function () {
         window.location.href = "/AsignacionGruas/Index?folio="+ $("#folioPlaceholder").text();
@@ -899,7 +861,9 @@
                 var selectedValueCar = data.IdCarretera;
                 var selectedValueTramo = data.IdTramo;
                 var selectedValueMun = data.idMunicipioUbicacion;
+                var idTipoVehiculo = data.idTipoVehiculo;
 
+                //Cuando se terminen de cargar los catalogos de asigna el valor de la consulta
                 $('#IdTramo').on('onFinishLoading',function()
                         {
                           
@@ -911,6 +875,8 @@
                           
                             $("#idMunicipioUbicacion").data("kendoDropDownList").value(selectedValueMun);
                         });
+
+
                 $("#numeroUbicacion").val(data.numeroUbicacion); 
                 $("#calleUbicacion").val(data.calleUbicacion);
                 $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion
@@ -926,7 +892,9 @@
                 $("#interseccion").val(data.interseccion);
 
                     $("#idPensionUbicacion").data("kendoDropDownList").value(data.idPensionUbicacion);
-
+                  $("#idTipoVehiculo").data("kendoDropDownList").value(data.idTipoVehiculo);
+                  $("#idOficial").data("kendoDropDownList").value(data.idOficial);
+                $("#idDescripcionEvento").data("kendoDropDownList").value(data.idDescripcionEvento);
                  sitteg_success("Se importaron los datos correctamente");
                
             },
@@ -951,7 +919,67 @@
                 document.execCommand('insertText', false, clipboardData);
             }
         });
-    });
+        
+        //Dependiendo la seleccion del solicitante son los campos requeridos
+        $('#usuario-tab').click(()=>{
+             requiredControlsUser();
+               addOnLostFocusRequiredControls(depositControlsValidate);
+        })
 
+        $('#oficial-tab').click(()=>{
+             requiredControlsOfficer();
+               addOnLostFocusRequiredControls(depositControlsValidate);
+        })
+
+        //Se agregan los campos requeridos de inicio
+        requiredControlsUser();
+
+        //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
+        addOnLostFocusRequiredControls(depositControlsValidate);
+
+    });
+    
+function requiredControlsUser(){
+    depositControlsValidate =[];
+    // Se crea el arreglo de controles requeridos de deposito
+        depositControlsValidate.push({ 'controlName': 'fechaSolicitud','isInput':true });
+        depositControlsValidate.push({ 'controlName': 'idTipoVehiculo','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idOficial' ,'isDropDown':true});
+        depositControlsValidate.push({ 'controlName': 'idDescripcionEvento','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idTipoUsuario','isDropDown':true });
+
+        //Datos requeridos de solicitante
+        depositControlsValidate.push({ 'controlName': 'nombreUsuario','isInput':true });
+        depositControlsValidate.push({ 'controlName': 'apellidoPaternoUsuario','isInput':true });
+        depositControlsValidate.push({ 'controlName': 'apellidoMaternoUsuario','isInput':true });
+        depositControlsValidate.push({ 'controlName': 'idEntidad','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idMunicipio','isDropDown':true });
+
+        //Datos requeridos de ubicacion del vehiculo
+        depositControlsValidate.push({ 'controlName': 'IdCarretera','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'IdTramo','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idEntidadUbicacion','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idMunicipioUbicacion','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idPensionUbicacion','isDropDown':true });
+}
+function requiredControlsOfficer(){
+    depositControlsValidate =[];
+    // Se crea el arreglo de controles requeridos de deposito
+        depositControlsValidate.push({ 'controlName': 'fechaSolicitud','isInput':true });
+        depositControlsValidate.push({ 'controlName': 'idTipoVehiculo','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idOficial' ,'isDropDown':true});
+        depositControlsValidate.push({ 'controlName': 'idDescripcionEvento','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idTipoUsuario','isDropDown':true });
+
+        //Datos requeridos de solicitante
+        depositControlsValidate.push({ 'controlName': 'idMotivoAsignacion','isDropDown':true });
+
+        //Datos requeridos de ubicacion del vehiculo
+        depositControlsValidate.push({ 'controlName': 'IdCarretera','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'IdTramo','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idEntidadUbicacion','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idMunicipioUbicacion','isDropDown':true });
+        depositControlsValidate.push({ 'controlName': 'idPensionUbicacion','isDropDown':true });
+}
 
   </script>

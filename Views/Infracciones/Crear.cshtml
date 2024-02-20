@@ -22,20 +22,7 @@
 					window.location.href = "/Principal";
 				}, 200);
 			} else {
-				// BUSCAR - CONSULTAR
-				//if (!auth.toString().includes("461")) {
-				//	$("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-				//}
-				////IMPRIMIR
-				//if (!auth.toString().includes("462")) {
-				//	$("#btnPDFReporte").prop('disabled', true).css({ "opacity": "0.3" });
-				//}
-				//// AGREGAR
-				//if (!auth.toString().includes("404")) {
-				//	$("#btnGuardarInfraccion").prop('disabled', true).css({ "opacity": "0.3" });
-				//	$("#btnNuevoVehiculo").prop('disabled', true).css({ "opacity": "0.3" });
-				//	$("#btnNuevoConductor").prop('disabled', true).css({ "opacity": "0.3" });
-				//}
+
 			}
 		} else {
 			Swal.fire({
@@ -47,6 +34,14 @@
 			}, 200);
 		}
 	});
+
+
+	function DataFilterCatalogTramo(){
+		
+		var value = $("#idCarretera").val()
+		return { idCarretera: value }
+	}
+
 
 </script>
 
@@ -274,8 +269,18 @@
 									<div class="controlForm">
 										<label>Tramo <b>(obligatorio):</b></label>
 										<div id="divTramo">
-											@(Html.Kendo().DropDownListFor(f => f.idTramo).Filter(FilterType.Contains)
-												.OptionLabel("-- Seleccione --")
+											@(
+												Html.Kendo().DropDownListFor(f => f.idTramo)
+															.Filter(FilterType.Contains)												
+															.OptionLabel("-- Seleccione --")
+															.DataSource(s=> {
+																s.Read(r =>
+																{
+																	r.Action("GetCatalogTramoFilter", "CatalogManager").Data("DataFilterCatalogTramo");
+																});
+													
+													})
+
 												.HtmlAttributes(new { style = "width:100%;", required = "required" })
 												)
 										</div>
@@ -334,136 +339,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="tab-pane tabCustomConteiner fade show" id="vehiculo-container2" role="tabpanel" aria-labelledby="vehiculo-tab">
-							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
-									<div class="row align-items-center justify-content-center justify-content-md-start">
-										<div class="col-auto">
-											<i class="icon-edit-car h1 colorPrimary"></i>
-										</div>
-										<div class="col-auto my-3">
-											<h5 class="px-4"><b>Vehículo de la infracción</b></h5>
-											@*<h6 class="px-4 text-muted">Marque el vehículo que desea asociar.</h6>*@
-										</div>
-									</div>
-								</div>
-								<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
-									<div class="row">
-										<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-											<button id="btnNuevoVehiculo2" onclick="mostrarModalAgregarVehiculo()" type="button">
-												<h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Agregar nuevo vehículo</b></h6>
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							@Html.HiddenFor(m=> m.idVehiculo)
-							<div id="divIsPropietarioConductor" class="row my-4 px-4" style="display:none">
-								<div class="form-group col-md-8">
-									<div class="checkbox">
-										<label>El propietario del vehículo es el conductor: </label>
-										<div class="btnToggleActive">
 
-										@(Html.Kendo().SwitchFor(m => m.isPropietarioConductor)
-											.Messages(c => c.Checked("SI").Unchecked("NO"))
-
-											.HtmlAttributes(new { style = "width:100%;", required = "required" })
-											)
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12">
-									<div class="tabCustomEnd"></div>
-								</div>
-							</div>
-						</div>
-						<div class="tab-pane tabCustomConteiner fade show" id="lugar-container" role="tabpanel" aria-labelledby="lugar-tab">
-							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
-									<div class="row align-items-center justify-content-center justify-content-md-start">
-										<div class="col-auto">
-											<i class="icon-carretera h1 colorPrimary"></i>
-										</div>
-										<div class="col-auto my-3">
-											<h5 class="px-4"><b>Lugar de la infracción</b></h5>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row my-4 px-4">
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Carretera <b>(obligatorio):</b></label>
-										@(Html.Kendo().DropDownList()
-											.Name("idCarretera")
-											.BindTo((SelectList)ViewBag.CatCarreteras)
-											.Filter(FilterType.Contains)
-
-											.OptionLabel("-- Seleccione --")
-											.HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
-											)
-									</div>
-								</div>
-								<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Tramo <b>(obligatorio):</b></label>
-										<div id="divTramo">
-											@(Html.Kendo().DropDownListFor(f => f.idTramo).Filter(FilterType.Contains)
-												.OptionLabel("-- Seleccione --")
-												.HtmlAttributes(new { style = "width:100%;", required = "required" })
-												)
-										</div>
-									</div>
-								</div>
-
-							</div>
-							@*  <div class="row my-4 px-4">
-							<div class="form-group col-md-3">
-							<div class="controlForm">
-							@(Html.Kendo().TextBoxFor(t => t.lugarCalle)
-							.Label(l => l.Content("Calle:"))
-							.Placeholder("Ingresa calle")
-							.HtmlAttributes(new { style = "width: 100%" })
-							)
-							</div>
-							</div>
-							<div class="form-group col-md-3">
-							<div class="controlForm">
-							@(Html.Kendo().TextBoxFor(t => t.lugarNumero)
-							.Label(l => l.Content("Número:"))
-							.Placeholder("Ingresa número")
-							.HtmlAttributes(new { style = "width: 100%" })
-							)
-							</div>
-							</div>
-							<div class="form-group col-md-3">
-							<div class="controlForm">
-							@(Html.Kendo().TextBoxFor(t => t.lugarColonia)
-							.Label(l => l.Content("Colonia:"))
-							.Placeholder("Ingresa colonia")
-							.HtmlAttributes(new { style = "width: 100%" })
-							)
-							</div>
-							</div>
-							<div class="form-group col-md-3">
-							<div class="controlForm">
-							@(Html.Kendo().TextBoxFor(t => t.lugarEntreCalle)
-							.Label(l => l.Content("Entre calle: "))
-							.Placeholder("Ingresa entre calle")
-							.HtmlAttributes(new { style = "width: 100%" })
-							)
-							</div>
-							</div>
-							</div> *@
-							<div class="row">
-								<div class="col-12">
-									<div class="tabCustomEnd"></div>
-								</div>
-							</div>
-						</div>
-						
 						<div class="tab-pane tabCustomConteiner fade show" id="vehiculo-container" role="tabpanel" aria-labelledby="vehiculo-tab">
 							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
 								<div class="col-12 col-md-6 col-lg-5 col-xl-auto">
@@ -488,36 +364,23 @@
 								</div>
 							</div>
 							@Html.HiddenFor(m=> m.idVehiculo)
-							<div id="divIsPropietarioConductor" class="row my-4 px-4" style="display:none">
-								<div class="form-group col-md-8">
-									<div class="checkbox">
-										<label>El propietario del vehículo es el conductor: </label>
-										<div class="btnToggleActive">
-										@(Html.Kendo().SwitchFor(m => m.isPropietarioConductor)
-											.Messages(c => c.Checked("SI").Unchecked("NO"))
 
-											.Events(ev => ev.Change("isPropietarioOnChange"))
-											)
-										</div>
+							<div class="row my-4 px-4">
+									<div id="detalleVehiculo">
+									</div>
+
+								<div class="row my-4 px-4">
+									<div id="listadoVehiculos">
+										<partial name="_ListadoVehiculos" model="ViewBag.Vehiculos" />
+									</div>
+								</div>
+							
+								<div class="row">
+									<div class="col-12">
+										<div class="tabCustomEnd"></div>
 									</div>
 								</div>
 							</div>
-							<div class="row my-4 px-4">
-								<div id="detalleVehiculo">
-								</div>
-
-							<div class="row my-4 px-4">
-								<div id="listadoVehiculos">
-									<partial name="_ListadoVehiculos" model="ViewBag.Vehiculos" />
-								</div>
-							</div>
-							
-							<div class="row">
-								<div class="col-12">
-									<div class="tabCustomEnd"></div>
-								</div>
-							</div>
-						</div>
 						</div>
 						<div class="tab-pane tabCustomConteiner fade show" id="conductor-container" role="tabpanel" aria-labelledby="conductor-tab">
 							<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -708,9 +571,6 @@
 			},
 			success: function (data) {
 				$("#detalleVehiculo").empty().append(data);
-				console.log("error", data)
-				console.log(pidVehiculo)
-				$("#idVehiculo").val(pidVehiculo);
 				hideLoading();
 			}, error: function () {
 				sitteg_warning("Ocurrio un error al procesar su solicitud.");

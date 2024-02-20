@@ -392,7 +392,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detalleVehiculo">
-                                    <partial name="_DetalleVehiculo" model="Model.Vehiculo" />
+                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model.Vehiculo" />
                                 </div>
                             </div>
                             @*<div class="row my-4 px-4">
@@ -431,7 +431,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
-                                    <partial name="_DetallePersona" model="Model.Persona" />
+                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
                                 </div>
                             </div>
                             <input type="hidden" id="hdnIdPersonaTemp" value="" />
@@ -830,7 +830,7 @@
     function btnEditarInfraccion() {
         var validator = $("#frmEditarInfraccion").kendoValidator().data('kendoValidator');
         var idVehiculo = $("#idVehiculo").val();
-        var idPersona = $("#idPersona").val();
+        var idPersona = $("#idPersonaInfraccion").val();
         var cortesia = $("#cortesiaSwitch").prop("checked");
         var controlsValidate = [];
         var isValid = true;

@@ -303,62 +303,7 @@
                 <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Búsqueda del vehículo</b></h5>
                 <h6 class="px-4 text-muted">Realiza una búsqueda del vehículo para conocer si ya está capturado en Registro de Infracciones y Accidentes de Guanajuato o de lo contrario podrá capturarlo.</h6>
             </div>
-             <div class="row px-4 mb-4 align-items-end">
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="controlForm my-3">
-
-                        <label>Entidad:</label>
-                        <span>
-                            @(Html.Kendo().DropDownListFor(d => d.IdEntidadBusqueda).Filter(FilterType.Contains)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Seleccione Entidad...")
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                .Filter(FilterType.Contains)
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Entidades_Read", "Vehiculos");
-                                    });
-                                }))
-                        </span>
-
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t => t.PlacasBusqueda)
-                            .Label(l => l.Content("Placas:"))
-                            .Placeholder("Ingresa Placas")
-                            .HtmlAttributes(new { style = "width: 100%" })
-                            )
-                    </div>
-                   <div id="ErrorMessageContainer" class="error-container"></div>
-
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t => t.SerieBusqueda)
-                            .Label(l => l.Content("Serie:"))
-                            .Placeholder("Ingresa serie")
-                            .HtmlAttributes(new { style = "width: 100%" })
-                            )
-
-                    </div>
-                </div>
-                                        <div class="0px;col-12 col-md-6 col-lg-7 col-xl-auto">
-									<div class="row">
-										<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-											<button id="btnNuevoVehiculo2" onclick="mostrarModalAgregarVehiculo()" type="button">
-												<h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Buscar vehículo</b></h6>
-											</button>
-										</div>
-									</div>
-                                    </div>
-        </div>
+       @(await Component.InvokeAsync("VehiculoPropietario"))  
          </form>
             <div class="row ">
             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">

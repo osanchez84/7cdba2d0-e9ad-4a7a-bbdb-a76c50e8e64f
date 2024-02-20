@@ -1,0 +1,259 @@
+﻿@model VehiculoModel
+
+
+<hr />
+<div class="row my-4 px-4">
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Placas:</label>&nbsp;@Model.placas*@
+            @(Html.Kendo().TextBoxFor(t => t.placas)
+                .Label(l => l.Content("Placas:"))
+                .Placeholder("Ingresa Placas")
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Serie:</label>&nbsp;@Model.serie*@
+            @(Html.Kendo().TextBoxFor(t => t.serie)
+                .Label(l => l.Content("Serie:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Numero tarjeta:</label>&nbsp;@Model.tarjeta*@
+            @(Html.Kendo().TextBoxFor(t => t.tarjeta)
+                .Label(l => l.Content("No. tarjeta:"))
+                .Placeholder("Ingresa No. tarjeta")
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            <label>Vigencia tarjeta:</label>
+            @(Html.Kendo().DateTimePickerFor(t => t.vigenciaTarjeta)
+                @*.Min(DateTime.Now)*@
+                .Label(l => l.Content("Vigencia tarjeta:"))
+                .Format("dd/MM/yyyy")
+                @*.Value("")*@
+                .Culture("es-ES")
+                .HtmlAttributes(new { style = "width: 100%", id = "vigenciaTarjeta" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+</div>
+
+<div class="row my-4 px-4">
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            <label>Entidad de registro:</label>
+            <span>
+                @(Html.Kendo().DropDownListFor(t => t.idEntidad).Filter(FilterType.Contains)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Seleccione Entidad...")
+                    .HtmlAttributes(new { style = "width:100%;" })
+                    .Filter(FilterType.Contains)
+                    .Enable(false)
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Entidades_Read", "Vehiculos");
+                        });
+                    }))
+            </span>
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Marca:</label>&nbsp;@Model.marca*@
+            @(Html.Kendo().TextBoxFor(t => t.marca)
+                .Label(l => l.Content("Marca:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Submarca:</label>&nbsp;@Model.submarca*@
+            @(Html.Kendo().TextBoxFor(t => t.submarca)
+                .Label(l => l.Content("Submarca:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Tipo vehículo:</label>&nbsp;@Model.tipoVehiculo*@
+            @(Html.Kendo().TextBoxFor(t => t.tipoVehiculo)
+                .Label(l => l.Content("Tipo vehículo:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+</div>
+<div class="row my-4 px-4">
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Modelo:</label>&nbsp;@Model.modelo*@
+            @(Html.Kendo().TextBoxFor(t => t.modelo)
+                .Label(l => l.Content("Modelo:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            <label>Color:</label>
+            <span>
+                @(Html.Kendo().DropDownListFor(t => t.idColor).Filter(FilterType.Contains)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Seleccione Color...")
+                    .HtmlAttributes(new { style = "width:100%;" })
+                    .Enable(false)
+                    .Filter(FilterType.Contains)
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Colores_Read", "Vehiculos");
+                        });
+                    }))
+            </span>
+
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Capacidad:</label>&nbsp;@(Model.capacidad != null ? Model.capacidad.ToString() : "-")*@
+            @(Html.Kendo().TextBoxFor(t => t.capacidad)
+                .Label(l => l.Content("Capacidad:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Póliza:</label>&nbsp;@(Model.poliza != null ? Model.poliza.ToString() : "-")*@
+            @(Html.Kendo().TextBoxFor(t => t.poliza)
+                .Label(l => l.Content("Póliza:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+</div>
+<div class="row my-4 px-4">
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Carga:</label>&nbsp;@(Model.carga.HasValue ? (Model.carga.Value ? "Si" : "No") : "-")*@
+            @(Html.Kendo().TextBoxFor(t => t.cargaTexto)
+                .Label(l => l.Content("Carga:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Otros:</label>&nbsp;@(Model.otros != null ? Model.otros.ToString() : "-")*@
+            @(Html.Kendo().TextBoxFor(t => t.otros)
+                .Label(l => l.Content("Otros:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @*<label>Número económico:</label>*@
+            @(Html.Kendo().TextBoxFor(t => t.numeroEconomico)
+                .Label(l => l.Content("Número económico:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    <div class="form-group col-md-3">
+        <div class="controlForm">
+            @(Html.Kendo().TextBoxFor(t => t.motor)
+                .Label(l => l.Content("Motor:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+</div>
+
+<div class="row px-4 mb-4 align-items-end">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="controlForm my-3">
+            @*<p>@Model.Persona.nombreCompleto</p>*@
+
+            @(Html.Kendo().TextBoxFor(t => t.Persona.nombreCompleto)
+                .Label(l => l.Content("Propietario:"))
+                .HtmlAttributes(new { style = "width: 100%" })
+                .Enable(false)
+                )
+        </div>
+    </div>
+    @if (ViewBag.EditarVehiculo != null)
+    {
+        @if (ViewBag.EditarVehiculo)
+        {
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="controlForm my-3">
+                    <button style="height:60px!important" class="btn btn-primary" id="btnSelect" type="button" onclick="SeleccionarPropietario()">  <h5 class="m-0"><b>...</b></h5></button>
+                </div>
+            </div>
+        }
+
+    }
+
+    @if (ViewBag.EditarVehiculo != null)
+    {
+        @if (ViewBag.EditarVehiculo)
+        {
+            <div class="col-12 col-md-6 col-lg-3" style="text-align:right!important">
+                <div class="controlForm my-3">
+                    <button class="btn btn-primary" id="btnEditarVehiculo" type="button" onclick="EditarVehiculo()">  <h5 class="m-0"><b>Editar datos de éste vehículo</b></h5></button>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<input type="hidden" id="hdnIdPersonaTemp" value="" />
+@if (ViewBag.EditarVehiculo != null)
+{
+    @if (ViewBag.EditarVehiculo)
+    {
+        <div class="row my-4 px-4">
+            <div id="listadoPersonas" style="display: none">
+                <partial name="_ListadoPersonas" model="ViewBag.Personas" />
+            </div>
+        </div>
+    }
+
+}
+<hr />
+
+
+
+
+

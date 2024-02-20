@@ -77,7 +77,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public string carretera { get; set; }
         public virtual VehiculoModel Vehiculo { get; set; }
         public PersonaModel Persona { get; set; }
+        
         public virtual PersonaInfraccionModel PersonaInfraccion { get; set; }
+         public virtual PersonaModel PersonaInfraccion2 { get; set; }
+
         public virtual IEnumerable<MotivosInfraccionVistaModel> MotivosInfraccion { get; set; }
         public virtual GarantiaInfraccionModel Garantia { get; set; }
 

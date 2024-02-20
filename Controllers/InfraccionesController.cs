@@ -268,14 +268,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-           // var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-            var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-            //var vehiculosList = _vehiculosService.GetAllVehiculos();
-            //var personasList = _personasService.GetAllPersonas();
-
-           // ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
-            //ViewBag.Vehiculos = vehiculosList;
             ViewBag.EditarVehiculo = false;
             return View(new InfraccionesModel());
         }
@@ -1692,6 +1685,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+
         public ActionResult ajax_CrearVehiculo_Ejemplo(VehiculoModel model)
         {
             int IdVehiculo = 0;
@@ -1763,7 +1757,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-
+    [HttpPost]
+        public IActionResult ajax_EditarConductor(PersonaModel model)
+        {
+            int id = _personasService.UpdatePersona(model);
+            int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            return Json(new { success = true });
+        }
 
 
         #region Budqueda

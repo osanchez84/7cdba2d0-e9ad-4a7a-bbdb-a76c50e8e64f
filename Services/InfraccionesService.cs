@@ -1956,8 +1956,8 @@ namespace GuanajuatoAdminUsuarios.Services
 							};
 							model.infraccionCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? false : ((int)reader["infraccionCortesia"])==1?false:true;
 							model.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-							model.Persona = _personasService.GetPersonaById((int)model.idPersona);
-							//model.PersonaInfraccion = _personasService.GetPersonaInfraccionById((int)model.idPersonaInfraccion);
+							model.Persona = _personasService.GetPersonaById((int)(model.idPersona??0));
+							model.PersonaInfraccion2 = _personasService.GetPersonaById((int)(model.idPersonaInfraccion??0));
 							model.PersonaInfraccion = model.idPersonaInfraccion == null ? new PersonaInfraccionModel() : GetPersonaInfraccionById((int)model.idInfraccion);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.strIsPropietarioConductor = model.idPersona == null ? "-" : model.idPersona == model.idPropitario ? "Propietario" : "Conductor";
@@ -2796,7 +2796,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		{
 			int result = 0;
 
-			string strQuery = @"INSERT INTO infracciones
+			string strQuery = @"
+
+INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
                                             ,idOficial
@@ -2833,7 +2835,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@lugarColonia
                                             ,@lugarEntreCalle
                                             ,@idVehiculo
-                                            ,@idPersona
+                                            ,(select top 1 propietario from vehiculos where idvehiculo=@idVehiculo)
                                             ,@idPersonaInfraccion
                                             ,@placasVehiculo
                                             ,@NumTarjetaCirculacion
@@ -2871,7 +2873,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle == null ? "" : (object)model.lugarEntreCalle;
 
 					command.Parameters.Add(new SqlParameter("idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo;
-					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona;
+					//command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona;
 					command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersona;
 					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.placasVehiculo.Trim(new Char[] { ' ', '-' });
 					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value =

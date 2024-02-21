@@ -43,8 +43,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             DiasInhabilesModel dia = new DiasInhabilesModel();
                             dia.idDiaInhabil = Convert.ToInt32(reader["idDiaInhabil"].ToString());
                             dia.idMunicipio = Convert.ToInt32(reader["idMunicipio"].ToString());
-
-                            dia.fecha = Convert.ToDateTime(reader["fecha"].ToString());
+                            if (reader["fecha"] != DBNull.Value)
+                            {
+                                if (DateTime.TryParse(reader["fecha"].ToString(), out DateTime parsedDate))
+                                {
+                                    dia.fecha = parsedDate; 
+                                }
+                                else
+                                {
+                              
+                                   dia.fecha = DateTime.MinValue;
+                                }
+                            }
                             dia.todosMunicipiosDesc = reader["todosMunicipiosDesc"].ToString();
                             dia.Municipio = reader["municipio"].ToString();
                             dia.EstatusDesc = reader["estatusDesc"].ToString();
@@ -91,6 +101,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     while (reader.Read())
                     {
                             dia.idDiaInhabil = Convert.ToInt32(reader["idDiaInhabil"].ToString());
+                            dia.idMunicipio = Convert.ToInt32(reader["idMunicipio"].ToString());
+                            dia.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+
                             dia.fecha = Convert.ToDateTime(reader["fecha"].ToString());
                             dia.todosMunicipiosDesc = reader["todosMunicipiosDesc"].ToString();
                             dia.Municipio = reader["municipio"].ToString();
@@ -119,7 +132,7 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 connection.Open();
                 SqlCommand sqlCommand = new SqlCommand(@"Insert into catDiasInhabiles
-                                                      (fecha,idMunicipio,todosMunicipiosDesc, estatus,) 
+                                                      (fecha,idMunicipio,todosMunicipiosDesc, estatus) 
                                                         values(@Fecha,@idMunicipio,@todosMunicipiosDesc,@estatus)", connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime)).Value = Dia.fecha;
                     sqlCommand.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = Dia.idMunicipio;

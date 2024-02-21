@@ -278,6 +278,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
             ViewBag.EditarVehiculo = false;
+            ViewBag.Regreso= 1;
             return View(new InfraccionesModel());
         }
 
@@ -403,8 +404,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        public ActionResult Editar(int idInfraccion, int id, bool? showE = false)
-
+        public ActionResult Editar(int idInfraccion, int id, string regreso, bool? showE = false)
         {
 
 
@@ -436,8 +436,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
             ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
             ViewBag.EditarVehiculo = true;
+			ViewBag.Regreso = regreso==null ? "0":regreso;
 
-            if ((model.MotivosInfraccion == null || model.MotivosInfraccion.Count() == 0) || (model.idGarantia == null || model.idGarantia == 0))
+			if ((model.MotivosInfraccion == null || model.MotivosInfraccion.Count() == 0) || (model.idGarantia == null || model.idGarantia == 0))
             {
                 HttpContext.Session.SetString("isedition", "0");
             }

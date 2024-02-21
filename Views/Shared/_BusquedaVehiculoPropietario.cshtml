@@ -1,0 +1,87 @@
+      @model GuanajuatoAdminUsuarios.Models.VehiculoPropietarioBusquedaModel
+     <script>
+               function buscarVehiculo() {
+            var placasValue = $("#PlacaBusqueda").val().trim();
+            var Mydata = $("#frmSearch").serialize();
+            showLoading();
+    $.ajax({
+        url: '@Url.Action("Ajax_BuscarVehiculo","BusquedaVehiculoPropietario")',
+        type: 'POST',
+        data: Mydata,
+        success: function (result) {
+            if (result.success === false) {
+                $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
+            } else {
+                document.getElementById("sec0").style.display = "none";
+                document.getElementById("VehiculoLocalizado").style.display = "block";
+                $("#VehiculoLocalizado").html(result);
+            }
+            hideLoading();
+                }, error: function () {
+                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                    hideLoading();
+                }
+    });
+}
+
+     </script>
+      <div class="row px-4 mb-4 align-items-end">
+                    <form id="frmSearch" class="row px-4 mb-4 align-items-end" method="post">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm my-3">
+
+                        <label>Entidad:</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(d => d.IdEntidadBusqueda).Filter(FilterType.Contains)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Seleccione Entidad...")
+                                .HtmlAttributes(new { style = "width:100%;" })
+                                .Filter(FilterType.Contains)
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Entidades_Read", "Vehiculos");
+                                    });
+                                }))
+                        </span>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.PlacaBusqueda)
+                            .Label(l => l.Content("Placas:"))
+                            .Placeholder("Ingresa Placas")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                   <div id="ErrorMessageContainer" class="error-container"></div>
+
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="controlForm my-3">
+                        @(Html.Kendo().TextBoxFor(t => t.SerieBusqueda)
+                            .Label(l => l.Content("Serie:"))
+                            .Placeholder("Ingresa serie")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3 col-xl-auto">
+				   <div class="col-auto btnOutline btnOutlinePrimary my-3">
+                     @(Html.Kendo().Button()
+                    .Name("btnBuscarVehiculo")
+                    .HtmlAttributes(new { type = "button" })
+                    .Content(" <h6 class='m-0 d-flex align-items-center'><i class='icon-addCar h5 mb-0 me-2'></i><b>Buscar vehículo</b></h6>")
+                    .Events(e => e.Click("buscarVehiculo")))
+
+								
+				</div>
+              </div>
+              </form>
+        </div>

@@ -4,7 +4,7 @@
  * Fecha de creación: Sunday, February 18th 2024 10:44:54 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sun Feb 18 2024
+ * Última modificación: Tue Feb 20 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -18,7 +18,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
-    public class SolicitudDepositoOtraDependenciaModel
+    public class SolicitudDepositoOtraDependenciaModel : VehiculoPropietarioBusquedaModel
     {
 
         [DataType(DataType.DateTime)]
@@ -38,8 +38,5 @@ namespace GuanajuatoAdminUsuarios.Models
         public string NumeroUbicacion { get; set; }
         public string InterseccionUbicacion { get; set; }
 
-        public int IdEntidadBusqueda { get; set; }
-        public string PlacasBusqueda { get; set; }
-        public string SerieBusqueda { get; set; }
     }
 }

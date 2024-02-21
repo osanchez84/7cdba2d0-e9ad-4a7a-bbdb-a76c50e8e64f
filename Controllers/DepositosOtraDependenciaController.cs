@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Authorize]
-    public class DepositosOtraDependenciaController : BaseController
+    public class DepositosOtraDependenciaController : BusquedaVehiculoPropietarioController
     {
         #region Variables
 

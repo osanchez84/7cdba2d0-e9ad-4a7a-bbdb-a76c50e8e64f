@@ -8,16 +8,20 @@ using System.Linq;
 using System.Drawing;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using GuanajuatoAdminUsuarios.RESTModels;
+using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
     public class VehiculosService : IVehiculosService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
+        private readonly IRepuveService _repuveService;
 
-        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD)
+        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD,IRepuveService repuveService)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
+            _repuveService = repuveService;
         }
 
         public IEnumerable<VehiculoModel> GetAllVehiculos()
@@ -893,5 +897,16 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListVehiculos;
         }
 
+        /// <summary>
+        /// Valida si un vehiculo tiene reporte de robo en REPUVE
+        /// </summary>
+        /// <param name="repuveGralModel"></param>
+        /// <returns></returns>
+
+        public bool ValidarRobo(RepuveConsgralRequestModel repuveGralModel)
+        {
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+            return repuveConsRoboResponse.estatus == "1";
+        }
     }
 }

@@ -28,10 +28,12 @@
                     window.location.href = "/Principal";
                 }, 200);
             }
+
+            $('#modalBusquedaVehiculo').hide();
         });
 </script>
 <div class="mainContainer bg-light">
-    <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
+    <section id="seccionPrincipal" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
                 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
             <div class="col-12 col-md-6 col-lg-5 col-xl-auto pe-0">
                 <div class="row align-items-center justify-content-center justify-content-md-start">
@@ -286,7 +288,7 @@
                         <i class="icon-car h1 colorPrimary"></i>
                     </div>
                     <div class="col-auto my-3">
-                        <h2 class="m-0 h3"><b>Captura de vehículo</b></h2>
+                        <h2 class="m-0 h3"><b>Asignación de vehículo</b></h2>
                     </div>
                 </div>
             </div>
@@ -303,9 +305,28 @@
                 <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Búsqueda del vehículo</b></h5>
                 <h6 class="px-4 text-muted">Realiza una búsqueda del vehículo para conocer si ya está capturado en Registro de Infracciones y Accidentes de Guanajuato o de lo contrario podrá capturarlo.</h6>
             </div>
-        @await Html.PartialAsync("_BusquedaVehiculoPropietario")
+            <div class="row  justify-content-end mx-4">
+            <div class="col-12 col-md-6 col-lg-3 col-xl-auto">
+				   <div class="col-auto btnOutline btnOutlinePrimary my-3">
+                     @(Html.Kendo().Button()
+                    .Name("btnBuscarVehiculo")
+                    .HtmlAttributes(new { type = "button" })
+                    .Content(" <h6 class='m-0 d-flex align-items-center'><i class='icon-addCar h5 mb-0 me-2'></i><b>Buscar vehículo</b></h6>")
+                    .Events(e => e.Click("mostrarBusquedaVehiculo")))
+                   </div>				
+				</div>
+              </div>
+               @(Html.Kendo().Dialog()
+        .Name("vehiculoDialogo")
+        .Title("")
+        .Content("<div id='contenidoModal'></div>")
+        .Modal(true)
+        .Visible(false)
+        .MaxWidth(1000)
+        .Events(ev => ev.Close("onClose").Open("onOpen"))
+    )
          </form>
-            <div class="row ">
+            <div class="row">
             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                 <div class="controlButton my-3" onclick="enviarSolicitud()">
                     @(Html.Kendo().Button()
@@ -316,6 +337,7 @@
             </div>
         </div>
     </section>
+    <div id="modalBusquedaVehiculo"></div>
 </div>
 
 <script>
@@ -336,5 +358,33 @@
                 hideLoading();
             }
         });
+    }
+
+    function mostrarBusquedaVehiculo(){
+         showLoading();
+         $.ajax({
+            url: '@Url.Action("MostrarBusquedaVehiculo")',
+            type: "POST",
+            data: {},
+            success: function (data) {
+                 // $('#contenidoModal').html(data);
+                  //$('#seccionPrincipal').hide();
+                  //$('#modalBusquedaVehiculo').show();
+                    $('#vehiculoDialogo').data('kendoDialog').open();
+                    $('#contenidoModal').html(data);
+                  hideLoading();
+            },
+            error: function (xhr, status, error) {
+                sitteg_error("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
+        });
+    }
+      function onClose() {
+        $("#btnBuscarVehiculo").fadeIn();
+    }
+
+    function onOpen() {
+        $("#btnBuscarVehiculo").fadeOut();
     }
 </script>

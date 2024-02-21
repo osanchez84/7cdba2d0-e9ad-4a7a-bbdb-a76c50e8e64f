@@ -1,26 +1,26 @@
 ﻿﻿@using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 @model VehiculoModel
 
+
+
+
+
 @{
-
-
-
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 
     var dateVigencia = Model.vigenciaTarjeta;
     var myAttributes = new { disabled = "", style = "width:100%;" };
-    if (Model != null)
-    {
-        myAttributes = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? new { disabled = "disabled", style = "width:100%;" } : new { disabled = "", style = "width:100%;" };
-    }
 
     bool disableInput = false;
     if (Model != null)
     {
-        disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
+        //disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
+        myAttributes = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? new { disabled = "disabled", style = "width:100%;" } : new { disabled = "", style = "width:100%;" };
     }
 
-        var mensaje = Model.ErrorRepube;
-
+    var mensaje = Model.ErrorRepube;
     ViewBag.serie = Model.serie;
 }
 
@@ -29,10 +29,38 @@
     $(document).ready(()=>{
 
     var t = "@mensaje"
+    var access = @listaIdsPermitidosJson;
+    var auth = @autorizaciones;
+
+    console.log(auth);
+    if (access != undefined && access != '') {
+        if (!access.toString().includes(localStorage.getItem("menuId"))) {
+            Swal.fire({
+                icon: "error",
+                title: "¡El usuario no tiene acceso a esta opción!"
+            });
+            setTimeout(() => {
+                window.location.href = "/Principal";
+            }, 200);
+        } else {
+            // CONSULTAR
+            if (!auth.toString().includes("256")) {
+                 $("#placas").prop("disabled", true).css({ "opacity": "0.3" });;
+                 $("#serie").prop("disabled", true).css({ "opacity": "0.3" });;
+            }
+        }
+    } else {
+        Swal.fire({
+            icon: "error",
+            title: "¡El usuario no tiene acceso a esta opción!"
+        });
+        setTimeout(() => {
+            window.location.href = "/Principal";
+        }, 200);
+    }
 
     if(!t){
-                  sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
- 
+        sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
     }
  
 })
@@ -204,28 +232,17 @@
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Placas:</label>
-                @Html.CustomTextBoxFor(model => model.placas,"Ingresa Placa", disableInput)
+                @Html.CustomTextBoxFor(model => model.placas,"Ingresa Placa", false)
             </div>
         </div>
 
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Serie:  </label>
-             <!--   @Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
 
-             @if(@disableInput){
-                     <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
-             </span>
-
-             }
-             else{
-                 <span class="k-widget k-textbox" style="width:100%;">
+            <span class="k-widget k-textbox" style="width:100%;">
                  <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
              </span>
-
-             }
-             
             </div>
         </div>
 

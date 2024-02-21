@@ -25,13 +25,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class DepositosOtraDependenciaController : BusquedaVehiculoPropietarioController
     {
         #region Variables
-
         #endregion
 
         #region Constructor
-        public DepositosOtraDependenciaController()
-        {
-        }
+        public DepositosOtraDependenciaController(ICatMunicipiosService municipioService):base(municipioService){}
+
         #endregion
         public IActionResult Depositos(int? Isol)
         {

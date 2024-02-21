@@ -28,10 +28,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [Authorize]
     public class BusquedaVehiculoPropietarioController : BaseController
     {
-         #region Variables
+        #region Variables
+        private readonly ICatMunicipiosService _municipioService;
         #endregion
-         public BusquedaVehiculoPropietarioController()
+         public BusquedaVehiculoPropietarioController(ICatMunicipiosService municipioService)
         {
+            _municipioService = municipioService;
         }
 
         [HttpPost]
@@ -207,9 +209,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return vehiculoEncontrado;
 
         }
-         private int ObtenerIdMunicipioDesdeBD([FromServices]ICatMunicipiosService municipioService,string municipio)
+         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            var idMunicipio = municipioService.obtenerIdPorNombre(municipio);
+            var idMunicipio = _municipioService.obtenerIdPorNombre(municipio);
             return idMunicipio;
         }
         private int ObtenerIdEntidadDesdeBD([FromServices]ICatEntidadesService entidadService,string entidad)
@@ -275,7 +277,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             idTipo = tipoVehiculo.CatalogList.Where(w => categoria.ToLower().Contains(w.Text.ToLower())).Select(s => s.Id).FirstOrDefault();
 
-            return (idTipo);
+            return idTipo;
 
         }
 
@@ -300,15 +302,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 return true;
             }
-            else if (sexo == "1")
-            {
-                return false;
-            }
             else
             {
                 return false;
             }
-
         }
         private long LimpiarValorTelefono(string telefono)
         {

@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Wed Feb 21 2024
+ * Última modificación: Thu Feb 22 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -155,13 +155,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Entidades_Drop()
         {
             var catEntidades = _catDictionary.GetCatalog("CatEntidades", "0");
-            var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
-            return Json(result);
-        }
-
-        public JsonResult Municipios_Drop()
-        {
-            var catEntidades = _catDictionary.GetCatalog("CatMunicipios", "0");
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }

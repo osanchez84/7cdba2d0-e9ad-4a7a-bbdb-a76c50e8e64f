@@ -88,7 +88,14 @@
          </form>
         </section>
         </div>
-        <div id="vehiculoContainer"></div>
+        <div class="modal fade modalCustom" id="vehiculoModal"  aria-labelledby="VehiculoServiceLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body bg-light" id="vehiculoModalContainer">
+                        </div>
+                    </div>
+                </div>
+            </div>
     <script>
 
             function buscarVehiculoEnPlataformas() {
@@ -104,8 +111,9 @@
                                         $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
                                         } else {
                                                     $('#busquedaVehiculoContainer').fadeOut();
-                                                    $('#agregarVehiculoModal').modal({ backdrop: 'static', keyboard: false });
-                                                    $("#vehiculoContainer").html(result);
+                                                    $('#vehiculoModal').modal({ backdrop: 'static', keyboard: false });
+                                                    $("#vehiculoModalContainer").html(result);
+                                                    $('#vehiculoModal').modal('show');
                                                 	
                                         }
                                         hideLoading();

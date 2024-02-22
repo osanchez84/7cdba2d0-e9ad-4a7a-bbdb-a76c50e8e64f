@@ -52,10 +52,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
      
 
-        public ActionResult EditarParcial(int IdDia)
+        public ActionResult EditarParcial(int idDiaInhabil)
         {
           
-             var diasInhabilesModel = _diasInhabiles.GetDiasById(IdDia);
+             var diasInhabilesModel = _diasInhabiles.GetDiasById(idDiaInhabil);
             Municipios_Read();
             return View("_Editar", diasInhabilesModel);
          }
@@ -87,7 +87,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 _diasInhabiles.CrearDiaInhabil(model);
                 var ListDiasInhabilesModel = _diasInhabiles.GetDiasInhabiles();
-                return Json(ListDiasInhabilesModel);
+                return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
             Municipios_Drop();
             return PartialView("_Crear");
@@ -102,9 +102,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ModelState.Remove("fecha");
             if (ModelState.IsValid)
             {
-                UpdateDiaInhabil(model);
+                _diasInhabiles.EditDia(model);
                 var ListDiasInhabilesModel = _diasInhabiles.GetDiasInhabiles();
-                return Json(ListDiasInhabilesModel);
+                return PartialView("_ListaDiasInhabiles", ListDiasInhabilesModel);
             }
             Municipios_Drop();
             return PartialView("_Editar");

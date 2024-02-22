@@ -34,6 +34,7 @@
                 columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
                 columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             }).HtmlAttributes(new { style = "height:250" })
+
             .Events(events => events
             .DataBound("onDataBound")
             )

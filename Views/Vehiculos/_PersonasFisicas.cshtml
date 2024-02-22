@@ -29,7 +29,9 @@
                 columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
                 columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             }).HtmlAttributes(new { style = "height:250" })
-            .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+            @*.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))*@
+            .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
+            .EnableCustomBinding(false)
             .Sortable()
             .Scrollable(scr => scr.Enabled(true))
             .Scrollable(scr => scr.Height(250))
@@ -37,8 +39,8 @@
             .Ajax()
             .Read(ev => ev.Action("ajax_BuscarPersonasFiscasPagination", "Vehiculos"))
 
-            .ServerOperation(false)
-            .PageSize(5)
+            @*.ServerOperation(false)*@
+            .PageSize(10)
             )
             .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
              .Search(s =>

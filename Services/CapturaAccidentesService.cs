@@ -2534,7 +2534,46 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-		public bool ValidarFolio(string folioInfraccion, int idDependencia)
+
+        public int GuardarDatosPrevioInfraccion(int idAccidente, string montoCamino, string montoCarga, string montoPropietarios, string montoOtros)
+        {
+            int result = 0;       
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = @"UPDATE accidentes 
+                                            SET montoCamino = @MontoCamino, 
+                                                montoCarga = @MontoCarga, 
+                                                montoPropietarios = @MontoPropietarios, 
+                                                montoOtros = @MontoOtros
+                                            WHERE idAccidente = @idAccidente
+                                            ";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                    command.Parameters.AddWithValue("@MontoCamino", montoCamino ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoCarga", montoCarga ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoPropietarios", montoPropietarios ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@MontoOtros", montoOtros ?? (object)DBNull.Value);
+                                     
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
+        public bool ValidarFolio(string folioInfraccion, int idDependencia)
 		{
 			int folio = 0;
 

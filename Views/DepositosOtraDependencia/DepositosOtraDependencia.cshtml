@@ -28,8 +28,6 @@
                     window.location.href = "/Principal";
                 }, 200);
             }
-
-            $('#modalBusquedaVehiculo').hide();
         });
 </script>
 <div class="mainContainer bg-light">
@@ -169,7 +167,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Municipios_Drop", "DepositosOtraDependencia");
+                                        read.Action("Municipios_Drop2", "DepositosOtraDependencia");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;" })
@@ -301,10 +299,12 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        <div class="col-12 my-4">
-                <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Búsqueda del vehículo</b></h5>
+                    <div class="row">
+            <div class="col-12 my-4">
+                <h5 class="px-4"><b>Asignación de vehículo</b></h5>
                 <h6 class="px-4 text-muted">Realiza una búsqueda del vehículo para conocer si ya está capturado en Registro de Infracciones y Accidentes de Guanajuato o de lo contrario podrá capturarlo.</h6>
             </div>
+        </div>
             <div class="row  justify-content-end mx-4">
             <div class="col-12 col-md-6 col-lg-3 col-xl-auto">
 				   <div class="col-auto btnOutline btnOutlinePrimary my-3">
@@ -316,15 +316,6 @@
                    </div>				
 				</div>
               </div>
-               @(Html.Kendo().Dialog()
-        .Name("vehiculoDialogo")
-        .Title("")
-        .Content("<div id='contenidoModal'></div>")
-        .Modal(true)
-        .Visible(false)
-        .MaxWidth(1000)
-        .Events(ev => ev.Close("onClose").Open("onOpen"))
-    )
          </form>
             <div class="row">
             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
@@ -337,7 +328,14 @@
             </div>
         </div>
     </section>
-    <div id="modalBusquedaVehiculo"></div>
+    <div class="modal fade modalCustom" id="agregarVehiculoModal"  aria-labelledby="VehiculoServiceLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body bg-light" id="agregarVehiculoBodyModal">
+                        </div>
+                    </div>
+                </div>
+            </div>
 </div>
 
 <script>
@@ -366,12 +364,9 @@
             url: '@Url.Action("MostrarBusquedaVehiculo")',
             type: "POST",
             data: {},
-            success: function (data) {
-                 // $('#contenidoModal').html(data);
-                  //$('#seccionPrincipal').hide();
-                  //$('#modalBusquedaVehiculo').show();
-                    $('#vehiculoDialogo').data('kendoDialog').open();
-                    $('#contenidoModal').html(data);
+            success: function (result) {
+                 $('#agregarVehiculoBodyModal').html(result);
+				 $('#agregarVehiculoModal').modal('show');
                   hideLoading();
             },
             error: function (xhr, status, error) {
@@ -381,10 +376,10 @@
         });
     }
       function onClose() {
-        $("#btnBuscarVehiculo").fadeIn();
+       // $("#btnBuscarVehiculo").fadeIn();
     }
 
     function onOpen() {
-        $("#btnBuscarVehiculo").fadeOut();
+        //$("#btnBuscarVehiculo").fadeOut();
     }
 </script>

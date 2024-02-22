@@ -217,6 +217,7 @@ namespace GuanajuatoAdminUsuarios
 
             services.AddScoped<ICatDependenciaEnviaService, CatDependenciaEnviaService>();
             services.AddScoped<ICatTipoMotivoIngresoService, CatTipoMotivoIngresoService>();
+            services.AddScoped<IVehiculoPlataformaService, VehiculoPlataformaService>();
 
 
             services

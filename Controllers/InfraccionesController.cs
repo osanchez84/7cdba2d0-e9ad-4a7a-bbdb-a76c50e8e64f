@@ -985,7 +985,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
                 vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
 
-                if (vehiculosModel.idVehiculo < 0)
+                if (vehiculosModel.idVehiculo > 0)
                 {
                     return await this.RenderViewAsync("_Create", vehiculosModel,true);
 

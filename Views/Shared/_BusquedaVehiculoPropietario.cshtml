@@ -1,51 +1,27 @@
       @model GuanajuatoAdminUsuarios.Models.VehiculoPropietarioBusquedaModel
-     <script>
-               function buscarVehiculo() {
-            var placasValue = $("#PlacaBusqueda").val().trim();
-            var Mydata = $("#frmSearch").serialize();
-            showLoading();
-    $.ajax({
-        url: '@Url.Action("BuscarVehiculo")',
-        type: 'POST',
-        data: Mydata,
-        success: function (result) {
-            if (result.success === false) {
-                $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
-            } else {
-                document.getElementById("sec0").style.display = "none";
-                document.getElementById("VehiculoLocalizado").style.display = "block";
-                $("#VehiculoLocalizado").html(result);
-            }
-            hideLoading();
-                }, error: function () {
-                    sitteg_warning("Ocurrio un error al procesar su solicitud.");
-                    hideLoading();
-                }
-    });
-}
-
-     </script>
+   
     <!-- ** Busqueda ** -->
-    <section id="sec0" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow mt-3 mb-5 rounded" style="display:block">
-     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-            <div class="col-12 col-md-auto pe-0">
-                <div class="row align-items-center justify-content-center justify-content-md-start">
-                    <div class="col-auto">
-                        <div class="border border-2 border-dark rounded-circle">
-                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
-                                <b>1</b>
-                            </h5>
-                        </div>
+        <div id="busquedaVehiculoContainer">
+       <section id="sectionCap" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow mt-3 mb-5 rounded">
+      <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+        <div class="col-12 col-md-auto pe-0">
+            <div class="row align-items-center justify-content-center justify-content-md-start">
+                <div class="col-auto">
+                    <div class="border border-2 border-dark rounded-circle">
+                        <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                            <b>1</b>
+                        </h5>
                     </div>
-                    <div class="col-auto p-0">
-                        <i class="icon-car h1 colorPrimary"></i>
-                    </div>
-                    <div class="col-auto my-3">
-                        <h2 class="m-0 h3"><b>Captura de vehículo</b></h2>
-                    </div>
+                </div>
+                <div class="col-auto p-0">
+                    <i class="icon-car h1 colorPrimary"></i>
+                </div>
+                <div class="col-auto my-3">
+                    <h2 class="m-0 h3"><b>Búsqueda de vehículo</b></h2>
                 </div>
             </div>
         </div>
+    </div>
            <div class="row">
             <div class="col-6 pe-0">
                 <div class="bgSuccess py-1"></div>
@@ -54,13 +30,14 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-      <div class="row px-4 mb-4 align-items-end">
-                <div class="col-12 col-md-6 col-lg-4">
+         <form id="busquedaVehiculoForm">
+      <div class="row px-4 mb-4">
+                <div class="col-12 col-md-8 col-lg-4">
                     <div class="controlForm my-3">
 
                         <label>Entidad:</label>
                         <span>
-                            @(Html.Kendo().DropDownListFor(d => d.IdEntidadBusqueda).Filter(FilterType.Contains)
+                            @(Html.Kendo().DropDownListFor(m => m.IdEntidadBusqueda).Filter(FilterType.Contains)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Seleccione Entidad...")
@@ -70,7 +47,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Entidades_Read", "Vehiculos");
+                                        read.Action("GetEntidades_Drop", "BusquedaVehiculoPropietario");
                                     });
                                 }))
                         </span>
@@ -80,7 +57,7 @@
 
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t => t.PlacaBusqueda)
+                        @(Html.Kendo().TextBoxFor(m => m.PlacaBusqueda)
                             .Label(l => l.Content("Placas:"))
                             .Placeholder("Ingresa Placas")
                             .HtmlAttributes(new { style = "width: 100%" })
@@ -92,7 +69,7 @@
 
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
-                        @(Html.Kendo().TextBoxFor(t => t.SerieBusqueda)
+                        @(Html.Kendo().TextBoxFor(m => m.SerieBusqueda)
                             .Label(l => l.Content("Serie:"))
                             .Placeholder("Ingresa serie")
                             .HtmlAttributes(new { style = "width: 100%" })
@@ -102,12 +79,41 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3 col-xl-auto">
 				   <div class="col-auto btnOutline btnOutlinePrimary my-3">
-                     @(Html.Kendo().Button()
-                    .Name("btnBuscarVehiculo")
-                    .HtmlAttributes(new { type = "button" })
-                    .Content(" <h6 class='m-0 d-flex align-items-center'><i class='icon-addCar h5 mb-0 me-2'></i><b>Buscar vehículo</b></h6>")
-                    .Events(e => e.Click("buscarVehiculo")))			
+                     <button id="btnBuscarVehiculo" onclick="buscarVehiculoEnPlataformas()" type="button">
+						<h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Buscar vehículo</b></h6>
+					</button>
 				</div>
               </div>
         </div>
+         </form>
         </section>
+        </div>
+        <div id="vehiculoContainer"></div>
+    <script>
+
+            function buscarVehiculoEnPlataformas() {
+                 var placasValue = $("#PlacaBusqueda").val().trim();
+                            var modeloBusqueda = $("#busquedaVehiculoForm").serialize();
+                            showLoading();
+                            $.ajax({
+                                    url: '@Url.Action("BuscarVehiculoEnPlataformas","BusquedaVehiculoPropietario")',
+                                    type: 'POST',
+                                    data: modeloBusqueda,
+                                    success: function (result) {
+                                        if (result.success === false) {
+                                        $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
+                                        } else {
+                                                    $('#busquedaVehiculoContainer').fadeOut();
+                                                    $('#agregarVehiculoModal').modal({ backdrop: 'static', keyboard: false });
+                                                    $("#vehiculoContainer").html(result);
+                                                	
+                                        }
+                                        hideLoading();
+                                    }, 
+                                    error: function () {
+                                            sitteg_error("Ocurrio un error al procesar su solicitud.");
+                                            hideLoading();
+                                    }
+                            });
+            }
+    </script>

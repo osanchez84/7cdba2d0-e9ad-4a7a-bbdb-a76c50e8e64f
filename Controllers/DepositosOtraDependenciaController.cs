@@ -4,7 +4,7 @@
  * Fecha de creación: Sunday, February 18th 2024 9:40:13 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Tue Feb 20 2024
+ * Última modificación: Wed Feb 21 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -12,12 +12,12 @@
  * HISTORIAL:
  */
 
-using GuanajuatoAdminUsuarios.Controllers;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -28,15 +28,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #endregion
 
         #region Constructor
-        public DepositosOtraDependenciaController(ICatMunicipiosService municipioService):base(municipioService){}
+        public DepositosOtraDependenciaController(ICatDictionary catDictionary):base(catDictionary) { }
 
         #endregion
-        public IActionResult Depositos(int? Isol)
+        public IActionResult Depositos()
         {
             return View("DepositosOtraDependencia");
         }
 
-        #region BusquedaCatalogos
+        #region Catalogos
         public JsonResult DependenciaEnvia_Drop([FromServices] ICatDependenciaEnviaService catDependenciaEnviaService)
         {
             var result = new SelectList(catDependenciaEnviaService.ObtenerDependenciasEnviaActivas(), "id", "nombre");
@@ -49,7 +49,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-        public JsonResult Municipios_Drop([FromServices] ICatMunicipiosService catMunicipiosService)
+        public JsonResult Municipios_Drop2([FromServices] ICatMunicipiosService catMunicipiosService)
         {
             var result = new SelectList(catMunicipiosService.GetMunicipiosPorEntidad(CatEntidadesModel.GUANAJUATO), "IdMunicipio", "Municipio");
             return Json(result);

@@ -16,12 +16,11 @@ namespace GuanajuatoAdminUsuarios.Services
     public class VehiculosService : IVehiculosService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
-        private readonly IRepuveService _repuveService;
+   
 
-        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD,IRepuveService repuveService)
+        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
-            _repuveService = repuveService;
         }
 
         public IEnumerable<VehiculoModel> GetAllVehiculos()
@@ -895,18 +894,6 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
             return ListVehiculos;
-        }
-
-        /// <summary>
-        /// Valida si un vehiculo tiene reporte de robo en REPUVE
-        /// </summary>
-        /// <param name="repuveGralModel"></param>
-        /// <returns></returns>
-
-        public bool ValidarRobo(RepuveConsgralRequestModel repuveGralModel)
-        {
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-            return repuveConsRoboResponse.estatus == "1";
         }
     }
 }

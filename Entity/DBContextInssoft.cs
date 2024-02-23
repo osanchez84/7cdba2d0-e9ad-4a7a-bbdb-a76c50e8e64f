@@ -259,6 +259,9 @@ public partial class DBContextInssoft : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fechaActualizacion");
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
+            entity.Property(e => e.Anio)
+               .HasColumnType("int")
+                .HasColumnName("anio");
 
         });
 

@@ -3387,7 +3387,8 @@ INSERT INTO infracciones
 								 ? default(string)
 								 : reader["nombreCortesia"].ToString();
 								infraccionModel.NumTarjetaCirculacion = reader["NumTarjetaCirculacion"].ToString();
-								infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
+								if (infraccionModel.idPersona!=null)
+									infraccionModel.Persona = _personasService.GetPersonaById((int)infraccionModel.idPersona);
 								infraccionModel.PersonaInfraccion = GetPersonaInfraccionById((int)infraccionModel.idInfraccion);
 								infraccionModel.Vehiculo = _vehiculosService.GetVehiculoById((int)infraccionModel.idVehiculo);
 								//infraccionModel.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(infraccionModel.idInfraccion);

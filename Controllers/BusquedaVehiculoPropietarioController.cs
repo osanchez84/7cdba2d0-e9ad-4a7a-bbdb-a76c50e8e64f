@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -47,13 +48,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 Vehiculo = new VehiculoModel
                 {
                     Persona = new PersonaModel()
-                }
+                },
+                IdEntidadBusqueda = CatEntidadesModel.GUANAJUATO
             };
             return PartialView("_BusquedaVehiculoPropietario", model);
         }
         #endregion
 
-        #region BuscarVehiculoEnPlataformas
+        #region Vehiculo
         [HttpPost]
         public ActionResult BuscarVehiculoEnPlataformas([FromServices] IOptions<AppSettings> appSettings, [FromServices] IRepuveService repuveService,
         [FromServices] IVehiculoPlataformaService vehiculoPlataformaService, [FromServices] IVehiculosService vehiculoService, [FromServices] ICotejarDocumentosClientService cotejarDocumentosService, VehiculoPropietarioBusquedaModel model)
@@ -133,6 +135,114 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         #endregion
 
+        #region Propietarios
+        /// <summary>
+        /// Muestra vista para crear persona fisica
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MostrarPersonaFisica()
+        {
+            var model = new PersonaModel
+            {
+                PersonaDireccion = new PersonaDireccionModel()
+            };
+            return PartialView("_PersonaFisica", model);
+        }
+        /// <summary>
+        /// Muestra vista para crear persona moral
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MostrarPersonaMoral()
+        {
+            var model = new PersonaModel
+            {
+                PersonaDireccion = new PersonaDireccionModel()
+            };
+            return PartialView("_PersonaMoral", model);
+        }
+
+        /// <summary>
+        /// Busca todas las personas morales
+        /// </summary>
+        /// <param name="personasService"></param>
+        /// <param name="PersonaMoralBusquedaModel"></param>
+        /// <returns></returns>
+        public ActionResult BuscarPersonaMoral([FromServices] IPersonasService personasService, PersonaMoralBusquedaModel PersonaMoralBusquedaModel)
+        {
+            PersonaMoralBusquedaModel.IdTipoPersona = (int)TipoPersona.Moral;
+            var personasMoralesModel = personasService.GetAllPersonasMorales(PersonaMoralBusquedaModel);
+            return PartialView("_ListPersonasMorales", personasMoralesModel);
+        }
+
+        /// <summary>
+        /// Busca todas las personas fisicas
+        /// </summary>
+        /// <param name="personasService"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BuscarPersonasFiscas([FromServices] IPersonasService personasService)
+        {
+            var personasFisicas = personasService.GetAllPersonas();
+            return PartialView("_PersonasFisicas", personasFisicas);
+        }
+        /// <summary>
+        /// Crea un nuevo registro en la bd de una persona fisica
+        /// </summary>
+        /// <param name="personasService"></param>
+        /// <param name="Persona"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public ActionResult CrearPersonaFisica([FromServices] IPersonasService personasService, PersonaModel Persona)
+        {
+            Persona.nombre = Persona.nombreFisico;
+            Persona.apellidoMaterno = Persona.apellidoMaternoFisico;
+            Persona.apellidoPaterno = Persona.apellidoPaternoFisico;
+            Persona.CURP = Persona.CURPFisico;
+            Persona.RFC = Persona.RFCFisico;
+            Persona.numeroLicencia = Persona.numeroLicenciaFisico;
+            Persona.idTipoLicencia = Persona.idTipoLicencia;
+            Persona.vigenciaLicencia = Persona.vigenciaLicencia;
+            Persona.PersonaDireccion.idEntidad = Persona.PersonaDireccion.idEntidadFisico;
+            Persona.PersonaDireccion.idMunicipio = Persona.PersonaDireccion.idMunicipioFisico;
+            Persona.PersonaDireccion.correo = Persona.PersonaDireccion.correoFisico;
+            Persona.PersonaDireccion.telefono = Persona.PersonaDireccion.telefonoFisico;
+            Persona.PersonaDireccion.colonia = Persona.PersonaDireccion.coloniaFisico;
+            Persona.PersonaDireccion.calle = Persona.PersonaDireccion.calleFisico;
+            Persona.PersonaDireccion.numero = Persona.PersonaDireccion.numeroFisico;
+            Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+            var IdPersonaFisica = personasService.CreatePersona(Persona);
+            if (IdPersonaFisica == 0)
+            {
+                throw new Exception("Ocurrio un error al dar de alta la persona");
+            }
+            var modelList = personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
+            return PartialView("_PersonasFisicas", modelList);
+        }
+        /// <summary>
+        /// Crea un nuevo registro en la bd de una persona moral
+        /// </summary>
+        /// <param name="personasService"></param>
+        /// <param name="Persona"></param>
+        /// <returns></returns>
+        public ActionResult CrearPersonaMoral([FromServices] IPersonasService personasService, PersonaModel Persona)
+        {
+            Persona.idCatTipoPersona = (int)TipoPersona.Moral;
+            Persona.PersonaDireccion.telefono = System.String.IsNullOrEmpty(Persona.telefono) ? null : Persona.telefono;
+            var IdPersonaMoral = personasService.CreatePersonaMoral(Persona);
+            if (IdPersonaMoral == 0)
+                return Json(new { success = false, message = "Ocurrió un error al procesar su solicitud." });
+            else
+            {
+                var modelList = personasService.ObterPersonaPorIDList(IdPersonaMoral);
+                return PartialView("_ListPersonasMorales", modelList);
+            }
+
+
+            //var personasMoralesModel = _personasService.GetAllPersonasMorales();
+
+        }
+
+        #endregion
         #region Catalogos
         public JsonResult GetEntidades_Drop()
         {
@@ -140,14 +250,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }
-         public JsonResult SubTipoServicios_Drop()
+        public JsonResult SubTipoServicios_Drop()
         {
             var catEntidades = _catDictionary.GetCatalog("CatSubtipoServicio", "0");
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }
 
-        public JsonResult GetSubtipoPorTipo_Drop([FromServices]ICatSubtipoServicio subtipoServicio,int idTipoServicio)
+        public JsonResult GetSubtipoPorTipo_Drop([FromServices] ICatSubtipoServicio subtipoServicio, int idTipoServicio)
         {
             var result = new SelectList(subtipoServicio.GetSubtipoPorTipo(idTipoServicio), "idSubTipoServicio", "subTipoServicio");
             return Json(result);
@@ -165,7 +275,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }
-        public JsonResult Municipios_Drop([FromServices]ICatMunicipiosService _catMunicipiosService,int entidadDDlValue)
+        public JsonResult Municipios_Drop([FromServices] ICatMunicipiosService _catMunicipiosService, int entidadDDlValue)
         {
             var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
             return Json(result);
@@ -199,7 +309,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(catEntidades.CatalogList, "Id", "Text");
             return Json(result);
         }
-        public JsonResult TipoLicencias_Drop([FromServices]ICatTipoLicenciasService catTipoLicenciasService)
+        public JsonResult TipoLicencias_Drop([FromServices] ICatTipoLicenciasService catTipoLicenciasService)
         {
             var result = new SelectList(catTipoLicenciasService.ObtenerTiposLicencia(), "idTipoLicencia", "tipoLicencia");
             return Json(result);

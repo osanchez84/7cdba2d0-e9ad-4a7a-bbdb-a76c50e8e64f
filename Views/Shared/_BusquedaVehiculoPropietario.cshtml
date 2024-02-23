@@ -1,28 +1,28 @@
-      @model GuanajuatoAdminUsuarios.Models.VehiculoPropietarioBusquedaModel
-   
-    <!-- ** Busqueda ** -->
-        <div id="busquedaVehiculoContainer">
-       <section id="sectionCap" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow mt-3 mb-5 rounded">
-      <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-        <div class="col-12 col-md-auto pe-0">
-            <div class="row align-items-center justify-content-center justify-content-md-start">
-                <div class="col-auto">
-                    <div class="border border-2 border-dark rounded-circle">
-                        <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
-                            <b>1</b>
-                        </h5>
+@model GuanajuatoAdminUsuarios.Models.VehiculoPropietarioBusquedaModel
+
+<!-- ** Busqueda ** -->
+<div id="busquedaVehiculoContainer">
+    <section id="sectionCap" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow mt-3 mb-5 rounded">
+        <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+            <div class="col-12 col-md-auto pe-0">
+                <div class="row align-items-center justify-content-center justify-content-md-start">
+                    <div class="col-auto">
+                        <div class="border border-2 border-dark rounded-circle">
+                            <h5 class="m-0 numberCard d-flex align-items-center justify-content-center">
+                                <b>1</b>
+                            </h5>
+                        </div>
                     </div>
-                </div>
-                <div class="col-auto p-0">
-                    <i class="icon-car h1 colorPrimary"></i>
-                </div>
-                <div class="col-auto my-3">
-                    <h2 class="m-0 h3"><b>Búsqueda de vehículo</b></h2>
+                    <div class="col-auto p-0">
+                        <i class="icon-car h1 colorPrimary"></i>
+                    </div>
+                    <div class="col-auto my-3">
+                        <h2 class="m-0 h3"><b>Búsqueda de vehículo</b></h2>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-           <div class="row">
+        <div class="row">
             <div class="col-6 pe-0">
                 <div class="bgSuccess py-1"></div>
             </div>
@@ -30,8 +30,8 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-         <form id="busquedaVehiculoForm">
-      <div class="row px-4 mb-4">
+        <form id="busquedaVehiculoForm">
+            <div class="row px-4 mb-4">
                 <div class="col-12 col-md-8 col-lg-4">
                     <div class="controlForm my-3">
 
@@ -63,7 +63,7 @@
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
-                   <div id="ErrorMessageContainer" class="error-container"></div>
+                    <div id="ErrorMessageContainer" class="error-container"></div>
 
                 </div>
 
@@ -78,50 +78,70 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3 col-xl-auto">
-				   <div class="col-auto btnOutline btnOutlinePrimary my-3">
-                     <button id="btnBuscarVehiculo" onclick="buscarVehiculoEnPlataformas()" type="button">
-						<h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Buscar vehículo</b></h6>
-					</button>
-				</div>
-              </div>
-        </div>
-         </form>
-        </section>
-        </div>
-        <div class="modal fade modalCustom" id="vehiculoModal"  aria-labelledby="VehiculoServiceLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body bg-light" id="vehiculoModalContainer">
-                        </div>
+                    <div class="col-auto btnOutline btnOutlinePrimary my-3">
+                        <button id="btnBuscarVehiculo" onclick="buscarVehiculoEnPlataformas()" type="button">
+                            <h6 class="m-0 d-flex align-items-center"><i class="icon-addCar h5 mb-0 me-2"></i><b>Buscar
+                                    vehículo</b></h6>
+                        </button>
                     </div>
                 </div>
             </div>
-    <script>
+        </form>
+    </section>
+</div>
+<div class="modal fade modalCustom" id="vehiculoModal" aria-labelledby="VehiculoServiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-body bg-light" id="vehiculoModalContainer">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var busquedaVehiculoValidate = [];
+    $(document).ready(function () {
+        //Se agrega la entidad de busqueda como campo requerido
+        busquedaVehiculoValidate.push({ 'controlName': 'IdEntidadBusqueda', 'isDropDown': true });
+        addOnLostFocusRequiredControls(busquedaVehiculoValidate);
+        $('#PlacaBusqueda').focus();
+    });
+    function buscarVehiculoEnPlataformas() {
+        if (!isControlsValidWithFocus(busquedaVehiculoValidate).isValid) {
+            sitteg_warning('Debes seleccionar una entidad.');
+            return;
+        }
+        var placaValue = $("#PlacaBusqueda").val().trim();
+        var serieValue = $("#SerieBusqueda").val().trim();
 
-            function buscarVehiculoEnPlataformas() {
-                 var placasValue = $("#PlacaBusqueda").val().trim();
-                            var modeloBusqueda = $("#busquedaVehiculoForm").serialize();
-                            showLoading();
-                            $.ajax({
-                                    url: '@Url.Action("BuscarVehiculoEnPlataformas","BusquedaVehiculoPropietario")',
-                                    type: 'POST',
-                                    data: modeloBusqueda,
-                                    success: function (result) {
-                                        if (result.success === false) {
-                                        $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
-                                        } else {
-                                                    $('#busquedaVehiculoContainer').fadeOut();
-                                                    $('#vehiculoModal').modal({ backdrop: 'static', keyboard: false });
-                                                    $("#vehiculoModalContainer").html(result);
-                                                    $('#vehiculoModal').modal('show');
-                                                	
-                                        }
-                                        hideLoading();
-                                    }, 
-                                    error: function () {
-                                            sitteg_error("Ocurrio un error al procesar su solicitud.");
-                                            hideLoading();
-                                    }
-                            });
+        if(!placaValue && !serieValue){
+            $('#PlacaBusqueda').focus();
+             sitteg_warning('Debes ingresar una placa o serie.');
+            return;
+        }
+
+        var modeloBusqueda = $("#busquedaVehiculoForm").serialize();
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("BuscarVehiculoEnPlataformas", "BusquedaVehiculoPropietario")',
+            type: 'POST',
+            data: modeloBusqueda,
+            success: function (result) {
+                if (result.success === false) {
+                    $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
+                } else {                 
+                    $('#busquedaVehiculoContainer').fadeOut();
+                    $('#vehiculoModal').modal({ backdrop: 'static', keyboard: false });
+                    $("#vehiculoModalContainer").html(result);
+                    $('#vehiculoModal').modal('show');
+
+
+                }
+                hideLoading();
+            },
+            error: function () {
+                sitteg_error("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
             }
-    </script>
+        });
+    }
+</script>

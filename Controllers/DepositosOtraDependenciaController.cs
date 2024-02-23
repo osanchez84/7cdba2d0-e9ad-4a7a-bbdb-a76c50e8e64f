@@ -4,7 +4,7 @@
  * Fecha de creación: Sunday, February 18th 2024 9:40:13 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Wed Feb 21 2024
+ * Última modificación: Fri Feb 23 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -17,7 +17,7 @@ using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -28,12 +28,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #endregion
 
         #region Constructor
-        public DepositosOtraDependenciaController(ICatDictionary catDictionary):base(catDictionary) { }
+        public DepositosOtraDependenciaController(ICatDictionary catDictionary) : base(catDictionary) { }
 
         #endregion
         public IActionResult Depositos()
         {
             return View("DepositosOtraDependencia");
+        }
+        /// <summary>
+        /// Guarda un registro de un deposito asociado a otra dependencia en la bd
+        /// </summary>
+        /// <param name="ingresarVehiculosService"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult GuardarDeposito([FromServices] IIngresarVehiculosService ingresarVehiculosService, SolicitudDepositoOtraDependenciaModel model)
+        {
+            int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
+            int idPension = (int)HttpContext.Session.GetInt32("IdPension");
+            int idDeposito = ingresarVehiculosService.GuardarDepositoOtraDependencia(model, idOficina, idPension);
+
+            if (idDeposito < 0)
+            {
+                return Json(new { success = false });
+            }
+            return Json(new { success = true });
         }
 
         #region Catalogos

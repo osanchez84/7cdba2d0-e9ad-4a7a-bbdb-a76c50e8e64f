@@ -851,8 +851,10 @@ $.ajax({
 
     function submitCreateVehiculo() {
     var idPersona = $("#ddlIdPersona").val();
+
+    //Se valida que se haya seleccionado una persona
      if ($("#ddlIdPersona").val() == '') {
-            sitteg_info('Debe seleccionar una Persona');
+            sitteg_info('Debes seleccionar una Persona');
             return;
         }
          var carga = $("#cargaSwitch").prop("checked");
@@ -871,18 +873,12 @@ $.ajax({
             console.log("Id vehiculo: ", idVeh)
             showLoading();
             $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
+                url: '@Url.Action("CrearVehiculo","BusquedaVehiculoPropietario")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
-                    $('#VehiculoServiceModal').modal('hide');
-                    $('#agregarVehiculoModal').modal('hide');
-                     var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
                         if (result && result.data) {
-                            var dataArray = Array.isArray(result.data) ? result.data : [result.data];
-
-                            grid.dataSource.data(dataArray);
                         } else {
                             console.error("La respuesta no tiene la estructura esperada:", result);
                         }

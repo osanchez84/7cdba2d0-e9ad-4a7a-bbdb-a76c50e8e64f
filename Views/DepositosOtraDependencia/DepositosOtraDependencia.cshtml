@@ -67,7 +67,7 @@
         </div>
          <form id="solicitudForm">
         <div class="row px-4 mt-3 mb-2 align-items-end">
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-md-6  col-lg-4">
                 <div class="controlForm my-3">
                     <label>Fecha (obligatorio):</label>
                         @(Html.Kendo().DateTimePickerFor(t => t.FechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
@@ -316,10 +316,15 @@
                    </div>				
 				</div>
               </div>
+              <div class="row">
+            <div class="col-12 my-4 mx-4">
+              @await Component.InvokeAsync("VehiculoPropietarioDatos",new{idVehiculo=0})
+            </div>
+              </div>
          </form>
             <div class="row">
             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                <div class="controlButton my-3" onclick="enviarSolicitud()">
+                <div class="controlButton my-3" onclick="guardarDeposito()">
                     @(Html.Kendo().Button()
                         .Name("addVehiculoBtn")
                         .HtmlAttributes(new { @class = "btnPrimary" })
@@ -339,6 +344,19 @@
 </div>
 
 <script>
+          var depositoOtraDependenciaControlsValidate = [];
+     $(document).ready(function() {
+        //Se configuran la validacion de los campos
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'FechaSolicitud', 'isInput': true });
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'IdDependenciaEnvia', 'isDropDown': true });
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'IdTipoMotivoIngreso', 'isDropDown': true });
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'IdMunicipioUbicacion', 'isDropDown': true });
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'IdCarretera', 'isDropDown': true });
+            depositoOtraDependenciaControlsValidate.push({ 'controlName': 'IdTramo', 'isDropDown': true });
+
+             //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
+            addOnLostFocusRequiredControls(depositoOtraDependenciaControlsValidate);
+        });
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
         showLoading();
@@ -367,6 +385,27 @@
             success: function (result) {
                  $('#agregarVehiculoBodyModal').html(result);
 				 $('#agregarVehiculoModal').modal('show');
+                  hideLoading();
+            },
+            error: function (xhr, status, error) {
+                sitteg_error("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
+        });
+    }
+    function guardarDeposito(){
+        //Se validan los campos del formulario
+        if (!isControlsValidWithFocus(depositoOtraDependenciaControlsValidate).isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+         showLoading();
+         $.ajax({
+            url: '@Url.Action("GuardarDeposito")',
+            type: "POST",
+            data: {},
+            success: function (result) {
+              
                   hideLoading();
             },
             error: function (xhr, status, error) {

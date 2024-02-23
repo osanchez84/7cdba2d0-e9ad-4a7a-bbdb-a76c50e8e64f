@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 20th 2024 10:41:56 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Tue Feb 20 2024
+ * Última modificación: Fri Feb 23 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -17,17 +17,17 @@ using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace GuanajuatoAdminUsuarios.Components
 {
-    public class VehiculoPropietarioViewComponent : ViewComponent
+    public class VehiculoPropietarioDatosViewComponent : ViewComponent
     {
-        public VehiculoPropietarioViewComponent()
+        public VehiculoPropietarioDatosViewComponent()
         {
 
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()  
+        public async Task<IViewComponentResult> InvokeAsync(int idVehiculo)  
        {
-            var modelo = new VehiculoPropietarioBusquedaModel();
-           return await Task.FromResult((IViewComponentResult) View("VehiculoPropietario",modelo));  
+            //var modelo = new VehiculoPropietarioBusquedaModel();
+           return await Task.FromResult((IViewComponentResult) View("VehiculoPropietarioDatos",new VehiculoModel()));  
        }  
     }
 }

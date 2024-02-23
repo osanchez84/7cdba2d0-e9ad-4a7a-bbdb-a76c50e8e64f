@@ -133,6 +133,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_Vehiculo", vehiculoModel);
         }
+        /// <summary>
+        /// Crea un registro de un vehiculo en la bd
+        /// </summary>
+        /// <param name="vehiculoService"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult CrearVehiculo([FromServices] IVehiculosService vehiculoService,VehiculoModel model)
+        {
+            var IdVehiculo = vehiculoService.CreateVehiculo(model);
+                return Json(new { data = IdVehiculo });
+        }
         #endregion
 
         #region Propietarios

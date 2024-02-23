@@ -1070,7 +1070,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
+            var can = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
+            if (can == 0)
+            {
+                return Json(new { IdPersona = IdPersona, IdVehiculoH = IdVehiculo , error=1 });
+            }
+
+            var idVehiculoInsertado = IdVehiculo;
 
             //BITACORA
             var ip = HttpContext.Connection.RemoteIpAddress.ToString();

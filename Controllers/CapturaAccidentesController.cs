@@ -927,7 +927,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
+            int idMunicipio = 0;
+
+            var municipioStr = _catDictionary.GetCatalog("CatMunicipios", "0");
+
+            idMunicipio = municipioStr.CatalogList
+                            .Where(w => RemoveDiacritics(w.Text.ToLower()).Contains(RemoveDiacritics(municipio.ToLower())))
+                            .Select(s => s.Id)
+                            .FirstOrDefault();
             return (idMunicipio);
         }
         private int ObtenerIdEntidadDesdeBD(string entidad)
@@ -1516,6 +1523,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catAgenciasMinisterioService.ObtenerAgenciasActivas(), "IdAgenciaMinisterio", "NombreAgencia");
             return Json(result);
         }
+        public JsonResult AgMinisterioDelegacion_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_catAgenciasMinisterioService.ObtenerAgenciasActivasPorDelegacion(idOficina), "IdAgenciaMinisterio", "NombreAgencia");
+            return Json(result);
+        }
         public JsonResult Oficiales_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
@@ -1675,8 +1689,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListVehiculosInfracciones.ToDataSourceResult(request));
         }
-        public ActionResult ModalInfraccionesVehiculos()
+        public ActionResult ModalInfraccionesVehiculos(string montoCamino, string montoCarga, string montoPropietarios, string montoOtros)
         {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
+           var DatosMontos = _capturaAccidentesService.GuardarDatosPrevioInfraccion(idAccidente,montoCamino, montoCarga, montoPropietarios, montoOtros);
+
             return PartialView("_ModalAsignarInfracciones");
         }
         public IActionResult VincularInfraccionAccidente(int IdVehiculo, int IdInfraccion)

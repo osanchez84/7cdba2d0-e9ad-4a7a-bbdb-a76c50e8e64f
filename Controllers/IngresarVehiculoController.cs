@@ -71,7 +71,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else if (tipoIngreso == "OtraDependencia")
             {
-                return Json(new { redirectTo = Url.Action("IngresoOtraDependencia") });
+                return Json(new { redirectTo = Url.Action("Depositos","DepositosOtraDependencia") });
             }
             else
             {

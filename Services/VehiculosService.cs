@@ -16,7 +16,7 @@ namespace GuanajuatoAdminUsuarios.Services
     public class VehiculosService : IVehiculosService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
-   
+
 
         public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD)
         {
@@ -108,7 +108,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idEntidad = Convert.ToInt32(reader["idEntidad"].ToString());
                             model.idSubtipoServicio = reader["idSubtipoServicio"].GetType() == typeof(DBNull) ? 0 : Convert.ToInt32(reader["idSubtipoServicio"].ToString());
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
-                            model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ?  "" : reader["servicio"].ToString();
+                            model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ? "" : reader["servicio"].ToString();
                             model.fechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = Convert.ToInt32(reader["estatus"].ToString());
@@ -281,7 +281,7 @@ namespace GuanajuatoAdminUsuarios.Services
             VehiculoModel model22 = new VehiculoModel();
             model22.Persona = new PersonaModel();
 
-            return modelList.FirstOrDefault()??model22;
+            return modelList.FirstOrDefault() ?? model22;
         }
 
         public VehiculoModel GetVehiculoToAnexo(VehiculoBusquedaModel modelSearch)
@@ -475,7 +475,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.serie = reader["serie"].ToString();
                             model.tarjeta = reader["tarjeta"].ToString();
                             model.vigenciaTarjeta = reader["vigenciaTarjeta"] == DBNull.Value
-                                ? (DateTime?)null 
+                                ? (DateTime?)null
                                 : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
                             model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
                             model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
@@ -894,6 +894,131 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
             return ListVehiculos;
+        }
+
+        public VehiculoModel GetVehiculoPropietario(VehiculoBusquedaModel modelSearch)
+        {
+            VehiculoModel model = new()
+            {
+                Persona = new PersonaModel()
+            };
+            //Busqueda en Sitteg:
+            bool encontradoEnRegistroEstatal = false;
+
+            string strQuery = @"SELECT
+                                v.idVehiculo, v.placas, v.serie, v.tarjeta, v.vigenciaTarjeta, v.idMarcaVehiculo
+                                ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
+                                ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona
+                                ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
+                                ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.tipoServicio
+                                ,catE.nombreEntidad, catC.color
+                                ,p.numeroLicencia,p.curp,p.rfc,nombre,p.apellidoPaterno,p.apellidoMaterno,p.idCatTipoPersona,p.idGenero,p.fechaNacimiento,p.idTipoLicencia,p.vigenciaLicencia
+                                FROM vehiculos v
+                                INNER JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
+                                left JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
+                                left JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
+                                left JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
+                                left JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
+                                left JOIN catColores catC on v.idColor = catC.idColor  
+                                left join personas p on v.idPersona=p.idPersona
+                                WHERE v.estatus = 1
+                                AND 
+                                (
+                                (v.idEntidad = @idEntidad  and v.serie= @Serie)
+                                OR v.serie= @Serie
+                                OR v.placas= @Placas 
+                                )";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)modelSearch.IdEntidadBusqueda ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)modelSearch.PlacasBusqueda != null ? modelSearch.PlacasBusqueda.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)modelSearch.SerieBusqueda != null ? modelSearch.SerieBusqueda.ToUpper() : DBNull.Value;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            model.idVehiculo = Convert.ToInt32(reader["idVehiculo"]);
+                            model.placas = reader["placas"].ToString();
+
+                            model.serie = reader["serie"].ToString();
+                            model.tarjeta = reader["tarjeta"].ToString();
+                            model.vigenciaTarjeta = reader["vigenciaTarjeta"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
+                            model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
+                            model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
+                            model.idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"]);
+
+                            model.modelo = reader["modelo"].ToString();
+                            model.idColor = Convert.ToInt32(reader["idColor"]);
+                            model.idEntidad = Convert.ToInt32(reader["idEntidad"]);
+                            model.idCatTipoServicio = Convert.ToInt32(reader["idCatTipoServicio"]);
+                            model.propietario = reader["propietario"].ToString();
+                            model.numeroEconomico = reader["numeroEconomico"].ToString();
+                            model.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"];
+                            model.paisManufactura = reader["paisManufactura"].ToString();
+                            model.numeroEconomico = reader["numeroEconomico"].ToString();
+
+                            model.marca = model.otros = reader["otros"].ToString(); ;
+                            model.submarca = reader["nombreSubmarca"].ToString();
+                            model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                            model.color = reader["color"].ToString();
+                            model.entidadRegistro = reader["nombreEntidad"].ToString();
+                            model.tipoServicio = reader["tipoServicio"].ToString();
+
+                            model.motor = reader["motor"].ToString();
+                            model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
+                            model.poliza = reader["poliza"].ToString();
+                            model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
+                            model.otros = reader["otros"].ToString();
+
+                            //Propietario
+                            model.Persona.idPersona = reader["idPersona"] == System.DBNull.Value ? default : (int?)reader["idPersona"];
+                            model.Persona.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.Persona.CURP = reader["curp"].ToString();
+                            model.Persona.RFC = reader["rfc"].ToString();
+                            model.Persona.nombre = reader["nombre"].ToString();
+                            model.Persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            model.Persona.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                            model.Persona.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default : (int?)reader["idCatTipoPersona"];
+                            model.Persona.idGenero = reader["idGenero"] == System.DBNull.Value ? default : (int?)reader["idGenero"];
+                            model.Persona.fechaNacimiento = reader["fechaNacimiento"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.Persona.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default : (int?)reader["idTipoLicencia"];
+                            model.Persona.vigenciaLicenciaFisico = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+                            model.Persona.vigenciaLicencia = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            if (encontradoEnRegistroEstatal)
+            {
+                model.encontradoEn = (int)EstatusBusquedaVehiculo.RegistroEstatal;
+            }
+            else
+            if (model.idVehiculo != 0)
+            {
+                model.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
+            }
+            else
+            {
+                model.encontradoEn = (int)EstatusBusquedaVehiculo.NoEncontrado;
+                model.serie = modelSearch.SerieBusqueda;
+            }
+            return model;
         }
     }
 }

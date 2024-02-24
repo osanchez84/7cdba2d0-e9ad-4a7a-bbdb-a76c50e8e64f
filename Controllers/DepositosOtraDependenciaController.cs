@@ -36,22 +36,37 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return View("DepositosOtraDependencia");
         }
         /// <summary>
+        /// Busca los datos de un vehiculo y muestra el componente de datos
+        /// </summary>
+        /// <param name="vehiculosService"></param>
+        /// <param name="idVehiculo"></param>
+        /// <returns></returns>
+         [HttpGet]
+        public IActionResult MostrarDatosVehiculo(int idVehiculo)
+        {
+            return ViewComponent("VehiculoPropietarioDatos", new { idVehiculo });
+        }
+        /// <summary>
         /// Guarda un registro de un deposito asociado a otra dependencia en la bd
         /// </summary>
         /// <param name="ingresarVehiculosService"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ActionResult GuardarDeposito([FromServices] IIngresarVehiculosService ingresarVehiculosService, SolicitudDepositoOtraDependenciaModel model)
+        public ActionResult GuardarDeposito([FromServices] IIngresarVehiculosService ingresarVehiculosService,[FromServices] IVehiculosService vehiculoService, SolicitudDepositoOtraDependenciaModel model)
         {
             int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
             int idPension = (int)HttpContext.Session.GetInt32("IdPension");
+
+            //Se busca el vehiculo y se asigna al objeto
+            model.Vehiculo = vehiculoService.GetVehiculoById(model.Vehiculo.idVehiculo);
+
             int idDeposito = ingresarVehiculosService.GuardarDepositoOtraDependencia(model, idOficina, idPension);
 
             if (idDeposito < 0)
             {
                 return Json(new { success = false });
             }
-            return Json(new { success = true });
+            return Json(new { success = true,redirectTo=Url.Action("Index","IngresarVehiculo") });
         }
 
         #region Catalogos

@@ -13,21 +13,24 @@
  */
 
 using System.Threading.Tasks;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace GuanajuatoAdminUsuarios.Components
 {
     public class VehiculoPropietarioDatosViewComponent : ViewComponent
     {
-        public VehiculoPropietarioDatosViewComponent()
+        private readonly IVehiculosService _vehiculosService;
+        public VehiculoPropietarioDatosViewComponent(IVehiculosService vehiculosService)
         {
-
+            _vehiculosService = vehiculosService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int idVehiculo)  
        {
+        var vehiculo = _vehiculosService.GetVehiculoById(idVehiculo);
             //var modelo = new VehiculoPropietarioBusquedaModel();
-           return await Task.FromResult((IViewComponentResult) View("VehiculoPropietarioDatos",new VehiculoModel()));  
+           return await Task.FromResult((IViewComponentResult) View("VehiculoPropietarioDatos",vehiculo));  
        }  
     }
 }

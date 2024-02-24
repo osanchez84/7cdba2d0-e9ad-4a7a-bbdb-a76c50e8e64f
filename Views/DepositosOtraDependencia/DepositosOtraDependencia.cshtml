@@ -65,13 +65,16 @@
                 <h6 class="px-4 text-muted">Se capturan los datos referentes al evento como fecha, motivo de ingreso.</h6>
             </div>
         </div>
-         <form id="solicitudForm">
+         <form id="frmDepositoOtraDependencia">
+        @Html.HiddenFor(m=> m.Vehiculo.idVehiculo, new { @id = "IdVehiculoAsignado" })
         <div class="row px-4 mt-3 mb-2 align-items-end">
             <div class="col-12 col-md-6  col-lg-4">
                 <div class="controlForm my-3">
                     <label>Fecha (obligatorio):</label>
-                        @(Html.Kendo().DateTimePickerFor(t => t.FechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
-                            .HtmlAttributes(new { style = "width: 100%", 
+                        @(Html.Kendo().DateTimePickerFor(t => t.FechaSolicitud)
+                        .Value(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                        .Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                        .HtmlAttributes(new { style = "width: 100%", 
                             title = "datepicker", 
                             required = "required" })
                     )
@@ -316,9 +319,9 @@
                    </div>				
 				</div>
               </div>
-              <div class="row">
+              <div class="row" id="vehiculoPropietarioDatosContainer" style="display:none">
             <div class="col-12 my-4 mx-4">
-              @await Component.InvokeAsync("VehiculoPropietarioDatos",new{idVehiculo=0})
+                <div id="vehiculoPropietarioDatos"> </div>
             </div>
               </div>
          </form>
@@ -356,6 +359,31 @@
 
              //Se agrega a los controles requeridos el evento de perdida de foco para remover el estilo de requerido
             addOnLostFocusRequiredControls(depositoOtraDependenciaControlsValidate);
+
+            //Si hay un cambio en el id de vehiculo se muestra los datos
+            $("#IdVehiculoAsignado").bind("change", function() {
+                if($(this).val()==='' || $(this).val()==0 || $(this).val()===undefined)
+                 $('#vehiculoPropietarioDatosContainer').hide();
+                else {
+                        $.ajax({
+                                url: '@Url.Action("MostrarDatosVehiculo","DepositosOtraDependencia")',
+                                type: "GET",
+                                data: { 'idVehiculo': $(this).val() },
+                                success: function (result) {
+                                            $('#vehiculoPropietarioDatosContainer').show();
+                                            $("#vehiculoPropietarioDatos").html(result);
+                                            hideLoading();
+                                           
+                                },
+                                error: function (xhr, status, error) {
+                                            hideLoading();
+                                            console.log(error);
+                                }
+                        });
+                    
+                     }
+            });
+
         });
     function carreteraDropDownChange() {
         var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
@@ -399,12 +427,30 @@
             sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
             return;
         }
+
+        //Se valida que se haya asignado un vehículo
+        var idVehiculo = $('#IdVehiculoAsignado').val();
+
+        if(idVehiculo==='' || idVehiculo===0 || idVehiculo===undefined){
+             sitteg_info('Debes asignar un vehículo');
+             return;
+        }
+
+      
          showLoading();
+         
          $.ajax({
             url: '@Url.Action("GuardarDeposito")',
             type: "POST",
-            data: {},
+            data: $("#frmDepositoOtraDependencia").serialize(),
             success: function (result) {
+                if(result.success){
+                      sitteg_success("Se guardó el registro exitosamente");
+                      window.location.href = result.redirectTo;
+                }
+                else{
+                     sitteg_error("Ocurrio un error al guardar el registro.");
+                }
               
                   hideLoading();
             },
@@ -413,12 +459,5 @@
                 hideLoading();
             }
         });
-    }
-      function onClose() {
-       // $("#btnBuscarVehiculo").fadeIn();
-    }
-
-    function onOpen() {
-        //$("#btnBuscarVehiculo").fadeOut();
     }
 </script>

@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Thu Feb 22 2024
+ * Última modificación: Fri Feb 23 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -73,7 +73,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 SerieBusqueda = model.SerieBusqueda
             };
 
-            VehiculoModel vehiculoModel = vehiculoService.GetVehiculoToAnexo(busquedaModel);
+            VehiculoModel vehiculoModel = vehiculoService.GetVehiculoPropietario(busquedaModel);
             vehiculoModel.idSubmarcaUpdated = vehiculoModel.idSubmarca;
             vehiculoModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
             {
@@ -134,15 +134,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_Vehiculo", vehiculoModel);
         }
         /// <summary>
-        /// Crea un registro de un vehiculo en la bd
+        /// Crea o actualiza un registro de un vehiculo en la bd
         /// </summary>
         /// <param name="vehiculoService"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ActionResult CrearVehiculo([FromServices] IVehiculosService vehiculoService,VehiculoModel model)
+        public ActionResult CrearEditarVehiculo([FromServices] IVehiculosService vehiculoService, VehiculoModel model)
         {
-            var IdVehiculo = vehiculoService.CreateVehiculo(model);
-                return Json(new { data = IdVehiculo });
+            int IdVehiculo;
+            if (model.idVehiculo > 0)
+            {
+                vehiculoService.UpdateVehiculo(model);
+                IdVehiculo = model.idVehiculo;
+            }
+            else
+                IdVehiculo = vehiculoService.CreateVehiculo(model);
+
+             if(IdVehiculo<=0)
+             return Json(new { success=false });
+
+                return Json(new {success=true, data = IdVehiculo });
         }
         #endregion
 

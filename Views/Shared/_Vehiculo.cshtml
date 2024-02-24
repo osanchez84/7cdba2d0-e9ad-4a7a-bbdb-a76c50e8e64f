@@ -535,16 +535,16 @@
             </div>
             }          
     </div>
-    @if (Model.idTipoPersona.HasValue)
+    @if (Model.Persona.idPersona>0)
 {
-    if (Model.idTipoPersona == 1)
+    if (Model.Persona.idCatTipoPersona == 1)
     {
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">Se encontraron datos de persona física</h4>
             <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
         </div>
     }
-    else if (Model.idTipoPersona == 2)
+    else if (Model.Persona.idCatTipoPersona == 2)
     {
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
@@ -792,6 +792,13 @@ $("#ddlCatTipoServicio").on("change", function () {
         $('#hdnIdCatTipoServicio').val(value);
 
     });
+     $("#ddlMarcas").on("change", function () {
+        var value = $(this).val();
+        _set_combo_catalog("CatSubmarcasByFilter", value, "idSubmarca", "false", "divSubmarca", "");
+        $('#idSubmarca').kendoDropDownList();
+
+    });
+
     $('#mensajeBuscandoPersonaFisica').hide();
         buscarPersonasFisicas();
         });
@@ -835,21 +842,25 @@ $("#ddlCatTipoServicio").on("change", function () {
         });
     }
        function abrirModalPersonaMoral(){
-$.ajax({
-        url: '@Url.Action("MostrarPersonaMoral","BusquedaVehiculoPropietario")',
-        type: 'GET',
-        data: {},
-        success: function (result) {
-            $('#personaMoralContainer').html(result);
-            $('#addMoral').modal('show');
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
-        }
+        $.ajax({
+            url: '@Url.Action("MostrarPersonaMoral","BusquedaVehiculoPropietario")',
+            type: 'GET',
+            data: {},
+            success: function (result) {
+                $('#personaMoralContainer').html(result);
+                $('#addMoral').modal('show');
+             },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+            }
     });
     }
 
     function submitCreateVehiculo() {
+        if (!isControlsValidWithFocus(vehiculoControlsValidate).isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
     var idPersona = $("#ddlIdPersona").val();
 
     //Se valida que se haya seleccionado una persona
@@ -863,30 +874,29 @@ $.ajax({
 
     
  //Se validan los campos del formulario
-        if (!isControlsValidWithFocus(vehiculoControlsValidate).isValid) {
-            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-            return;
-        }
+        
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
             console.log("Id vehiculo: ", idVeh)
             showLoading();
             $.ajax({
-                url: '@Url.Action("CrearVehiculo","BusquedaVehiculoPropietario")',
+                url: '@Url.Action("CrearEditarVehiculo","BusquedaVehiculoPropietario")',
                 type: 'POST',
                 data: formData,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
-                        if (result && result.data) {
+                        if (result.success) {
+                            $('#IdVehiculoAsignado').val(result.data).change();
+                            $('#vehiculoModal').modal('hide');
+                            $('#agregarVehiculoModal').modal('hide');
                         } else {
-                            console.error("La respuesta no tiene la estructura esperada:", result);
+                             sitteg_warning('Lo sentimos, ha ocurrido un error favor de report');
                         }
                         hideLoading();
                     },
                 error: function (xhr, status) {
                     var errmsg = xhr.responseText;
-                    console.log(errmsg)
                     sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
                     hideLoading();
                 }

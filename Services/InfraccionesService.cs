@@ -2036,8 +2036,45 @@ namespace GuanajuatoAdminUsuarios.Services
 
 			return modelList.FirstOrDefault();
 		}
+		public int ExitDesposito(int idInfraccion)
+		{
+			var result = 1;
 
-		public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia)
+			string strQuer = @"select count(*) result from depositos where idinfraccion=@IdInfraccion";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+					try
+				{
+
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuer, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+                    
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))					
+					{
+						
+						while (reader.Read())	
+						{
+							result = (int)reader["result"];						
+						}
+						
+					}
+
+
+                     }
+				catch (Exception ex) {
+				}
+				finally
+				{
+                    connection.Close();
+                }
+			}
+
+			return result;
+        }
+
+        public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia)
 		{
 			List<NuevaInfraccionModel> modelList = new List<NuevaInfraccionModel>();
 			string strQuery = @"SELECT idInfraccion

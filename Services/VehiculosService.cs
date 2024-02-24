@@ -1364,6 +1364,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                 }
 
+                vehiculoEncontrado.ReporteRobo = vehiculosModel.ReporteRobo;
+
+                vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
                 if (allowSistem)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");

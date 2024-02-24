@@ -72,6 +72,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return View("Depositos");
             }       
         }
+
+
+        public IActionResult DepositosInfraccion()
+        {
+            int infraccionID = HttpContext.Session.GetInt32("LastInfCapturada").HasValue ? HttpContext.Session.GetInt32("LastInfCapturada").Value :0;
+
+            HttpContext.Session.Remove("LastInfCapturada");
+
+
+            var complemntarRegistro = _catDepositosService.ImportarInfraccion(infraccionID);
+
+            if(complemntarRegistro.idInfraccion!=null && complemntarRegistro.idInfraccion!=0 )
+                return View("Depositos", complemntarRegistro);
+            else 
+            return View("Depositos");
+
+        }
+
+
+
         public IActionResult Ubicacion(int Isol)
         {
             var solicitud = _catDepositosService.ObtenerSolicitudPorID(Isol);

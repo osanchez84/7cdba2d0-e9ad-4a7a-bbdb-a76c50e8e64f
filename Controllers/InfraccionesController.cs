@@ -430,6 +430,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
             model.Vehiculo.cargaTexto = (model.Vehiculo.carga == true) ? "Si" : "No";
             model.Persona = model.Persona ?? new PersonaModel();
+
+
+            var ToDepositos = _infraccionesService.ExitDesposito(id);
+
+            HttpContext.Session.SetInt32("LastInfCapturada", id);
+
+            ViewBag.GoDEpositos = ToDepositos;
+            
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+
             model.Persona.PersonaDireccion = model.Persona.PersonaDireccion ?? new PersonaDireccionModel();
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
@@ -444,7 +455,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
             ViewBag.CatAplicadoA = new SelectList(CatAplicadoA.CatalogList, "Id", "Text");
             ViewBag.EsSoloLectura = showE.HasValue && showE.Value;
@@ -474,6 +484,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccionAccidenteById(id, idDependencia);
             model.isPropietarioConductor = model.Vehiculo.idPersona == model.IdPersona;
+
+
+            var ToDepositos = _infraccionesService.ExitDesposito(idInfraccion);
+
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+
+
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.IdCarretera.ToString());
             var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
@@ -486,7 +504,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
             ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-            ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
 
             return View("Editar2", model);
@@ -999,7 +1016,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
-                
+                if(!string.IsNullOrEmpty(model.PlacasBusqueda)){
+                    model.PlacasBusqueda = model.PlacasBusqueda.ToUpper();
+                }
+                if (!string.IsNullOrEmpty(model.SerieBusqueda)){
+                    model.SerieBusqueda = model.SerieBusqueda.ToUpper();
+                }
+
+
                 var models = _vehiculosService.GetModles(model);
 
                 var test = await this.RenderViewAsync2("", models);

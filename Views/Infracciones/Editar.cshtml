@@ -95,6 +95,8 @@
                 <nav class="tabCustom">
                     @*navegador tabs*@
                     <div class="nav nav-tabs row mx-0" id="nav-tab" role="tablist">
+
+
                         <button class="nav-link active col" id="informacionInfraccion-tab" data-bs-toggle="tab" data-bs-target="#informacionInfraccion-container" type="button" role="tab" aria-controls="informacionInfraccion-container" aria-selected="true">
                             <div class="row justify-content-center align-items-center px-2 py-1">
                                 <div class="col-auto radioCustom p-0">
@@ -239,10 +241,19 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Municipio <b>(obligatorio)</b>:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.idMunicipio).Filter(FilterType.Contains)
-                                            .BindTo((SelectList)ViewBag.CatMunicipios)
+                                        @(Html.Kendo().DropDownList()
+                                            .Name("idMunicipio")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .DataSource(source =>
+                                            {
+                                                source.Read(read =>
+                                                {
+                                                    read.Action("Municipios_Por_Delegacion_Drop", "Infracciones");
+                                                });
+                                            })
                                             .OptionLabel("-- Seleccione --")
-                                            .Enable(!ViewBag.EsSoloLectura)
+                                            .Filter(FilterType.Contains)
                                             .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                             )
                                     </div>
@@ -919,15 +930,24 @@
                     sitteg_warning(response.message);
                 }
 
+
+
+                    if ("@ViewBag.GoDEpositos" == "0") {
+                        window.location.href = '/Depositos/DepositosInfraccion'
+                    }
+                    
+
+
                 var redirectTo = sessionStorage.getItem('redirectTo');
                 console.log("RED", redirectTo);
                 if (shouldGoBack && redirectTo) {
-                    if (@regreso == "1")
+                    alert("@ViewBag.GoDEpositos")
+                     if (@regreso == "1")
                         window.location.href = "/Infracciones/Crear";
-                    else
-                    setTimeout(function () {
-                        window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
-                    }, 2000);
+                    else{
+                    setTimeout(function () {                                                                       
+                                window.location.href = '/CapturaAccidentes/CapturaAccidenteC';                                             
+                    }, 2000);}
                 }
 
                 hideLoading();

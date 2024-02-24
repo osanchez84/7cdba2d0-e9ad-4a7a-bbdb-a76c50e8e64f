@@ -1364,10 +1364,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                 }
 
-                vehiculoEncontrado.ReporteRobo = vehiculosModel.ReporteRobo;
-
-                vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
-                if (allowSistem)
+   if (allowSistem)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
                     var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
@@ -1418,6 +1415,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                         PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
                     };
+                    vehiculoEncontrado.ReporteRobo = vehiculosModel.ReporteRobo;
 
                     vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 

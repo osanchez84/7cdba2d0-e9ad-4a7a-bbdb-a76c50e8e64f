@@ -33,10 +33,6 @@
                             columns.Bound(p => p.nombre).Title("Nombre:").Width(250);
                             columns.Bound(p => p.PersonaDireccion.calle).Title("Dirección:").Width(150);
                             columns.Bound(c => c.PersonaDireccion.municipio).Title("Municipio:").Width(100);
-                            columns.Bound(p => p.idPersona).ClientTemplate(
-                            "<button onclick=\"ShowDetailPopUp('#= idPersona #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
-                            ).Title("Acciones").Sortable(false).Width(100);
-
 
                         }).HtmlAttributes(new { style = "height:250" })
                         .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))
@@ -59,22 +55,6 @@
             </div>
 
         </div>
-    </div>
-    <div class="row my-5 align-items-end">
-        <div class="col-12 col-md-6 mx-md-auto">
-            <div class="row justify-content-around">
-                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                    <div class="controlButton" onclick="EditarBusquedaMoral()">
-                        @(Html.Kendo().Button()
-                            .Name("editSearchMoral")
-                            .HtmlAttributes(new { @class = "px-5" })
-                            .Content("<h5 class=\"m-0\"><b>Regresar</b></h5>"))
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
     </div>
 </section>
 

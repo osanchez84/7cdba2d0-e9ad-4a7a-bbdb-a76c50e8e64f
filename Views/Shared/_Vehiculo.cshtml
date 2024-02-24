@@ -88,7 +88,7 @@
                     <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
                       @if (ViewBag.ReporteRobo == true)
                     {
-                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo</b></h5>
+                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b></h5>
                     }
                     <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
                 </div>
@@ -101,7 +101,7 @@
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
                      @if (ViewBag.ReporteRobo == true)
                     {
-                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgDanger mb-1 me-2 rounded-circle"></b><b>El vehículo cuenta con reporte de robo</b></h5>
+                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgDanger mb-1 me-2 rounded-circle"></b><b>El vehículo cuenta con reporte de robo en REPUVE</b></h5>
                     }
                      @if (Model.origenDatos!=null)
                         {
@@ -804,7 +804,7 @@ $("#ddlCatTipoServicio").on("change", function () {
         });
 
         function buscarPersonasFisicas() {
-        showLoading();
+        //showLoading();
          $('#mensajeBuscandoPersonaFisica').show();
         $.ajax({
             url: '@Url.Action("BuscarPersonasFiscas","BusquedaVehiculoPropietario")',
@@ -812,7 +812,7 @@ $("#ddlCatTipoServicio").on("change", function () {
             success: function (result) {
                  $('#mensajeBuscandoPersonaFisica').hide();
                 $("#personasFisicasInf").html(result);
-                hideLoading();
+               // hideLoading();
             },error: function () {
                 $('#mensajeBuscandoPersonaFisica').hide();
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -832,7 +832,6 @@ $("#ddlCatTipoServicio").on("change", function () {
                 document.getElementById("PersonaMoralLocalizada").style.display = "block";
                 $("#PersonaMoralLocalizada").html(result);
                 var grid = $("#gridPersonasMorales").data("kendoGrid");
-                  sitteg_success('Elemento guardado correctamente')
                 grid.refresh();
                 hideLoading();
             },error: function () {

@@ -17,6 +17,6 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int CreateVehiculo(VehiculoModel model);
         public int UpdateVehiculo(VehiculoModel model);
 
-        public VehiculoModel GetVehiculoPropietario(VehiculoBusquedaModel model);
+        public List<VehiculoModel> GetVehiculoPropietario(VehiculoBusquedaModel model);
     }
 }

@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Fri Feb 23 2024
+ * Última modificación: Sat Feb 24 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -24,6 +24,7 @@ using Microsoft.Extensions.Options;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+using GuanajuatoAdminUsuarios.Helpers;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -57,13 +58,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         #region Vehiculo
         [HttpPost]
-        public ActionResult BuscarVehiculoEnPlataformas([FromServices] IOptions<AppSettings> appSettings, [FromServices] IRepuveService repuveService,
+        public IActionResult BuscarVehiculoEnPlataformas([FromServices] IOptions<AppSettings> appSettings, [FromServices] IRepuveService repuveService,
         [FromServices] IVehiculoPlataformaService vehiculoPlataformaService, [FromServices] IVehiculosService vehiculoService, [FromServices] ICotejarDocumentosClientService cotejarDocumentosService, VehiculoPropietarioBusquedaModel model)
         {
 
             RepuveConsgralRequestModel repuveGralModel = new(model.PlacaBusqueda, model.SerieBusqueda);
 
             ViewBag.ReporteRobo = vehiculoPlataformaService.ValidarRoboRepuve(repuveGralModel);
+
 
             var buscarEnServicios = appSettings.Value.AllowWebServicesRepuve;
             VehiculoBusquedaModel busquedaModel = new()
@@ -73,17 +75,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 SerieBusqueda = model.SerieBusqueda
             };
 
-            VehiculoModel vehiculoModel = vehiculoService.GetVehiculoPropietario(busquedaModel);
-            vehiculoModel.idSubmarcaUpdated = vehiculoModel.idSubmarca;
-            vehiculoModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-            {
-                PersonasMorales = new List<PersonaModel>()
-            };
+            List<VehiculoModel> listaVehiculos = vehiculoService.GetVehiculoPropietario(busquedaModel);
+            VehiculoModel vehiculoModel = new();
 
-            if (vehiculoModel.idVehiculo > 0)
-            {
-                return PartialView("_Vehiculo", vehiculoModel);
 
+            if (listaVehiculos.Count > 1)
+            {
+                var view1 = this.RenderViewAsync("_ListaVehiculos", listaVehiculos, true);
+                return Json(new { listaVehiculos = true, view = view1 });
+
+            }
+            if (listaVehiculos.Count == 1)
+            {
+
+                return Json(new { listaVehiculos.FirstOrDefault().idVehiculo });
             }
 
             if (buscarEnServicios && !string.IsNullOrEmpty(busquedaModel.PlacasBusqueda))
@@ -102,7 +107,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     vehiculoModel.ErrorRepube = string.IsNullOrEmpty(vehiculoModel.placas) ? "No" : "";
                     //Se establece el origen de datos
                     vehiculoModel.origenDatos = "Padrón Estatal";
-                    return PartialView("_Vehiculo", vehiculoModel);
+                    var view2 = this.RenderViewAsync("_Vehiculo", vehiculoModel, true);
+                    return Json(new { crearVehiculo = true, view = view2 });
                 }
             }
 
@@ -127,11 +133,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 //Se establece el origen de datos
                 vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
-                return PartialView("_Vehiculo", vehiculoEncontrado);
+
+                if (ViewBag.ReporteRobo)
+                {
+                    vehiculoEncontrado.placas = repuveGralModel.placa;
+                    vehiculoEncontrado.serie = repuveGralModel.niv;
+                }
+
+
+                var view3 = this.RenderViewAsync("_Vehiculo", vehiculoEncontrado, true);
+                return Json(new { crearVehiculo = true, view = view3 });
+
 
             }
-
-            return PartialView("_Vehiculo", vehiculoModel);
+            var view4 = this.RenderViewAsync("_Vehiculo", vehiculoModel, true);
+            return Json(new { crearVehiculo = true, view = view4 });
         }
         /// <summary>
         /// Crea o actualiza un registro de un vehiculo en la bd
@@ -150,10 +166,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
                 IdVehiculo = vehiculoService.CreateVehiculo(model);
 
-             if(IdVehiculo<=0)
-             return Json(new { success=false });
+            if (IdVehiculo <= 0)
+                return Json(new { success = false });
 
-                return Json(new {success=true, data = IdVehiculo });
+            return Json(new { success = true, data = IdVehiculo });
         }
         #endregion
 

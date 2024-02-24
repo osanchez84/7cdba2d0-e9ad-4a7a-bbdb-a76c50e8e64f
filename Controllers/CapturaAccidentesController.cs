@@ -377,6 +377,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
         {
+            //var EliminarVehiculo = _capturaAccidentesService.BorrarVehiculoAccidente(IdVehiculoInvolucrado, IdAccidente);
             var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado, IdAccidente);
 
             //BITACORA

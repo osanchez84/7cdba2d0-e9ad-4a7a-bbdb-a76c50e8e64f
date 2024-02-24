@@ -533,6 +533,112 @@ namespace GuanajuatoAdminUsuarios.Services
             return model;
         }
 
+
+
+        public SolicitudDepositoModel ImportarInfraccion(int folioBusquedaInfraccion)
+        {
+            SolicitudDepositoModel model = new SolicitudDepositoModel();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact =
+                                           @"SELECT TOP 1 inf.idInfraccion
+                                                    ,inf.idOficial
+                                                    ,inf.idDependencia
+                                                    ,inf.idDelegacion
+                                                    ,inf.idVehiculo
+                                                    ,inf.idAplicacion
+                                                    ,inf.idGarantia
+                                                    ,inf.idEstatusInfraccion
+                                                    ,inf.idMunicipio
+                                                    ,inf.idTramo
+                                                    ,inf.idCarretera
+                                                    ,inf.idPersona
+                                                    ,inf.idPersonaInfraccion
+                                                    ,inf.placasVehiculo
+                                                    ,inf.folioInfraccion
+                                                    ,inf.fechaInfraccion
+                                                    ,inf.kmCarretera
+                                                    ,inf.observaciones
+                                                    ,inf.lugarCalle
+                                                    ,inf.lugarNumero
+                                                    ,inf.lugarColonia
+                                                    ,inf.lugarEntreCalle
+                                                    ,inf.infraccionCortesia
+                                                    ,inf.NumTarjetaCirculacion
+                                                    ,inf.fechaActualizacion
+                                                    ,inf.actualizadoPor
+                                                    ,inf.estatus
+                                                    ,del.idOficinaTransporte, del.nombreOficina,dep.idDependencia,dep.nombreDependencia,catGar.idGarantia,catGar.garantia
+                                                    ,estIn.idEstatusInfraccion, estIn.estatusInfraccion
+                                                    ,tipoP.idTipoPlaca, tipoP.tipoPlaca
+                                                    ,tipoL.idTipoLicencia, tipoL.tipoLicencia
+                                                    ,catOfi.idOficial,catOfi.nombre,catOfi.apellidoPaterno,catOfi.apellidoMaterno,catOfi.rango
+                                                    ,catMun.idMunicipio,catMun.municipio
+                                                    ,catTra.idTramo,catTra.tramo
+                                                    ,per.RFC,per.fechaNacimiento
+                                                    ,catCarre.idCarretera,catCarre.carretera
+                                                    ,veh.idMarcaVehiculo,veh.idMarcaVehiculo, veh.serie,veh.tarjeta, veh.vigenciaTarjeta,veh.idTipoVehiculo,veh.modelo
+                                                    ,veh.idColor,veh.idEntidad,veh.idCatTipoServicio, veh.propietario, veh.numeroEconomico
+                                                    ,catEntidad.idEntidad as idEntidadUbicacion
+                                                    ,(select top 1 cva.idPension from conductoresVehiculosAccidente cva left join infraccionesAccidente ia on cva.idAccidente=ia.idAccidente where ia.idInfraccion=inf.idInfraccion  order by cva.fechaActualizacion  desc) as idPensionUbicacion
+                                                    ,(select top 1 e.idDescripcion  from depositos d left join solicitudes s on d.idSolicitud=s.idSolicitud left join catDescripcionesEvento e on s.idEvento=e.idDescripcion  left join infracciones i on d.idInfraccion=i.idInfraccion where i.idInfraccion=inf.idInfraccion order by d.idDeposito desc) as idDescripcionEvento
+                                                    FROM infracciones as inf
+                                                    left join catDependencias dep on inf.idDependencia= dep.idDependencia
+                                                    left join catDelegacionesOficinasTransporte	del on inf.idDelegacion = del.idOficinaTransporte
+                                                    left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
+                                                    left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
+                                                    left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia and inf.idInfraccion=gar.idInfraccion
+                                                    left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
+                                                    left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
+                                                    left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
+                                                    left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                                                    left join catEntidades catEntidad on catMun.idEntidad=catEntidad.idEntidad
+                                                    left join catTramos catTra on inf.idTramo = catTra.idTramo
+                                                    left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
+                                                    left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+                                                    left join personas per on inf.idPersona = per.idPersona
+                                                    WHERE inf.idInfraccion=@folioInfraccion ORDER BY inf.fechaInfraccion desc";
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.Int)).Value = folioBusquedaInfraccion;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+                            model.idMunicipioUbicacion = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
+                            model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
+                            model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());
+                            model.kilometroUbicacion = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
+                            model.calleUbicacion = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+                            model.numeroUbicacion = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+                            model.coloniaUbicacion = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+                            model.interseccion = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+                            model.folio = reader["folioInfraccion"] == System.DBNull.Value ? string.Empty : reader["folioInfraccion"].ToString();
+                            model.municipio = reader["municipio"].ToString();
+                            model.idEntidadUbicacion = reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
+                            model.idPensionUbicacion = reader["idPensionUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPensionUbicacion"].ToString());
+                            model.idTipoVehiculo = reader["idTipoVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoVehiculo"].ToString());
+                            model.idOficial = reader["idOficial"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idOficial"].ToString());
+                            model.idDescripcionEvento = reader["idDescripcionEvento"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idDescripcionEvento"].ToString());
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    Logger.Error("Error al obtener infracción por folio: " + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return model;
+        }
+
+
         public List<SolicitudDepositoModel> ObtenerServicios()
 
         {

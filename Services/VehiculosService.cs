@@ -1413,6 +1413,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
                 };
 
+                    vehiculoEncontrado.ReporteRobo = vehiculosModel.ReporteRobo;
+
                 vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
                 //Se establece el origen de datos

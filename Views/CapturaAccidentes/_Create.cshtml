@@ -1211,16 +1211,15 @@
                         @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div id="divMunicipio" class="controlForm my-3">
-                            <label>Municipio (obligatorio):</label>
+                  <div id="divMunicipio" class="controlForm my-3">
+                            <label for="idMunicipioFisico">Municipio (obligatorio):</label>
                             <span>
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
                                     .HtmlAttributes(new { style = "width:100%;",id="idMunicipioFisico" })
-                                                        .Filter(FilterType.Contains)
-
+                                    .Filter(FilterType.Contains)
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1401,9 +1400,14 @@
         var value = $(this).val();
          console.log("ENT", value)
         _set_combo_catalog("CatMunicipiosByEntidad", value, "idMunicipioFisico", "false", "divMunicipio", "");
-        $('#idMunicipioFisico').kendoDropDownList();
+        var labelExistente = $("label[for='idMunicipioFisico']");
+    if (labelExistente.length === 0) {
+        var nuevoLabel = $("<label for='idMunicipioFisico'>Municipio (obligatorio):</label>");
+        $("#divMunicipio").prepend(nuevoLabel);
+    }
 
-    });
+    $('#idMunicipioFisico').kendoDropDownList();
+});
 
      $("#EntidadMoral").on("change", function () {
         var value = $(this).val();

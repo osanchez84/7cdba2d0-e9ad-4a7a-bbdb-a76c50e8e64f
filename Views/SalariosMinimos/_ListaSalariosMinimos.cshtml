@@ -3,17 +3,13 @@
         .Name("gridCatUmas")
         .Columns(columns =>
         {
-            columns.Bound(c => c.IdSalario).Title("Id").Hidden();  
-            columns.Bound(c => c.Area).Title("Area").Width(190);
-            columns.Bound(c => c.Salario).Title("Valor").Width(190);
+            columns.Bound(c => c.IdSalario).Title("Id").Hidden();
+            @*columns.Bound(c => c.Area).Title("Area").Width(190);*@
+            columns.Bound(c => c.Salario).Title("Valor").Width(190).Format("{0:###,###,###,###.##}");
             columns.Bound(c => c.Anio).Width(190);
             columns.Bound(c => c.Fecha).Width(190).Format("{0:dd/MM/yyyy}");
+            columns.Bound(c => c.estatusDesc).Title("Estatus").Width(100);
             columns.Command(c => c.Custom("Editar").Click("editarSalarioMinimo")).Width(100);
-            //columns.Bound(c => c.estatusDesc).Title("Estatus en sistema").Width(100);
-            //columns.Command(c => c.Custom("Editar").Click("getId")).Width(80);
-           // columns.Command(c => c.Custom("Eliminar").Click("eliminar")).Width(80);
-
-
 
         }).HtmlAttributes(new { style = "height:550px" })
         .Sortable()
@@ -28,13 +24,13 @@
             .PageSize(5).Model(model => model.Id(p => p.IdSalario))
         )
      .ToolBar(t => t.Search().Text("Buscar..."))
-      //  .Search(s =>
-       // {
-           // s.Field(c => c.Anio);
-           // s.Field(c => c.Salario);
+        //  .Search(s =>
+        // {
+        // s.Field(c => c.Anio);
+        // s.Field(c => c.Salario);
 
-       // })
-       
+        // })
+
         .Selectable(selectable => selectable.Mode(GridSelectionMode.Single)
         .Type(GridSelectionType.Row)
         )

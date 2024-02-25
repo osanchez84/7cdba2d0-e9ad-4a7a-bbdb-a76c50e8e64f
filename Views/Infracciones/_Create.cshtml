@@ -176,7 +176,7 @@ $(document).ready(()=>{
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
-                    .HtmlAttributes(new { style = "width:100%;" })
+                    .HtmlAttributes(new { style = "width:100%;",id="idEdntidad2" })
                     .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
@@ -1067,7 +1067,7 @@ $(document).ready(()=>{
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
-                            <label>Fecha de nacimiento <b>(obligatorio):</b></label>
+                            <label>Fecha de nacimiento </label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                 .Culture("es-ES")
@@ -1177,9 +1177,9 @@ $(document).ready(()=>{
                          @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div id="divMunicipio" class="controlForm my-3">
+                        <div  class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
-                            <span>
+                            <span id="divMunicipio">
                                 @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")

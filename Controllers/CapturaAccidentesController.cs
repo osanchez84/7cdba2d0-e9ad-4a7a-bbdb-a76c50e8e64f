@@ -1978,6 +1978,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ajax_CrearVehiculo_Ejemplo2(VehiculoModel model)
         {
+            // creamos a la persona sin datos
+            if (model.Persona.idPersona==-1) { 
+                
+                PersonaDireccionModel direccion = new PersonaDireccionModel();
+                direccion.idEntidad = 35;
+                direccion.colonia = "se ignora";
+                direccion.calle = "se ignora";
+                direccion.numero = "se ignora";                
+                PersonaModel persona = new PersonaModel();                
+                persona.nombre = "se ignora";
+                persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                persona.PersonaDireccion = direccion;
+                persona.idGenero = 1;
+                var IdPersonaFisica = _personasService.CreatePersona(persona);
+                model.idPersona = IdPersonaFisica;
+                model.Persona.idPersona = IdPersonaFisica;
+                model.propietario = persona.nombre;
+            }
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
             if (IdVehiculo != 0)

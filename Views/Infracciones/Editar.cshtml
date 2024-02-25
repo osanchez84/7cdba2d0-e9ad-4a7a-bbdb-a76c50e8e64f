@@ -42,6 +42,46 @@
         }
     });
 
+
+    function EditarVehiculo() {
+        $("#Vehiculo_tarjeta").addClass("activeData");
+        $('#Vehiculo_tarjeta').data("kendoTextBox").enable();
+
+        //$("#Persona_nombreCompleto").addClass("activeData");
+        //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
+
+        $("#Vehiculo_motor").addClass("activeData");
+        $("#Vehiculo_motor").data("kendoTextBox").enable();
+
+        $("#Vehiculo_numeroEconomico").addClass("activeData");
+        $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable();
+
+        $("#Vehiculo_otros").addClass("activeData");
+        $("#Vehiculo_otros").data("kendoTextBox").enable();
+
+        $("#Vehiculo_poliza").addClass("activeData");
+        $("#Vehiculo_poliza").data("kendoTextBox").enable();
+        //
+        $("#Vehiculo_capacidad").addClass("activeData");
+        $("#Vehiculo_capacidad").data("kendoTextBox").enable();
+
+        $("#Vehiculo_placas").addClass("activeData");
+        $("#Vehiculo_placas").data("kendoTextBox").enable()
+
+        $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
+        $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable();
+
+        $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
+        $("#Vehiculo_idEntidad").data("kendoDropDownList").enable();
+
+        $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
+        $("#Vehiculo_idColor").data("kendoDropDownList").enable();
+
+        $("#Vehiculo_btnSelect").prop("disabled", false);
+        $("#Vehiculo_placas").focus();
+    }
+
+
 </script>
 
 <div class="mainContainer bg-light">
@@ -404,7 +444,9 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detalleVehiculo">
-                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model.Vehiculo" />
+                                    @Html.HiddenFor(s=>s.Vehiculo.idPersona)
+
+                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model" />
                                 </div>
                             </div>
                             @*<div class="row my-4 px-4">
@@ -931,8 +973,9 @@
                 }
 
 
+                var valgar = $("#ddlTipoGarantia").val()
 
-                    if ("@ViewBag.GoDEpositos" == "0") {
+                    if ("@ViewBag.GoDEpositos" == "0" && valgar=="4") {
                         window.location.href = '/Depositos/DepositosInfraccion'
                     }
                     
@@ -1217,43 +1260,6 @@
         
     //});
 
-    function EditarVehiculo() {
-        $("#tarjeta").addClass("activeData");
-        $('#tarjeta').data("kendoTextBox").enable();
-
-        //$("#Persona_nombreCompleto").addClass("activeData");
-        //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
-
-        $("#motor").addClass("activeData");
-        $("#motor").data("kendoTextBox").enable();
-
-        $("#numeroEconomico").addClass("activeData");
-        $("#numeroEconomico").data("kendoTextBox").enable();
-        
-        $("#otros").addClass("activeData");
-        $("#otros").data("kendoTextBox").enable();
-        
-        $("#poliza").addClass("activeData");
-        $("#poliza").data("kendoTextBox").enable();
-        //
-        $("#capacidad").addClass("activeData");
-        $("#capacidad").data("kendoTextBox").enable();
-
-        $("#placas").addClass("activeData");
-        $("#placas").data("kendoTextBox").enable()
-
-        $("#vigenciaTarjeta").addClass("activeData");
-        $("#vigenciaTarjeta").data("kendoDateTimePicker").enable();
-
-        $("#idEntidad").closest('.k-dropdown').addClass("activeData");
-        $("#idEntidad").data("kendoDropDownList").enable();
-        
-        $("#idColor").closest('.k-dropdown').addClass("activeData");
-        $("#idColor").data("kendoDropDownList").enable();    
-        
-        $("#btnSelect").prop("disabled",false);       
-        $("#placas").focus();
-    }
 
     function btnEditarPersona() {
 		

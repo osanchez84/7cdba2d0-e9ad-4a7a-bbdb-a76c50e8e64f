@@ -33,10 +33,10 @@ namespace GuanajuatoAdminUsuarios.Services
             List<PersonaModel> modelList = new List<PersonaModel>();
             string strQuery = @"SELECT TOP 100
                                 p.idPersona
-                               ,p.numeroLicencia
-                               ,p.CURP
-                               ,p.RFC
-                               ,p.nombre
+                               ,isnull(p.numeroLicencia,'')numeroLicencia
+                               ,isnull(p.CURP,'')CURP
+                               ,isnull(p.RFC,'')RFC
+                               ,isnull(p.nombre,'') nombre
                                ,p.apellidoPaterno
                                ,p.apellidoMaterno
                                ,p.fechaActualizacion
@@ -47,7 +47,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							   ,p.fechaNacimiento
 							   ,p.idGenero
 							   ,p.vigenciaLicencia
-                               ,ctp.tipoPersona
+                               ,isnull(ctp.tipoPersona,'')tipoPersona
 							   ,cl.tipoLicencia
 							   ,cg.genero
                                FROM personas p

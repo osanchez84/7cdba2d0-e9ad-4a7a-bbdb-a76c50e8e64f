@@ -461,7 +461,7 @@ namespace GuanajuatoAdminUsuarios.Services
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
                                     cmi.idCatMotivoInfraccion,
-                                    cmi.nombre,
+                                    cmi.nombre + ' - '+ cmi.fundamento  nombre,
                                     cmi.fundamento,
                                     cmi.calificacionMinima,
                                     cmi.calificacionMaxima,

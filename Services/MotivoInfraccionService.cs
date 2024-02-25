@@ -412,7 +412,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                          mi.fechaInicio, mi.fechaFinVigencia,mi.estatus,e.estatusDesc
 										 FROM catMotivosInfraccion AS mi
 										 LEFT JOIN estatus AS e ON mi.estatus = e.estatus
-                                         WHERE mi.estatus = 1 AND mi.transito = @idDependencia" + condiciones;
+                                         WHERE mi.transito = @idDependencia" + condiciones;
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
 

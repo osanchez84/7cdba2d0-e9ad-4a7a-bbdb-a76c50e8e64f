@@ -357,8 +357,9 @@
                 url: '@Url.Action("AccidentesGeneral","PDFGenerator")',
                 data: Mydata,
                 success: function (r) {
+                    if(r.success){
                     try {
-                        var bytes = Base64ToBytes(r);
+                        var bytes = Base64ToBytes(r.data);
                         var blob = new Blob([bytes], { type: "application/octetstream" });
                         var isIE = false || !!document.documentMode;
 
@@ -376,6 +377,10 @@
                         }
                     } catch (error) {
                         handleError(error);
+                    }
+                    }
+                    else{
+                        sitteg_warning(r.message);
                     }
                 },
                 error: function () {

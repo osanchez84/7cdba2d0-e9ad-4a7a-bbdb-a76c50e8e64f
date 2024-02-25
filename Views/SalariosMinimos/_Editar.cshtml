@@ -38,6 +38,7 @@
                 <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
             </div>
             <div class="col-12 col-lg-6 my-4 btnToggleActive">
+                @Html.HiddenFor(m=>m.IdSalario)
                 @(Html.Kendo().SwitchFor(t => t.ValorEstatusSalarios)
                     .Name("salariosSwitch")
                     .Checked(true)
@@ -48,7 +49,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-6">
+           @* <div class="col-12 col-md-6">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.Area)
                         .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
@@ -57,9 +58,9 @@
                         )
 
                 </div>
-            </div>
+            </div>*@
 
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.Anio)
                         .Label(l => l.Content("Año <b>(obligatorio)</b>:"))
@@ -69,10 +70,8 @@
 
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
                     @(Html.Kendo().TextBoxFor(t => t.Salario)
                         .Label(l => l.Content("UMA <b>(obligatorio)</b>:"))
@@ -83,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
                     <label class="control-label">"Fecha Vigencia <b>(obligatorio)</b>:"</label>
                     @(Html.Kendo().DatePickerFor(t => t.Fecha)
@@ -94,6 +93,10 @@
                 </div>
             </div>
         </div>
+@*
+        <div class="row">
+            
+        </div>*@
     </form>
     <div class="row my-4">
         <div class="col-12 col-md-6 mx-md-auto">

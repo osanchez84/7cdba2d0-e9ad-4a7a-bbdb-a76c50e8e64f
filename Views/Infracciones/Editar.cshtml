@@ -281,8 +281,8 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Municipio <b>(obligatorio)</b>:</label>
-                                        @(Html.Kendo().DropDownList()
-                                            .Name("idMunicipio")
+                                        @(Html.Kendo().DropDownListFor(s=>s.idMunicipio)
+//                                            .Name("idMunicipio")
                                             .DataTextField("Text")
                                             .DataValueField("Value")
                                             .DataSource(source =>

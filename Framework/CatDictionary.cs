@@ -189,6 +189,9 @@ namespace GuanajuatoAdminUsuarios.Framework
 									Id = Convert.ToInt32(s["idTramo"]),
 									Text = Convert.ToString(s["tramo"])
 								}).ToList();
+						catalogModel.CatalogList.Add(new SystemCatalogListModel() { Id = 1, Text = "No aplica" });
+						catalogModel.CatalogList.Add(new SystemCatalogListModel() { Id = 2, Text = "No especificado" });
+
 					}
 					break;
 				case "CatTramos":

@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Runtime.ConstrainedExecution;
 using System.Data.Common;
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -111,7 +112,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
                 catch (SqlException ex)
                 {
-
+                    Logger.Error("Error al obtener accidentes:"+ex);
                 }
                 finally
                 {

@@ -2219,7 +2219,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			decimal umas = 0M;
 			string strQuery = @"SELECT top 1 salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 and fecha<=@fecha order by fecha"
+                               WHERE estatus = 1 and fecha<=@fecha order by fecha desc"
 			;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

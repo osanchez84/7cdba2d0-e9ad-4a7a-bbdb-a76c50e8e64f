@@ -63,5 +63,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public decimal getUMAValue();
 
+        public List<InfraccionesModel> GetReporteInfracciones(InfraccionesBusquedaModel model, int idOficina, int idDependenciaPerfil);
+
     }
 }

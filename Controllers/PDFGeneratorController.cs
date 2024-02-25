@@ -189,13 +189,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public ContentResult InfraccionesGeneral(InfraccionesBusquedaModel model)
 		{
 
-
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			Pagination pagination = new Pagination();
-			pagination.PageIndex = 0;
-			pagination.PageSize = 1000000;
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var modelList = _infraccionesService.GetAllInfraccionesPagination(model, idOficina, idDependencia, pagination);
+
+			//Se valida si ambas fecha vienen nulas se limita la consulta a un rango de 45 dias
+			/*if(model.FechaInicio.Year<=1900 && model.FechaFin.Year<=1900){
+				model.FechaInicio=DateTime.Now.AddDays(-45);
+				model.FechaFin=DateTime.Now;
+			}*/
+			var modelList = _infraccionesService.GetReporteInfracciones(model, idOficina, idDependencia);
 			var pdfModel = modelList.Select(s => new InfraccionesGeneralPDFModel
 			{
 				folioInfraccion = s.folioInfraccion,

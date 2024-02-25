@@ -2,7 +2,7 @@
 <script>
     function onRowSelect(e) {
         var selectedRow = this.select();
-        var IdVehiculo, IdPersona;
+        var IdVehiculo, IdPersona, Placa, Serie;
 
         if (selectedRow.length > 0) {
             var dataItem = this.dataItem(selectedRow);
@@ -10,20 +10,25 @@
             IdPersona = dataItem.IdPersona;
             Placa = dataItem.Placa;
             Serie = dataItem.Serie;
-             
+
             showLoading();
             $.ajax({
-              url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
+                url: '@Url.Action("ActualizarAccidenteConVehiculo", "CapturaAccidentes")',
                 type: 'POST',
-                data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona, Placa : Placa, Serie :Serie },
-                success: function (result) { 
-                    console.log("FER",result)
-                    abrirModalConductor(IdPersona, result.IdVehiculoH);
+                data: { IdVehiculo: IdVehiculo, IdPersona: IdPersona, Placa: Placa, Serie: Serie },
+                success: function (result) {
                     hideLoading();
+                    if (result.error) {
+                        $('#agregarVehiculoModal').modal('hide');
+                        sitteg_warning("El vehículo ya fue registrado en este accidente")
+                    } else {
+                        console.log("FER", result);
+                        abrirModalConductor(IdPersona, result.IdVehiculoH);
+                    }
                 },
                 error: function (error) {
                     hideLoading();
-                    alert("ERROR");
+                    alert("ERROR al procesar la solicitud.");
                 }
             });
         }

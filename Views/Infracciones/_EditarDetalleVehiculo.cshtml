@@ -1,4 +1,4 @@
-﻿@model VehiculoModel
+﻿@model InfraccionesModel
 
 
 <hr />
@@ -6,10 +6,10 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Placas:</label>&nbsp;@Model.placas*@
-            @(Html.Kendo().TextBoxFor(t => t.placas)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.placas)
                 .Label(l => l.Content("Placas:"))
                 .Placeholder("Ingresa Placas")
-                .HtmlAttributes(new { style = "width: 100%" })
+                .HtmlAttributes(new { style = "width: 100%", id = "Vehiculo_placas" })
                 .Enable(false)
                 )
         </div>
@@ -17,7 +17,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Serie:</label>&nbsp;@Model.serie*@
-            @(Html.Kendo().TextBoxFor(t => t.serie)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.serie)
                 .Label(l => l.Content("Serie:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -27,7 +27,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Numero tarjeta:</label>&nbsp;@Model.tarjeta*@
-            @(Html.Kendo().TextBoxFor(t => t.tarjeta)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.tarjeta)
                 .Label(l => l.Content("No. tarjeta:"))
                 .Placeholder("Ingresa No. tarjeta")
                 .HtmlAttributes(new { style = "width: 100%" })
@@ -38,13 +38,13 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Vigencia tarjeta:</label>
-            @(Html.Kendo().DateTimePickerFor(t => t.vigenciaTarjeta)
+            @(Html.Kendo().DateTimePickerFor(t => t.Vehiculo.vigenciaTarjeta)
                 @*.Min(DateTime.Now)*@
                 .Label(l => l.Content("Vigencia tarjeta:"))
                 .Format("dd/MM/yyyy")
                 @*.Value("")*@
                 .Culture("es-ES")
-                .HtmlAttributes(new { style = "width: 100%", id = "vigenciaTarjeta" })
+                .HtmlAttributes(new { style = "width: 100%"  })
                 .Enable(false)
                 )
         </div>
@@ -56,7 +56,7 @@
         <div class="controlForm">
             <label>Entidad de registro:</label>
             <span>
-                @(Html.Kendo().DropDownListFor(t => t.idEntidad).Filter(FilterType.Contains)
+                @(Html.Kendo().DropDownListFor(t => t.Vehiculo.idEntidad).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
@@ -76,7 +76,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Marca:</label>&nbsp;@Model.marca*@
-            @(Html.Kendo().TextBoxFor(t => t.marca)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.marca)
                 .Label(l => l.Content("Marca:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -86,7 +86,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Submarca:</label>&nbsp;@Model.submarca*@
-            @(Html.Kendo().TextBoxFor(t => t.submarca)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.submarca)
                 .Label(l => l.Content("Submarca:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -96,7 +96,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Tipo vehículo:</label>&nbsp;@Model.tipoVehiculo*@
-            @(Html.Kendo().TextBoxFor(t => t.tipoVehiculo)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.tipoVehiculo)
                 .Label(l => l.Content("Tipo vehículo:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -108,7 +108,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Modelo:</label>&nbsp;@Model.modelo*@
-            @(Html.Kendo().TextBoxFor(t => t.modelo)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.modelo)
                 .Label(l => l.Content("Modelo:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -119,7 +119,7 @@
         <div class="controlForm">
             <label>Color:</label>
             <span>
-                @(Html.Kendo().DropDownListFor(t => t.idColor).Filter(FilterType.Contains)
+                @(Html.Kendo().DropDownListFor(t => t.Vehiculo.idColor).Filter(FilterType.Contains)
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Color...")
@@ -140,7 +140,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Capacidad:</label>&nbsp;@(Model.capacidad != null ? Model.capacidad.ToString() : "-")*@
-            @(Html.Kendo().TextBoxFor(t => t.capacidad)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.capacidad)
                 .Label(l => l.Content("Capacidad:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -150,7 +150,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Póliza:</label>&nbsp;@(Model.poliza != null ? Model.poliza.ToString() : "-")*@
-            @(Html.Kendo().TextBoxFor(t => t.poliza)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.poliza)
                 .Label(l => l.Content("Póliza:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -162,7 +162,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Carga:</label>&nbsp;@(Model.carga.HasValue ? (Model.carga.Value ? "Si" : "No") : "-")*@
-            @(Html.Kendo().TextBoxFor(t => t.cargaTexto)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.cargaTexto)
                 .Label(l => l.Content("Carga:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -172,7 +172,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Otros:</label>&nbsp;@(Model.otros != null ? Model.otros.ToString() : "-")*@
-            @(Html.Kendo().TextBoxFor(t => t.otros)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.otros)
                 .Label(l => l.Content("Otros:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -182,7 +182,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             @*<label>Número económico:</label>*@
-            @(Html.Kendo().TextBoxFor(t => t.numeroEconomico)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.numeroEconomico)
                 .Label(l => l.Content("Número económico:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -191,7 +191,7 @@
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
-            @(Html.Kendo().TextBoxFor(t => t.motor)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.motor)
                 .Label(l => l.Content("Motor:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -205,7 +205,7 @@
         <div class="controlForm my-3">
             @*<p>@Model.Persona.nombreCompleto</p>*@
 
-            @(Html.Kendo().TextBoxFor(t => t.Persona.nombreCompleto)
+            @(Html.Kendo().TextBoxFor(t => t.Vehiculo.Persona.nombreCompleto)
                 .Label(l => l.Content("Propietario:"))
                 .HtmlAttributes(new { style = "width: 100%" })
                 .Enable(false)
@@ -255,5 +255,11 @@
 
 
 
+<script>
 
+    $(document).ready(()=>{
+        EditarVehiculo()
+    })
+
+</script>
 

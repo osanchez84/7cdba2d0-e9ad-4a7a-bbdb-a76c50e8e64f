@@ -377,6 +377,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult EliminarInvolucradoAccidente(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
         {
+            //var EliminarVehiculo = _capturaAccidentesService.BorrarVehiculoAccidente(IdVehiculoInvolucrado, IdAccidente);
             var involucradoEliminado = _capturaAccidentesService.EliminarInvolucradoAcc(IdVehiculoInvolucrado, IdPropietarioInvolucrado, IdAccidente);
 
             //BITACORA
@@ -1070,7 +1071,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var idVehiculoInsertado = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
+            var can = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
+            if (can == 0)
+            {
+                return Json(new { IdPersona = IdPersona, IdVehiculoH = IdVehiculo , error=1 });
+            }
+
+            var idVehiculoInsertado = IdVehiculo;
 
             //BITACORA
             var ip = HttpContext.Connection.RemoteIpAddress.ToString();
@@ -1094,6 +1101,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ActualizarConConductor(int IdVehiculo, int IdPersona)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
+           
+            var idVehiculoInsertado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente, IdPersona);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(idVehiculoInsertado, ip, "CapturaAccidente_ConConductor", "Actualizar", "update", user);
+
+            return Json(idVehiculoInsertado);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarSinConductor(int IdVehiculo)
+        {
+            int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
+            var personamodel = new PersonaModel();
+            personamodel.nombre = "SE Ignora";
+            personamodel.idCatTipoPersona = 1;
+            personamodel.PersonaDireccion = new PersonaDireccionModel();
+
+            var IdPersona = _personasService.CreatePersona(personamodel);
             var idVehiculoInsertado = _capturaAccidentesService.InsertarConductor(IdVehiculo, idAccidente, IdPersona);
 
             //BITACORA

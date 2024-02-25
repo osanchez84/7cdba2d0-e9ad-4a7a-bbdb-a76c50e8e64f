@@ -214,7 +214,7 @@
 						@(Html.Kendo().Button()
 							.Name("editInvolucrados")
 							.HtmlAttributes(new { @class = "px-5" })
-							.Enable(!ViewBag.EsSoloLectura) // Desactiva el botón si es solo lectura
+							.Enable(!ViewBag.EsSoloLectura) 
 							.Content("<h6 class=\"m-0\"><b>Actualizar información del Accidente</b></h6>"))
 					}
 					</div>
@@ -500,16 +500,16 @@
 				$('#ModalBodyAgregarVehiculo').html(result);
 				$('#agregarVehiculoModal').modal('show');
 				hideLoading();
-			}, error: function () {
+			},
+			error: function () {
 				sitteg_warning("Ocurrio un error al procesar su solicitud.");
 				hideLoading();
 			}
 		});
 	}
 
-</script>
 
-<script>
+
 	function pensionDropDownChange() {
 		var delegacionDDValue = $("#IdDelegacion").data("kendoDropDownList").value();
 		showLoading();

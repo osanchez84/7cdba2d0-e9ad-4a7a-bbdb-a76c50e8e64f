@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -47,7 +48,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					   		        LEFT JOIN personas AS per ON v.idPersona = per.idPersona
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
 	                                LEFT JOIN pensiones AS pen ON d.idPension = pen.idPension
-                                    WHERE d.idPension = @idPension" + condiciones;
+                                    WHERE d.idPension = @idPension and estatusSolicitud=5 and d.liberado = 1 " + condiciones;
                                    
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -352,7 +353,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         nombreRecibe = @nombreRecibe,
                         nombreEntrega = @nombreEntrega,
                         observaciones = @observaciones,
-                        estatus = @estatus,
+                        estatus = @estatus,                       
                         actualizadoPor = @actualizadoPor,
                         fechaActualizacion = @fechaActualizacion
                 WHEN NOT MATCHED THEN
@@ -375,9 +376,22 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
 
                     command.ExecuteNonQuery();
+
+
+
+                  //  connection.Open();
+                    SqlCommand sqlCommand = new(@"update depositos set estatusSolicitud=6,fechaActualizacion=@fechaAct where idDeposito=@idDeposito;",connection);
+
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@fechaAct", SqlDbType.DateTime)).Value = DateTime.Now;
+                    sqlCommand.CommandType = CommandType.Text;
+                    result = sqlCommand.ExecuteNonQuery();
+
+
                 }
                 catch (SqlException ex)
                 {
+                    Logger.Error("Ocurrió un error al proporcionar salida de vehiculo:" + ex);
                     return result;
                 }
                 finally

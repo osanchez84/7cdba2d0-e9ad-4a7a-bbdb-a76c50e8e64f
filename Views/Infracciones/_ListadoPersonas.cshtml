@@ -50,6 +50,8 @@
             var idPersona = dataItem.idPersona;
             var nombre = dataItem.nombre + ' ' + dataItem.apellidoPaterno + ' ' + dataItem.apellidoMaterno;
             $("#idPersona").val(idPersona);
+            $("#Vehiculo_idPersona").val(idPersona);
+
             $("#Persona_nombreCompleto").val(nombre);
             if (row.hasClass("k-selected")) {
                 setTimeout(function (e) {
@@ -59,6 +61,9 @@
             } else {
                 grid.clearSelection();
             };
+
+            $("#textoConductor").empty()
+
             buscarPersona(idPersona);
         };
     })

@@ -29,7 +29,8 @@ namespace GuanajuatoAdminUsuarios.Services
 								cmi.fechaFinVigencia,
 	                            cmi.idCatMotivoInfraccion ,
 	                            cmi.nombre,
-	                            cmi.fundamento , 
+	                            cmi.fundamento ,
+                                cmi.estatus,
 	                            cmi.calificacionMinima , 
 	                            cmi.calificacionMaxima , 
 	                            cmi.IdConcepto , 
@@ -60,6 +61,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             CatMotivosInfraccionModel model = new CatMotivosInfraccionModel();
                             model.IdCatMotivoInfraccion = reader["idCatMotivoInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivoInfraccion"].ToString());
+                            model.Estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
+                            model.estatusDesc = reader["ValorEstatusMotivosInfraccion"].ToString();
+
                             model.Nombre = reader["nombre"].ToString();
                             model.Fundamento = reader["fundamento"].ToString();
                             model.CalificacionMinima = reader["calificacionMinima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMinima"].ToString());
@@ -95,6 +99,7 @@ namespace GuanajuatoAdminUsuarios.Services
             string query = @"SELECT 
 	                            cmi.idCatMotivoInfraccion ,
 	                            cmi.nombre,
+	                            cmi.estatus,
 	                            cmi.fundamento , 
 	                            cmi.calificacionMinima , 
 	                            cmi.calificacionMaxima , 
@@ -127,6 +132,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             CatMotivosInfraccionModel model = new CatMotivosInfraccionModel();
                             model.IdCatMotivoInfraccion = reader["idCatMotivoInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivoInfraccion"].ToString());
+                            model.Estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatMotivoInfraccion"].ToString());
+
                             model.Nombre = reader["nombre"].ToString();
                             model.Fundamento = reader["fundamento"].ToString();
                             model.CalificacionMinima = reader["calificacionMinima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["calificacionMinima"].ToString());
@@ -214,7 +221,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , calificacionMaxima
                                 , fundamento
                                 , fechaInicio
-                                , fechaFinVigencia)
+                                , fechaFinVigencia
+                                 ,transito)
                             VALUES(@nombre
                                 , @IdSubConcepto
                                 , @fechaActualizacion
@@ -297,10 +305,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@calificacionMinima",motivo.CalificacionMinima);
                     command.Parameters.AddWithValue("@calificacionMaxima", motivo.CalificacionMaxima);
                     command.Parameters.AddWithValue("@fundamento", motivo.Fundamento);
+                    command.Parameters.AddWithValue("@estatus", motivo.estatus);
+
 
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);
-                    command.Parameters.AddWithValue("@estatus", 1);
 
                     result = command.ExecuteNonQuery();
                 }
@@ -403,7 +412,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                          mi.fechaInicio, mi.fechaFinVigencia,mi.estatus,e.estatusDesc
 										 FROM catMotivosInfraccion AS mi
 										 LEFT JOIN estatus AS e ON mi.estatus = e.estatus
-                                         WHERE mi.estatus = 1 AND mi.transito = @idDependencia" + condiciones;
+                                         WHERE mi.transito = @idDependencia" + condiciones;
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
 
@@ -452,7 +461,7 @@ namespace GuanajuatoAdminUsuarios.Services
             List<CatMotivosInfraccionModel> motivos = new List<CatMotivosInfraccionModel>();
             string query = @"SELECT 
                                     cmi.idCatMotivoInfraccion,
-                                    cmi.nombre,
+                                    cmi.nombre + ' - '+ cmi.fundamento  nombre,
                                     cmi.fundamento,
                                     cmi.calificacionMinima,
                                     cmi.calificacionMaxima,

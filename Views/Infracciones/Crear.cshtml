@@ -418,7 +418,7 @@
 										</div>
 										<div class="col-auto my-3">
 											<h5 class="px-4"><b>Conductor de la infracción</b></h5>
-											@*<h6 class="px-4 text-muted">Marque la persona que desea asociar como conductor.</h6>*@
+											<h6 class="px-4 text-muted" id="textoConductor"></h6>
 										</div>
 									</div>
 								</div>
@@ -508,6 +508,9 @@
 					$("#idPersona").val(result)
 				}
 				hideLoading();
+				$("#textoConductor").empty().append("Se omitio el conductor")
+				var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
+				grid.clearSelection();
 
 			},
 			error: function (xhr, status) {
@@ -526,6 +529,10 @@
 
 	function ProPietarioConductor() {
 
+
+		$("#textoConductor").empty().append("El propietario es el conductor")
+		var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
+		grid.clearSelection();
 		var result =$("#Persona_idPersona").val()
 
 		if(result){

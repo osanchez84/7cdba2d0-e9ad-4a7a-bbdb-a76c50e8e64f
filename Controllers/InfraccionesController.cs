@@ -1241,7 +1241,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var id = _infraccionesService.CrearMotivoInfraccion(model);
             var modelList = _infraccionesService.GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
-            var umas = _infraccionesService.GetUmas();
+            var fecha = _infraccionesService.GetDateInfraccion(model.idInfraccion);
+
+			var umas = _infraccionesService.GetUmas(fecha);
             ViewBag.Umas = umas;
             ViewBag.Totales = modelList.Sum(s => s.calificacion) * umas;
             var ip = HttpContext.Connection.RemoteIpAddress.ToString();
@@ -1583,6 +1585,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
                 var modelList = _personasService.GetAllPersonas();
+                ViewBag.EditarVehiculo = true;
                 return PartialView("_ListadoPersonas", modelList);
             }
         }

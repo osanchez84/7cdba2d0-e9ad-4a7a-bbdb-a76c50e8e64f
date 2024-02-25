@@ -1057,7 +1057,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.strIsPropietarioConductor = model.Vehiculo.idPersona == model.idPersona ? "SI" : "NO";
 							model.delegacion = reader["nombreOficina"] == System.DBNull.Value ? string.Empty : reader["nombreOficina"].ToString();
-							model.umas = GetUmas();
+							model.umas = GetUmas(model.fechaInfraccion);
 
 
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
@@ -1268,7 +1268,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
-							model.umas = GetUmas();
+							model.umas = GetUmas(model.fechaInfraccion);
 							model.AplicadaA = reader["aplicadaa"].GetType() == typeof(DBNull) ? "" : reader["aplicadaa"].ToString();
 
 
@@ -1337,6 +1337,39 @@ namespace GuanajuatoAdminUsuarios.Services
 				}
 
 			return result;
+		}
+
+		public DateTime GetDateInfraccion(int idInfraccion)
+		{
+			var time = DateTime.Now;
+			var str = @"select top 1 fechainfraccion from infracciones where idinfraccion=@idInf";
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(str, connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idInf", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read()){
+							time = (DateTime)reader["fechainfraccion"];
+						}
+					}
+				}
+				catch (Exception e)
+				{
+
+				}
+				finally
+				{
+
+				}
+			}
+			return time;
+
 		}
 
 
@@ -2012,7 +2045,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
 							model.Garantia = model.Garantia ?? new GarantiaInfraccionModel();
 							model.Garantia.garantia = model.Garantia.garantia ?? "";
-							model.umas = GetUmas();
+							model.umas = GetUmas(model.fechaInfraccion);
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{
 								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
@@ -2153,7 +2186,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.IdVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
-							model.umas = GetUmas();
+							model.umas = GetUmas(model.fechaInfraccion);
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{
 								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
@@ -2179,12 +2212,15 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public decimal GetUmas()
+		public decimal GetUmas(DateTime? fecha=null)
 		{
+
+			fecha = fecha ?? DateTime.Now;
+
 			decimal umas = 0M;
-			string strQuery = @"SELECT salario
+			string strQuery = @"SELECT top 1 salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 AND area = 'C'"
+                               WHERE estatus = 1 and fecha<=@fecha order by fecha"
 			;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -2194,6 +2230,8 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime)).Value = (object)fecha ?? DBNull.Value;
+
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
@@ -2532,7 +2570,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.Vehiculo = _vehiculosService.GetVehiculoById((int)model.idVehiculo);
 							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
-							model.umas = GetUmas();
+							model.umas = GetUmas(model.fechaInfraccion);
 							if (model.MotivosInfraccion.Any(w => w.calificacion != null))
 							{
 								model.totalInfraccion = (model.MotivosInfraccion.Sum(s => (int)s.calificacion) * model.umas);
@@ -3025,7 +3063,7 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idTramo", SqlDbType.Int)).Value = (object)model.idTramo ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.Vehiculo.idPersona ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)vehiculo.placas ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;

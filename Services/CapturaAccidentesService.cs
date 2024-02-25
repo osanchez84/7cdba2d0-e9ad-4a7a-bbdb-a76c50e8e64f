@@ -364,54 +364,63 @@ namespace GuanajuatoAdminUsuarios.Services
             return Vehiculo;
         }
 
-        public int ActualizarConVehiculo(int idVehiculo, int idAccidente,int IdPersona, string Placa, string Serie)
-        {
-            int idVehiculoInsertado = 0;
+		public int ActualizarConVehiculo(int idVehiculo, int idAccidente, int IdPersona, string Placa, string Serie)
+		{
+			int idVehiculoInsertado = 0;
 
-            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-            {
-                try
-                {
-                    connection.Open();
-                    string query = @"
-                                        declare 
-                                            @exist int
-                                           set  @exist  = (select count(*) from vehiculosAccidente where placa= @Placa and idAccidente= @idAccidente and estatus=1  )
-                                    if @exist=0
-                                        begin
-                                    INSERT INTO vehiculosAccidente (idAccidente, idVehiculo, idPersona, placa, serie) OUTPUT INSERTED.idVehiculo VALUES (@idAccidente, @idVehiculo,@idPersona, @Placa ,@Serie)
-                                        end
-                                        select @exist result";
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+					connection.Open();
+					string query = @"
+                            DECLARE @exist INT
+                            SET @exist = (SELECT COUNT(*) FROM vehiculosAccidente WHERE placa = @Placa AND idAccidente = @idAccidente AND estatus = 1)
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@idVehiculo", idVehiculo);
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                    command.Parameters.AddWithValue("@idPersona", IdPersona);
-                    command.Parameters.AddWithValue("@Placa", Placa);
-                    command.Parameters.AddWithValue("@Serie", Serie);
+                            IF @exist = 0
+                            BEGIN
+                                INSERT INTO vehiculosAccidente (idAccidente, idVehiculo, idPersona, placa, serie)
+                                OUTPUT INSERTED.idVehiculo
+                                VALUES (@idAccidente, @idVehiculo, @idPersona, @Placa, @Serie)
+                                SET @idVehiculoInsertado = 1
+                            END
+                            ELSE
+                            BEGIN
+                                SET @idVehiculoInsertado = 0
+                            END";
 
-                    var insertedId = command.ExecuteReader();
+					SqlCommand command = new SqlCommand(query, connection);
+					command.Parameters.AddWithValue("@idVehiculo", idVehiculo);
+					command.Parameters.AddWithValue("@idAccidente", idAccidente);
+					command.Parameters.AddWithValue("@idPersona", IdPersona);
+					command.Parameters.AddWithValue("@Placa", Placa);
+					command.Parameters.AddWithValue("@Serie", Serie);
 
-                    while(insertedId.Read()){
-                        idVehiculoInsertado = (int)insertedId["result"];
-                    }
+					// Agregamos el parámetro de salida para capturar el valor de @idVehiculoInsertado
+					SqlParameter idVehiculoInsertadoParam = new SqlParameter("@idVehiculoInsertado", SqlDbType.Int);
+					idVehiculoInsertadoParam.Direction = ParameterDirection.Output;
+					command.Parameters.Add(idVehiculoInsertadoParam);
 
+					// Ejecutamos el comando
+					command.ExecuteNonQuery();
 
-                    
-                }
-                catch (SqlException ex)
-                {
-                    // Manejar la excepción
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+					// Capturamos el valor de @idVehiculoInsertado después de ejecutar el comando
+					idVehiculoInsertado = (int)idVehiculoInsertadoParam.Value;
+				}
+				catch (SqlException ex)
+				{
+					// Manejar la excepción
+				}
+				finally
+				{
+					connection.Close();
+				}
+			}
 
-            return idVehiculoInsertado;
-        }
-        public int BorrarVehiculoAccidente(int idVehiculo, int idAccidente)
+			return idVehiculoInsertado;
+		}
+
+		public int BorrarVehiculoAccidente(int idVehiculo, int idAccidente)
         {
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -1579,7 +1588,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-
+      
         public int EliminarInvolucradoAcc(int IdVehiculoInvolucrado, int IdPropietarioInvolucrado, int IdAccidente)
         {
             int result = 0;

@@ -10,7 +10,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IInfraccionesService
     {
         bool UpdateFolio(string id, string folio);
-        public decimal GetUmas();
+        public decimal GetUmas(DateTime? fecha=null);
         public List<InfraccionesModel> GetAllInfracciones2();
 
         public List<EstadisticaInfraccionMotivosModel> GetAllEstadisticasInfracciones(int idOficina, int idDependencia); 
@@ -32,7 +32,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 		InfraccionesModel GetInfraccionById(int IdInfraccion, int idDependencia);
         public InfraccionesReportModel GetInfraccionReportById(int IdInfraccion, int idDependencia);
         public List<MotivosInfraccionVistaModel> GetMotivosInfraccionByIdInfraccion(int idInfraccion);
-        public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
+		public DateTime GetDateInfraccion(int idInfraccion);
+
+		public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);
         public int CrearPersonaInfraccion(int idInfraccion, int idPersona);
         public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInf);

@@ -1693,6 +1693,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ajax_CrearVehiculo_Ejemplo2(VehiculoModel model)
         {
+
+            model.idEntidad = model.idEdntidad2;
+
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
             if (IdVehiculo != 0)

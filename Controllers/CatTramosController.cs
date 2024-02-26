@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 using System;
 
 namespace GuanajuatoAdminUsuarios.Controllers

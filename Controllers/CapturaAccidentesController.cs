@@ -1337,8 +1337,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalAgregarInvolucradoPersona");
         }
+		public IActionResult SinInvolucrado()
+		{
+			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
+			var personamodel = new PersonaModel();
+			personamodel.nombre = "SE Ignora";
+			personamodel.idCatTipoPersona = 1;
+			personamodel.PersonaDireccion = new PersonaDireccionModel();
 
-        public ActionResult ModalAgregarComplemeto()
+			var nuevaPersona = _personasService.CreatePersona(personamodel);
+            personamodel.idPersona = nuevaPersona;
+
+			return Json (personamodel);
+		}
+		
+		public ActionResult ModalAgregarComplemeto()
         {
             return PartialView("_ModalComplementoVehiculo");
         }

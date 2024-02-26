@@ -430,7 +430,9 @@ public partial class DBContextInssoft : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.IdDelegacion).HasColumnName("IdDelegacion");
-            entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
+			//entity.Property(e => e.Transito).HasColumnName("transito");
+
+			entity.Property(e => e.ActualizadoPor).HasColumnName("actualizadoPor");
             entity.Property(e => e.FechaActualizacion)
              .HasColumnType("datetime")
              .HasColumnName("fechaActualizacion");

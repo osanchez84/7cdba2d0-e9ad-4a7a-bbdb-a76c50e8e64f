@@ -45,7 +45,6 @@ using GuanajuatoAdminUsuarios.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using String = System.String;
 using static iTextSharp.tool.xml.html.HTML;
-using Telerik.SvgIcons;
 //using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers

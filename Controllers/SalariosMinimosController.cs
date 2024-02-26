@@ -153,7 +153,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             salario.Estatus = 1;
           //  salario.ActualizadoPor= model.ActualizadoPor;
             salario.FechaActualizacion = DateTime.Now;
-            salario.Anio = model.Anio;  
+           // salario.Anio = model.Anio;  
             dbContext.CatSalariosMinimos.Add(salario);
             dbContext.SaveChanges();
         }
@@ -210,7 +210,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                     Salario = salariosMinimos.Salario,
                                     Fecha = salariosMinimos.Fecha,
                                     Estatus = salariosMinimos.Estatus,
-                                    Anio = salariosMinimos.Anio
+                                    Anio = 0
 
 
                                 }).Where(w => w.IdSalario == IdSalario).FirstOrDefault();
@@ -238,7 +238,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                          Fecha = salariosMinimos.Fecha,
                                          Estatus = salariosMinimos.Estatus,
                                          estatusDesc = estatus.estatusDesc,
-                                         Anio = salariosMinimos.Anio == null ? 0 : salariosMinimos.Anio,
+                                         Anio = 0,
                                          
                                      }).ToList();
             return ListSalariosModel;

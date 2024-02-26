@@ -10,8 +10,10 @@ namespace GuanajuatoAdminUsuarios.Entity
         public string NombreAgencia { get; set; }
 
         public int IdDelegacion { get; set; }
+		//public int Transito { get; set; }
 
-        public DateTime? FechaActualizacion { get; set; }
+
+		public DateTime? FechaActualizacion { get; set; }
 
         public int? ActualizadoPor { get; set; }
 

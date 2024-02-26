@@ -221,9 +221,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Municipios_Por_Delegacion_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var tt = _catMunicipiosService.GetMunicipiosPorDelegacion(idOficina);
 
-            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
-            return Json(result);
+			tt.Add(new CatMunicipiosModel() { IdMunicipio = 1, Municipio = "No aplica" });
+			tt.Add(new CatMunicipiosModel() { IdMunicipio = 2, Municipio = "No especificado" });
+
+
+			var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+
+			
+
+
+
+			return Json(result);
         }
         public JsonResult Municipios_Por_Entidad(int entidadDDlValue)
         {
@@ -443,7 +453,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             model.Persona.PersonaDireccion = model.Persona.PersonaDireccion ?? new PersonaDireccionModel();
             var catTramos = _catDictionary.GetCatalog("CatTramosByFilter", model.idCarretera.ToString());
-            var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
+
+
+
+			var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
             var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
             var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");

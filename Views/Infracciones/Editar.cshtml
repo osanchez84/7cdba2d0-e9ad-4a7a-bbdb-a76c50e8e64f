@@ -281,8 +281,8 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Municipio <b>(obligatorio)</b>:</label>
-                                        @(Html.Kendo().DropDownList()
-                                            .Name("idMunicipio")
+                                        @(Html.Kendo().DropDownListFor(s=>s.idMunicipio)
+//                                            .Name("idMunicipio")
                                             .DataTextField("Text")
                                             .DataValueField("Value")
                                             .DataSource(source =>
@@ -984,7 +984,7 @@
                 var redirectTo = sessionStorage.getItem('redirectTo');
                 console.log("RED", redirectTo);
                 if (shouldGoBack && redirectTo) {
-                    alert("@ViewBag.GoDEpositos")
+                   // alert("@ViewBag.GoDEpositos")
                      if (@regreso == "1")
                         window.location.href = "/Infracciones/Crear";
                     else{

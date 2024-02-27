@@ -680,5 +680,85 @@
         $("#idColor").prop("disabled", true);
     });
 
+
+
+
+	
+    function onRowSelect() {
+            
+        var grid = $("#gridPersonasLicencia").data("kendoGrid");
+        var selectedRowData = grid.dataItem(grid.select());
+
+        console.log("EE", selectedRowData);
+        
+        const tipoLicenciaMapping = {
+                "TIPO A  CHOFER AUTOMOVILISTA": 1,
+                "TIPO B CHOFER SERVICIO PÚBLICO": 2,
+                "TIPO C  Chofer Servicio de Carga": 3,
+                "TIPO D -MOTOCICLISTA": 4,
+                "PERMISO A -AUTOMOVIL-": 6,
+                "PERMISO D -MOTOCICLETA-": 7,
+                "NO APLICA": 8,
+                "TIPO A": 1,
+                "TIPO B": 2,
+                "TIPO C": 3,
+                "TIPO D": 4,
+                "PERMISO A": 6,
+                "PERMISO D": 7,
+                "A-AUTOMOVILISTA": 1,
+                "B-CHOFER DE SERVICIO PÚBLICO": 2,
+                "C-CHOFER DE SERVICIO DE CARGA": 3,
+                "D-MOTOCICLISTA": 4,
+                "PA-PERMISO AUTOMOVILISTA": 6,
+                "PD-PERMISO MOTOCICLISTA": 7,
+
+            };
+           
+            const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.tipoLicencia] || 0;
+           
+            selectedRowData.idTipoLicencia = tipoLicenciaNumero;
+         console.log("4..." )
+          console.log("4.1.." + selectedRowData.nombreCompleto)
+         //   showLoading();
+            var fd = new FormData();
+            fd.append("nombre", selectedRowData.nombre);
+            fd.append("apellidoPaterno", selectedRowData.apellidoPaterno);
+            fd.append("apellidoMaterno", selectedRowData.apellidoMaterno);
+            fd.append("CURP", selectedRowData.CURP);
+            fd.append("RFC", selectedRowData.RFC);
+            fd.append("numeroLicencia", selectedRowData.numeroLicencia);
+            fd.append("tipoLicencia", tipoLicenciaNumero);
+           fd.append("idGenero", selectedRowData.idGenero);
+           fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+           fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+
+
+           
+            $.ajax({
+                type: 'POST',
+                 url: '/Personas/guardaDesdeServicio',
+                  contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                 data: fd,
+                 success: function (result) {
+                       $('#modalLicenciasList').modal('hide');
+                     var grid = $("#gridPersonas").data("kendoGrid");
+                     if (result && result.data) {
+                         var dataArray = [result.data];
+                         grid.dataSource.data(dataArray);
+                     } else {
+                         console.error("La respuesta no tiene la estructura esperada:", result);
+                     }
+                     sitteg_success('Elemento guardado correctamente')
+                     hideLoading();
+                 },
+                 error: function (error) {
+                     sitteg_warning('Error al guardar en la base de datos:');
+                     hideLoading();
+                 }
+            });
+        }
+
+
 </script>
 

@@ -1775,6 +1775,73 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
+
+
+        public List<PersonaModel> GetPersonas()
+        {
+            var ListaPersonas = new List<PersonaModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("[usp_ObtienePersonas]", connection))
+                    {
+                        
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                ListaPersonas.Add(new PersonaModel()
+                                {
+
+                                    PersonaDireccion = new PersonaDireccionModel(),
+                                    idPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString()),
+                                    numeroLicencia = reader["numeroLicencia"].ToString(),
+                                    CURP = reader["CURP"].ToString(),
+                                    RFC = reader["RFC"].ToString(),
+                                    nombre = reader["nombre"].ToString(),
+                                    apellidoPaterno = reader["apellidoPaterno"].ToString(),
+                                    apellidoMaterno = reader["apellidoMaterno"].ToString(),
+                                    fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString()),
+                                    actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString()),
+                                    estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString()),
+                                    idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString()),
+                                    tipoPersona = reader["tipoPersona"].ToString(),
+                                    idGenero = reader["idGenero"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"].ToString()),
+                                    genero = reader["genero"].ToString(),
+                                    idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString()),
+                                    tipoLicencia = reader["tipoLicencia"].ToString(),
+                                    fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString()),
+                                    vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString()),
+                                });
+
+                                
+                            }
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                    
+                }
+                return ListaPersonas;
+
+            }
+        }
+
+
+
     }
 }
 

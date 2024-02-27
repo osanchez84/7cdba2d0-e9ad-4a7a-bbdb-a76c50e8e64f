@@ -1136,7 +1136,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-											@"SELECT inf.idInfraccion
+                                            @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
 											,inf.horaInfraccion
@@ -1159,6 +1159,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,tipolicconduct.tipoLicencia tipoLicenciaConductor
                                             ,conduct.vigenciaLicencia vencimientoLicConductor
                                             ,veh.placas
+											,veh.tarjeta
                                             ,tipoveh.tipoVehiculo
                                             ,marcaveh.marcaVehiculo
                                             ,submarcaveh.nombreSubmarca
@@ -1171,6 +1172,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,entidadveh.nombreEntidad
                                             ,tiposerv.tipoServicio
                                             ,veh.numeroEconomico
+											,catGar.garantia
                                             ,COALESCE(inf.infraccionCortesia,0) tieneCortesia
                                             --SacarMotivosInfracción
                                             --SacarGarantia
@@ -1200,6 +1202,8 @@ namespace GuanajuatoAdminUsuarios.Services
 			                                            left join catGeneros generoconduct on generoconduct.idGenero = conduct.idGenero
 			                                            left join catTipoLicencia tipolicconduct on tipolicconduct.idTipoLicencia = conduct.idTipoLicencia
                                             left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+											LEFT JOIN garantiasInfraccion garInf ON garInf.idInfraccion = inf.idInfraccion
+											LEFT JOIN catGarantias catGar ON catGar.idGarantia = garInf.idCatGarantia
 			                                            LEFT JOIN catTiposVehiculo tipoveh on tipoveh.idTipoVehiculo = veh.idTipoVehiculo
 			                                            LEFT JOIN catMarcasVehiculos marcaveh on marcaveh.idMarcaVehiculo = veh.idMarcaVehiculo
 			                                            LEFT JOIN catSubmarcasVehiculos submarcaveh on submarcaveh.idSubmarca = veh.idSubmarca
@@ -1265,10 +1269,10 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.lugarPago = reader["lugarPago"] == System.DBNull.Value ? string.Empty : reader["lugarPago"].ToString();
 							model.concepto = reader["concepto"] == System.DBNull.Value ? string.Empty : reader["concepto"].ToString();
 							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGarantia"].ToString());
-
-							model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
+                            model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
-							model.umas = GetUmas(model.fechaInfraccion);
+                            model.Garantia.tipoLicencia = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
+                            model.umas = GetUmas(model.fechaInfraccion);
 							model.AplicadaA = reader["aplicadaa"].GetType() == typeof(DBNull) ? "" : reader["aplicadaa"].ToString();
 
 

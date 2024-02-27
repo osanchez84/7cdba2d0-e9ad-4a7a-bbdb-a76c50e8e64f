@@ -474,6 +474,9 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
                                 @*<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                                 <div class="row">
                                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
@@ -483,6 +486,18 @@
                                 </div>
                                 </div>
                                 </div>*@
+
+                                <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+                                <div class="row">
+                                <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <button href="#" id="btnEditarConductor" onclick="editarConductor()">
+                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Editar conductor</b></h6>
+                                </button>
+                                </div>
+                                </div>
+                                </div>
+
+                                
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
@@ -1282,9 +1297,9 @@
     //});
 
 
-    function btnEditarPersona() {
+    function editarConductor() {
 		
-        var idPersona = $("#idPersona").val();
+        var idPersona = $("#idPersonaInfraccion").val();
         var isValid = false;
 
         if (!idPersona) {
@@ -1295,18 +1310,19 @@
         }
 
 		if (isValid) {
-            //console.log("entra");
+            console.log("entra");
             var curp = $("#CURP").val();
             var rfc = $("#RFC").val();
             var fechaNacimiento = $("#fechaNacimiento").val();
             var personaDireccionCalle = $("#PersonaDireccion_calle").val();
-            var personaDireccionNumero = $("#PersonaDireccion_numero").val();
+            var numero = $("#PersonaDireccion_numero").val();
             var colonia = $("#PersonaDireccion_colonia").val();
             var telefono = $("#PersonaDireccion_telefono").val();
             var correo = $("#PersonaDireccion_correo").val();
-            var licencia = $("#numeroLicencia").val();
+            var calle = $("#PersonaDireccion_calle").val();
+            var numeroLicencia = $("#numeroLicencia").val();
             var vigenciaLicencia = $("#vigenciaLicencia").val();
-            var serial = {curp,rfc,fechaNacimiento,personaDireccionCalle,personaDireccionNumero,colonia,telefono,correo,licencia,vigenciaLicencia};
+            var serial = {idPersona,curp,rfc,fechaNacimiento,personaDireccionCalle,numero,colonia,telefono,correo,numeroLicencia,vigenciaLicencia,calle};
             //console.log("serial",serial);
 			
 			showLoading();

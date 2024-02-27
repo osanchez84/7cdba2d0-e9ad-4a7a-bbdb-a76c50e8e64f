@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _contextIncidencias = contextIncidencias;
         }
 
-        public LicenciaPersonaDatos ObtenerDatosPersona(string licencia, string curp, string rfc, string nombre, string primer_apellido, string segundo_apellido)
+        public List<LicenciaPersonaDatos> ObtenerDatosPersona(string licencia, string curp, string rfc, string nombre, string primer_apellido, string segundo_apellido)
         {
             string condiciones = "";
             condiciones += string.IsNullOrEmpty(licencia) ? "" : " AND P.NUM_LICENCIA = @licencia ";
@@ -47,8 +47,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
             if (!string.IsNullOrEmpty(segundo_apellido))
                 parametros.Add(new SqlParameter() { ParameterName = "@segundo_apellido", Value = segundo_apellido });
-
-            string queryDatosPersona = @"SELECT TOP 1 p.ID_PERSONA  
+          //  +++modificar el query
+            string queryDatosPersona = @"SELECT  p.ID_PERSONA
                                         , p.NOMBRE_COMPLETO 
                                         , p.NOMBRE, p.PRIMER_APELLIDO ,p.SEGUNDO_APELLIDO 
                                         , p.FECHA_NACIMIENTO ,p.CURP ,p.RFC 
@@ -63,20 +63,25 @@ namespace GuanajuatoAdminUsuarios.Services
                                         , c.CP, c.DESCRIPCION COLONIA, D.CALLE, D.NUM_EXT, D.NUM_INT 
                                         ,P.TELEFONO1 , P.EMAIL 
                                         FROM PERSONAS p 
-                                        JOIN LICENCIAS l ON p.id_persona = l.ID_PERSONA
-                                        JOIN DOMICILIOS d ON d.ID_PERSONA = p.ID_PERSONA 
-	                                        , CAT_DOM_ESTADOS e, CAT_NACIONALIDAD n, CAT_GENERO g
-	                                        , CAT_TIPOS_LICENCIA ctl
-	                                        , CAT_DOM_MUNICIPIOS m, CAT_DOM_COLONIAS c
-		                                        WHERE e.ID_ESTADO = p.ID_ESTADO_NACIMIENTO
-			                                        AND n.ID_NACIONALIDAD = p.ID_NACIONALIDAD
-			                                        AND g.ID_GENERO = p.ID_GENERO
-			                                        AND ctl.ID_TIPO_LICENCIA = L.ID_TIPO_LICENCIA 
-			                                        AND d.ID_MUNICIPIO = m.ID_MUNICIPIO
-			                                        AND d.ID_COLONIA = c.ID_COLONIA " + condiciones + " ORDER BY l.ID_LICENCIA DESC, d.ID_DOMICILIO DESC  ";
+                                            JOIN CAT_GENERO g on p.ID_GENERO = g.ID_GENERO
+	                                        JOIN LICENCIAS l ON p.id_persona = l.ID_PERSONA
+	                                        join CAT_DOM_ESTADOS e ON p.ID_ESTADO_NACIMIENTO = e.ID_ESTADO
+	                                        join CAT_NACIONALIDAD n ON p.ID_NACIONALIDAD = n.ID_NACIONALIDAD
+	                                        join CAT_TIPOS_LICENCIA ctl ON l.ID_TIPO_LICENCIA = ctl.ID_TIPO_LICENCIA
+	                                        JOIN DOMICILIOS d ON l.ID_DOMICILIO = d.ID_DOMICILIO
+	                                        JOIN CAT_DOM_MUNICIPIOS m ON d.ID_MUNICIPIO = m.ID_MUNICIPIO
+	                                        join CAT_DOM_COLONIAS c on d.ID_COLONIA = c.ID_COLONIA 
+	                                     WHERE l.ID_LICENCIA = (SELECT MAX(l2.ID_LICENCIA)
+                                                                FROM LICENCIAS l2
+																WHERE p.ID_PERSONA = l2.ID_PERSONA
+																AND L2.ESTATUS = 9							
+																)
+                                                
+			                              " + condiciones ;
 
-            LicenciaPersonaDatos persona = _contextLicencias.personaDatos.FromSqlRaw(queryDatosPersona, parametros.ToArray()).FirstOrDefault();
-            return persona;
+            //   LicenciaPersonaDatos persona = _contextLicencias.personaDatos.FromSqlRaw(queryDatosPersona, parametros.ToArray()).FirstOrDefault();
+            var encontrados = _contextLicencias.personaDatos.FromSqlRaw(queryDatosPersona, parametros.ToArray()).ToList();
+            return encontrados;
 
         }
 
@@ -246,5 +251,7 @@ namespace GuanajuatoAdminUsuarios.Services
             LicenciaPersonaDatos persona = _contextIncidencias.personaDatos.FromSqlRaw(queryDatosPersona, parametros.ToArray()).FirstOrDefault();
             return persona;
         }
+
+       
     }
 }

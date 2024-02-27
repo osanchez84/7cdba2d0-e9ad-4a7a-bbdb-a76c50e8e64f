@@ -49,7 +49,7 @@
                 "<div style='display:flex; align-items:center;'>" +
                 "# if (infraccionCortesiaString !== null && infraccionCortesiaString === 'Cortesía') { #" +
                 "<div>#= infraccionCortesiaString #</div>" +
-                "<button id='btnCortesia' onclick=\"ModalEditarCortesia('#= idInfraccion #')\" class='w-100 btn'>" +
+                "<button id='btnCortesia' onclick=\"ModalEditarCortesia('#= idInfraccion #','#= folioInfraccion #')\" class='w-100 btn'>" +
                 "<h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b></b></h6>" +
                 "</button>" +
                 "# } else if (infraccionCortesiaString !== null) { #" +
@@ -122,6 +122,7 @@ function eliminarInfraccion(){
 }
 
     function ModalEditarCortesia(idInfraccion) {
+
         showLoading();
         $.ajax({
             url: '/Infracciones/ModalEditarCortesia',

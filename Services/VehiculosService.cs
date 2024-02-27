@@ -1421,6 +1421,13 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     //Se establece el origen de datos
                     vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
+
+
+
+
+
+                    vehiculoEncontrado.placas = model.PlacasBusqueda ?? vehiculoEncontrado.placas;
+                    vehiculoEncontrado.serie = model.SerieBusqueda ?? vehiculoEncontrado.serie;
                     return vehiculoEncontrado;
 
                 }

@@ -1136,13 +1136,13 @@ namespace GuanajuatoAdminUsuarios.Services
 				{
 					connection.Open();
 					const string SqlTransact =
-											@"SELECT inf.idInfraccion
+                                            @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
-											,inf.horaInfraccion
+											,ISNULL(SUBSTRING(inf.horaInfraccion, 1, 2) + ':' + SUBSTRING(inf.horaInfraccion, 3, 2),'00:00') AS horaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
                                             ,estIn.estatusInfraccion
-                                            ,CONCAT(catOfi.nombre,'',catOfi.apellidoPaterno,' ', catOfi.apellidoMaterno) nombreOficial
+                                            ,CONCAT(catOfi.nombre,' ',catOfi.apellidoPaterno,' ', catOfi.apellidoMaterno) nombreOficial
                                             ,catMun.municipio
                                             ,catCarre.carretera
                                             ,catTra.tramo

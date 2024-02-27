@@ -293,12 +293,13 @@ namespace GuanajuatoAdminUsuarios.Framework
 					if (int.TryParse(parameter, out intId))
 					{
 						catalogModel.CatalogName = catalog;
-						campos = new string[] { "idCatMotivoInfraccion", "nombre" };
+						campos = new string[] { "idCatMotivoInfraccion", "nombre", "transito" };
 						catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catMotivosInfraccion", campos)
 								.Select(s => new SystemCatalogListModel()
 								{
 									Id = Convert.ToInt32(s["idCatMotivoInfraccion"]),
-									Text = Convert.ToString(s["nombre"])
+									Text = Convert.ToString(s["nombre"]),
+									Transito = Convert.ToInt32(s["transito"])==1 ? true:false
 								})
 								.OrderBy(s => s.Text)
 								.ToList();

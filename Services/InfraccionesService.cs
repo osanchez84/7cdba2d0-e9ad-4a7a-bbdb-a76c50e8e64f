@@ -1176,7 +1176,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             --SacarGarantia
                                             --DatosPago
                                             ,COALESCE(inf.monto,'0') montoCalificacion
-                                            ,COALESCE(inf.monto,'0') montoPagado
+                                            ,COALESCE(inf.montoPagado,'0') montoPagado
                                             ,COALESCE(inf.reciboPago,'') reciboPago
                                             ,inf.oficioRevocacion oficioCondonacion
                                             ,inf.fechaPago

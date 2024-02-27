@@ -1139,10 +1139,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                             @"SELECT inf.idInfraccion
                                             ,inf.folioInfraccion 
                                             ,inf.fechaInfraccion
-											,inf.horaInfraccion
+											,ISNULL(SUBSTRING(inf.horaInfraccion, 1, 2) + ':' + SUBSTRING(inf.horaInfraccion, 3, 2),'00:00') AS horaInfraccion
                                             ,DATEADD(DAY, 10, inf.fechaInfraccion) as fechaVencimiento
                                             ,estIn.estatusInfraccion
-                                            ,CONCAT(catOfi.nombre,'',catOfi.apellidoPaterno,' ', catOfi.apellidoMaterno) nombreOficial
+                                            ,CONCAT(catOfi.nombre,' ',catOfi.apellidoPaterno,' ', catOfi.apellidoMaterno) nombreOficial
                                             ,catMun.municipio
                                             ,catCarre.carretera
                                             ,catTra.tramo
@@ -1178,7 +1178,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             --SacarGarantia
                                             --DatosPago
                                             ,COALESCE(inf.monto,'0') montoCalificacion
-                                            ,COALESCE(inf.monto,'0') montoPagado
+                                            ,COALESCE(inf.montoPagado,'0') montoPagado
                                             ,COALESCE(inf.reciboPago,'') reciboPago
                                             ,inf.oficioRevocacion oficioCondonacion
                                             ,inf.fechaPago
@@ -3124,6 +3124,7 @@ INSERT INTO infracciones
                                        SET                                          
                                            infraccionCortesia = @infraccionCortesia
                                           ,fechaActualizacion = @fechaActualizacion
+										  ,ObservacionsesApl = @ObservacionesApl
                                           WHERE idInfraccion = @idInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3135,6 +3136,8 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
 					command.Parameters.Add(new SqlParameter("@infraccionCortesia", SqlDbType.Int)).Value = 1;
 					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("@ObservacionesApl", SqlDbType.VarChar)).Value = (object)model.ObsevacionesApl;
+
 					//command.Parameters.Add(new SqlParameter("@observacionesCortesia", SqlDbType.NVarChar)).Value = (object)model.observacionesCortesia ?? DBNull.Value;
 
 					result = command.ExecuteNonQuery();
@@ -3556,7 +3559,7 @@ INSERT INTO infracciones
 			}
 			return InfraccionesList;
 		}
-		public int ActualizarEstatusCortesia(int idInfraccion, int cortesiaInt)
+		public int ActualizarEstatusCortesia(int idInfraccion, int cortesiaInt ,string observaciones)
 		{
 			var result = 0;
 
@@ -3565,12 +3568,13 @@ INSERT INTO infracciones
 				try
 				{
 					connection.Open();
-					string updateQuery = "UPDATE infracciones SET infraccionCortesia = @cortesiaInt WHERE idInfraccion = @idInfraccion";
+					string updateQuery = "UPDATE infracciones SET infraccionCortesia = @cortesiaInt ,ObservacionsesApl=@obs WHERE idInfraccion = @idInfraccion";
 
 					SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
 
 					updateCommand.Parameters.AddWithValue("@idInfraccion", idInfraccion);
 					updateCommand.Parameters.AddWithValue("@cortesiaInt", cortesiaInt);
+					updateCommand.Parameters.AddWithValue("@obs", observaciones);
 					updateCommand.ExecuteNonQuery();
 
 					string selectQuery = "SELECT infraccionCortesia FROM infracciones WHERE idInfraccion = @idInfraccion";
@@ -3691,6 +3695,56 @@ INSERT INTO infracciones
 				return InfraccionesList;
 			}
 		}
-	}
+
+
+
+		public int GetDiaFestivo(int idDelegacion, DateTime fecha)
+		{
+
+           int resultado = 0;
+            string strQuery = @"SELECT 1 as resultado	                                  
+                                FROM diasInhabiles as f, delegaciones i  
+                                WHERE f.idMunicipio = i.idMunicipio
+									and i.idDelegacion = @idDelegacion
+									and f.fecha = CONVERT(DATE, @fecha,103) 
+								";
+            
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)idDelegacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime)).Value = (object)fecha ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+
+                            resultado = reader["resultado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["resultado"].ToString());
+
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return resultado;
+
+
+        }
+    }
 }
 

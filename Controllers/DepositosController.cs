@@ -139,7 +139,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Municipios_Drop(int entidadDDlValue)
         {
-            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue), "IdMunicipio", "Municipio");
+
+
+            var tt = _catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue);
+
+							tt.Add(new CatMunicipiosModel() { IdMunicipio = 1, Municipio = "No aplica" });
+			tt.Add(new CatMunicipiosModel() { IdMunicipio = 2, Municipio = "No especificado" });
+
+			var result = new SelectList(tt, "IdMunicipio", "Municipio");
+
             return Json(result);
         }
     
@@ -171,7 +179,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Tramos_Drop(int carreteraDDValue)
         {
-            var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+
+            var tt = _catTramosService.ObtenerTamosPorCarretera(carreteraDDValue);
+			tt.Add(new CatTramosModel() { IdTramo = 1, Tramo = "No aplica" });
+			tt.Add(new CatTramosModel() { IdTramo = 2, Tramo = "No especificado" });
+
+
+			var result = new SelectList(tt, "IdTramo", "Tramo");
+
+
+
             return Json(result);
         }
         public JsonResult Pensiones_Drop()

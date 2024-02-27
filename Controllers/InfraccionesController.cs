@@ -570,7 +570,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_crearInfraccion(InfraccionesModel model, CrearMultasTransitoRequestModel requestMode)
         {
+            
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+           
 
             bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);
 
@@ -584,6 +586,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion, idDependencia);
+                //    model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion);
+
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
@@ -629,11 +634,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     niv = model.SerieBusqueda
                 };
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo");
-                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
                 if (repuveConsRoboResponse!=null)
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
-                ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
+                ViewBag.ReporteRobo = repuveConsRoboResponse.EsRobado;
                 if (_appSettings.AllowWebServices)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
@@ -814,9 +819,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var estatus = false;
 
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
 
-            estatus = repuveConsRoboResponse.estatus == "1";
+            estatus = repuveConsRoboResponse.EsRobado;
 
             return estatus;
         }
@@ -976,6 +981,46 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+
+
+
+        public async Task<IActionResult> CrearvehiculoSinPlaca()
+        {
+            try
+            {
+                //var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
+
+
+
+
+                    var jsonPartialVehiculosByWebServices = await ajax_CrearVehiculoSinPlacasVehiculo();
+
+                        return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
+ 
+                
+            }
+            catch (Exception ex)
+            {
+                return Json(new { noResults = true, error = "Se produjo un error al procesar la solicitud", data = "" });
+            }
+        }
+
+
+       private async Task<string> ajax_CrearVehiculoSinPlacasVehiculo()
+        {
+
+            var models = new VehiculoModel();
+            models.Persona = new PersonaModel();
+            models.Persona.PersonaDireccion = new PersonaDireccionModel();
+            models.PersonasFisicas = new List<PersonaModel>();
+            models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            models.placas = "XXXXOXO";
+            models.serie = "XXXXOXOhf5321";
+            var result = await this.RenderViewAsync2("", models);
+            return result;
+        }
+
 
 
         public async Task<ActionResult> BuscarVehiculo(VehiculoBusquedaModel model)
@@ -1884,11 +1929,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalCambiarCortesia", viewCortesiaModel);
         }
-        public ActionResult UpdateCortesia(int idInfraccion, int cortesiaInt)
+        public ActionResult UpdateCortesia(int idInfraccion, int cortesiaInt,string ObsevacionesApl)
         {
 
 
-            var cambioCortesia = _infraccionesService.ActualizarEstatusCortesia(idInfraccion, cortesiaInt);
+            var cambioCortesia = _infraccionesService.ActualizarEstatusCortesia(idInfraccion, cortesiaInt,ObsevacionesApl);
 
             return Json(cambioCortesia);
         }
@@ -1954,6 +1999,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(dat);
 
 		}
+
+
+        public DateTime getFechaVencimiento(DateTime fechaInfraccion, int idOficina)
+        {
+            int contador = 0;
+            DateTime fechavigencia = fechaInfraccion;
+            while (contador < 10)
+            {
+                fechavigencia= fechaInfraccion.AddDays(1);
+                Console.WriteLine(fechavigencia.ToString("dddd"));
+                if (fechavigencia.DayOfWeek.ToString() == "Sunday" || fechavigencia.DayOfWeek.ToString() == "Domingo")
+                    Console.WriteLine(fechavigencia.ToString("dddd"));
+                else
+                {
+                    if(_infraccionesService.GetDiaFestivo(idOficina, fechavigencia) ==0)
+                        contador++;
+                }
+                //else { 
+                //contador++;
+                //}
+                fechaInfraccion = fechavigencia;
+            }
+
+
+            return fechaInfraccion;
+        }
 
 
 	}

@@ -303,7 +303,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Color: ", ModelDataInfracciones.color));
                 nested.AddCell(FieldCellTitleBox("Propietario"));
                 nested.AddCell(FieldCellBox("Nombre: ", ModelDataInfracciones.nombrePropietario));
-                nested.AddCell(FieldCellBox("Domicilio: ", ModelDataInfracciones.domicilioPropietario));
+                //     nested.AddCell(FieldCellBox("Domicilio: ", ModelDataInfracciones.domicilioPropietario));
+                          
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -321,13 +322,21 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Tipo de servicio: ", ModelDataInfracciones.tipoServicio));
                 nested.AddCell(FieldCellBox("No. Económico: ", ModelDataInfracciones.numeroEconomico));
                 nested.AddCell("");
+               
+
+
+                
+
+
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
                 nesthousing.Rowspan = 5;
                 nesthousing.PaddingBottom = 5f;
                 Invoicetable.AddCell(nesthousing);
             }
-
+            PdfPCell domicilioProp = new PdfPCell(FieldCellBox("Domicilio: ", (ModelDataInfracciones.domicilioPropietario == null) ? "" : ModelDataInfracciones.domicilioPropietario.ToString()));
+            domicilioProp.Colspan = 2;
+            Invoicetable.AddCell(domicilioProp);
 
             Invoicetable.PaddingTop = 10f;
 

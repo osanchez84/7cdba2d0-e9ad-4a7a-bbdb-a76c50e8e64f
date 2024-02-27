@@ -41,11 +41,12 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
                                                         LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                                                         LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion  
-                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2
-                                                        and transito=@corporacion
+                                                        WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2
+                                                        and i.transito=1
                                                         ORDER BY i.idInfraccion DESC ", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion??"";
+                    command.Parameters.Add(new SqlParameter("@corporacion", SqlDbType.Int)).Value = corporacion;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

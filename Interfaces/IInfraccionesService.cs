@@ -44,7 +44,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia);
 
         public bool CancelTramite(string id);
-        public int ActualizarEstatusCortesia(int idInfraccion,int  cortesiaInt);
+        public int ActualizarEstatusCortesia(int idInfraccion,int  cortesiaInt,string observaciones);
 
 
         public NuevaInfraccionModel GetInfraccionAccidenteById(int idInfraccion, int idDependencia);
@@ -67,5 +67,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public List<InfraccionesModel> GetReporteInfracciones(InfraccionesBusquedaModel model, int idOficina, int idDependenciaPerfil);
 
+
+        public int GetDiaFestivo(int idDelegacion, DateTime fecha);
     }
 }

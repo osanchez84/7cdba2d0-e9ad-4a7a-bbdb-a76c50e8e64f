@@ -1,8 +1,7 @@
 @model GuanajuatoAdminUsuarios.Models.SolicitudDepositoOtraDependenciaModel
-        @{
-    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
-    var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
-    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+@{
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    string listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos")==null?"undefined":@HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos");
 }
 
 <script>
@@ -443,8 +442,9 @@
             data: $("#frmDepositoOtraDependencia").serialize(),
             success: function (result) {
                 if(result.success){
-                      sitteg_success("Se guardó el registro exitosamente");
-                      window.location.href = result.redirectTo;
+                    sitteg_success("Se guardó el registro exitosamente");
+                    setTimeout(() => { window.location.href = result.redirectTo; },1000)
+                      
                 }
                 else{
                      sitteg_error("Ocurrio un error al guardar el registro.");

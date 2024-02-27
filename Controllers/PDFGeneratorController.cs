@@ -182,7 +182,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			if (modelList.Count == 0)
 				return Json(new { success = false, message = "No se encontraron registros con los parámetros de búsqueda" });
 
-			var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 8, ColumnsNames, modelList);
+			var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", ColumnsNames, modelList, Array.Empty<float>());
 			//return File(result.Item1, "application/pdf", result.Item2);
 			byte[] bytes = result.Item1.ToArray();
 			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
@@ -227,15 +227,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				{"placas","Placas"},
 				{"delegacion","Delegación"},
 				{ "estatusInfraccion", "Estatus"},
-				{ "aplicacion","Aplicadoa"}
+				{ "aplicacion","Aplicada a"}
 			};
 
 			//Si no se encontraron datos
 			if (pdfModel.Count == 0)
 				return Json(new { success = false, message = "No se encontraron registros con los parámetros de búsqueda" });
 
-
-			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", 10, ColumnsNames, pdfModel);
+			float[]columnWidth = {10f,10f,10f,10f,10f,10f,10f,10f,10f,10f};
+			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", ColumnsNames, pdfModel,columnWidth);
 			byte[] bytes = result.Item1.ToArray();
 			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
 			return  Json(new { success = true, data = base64 });;

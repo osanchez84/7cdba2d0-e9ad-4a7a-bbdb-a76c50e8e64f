@@ -77,7 +77,7 @@
         $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
         $("#Vehiculo_idColor").data("kendoDropDownList").enable();
 
-        $("#Vehiculo_btnSelect").prop("disabled", false);
+       // $("#Vehiculo_btnSelect").prop("disabled", false);
         $("#Vehiculo_placas").focus();
     }
 
@@ -801,7 +801,7 @@
     function updateNumLic() {
 
         var numvalue = $("#numLicGar").val()
-
+        console.log("VAL", numvalue)
         $("#Garantia_numLicencia").val(numvalue)
 
 
@@ -917,6 +917,7 @@
             var vehiculo =  {   tarjeta: $("#tarjeta").val(),
                                 placas: $("#placas").val(),
                                 vigenciaTarjeta: $("#vigenciaTarjeta").val()
+
             };
 
 

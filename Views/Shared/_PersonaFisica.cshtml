@@ -2,7 +2,6 @@
 <div class="modal fade modalCustom" id="addFisico" aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
-
             <section class=" bg-white rounded">
                 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
                     <div class="col-auto pe-0">
@@ -321,11 +320,11 @@
         addOnLostFocusRequiredControls(personaFisicaControlsValidate);
 
         $("#PersonaDireccion_idEntidadFisico").on("change", function () {
-        var value = $(this).val();
-        _set_combo_catalog("CatMunicipiosByEntidad", value, "PersonaDireccion_idMunicipioFisico", "false", "divMunicipioLista", "");
-        $('#PersonaDireccion_idMunicipioFisico').kendoDropDownList();
+            var value = $(this).val();
+            _set_combo_catalog("CatMunicipiosByEntidad", value, "PersonaDireccion_idMunicipioFisico", "false", "divMunicipioLista", "");
+            $('#PersonaDireccion_idMunicipioFisico').kendoDropDownList();
 
-    });
+        });
     });
     function submitCreatePersonaFisica() {
         //Se validan los campos del formulario
@@ -345,6 +344,7 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
+                hideLoading();
                 $("#personasFisicasInf").html(result);
                 $("#apellidoPaternoFisico").val(null);
                 $("#apellidoMaternoFisico").val(null);
@@ -362,7 +362,7 @@
                 $("#PersonaDireccion_correoFisico").val(null);
                 $("#PersonaDireccion_telefonoFisico").val(null);
                 $('#addFisico').modal('hide');
-                hideLoading();
+           
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX:", textStatus, errorThrown);

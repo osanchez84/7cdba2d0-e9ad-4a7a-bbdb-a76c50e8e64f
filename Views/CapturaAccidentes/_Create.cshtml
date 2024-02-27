@@ -693,6 +693,17 @@ function mostrarMensajeRobado() {
                             </div>
                         </div>
                     </button>
+                    <button class="nav-link col" id="none-person-tab" data-bs-toggle="tab" data-bs-target="#none-person" type="button" role="tab" aria-controls="none-person" aria-selected="false">
+                        <div class="row justify-content-center align-items-center px-3 py-2">
+                            <div class="col-auto radioCustom p-0">
+                                <div class="rounded-circle m-2"></div>
+                            </div>
+                            <div class="col-auto p-0">
+                                <h5 class="m-0"><i class="icon-sinPropietario h4"></i> <b>Se ignora propietario</b></h5>
+                            </div>
+                        </div>
+                    </button>
+
                     @*<button class="nav-link col" id="none-person-tab" data-bs-toggle="tab" data-bs-target="#none-person" type="button" role="tab" aria-controls="none-person" aria-selected="false">
                     <div class="row justify-content-center align-items-center px-3 py-2">
                     <div class="col-auto radioCustom p-0">
@@ -794,6 +805,41 @@ function mostrarMensajeRobado() {
                 </div>
 
             </div>
+
+            @*NONE PERSONA*@
+            
+            <div class="tab-pane tabCustomConteiner fade" id="none-person" role="tabpanel" aria-labelledby="none-person-tab">
+                <div class="row px-4 mt-4 pb-4 align-items-end">
+                    <h4 class="fw-normal">Se desconoce el propietario del vehículo </h4>
+                       
+                    <div class="col-12 col-md-6 mx-md-auto">
+                        <div class="row justify-content-around">
+                            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                               
+
+                                <div class="controlButton">
+                                    
+                                        <button class="btnPrimary" type="button" onclick="submitSinPersona()">  
+                                            <h5 class="m-0"><b>Finalizar</b></h5>
+                                        </button>
+                                    
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="tabCustomEnd">
+                        </div>
+                    </div>
+                </div>
+            </div>    
+            
+
 
         </div>
     </section>
@@ -1599,7 +1645,16 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
 }
 
+
+ function submitSinPersona(){
+
+    $("#ddlIdPersona").val("-1");
+    submitCreateVehiculo();
+    }
+
+
   function submitCreateVehiculo() {
+      
     var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
     var controlsValidate = [];
@@ -1719,4 +1774,6 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         $('#hdnidSubtipoServicio').val(value);
     });
 
+
+   
 </script>

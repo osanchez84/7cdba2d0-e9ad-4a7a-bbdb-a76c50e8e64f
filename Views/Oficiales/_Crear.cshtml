@@ -38,30 +38,30 @@
     </div>
     <form id="agregarOficialForm" class="px-4 mb-4">
         @*<div class="row align-items-end">
-            <div class="col-12 col-md-4">
-                <div class="controlForm my-3">
-                    <label>Delegación<b>(obligatorio)</b>:</label>
-                    <span>
-                        @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("Selecciona una  Delegación")
-                            .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("Delegaciones_Drop", "Oficiales");
-                                });
-                            }))
-                    </span>
-                </div>
-            </div>
+        <div class="col-12 col-md-4">
+        <div class="controlForm my-3">
+        <label>Delegación<b>(obligatorio)</b>:</label>
+        <span>
+        @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .OptionLabel("Selecciona una  Delegación")
+        .HtmlAttributes(new { @class = "CentradoList", style = "width:100%;" })
+        .DataSource(source =>
+        {
+        source.Read(read =>
+        {
+        read.Action("Delegaciones_Drop", "Oficiales");
+        });
+        }))
+        </span>
+        </div>
+        </div>
         </div>*@
         <div class="row align-items-end">
             <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.Nombre)
+                    @(Html.Kendo().TextBoxFor(t => t.Nombre)
                         .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                         .Placeholder("Ingresa el nombre del oficial")
                         .HtmlAttributes(new { style = "width: 100%" })
@@ -71,7 +71,7 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.ApellidoPaterno)
+                    @(Html.Kendo().TextBoxFor(t => t.ApellidoPaterno)
                         .Label(l => l.Content("Apellido paterno:"))
                         .Placeholder("Ingresa el apellido paterno del oficial")
                         .HtmlAttributes(new { style = "width: 100%" })
@@ -81,7 +81,7 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
-                    @(Html.Kendo().TextBoxFor(t=>t.ApellidoMaterno)
+                    @(Html.Kendo().TextBoxFor(t => t.ApellidoMaterno)
                         .Label(l => l.Content("Apellido materno:"))
                         .Placeholder("Ingresa el apellido materno del oficial")
                         .HtmlAttributes(new { style = "width: 100%" })
@@ -92,12 +92,12 @@
             <div class="col-12 col-md-4">
                 <div class="controlForm my-3">
                     <label>Oficina</b>:</label>
-                    @(Html.Kendo().DropDownListFor(t=>t.IdOficina)                        
+                    @(Html.Kendo().DropDownListFor(t => t.IdOficina)
                         .Filter(FilterType.Contains)
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Selecciona una oficina")
-                        .HtmlAttributes(new { style = "width:100%;"})
+                        .HtmlAttributes(new { style = "width:100%;" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -139,7 +139,7 @@
             sitteg_warning("Debe ingresar el nombre.");
             return;
         }
-        
+
         var Mydata = $("#agregarOficialForm").serialize();
         console.log(Mydata);
         $('#agregarOficial').modal('hide');

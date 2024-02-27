@@ -21,7 +21,66 @@ namespace GuanajuatoAdminUsuarios.Utils
 
         }
 
-        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, List<T> ModelData)
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, Dictionary<string, string> ColumnsNames, List<T> ModelData,float[] columnWidth)
+        {
+            try
+            {
+                MemoryStream workStream = new MemoryStream();
+                StringBuilder status = new StringBuilder("");
+                DateTime dTime = DateTime.Now;
+
+                string strPDFFileName = string.Format(NamePdf + "-" + dTime.ToString("ddMMyyyy") + ".pdf");
+
+                iText.Document doc = new();
+                doc.SetMargins(10, 10, 20, 10);
+
+                PdfWriter.GetInstance(doc, workStream).CloseStream = false;
+                doc.Open();
+
+                #region Header
+                PdfPTable tableHeader = new PdfPTable(2);
+                tableHeader.DefaultCell.Border = iText.Rectangle.NO_BORDER;
+                float[] headers = new float[] { 30, 60 };
+                tableHeader.SetWidths(headers);
+                tableHeader.WidthPercentage = 100;
+
+
+                var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", "logo-gto.png");
+                iText.Image image = iText.Image.GetInstance(path);
+                image.ScaleToFit(150f, 150f);
+                image.ScaleToFitHeight = false;
+                tableHeader.AddCell(new PdfPCell(image)).Border = 0;
+
+                BaseFont bf = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                iText.Font fontInvoice = new iText.Font(bf, 20, iText.Font.NORMAL);
+                tableHeader.AddCell(new PdfPCell(new iText.Phrase(Title, fontInvoice))).Border = 0;
+
+                doc.Add(tableHeader);
+
+                #endregion
+
+                doc.Add(new Paragraph("\n"));
+
+                //iText.Paragraph p3 = new iText.Paragraph();
+                //p3.SpacingAfter = 6;
+                //doc.Add(p3);
+
+                PdfPTable tableLayout = new PdfPTable(ColumnsNames.Count);
+                doc.Add(Add_Content_To_PDF(tableLayout, ModelData, ColumnsNames,columnWidth));
+
+                doc.Close();
+                byte[] byteInfo = workStream.ToArray();
+                workStream.Write(byteInfo, 0, byteInfo.Length);
+                workStream.Position = 0;
+                return (workStream, strPDFFileName);
+            }
+            catch (Exception ex)
+            {
+                return (null, null);
+            }
+        }
+
+        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, Dictionary<string, string> ColumnsNames, T ModelData,float[] columnWidth)
         {
             try
             {
@@ -64,8 +123,8 @@ namespace GuanajuatoAdminUsuarios.Utils
                 //p3.SpacingAfter = 6;
                 //doc.Add(p3);
 
-                PdfPTable tableLayout = new PdfPTable(SizeColumns);
-                doc.Add(Add_Content_To_PDF(tableLayout, ModelData, ColumnsNames, SizeColumns));
+                PdfPTable tableLayout = new PdfPTable(ColumnsNames.Count);
+                doc.Add(Add_Content_To_PDF(tableLayout, ModelData, ColumnsNames,columnWidth));
 
                 doc.Close();
                 byte[] byteInfo = workStream.ToArray();
@@ -79,75 +138,24 @@ namespace GuanajuatoAdminUsuarios.Utils
             }
         }
 
-        public (MemoryStream, string) CreatePdf<T>(string NamePdf, string Title, int SizeColumns, Dictionary<string, string> ColumnsNames, T ModelData)
+        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames,float[] columnWidth)
         {
-            try
-            {
-                MemoryStream workStream = new MemoryStream();
-                StringBuilder status = new StringBuilder("");
-                DateTime dTime = DateTime.Now;
+           /* if (ColumnsNames.Count == size)
+            {*/
 
-                string strPDFFileName = string.Format(NamePdf + "-" + dTime.ToString("ddMMyyyy") + ".pdf");
+                float[] headers = columnWidth.Length == 0 ? new float[ColumnsNames.Count] : columnWidth;
 
-                iText.Document doc = new iText.Document();
-                doc.SetMargins(10, 10, 20, 10);
-
-                PdfWriter.GetInstance(doc, workStream).CloseStream = false;
-                doc.Open();
-
-                #region Header
-                PdfPTable tableHeader = new PdfPTable(2);
-                tableHeader.DefaultCell.Border = iText.Rectangle.NO_BORDER;
-                float[] headers = new float[] { 30, 60 };
-                tableHeader.SetWidths(headers);
-                tableHeader.WidthPercentage = 100;
-
-                var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", "logo-gto.png");
-                iText.Image image = iText.Image.GetInstance(path);
-                image.ScaleToFit(150f, 150f);
-                image.ScaleToFitHeight = false;
-                tableHeader.AddCell(new PdfPCell(image)).Border = 0;
-
-                BaseFont bf = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                iText.Font fontInvoice = new iText.Font(bf, 20, iText.Font.NORMAL);
-                tableHeader.AddCell(new PdfPCell(new iText.Phrase(Title, fontInvoice))).Border = 0;
-
-                doc.Add(tableHeader);
-
-                #endregion
-
-                doc.Add(new Paragraph("\n"));
-
-                //iText.Paragraph p3 = new iText.Paragraph();
-                //p3.SpacingAfter = 6;
-                //doc.Add(p3);
-
-                PdfPTable tableLayout = new PdfPTable(SizeColumns);
-                doc.Add(Add_Content_To_PDF(tableLayout, ModelData, ColumnsNames, SizeColumns));
-
-                doc.Close();
-                byte[] byteInfo = workStream.ToArray();
-                workStream.Write(byteInfo, 0, byteInfo.Length);
-                workStream.Position = 0;
-                return (workStream, strPDFFileName);
-            }
-            catch (Exception ex)
-            {
-                return (null, null);
-            }
-        }
-
-        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, T ModelData, Dictionary<string, string> ColumnsNames, int size)
-        {
-            if (ColumnsNames.Count == size)
-            {
-
-                float[] headers = new float[(size)];
-                var porcentHeader = (float)100 / size;
-                for (int i = 0; i < size; i++)
+            if (headers.Length != ColumnsNames.Count)
+                throw new Exception("El número de columnas no coincide con el arreglo de ancho de columnas"); 
+            
+            //Se calcula el tamaño de cada columna en caso de no proporcionar ancho por cada columna
+                if (columnWidth.Length == 0) {
+                var porcentHeader = (float)100 / ColumnsNames.Count;
+                for (int i = 0; i < ColumnsNames.Count; i++)
                 {
                     headers[i] = porcentHeader;
                 }
+            }
 
                 tableLayout.SetWidths(headers);
                 tableLayout.WidthPercentage = 100;
@@ -174,21 +182,25 @@ namespace GuanajuatoAdminUsuarios.Utils
                     count++;
                 }
                 return tableLayout;
-            }
-            return null;
+           /* }
+            return null;*/
         }
 
-        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames, int size)
+        private PdfPTable Add_Content_To_PDF<T>(PdfPTable tableLayout, List<T> ModelData, Dictionary<string, string> ColumnsNames,float[] columnWidth)
         {
-            if (ColumnsNames.Count == size)
-            {
+            /* if (ColumnsNames.Count == size)
+             {*/
 
-                float[] headers = new float[(size)];
-                var porcentHeader = (float)100 / size;
-                for (int i = 0; i < size; i++)
+            float[] headers = columnWidth.Length == 0 ? new float[ColumnsNames.Count] : columnWidth;
+
+            //Se calcula el tamaño de cada columna en caso de no proporcionar ancho por cada columna
+                if (columnWidth.Length == 0) {
+                var porcentHeader = (float)100 / ColumnsNames.Count;
+                for (int i = 0; i < ColumnsNames.Count; i++)
                 {
                     headers[i] = porcentHeader;
                 }
+            }
 
                 tableLayout.SetWidths(headers);
                 tableLayout.WidthPercentage = 100;
@@ -238,8 +250,8 @@ namespace GuanajuatoAdminUsuarios.Utils
                     }
                 }
                 return tableLayout;
-            }
-            return null;
+            /*}
+            return null;*/
         }
 
 

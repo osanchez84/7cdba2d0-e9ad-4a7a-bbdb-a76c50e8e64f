@@ -5,6 +5,7 @@
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
  * Última modificación: Tue Feb 27 2024
+ * Última modificación: Tue Feb 27 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -176,6 +177,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult CrearEditarVehiculo([FromServices] IVehiculosService vehiculoService, VehiculoModel model)
         {
             int IdVehiculo;
+            model.propietario = model.Persona?.idPersona.ToString();
             if (model.idVehiculo > 0)
             {
                 vehiculoService.UpdateVehiculo(model);

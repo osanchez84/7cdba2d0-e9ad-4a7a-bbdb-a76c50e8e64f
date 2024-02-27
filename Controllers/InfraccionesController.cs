@@ -627,11 +627,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     niv = model.SerieBusqueda
                 };
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo");
-                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
                 if (repuveConsRoboResponse!=null)
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
-                ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
+                ViewBag.ReporteRobo = repuveConsRoboResponse.EsRobado;
                 if (_appSettings.AllowWebServices)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
@@ -812,9 +812,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var estatus = false;
 
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
 
-            estatus = repuveConsRoboResponse.estatus == "1";
+            estatus = repuveConsRoboResponse.EsRobado;
 
             return estatus;
         }

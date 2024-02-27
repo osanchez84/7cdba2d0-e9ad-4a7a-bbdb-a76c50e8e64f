@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.RESTModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -79,6 +80,8 @@ namespace GuanajuatoAdminUsuarios.Models
         //public virtual PersonaModel PersonaUpdate { get; set; }
         public bool? showSubTipo { get; set; } = false;
         public int total { get; set; }
+
+        public RepuveRoboModel RepuveRobo { get; set; }
         public List<PersonaModel> PersonasFisicas { get; set; }
         
     }

@@ -20,6 +20,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using GuanajuatoAdminUsuarios.RESTModels;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
+using Microsoft.IdentityModel.Tokens;
+using Kendo.Mvc.Extensions;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1004,15 +1006,11 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        private bool ValidarRobo(RepuveConsgralRequestModel repuveGralModel)
+        private RepuveRoboModel ValidarRobo(RepuveConsgralRequestModel repuveGralModel)
         {
-            var estatus = false;
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
 
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-
-            estatus = repuveConsRoboResponse.estatus == "1";
-
-            return estatus;
+            return repuveConsRoboResponse;
         }
 
         private int ObtenerIdEntidadRepuve(string entidad)
@@ -1324,9 +1322,23 @@ namespace GuanajuatoAdminUsuarios.Services
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
                 var vehiculosModel = new VehiculoModel();
 
-                RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
+                //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
+                RepuveConsgralRequestModel repuveGralModel = new(model.PlacasBusqueda, model.SerieBusqueda);
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
-                vehiculosModel.ReporteRobo = ValidarRobo(repuveGralModel);
+                RepuveRoboModel repuveRoboModel = new();
+
+                try
+                {
+                    repuveRoboModel = ValidarRobo(repuveGralModel);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("Ocurrió un error al consultar robados en REPUVE:" + e);
+                }
+
+
+                vehiculosModel.RepuveRobo = repuveRoboModel;
+                vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
 
                 var allowSistem = _appSettings.AllowWebServicesRepuve;
 
@@ -1357,6 +1369,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+
+                        //Se asigna el objeto de la consulta de robado a repuve
+                        vehiculosModel.RepuveRobo = repuveRoboModel;
+                        vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
+
                         //Se establece el origen de datos
                         vehiculosModel.origenDatos = "Padrón Estatal";
 
@@ -1364,10 +1381,18 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                 }
 
-   if (allowSistem)
+                if (allowSistem)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
-                    var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                    RepuveConsgralResponseModel repuveConsGralResponse = new();
+                    try
+                    {
+                        repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Ocurrió un error al consultar vehículo en REPUVE:" + ex);
+                    }
                     Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
                     var idEntidad = !string.IsNullOrEmpty(repuveConsGralResponse.entidad_expide)
                           ? ObtenerIdEntidadRepuve(repuveConsGralResponse.entidad_expide)
@@ -1396,8 +1421,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     var vehiculoEncontrado = new VehiculoModel
                     {
-                        placas = repuveConsGralResponse.placa,
-                        serie = repuveConsGralResponse.niv_padron,
+                        placas = repuveConsGralResponse.placa.IsNullOrEmpty() ? repuveRoboModel.Placa : repuveConsGralResponse.placa,
+                        serie = repuveConsGralResponse.niv_padron.IsNullOrEmpty() ? repuveRoboModel.Niv : repuveConsGralResponse.niv_padron,
                         // numeroEconomico = repuveConsGralResponse.tnia,
                         motor = repuveConsGralResponse.motor,
                         //otros = repuveConsGralResponse.
@@ -1409,18 +1434,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         idTipoVehiculo = idTipo,
                         modelo = repuveConsGralResponse.modelo,
                         idCatTipoServicio = idTipoServicio,
-                        //carga = repuveConsGralResponse.ca,
-
                         Persona = new PersonaModel(),
-
                         PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                        RepuveRobo = repuveRoboModel,
+                        ReporteRobo = repuveRoboModel.EsRobado,
+                        ErrorRepube = !repuveConsGralResponse.estatus.IsCaseInsensitiveEqual(RepuveConsgralResponseModel.CONSULTA_CORRECTA) ? "No" : ""
                     };
-                    vehiculoEncontrado.ReporteRobo = vehiculosModel.ReporteRobo;
-
-                    vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
                     //Se establece el origen de datos
                     vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
+
                     return vehiculoEncontrado;
 
                 }
@@ -1428,7 +1451,6 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE (BANDERA DESACTIVADA)");
                 }
-                vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
 
 
                 return vehiculosModel;

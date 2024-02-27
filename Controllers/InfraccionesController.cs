@@ -524,7 +524,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ajax_editarInfraccion(InfraccionesModel model, VehiculoModel vehiculo)
+        public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
 
             var isedition = HttpContext.Session.GetString("isedition");
@@ -536,7 +536,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idInf = model.idInfraccion;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
-                model.Garantia.numPlaca = vehiculo.placas;
+                model.Garantia.numPlaca = model.Vehiculo.placas;
+                model.Garantia.numLicencia = model.PersonaInfraccion.numeroLicencia;
+
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }
@@ -548,7 +550,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var idInfraccion = _infraccionesService.ModificarInfraccion(model, vehiculo);
+            var idInfraccion = _infraccionesService.ModificarInfraccion(model);
 
             if (isedition == "0")
             {
@@ -627,11 +629,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     niv = model.SerieBusqueda
                 };
                 Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo");
-                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
                 if (repuveConsRoboResponse!=null)
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
 
-                ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
+                ViewBag.ReporteRobo = repuveConsRoboResponse.EsRobado;
                 if (_appSettings.AllowWebServices)
                 {
                     Logger.Debug("Infracciones - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
@@ -812,9 +814,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var estatus = false;
 
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
 
-            estatus = repuveConsRoboResponse.estatus == "1";
+            estatus = repuveConsRoboResponse.EsRobado;
 
             return estatus;
         }

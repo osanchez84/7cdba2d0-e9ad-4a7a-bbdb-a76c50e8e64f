@@ -4,7 +4,7 @@
  * Fecha de creación: Wednesday, February 21st 2024 9:56:46 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Wed Feb 21 2024
+ * Última modificación: Tue Feb 27 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -55,10 +55,10 @@ namespace GuanajuatoAdminUsuarios.Services
         /// <param name="repuveGralModel"></param>
         /// <returns></returns>
 
-        public bool ValidarRoboRepuve(RepuveConsgralRequestModel repuveGralModel)
+        public RepuveRoboModel ValidarRoboRepuve(RepuveConsgralRequestModel repuveGralModel)
         {
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-            return repuveConsRoboResponse.estatus == "1";
+            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveRoboModel();
+            return repuveConsRoboResponse;
         }
         #region Catalogos y Generacion de Objeto Vehiculo Finanzas
 

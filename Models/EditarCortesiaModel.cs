@@ -6,6 +6,8 @@
         public int cortesiaInt { get; set; }
         public bool infraccionCortesia { get; set; }
 
+        public string ObsevacionesApl { get; set; }
+
         
     }
 }

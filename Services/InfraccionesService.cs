@@ -3120,6 +3120,7 @@ INSERT INTO infracciones
                                        SET                                          
                                            infraccionCortesia = @infraccionCortesia
                                           ,fechaActualizacion = @fechaActualizacion
+										  ,ObservacionsesApl = @ObservacionesApl
                                           WHERE idInfraccion = @idInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3131,6 +3132,8 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion;
 					command.Parameters.Add(new SqlParameter("@infraccionCortesia", SqlDbType.Int)).Value = 1;
 					command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+					command.Parameters.Add(new SqlParameter("@ObservacionesApl", SqlDbType.VarChar)).Value = (object)model.ObsevacionesApl;
+
 					//command.Parameters.Add(new SqlParameter("@observacionesCortesia", SqlDbType.NVarChar)).Value = (object)model.observacionesCortesia ?? DBNull.Value;
 
 					result = command.ExecuteNonQuery();
@@ -3552,7 +3555,7 @@ INSERT INTO infracciones
 			}
 			return InfraccionesList;
 		}
-		public int ActualizarEstatusCortesia(int idInfraccion, int cortesiaInt)
+		public int ActualizarEstatusCortesia(int idInfraccion, int cortesiaInt ,string observaciones)
 		{
 			var result = 0;
 
@@ -3561,12 +3564,13 @@ INSERT INTO infracciones
 				try
 				{
 					connection.Open();
-					string updateQuery = "UPDATE infracciones SET infraccionCortesia = @cortesiaInt WHERE idInfraccion = @idInfraccion";
+					string updateQuery = "UPDATE infracciones SET infraccionCortesia = @cortesiaInt ,ObservacionsesApl=@obs WHERE idInfraccion = @idInfraccion";
 
 					SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
 
 					updateCommand.Parameters.AddWithValue("@idInfraccion", idInfraccion);
 					updateCommand.Parameters.AddWithValue("@cortesiaInt", cortesiaInt);
+					updateCommand.Parameters.AddWithValue("@obs", observaciones);
 					updateCommand.ExecuteNonQuery();
 
 					string selectQuery = "SELECT infraccionCortesia FROM infracciones WHERE idInfraccion = @idInfraccion";

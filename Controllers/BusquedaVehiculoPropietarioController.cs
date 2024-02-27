@@ -29,6 +29,8 @@ using GuanajuatoAdminUsuarios.Helpers;
 using GuanajuatoAdminUsuarios.Util;
 using Microsoft.IdentityModel.Tokens;
 using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using System.Threading.Tasks;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -37,6 +39,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         #region Variables
         private readonly ICatDictionary _catDictionary;
+        private static BusquedaPersonaModel busqudeaPersonaModel = new();
         #endregion
         #region Constructor
         public BusquedaVehiculoPropietarioController(ICatDictionary catDictionary)
@@ -193,7 +196,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         #endregion
 
-        #region Propietarios
+        #region Propietario, Conductor, Persona
         /// <summary>
         /// Muestra vista para crear persona fisica
         /// </summary>
@@ -243,6 +246,73 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var personasFisicas = personasService.GetAllPersonas();
             return PartialView("_PersonasFisicas", personasFisicas);
         }
+
+        [HttpPost]
+        public IActionResult BuscarPersonaFisicaWithPaginado([FromServices] IPersonasService personasService, [DataSourceRequest] DataSourceRequest request, BusquedaPersonaModel model)
+        {
+            // Realizar la búsqueda de personas
+            if (model.PersonaModel != null)
+                busqudeaPersonaModel = model;
+            else
+                model = busqudeaPersonaModel;
+
+
+            var personas = new BusquedaPersonaModel();
+            Pagination pagination = new Pagination
+            {
+                PageIndex = request.Page - 1
+            };
+            if (model.PersonaModel != null)
+            {
+                if (model.PersonaModel.apellidoMaternoBusqueda == null &&
+                    model.PersonaModel.apellidoPaternoBusqueda == null &&
+                    model.PersonaModel.CURPBusqueda == null &&
+                    model.PersonaModel.RFCBusqueda == null &&
+                    model.PersonaModel.numeroLicenciaBusqueda == null &&
+                    model.PersonaModel.nombreBusqueda == null)
+                {
+                    pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
+                }
+                else
+                {
+                    pagination.PageSize = 1000000;
+                }
+            }
+            else
+            {
+                pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
+            }
+
+            var personasList = personasService.BusquedaPersonaPagination(model, pagination);
+
+            // Verificar si se encontraron resultados en la búsqueda de personas
+            if (personasList.Any())
+            {
+                personas.ListadoPersonas = personasList;
+                var total = 0;
+                if (personasList.Count() > 0)
+                    total = personasList.ToList().FirstOrDefault().total;
+
+                //if (findAll)
+                request.PageSize = pagination.PageSize;
+
+                var result = new DataSourceResult()
+                {
+                    Data = personas.ListadoPersonas,
+                    Total = total
+                };
+                return Json(new { encontrada = true, source=result});
+            }
+
+            // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
+            return Json(new { encontrada = false, tipo = "sin datos", message = "busca en licencias" });
+        }
+
+        public IActionResult MostrarListaPersonasFisicaEncontradas(List<PersonaModel> listaPersonas)
+        {
+            return ViewComponent("ListaPersonasEncontradas",listaPersonas);
+        }
+
         /// <summary>
         /// Crea un nuevo registro en la bd de una persona fisica
         /// </summary>

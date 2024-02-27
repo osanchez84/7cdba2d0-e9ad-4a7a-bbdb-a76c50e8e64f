@@ -1618,7 +1618,7 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public List<PersonaModel> BusquedaPersonaPagination(PersonasModel model, Pagination pagination)
+        public List<PersonaModel> BusquedaPersonaPagination(BusquedaPersonaModel model, Pagination pagination)
         {
             //
             List<PersonaModel> ListaPersonas = new List<PersonaModel>();

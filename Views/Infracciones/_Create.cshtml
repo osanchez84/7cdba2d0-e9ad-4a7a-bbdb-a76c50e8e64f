@@ -775,9 +775,8 @@
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
                 aria-labelledby="person-fisica-tab">
-                <div class="row px-4 mt-4 pb-4 align-items-end">
-
-                    <div id="personasFisicasInf">
+                <div class="row px-4 mt-4 pb-4">
+                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
                     </div>
 
                 </div>

@@ -108,7 +108,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model,idOficina);
-            var result = _pdfService.CreatePdf<ReporteAsignacionModel>("ReporteAsignacionServicios", "Asignación de Servicios", 7, ColumnsNames, listReporteAsignacion);
+            var result = _pdfService.CreatePdf<ReporteAsignacionModel>("ReporteAsignacionServicios", "Asignación de Servicios", ColumnsNames, listReporteAsignacion,Array.Empty<float>());
             return File(result.Item1, "application/pdf", result.Item2);
         }
 

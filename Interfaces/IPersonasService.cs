@@ -32,5 +32,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int CreatePersona(PersonaModel model);
 
         public IEnumerable<PersonaModel> GetAllPersonasPagination(Pagination pagination);
+
+        List<PersonaModel> GetPersonas();
     }
 }

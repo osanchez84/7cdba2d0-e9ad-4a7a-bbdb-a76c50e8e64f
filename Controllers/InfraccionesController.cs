@@ -1499,7 +1499,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ModalAgregarConductor()
         {
-            return View("_ModalBusquedaPersonas");
+            PersonasModel model = new PersonasModel();
+            return View("_ModalBusquedaPersonas", model);
         }
 
 
@@ -1693,6 +1694,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public ActionResult ajax_CrearVehiculo_Ejemplo2(VehiculoModel model)
         {
+
+            model.idEntidad = model.idEdntidad2;
+
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
             if (IdVehiculo != 0)

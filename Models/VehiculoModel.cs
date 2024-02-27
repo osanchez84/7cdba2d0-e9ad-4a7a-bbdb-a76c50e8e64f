@@ -12,7 +12,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public bool ReporteRobo { get; set; }  
         public string ErrorRepube { get; set; } = ""; 
         public bool showclose { get; set; } = true;
-
+        
         public int idVehiculo { get; set; }
         public string placas { get; set; }
         public string serie { get; set; }
@@ -29,6 +29,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string modelo { get; set; }
         public int idColor { get; set; }
         public int idEntidad { get; set; }
+        public int idEdntidad2 { get; set; }
         public int idCatTipoServicio { get; set; }
         public int? idTipoPersona { get; set; }
 

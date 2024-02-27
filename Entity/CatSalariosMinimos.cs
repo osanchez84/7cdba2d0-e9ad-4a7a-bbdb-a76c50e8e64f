@@ -16,6 +16,5 @@ namespace GuanajuatoAdminUsuarios.Entity
         public int? ActualizadoPor { get; set; }
 
         public int? Estatus { get; set; }
-        public int? Anio { get; set; }
     }
 }

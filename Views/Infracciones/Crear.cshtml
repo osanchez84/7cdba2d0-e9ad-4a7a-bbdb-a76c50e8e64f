@@ -188,11 +188,13 @@
 										<label>Fecha infracción <b>(obligatorio)</b>:</label>
 										@(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
 											.Max(DateTime.Now)
+											.Value(DateTime.Now)
 											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
-											.Format("dd/MM/yyyy HH:mm")
-											.Value("")
+											.Format("dd/MM/yyyy HH:mm")											
 											.Culture("es-ES")
-											.Interval(1)
+											.Interval(10)
+											.DateInput()
+											.StartTime(DateTime.Now)
 											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
 											)
 									</div>

@@ -632,7 +632,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             string strQuery = @"SELECT DISTINCT  
                 ac.numeroReporte		as Numreporteaccidente
-                ,ac.fecha				as Fecha
+                ,CONVERT(varchar, ac.fecha, 103)				as Fecha
                 ,ac.hora				as Hora
                 ,ac.idMunicipio         as idMunicipio
                 ,ac.idOficinaDelegacion as idOficinaDelegacion

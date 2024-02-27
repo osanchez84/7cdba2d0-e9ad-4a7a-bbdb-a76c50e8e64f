@@ -278,44 +278,40 @@
 
 <script>
 	function submitSearch() {
-		var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
-		showLoading();
+    var Mydata = $("#frmBusquedaEstadisticasIncidencias").serialize();
+    showLoading();
 
-		$.ajax({
-			url: '@Url.Action("ajax_BusquedaAccidentes")',
-			type: 'POST',
-			data: Mydata,
-			success: function (result) {
-				console.log("SD",result)
-				if (result.includes("no tiene permisos")) {
-					sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
-					hideLoading();
-				} else {
-					$.ajax({
-						data: Mydata,
-						url: '@Url.Action("ajax_BusquedaParaTablas")',
-						type: 'POST',
-						dataType: 'json',
-						success: function (result) {
-							$("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
-							$("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
-						},
-						error: function () {
-							sitteg_warning("Ocurrió un error al obtener estadísticas.");
-						},
-						complete: function () {
-							hideLoading();
-						}
-					});
-				}
-			},
-			error: function () {
-				sitteg_warning("Ocurrió un error en la búsqueda, inténtelo de nuevo más tarde.");
-				hideLoading();
-			}
-		});
-	}
-
+    $.ajax({
+        url: '@Url.Action("ajax_BusquedaAccidentes")',
+        type: 'POST',
+        data: Mydata,
+        success: function (result) {
+            console.log("SD", result);
+			   $("#estadisticasInfracciones").html(result);
+        
+            $.ajax({
+                data: Mydata,
+                url: '@Url.Action("ajax_BusquedaParaTablas")',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+			       $("#gridListadoAccidentesPorAccidente").data("kendoGrid").dataSource.data(result.EstadisticasPorAccidente);
+			       $("#gridListadoAccidentesPorVehiculo").data("kendoGrid").dataSource.data(result.EstadisticasPorVehiculo);
+                },
+                error: function () {
+                    sitteg_warning("Ocurrió un error al obtener estadísticas.");
+                },
+                complete: function () {
+                    hideLoading();
+                }
+            });
+        },
+        error: function () {
+            sitteg_warning("Ocurrió un error en la búsqueda, inténtelo de nuevo más tarde.");
+            hideLoading();
+        }
+    });
+}
 
 
 	$("#ddlFactores").on("change", function () {

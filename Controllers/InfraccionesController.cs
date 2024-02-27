@@ -437,7 +437,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             int count = ("MONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\nMONOETILENGLICOL G F (GRANEL) MONOETILENGLICOL G F\r\n(GRANEL) MONOETILENGLICOL G F (GRANEL)\r\n").Length;
             var model = _infraccionesService.GetInfraccion2ById(ids, idDependencia);
-            model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersona;
+            model.isPropietarioConductor = model.Vehiculo.idPersona == model.idPersonaInfraccion;
             model.Vehiculo.cargaTexto = (model.Vehiculo.carga == true) ? "Si" : "No";
             model.Persona = model.Persona ?? new PersonaModel();
 

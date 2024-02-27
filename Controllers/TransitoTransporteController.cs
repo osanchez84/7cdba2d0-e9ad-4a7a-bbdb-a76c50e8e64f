@@ -78,7 +78,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model,idOficina);
-            var result = _pdfService.CreatePdf("ReporteTransitoTransporte", "Tránsito Transporte", 4, ColumnsNames, ListTransitoModel);
+            var result = _pdfService.CreatePdf("ReporteTransitoTransporte", "Tránsito Transporte", ColumnsNames, ListTransitoModel,Array.Empty<float>());
             return File(result.Item1, "application/pdf", result.Item2);
         }
 

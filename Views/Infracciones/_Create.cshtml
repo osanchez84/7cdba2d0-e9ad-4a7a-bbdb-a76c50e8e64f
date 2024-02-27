@@ -1557,6 +1557,8 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     function submitCreateVehiculo() {
    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
+
+
     var controlsValidate = [];
     var isValid = true;
     idMarca = $("#ddlMarcas").val();
@@ -1571,7 +1573,7 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
         $("#idCarga").val(carga ? 1 : 0);
          var idTipoSer = $('#hdnIdCatTipoServicio').val();
 
-    controlsValidate.push({ 'controlName': 'idEntidad' });
+    controlsValidate.push({ 'controlName': 'idEdntidad2' });
     controlsValidate.push({ 'controlName': 'ddlMarcas' });
     controlsValidate.push({ 'controlName': 'idSubmarca' });
     controlsValidate.push({ 'controlName': 'idTipoVehiculo' });

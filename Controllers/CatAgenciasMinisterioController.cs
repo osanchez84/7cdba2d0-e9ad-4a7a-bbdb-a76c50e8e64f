@@ -2,6 +2,7 @@
 using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -22,17 +23,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class CatAgenciasMinisterioController : BaseController
     {
         private readonly ICatAgenciasMinisterioService _catAgenciasMinisterioService;
+		private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
 
-        public CatAgenciasMinisterioController(ICatAgenciasMinisterioService catAgenciasMinisterioService)
+		public CatAgenciasMinisterioController(ICatAgenciasMinisterioService catAgenciasMinisterioService,ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService
+)
         {
             _catAgenciasMinisterioService = catAgenciasMinisterioService;
-        }
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
+
+		}
         
             DBContextInssoft dbContext = new DBContextInssoft();
             public IActionResult Index()
         {
          
-                var ListAgenciasMinisterioModel = GetAgenciasministerio();
+                var ListAgenciasMinisterioModel = _catAgenciasMinisterioService.ObtenerAgenciasActivas();
 
                 return View(ListAgenciasMinisterioModel);
             }
@@ -48,15 +53,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             public ActionResult AgregarAgenciaMinisterioModal()
              {
     
-                SetDDLDelegaciones();
+                Delegaciones_Drop();
                 return PartialView("_Crear");
               }
    
 
             public ActionResult EditarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {
-       
-                SetDDLDelegaciones();
+
+			Delegaciones_Drop();
                 var agenciasMinisterioModel = GetAgenciaMinisterioByID(IdAgenciaMinisterio);
                 return PartialView("_Editar", agenciasMinisterioModel);
             }
@@ -64,7 +69,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             public ActionResult EliminarAgenciaMinisterioModal(int IdAgenciaMinisterio)
             {
-                SetDDLDelegaciones();
+			Delegaciones_Drop();
                 var agenciasMinisterioModel = GetAgenciaMinisterioByID(IdAgenciaMinisterio);
                 return PartialView("_Eliminar", agenciasMinisterioModel);
             }
@@ -81,10 +86,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
                     CrearAgenciaMinisterio(model);
-                    var ListAgenciasMinisterioModel = GetAgenciasministerio();
-                    return Json(ListAgenciasMinisterioModel);
+                    var ListAgenciasMinisterioModel = _catAgenciasMinisterioService.ObtenerAgenciasActivas();
+				return Json(ListAgenciasMinisterioModel);
                 }
-                SetDDLDelegaciones();
+			Delegaciones_Drop();
                 return PartialView("_Crear");
             }
 
@@ -99,7 +104,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
                     EditarAgenciaMinisterio(model);
-                    var ListAgenciasMinisterioModel = GetAgenciasministerio();
+                    var ListAgenciasMinisterioModel = _catAgenciasMinisterioService.ObtenerAgenciasActivas();
                     return Json(ListAgenciasMinisterioModel);
                 }
                 return PartialView("_ListaAgenciasMinisterio");
@@ -114,36 +119,36 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
                     EliminarAgenciaMinisterio(model);
-                    var ListAgenciasMinisterioModel = GetAgenciasministerio();
+                    var ListAgenciasMinisterioModel = _catAgenciasMinisterioService.ObtenerAgenciasActivas();
                     return PartialView("_ListaAgenciasMinisterio", ListAgenciasMinisterioModel);
                 }
-                SetDDLDelegaciones();
+			Delegaciones_Drop();
                 return PartialView("_Eliminar");
             }
 
             public JsonResult GetAgenciasM([DataSourceRequest] DataSourceRequest request, int idDelegacion)
             {
-                var ListAgenciasMinisterioModel = GetAgenciasministerio();
-            if (idDelegacion != 0)
+                var ListAgenciasMinisterioModel = _catAgenciasMinisterioService.ObtenerAgenciasActivas();
+			if (idDelegacion != 0)
                 ListAgenciasMinisterioModel = ListAgenciasMinisterioModel.Where(s => s.IdDelegacion == idDelegacion).ToList();
             return Json(ListAgenciasMinisterioModel.ToDataSourceResult(request));
             }
 
-            public JsonResult Delegaciones_Drop()
-            {
-                var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
-                return Json(result);
-            }
+		public JsonResult Delegaciones_Drop()
+		{
+			var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
+			return Json(result);
+		}
 
 
 
 
-            #endregion
+		#endregion
 
 
-            #region Acciones a base de datos
+		#region Acciones a base de datos
 
-            public void CrearAgenciaMinisterio(CatAgenciasMinisterioModel model)
+		public void CrearAgenciaMinisterio(CatAgenciasMinisterioModel model)
             {
                 CatAgenciasMinisterio agencia = new CatAgenciasMinisterio();
                 agencia.IdAgenciaMinisterio = model.IdAgenciaMinisterio;
@@ -224,12 +229,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                                    select new CatAgenciasMinisterioModel
                                                    {
                                                        IdDelegacion = catAgenciasMinisterio.IdDelegacion,
-
                                                        IdAgenciaMinisterio = catAgenciasMinisterio.IdAgenciaMinisterio,
                                                        NombreAgencia = catAgenciasMinisterio.NombreAgencia,
                                                        DelegacionDesc = delegaciones.Delegacion,
                                                        estatusDesc = estatus.estatusDesc,
-
                                                    }).ToList();
                 return ListAgenciasMinisterioModel;
             }

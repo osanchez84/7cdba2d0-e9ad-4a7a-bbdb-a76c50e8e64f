@@ -3,6 +3,7 @@ using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -22,7 +23,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         [HttpGet]
         [Route("datos_generales")]
-        public ActionResult ObtenerDatosGeneralesPersona(
+        //  public ActionResult ObtenerDatosGeneralesPersona(
+        public List<LicenciaPersonaDatos> ObtenerDatosGeneralesPersona(
                                                    [FromQuery(Name = "licencia")] string licencia
                                                  , [FromQuery(Name = "curp")] string curp
                                                  , [FromQuery(Name = "rfc")] string rfc
@@ -33,17 +35,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             try
             {
-                LicenciaPersonaDatos persona = licenciasService.ObtenerDatosPersona(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
-
-                if (persona == null)
+                List<LicenciaPersonaDatos> persona = licenciasService.ObtenerDatosPersona(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
+                //LicenciaPersonaDatos persona =new LicenciaPersonaDatos();
+             /*   if (persona == null)
                 {
-                    persona = licenciasService.ObtenerDatosPersonaBD3(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
+                //    persona = licenciasService.ObtenerDatosPersonaBD3(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
                     if (persona == null)
                     {
-                        persona = licenciasService.ObtenerDatosPersonaBD1(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
+                  //      persona = licenciasService.ObtenerDatosPersonaBD1(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
                         if (persona == null)
                         {
-                            persona = licenciasService.ObtenerDatosPersonaBD2(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
+                    //        persona = licenciasService.ObtenerDatosPersonaBD2(licencia, curp, rfc, nombre, primer_apellido, segundo_apellido);
                             if (persona == null)
                             {
                                 return Ok(new LicenciaRespuestaPersona
@@ -84,22 +86,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     }
 
                 }
-                return Ok(new
-                {
-                    tipo = LicenciaTipoRespuesta.respuestas.success.ToString(),
-                    mensaje = "Datos obtenidos correctamente.",
-                    datos = persona
-                });
+                */
+                //   return Ok(new
+                //  {
+                //     tipo = LicenciaTipoRespuesta.respuestas.success.ToString(),
+                //    mensaje = "Datos obtenidos correctamente.",
+                //   datos = persona
+                // });
+                return (persona);
 
             }
             catch (Exception excepcion)
             {
-                return UnprocessableEntity(new LicenciaRespuestaPersona
-                {
-                    tipo = LicenciaTipoRespuesta.respuestas.error.ToString(),
-                    mensaje = "Ocurrió un error al obtener los datos. " + excepcion.Message +"; " + excepcion.InnerException,
-                    datos = null
-                });
+          //      return UnprocessableEntity(new LicenciaRespuestaPersona
+           //     {
+            //        tipo = LicenciaTipoRespuesta.respuestas.error.ToString(),
+             //       mensaje = "Ocurrió un error al obtener los datos. " + excepcion.Message +"; " + excepcion.InnerException,
+              //      datos = null
+               // });
+               return(null);
             }
         }
     }

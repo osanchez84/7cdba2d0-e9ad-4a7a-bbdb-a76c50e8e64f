@@ -7,7 +7,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public int? IdInfraccion { get; set; }
         public string folioInfraccion { get; set; }
-
+        public string ObservacionesSub { get; set; }
         public string FechaInfraccion { get; set; }
         public string Conductor { get; set; }
         public string Placas { get; set; }

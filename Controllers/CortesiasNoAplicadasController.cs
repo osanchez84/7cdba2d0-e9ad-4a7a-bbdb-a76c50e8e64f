@@ -41,7 +41,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ObtenerCortesiasNoAplicadas(string FolioInfraccion)
         {
-            var ListInfraccionesModel = _CortesiasNoAplicadasService.ObtInfraccionesCortesiasNoAplicadas(FolioInfraccion);
+
+            var corp = HttpContext.Session.GetInt32("IdDependencia").Value;
+
+            var ListInfraccionesModel = _CortesiasNoAplicadasService.ObtInfraccionesCortesiasNoAplicadas(FolioInfraccion,corp);
             return Json(ListInfraccionesModel);
 
         }
@@ -54,10 +57,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 		[HttpPost]
-		public IActionResult GuardarObservaciones(string folioInfraccion, string observaciones)
+		public IActionResult GuardarObservaciones(string folioInfraccion, string ObservacionesSub)
 		{
 
-			var ListInfraccionesModel = _CortesiasNoAplicadasService.GuardarObservacion(folioInfraccion, observaciones);
+			var ListInfraccionesModel = _CortesiasNoAplicadasService.GuardarObservacion(folioInfraccion, ObservacionesSub);
 			return View("_DetalleCortesiasNoAplicadas");
 		}
 

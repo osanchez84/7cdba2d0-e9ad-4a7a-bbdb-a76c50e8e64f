@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        List<CortesiasNoAplicadasModel> ICortesiasNoAplicadas.ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion)
+        List<CortesiasNoAplicadasModel> ICortesiasNoAplicadas.ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion,int corporacion)
         {
             List<CortesiasNoAplicadasModel> ListaInfracciones = new List<CortesiasNoAplicadasModel>();
 
@@ -41,7 +41,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
                                                         LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                                                         LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion  
-                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2 ORDER BY i.idInfraccion DESC ", connection);
+                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2
+                                                        and transito=@corporacion
+                                                        ORDER BY i.idInfraccion DESC ", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion??"";
                     command.CommandType = CommandType.Text;
@@ -93,7 +95,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     ELse 'No Aplica' END ) AS infraccionCortesia, g.garantia, tp.tipoPlaca, i.placasVehiculo,
                     tl.tipoLicencia, v.tarjeta, i.monto, i.reciboPago, i.fechaPago, i.lugarPago,
                     i.oficioEnvio, i.placasVehiculo, CONCAT( pV.nombre,' ', pV.apellidoPaterno,' ', pV.apellidoMaterno)AS Propietario,
-                    i.observaciones, e.estatusInfraccion,
+                    i.observaciones,i.ObservacionesSub, e.estatusInfraccion,
                     CONVERT(varchar,i.fechaInfraccion,103) AS fechaInfraccion, v.serie,
                     (Case When i.estatus = 1 Then 'si' 
                     ELse 'No' END ) AS estatus
@@ -158,6 +160,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccion.Tarjeta = reader["tarjeta"].ToString();
                             infraccion.Propietario = reader["Propietario"].ToString();
                             infraccion.Observaciones = reader["observaciones"].ToString();
+                            infraccion.ObservacionesSub = reader["ObservacionesSub"].GetType() == typeof(DBNull) ? "" : (string)reader["ObservacionesSub"];
                             infraccion.Estatus = reader["estatusInfraccion"].ToString();
                             //infraccion.Capturista = reader["Capturista"].ToString();
                             infraccion.Baja = reader["estatus"].ToString();
@@ -193,7 +196,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand("Update infracciones set observaciones = @observaciones,infraccionCortesia=3 where folioInfraccion = @folioInfraccion", connection);
+					SqlCommand command = new SqlCommand("Update infracciones set ObservacionesSub = @observaciones,infraccionCortesia=3 where folioInfraccion = @folioInfraccion", connection);
 					command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioInfraccion;
 					command.Parameters.Add(new SqlParameter("@observaciones", SqlDbType.NVarChar)).Value = observaciones;
 

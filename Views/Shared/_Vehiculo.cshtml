@@ -877,7 +877,6 @@ $("#ddlCatTipoServicio").on("change", function () {
 
             var formData = $("#frmCreateVehiculo").serialize();
             var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
             showLoading();
             $.ajax({
                 url: '@Url.Action("CrearEditarVehiculo","BusquedaVehiculoPropietario")',
@@ -886,9 +885,11 @@ $("#ddlCatTipoServicio").on("change", function () {
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
                         if (result.success) {
-                            $('#IdVehiculoAsignado').val(result.data).change();
+                            $('#IdVehiculoAsignado').val(result.data);
+                            $('#IdVehiculoAsignado').change();
                             $('#vehiculoModal').modal('hide');
                             $('#agregarVehiculoModal').modal('hide');
+                            $('.modal-backdrop').remove();
                         } else {
                              sitteg_warning('Lo sentimos, ha ocurrido un error favor de report');
                         }
@@ -907,7 +908,7 @@ $("#ddlCatTipoServicio").on("change", function () {
           // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
           $('#confirmarCerrar').on('click', function () {
          $('#confirmacionModal').modal('hide');
-          window.close(); // Cierra la ventana
+                 // Cierra la ventana
         });
     }
     function cerrarModalFisica(){

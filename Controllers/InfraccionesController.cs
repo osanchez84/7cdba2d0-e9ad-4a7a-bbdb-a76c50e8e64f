@@ -524,7 +524,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         [HttpPost]
-        public ActionResult ajax_editarInfraccion(InfraccionesModel model, VehiculoModel vehiculo)
+        public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
 
             var isedition = HttpContext.Session.GetString("isedition");
@@ -536,7 +536,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idInf = model.idInfraccion;
             if (model.idGarantia == null || model.idGarantia == 0)
             {
-                model.Garantia.numPlaca = vehiculo.placas;
+                model.Garantia.numPlaca = model.Vehiculo.placas;
+                model.Garantia.numLicencia = model.PersonaInfraccion.numeroLicencia;
+
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }
@@ -548,7 +550,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
             model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var idInfraccion = _infraccionesService.ModificarInfraccion(model, vehiculo);
+            var idInfraccion = _infraccionesService.ModificarInfraccion(model);
 
             if (isedition == "0")
             {

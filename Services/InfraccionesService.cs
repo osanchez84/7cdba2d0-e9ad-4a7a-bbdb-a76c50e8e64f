@@ -3041,7 +3041,7 @@ INSERT INTO infracciones
 		/// <param name="model"></param>
 		/// <param name="vehiculo"></param>
 		/// <returns></returns>
-		public int ModificarInfraccion(InfraccionesModel model, VehiculoModel vehiculo)
+		public int ModificarInfraccion(InfraccionesModel model)
 		{
 			int result = 0;
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -3065,7 +3065,7 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("idCarretera", SqlDbType.Int)).Value = (object)model.idCarretera ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idPersona", SqlDbType.Int)).Value = (object)model.Vehiculo.idPersona ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("idPersonaInfraccion", SqlDbType.Int)).Value = (object)model.idPersonaInfraccion ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)vehiculo.placas ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("placasVehiculo", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.placas ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("kmCarretera", SqlDbType.NVarChar)).Value = (object)model.kmCarretera ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("observaciones", SqlDbType.NVarChar)).Value = (object)model.observaciones ?? DBNull.Value;
@@ -3074,7 +3074,7 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("lugarColonia", SqlDbType.NVarChar)).Value = (object)model.lugarColonia ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("lugarEntreCalle", SqlDbType.NVarChar)).Value = (object)model.lugarEntreCalle ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("infraccionCortesia", SqlDbType.Int)).Value = (object)model.cortesiaInt ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)vehiculo.tarjeta ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("NumTarjetaCirculacion", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.tarjeta ?? DBNull.Value;
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
@@ -3084,14 +3084,14 @@ INSERT INTO infracciones
 					string horaInfraccionString = horaFormateada;
 					command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.NVarChar)).Value = horaInfraccionString;
 
-					command.Parameters.Add(new SqlParameter("vigenciaTarjeta", SqlDbType.DateTime2)).Value = (object)vehiculo.vigenciaTarjeta ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("motor", SqlDbType.NVarChar)).Value = (object)vehiculo.motor ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)vehiculo.numeroEconomico ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)vehiculo.otros ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)vehiculo.poliza ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@capacidad", SqlDbType.Int)).Value = (object)vehiculo.capacidad ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)vehiculo.idEntidad ?? DBNull.Value;
-					command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)vehiculo.idColor ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("vigenciaTarjeta", SqlDbType.DateTime2)).Value = (object)model.Vehiculo.vigenciaTarjeta ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("motor", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.motor ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.numeroEconomico ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@otros", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.otros ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@poliza", SqlDbType.NVarChar)).Value = (object)model.Vehiculo.poliza ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@capacidad", SqlDbType.Int)).Value = (object)model.Vehiculo.capacidad ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)model.Vehiculo.idEntidad ?? DBNull.Value;
+					command.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)model.Vehiculo.idColor ?? DBNull.Value;
 
 					result = command.ExecuteNonQuery();
 					//if (result > 0) // Si la actualización tuvo éxito

@@ -2,10 +2,34 @@
 
 <script>
 	function buscarConductor() {
-		var Mydata = $("#buscarInvolucradoForm").serialize();
+		//var Mydata = $("#buscarInvolucradoForm").serialize();
+		 var formData = $("#buscarInvolucradoForm").serializeArray();
+
+		 
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        var findData = false;
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+            if (!findData) {
+                if (field.value != '' && field.value != undefined) {
+                    findData = true;
+                }
+            }
+        });
+
+
+
 		showLoading();
+		console.log(trimmedData);
 		$.ajax({
-			url: '/CapturaAccidentes/BuscarPorParametro',
+		//	url: '/CapturaAccidentes/BuscarPorParametro',
+			url: '/CapturaAccidentes/BuscarPorParametroPaginado',
 			type: 'POST',
 			data: Mydata,
 			success: function (response) {

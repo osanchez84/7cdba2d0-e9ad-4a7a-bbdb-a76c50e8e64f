@@ -89,7 +89,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private string resultValue = string.Empty;
         private bool placaEncontrada = false;
         private List<CapturaAccidentesModel> capturaAccidenteModel = new List<CapturaAccidentesModel>();
-
+        private static CapturaAccidentesModel perModel = new CapturaAccidentesModel();
         public CapturaAccidentesController(ICapturaAccidentesService capturaAccidentesService, ICatMunicipiosService catMunicipiosService, ICatCarreterasService catCarreterasService, ICatTramosService catTramosService,
             ICatClasificacionAccidentes catClasificacionAccidentesService, ICatFactoresAccidentesService catFactoresAccidentesService, ICatFactoresOpcionesAccidentesService catFactoresOpcionesAccidentesService, ICatCausasAccidentesService catCausasAccidentesService,
             ITiposCarga tiposCargaService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, IPensionesService pensionesService, ICatFormasTrasladoService catFormasTrasladoService, ICatTipoInvolucradoService catTipoInvolucradoService,
@@ -1733,7 +1733,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ModalInfraccionesVehiculos(string montoCamino, string montoCarga, string montoPropietarios, string montoOtros)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-           var DatosMontos = _capturaAccidentesService.GuardarDatosPrevioInfraccion(idAccidente,montoCamino, montoCarga, montoPropietarios, montoOtros);
+            var DatosMontos = _capturaAccidentesService.GuardarDatosPrevioInfraccion(idAccidente, montoCamino, montoCarga, montoPropietarios, montoOtros);
 
             return PartialView("_ModalAsignarInfracciones");
         }
@@ -2019,6 +2019,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ajax_CrearVehiculo_Ejemplo2(VehiculoModel model)
         {
+            // creamos a la persona sin datos
+            if (model.Persona.idPersona == -1)
+            {
+
+                PersonaDireccionModel direccion = new PersonaDireccionModel();
+                direccion.idEntidad = 35;
+                direccion.colonia = "se ignora";
+                direccion.calle = "se ignora";
+                direccion.numero = "se ignora";
+                PersonaModel persona = new PersonaModel();
+                persona.nombre = "se ignora";
+                persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                persona.PersonaDireccion = direccion;
+                persona.idGenero = 1;
+                var IdPersonaFisica = _personasService.CreatePersona(persona);
+                model.idPersona = IdPersonaFisica;
+                model.Persona.idPersona = IdPersonaFisica;
+                model.propietario = persona.nombre;
+            }
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
             if (IdVehiculo != 0)
@@ -2140,7 +2159,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             try
             {
                 var id = _personasService.InsertarDesdeServicio(personaDatos);
-                var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
+                var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA==null?"sin numero licencia": personaDatos.NUM_LICENCIA);
 
                 CapturaAccidentesModel involucrado = new CapturaAccidentesModel();
                 involucrado.IdPersona = (int)datosTabla.idPersona;
@@ -2282,6 +2301,161 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListInfracciones);
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> BuscarPorParametroPaginado([DataSourceRequest] DataSourceRequest request, CapturaAccidentesModel capturaModel)
+        {
+            // Realizar la búsqueda de personas
+            // if (model != null)
+            //    perModel = model;
+            //else
+            //   model = perModel;
+            PersonasModel  model= new PersonasModel();
+            PersonaModel personaM = new PersonaModel();
+            personaM.CURPBusqueda =capturaModel.CURPBusqueda;
+            personaM.RFCBusqueda = capturaModel.RFCBusqueda;
+            personaM.nombreBusqueda= capturaModel.nombreBusqueda;
+            personaM.apellidoPaternoBusqueda = capturaModel.apellidoPaternoBusqueda;
+            personaM.apellidoMaternoBusqueda = capturaModel.apellidoMaternoBusqueda;
+            personaM.numeroLicenciaBusqueda = capturaModel.numeroLicenciaBusqueda;
+
+            model.PersonaModel = personaM;
+
+           var findAll = false;
+            var personas = new PersonasModel();
+            Pagination pagination = new Pagination();
+            pagination.PageIndex = request.Page - 1;
+            if (model != null)
+            {
+                
+                if (model.PersonaModel.apellidoMaternoBusqueda == null &&
+                    model.PersonaModel.apellidoPaternoBusqueda == null &&
+                    model.PersonaModel.CURPBusqueda == null &&
+                    model.PersonaModel.RFCBusqueda == null &&
+                    model.PersonaModel.numeroLicenciaBusqueda == null &&
+                    model.PersonaModel.nombreBusqueda == null)
+                {
+                    pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
+                }
+                else
+                {
+                    findAll = true;
+                    pagination.PageSize = 1000000;
+                }
+            }
+            else
+            {
+                pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
+            }
+
+            //model = perModel;
+            var personasList = _personasService.BusquedaPersonaPagination(model, pagination);
+
+            // Verificar si se encontraron resultados en la búsqueda de personas
+            if (personasList.Any())
+            {
+                personas.ListadoPersonas = personasList;
+                var total = 0;
+                if (personasList.Count() > 0)
+                    total = personasList.ToList().FirstOrDefault().total;
+
+                //if (findAll)
+                request.PageSize = pagination.PageSize;
+
+                //      var result = new DataSourceResult()
+                //        {
+                //              Data = personas.ListadoPersonas,
+                //                Total = total,                    
+                //              };
+                List<CapturaAccidentesModel> resultado = new List<CapturaAccidentesModel>(); 
+                foreach (PersonaModel pivote in personas.ListadoPersonas)
+                {
+                    CapturaAccidentesModel capAcc = new CapturaAccidentesModel();
+                    capAcc.nombre = pivote.nombre;
+                    capAcc.apellidoPaterno = pivote.apellidoPaterno;
+                    capAcc.apellidoMaterno = pivote.apellidoMaterno;
+                    capAcc.TipoLicencia= pivote.tipoLicencia;
+                    capAcc.numeroLicencia = pivote.numeroLicencia;
+                    capAcc.CURP= pivote.CURP;
+                    resultado.Add(capAcc);
+                }
+
+
+                return Json(new { encontrada = true, Data = resultado, tipo = "success", message = "busqueda exitosa" });
+
+//                
+            }
+
+            // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
+
+            string parametros = "";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.numeroLicenciaBusqueda) ? "" : "licencia=" + model.PersonaModel.numeroLicenciaBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.CURPBusqueda) ? "" : "curp=" + model.PersonaModel.CURPBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.RFCBusqueda) ? "" : "rfc=" + model.PersonaModel.RFCBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.nombreBusqueda) ? "" : "nombre=" + model.PersonaModel.nombreBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.apellidoPaternoBusqueda) ? "" : "primer_apellido=" + model.PersonaModel.apellidoPaternoBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.apellidoMaternoBusqueda) ? "" : "segundo_apellido=" + model.PersonaModel.apellidoMaternoBusqueda;
+            string ultimo = parametros.Substring(parametros.Length - 1);
+            if (ultimo.Equals("&"))
+                parametros = parametros.Substring(0, parametros.Length - 1);
+
+            try
+            {
+                string urlServ = Request.GetDisplayUrl();
+                Uri uri = new Uri(urlServ);
+                string requested = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+
+                var url = requested + $"/api/Licencias/datos_generales?" + parametros;
+
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    //    LicenciaRespuestaPersona respuesta = JsonConvert.DeserializeObject<LicenciaRespuestaPersona>(content);
+                    // var personasEncontradas = content.
+                    //  return Json(new { encontrada = false, Data = respuesta.datos, tipo = respuesta.datos == null ? "sin datos" : "success", message = respuesta.mensaje });
+
+
+                    List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
+
+                    List<CapturaAccidentesModel> resultado = new List<CapturaAccidentesModel>();
+                    foreach (LicenciaPersonaDatos pivote in respuesta)
+                    {
+                        CapturaAccidentesModel capAcc = new CapturaAccidentesModel();
+                        capAcc.nombre = pivote.NOMBRE;
+                        capAcc.apellidoPaterno = pivote.PRIMER_APELLIDO;
+                        capAcc.apellidoMaterno = pivote.SEGUNDO_APELLIDO;
+                        capAcc.TipoLicencia = pivote.TIPOLICENCIA; ;
+                        capAcc.numeroLicencia = pivote.NUM_LICENCIA;
+                        capAcc.CURP = pivote.CURP;
+                        resultado.Add(capAcc);
+                    }
+
+
+
+                  //  return Json(pEncontradas);
+                    return Json(new { encontrada = true, Data = resultado, tipo = "success", message = "busqueda exitosa" });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // En caso de errores, devolver una respuesta JSON con licencia no encontrada
+                return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
+            }
+
+            
+            //                
+
+            return Json(new { encontrada = false, Data = "1", tipo = "sin datos", message = "busca en licencias" });
+
+
+        }
+
     }
 }
 

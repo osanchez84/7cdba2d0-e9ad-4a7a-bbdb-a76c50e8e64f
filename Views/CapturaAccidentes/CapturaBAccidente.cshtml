@@ -56,12 +56,13 @@
         });
     }
     function buscarInvolucrado() {
+        
         var licenciaBusqueda = $("#numeroLicenciaBusqueda").val().trim();
         var rfcBusqueda = $("#RFCBusqueda").val().trim();
         var curpBusqueda = $("#CURPBusqueda").val().trim();
         var nombreBusqueda = $("#nombreBusqueda").val().trim();
         var apellidoPaternoBusqueda = $("#apellidoPaternoBusqueda").val().trim();
-
+       
         if (licenciaBusqueda !== "") {
             if (licenciaBusqueda.length < 10) {
                 sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
@@ -88,15 +89,46 @@
             return;
         }
         var Mydata = $("#buscarInvolucradoForm").serialize();
+        console.log("capturaBAccidente2:" + Mydata);
+        var formData = $("#buscarInvolucradoForm").serializeArray();
+        console.log("capturaBAccidente3:" + formData);
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        var findData = false;
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+            if (!findData) {
+                if (field.value != '' && field.value != undefined) {
+                    findData = true;
+                }
+            }
+        });
+
+
         showLoading();
+         
         $.ajax({
-            url: '/CapturaAccidentes/BuscarPorParametro',
+            //url: '/CapturaAccidentes/BuscarPorParametro',
+            url: '/CapturaAccidentes/BuscarPorParametroPaginado',
             type: 'POST',
-            data: Mydata,
+            data: trimmedData,
             success: function (response) {
                 if (response.tipo == "success") {
                     // Crear instancia del modelo con los datos recibidos
-                    mostrarModal(response.datos);
+                    
+                    console.log("resultado de busqueda: " + response.Data)
+                                    
+                    hideLoading();
+                     
+                     $('#modalLicenciasList').modal('show');
+                    var grid = $("#gridPersonasLicencia").data("kendoGrid");
+                       grid.dataSource.data(response.Data);
+                       grid.dataSource._total = response.length;
 
                 } else {
                     // Mostrar los resultados de personas encontradas en la búsqueda
@@ -132,8 +164,9 @@
     }
 
     function mostrarModal(jsonData) {
+        console.log("jsonData: " + jsonData)
         const modal = document.getElementById('modalLicencias');
-
+        
         const modalContent = `
                             <div class="modal-header">
                                 <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
@@ -143,10 +176,10 @@
                             </div>
                             <div class="modal-body">
                                 <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                                <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                                <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+                                <p><strong>Apellido Paterno:</strong> ${jsonData.apellidoPaterno}</p>
+                                <p><strong>Apellido Materno:</strong> ${jsonData.apellidoMaterno}</p>
                                 <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                                <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+                                <p><strong>Número de Licencia:</strong> ${jsonData.numeroLicencia}</p>
                                 <p><strong>Fecha de Expedición:</strong> ${jsonData.fecha_inicio_vigencia}</p>
                                 <p><strong>Fecha de Vigencia:</strong> ${jsonData.fecha_termino_vigencia}</p>
                             </div>
@@ -446,6 +479,16 @@
             </div>
         </div>
     </div>
+    <div id="modalLicenciasList" class="modal">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+            
+                <partial name="_ListaPersonasEnLicencias" model="Model" />
+            
+            <!-- Contenido del modal se llenará con la función mostrarModal -->
+        </div>
+    </div>
+</div>
 
 
 

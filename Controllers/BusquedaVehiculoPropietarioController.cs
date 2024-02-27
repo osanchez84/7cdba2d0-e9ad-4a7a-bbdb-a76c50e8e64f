@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sat Feb 24 2024
+ * Última modificación: Tue Feb 27 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -25,6 +25,9 @@ using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
 using GuanajuatoAdminUsuarios.Helpers;
+using GuanajuatoAdminUsuarios.Util;
+using Microsoft.IdentityModel.Tokens;
+using Kendo.Mvc.Extensions;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -63,8 +66,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             RepuveConsgralRequestModel repuveGralModel = new(model.PlacaBusqueda, model.SerieBusqueda);
+            VehiculoModel vehiculoModel = new();
+            //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
+            RepuveRoboModel repuveRoboModel = new();
 
-            ViewBag.ReporteRobo = vehiculoPlataformaService.ValidarRoboRepuve(repuveGralModel);
+            try
+            {
+                repuveRoboModel = vehiculoPlataformaService.ValidarRoboRepuve(repuveGralModel);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Ocurrió un error al consultar robados en REPUVE:" + e);
+            }
+
+
+            vehiculoModel.RepuveRobo = repuveRoboModel;
+            vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
+
 
 
             var buscarEnServicios = appSettings.Value.AllowWebServicesRepuve;
@@ -76,7 +94,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             };
 
             List<VehiculoModel> listaVehiculos = vehiculoService.GetVehiculoPropietario(busquedaModel);
-            VehiculoModel vehiculoModel = new();
+
 
 
             if (listaVehiculos.Count > 1)
@@ -104,7 +122,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                 {
                     vehiculoModel = vehiculoPlataformaService.GetVehiculoModelFromFinanzas(result);
-                    vehiculoModel.ErrorRepube = string.IsNullOrEmpty(vehiculoModel.placas) ? "No" : "";
+
+                    //Se asigna el objeto de la consulta de robado a repuve
+                    vehiculoModel.RepuveRobo = repuveRoboModel;
+                    vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
+
                     //Se establece el origen de datos
                     vehiculoModel.origenDatos = "Padrón Estatal";
                     var view2 = this.RenderViewAsync("_Vehiculo", vehiculoModel, true);
@@ -118,8 +140,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 var vehiculoEncontrado = new VehiculoModel
                 {
-                    placas = repuveConsGralResponse.placa,
-                    serie = repuveConsGralResponse.niv_padron,
+                    placas = repuveConsGralResponse.placa.IsNullOrEmpty() ? repuveRoboModel.Placa : repuveConsGralResponse.placa,
+                    serie = repuveConsGralResponse.niv_padron.IsNullOrEmpty() ? repuveRoboModel.Niv : repuveConsGralResponse.niv_padron,
                     motor = repuveConsGralResponse.motor,
                     color = repuveConsGralResponse.color,
                     submarca = repuveConsGralResponse.submarca,
@@ -128,18 +150,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     Persona = new PersonaModel(),
 
                     PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                    RepuveRobo = repuveRoboModel,
+                    ReporteRobo = repuveRoboModel.EsRobado,
+                    ErrorRepube = !repuveConsGralResponse.estatus.IsCaseInsensitiveEqual(RepuveConsgralResponseModel.CONSULTA_CORRECTA) ? "No" : ""
                 };
                 vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
 
                 //Se establece el origen de datos
                 vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
-
-                if (ViewBag.ReporteRobo)
-                {
-                    vehiculoEncontrado.placas = repuveGralModel.placa;
-                    vehiculoEncontrado.serie = repuveGralModel.niv;
-                }
-
 
                 var view3 = this.RenderViewAsync("_Vehiculo", vehiculoEncontrado, true);
                 return Json(new { crearVehiculo = true, view = view3 });

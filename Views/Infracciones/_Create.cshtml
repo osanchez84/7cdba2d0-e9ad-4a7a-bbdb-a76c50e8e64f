@@ -6,7 +6,12 @@
     var myAttributes = new { disabled = "", style = "width:100%;" };
     if (Model != null)
     {
-        myAttributes = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? new { disabled = "disabled", style = "width:100%;" } : new { disabled = "", style = "width:100%;" };
+        myAttributes = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? new
+        {
+            disabled = "disabled",
+            style =
+        "width:100%;"
+        } : new { disabled = "", style = "width:100%;" };
     }
 
     bool disableInput = false;
@@ -21,18 +26,39 @@
 }
 <script>
 
-$(document).ready(()=>{
+    $(document).ready(() => {
 
-    var t = "@mensaje"
+        var t = "@mensaje"
+        var esRobado = "@Model.ReporteRobo";
 
-    if(t!='' && t!=undefined){
-        sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+        if (t != '' && t != undefined) {
+            sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+        }
+        //Si el vehículo tiene reporte de robo se muestra mensaje
+        if (esRobado == "True") {
+            setTimeout(() => { mostrarMensajeRobado() }, 400);
+        }
+
+    });
+
+    function mostrarMensajeRobado() {
+        var placa = "@Model.RepuveRobo.Placa";
+        var niv = "@Model.RepuveRobo.Niv";
+        var fecha = "@Model.RepuveRobo.Fecha";
+        var fuenteRobo = "@Model.RepuveRobo.FuenteRobo";
+        var averiguacion = "@Model.RepuveRobo.Averiguacion";
+        var fechaAveriguacion = "@Model.RepuveRobo.FechaAveriguacion";
+        var agente = "@Model.RepuveRobo.AgenteMinisterioPublico";
+
+        Swal.fire({
+            icon: "error",
+            title: "Vehículo con REPORTE DE ROBO",
+            html: `PLACA: ${placa}<br>NIV: ${niv}<br>FECHA: ${fecha}<br>AVERIGUACION: ${averiguacion}<br>FECHA DE AVERIGUACION: ${fechaAveriguacion}<br>FUENTE DE ROBO: ${fuenteRobo}<br>AGENTE: ${agente}`
+        });
     }
- 
-})
- 
 
-     function EntidadDropDownChangeFis() {
+
+    function EntidadDropDownChangeFis() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidadFisico").data("kendoDropDownList").value();
 
         showLoading();
@@ -50,7 +76,7 @@ $(document).ready(()=>{
             }
         });
     }
- function EntidadDropDownChangeV() {
+    function EntidadDropDownChangeV() {
         var entidadDDlValue = $("#Persona_PersonaDireccion_idEntidad").data("kendoDropDownList").value();
         showLoading();
         $.ajax({
@@ -75,7 +101,7 @@ $(document).ready(()=>{
 
         if (idTipoServicio == 1 || idTipoServicio == 5)
             DivSubTipoServicio.css('display', 'block');
-        else 
+        else
             DivSubTipoServicio.css('display', 'none');
 
         showLoading();
@@ -85,7 +111,7 @@ $(document).ready(()=>{
             data: { idTipoServicio: idTipoServicio },
             success: function (data) {
                 var SubTipoServicio = $("#ddlCatSubTipoServicio").data("kendoDropDownList");
-                if (SubTipoServicio) 
+                if (SubTipoServicio)
                     SubTipoServicio.dataSource.data(data);
                 console.log(data);
                 hideLoading();
@@ -95,7 +121,7 @@ $(document).ready(()=>{
             }
         });
     }
-	
+
     $("#ddlCatSubTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
@@ -143,12 +169,20 @@ $(document).ready(()=>{
 
     @if (Model != null)
     {
-        @if (Model.idVehiculo >0)
+        @if (Model.idVehiculo > 0)
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
-                    <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
+                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b
+                            class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i
+                                style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo
+                            capturado en Registro de Infracciones y Accidentes</b></h5>
+                      @if (Model.ReporteRobo == true)
+                    {
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
+                    }
+                    <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la
+                        información del vehículo.</h6>
                 </div>
             </div>
         }
@@ -156,12 +190,19 @@ $(document).ready(()=>{
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
-                     @if (Model.origenDatos!=null)
-                        {
-                         <h6 class="px-4"><b>Vehículo encontrado en el @Model.origenDatos</b></h6>
-                        }
-                    <h6 class="px-4 text-muted">Vehículo sin captura en la plataforma <b class="colorPrimary">Realiza o Completa</b> la captura de vehículo.</h6>
+                    <h5 class="px-4 colorDanger d-flex align-items-center"><b
+                            class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en
+                            Registro de Infracciones y Accidentes de Guanajuato</b></h5>
+                      @if (Model.ReporteRobo == true)
+                    {
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
+                    }
+                    @if (Model.origenDatos != null)
+                    {
+                        <h6 class="px-4"><b>Vehículo encontrado en el @Model.origenDatos</b></h6>
+                    }
+                    <h6 class="px-4 text-muted">Vehículo sin captura en la plataforma <b class="colorPrimary">Realiza o
+                            Completa</b> la captura de vehículo.</h6>
                 </div>
             </div>
         }
@@ -176,7 +217,7 @@ $(document).ready(()=>{
                     .DataTextField("Text")
                     .DataValueField("Value")
                     .OptionLabel("Seleccione Entidad...")
-                    .HtmlAttributes(new { style = "width:100%;",id="idEdntidad2" })
+                    .HtmlAttributes(new { style = "width:100%;", id = "idEdntidad2" })
                     .Filter(FilterType.Contains)
                     .DataSource(source =>
                     {
@@ -192,28 +233,32 @@ $(document).ready(()=>{
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Placas:</label>
-                @Html.CustomTextBoxFor(model => model.placas,"Ingresa Placa", disableInput)
+                @Html.CustomTextBoxFor(model => model.placas, "Ingresa Placa", disableInput)
             </div>
         </div>
 
         <div class="col-12 col-md-6 col-lg-3">
             <div class="controlForm my-3">
                 <label>Serie:</label>
-                
-                
-                <!--@Html.CustomTextBoxFor(model => model.serie,"Ingresa Serie", disableInput)-->
-                             @if(@disableInput){
-                     <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input k-state-disabled" />
-             </span>
 
-             }
-             else{
-                 <span class="k-widget k-textbox" style="width:100%;">
-                 <input  type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie" class="k-input" />
-             </span>
 
-             }
+                <!--@Html.CustomTextBoxFor(model => model.serie, "Ingresa Serie", disableInput)-->
+                @if (@disableInput)
+                {
+                    <span class="k-widget k-textbox" style="width:100%;">
+                        <input type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie"
+                            class="k-input k-state-disabled" />
+                    </span>
+
+                }
+                else
+                {
+                    <span class="k-widget k-textbox" style="width:100%;">
+                        <input type="text" style="width:100%;" value="@Model.serie" name="serie" id="serie"
+                            class="k-input" />
+                    </span>
+
+                }
 
 
             </div>
@@ -255,7 +300,7 @@ $(document).ready(()=>{
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value("")
-                     //   .DateInput()
+                        // .DateInput()
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
@@ -264,7 +309,7 @@ $(document).ready(()=>{
                 {
                     @(Html.Kendo().DatePickerFor(t => t.vigenciaTarjeta).Format("dd/MM/yyyy")
                         .Value("")
-                       // .DateInput()
+                        // .DateInput()
                         .Culture("es-ES")
                         .HtmlAttributes(new { style = "width: 100%", title = "datetimepicker" })
                         )
@@ -276,7 +321,7 @@ $(document).ready(()=>{
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Marca <b>(obligatorio):</b></label>
-                @if (Model.idMarcaVehiculo != 0 && Model.idSubmarca !=0)               
+                @if (Model.idMarcaVehiculo != 0 && Model.idSubmarca != 0)
                 {
                     @(Html.Kendo().DropDownListFor(d => d.idMarcaVehiculo).Filter(FilterType.Contains)
                         .DataTextField("Text")
@@ -315,7 +360,7 @@ $(document).ready(()=>{
         <div class="col-12 col-md-4 col-lg-3 col-xl-2">
             <div class="controlForm my-3">
                 <label>Sub-Marca <b>(obligatorio):</b></label>
-                @if (Model.idSubmarca != 0)               
+                @if (Model.idSubmarca != 0)
                 {
                     @*<div id="divSubmarca">
                 @(Html.Kendo().DropDownListFor(f => f.idSubmarca)
@@ -324,7 +369,7 @@ $(document).ready(()=>{
                 )
 
                 </div>*@
-                    @Html.HiddenFor(m=> m.idSubmarcaUpdated, new { @id = "hdnIdSubmarca" })
+                    @Html.HiddenFor(m => m.idSubmarcaUpdated, new { @id = "hdnIdSubmarca" })
 
                     @(Html.Kendo().DropDownListFor(d => d.idSubmarca).Filter(FilterType.Contains)
                         .DataTextField("Text")
@@ -344,7 +389,7 @@ $(document).ready(()=>{
                 {
 
                     <div id="divSubmarca">
-                        @Html.HiddenFor(m=> m.idSubmarca)
+                        @Html.HiddenFor(m => m.idSubmarca)
                         @(Html.Kendo().DropDownList()
                             .Name("ddlIdSubIn")
                             .OptionLabel(@Model.submarca)
@@ -400,7 +445,7 @@ $(document).ready(()=>{
         <div class="col-12 col-md-2 col-lg-3">
             <div class="controlForm my-3">
                 <label>Modelo:</label>
-                @Html.CustomTextBoxFor(model => model.modelo,"Ingresa Modelo", disableInput)
+                @Html.CustomTextBoxFor(model => model.modelo, "Ingresa Modelo", disableInput)
 
             </div>
         </div>
@@ -471,23 +516,23 @@ $(document).ready(()=>{
                 <div class="btnToggleActive">
                     @Html.HiddenFor(m => m.cargaInt, new { id = "idCarga" })
                     @(Html.Kendo().SwitchFor(m => m.carga)
-                            .Messages(c => c.Checked("SI").Unchecked("NO"))
-                            .HtmlAttributes(new { id = "cargaSwitch" })
+                        .Messages(c => c.Checked("SI").Unchecked("NO"))
+                        .HtmlAttributes(new { id = "cargaSwitch" })
 
-                            )
+                        )
 
                 </div>
             </div>
         </div>
 
-        @Html.HiddenFor(m=> m.idVehiculo, new { @id = "hdnIdVehiculo" })
-        @Html.HiddenFor(m=> m.Persona.idPersona, new { @id = "ddlIdPersona" })
-        @Html.HiddenFor(m=> m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
-        
-     <input type="hidden" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoServicio">
-     <input type="hidden" value="@Model.idSubtipoServicio" name="idSubtipoServicio" id="hdnidSubtipoServicio">
-     
-     @Html.HiddenFor(m=> m.encontradoEn, new { @id = "hdnEncontradoEn" })
+        @Html.HiddenFor(m => m.idVehiculo, new { @id = "hdnIdVehiculo" })
+        @Html.HiddenFor(m => m.Persona.idPersona, new { @id = "ddlIdPersona" })
+        @Html.HiddenFor(m => m.Persona.idCatTipoPersona, new { @id = "ddlIdCatTipoPersona" })
+
+        <input type="hidden" value="@Model.idCatTipoServicio" name="idCatTipoServicio" id="hdnIdCatTipoServicio">
+        <input type="hidden" value="@Model.idSubtipoServicio" name="idSubtipoServicio" id="hdnidSubtipoServicio">
+
+        @Html.HiddenFor(m => m.encontradoEn, new { @id = "hdnEncontradoEn" })
 
     </form>
 
@@ -530,83 +575,85 @@ $(document).ready(()=>{
     </div>
     <div class="row align-items-end">
 
-        <div class="col-6 controlForm my-3" >
-                <label>Tipo de Servicio:</label>
-                @(Html.Kendo().DropDownListFor(d => d.idCatTipoServicio).Filter(FilterType.Contains)
+        <div class="col-6 controlForm my-3">
+            <label>Tipo de Servicio:</label>
+            @(Html.Kendo().DropDownListFor(d => d.idCatTipoServicio).Filter(FilterType.Contains)
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .OptionLabel("Seleccione Tipo de Servicio...:")
+                .HtmlAttributes(new { style = "width:100%;", id = "ddlCatTipoServicio" })
+                .Events(e => e.Change("ChangeSubTipoServicio"))
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("TipoServicios_Read", "Vehiculos");
+                    });
+                })
+                )
+        </div>
+        @if (Model.showSubTipo == true)
+        {
+            <div class="col-6 controlForm my-3" id="DivSubTipoServicio" style="display:block">
+                <label>Subtipo de Servicio:</label>
+                @(
+                    Html.Kendo().DropDownListFor(d => d.idSubtipoServicio)
+                    .Filter(FilterType.Contains)
+
                     .DataTextField("Text")
                     .DataValueField("Value")
-                    .OptionLabel("Seleccione Tipo de Servicio...:")
-                    .HtmlAttributes(new { style = "width:100%;", id = "ddlCatTipoServicio" })
-                    .Events(e => e.Change("ChangeSubTipoServicio"))
+                    .OptionLabel("Seleccione Subtipo de Servicio...:")
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlCatSubTipoServicio" })
                     .DataSource(source =>
                     {
                         source.Read(read =>
                         {
-                            read.Action("TipoServicios_Read", "Vehiculos");
+                            read.Action("GetSubtipoPorTipo", "Vehiculos");
                         });
                     })
                     )
-        </div>
-         @if (Model.showSubTipo == true)
-            {
-                <div class="col-6 controlForm my-3" id="DivSubTipoServicio" style="display:block">
+            </div>
+        }
+        else
+        {
+            <div class="col-6 controlForm my-3" id="DivSubTipoServicio" style="display:none">
                 <label>Subtipo de Servicio:</label>
                 @(
-                Html.Kendo().DropDownListFor(d => d.idSubtipoServicio)
-                                            .Filter(FilterType.Contains)
+                    Html.Kendo().DropDownListFor(d => d.idSubtipoServicio)
+                    .Filter(FilterType.Contains)
 
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("Seleccione Subtipo de Servicio...:")
-                            .HtmlAttributes(new { style = "width:100%;", id = "ddlCatSubTipoServicio" })
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("GetSubtipoPorTipo", "Vehiculos");
-                                });
-                            })
-                            )
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .OptionLabel("Seleccione Subtipo de Servicio...:")
+                    .HtmlAttributes(new { style = "width:100%;", id = "ddlCatSubTipoServicio" })
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("GetSubtipoPorTipo", "Vehiculos");
+                        });
+                    })
+                    )
             </div>
-            } else {
-                <div class="col-6 controlForm my-3" id="DivSubTipoServicio" style="display:none">
-                <label>Subtipo de Servicio:</label>
-                @(
-                Html.Kendo().DropDownListFor(d => d.idSubtipoServicio)
-                                            .Filter(FilterType.Contains)
-
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("Seleccione Subtipo de Servicio...:")
-                            .HtmlAttributes(new { style = "width:100%;", id = "ddlCatSubTipoServicio" })
-                            .DataSource(source =>
-                            {
-                                source.Read(read =>
-                                {
-                                    read.Action("GetSubtipoPorTipo", "Vehiculos");
-                                });
-                            })
-                            )
-            </div>
-            }          
+        }
     </div>
-@if (Model.idTipoPersona.HasValue)
-{
-    if (Model.idTipoPersona == 1)
+    @if (Model.idTipoPersona.HasValue)
     {
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
-            <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
-        </div>
+        if (Model.idTipoPersona == 1)
+        {
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Se encontraron datos de persona física</h4>
+                <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+            </div>
+        }
+        else if (Model.idTipoPersona == 2)
+        {
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
+                <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
+            </div>
+        }
     }
-    else if (Model.idTipoPersona == 2)
-    {
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
-            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
-        </div>
-    }
-}
 
 
 
@@ -618,7 +665,9 @@ $(document).ready(()=>{
         <div>
             <nav class="tabCustom">
                 <div class="nav nav-tabs row mx-0" id="nav-tab" role="tablist">
-                    <button class="nav-link active col" id="person-moral-tab" data-bs-toggle="tab" data-bs-target="#person-moral" type="button" role="tab" aria-controls="person-moral" aria-selected="true">
+                    <button class="nav-link active col" id="person-moral-tab" data-bs-toggle="tab"
+                        data-bs-target="#person-moral" type="button" role="tab" aria-controls="person-moral"
+                        aria-selected="true">
                         <div class="row justify-content-center align-items-center px-3 py-2">
                             <div class="col-auto radioCustom p-0">
                                 <div class="rounded-circle m-2"></div>
@@ -628,7 +677,9 @@ $(document).ready(()=>{
                             </div>
                         </div>
                     </button>
-                    <button class="nav-link col" id="person-fisica-tab" data-bs-toggle="tab" data-bs-target="#person-fisica" type="button" role="tab" aria-controls="person-fisica" aria-selected="false">
+                    <button class="nav-link col" id="person-fisica-tab" data-bs-toggle="tab"
+                        data-bs-target="#person-fisica" type="button" role="tab" aria-controls="person-fisica"
+                        aria-selected="false">
                         <div class="row justify-content-center align-items-center px-3 py-2">
                             <div class="col-auto radioCustom p-0">
                                 <div class="rounded-circle m-2"></div>
@@ -638,7 +689,9 @@ $(document).ready(()=>{
                             </div>
                         </div>
                     </button>
-                    @*<button class="nav-link col" id="none-person-tab" data-bs-toggle="tab" data-bs-target="#none-person" type="button" role="tab" aria-controls="none-person" aria-selected="false">
+                    @*<button class="nav-link col" id="none-person-tab" data-bs-toggle="tab"
+                    data-bs-target="#none-person" type="button" role="tab" aria-controls="none-person"
+                    aria-selected="false">
                     <div class="row justify-content-center align-items-center px-3 py-2">
                     <div class="col-auto radioCustom p-0">
                     <div class="rounded-circle m-2"></div>
@@ -657,7 +710,8 @@ $(document).ready(()=>{
         <div class="tab-content" id="nav-tabContent">
 
             @*PERSONA MORAL*@
-            <div class="tab-pane tabCustomConteiner fade show active" id="person-moral" role="tabpanel" aria-labelledby="person-moral-tab">
+            <div class="tab-pane tabCustomConteiner fade show active" id="person-moral" role="tabpanel"
+                aria-labelledby="person-moral-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
                     <form id="frmSearchPersonaMoral" class="row px-4 mb-4 align-items-end" method="post">
@@ -684,7 +738,9 @@ $(document).ready(()=>{
                         </div>
                         <div class="col-12 col-md-6 mx-md-auto col-lg-4 mx-lg-0 ">
                             <div class="controlButton my-3">
-                                <button class="btnPrimary" type="button" onclick="submitSearchPersonaMoral()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                                <button class="btnPrimary" type="button" onclick="submitSearchPersonaMoral()">
+                                    <h5 class="m-0"><b>Buscar</b></h5>
+                                </button>
 
                             </div>
                         </div>
@@ -704,7 +760,8 @@ $(document).ready(()=>{
                             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                                 <div class="btnOutline btnOutlinePrimary my-3">
                                     <button data-bs-toggle="modal" data-bs-target="#addMoral">
-                                        <h5 class="m-0"><i class="me-2 icon-addMoral"></i><b>Agregar nueva persona moral</b></h5>
+                                        <h5 class="m-0"><i class="me-2 icon-addMoral"></i><b>Agregar nueva persona
+                                                moral</b></h5>
                                     </button>
                                 </div>
                             </div>
@@ -716,7 +773,8 @@ $(document).ready(()=>{
             </div>
 
             @*PERSONA FISICA*@
-            <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
+            <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
+                aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
                     <div id="personasFisicasInf">
@@ -745,7 +803,7 @@ $(document).ready(()=>{
 
 
 @*PERSONA MORAL*@
-<div class="modal fade modalCustom" id="addMoral"  aria-labelledby="addMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addMoral" aria-labelledby="addMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -764,7 +822,7 @@ $(document).ready(()=>{
                     <div class="col-auto">
                         <div class="row">
                             <div class="col-auto my-3">
-                                <button type="button"onclick="cerrarModalMoral()" >X</button>
+                                <button type="button" onclick="cerrarModalMoral()">X</button>
                             </div>
                         </div>
                     </div>
@@ -798,16 +856,16 @@ $(document).ready(()=>{
                                 .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
                                 .Placeholder("Ingresa Nombre")
                                 @*.HtmlAttributes(new { style = "width: 100%", required = "required" })*@
-                                .HtmlAttributes(new { style = "width: 100%"})
+                                .HtmlAttributes(new { style = "width: 100%" })
                                 )
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
-                           <label>Teléfono:</label>
+                            <label>Teléfono:</label>
                             @(Html.Kendo().TextBoxFor(t => t.Persona.PersonaDireccion.telefono)
                                 .Placeholder("Ingresa Teléfono")
-                                .HtmlAttributes(new { style = "width: 100%" ,onkeypress = "return validarNumero(event)"})
+                                .HtmlAttributes(new { style = "width: 100%", onkeypress = "return validarNumero(event)" })
                                 )
                         </div>
                     </div>
@@ -827,7 +885,8 @@ $(document).ready(()=>{
 
                             <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
+                                @(Html.Kendo().DropDownListFor(d =>
+                                    d.Persona.PersonaDireccion.idEntidad).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
@@ -848,7 +907,8 @@ $(document).ready(()=>{
                         <div id="divMunicipioMor" class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
+                                @(Html.Kendo().DropDownListFor(d =>
+                                    d.Persona.PersonaDireccion.idMunicipio).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
@@ -904,12 +964,13 @@ $(document).ready(()=>{
                     <div class="col-12 col-md-6 mx-md-auto">
                         <div class="row justify-content-around">
                             <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0">
-                                <button type="button" onclick ="cerrarModalMoral()">
+                                <button type="button" onclick="cerrarModalMoral()">
                                     <h6 class="m-0 px-3"><b>Cerrar</b></h6>
                                 </button>
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onClick="submitCreateMoral()" @* data-bs-dismiss="modal"*@ aria-label="Close">
+                                <div class="controlButton" onClick="submitCreateMoral()" @* data-bs-dismiss="modal"*@
+                                    aria-label="Close">
                                     @(Html.Kendo().Button()
                                         .Name("AddMoral")
                                         .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -926,7 +987,7 @@ $(document).ready(()=>{
     </div>
 </div>
 
-<div class="modal fade modalCustom" id="modalUpdateMoral"  aria-labelledby="updateMoralLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="modalUpdateMoral" aria-labelledby="updateMoralLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -945,7 +1006,8 @@ $(document).ready(()=>{
                     <div class="col-auto">
                         <div class="row">
                             <div class="col-auto my-3">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                         </div>
                     </div>
@@ -975,7 +1037,7 @@ $(document).ready(()=>{
 </div>
 
 @*PERSONA FISICA*@
-<div class="modal fade modalCustom" id="addFisico"  aria-labelledby="addFisicoLabel" aria-hidden="true">
+<div class="modal fade modalCustom" id="addFisico" aria-labelledby="addFisicoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
         <div class="modal-content">
 
@@ -1022,7 +1084,7 @@ $(document).ready(()=>{
                                 )
 
                         </div>
-                         @*<div id="errorContainerPersona_nombreFisico" class="error-container"></div>*@
+                        @*<div id="errorContainerPersona_nombreFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm my-3">
@@ -1053,7 +1115,7 @@ $(document).ready(()=>{
                                 )
 
                         </div>
-                          @*<div id="errorContainerPersona_RFCFisico" class="error-container"></div>*@
+                        @*<div id="errorContainerPersona_RFCFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -1070,12 +1132,12 @@ $(document).ready(()=>{
                             <label>Fecha de nacimiento </label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
-                                .Culture("es-ES")
+                                    .Culture("es-ES")
                                     .Format("dd/MM/yyyy")
                                     )
                             </span>
                         </div>
-                         @*<div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>*@
+                        @*<div id="errorContainerPersona_fechaNacimiento" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
@@ -1122,12 +1184,13 @@ $(document).ready(()=>{
                         <div class="controlForm my-3">
                             <label>Entidad <b>(obligatorio)</b>:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idEntidadFisico).Filter(FilterType.Contains)
+                                @(Html.Kendo().DropDownListFor(d =>
+                                    d.Persona.PersonaDireccion.idEntidadFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Entidad...")
                                     .HtmlAttributes(new { style = "width:100%;" })
-                                   // .Events(e => e.Change("EntidadDropDownChangeFis"))
+                                    // .Events(e => e.Change("EntidadDropDownChangeFis"))
                                     .DataSource(source =>
                                     {
                                         source.Read(read =>
@@ -1150,7 +1213,8 @@ $(document).ready(()=>{
                                 )
 
                         </div>
-                       @*<div id="errorContainerPersona_PersonaDireccion_coloniaFisico" class="error-container"></div>*@
+                        @*<div id="errorContainerPersona_PersonaDireccion_coloniaFisico"
+                        class="error-container"></div>*@
                     </div>
 
                     <div class="col-12 col-md-6 col-lg-6">
@@ -1174,13 +1238,14 @@ $(document).ready(()=>{
                                 )
 
                         </div>
-                         @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
+                        @*<div id="errorContainerPersona_PersonaDireccion_numeroFisico" class="error-container"></div>*@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div  class="controlForm my-3">
+                        <div class="controlForm my-3">
                             <label>Municipio <b>(obligatorio)</b>:</label>
                             <span id="divMunicipio">
-                                @(Html.Kendo().DropDownListFor(d => d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
+                                @(Html.Kendo().DropDownListFor(d =>
+                                    d.Persona.PersonaDireccion.idMunicipioFisico).Filter(FilterType.Contains)
                                     .DataTextField("Text")
                                     .DataValueField("Value")
                                     .OptionLabel("Seleccione Municipio...")
@@ -1221,7 +1286,8 @@ $(document).ready(()=>{
                         <div class="controlForm my-3">
                             <label>Tipo de licencia:</label>
                             <span>
-                                @(Html.Kendo().DropDownListFor(t => t.Persona.idTipoLicencia).Filter(FilterType.Contains)
+                                @(Html.Kendo().DropDownListFor(t =>
+                                    t.Persona.idTipoLicencia).Filter(FilterType.Contains)
                                     .Label(l => l.Content("Tipo de Licencia:"))
                                     .DataTextField("Text")
                                     .DataValueField("Value")
@@ -1243,8 +1309,8 @@ $(document).ready(()=>{
                             <label>Fecha de vencimiento:</label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.vigenciaLicencia)
-                                .Culture("es-ES")
-                                .Value(""))
+                                    .Culture("es-ES")
+                                    .Value(""))
 
                             </span>
                         </div>
@@ -1260,7 +1326,8 @@ $(document).ready(()=>{
                                 </button>
                             </div>
                             <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                                <div class="controlButton" onClick="submitCreatePersonaFisica()" data-bs-dismiss="modal_v" aria-label="Close">
+                                <div class="controlButton" onClick="submitCreatePersonaFisica()"
+                                    data-bs-dismiss="modal_v" aria-label="Close">
                                     @(Html.Kendo().Button()
                                         .Name("AddFisico")
                                         .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -1278,7 +1345,7 @@ $(document).ready(()=>{
     </div>
 </div>
 
-<div class="modal fade" id="confirmacionModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmacionModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1299,27 +1366,27 @@ $(document).ready(()=>{
 <script>
 
     $(document).ready(function () {
-        @if (ViewBag.ReporteRobo == true)
-        {
-		<text>
-		sitteg_error('El vehículo cuenta con reporte de robo')
-		</text>
-        }
-        buscarPersonasFisicas();
+    @if (ViewBag.ReporteRobo == true)
+    {
+        <text>
+                    sitteg_error('El vehículo cuenta con reporte de robo')
+        </text>
+    }
+            buscarPersonasFisicas();
     });
 
-     function validarNumero(event) {
-            var charCode = (event.which) ? event.which : event.keyCode;
+    function validarNumero(event) {
+        var charCode = (event.which) ? event.which : event.keyCode;
 
-            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
-                mostrarError("Solo se permiten números.");
-                event.preventDefault();
-                return false;
-            }
-
-            ocultarError();
-            return true;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
+            mostrarError("Solo se permiten números.");
+            event.preventDefault();
+            return false;
         }
+
+        ocultarError();
+        return true;
+    }
 
     function buscarPersonasFisicas() {
         showLoading();
@@ -1329,7 +1396,7 @@ $(document).ready(()=>{
             success: function (result) {
                 $("#personasFisicasInf").html(result);
                 hideLoading();
-            },error: function () {
+            }, error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
@@ -1343,14 +1410,14 @@ $(document).ready(()=>{
 
     });
 
-     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
+    $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
         var value = $(this).val();
         _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
         $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
 
     });
 
-     $("#Persona_PersonaDireccion_idEntidad").on("change", function () {
+    $("#Persona_PersonaDireccion_idEntidad").on("change", function () {
         var value = $(this).val();
         _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipio", "false", "divMunicipioMor", "");
         $('#Persona_PersonaDireccion_idMunicipio').kendoDropDownList();
@@ -1365,63 +1432,63 @@ $(document).ready(()=>{
 
     //});
 
- 
 
-   function submitCreateMoral() {
-    var controlsValidate = [];
-    var isValid = true;
-    var phone = $("#Persona_telefono").val();
-    var email = $("#Persona_PersonaDireccion_correo").val();
-    var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
 
-    //TODO
-    // ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
-    controlsValidate.push({ 'controlName': 'Persona_nombre' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
-    if (!isControlsValid(controlsValidate)) { isValid = false; }
+    function submitCreateMoral() {
+        var controlsValidate = [];
+        var isValid = true;
+        var phone = $("#Persona_telefono").val();
+        var email = $("#Persona_PersonaDireccion_correo").val();
+        var validator = $("#frmCreateMoral").kendoValidator().data('kendoValidator');
 
-    // DROP DOWN LIST
-    controlsValidate=[];
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidad' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipio' });
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+        //TODO
+        // ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
+        controlsValidate.push({ 'controlName': 'Persona_nombre' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_colonia' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calle' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numero' });
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
 
-    $("#hdnidCatTipoServicio").prop("disabled",true)
-    $('#Persona_telefono').removeClass("errorData");
-    if (phone != "" && phone != undefined) {
-        if (!isValidPhone(phone)) {
-            $('#Persona_telefono').addClass("errorData");
-            isValid = false;
+        // DROP DOWN LIST
+        controlsValidate = [];
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidad' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipio' });
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+        $("#hdnidCatTipoServicio").prop("disabled", true)
+        $('#Persona_telefono').removeClass("errorData");
+        if (phone != "" && phone != undefined) {
+            if (!isValidPhone(phone)) {
+                $('#Persona_telefono').addClass("errorData");
+                isValid = false;
+            }
         }
-    }
 
-    $('#Persona_PersonaDireccion_correo').removeClass("errorData");
-    if (email != "" && email != undefined) {
-        if (!isValidEmail(email)) {
-            $('#Persona_PersonaDireccion_correo').addClass("errorData");
-            isValid = false;
+        $('#Persona_PersonaDireccion_correo').removeClass("errorData");
+        if (email != "" && email != undefined) {
+            if (!isValidEmail(email)) {
+                $('#Persona_PersonaDireccion_correo').addClass("errorData");
+                isValid = false;
+            }
         }
-    }
-    if (!isValid) {
-        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
 
-    if (validator.validate()) {
-        var formData = $("#frmCreateMoral").serialize();
-        showLoading();
-        $.ajax({
-            url: '@Url.Action("ajax_CrearPersonaMoral")',
-            type: 'POST',
-            data: formData,
-            success: function (result) {
-                sitteg_success('Elemento guardado correctamente');
-                window.setTimeout(function () {
-                    document.getElementById("sec3").style.display = "none";
-                    document.getElementById("PersonaMoralLocalizada").style.display = "block";
-                    $("#PersonaMoralLocalizada").html(result);
+        if (validator.validate()) {
+            var formData = $("#frmCreateMoral").serialize();
+            showLoading();
+            $.ajax({
+                url: '@Url.Action("ajax_CrearPersonaMoral")',
+                type: 'POST',
+                data: formData,
+                success: function (result) {
+                    sitteg_success('Elemento guardado correctamente');
+                    window.setTimeout(function () {
+                        document.getElementById("sec3").style.display = "none";
+                        document.getElementById("PersonaMoralLocalizada").style.display = "block";
+                        $("#PersonaMoralLocalizada").html(result);
                         $('#addMoral').modal('hide');
                         $('#Persona_telefono').val(null);
                         $('#Persona_nombre').val(null);
@@ -1429,28 +1496,28 @@ $(document).ready(()=>{
                         $('#Persona_PersonaDireccion_correo').val(null);
                         $('#Persona_PersonaDireccion_colonia').val(null);
                         $('#Persona_PersonaDireccion_calle').val(null);
-                        
+
                         sitteg_success('Elemento guardado correctamente')
-                }, 500);
+                    }, 500);
 
-                hideLoading();
-            },
-            error: function (xhr, status) {
-                var errmsg = xhr.responseText;
-                console.log(errmsg);
-                sitteg_warning('Lo sentimos, ha ocurrido un error.');
-                hideLoading();
-            }
-        });
-    } else {
-        //idTelefono.prop("disabled", false);
-        sitteg_info('Debe llenar los campos requeridos');
-    $("#hdnidCatTipoServicio").prop("disabled",false)
+                    hideLoading();
+                },
+                error: function (xhr, status) {
+                    var errmsg = xhr.responseText;
+                    console.log(errmsg);
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
+                }
+            });
+        } else {
+            //idTelefono.prop("disabled", false);
+            sitteg_info('Debe llenar los campos requeridos');
+            $("#hdnidCatTipoServicio").prop("disabled", false)
 
 
-        return;
+            return;
+        }
     }
-}
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
@@ -1465,164 +1532,164 @@ $(document).ready(()=>{
                 document.getElementById("PersonaMoralLocalizada").style.display = "block";
                 $("#PersonaMoralLocalizada").html(result);
                 var grid = $("#gridPersonasMorales").data("kendoGrid");
-                  sitteg_success('Elemento guardado correctamente')
+                sitteg_success('Elemento guardado correctamente')
                 grid.refresh();
                 hideLoading();
-            },error: function () {
+            }, error: function () {
                 sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
         });
     }
 
- function submitCreatePersonaFisica() {
-    var controlsValidate = [];
-    var isValid = true;
-    controlsValidate.push({ 'controlName': 'Persona_nombreFisico' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_coloniaFisico' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calleFisico' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
-    if (!isControlsValid(controlsValidate)) { isValid = false; }
-    
-    // DROP DOWN LIST
-    controlsValidate=[];
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidadFisico' });
-    controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipioFisico' });
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
-    
-    var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
-    var email = $("#Persona_PersonaDireccion_correoFisico").val();
+    function submitCreatePersonaFisica() {
+        var controlsValidate = [];
+        var isValid = true;
+        controlsValidate.push({ 'controlName': 'Persona_nombreFisico' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_coloniaFisico' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_calleFisico' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_numeroFisico' });
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
 
-    $('#Persona_PersonaDireccion_telefonoFisico').removeClass("errorData");
-    if (phone != "" && phone != undefined) {
-        if (!isValidPhone(phone)) {
-            $('#Persona_PersonaDireccion_telefonoFisico').addClass("errorData");
-            isValid = false;
+        // DROP DOWN LIST
+        controlsValidate = [];
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idEntidadFisico' });
+        controlsValidate.push({ 'controlName': 'Persona_PersonaDireccion_idMunicipioFisico' });
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+        var phone = $("#Persona_PersonaDireccion_telefonoFisico").val();
+        var email = $("#Persona_PersonaDireccion_correoFisico").val();
+
+        $('#Persona_PersonaDireccion_telefonoFisico').removeClass("errorData");
+        if (phone != "" && phone != undefined) {
+            if (!isValidPhone(phone)) {
+                $('#Persona_PersonaDireccion_telefonoFisico').addClass("errorData");
+                isValid = false;
+            }
         }
-    }
 
-    $('#Persona_PersonaDireccion_correoFisico').removeClass("errorData");
-    if (email != "" && email != undefined) {
-        if (!isValidEmail(email)) {
-            $('#Persona_PersonaDireccion_correoFisico').addClass("errorData");
-            isValid = false;
+        $('#Persona_PersonaDireccion_correoFisico').removeClass("errorData");
+        if (email != "" && email != undefined) {
+            if (!isValidEmail(email)) {
+                $('#Persona_PersonaDireccion_correoFisico').addClass("errorData");
+                isValid = false;
+            }
         }
-    }
-    if (!isValid) {
-        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }
-
-    var generoBool = $("#generoSwitch").prop("checked");
-    $("#idGenero").val(generoBool ? 1 : 2);
-
-    var Mydata = $("#personaFisicaForm").serialize();
-    showLoading();
-    $.ajax({
-        url: '@Url.Action("ajax_CrearPersonaFisica")',
-        type: 'POST',
-        data: Mydata,
-        success: function (result) {
-            console.log(result);
-            $("#personasFisicasInf").html(result);
-            $("#Persona_apellidoPaternoFisico").val(null);
-            $("#Persona_apellidoMaternoFisico").val(null);
-            $("#Persona_nombreFisico").val(null);
-            $("#Persona_vigenciaLicencia").val(null);
-            $("#Persona_numeroLicenciaFisico").val(null);
-            $("#Persona_Direccion_numeroFisico").val(null);
-            $("#Persona_PersonaDireccion_correoFisico").val(null);
-            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
-            $("#Persona_fechaNacimiento").val(null);
-            $("#Persona_CURPFisico").val(null);
-            $("#Persona_RFCFisico").val(null);
-            $("#Persona_PersonaDireccion_calleFisico").val(null);
-            $("#Persona_PersonaDireccion_coloniaFisico").val(null);
-            $("#Persona_PersonaDireccion_correoFisico").val(null);
-            $("#Persona_PersonaDireccion_telefonoFisico").val(null);
-            $('#addFisico').modal('hide');
-            hideLoading();
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
-            hideLoading();
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
         }
-    });
-}
-function asignarMensajeError(contenedorErrorId, mensaje) {
-    $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
-}
+
+        var generoBool = $("#generoSwitch").prop("checked");
+        $("#idGenero").val(generoBool ? 1 : 2);
+
+        var Mydata = $("#personaFisicaForm").serialize();
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ajax_CrearPersonaFisica")',
+            type: 'POST',
+            data: Mydata,
+            success: function (result) {
+                console.log(result);
+                $("#personasFisicasInf").html(result);
+                $("#Persona_apellidoPaternoFisico").val(null);
+                $("#Persona_apellidoMaternoFisico").val(null);
+                $("#Persona_nombreFisico").val(null);
+                $("#Persona_vigenciaLicencia").val(null);
+                $("#Persona_numeroLicenciaFisico").val(null);
+                $("#Persona_Direccion_numeroFisico").val(null);
+                $("#Persona_PersonaDireccion_correoFisico").val(null);
+                $("#Persona_PersonaDireccion_telefonoFisico").val(null);
+                $("#Persona_fechaNacimiento").val(null);
+                $("#Persona_CURPFisico").val(null);
+                $("#Persona_RFCFisico").val(null);
+                $("#Persona_PersonaDireccion_calleFisico").val(null);
+                $("#Persona_PersonaDireccion_coloniaFisico").val(null);
+                $("#Persona_PersonaDireccion_correoFisico").val(null);
+                $("#Persona_PersonaDireccion_telefonoFisico").val(null);
+                $('#addFisico').modal('hide');
+                hideLoading();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+                hideLoading();
+            }
+        });
+    }
+    function asignarMensajeError(contenedorErrorId, mensaje) {
+        $('<div class="error-message">' + mensaje + '</div>').appendTo("#" + contenedorErrorId).css('color', 'red');
+    }
 
 
     function submitCreateVehiculo() {
-   var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
+        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
-    var controlsValidate = [];
-    var isValid = true;
-    idMarca = $("#ddlMarcas").val();
-    var idSubmarca = $("#idSubmarca").val();
-    var idTipoVehiculo = $("idTipoVehiculo").val();
-    var idPersona = $("#ddlIdPersona").val();
-     if ($("#ddlIdPersona").val() == '') {
+        var controlsValidate = [];
+        var isValid = true;
+        idMarca = $("#ddlMarcas").val();
+        var idSubmarca = $("#idSubmarca").val();
+        var idTipoVehiculo = $("idTipoVehiculo").val();
+        var idPersona = $("#ddlIdPersona").val();
+        if ($("#ddlIdPersona").val() == '') {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
-         var carga = $("#cargaSwitch").prop("checked");
+        var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
-         var idTipoSer = $('#hdnIdCatTipoServicio').val();
+        var idTipoSer = $('#hdnIdCatTipoServicio').val();
 
-    controlsValidate.push({ 'controlName': 'idEntidad' });
-    controlsValidate.push({ 'controlName': 'ddlMarcas' });
-    controlsValidate.push({ 'controlName': 'idSubmarca' });
-    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'ddlMarcas' });
+        controlsValidate.push({ 'controlName': 'idSubmarca' });
+        controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
+        //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
 
-    // INPUTS
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
+        // INPUTS
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    } 
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
 
-            var formData = $("#frmCreateVehiculo").serialize();
-            var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            showLoading();
-            $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    sitteg_success('Elemento guardado correctamente')
-                    $('#VehiculoServiceModal').modal('hide');
-                    $('#agregarVehiculoModal').modal('hide');
-                     var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
-                        if (result && result.data) {
-                            var dataArray = Array.isArray(result.data) ? result.data : [result.data];
+        var formData = $("#frmCreateVehiculo").serialize();
+        var idVeh = $('#hdnIdVehiculo').val();
+        console.log("Id vehiculo: ", idVeh)
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
+            type: 'POST',
+            data: formData,
+            success: function (result) {
+                sitteg_success('Elemento guardado correctamente')
+                $('#VehiculoServiceModal').modal('hide');
+                $('#agregarVehiculoModal').modal('hide');
+                var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
+                if (result && result.data) {
+                    var dataArray = Array.isArray(result.data) ? result.data : [result.data];
 
-                            grid.dataSource.data(dataArray);
-                        } else {
-                            console.error("La respuesta no tiene la estructura esperada:", result);
-                        }
-                        hideLoading();
-                    },
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
-                    hideLoading();
+                    grid.dataSource.data(dataArray);
+                } else {
+                    console.error("La respuesta no tiene la estructura esperada:", result);
                 }
-            });
+                hideLoading();
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
+                hideLoading();
+            }
+        });
     }
-        
-$("#ddlCatTipoServicio").on("change", function () {
+
+    $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
         console.log(value);
         $('#hdnIdCatTipoServicio').val(value);
 
     });
-     function cerrarModalV() {
+    function cerrarModalV() {
         $('#confirmacionModal').modal('show');
 
         // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
@@ -1632,29 +1699,29 @@ $("#ddlCatTipoServicio").on("change", function () {
         });
     }
 
-       $(document).ready(function() {
+    $(document).ready(function () {
         var datePicker = $("#Persona_vigenciaLicencia").data("kendoDatePicker");
         datePicker.value(null);
     });
- 
-    $(document).ready(function() {
-    var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
-    var dateVigencia = datePicker.value();
 
-    // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
-    if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
-        datePicker.value(null);
+    $(document).ready(function () {
+        var datePicker = $("#vigenciaTarjeta").data("kendoDatePicker");
+        var dateVigencia = datePicker.value();
+
+        // Verifica si dateVigencia es igual a la fecha mínima de .NET (01/01/0001)
+        if (dateVigencia !== null && dateVigencia.getTime() === new Date(1, 0, 1).getTime()) {
+            datePicker.value(null);
+        }
+    });
+
+    function cerrarModalFisica() {
+        $('#addFisico').modal('hide');
+
     }
-});
+    function cerrarModalMoral() {
+        $('#addMoral').modal('hide');
 
-function cerrarModalFisica(){
-   $('#addFisico').modal('hide');
- 
-}
-function cerrarModalMoral(){
-   $('#addMoral').modal('hide');
-
-}
+    }
 
 
 </script>

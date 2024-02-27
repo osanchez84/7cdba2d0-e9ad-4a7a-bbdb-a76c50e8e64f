@@ -28,15 +28,33 @@
 <script>
     var personaFisicaControlsValidate=[];
     $(document).ready(()=>{
-
+       var esRobado = "@Model.ReporteRobo";
     var t = "@mensaje"
 
-    if(!t){
+    if (t != '' && t != undefined) {
                   sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
+  }
+    //Si el vehículo tiene reporte de robo se muestra mensaje
+        if (esRobado == "True") {
+            setTimeout(() => { mostrarMensajeRobado() }, 400);
+        }
  
+});
+function mostrarMensajeRobado() {
+        var placa = "@Model.RepuveRobo.Placa";
+        var niv = "@Model.RepuveRobo.Niv";
+        var fecha = "@Model.RepuveRobo.Fecha";
+        var fuenteRobo = "@Model.RepuveRobo.FuenteRobo";
+        var averiguacion = "@Model.RepuveRobo.Averiguacion";
+        var fechaAveriguacion = "@Model.RepuveRobo.FechaAveriguacion";
+        var agente = "@Model.RepuveRobo.AgenteMinisterioPublico";
+
+        Swal.fire({
+            icon: "error",
+            title: "Vehículo con REPORTE DE ROBO",
+            html: `PLACA: ${placa}<br>NIV: ${niv}<br>FECHA: ${fecha}<br>AVERIGUACION: ${averiguacion}<br>FECHA DE AVERIGUACION: ${fechaAveriguacion}<br>FUENTE DE ROBO: ${fuenteRobo}<br>AGENTE: ${agente}`
+        });
     }
- 
-})
  
 
      function EntidadDDChangeAccFis() {
@@ -157,6 +175,10 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
+                    @if (Model.ReporteRobo == true)
+                    {
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
+                    }
                     <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
                 </div>
             </div>
@@ -166,6 +188,10 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
+                      @if (Model.ReporteRobo == true)
+                    {
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
+                    }
                      @if (Model.origenDatos!=null)
                         {
                          <h6 class="px-4"><b>Vehículo encontrado en el @Model.origenDatos</b></h6>
@@ -1336,14 +1362,6 @@
 <script>
 
     $(document).ready(function () {
-         @if (ViewBag.ReporteRobo == true)
-        {
-		<text>
-		sitteg_error('El vehículo cuenta con reporte de robo')
-		</text>
-        }
-
-        
                 $.ajax({
             url: '@Url.Action("pruebapartial")',
             type: 'POST',

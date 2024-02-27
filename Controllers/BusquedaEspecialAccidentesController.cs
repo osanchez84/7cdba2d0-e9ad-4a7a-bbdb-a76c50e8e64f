@@ -136,7 +136,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             };
             var AccidenteModel = _busquedaEspecialAccidentesService.ObtenerAccidentePorId(IdAccidente);
-            var result = _pdfService.CreatePdf("ReporteAccidente", "Accidentes", 6, ColumnsNames, AccidenteModel);
+            var result = _pdfService.CreatePdf("ReporteAccidente", "Accidentes", ColumnsNames, AccidenteModel,Array.Empty<float>());
             return File(result.Item1, "application/pdf", result.Item2);
         }
 
@@ -180,7 +180,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
             var ListTransitoModel = _busquedaEspecialAccidentesService.BusquedaAccidentes(model, idOficina);
-            var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", 6, ColumnsNames, ListTransitoModel);
+            var result = _pdfService.CreatePdf("ReporteAccidentes", "Accidentes", ColumnsNames, ListTransitoModel,Array.Empty<float>());
             return File(result.Item1, "application/pdf", result.Item2);
         }
         public ActionResult EliminarAccidente(int idAccidente)

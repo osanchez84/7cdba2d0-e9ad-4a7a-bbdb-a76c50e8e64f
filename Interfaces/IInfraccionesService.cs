@@ -67,5 +67,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public List<InfraccionesModel> GetReporteInfracciones(InfraccionesBusquedaModel model, int idOficina, int idDependenciaPerfil);
 
+
+        public int GetDiaFestivo(int idDelegacion, DateTime fecha);
     }
 }

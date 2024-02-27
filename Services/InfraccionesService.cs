@@ -1176,7 +1176,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             --SacarGarantia
                                             --DatosPago
                                             ,COALESCE(inf.monto,'0') montoCalificacion
-                                            ,COALESCE(inf.monto,'0') montoPagado
+                                            ,COALESCE(inf.montoPagado,'0') montoPagado
                                             ,COALESCE(inf.reciboPago,'') reciboPago
                                             ,inf.oficioRevocacion oficioCondonacion
                                             ,inf.fechaPago
@@ -3691,6 +3691,56 @@ INSERT INTO infracciones
 				return InfraccionesList;
 			}
 		}
-	}
+
+
+
+		public int GetDiaFestivo(int idDelegacion, DateTime fecha)
+		{
+
+           int resultado = 0;
+            string strQuery = @"SELECT 1 as resultado	                                  
+                                FROM diasInhabiles as f, delegaciones i  
+                                WHERE f.idMunicipio = i.idMunicipio
+									and i.idDelegacion = @idDelegacion
+									and f.fecha = CONVERT(DATE, @fecha,103) 
+								";
+            
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)idDelegacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fecha", SqlDbType.DateTime)).Value = (object)fecha ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+
+                            resultado = reader["resultado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["resultado"].ToString());
+
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return resultado;
+
+
+        }
+    }
 }
 

@@ -570,7 +570,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_crearInfraccion(InfraccionesModel model, CrearMultasTransitoRequestModel requestMode)
         {
+            
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+           
 
             bool validarFolio = _infraccionesService.ValidarFolio(model.folioInfraccion, idDependencia);
 
@@ -584,6 +586,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
                 model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion, idDependencia);
+                //    model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion);
+
 
 
                 var idInfraccion = _infraccionesService.CrearInfraccion(model, idDependencia);
@@ -1994,6 +1999,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(dat);
 
 		}
+
+
+        public DateTime getFechaVencimiento(DateTime fechaInfraccion, int idOficina)
+        {
+            int contador = 0;
+            DateTime fechavigencia = fechaInfraccion;
+            while (contador < 10)
+            {
+                fechavigencia= fechaInfraccion.AddDays(1);
+                Console.WriteLine(fechavigencia.ToString("dddd"));
+                if (fechavigencia.DayOfWeek.ToString() == "Sunday" || fechavigencia.DayOfWeek.ToString() == "Domingo")
+                    Console.WriteLine(fechavigencia.ToString("dddd"));
+                else
+                {
+                    if(_infraccionesService.GetDiaFestivo(idOficina, fechavigencia) ==0)
+                        contador++;
+                }
+                //else { 
+                //contador++;
+                //}
+                fechaInfraccion = fechavigencia;
+            }
+
+
+            return fechaInfraccion;
+        }
 
 
 	}

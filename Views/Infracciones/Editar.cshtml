@@ -708,7 +708,7 @@
                                     <div class="row my-4">
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
-                                                 @if(Model.Garantia.numLicencia != null){
+                                                 @if(Model.Garantia.idTipoLicencia != null){
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia).Filter(FilterType.Contains)
                                                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                                                      .Label(l => l.Content("Tipo de licencia:"))
@@ -716,7 +716,7 @@
                                                     .Enable(!ViewBag.EsSoloLectura)
                                                     .HtmlAttributes(new { style = "width:100%;" }))
                                                     }else{
-                                                    @(Html.Kendo().DropDownListFor(m => m.PersonaInfraccion.idTipoLicencia).Filter(FilterType.Contains)
+                                                    @(Html.Kendo().DropDownListFor(m => m.PersonaInfraccion2.idTipoLicencia).Filter(FilterType.Contains)
                                                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
                                                      .Label(l => l.Content("Tipo de licencia:"))
                                                     .OptionLabel("-- Seleccione --")
@@ -736,7 +736,7 @@
                                                     .HtmlAttributes(new { style = "width: 100%", id = "numLicGar" })
                                                     )
                                                     }else{
-                                                @(Html.Kendo().TextBoxFor(t => t.PersonaInfraccion.numeroLicencia)
+                                                @(Html.Kendo().TextBoxFor(t => t.PersonaInfraccion2.numeroLicencia)
                                                     .Label(l => l.Content("Número licencia:"))
                                                     .Placeholder("Ingresa licencia")
                                                     //.Events(s => s.Change("updateNumLic"))

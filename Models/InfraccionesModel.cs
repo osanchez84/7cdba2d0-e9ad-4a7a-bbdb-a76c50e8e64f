@@ -138,6 +138,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreEntidad { get; set; }
         public string tipoServicio { get; set; }
         public string numeroEconomico {  get; set; }
+        public string cortesia { get; set; }
+
         public bool tieneCortesia { get; set; }
         public decimal montoCalificacion { get; set; }
         public decimal montoPagado { get; set; }

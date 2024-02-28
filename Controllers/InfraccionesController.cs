@@ -537,8 +537,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.Vehiculo.placas;
-                model.Garantia.numLicencia = model.PersonaInfraccion.numeroLicencia;
-
+                model.Garantia.numLicencia = model.PersonaInfraccion2.numeroLicencia;
+                model.Garantia.idTipoLicencia = model.PersonaInfraccion2.idTipoLicencia;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }

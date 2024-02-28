@@ -2,7 +2,6 @@
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
-using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

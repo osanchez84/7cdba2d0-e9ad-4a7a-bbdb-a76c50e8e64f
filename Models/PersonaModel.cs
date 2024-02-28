@@ -49,6 +49,14 @@ namespace GuanajuatoAdminUsuarios.Models
         public string? telefonoInfraccion { get; set; }
         public string? tipoLicencia { get; set; }
         public string? telefono { get; set; }
+
+        public string? codigoPostal { get; set; }
+
+        public string? colonia { get; set; }
+
+        public string? calle { get; set; }
+
+        public string? numero { get; set; }
         public string correo { get; set; }
         public string correoInfraccion { get; set; }
         public bool generoBool { get; set; }

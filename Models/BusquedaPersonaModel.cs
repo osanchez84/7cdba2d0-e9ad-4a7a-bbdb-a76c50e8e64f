@@ -17,6 +17,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
 
         public List<PersonaModel> ListadoPersonas { get; set; }
+
+        public override string ToString()
+        {
+            return $"[Nombre:{NombreBusqueda},Paterno:{ApellidoPaternoBusqueda},Materno:{ApellidoMaternoBusqueda},RFC:{RFCBusqueda},CURP:{CURPBusqueda},No.Licencia:{NumeroLicenciaBusqueda}]";
+        }
     }
 
 }

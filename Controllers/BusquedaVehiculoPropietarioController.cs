@@ -250,15 +250,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public IActionResult BuscarPersonaFisicaWithPaginado([FromServices] IPersonasService personasService, [DataSourceRequest] DataSourceRequest request, BusquedaPersonaModel model)
         {
-            // Realizar la búsqueda de personas
-            if (model.PersonaModel != null)
-                busqudeaPersonaModel = model;
-            else
-                model = busqudeaPersonaModel;
+            //Se eliminan espacios en blanco de los campos de busqueda
+            model.PersonaModel ??= new();
+            model.CURPBusqueda = model.CURPBusqueda?.Trim();
+            model.RFCBusqueda = model.RFCBusqueda?.Trim();
+            model.NombreBusqueda = model.NombreBusqueda?.Trim();
+            model.ApellidoPaternoBusqueda = model.ApellidoPaternoBusqueda?.Trim();
+            model.ApellidoMaternoBusqueda = model.ApellidoMaternoBusqueda?.Trim();
+            model.NumeroLicenciaBusqueda = model.NumeroLicenciaBusqueda?.Trim();
 
-
-            var personas = new BusquedaPersonaModel();
-            Pagination pagination = new Pagination
+            Logger.Info("Buscar persona fisica en RIAG por :" + model);
+            Pagination pagination = new()
             {
                 PageIndex = request.Page - 1
             };
@@ -288,9 +290,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             // Verificar si se encontraron resultados en la búsqueda de personas
             if (personasList.Any())
             {
-                personas.ListadoPersonas = personasList;
+                List<PersonaModel> personas = personasList;
                 var total = 0;
-                if (personasList.Count() > 0)
+                if (personasList.Count > 0)
                     total = personasList.ToList().FirstOrDefault().total;
 
                 //if (findAll)
@@ -298,10 +300,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 var result = new DataSourceResult()
                 {
-                    Data = personas.ListadoPersonas,
+                    Data = personas,
                     Total = total
                 };
-                return Json(new { encontrada = true, source=result});
+                return Json(new { encontrada = true, source = result });
             }
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
@@ -310,7 +312,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult MostrarListaPersonasFisicaEncontradas(List<PersonaModel> listaPersonas)
         {
-            return ViewComponent("ListaPersonasEncontradas",listaPersonas);
+            return ViewComponent("ListaPersonasEncontradas", listaPersonas);
         }
 
         /// <summary>

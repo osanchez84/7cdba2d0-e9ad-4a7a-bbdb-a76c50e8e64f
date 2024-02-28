@@ -367,18 +367,18 @@
         console.log(formData);
         showLoading(); 
         $.ajax({
-          //  url: '/Personas/BuscarPorParametro',
           url: '@Url.Action("BuscarPersonaFisicaWithPaginado","BusquedaVehiculoPropietario")',
             type: 'POST',
             data: formData,
             success: function (response) {
                 alert(response);
+                console.log(response);
                 if (!response.encontrada) {
                     hideLoading();
                     buscaEnLicencias()
                     return;
                 }
-                var personasList = response.data;
+                var personasList = response.source;
                 if (personasList != null) {
                     cargaListaPersonasFisicasEncontradas(personasList.Data);
                 }
@@ -389,6 +389,7 @@
                 hideLoading();
             },
             error: function (error) {
+                console.log(error);
                 sitteg_warning('Ocurrió un error en la búsqueda.');
                 hideLoading();
             }
@@ -401,7 +402,7 @@
           //  url: '/Personas/BuscarPorParametro',
           url: '@Url.Action("MostrarListaPersonasFisicaEncontradas","BusquedaVehiculoPropietario")',
             type: 'POST',
-            data: data,
+            data: data.Data,
             success: function (response) {
                  $("#listadoPersonas").html(result);
                 hideLoading();

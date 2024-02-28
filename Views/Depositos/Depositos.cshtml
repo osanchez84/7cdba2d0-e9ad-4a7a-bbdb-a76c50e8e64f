@@ -108,7 +108,7 @@
             <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="controlForm my-3">
                     <label>Fecha <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().DateTimePickerFor(t => t.fechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                        @(Html.Kendo().DateTimePickerFor(t => t.fechaSolicitud).Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss").Interval(1)
                             .HtmlAttributes(new { style = "width: 100%", 
                             title = "datepicker", 
                             required = "required" })

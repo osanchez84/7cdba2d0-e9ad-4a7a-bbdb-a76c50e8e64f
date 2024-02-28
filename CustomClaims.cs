@@ -10,8 +10,9 @@ namespace GuanajuatoAdminUsuarios
 		public const string Pension = "Pension";
         public const string TipoOficina = "TipoOficina";
         public const string AbreviaturaMunicipio = "AbreviaturaMunicipio";
+		public const string Oficina= "Oficina";
 
 
-    }
+	}
 }
 

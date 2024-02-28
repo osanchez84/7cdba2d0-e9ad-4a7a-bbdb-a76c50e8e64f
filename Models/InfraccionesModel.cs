@@ -35,9 +35,10 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime ?fechaNacimiento { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime fechaInfraccion { get; set; } = DateTime.Now;
+        public DateTime fechaInfraccion { get; set; } 
+		public DateTime horaInfraccion { get; set; } 
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaVencimiento { get; set; } = DateTime.Now;
 
 		public string aplicacion { get; set; }
@@ -138,6 +139,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreEntidad { get; set; }
         public string tipoServicio { get; set; }
         public string numeroEconomico {  get; set; }
+        public string cortesia { get; set; }
+
         public bool tieneCortesia { get; set; }
         public decimal montoCalificacion { get; set; }
         public decimal montoPagado { get; set; }

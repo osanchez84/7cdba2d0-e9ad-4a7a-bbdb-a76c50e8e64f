@@ -133,6 +133,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
             //_infraccionesService.GetAllInfracciones(idOficina);
             searchModel.ListInfracciones = listInfracciones;
+
+
+
             return View(searchModel);
         }
 
@@ -537,8 +540,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.Vehiculo.placas;
-                model.Garantia.numLicencia = model.PersonaInfraccion.numeroLicencia;
-
+                model.Garantia.numLicencia = model.PersonaInfraccion2.numeroLicencia;
+                model.Garantia.idTipoLicencia = model.PersonaInfraccion2.idTipoLicencia;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }
@@ -1017,6 +1020,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             models.placas = "XXXXOXO";
             models.serie = "XXXXOXOhf5321";
+            models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;
         }
@@ -1792,8 +1796,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [HttpPost]
         public IActionResult ajax_EditarConductor(PersonaModel model)
         {
-            int id = _personasService.UpdatePersona(model);
-            int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            //int id = _personasService.UpdatePersona(model);
+            //int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            
+            int id = _personasService.UpdateConductor(model);
+            
+            
             return Json(new { success = true });
         }
 

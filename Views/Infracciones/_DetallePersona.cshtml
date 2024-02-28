@@ -178,7 +178,7 @@
         <div class="form-group col-md-3">
             <div class="controlForm">
                 <label>Vigencia Licencia:</label>
-                @(Html.Kendo().DateTimePickerFor(t => t.vigenciaLicencia).Max(DateTime.Now)
+                @(Html.Kendo().DateTimePickerFor(t => t.vigenciaLicencia)
                                                 .Label(l => l.Content("Vigencia Licencia:"))
                                                 .Format("dd/MM/yyyy")
                                                 .Enable(!ViewBag.EsSoloLectura)

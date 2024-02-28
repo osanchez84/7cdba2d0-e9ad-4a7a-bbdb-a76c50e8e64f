@@ -183,7 +183,7 @@
 								</div>
 							</div>
 							<div class="row my-4 px-4">
-								<div class="form-group col-md-4">
+								@*<div class="form-group col-md-4">
 									<div class="controlForm">
 										<label>Fecha infracción <b>(obligatorio)</b>:</label>
 										@(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
@@ -194,8 +194,34 @@
 											.Culture("es-ES")
 											.Interval(10)
 											.DateInput()
-											.StartTime(DateTime.Now)
+											//.StartTime(DateTime.Now)
 											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
+											)
+									</div>
+								</div>*@
+
+								<div class="row my-4 px-4">
+									<div class="form-group col-md-3 controlForm">
+										<label>Fecha infracción <b>(obligatorio)</b>:</label>
+										@(Html.Kendo().DatePickerFor(t => t.fechaInfraccion)
+
+											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
+											.Format("dd/MM/yyyy")
+											.Culture("es-ES")
+											.Value("")
+											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
+											)
+									</div>
+								
+
+									<div class="form-group col-md-2 controlForm">
+										<label class="text-muted">Hora:</label>
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
+											.Label(l => l.Content("Hora:"))
+											.Value("")
+											.Format("HH:mm")
+											.Culture("es-ES")
+											.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
 											)
 									</div>
 								</div>

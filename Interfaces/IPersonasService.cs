@@ -26,6 +26,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int UpdatePersonaMoral(PersonaModel model);
         int CreatePersonaDireccion(PersonaDireccionModel model);
         int UpdatePersonaDireccion(PersonaDireccionModel model);
+        int UpdateConductores(Object model);
         PersonaModel GetPersonaTypeById(int idPersona);
         public PersonaModel BuscarPersonaSoloLicencia(string numeroLicencia);
         public int UpdatePersona(PersonaModel model);
@@ -34,6 +35,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public IEnumerable<PersonaModel> GetAllPersonasPagination(Pagination pagination);
 
         List<PersonaModel> GetPersonas();
+        int UpdateConductor(PersonaModel model);
 
         List<PersonaModel> BuscarPersonasWithPagination(BusquedaPersonaModel model, Pagination pagination);
     }

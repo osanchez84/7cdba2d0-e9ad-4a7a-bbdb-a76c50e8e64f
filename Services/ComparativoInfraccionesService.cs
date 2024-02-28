@@ -1,5 +1,6 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,31 +32,38 @@ namespace GuanajuatoAdminUsuarios.Services
             condiciones += modelBusqueda.idTipoServicio.Equals(null) || modelBusqueda.idTipoServicio == 0 ? "" : " AND veh.idCatTipoServicio  = @idCatTipoServicio ";
             condiciones += modelBusqueda.idTipoLicencia.Equals(null) || modelBusqueda.idTipoLicencia == 0 ? "" : " AND gar.idTipoLicencia = @idTipoLicencia ";
             condiciones += modelBusqueda.idMunicipio.Equals(null) || modelBusqueda.idMunicipio == 0 ? "" : " AND inf.idMunicipio =@idMunicipio ";
+            if (modelBusqueda.idTipo == 0)
+                condiciones += " AND catMotInf.transito IN(0,1)";
+            else if (modelBusqueda.idTipo == 1)
+                condiciones += " AND catMotInf.transito=1";
+            else if (modelBusqueda.idTipo == 2)
+                condiciones += " AND catMotInf.transito=0";
 
-           /* string query = @"SELECT YEAR(inf.fechaInfraccion) AS ANIO, COUNT(*) AS TOTAL
-                FROM infracciones inf
-                left join catDependencias dep on inf.idDependencia= dep.idDependencia
-                left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
-                left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
-                left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
-                left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
-                left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
-                left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
-                left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
-                left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
-                left join catTramos catTra on inf.idTramo = catTra.idTramo
-                left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
-                left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
-                left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-                left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
-                left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
-                left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                WHERE inf.estatus = 1 @WHERES
-                GROUP BY YEAR(inf.fechaInfraccion)"
-            ;*/
+            /* string query = @"SELECT YEAR(inf.fechaInfraccion) AS ANIO, COUNT(*) AS TOTAL
+                 FROM infracciones inf
+                 left join catDependencias dep on inf.idDependencia= dep.idDependencia
+                 left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
+                 left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
+                 left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
+                 left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
+                 left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
+                 left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
+                 left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
+                 left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                 left join catTramos catTra on inf.idTramo = catTra.idTramo
+                 left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
+                 left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+                 left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+                 left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
+                 left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
+                 left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
+                 WHERE inf.estatus = 1 @WHERES
+                 GROUP BY YEAR(inf.fechaInfraccion)"
+             ;*/
             string query = @"SELECT YEAR(inf.fechaInfraccion) AS ANIO, COUNT(*) AS TOTAL
                 FROM infracciones inf
-               
+                left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+                left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
                 WHERE inf.estatus = 1 @WHERES
                 GROUP BY YEAR(inf.fechaInfraccion)"
            ;
@@ -136,39 +144,44 @@ namespace GuanajuatoAdminUsuarios.Services
             condiciones += modelBusqueda.idTipoServicio.Equals(null) || modelBusqueda.idTipoServicio == 0 ? "" : " AND veh.idCatTipoServicio  = @idCatTipoServicio ";
             condiciones += modelBusqueda.idTipoLicencia.Equals(null) || modelBusqueda.idTipoLicencia == 0 ? "" : " AND gar.idTipoLicencia = @idTipoLicencia ";
             condiciones += modelBusqueda.idMunicipio.Equals(null) || modelBusqueda.idMunicipio == 0 ? "" : " AND inf.idMunicipio =@idMunicipio ";
+            if (modelBusqueda.idTipo == 0)
+                condiciones += " AND catMotInf.transito IN(0,1)";
+            else if (modelBusqueda.idTipo == 1)
+                condiciones += " AND catMotInf.transito=1";
+            else if (modelBusqueda.idTipo == 2)
+                condiciones += " AND catMotInf.transito=0";
+            /*  string query = @"SELECT catac.causaAccidente AS CAUSA, COUNT(*) AS CANTIDAD, YEAR(inf.fechaInfraccion) AS ANIO 
+                  FROM infracciones inf
+                  INNER JOIN infraccionesAccidente ia on ia.idInfraccion = inf.idInfraccion
+                  INNER JOIN accidenteCausas ac on ac.idAccidente = ia.idAccidente
+                  INNER JOIN catCausasAccidentes catac on catac.idCausaAccidente = ac.idCausaAccidente
+                  left join catDependencias dep on inf.idDependencia= dep.idDependencia
+                  left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
+                  left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
+                  left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
+                  left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
+                  left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
+                  left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
+                  left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
+                  left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
+                  left join catTramos catTra on inf.idTramo = catTra.idTramo
+                  left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
+                  left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
+                  left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
+                  left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
+                  left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
+                  left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
+                  WHERE inf.estatus = 1 AND YEAR(inf.fechaInfraccion) in (2000,2023) 
+                  GROUP BY catac.causaAccidente, YEAR(inf.fechaInfraccion)"
+              ;
 
-          /*  string query = @"SELECT catac.causaAccidente AS CAUSA, COUNT(*) AS CANTIDAD, YEAR(inf.fechaInfraccion) AS ANIO 
-                FROM infracciones inf
-                INNER JOIN infraccionesAccidente ia on ia.idInfraccion = inf.idInfraccion
-                INNER JOIN accidenteCausas ac on ac.idAccidente = ia.idAccidente
-                INNER JOIN catCausasAccidentes catac on catac.idCausaAccidente = ac.idCausaAccidente
-                left join catDependencias dep on inf.idDependencia= dep.idDependencia
-                left join catDelegaciones	del on inf.idDelegacion = del.idDelegacion
-                left join catEstatusInfraccion  estIn on inf.IdEstatusInfraccion = estIn.idEstatusInfraccion
-                left join catGarantias catGar on inf.idGarantia = catGar.idGarantia
-                left join garantiasInfraccion gar on catGar.idGarantia= gar.idCatGarantia
-                left join catTipoPlaca  tipoP on gar.idTipoPlaca=tipoP.idTipoPlaca
-                left join catTipoLicencia tipoL on tipoL.idTipoLicencia= gar.idTipoLicencia
-                left join catOficiales catOfi on inf.idOficial = catOfi.idOficial
-                left join catMunicipios catMun on inf.idMunicipio =catMun.idMunicipio
-                left join catTramos catTra on inf.idTramo = catTra.idTramo
-                left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
-                left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
-                left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
-                left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
-                left join catSubConceptoInfraccion catSubInf on catMotInf.IdSubConcepto = catSubInf.idSubConcepto
-                left join catConceptoInfraccion catConInf on  catSubInf.idConcepto = catConInf.idConcepto
-                WHERE inf.estatus = 1 AND YEAR(inf.fechaInfraccion) in (2000,2023) 
-                GROUP BY catac.causaAccidente, YEAR(inf.fechaInfraccion)"
-            ;
-
-            string strQuery = query.Replace("@WHERES", condiciones);*/
+              string strQuery = query.Replace("@WHERES", condiciones);*/
 
             string query = @"SELECT catMotInf.nombre AS CAUSA, COUNT(*) AS CANTIDAD, YEAR(inf.fechaInfraccion) AS ANIO 
                 FROM infracciones inf
                 left join motivosInfraccion motInf on inf.IdInfraccion = motInf.idInfraccion
                 left join catMotivosInfraccion catMotInf on motInf.idCatMotivosInfraccion = catMotInf.idCatMotivoInfraccion 
-                WHERE inf.estatus = 1 AND YEAR(inf.fechaInfraccion) in (2000,2024) 
+                WHERE inf.estatus = 1 AND YEAR(inf.fechaInfraccion) in (@año1,@año2) 
                 GROUP BY catMotInf.nombre, YEAR(inf.fechaInfraccion)";
  
 
@@ -248,6 +261,12 @@ namespace GuanajuatoAdminUsuarios.Services
             condiciones += modelBusqueda.idTipoServicio.Equals(null) || modelBusqueda.idTipoServicio == 0 ? "" : " AND veh.idCatTipoServicio  = @idCatTipoServicio ";
             condiciones += modelBusqueda.idTipoLicencia.Equals(null) || modelBusqueda.idTipoLicencia == 0 ? "" : " AND gar.idTipoLicencia = @idTipoLicencia ";
             condiciones += modelBusqueda.idMunicipio.Equals(null) || modelBusqueda.idMunicipio == 0 ? "" : " AND inf.idMunicipio =@idMunicipio ";
+            if (modelBusqueda.idTipo ==0 )
+                condiciones += " AND catMotInf.transito IN(0,1)";
+            else if (modelBusqueda.idTipo == 1)
+                condiciones += " AND catMotInf.transito=1";
+            else if (modelBusqueda.idTipo == 2)
+                condiciones += " AND catMotInf.transito=0";
 
             string query = @"SELECT C.NUMERO_MOTIVO AS NUMERO_MOTIVO, COUNT(C.idInfraccion) AS TOTAL_INFRACCIONES, CUENTA* Count(c.idInfraccion) AS TOTAL_CONTAB, C.FECHA AS ANIO 
                         FROM (
@@ -314,6 +333,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     command.Parameters.Add(new SqlParameter("@año1", SqlDbType.Int)).Value = (object)modelBusqueda.año1 ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@año2", SqlDbType.Int)).Value = (object)modelBusqueda.año2 ?? DBNull.Value;
+                    //if (modelBusqueda.idTipo == 0)
+                    //command.Parameters.Add(new SqlParameter("@idTipo", SqlDbType.Int)).Value = (object)modelBusqueda.idTipo ?? DBNull.Value;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

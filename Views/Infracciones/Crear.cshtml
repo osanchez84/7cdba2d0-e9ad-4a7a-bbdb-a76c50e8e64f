@@ -203,7 +203,7 @@
 								<div class="row my-4 px-4">
 									<div class="form-group col-md-3 controlForm">
 										<label>Fecha infracción <b>(obligatorio)</b>:</label>
-										@(Html.Kendo().DatePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
+										@(Html.Kendo().DatePickerFor(t => t.fechaInfraccion)
 
 											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
 											.Format("dd/MM/yyyy")
@@ -216,7 +216,7 @@
 
 									<div class="form-group col-md-2 controlForm">
 										<label class="text-muted">Hora:</label>
-										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1).Max(DateTime.Now)
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
 											.Label(l => l.Content("Hora:"))
 											.Format("HH:mm")
 											.Culture("es-ES")

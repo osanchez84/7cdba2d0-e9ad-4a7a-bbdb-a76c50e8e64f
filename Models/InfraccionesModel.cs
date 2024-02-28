@@ -36,8 +36,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaInfraccion { get; set; } = DateTime.Now;
+		public DateTime horaInfraccion { get; set; } = DateTime.Now;
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaVencimiento { get; set; } = DateTime.Now;
 
 		public string aplicacion { get; set; }

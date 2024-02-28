@@ -2013,6 +2013,8 @@ namespace GuanajuatoAdminUsuarios.Services
 							DateTime fechaHoraInfraccion = fechaInfraccion.Date + horaInfraccionTimeSpan;
 
 							model.fechaInfraccion = fechaHoraInfraccion;
+							model.horaInfraccion = fechaHoraInfraccion;
+
 							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
 							model.observaciones = reader["observaciones"] == System.DBNull.Value ? string.Empty : reader["observaciones"].ToString();
 							model.lugarCalle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
@@ -2922,7 +2924,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 			string strQuery = @"
 
-INSERT INTO infracciones
+											INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
                                             ,idOficial
@@ -2977,7 +2979,7 @@ INSERT INTO infracciones
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
-					DateTime fechaInfraccion = model.fechaInfraccion;
+					DateTime fechaInfraccion = model.horaInfraccion;
 					TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
 
 					string horaFormateada = horaInfraccion.ToString("hhmm");
@@ -3078,7 +3080,7 @@ INSERT INTO infracciones
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
-					DateTime fechaInfraccion = model.fechaInfraccion;
+					DateTime fechaInfraccion = model.horaInfraccion;
 					TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
 					string horaFormateada = horaInfraccion.ToString("hhmm");
 					string horaInfraccionString = horaFormateada;

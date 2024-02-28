@@ -845,6 +845,110 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
+
+        public int UpdateConductor(PersonaModel model)
+        {
+            int result = 0;
+
+            //Personas ************************
+            string strQuery = @"
+                            Update personas
+                            set 
+                             numeroLicencia	   = @numeroLicencia
+                            ,CURP			   = @CURP
+                            ,RFC			   = @RFC
+                            ,fechaActualizacion= GETDATE()
+                            ,actualizadoPor	   = @actualizadoPor
+                            ,estatus			= @estatus
+                            ,fechaNacimiento = @fechaNacimiento
+                            ,vigenciaLicencia = @vigenciaLicencia
+                            where idPersona= @idPersona";
+
+            //Personas direcciones ********
+            string strQueryPD = @"Update personasDirecciones
+                                SET
+                                colonia			= @colonia
+                                ,calle				= @calle
+                                ,numero				= @numero
+                                ,telefono			= @telefono
+                                ,correo				= @correo
+                                ,actualizadoPor		= @actualizadoPor
+                                ,fechaActualizacion	= GETDATE()
+                                ,estatus			= @estatus
+                                where idPersona = @idPersona";
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)model.vigenciaLicencia ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    //result = Convert.ToInt32(command.ExecuteScalar());
+                    result = Convert.ToInt32(command.ExecuteScalar());
+
+                }
+                catch (SqlException ex)
+                {
+                    return 0;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+
+                //ACTUALIZACION DE PERSONASDIRECCIONES ***********************
+               
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQueryPD, connection);
+                    //command.Parameters.Add(new SqlParameter("@idPersonasDirecciones", SqlDbType.Int)).Value = (object)model.PersonaDireccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@colonia", SqlDbType.NVarChar)).Value = (object)model.colonia;
+                    command.Parameters.Add(new SqlParameter("@calle", SqlDbType.NVarChar)).Value = (object)model.calle;
+                    command.Parameters.Add(new SqlParameter("@numero", SqlDbType.NVarChar)).Value = (object)model.numero;
+                    command.Parameters.Add(new SqlParameter("@telefono", SqlDbType.BigInt)).Value = (object)model.telefono ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@correo", SqlDbType.NVarChar)).Value = (object)model.correo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.idPersona;
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.CommandType = CommandType.Text;
+                    //result = Convert.ToInt32(command.ExecuteScalar());
+                    result = command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            }
+
+
+            
+
+            return result;
+        }
+
+
+
         public int CreatePersonaDireccion(PersonaDireccionModel model)
         {
             int result = 0;
@@ -1840,8 +1944,10 @@ namespace GuanajuatoAdminUsuarios.Services
             }
         }
 
-
-
+        public int UpdateConductores(object model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

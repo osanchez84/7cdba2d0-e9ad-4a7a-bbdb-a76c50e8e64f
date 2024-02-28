@@ -1792,8 +1792,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [HttpPost]
         public IActionResult ajax_EditarConductor(PersonaModel model)
         {
-            int id = _personasService.UpdatePersona(model);
-            int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            //int id = _personasService.UpdatePersona(model);
+            //int idDireccion = _personasService.UpdatePersonaDireccion(model.PersonaDireccion);
+            
+            int id = _personasService.UpdateConductor(model);
+            
+            
             return Json(new { success = true });
         }
 

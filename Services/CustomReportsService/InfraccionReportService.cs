@@ -557,8 +557,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Garantía"));
                 nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia?.garantia));
-                nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placas"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
-                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placas"? ModelDataInfracciones.placas:"-"));
+                nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placa"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
+                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placa"? ModelDataInfracciones.placas:"-"));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -572,7 +572,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
 				nested.AddCell("   ");
 				nested.AddCell(FieldCellBox("Tipo licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.tipoLicencia:"-"));
                 nested.AddCell(FieldCellBox("No. de licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.numLicencia:"-"));
-                nested.AddCell(FieldCellBox("No. de tarjeta: ", tipoGar== "Tarjeta de circulación"? ModelDataInfracciones.NumTarjetaCirculacion:"-"));//VALIDAR
+                nested.AddCell(FieldCellBox("No. de tarjeta: ", tipoGar== "Tarjeta"? ModelDataInfracciones.NumTarjetaCirculacion:"-"));//VALIDAR
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

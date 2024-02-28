@@ -4,8 +4,8 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Tue Feb 27 2024
- * Última modificación: Tue Feb 27 2024
+ * Última modificación: Wed Feb 28 2024
+ * Última modificación: Wed Feb 28 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -39,7 +39,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
     {
         #region Variables
         private readonly ICatDictionary _catDictionary;
-        private static BusquedaPersonaModel busqudeaPersonaModel = new();
+
         #endregion
         #region Constructor
         public BusquedaVehiculoPropietarioController(ICatDictionary catDictionary)
@@ -285,7 +285,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
             }
 
-            var personasList = new List<PersonaModel>();//personasService.BuscarPersonasWithPagination(model, pagination);
+            var personasList = personasService.BuscarPersonasWithPagination(model, pagination);
 
             // Verificar si se encontraron resultados en la búsqueda de personas
             if (personasList.Any())
@@ -298,21 +298,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //if (findAll)
                 request.PageSize = pagination.PageSize;
 
-                var result = new DataSourceResult()
-                {
-                    Data = personas,
-                    Total = total
-                };
-                return Json(new { encontrada = true, source = result });
+                /* var result = new DataSourceResult()
+                 {
+                     Data = personas,
+                     Total = total
+                 };*/
+                model.ListadoPersonas = personasList;
+                return Json(new { encontrada = true, result = model });
             }
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
             return Json(new { encontrada = false, tipo = "sin datos", message = "busca en licencias" });
         }
 
-        public IActionResult MostrarListaPersonasFisicaEncontradas(List<PersonaModel> listaPersonas)
+        public IActionResult MostrarListaPersonasFisicaEncontradas(BusquedaPersonaModel model)
         {
-            return ViewComponent("ListaPersonasEncontradas", listaPersonas);
+            return ViewComponent("ListaPersonasEncontradas", new { listaPersonas=model.ListadoPersonas });
         }
 
         /// <summary>

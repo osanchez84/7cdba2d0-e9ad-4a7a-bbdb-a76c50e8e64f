@@ -2,7 +2,90 @@
 @{
     var headerAlign = Model.IsModal ? "align-items-center justify-content-between" : "align-items-end justify-content-end";
 }
+<script>
+function buscarPersonaFisica(){
+        // HMG: Se cambian funcionalidades por lentitud en la carga y se hace el paginado.
+        var licenciaBusqueda = $("#NumeroLicenciaBusqueda").val().trim();
+        var rfcBusqueda = $("#RFCBusqueda").val().trim();
+        var curpBusqueda = $("#CURPBusqueda").val().trim();
+        var nombreBusqueda = $("#NombreBusqueda").val().trim();
+        var apellidoPaternoBusqueda = $("#ApellidoPaternoBusqueda").val().trim();
+   
 
+        if (licenciaBusqueda !== "") {
+            if (licenciaBusqueda.length < 10) {
+                alert("licencia");
+                sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+        if (rfcBusqueda !== "") {
+            if (rfcBusqueda.length < 10) {
+                sitteg_warning("El RFC debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+        if (curpBusqueda !== "") {
+            if (curpBusqueda.length < 10) {
+                sitteg_warning("El CURP debe tener al menos 10 caracteres.");
+                return;
+            }
+        }
+        if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
+            (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
+            sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
+            return;
+        }
+       
+        $("#listadoPersonasContainer").fadeOut();
+        var formData = $("#buscarPersonaFisicaForm").serialize();
+        showLoading(); 
+        $.ajax({
+          url: '@Url.Action("BuscarPersonaFisicaWithPaginado","BusquedaVehiculoPropietario")',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (!response.encontrada) {
+                    hideLoading();
+                    buscaEnLicencias()
+                    return;
+                }
+                var modelo = response.result;
+                if (modelo.ListadoPersonas != null && modelo.ListadoPersonas.length>0) {
+                    cargaListaPersonasFisicasEncontradas(modelo);
+                }
+                else {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                }
+
+                hideLoading();
+            },
+            error: function (error) {
+                console.log(error);
+                sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
+            }
+        });
+    }
+
+     function cargaListaPersonasFisicasEncontradas(model){
+        showLoading();
+         $.ajax({
+          url: '@Url.Action("MostrarListaPersonasFisicaEncontradas","BusquedaVehiculoPropietario")',
+            type: 'POST',
+            data: model,
+            success: function (response) {
+                $("#listadoPersonasContainer").fadeIn();
+                 $("#listadoPersonasRiagContainer").html(response);
+                hideLoading();
+            },
+            error: function (error) {
+                sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
+            }
+        });
+    }
+</script>
 
 <section class="bg-white boxShadow rounded">
     <div class="row @headerAlign px-4 px-md-4 pt-3 pb-2">
@@ -105,12 +188,11 @@
             </div>
                 <div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0">
         <div class="controlButton my-3">
-            <div class="controlButton my-3" onclick="buscarPersonaFisica()">
                 @(Html.Kendo().Button()
                     .Name("buscarOtroConductor")
-                    .HtmlAttributes(new { @class = "btnPrimary" })
+                    .HtmlAttributes(new {type = "button", @class = "btnPrimary" })
+                     .Events(ev => ev.Click("buscarPersonaFisica"))
                     .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
-            </div>
         </div>
     </div>
         </div>
@@ -120,6 +202,13 @@
             <div class="bg-light py-1"></div>
         </div>
     </div>
+        @*Table*@
+        <div id="listadoPersonasContainer">
+        <div id="listadoPersonasLicenciasContainer">
+     </div>
+    <div id="listadoPersonasRiagContainer">
+     </div>
+        </div>
     <div id="resultadoLicencia" style="display: none;">
         <p>Nombre: <span id="nombreSpan"></span></p>
         <label for="tipoLicenciaDropdown">Tipo de Licencia:</label>
@@ -140,61 +229,7 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-between mb-1 py-4 titleCustom">
-        <div class="col-12 col-md-auto mt-4 mb-2">
-            <h5 class="px-4"><b>Listado de Personas</b></h5>
-            <h6 class="px-4 text-muted">Edita las personas que lo requieran.</h6>
-        </div>
-    </div>
-
-    @*Table*@
-    <div id="listadoPersonas">
-              @await Component.InvokeAsync("ListaPersonasEncontradas",Model.ListadoPersonas)
-    </div>
-
-
 </section>
-
-
-
-<div class="modal fade modalCustom" id="modalCrearPersona" aria-labelledby="modalCrearPersona" aria-hidden="true">
-    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered ">
-        <div class="modal-content">
-            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-                <div class="col-auto pe-0">
-                    <div class="row align-items-center justify-content-center justify-content-md-start">
-                        <div class="col-auto pe-0">
-                            <i class="icon-addConcecionario h1 colorPrimary"></i>
-                        </div>
-                        <div class="col-auto my-3">
-                            <h2 class="m-0 h3"><b>Agregar Persona</b></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="row">
-                        <div class="col-auto my-3">
-                            <button type="button" class="btn btn-danger" onclick="cerrarModalP()" aria-label="Close">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="bg-light py-1"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 my-4">
-                    <h5 class="px-4"><b>Datos de persona</b></h5>
-                    <h6 class="px-4 text-muted">Completa los datos obligatorios para guardar.</h6>
-                </div>
-            </div>
-            <div class="modal-body" id="modalBodyCrearPersona">
-            </div>
-        </div>
-    </div>
-</div>
 <div id="modalLicencias" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -252,7 +287,9 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="confirmacionModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+@if (Model.IsModal)
+{
+    <div class="modal fade" id="confirmacionModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -269,7 +306,7 @@
         </div>
     </div>
 </div>
-
+}
 
 <script>
     $(document).ready(function () {
@@ -325,95 +362,7 @@
         });
     }
 
-
-    function buscarPersonaFisica() {
-        // HMG: Se cambian funcionalidades por lentitud en la carga y se hace el paginado.
-        var licenciaBusqueda = $("#NumeroLicenciaBusqueda").val().trim();
-        var rfcBusqueda = $("#RFCBusqueda").val().trim();
-        var curpBusqueda = $("#CURPBusqueda").val().trim();
-        var nombreBusqueda = $("#NombreBusqueda").val().trim();
-        var apellidoPaternoBusqueda = $("#ApellidoPaternoBusqueda").val().trim();
    
-       alert("lic:"+licenciaBusqueda.length);
-        if (licenciaBusqueda !== "") {
-            if (licenciaBusqueda.length < 10) {
-                alert("licencia");
-                sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
-                return;
-            }
-        }
-               alert("rrfc:"+rfcBusqueda.length);
-        if (rfcBusqueda !== "") {
-            if (rfcBusqueda.length < 10) {
-                sitteg_warning("El RFC debe tener al menos 10 caracteres.");
-                return;
-            }
-        }
-  alert("rrfccurpo:"+curpBusqueda.length);
-        if (curpBusqueda !== "") {
-            if (curpBusqueda.length < 10) {
-                sitteg_warning("El CURP debe tener al menos 10 caracteres.");
-                return;
-            }
-        }
-  alert("nombre:"+nombreBusqueda.length);
-    alert("apellido pat:"+apellidoPaternoBusqueda.length);
-        if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
-            (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
-                alert("ahora siiii");
-            sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
-            //return;
-        }
-       
-      
-        var formData = $("#buscarPersonaFisicaForm").serialize();
-        showLoading(); 
-        $.ajax({
-          url: '@Url.Action("BuscarPersonaFisicaWithPaginado","BusquedaVehiculoPropietario")',
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                alert(response);
-                if (!response.encontrada) {
-                    hideLoading();
-                    buscaEnLicencias()
-                    return;
-                }
-                var personasList = response.source;
-                if (personasList != null) {
-                    cargaListaPersonasFisicasEncontradas(personasList.Data);
-                }
-                else {
-                    sitteg_warning("La búsqueda no arrojó resultados.");
-                }
-
-                hideLoading();
-            },
-            error: function (error) {
-                console.log(error);
-                sitteg_warning('Ocurrió un error en la búsqueda.');
-                hideLoading();
-            }
-        });
-    }
-
-    function cargaListaPersonasFisicasEncontradas(data){
-        showLoading();
-         $.ajax({
-          //  url: '/Personas/BuscarPorParametro',
-          url: '@Url.Action("MostrarListaPersonasFisicaEncontradas","BusquedaVehiculoPropietario")',
-            type: 'POST',
-            data: data.Data,
-            success: function (response) {
-                 $("#listadoPersonas").html(result);
-                hideLoading();
-            },
-            error: function (error) {
-                sitteg_warning('Ocurrió un error en la búsqueda.');
-                hideLoading();
-            }
-        });
-    }
 
 
    
@@ -526,63 +475,26 @@
     }
 
     function buscaEnLicencias() {
-
-        var formData = $("#buscarConductorForm").serializeArray();
-
-        // Aplica Trim a cada valor en formData
-        $.each(formData, function (index, field) {
-            field.value = $.trim(field.value);
-        });
-
-        // Convierte de nuevo a objeto
-        var trimmedData = {};
-        var findData = false;
-        $.each(formData, function (index, field) {
-            trimmedData[field.name] = field.value;
-            if (!findData) {
-                if (field.value != '' && field.value != undefined) {
-                    findData = true;
-                }
-            }
-        });
+        $("#listadoPersonasContainer").fadeOut();
+        var formData = $("#buscarPersonaFisicaForm").serialize();
         showLoading();
-        console.log("se envian parametros de busqueda: " + trimmedData);
         $.ajax({
         //    url: '@Url.Action("PersonasEnLicencias")',
              url: '/Personas/PersonasEnLicencias', 
             type: 'POST',
-            data: trimmedData,
+            data: formData,
             success: function (response) {
 
-                console.log("encontrado length: " + response.length);
-                console.log("encontrado: " + response);
-
-             //   alert("regreso de resultado")
-             //   var ListaPersonaLicencias = JSON.parse(response);
-
-
-                if (response.length >0) {
-                    
+               if (response.length >0) {
                     hideLoading();
-                   
-                    var grid = $("#gridPersonasLicencia").data("kendoGrid");
-                       grid.dataSource.data(response);
-                       grid.dataSource._total = response.length;
-
+                     $("#listadoPersonasContainer").fadeIn();
                     
-                    $('#modalLicenciasList').modal('show');
-
-                 
-
                 }
                 else {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     hideLoading();
                     return;
                 }
-
-
-
                 hideLoading();
             },
             error: function (error) {

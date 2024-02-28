@@ -777,22 +777,28 @@
                 aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4">
                     @await Component.InvokeAsync("BusquedaPersonaFisica",false)
-                    </div>
-
                 </div>
-                <div class="row">
+ <div class="row">
                     <div class="col-12">
                         <div class="tabCustomEnd">
+                            <div class="row ">
+                                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                                            <div class="controlButton my-3" onclick="submitCreateVehiculo()">
+                                                @(Html.Kendo().Button()
+                                                    .Name("buscarFisica")
+                                                    .HtmlAttributes(new { @class = "btnPrimary" })
+                                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
-
-            </div>
-
+                </div>
 
             @*SE IGNORA*@
             <div class="tab-pane tabCustomConteiner fade" id="none-person" role="tabpanel"
-                aria-labelledby="person-fisica-tab">
+                aria-labelledby="none-person-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
                     <div id="personasFisicasInf">

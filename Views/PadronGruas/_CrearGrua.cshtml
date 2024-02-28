@@ -172,7 +172,9 @@
                 $("#listadoGruas").html(result);
                 $('#addGrua').modal('hide');
                 sitteg_info('Elemento guardado correctamente')
-               
+                setTimeout(function () {
+                window.location.href = "/PadronGruas/Index"; //will redirect to your blog page (an ex: blog.html)
+                }, 2000);
             },
             error: function (xhr, status) 
             {

@@ -1620,16 +1620,97 @@ namespace GuanajuatoAdminUsuarios.Services
 
         public List<PersonaModel> BusquedaPersonaPagination(BusquedaPersonaModel model, Pagination pagination)
         {
+            //
             List<PersonaModel> ListaPersonas = new List<PersonaModel>();
+            if (model.PersonaModel == null)
+                model.PersonaModel = new PersonaModel();
 
-            using SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection());
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("[usp_ObtieneBusquedaPersonas]", connection))
+                    {
+                        if (model.PersonaModel.CURPBusqueda != null)
+                            model.PersonaModel.CURPBusqueda = model.PersonaModel.CURPBusqueda.Trim();
+                        if (model.PersonaModel.RFCBusqueda != null)
+                            model.PersonaModel.RFCBusqueda = model.PersonaModel.RFCBusqueda.Trim();
+                        if (model.PersonaModel.nombreBusqueda != null)
+                            model.PersonaModel.nombreBusqueda = model.PersonaModel.nombreBusqueda.Trim();
+                        if (model.PersonaModel.apellidoPaternoBusqueda != null)
+                            model.PersonaModel.apellidoPaternoBusqueda = model.PersonaModel.apellidoPaternoBusqueda.Trim();
+                        if (model.PersonaModel.apellidoMaternoBusqueda != null)
+                            model.PersonaModel.apellidoMaternoBusqueda = model.PersonaModel.apellidoMaternoBusqueda.Trim();
+
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
+                        cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                        cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.numeroLicenciaBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.CURPBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.RFCBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.nombreBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoPaternoBusqueda ?? DBNull.Value;
+                        cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoMaternoBusqueda ?? DBNull.Value;
+                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        {
+                            while (reader.Read())
+                            {
+                                PersonaModel persona = new PersonaModel();
+
+                                persona.PersonaDireccion = new PersonaDireccionModel();
+                                persona.idPersona = reader["idPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersona"].ToString());
+                                persona.numeroLicencia = reader["numeroLicencia"].ToString();
+                                persona.CURP = reader["CURP"].ToString();
+                                persona.RFC = reader["RFC"].ToString();
+                                persona.nombre = reader["nombre"].ToString();
+                                persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                                persona.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                                persona.fechaActualizacion = reader["fechaActualizacion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                                persona.actualizadoPor = reader["actualizadoPor"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["actualizadoPor"].ToString());
+                                persona.estatus = reader["estatus"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["estatus"].ToString());
+                                persona.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
+                                persona.tipoPersona = reader["tipoPersona"].ToString();
+                                persona.idGenero = reader["idGenero"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"].ToString());
+                                persona.genero = reader["genero"].ToString();
+                                persona.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+                                persona.tipoLicencia = reader["tipoLicencia"].ToString();
+                                persona.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                                persona.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+                                persona.total = Convert.ToInt32(reader["Total"]);
+                                ListaPersonas.Add(persona);
+
+                            }
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                return ListaPersonas;
+
+            }
+        }
+
+        public List<PersonaModel> BuscarPersonasWithPagination(BusquedaPersonaModel model, Pagination pagination)
+        {
+            List<PersonaModel> ListaPersonas = new();
+
+            using SqlConnection connection = new(_sqlClientConnectionBD.GetConnection());
             try
             {
                 connection.Open();
-                using SqlCommand cmd = new SqlCommand("[usp_ObtieneBusquedaPersonas]", connection);
+                using SqlCommand cmd = new("[usp_ObtieneBusquedaPersonas]", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@PageIndex", pagination.PageIndex);
-                cmd.Parameters.AddWithValue("@PageSize", pagination.PageSize);
+                cmd.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value =  pagination.PageIndex;
+                cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)).Value =  pagination.PageSize;
                 cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.NumeroLicenciaBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.CURPBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.RFCBusqueda ?? DBNull.Value;

@@ -34,5 +34,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public IEnumerable<PersonaModel> GetAllPersonasPagination(Pagination pagination);
 
         List<PersonaModel> GetPersonas();
+
+        List<PersonaModel> BuscarPersonasWithPagination(BusquedaPersonaModel model, Pagination pagination);
     }
 }

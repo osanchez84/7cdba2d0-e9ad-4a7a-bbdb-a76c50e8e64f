@@ -1,6 +1,5 @@
 @model GuanajuatoAdminUsuarios.Models.BusquedaPersonaModel
 @{
-    Layout = null;
     var headerAlign = Model.IsModal ? "align-items-center justify-content-between" : "align-items-end justify-content-end";
 }
 
@@ -150,7 +149,7 @@
 
     @*Table*@
     <div id="listadoPersonas">
-                @await Component.InvokeAsync("ListaPersonasEncontradas",Model.ListadoPersonas)
+              @await Component.InvokeAsync("ListaPersonasEncontradas",Model.ListadoPersonas)
     </div>
 
 
@@ -335,36 +334,39 @@
         var nombreBusqueda = $("#NombreBusqueda").val().trim();
         var apellidoPaternoBusqueda = $("#ApellidoPaternoBusqueda").val().trim();
    
-       
-        /*if (licenciaBusqueda !== "") {
+       alert("lic:"+licenciaBusqueda.length);
+        if (licenciaBusqueda !== "") {
             if (licenciaBusqueda.length < 10) {
+                alert("licencia");
                 sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
                 return;
             }
         }
+               alert("rrfc:"+rfcBusqueda.length);
         if (rfcBusqueda !== "") {
             if (rfcBusqueda.length < 10) {
                 sitteg_warning("El RFC debe tener al menos 10 caracteres.");
                 return;
             }
         }
-
+  alert("rrfccurpo:"+curpBusqueda.length);
         if (curpBusqueda !== "") {
             if (curpBusqueda.length < 10) {
                 sitteg_warning("El CURP debe tener al menos 10 caracteres.");
                 return;
             }
         }
-
+  alert("nombre:"+nombreBusqueda.length);
+    alert("apellido pat:"+apellidoPaternoBusqueda.length);
         if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
             (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
+                alert("ahora siiii");
             sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
-            return;
-        }*/
+            //return;
+        }
        
       
         var formData = $("#buscarPersonaFisicaForm").serialize();
-        console.log(formData);
         showLoading(); 
         $.ajax({
           url: '@Url.Action("BuscarPersonaFisicaWithPaginado","BusquedaVehiculoPropietario")',
@@ -372,7 +374,6 @@
             data: formData,
             success: function (response) {
                 alert(response);
-                console.log(response);
                 if (!response.encontrada) {
                     hideLoading();
                     buscaEnLicencias()

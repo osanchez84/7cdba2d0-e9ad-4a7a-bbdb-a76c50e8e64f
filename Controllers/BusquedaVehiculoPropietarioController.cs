@@ -259,7 +259,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.ApellidoMaternoBusqueda = model.ApellidoMaternoBusqueda?.Trim();
             model.NumeroLicenciaBusqueda = model.NumeroLicenciaBusqueda?.Trim();
 
-            Logger.Info("Buscar persona fisica en RIAG por :" + model);
+            //Logger.Info("Buscar persona fisica en RIAG por :" + model);
             Pagination pagination = new()
             {
                 PageIndex = request.Page - 1
@@ -285,7 +285,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
             }
 
-            var personasList = personasService.BusquedaPersonaPagination(model, pagination);
+            var personasList = new List<PersonaModel>();//personasService.BuscarPersonasWithPagination(model, pagination);
 
             // Verificar si se encontraron resultados en la búsqueda de personas
             if (personasList.Any())

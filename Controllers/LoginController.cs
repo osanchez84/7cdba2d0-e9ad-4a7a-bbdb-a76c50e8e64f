@@ -358,7 +358,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 new Claim(CustomClaims.IdUsuario, idUsuario),
                 new Claim(CustomClaims.Nombre, nombre),
 				//new Claim(CustomClaims.Perfil, perfil),
-                new Claim(CustomClaims.NombreOficina, oficina),
+                new Claim(CustomClaims.Oficina, oficina),
                 new Claim(CustomClaims.TipoOficina, TipoOfi),
                 new Claim(CustomClaims.Pension, pension),
                 new Claim(CustomClaims.AbreviaturaMunicipio, abreviaturaMunicipio),

@@ -133,6 +133,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
             //_infraccionesService.GetAllInfracciones(idOficina);
             searchModel.ListInfracciones = listInfracciones;
+
+
+
             return View(searchModel);
         }
 
@@ -1017,6 +1020,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             models.placas = "XXXXOXO";
             models.serie = "XXXXOXOhf5321";
+            models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;
         }

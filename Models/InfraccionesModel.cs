@@ -35,8 +35,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime ?fechaNacimiento { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime fechaInfraccion { get; set; } = DateTime.Now;
-		public DateTime horaInfraccion { get; set; } = DateTime.Now;
+        public DateTime fechaInfraccion { get; set; } 
+		public DateTime horaInfraccion { get; set; } 
 
 		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaVencimiento { get; set; } = DateTime.Now;

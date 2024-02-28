@@ -2931,9 +2931,8 @@ namespace GuanajuatoAdminUsuarios.Services
 		public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
 		{
 			int result = 0;
-
+			DateTime fechaVencimiento = model.fechaVencimiento.Date;
 			string strQuery = @"
-
 											INSERT INTO infracciones
                                             (fechaInfraccion
                                             ,folioInfraccion
@@ -2957,7 +2956,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,actualizadoPor
                                             ,estatus
 											,horaInfraccion
-										    ,transito)
+										    ,transito
+											,fechaVencimiento)
                                      VALUES (@fechaInfraccion
                                             ,@folioInfraccion
                                             ,@idOficial
@@ -2980,7 +2980,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,@actualizadoPor
                                             ,@estatus
 											,@horaInfraccion
-											, " + IdDependencia + ");SELECT SCOPE_IDENTITY()";
+											,@idDependencia
+											,CONVERT(DATE, @fechaVencimiento)
+											);SELECT SCOPE_IDENTITY()";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try
@@ -2988,7 +2990,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
+					command.Parameters.Add(new SqlParameter("fechaVencimiento", SqlDbType.Date)).Value = (object)fechaVencimiento; command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
 					DateTime fechaInfraccion = model.horaInfraccion;
 					TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
 
@@ -3028,8 +3030,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.Add(new SqlParameter("fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
 					command.Parameters.Add(new SqlParameter("actualizadoPor", SqlDbType.Int)).Value = (object)1;
 					command.Parameters.Add(new SqlParameter("estatus", SqlDbType.Int)).Value = (object)1;
-
-
+				
 					result = Convert.ToInt32(command.ExecuteScalar());
 				}
 				catch (SqlException ex)

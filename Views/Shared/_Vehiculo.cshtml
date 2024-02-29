@@ -86,9 +86,9 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
-                      @if (ViewBag.ReporteRobo == true)
+                      @if (Model.ReporteRobo == true)
                     {
-                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b></h5>
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
                     }
                     <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
                 </div>
@@ -99,9 +99,9 @@
             <div class="row">
                 <div class="col-12 my-4">
                     <h5 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Vehículo sin captura en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
-                     @if (ViewBag.ReporteRobo == true)
+                      @if (Model.ReporteRobo == true)
                     {
-                          <h5 class="px-4 colorDanger d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgDanger mb-1 me-2 rounded-circle"></b><b>El vehículo cuenta con reporte de robo en REPUVE</b></h5>
+                          <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
                     }
                      @if (Model.origenDatos!=null)
                         {
@@ -649,13 +649,7 @@
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
-                    <div id="mensajeBuscandoPersonaFisica" class="col-md-6 my-2">
-                        <span>
-                            <b>Buscando lista de personas, un momento...</b>
-                        </span>
-                        </div>
-                    <div id="personasFisicasInf">
-                    </div>
+                     @await Component.InvokeAsync("BusquedaPersonaFisica",false)
 
                 </div>
                 <div class="row">
@@ -739,7 +733,7 @@
 @*Modal de confirmación para salir de la ventana*@
 
 
-  <div class="modal fade" id="confirmacionModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="confirmacionModalV"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -751,7 +745,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
-                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+                <button type="button" class="btn btn-secondary" id="confirmarCerrarV" onclick="cancelarConfirmacionV()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -918,15 +912,19 @@ $("#ddlCatTipoServicio").on("change", function () {
     }
 
     function cerrarModalV() {
-         $('#confirmacionModal').modal('show');
+         $('#confirmacionModalV').modal('show');
           // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
           $('#confirmarCerrar').on('click', function () {
-         $('#confirmacionModal').modal('hide');
+         $('#confirmacionModalV').modal('hide');
                  // Cierra la ventana
         });
     }
     function cerrarModalFisica(){
    $('#addFisico').modal('hide');
+ 
+}
+function cancelarConfirmacionV(){
+   $('#confirmacionModalV').modal('hide');
  
 }
     </script>

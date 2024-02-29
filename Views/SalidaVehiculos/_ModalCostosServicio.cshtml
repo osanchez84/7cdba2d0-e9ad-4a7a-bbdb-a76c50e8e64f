@@ -36,13 +36,14 @@
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="controlForm my-3">
                         @Html.HiddenFor(m=>m.idDeposito)
+                                                @Html.HiddenFor(m=>m.idGrua)
 
                         @{
                             var abanderamiento = Model.abanderamiento;
-                            var disabled = (abanderamiento != 1) ? "disabled" : "";
+                            var abamderamientodisabled = (abanderamiento != 1) ? "disabled" : "";
                         }
                         @(Html.Kendo().NumericTextBoxFor(t => t.costoAbanderamiento)
-                            .HtmlAttributes(new { style = "width: 80%", @disabled })
+                    .HtmlAttributes(new { style = "width: 80%", @abamderamientodisabled })
                             .Label(l => l.Content("Costo Abanderamiento:"))
                             .Format("n2")
                             .Spinners(false)
@@ -65,17 +66,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <div class="controlForm my-3">
-                            @(Html.Kendo().NumericTextBoxFor(t => t.costoTotalPorGrua)
-                                .HtmlAttributes(new { style = "width: 80%" })
-                                .Label(l => l.Content("Costo Total:"))
-                                .Format("n2")
-                                .Spinners(false)
-                                .HtmlAttributes(new { @readonly = "readonly" })
-                                )
-                        </div>
-                </div>
+                
 
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
             <div class="controlForm mb-3">
@@ -107,6 +98,17 @@
                         .Spinners(false)
                         )
                 </span>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+            <div class="controlForm my-3">
+                @(Html.Kendo().NumericTextBoxFor(t => t.costoTotalPorGrua)
+                    .HtmlAttributes(new { style = "width: 80%" })
+                    .Label(l => l.Content("Costo Total:"))
+                    .Format("n2")
+                    .Spinners(false)
+                    .HtmlAttributes(new { @readonly = "readonly" })
+                    )
             </div>
         </div>
     </form>

@@ -243,7 +243,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
-        public CostosServicioModel CostosServicio(int idDeposito)
+        public CostosServicioModel CostosServicio(int idDeposito, int idGrua)
         {
             CostosServicioModel model = new CostosServicioModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -254,21 +254,24 @@ namespace GuanajuatoAdminUsuarios.Services
                                             @"SELECT ga.idDeposito,ga.idGrua,ga.abanderamiento,ga.arrastre,  
                                                                 ga.salvamento,ga.costoTotal,ga.costoAbanderamiento,ga.costoArrastre,ga.costoBanderazo,ga.costoSalvamento
                                                                 From gruasAsignadas AS ga  
-                                                                WHERE ga.idDeposito = @idDeposito";
+                                                                WHERE ga.idDeposito = @idDeposito AND ga.idGrua = @idGrua";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = idDeposito;
+                    command.Parameters.Add(new SqlParameter("@idGrua", SqlDbType.Int)).Value = idGrua;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
                             model.idDeposito = Convert.ToInt32(reader["idDeposito"]?.ToString() ?? "0");
+                            model.idGrua = Convert.ToInt32(reader["idGrua"]?.ToString() ?? "0");
                             model.costoArrastre = float.TryParse(reader["costoArrastre"]?.ToString(), out float costoArrastre) ? costoArrastre : 0.0f;
                             model.costoSalvamento = float.TryParse(reader["costoSalvamento"]?.ToString(), out float costoSalvamento) ? costoSalvamento : 0.0f;
                             model.costoBanderazo = float.TryParse(reader["costoBanderazo"]?.ToString(), out float costoBanderazo) ? costoBanderazo : 0.0f;
-
                             model.costoAbanderamiento = float.TryParse(reader["costoAbanderamiento"]?.ToString(), out float costoAbanderamiento) ? costoAbanderamiento : 0.0f;
                             model.costoTotalPorGrua = float.TryParse(reader["costoTotal"]?.ToString(), out float costoTotal) ? costoTotal : 0.0f;
+                           
                             model.abanderamiento = Convert.ToInt32(reader["abanderamiento"]?.ToString() ?? "0");
                             model.salvamento = Convert.ToInt32(reader["salvamento"]?.ToString() ?? "0");
                             model.arrastre = Convert.ToInt32(reader["arrastre"]?.ToString() ?? "0");
@@ -302,10 +305,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                    "costoBanderazo = @costoBanderazo, " +
                                    "costoSalvamento = @costoSalvamento, " +
                                    "costoTotal = @costoTotal " +
-                                   "where idDeposito=@idDeposito",
+                                   "where idDeposito=@idDeposito AND idGrua = @idGrua",
                         connection);
                     
                     sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@idGrua", SqlDbType.Int)).Value = model.idGrua;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoAbanderamiento", SqlDbType.Float)).Value = model.costoAbanderamiento;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoArrastre", SqlDbType.Float)).Value = model.costoArrastre;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoBanderazo", SqlDbType.Float)).Value = model.costoBanderazo;

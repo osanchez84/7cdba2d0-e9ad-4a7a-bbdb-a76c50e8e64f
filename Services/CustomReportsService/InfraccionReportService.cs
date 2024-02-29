@@ -380,7 +380,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             {
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
-                nested.AddCell(FieldCellBox("Cortesía: ", (ModelDataInfracciones.tieneCortesia? "Con cortesía" : "No cortesía") ));
+                nested.AddCell(FieldCellBox("Cortesía: ", ModelDataInfracciones.cortesia ));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

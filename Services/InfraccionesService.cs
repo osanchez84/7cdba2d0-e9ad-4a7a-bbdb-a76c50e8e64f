@@ -1174,6 +1174,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,veh.numeroEconomico
 											,catGar.garantia
                                             ,COALESCE(inf.infraccionCortesia,0) tieneCortesia
+											,cTCort.nombreCortesia
                                             --SacarMotivosInfracción
                                             --SacarGarantia
                                             --DatosPago
@@ -1195,7 +1196,7 @@ namespace GuanajuatoAdminUsuarios.Services
 											left join catAplicacionInfraccion ainf on ainf.idAplicacion = inf.idAplicacion
                                             left join catCarreteras catCarre on inf.IdCarretera = catCarre.idCarretera
                                             left join personasInfracciones pInf on pInf.idInfraccion = inf.idInfraccion
-                                            left join personas conduct on conduct.idPersona = inf.idPersona
+                                            left join personas conduct on conduct.idPersona = inf.idPersonaInfraccion
 			                                            left join personasDirecciones dirconduct on dirconduct.idPersona = inf.idPersona
 			                                            left join catMunicipios dirconductmuni on dirconductmuni.idMunicipio = dirconduct.idMunicipio
 			                                            left join catEntidades dirconductenti on dirconductenti.idEntidad = dirconduct.idEntidad
@@ -1214,7 +1215,8 @@ namespace GuanajuatoAdminUsuarios.Services
 						                                            LEFT JOIN personasDirecciones dirprop on dirprop.idPersona = propietario.idPersona
 						                                            left join catMunicipios dirpropmuni on dirpropmuni.idMunicipio = dirprop.idMunicipio
 						                                            left join catEntidades dirpropenti on dirpropenti.idEntidad = dirprop.idEntidad
-                                            WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion and inf.transito = @idDependencia";
+    															    LEFT JOIN catTipoCortesia cTCort ON  cTCort.id = inf.infraccionCortesia                                        
+																	WHERE inf.estatus = 1 and inf.idInfraccion=@IdInfraccion and inf.transito = @idDependencia";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.Parameters.Add(new SqlParameter("@IdInfraccion", SqlDbType.Int)).Value = (object)IdInfraccion ?? DBNull.Value;
@@ -1261,7 +1263,9 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.tipoServicio = reader["tipoServicio"] == System.DBNull.Value ? string.Empty : reader["tipoServicio"].ToString();
 							model.numeroEconomico = reader["numeroEconomico"] == System.DBNull.Value ? string.Empty : reader["numeroEconomico"].ToString();
 							model.tieneCortesia = reader["tieneCortesia"] == System.DBNull.Value ? default(bool) : Convert.ToBoolean(Convert.ToByte(reader["tieneCortesia"].ToString()));
-							model.montoCalificacion = reader["montoCalificacion"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoCalificacion"].ToString());
+                            model.cortesia = reader["nombreCortesia"] == System.DBNull.Value ? string.Empty : reader["nombreCortesia"].ToString();
+
+                            model.montoCalificacion = reader["montoCalificacion"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoCalificacion"].ToString());
 							model.montoPagado = reader["montoPagado"] == System.DBNull.Value ? default(decimal) : Convert.ToDecimal(reader["montoPagado"].ToString());
 							model.reciboPago = reader["reciboPago"] == System.DBNull.Value ? string.Empty : reader["reciboPago"].ToString();
 							model.oficioCondonacion = reader["oficioCondonacion"] == System.DBNull.Value ? string.Empty : reader["oficioCondonacion"].ToString();
@@ -1271,7 +1275,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.idGarantia = reader["idGarantia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGarantia"].ToString());
                             model.MotivosInfraccion = GetMotivosInfraccionByIdInfraccion(model.idInfraccion);
 							model.Garantia = model.idGarantia == null ? new GarantiaInfraccionModel() : GetGarantiaById((int)model.idInfraccion);
-                            model.Garantia.tipoLicencia = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
+                            //model.Garantia.tipoLicencia = reader["tipoLicenciaConductor"] == System.DBNull.Value ? string.Empty : reader["tipoLicenciaConductor"].ToString();
                             model.umas = GetUmas(model.fechaInfraccion);
 							model.AplicadaA = reader["aplicadaa"].GetType() == typeof(DBNull) ? "" : reader["aplicadaa"].ToString();
 
@@ -1578,7 +1582,9 @@ namespace GuanajuatoAdminUsuarios.Services
 							//model.idPersonaInfraccion = reader["idPersonaInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaInfraccion"].ToString());
 							model.idPersona = reader["idPersonaDireccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idPersonaDireccion"].ToString());
 							model.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCatTipoPersona"].ToString());
-							model.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+
+                            model.numeroLicencia = reader["numeroLicencia"].ToString();
 							model.CURP = reader["CURP"].ToString();
 							model.RFC = reader["RFC"].ToString();
 							model.nombre = reader["nombre"].ToString();

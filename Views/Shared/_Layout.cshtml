@@ -1,6 +1,6 @@
 @inject IHttpContextAccessor Accessor
 @{
-    var nombreOficina = User.FindFirst(CustomClaims.NombreOficina);
+    var nombreOficina = User.FindFirst(CustomClaims.Oficina);
 
     var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
     var nombrePension = User.FindFirst(CustomClaims.Pension);

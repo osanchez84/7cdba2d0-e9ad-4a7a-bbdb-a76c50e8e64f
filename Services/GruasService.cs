@@ -57,6 +57,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             gruasConcesionario.IdTipoGrua = reader["IdTipoGrua"] is DBNull ? 0 : Convert.ToInt32(reader["IdTipoGrua"]);
                             gruasConcesionario.placas = reader["placas"] is DBNull ? string.Empty : reader["placas"].ToString();
                             gruasConcesionario.capacidad = reader["capacidad"] is DBNull ? string.Empty : reader["capacidad"].ToString();
+                            gruasConcesionario.capacidad = gruasConcesionario.capacidad + " t";
                             gruasConcesionario.TipoGrua = reader["TipoGrua"] is DBNull ? string.Empty : reader["TipoGrua"].ToString();
                             gruasConcesionario.operadorGrua = reader["operadorGrua"] is DBNull ? string.Empty : reader["operadorGrua"].ToString();
 

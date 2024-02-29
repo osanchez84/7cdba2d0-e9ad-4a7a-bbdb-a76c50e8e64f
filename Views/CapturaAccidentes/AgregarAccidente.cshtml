@@ -86,7 +86,7 @@
                         <div class="controlForm my-3">
                             <label>Hora <b>(obligatorio)</b>:</label>
                             <span>
-                                @(Html.Kendo().TimePickerFor(t => t.Hora).Max(DateTime.Now)
+                                @(Html.Kendo().TimePickerFor(t => t.Hora)
                                     .Format("HH:mm")
                                     .Interval(1)
                                     

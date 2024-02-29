@@ -244,7 +244,58 @@ finally
             return result;
         }
 
-        public List<CatMunicipiosModel> GetMunicipiosPorDelegacion(int idOficina)
+
+		public List<CatMunicipiosModel> GetMunicipiosPorDelegacion2(int idOficina)
+		{
+			//
+			List<CatMunicipiosModel> ListaMunicipios = new List<CatMunicipiosModel>();
+
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand("SELECT m.*,e.estatus FROM catMunicipios AS m LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idOficinaTransporte = @idOficina and m.estatus=1;\r\n", connection);
+					command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							CatMunicipiosModel municipio = new CatMunicipiosModel();
+							municipio.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+							municipio.IdEntidad = Convert.ToInt32(reader["IdEntidad"].ToString());
+							municipio.Municipio = reader["Municipio"].ToString();
+							municipio.estatusDesc = reader["estatus"].ToString();
+							municipio.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
+							municipio.Estatus = Convert.ToInt32(reader["estatus"] is DBNull ? 0 : reader["estatus"]);
+							municipio.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+							ListaMunicipios.Add(municipio);
+
+						}
+
+					}
+
+				}
+				catch (SqlException ex)
+				{
+					//Guardar la excepcion en algun log de errores
+					//ex
+				}
+				finally
+				{
+					connection.Close();
+				}
+			return ListaMunicipios;
+
+
+		}
+
+
+
+
+		public List<CatMunicipiosModel> GetMunicipiosPorDelegacion(int idOficina)
         {
             //
             List<CatMunicipiosModel> ListaMunicipios = new List<CatMunicipiosModel>();
@@ -254,7 +305,7 @@ finally
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT m.*,e.estatus FROM catMunicipios AS m LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idOficinaTransporte = @idOficina;\r\n", connection);
+                    SqlCommand command = new SqlCommand("SELECT m.*,e.estatus FROM catMunicipios AS m LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idOficinaTransporte = @idOficina ;\r\n", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 

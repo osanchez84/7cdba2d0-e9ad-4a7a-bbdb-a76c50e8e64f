@@ -173,6 +173,61 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return result;
         }
+
+        public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasFiltrado(int idDependencia)
+        {
+            //
+            List<CatDelegacionesOficinasTransporteModel> ListaDelegacionsOficinas = new List<CatDelegacionesOficinasTransporteModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT del.*, e.estatusDesc,m.municipio, ISNULL(d.Transito,0) Transito 
+                                                          FROM catDelegacionesOficinasTransporte AS del 
+                                                          INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion
+                                                          INNER JOIN estatus AS e ON del.estatus = e.estatus 
+                                                          INNER JOIN catMunicipios AS m ON del.idMunicipio = m.idMunicipio
+                                                            WHERE d.transito = @idDependencia;", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatDelegacionesOficinasTransporteModel delegacionOficina = new CatDelegacionesOficinasTransporteModel();
+                            delegacionOficina.IdOficinaTransporte = Convert.ToInt32(reader["IdOficinaTransporte"].ToString());
+                            delegacionOficina.NombreOficina = reader["NombreOficina"].ToString();
+                            delegacionOficina.JefeOficina = reader["JefeOficina"].ToString();
+                            delegacionOficina.Municipio = reader["Municipio"].ToString();
+                            delegacionOficina.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+                            delegacionOficina.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
+                            delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
+                            delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            delegacionOficina.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
+                            //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
+                            ListaDelegacionsOficinas.Add(delegacionOficina);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaDelegacionsOficinas;
+
+
+        }
     }
 
 }

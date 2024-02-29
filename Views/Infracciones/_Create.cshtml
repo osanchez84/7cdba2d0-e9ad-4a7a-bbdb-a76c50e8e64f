@@ -327,7 +327,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlMarcas" })
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMarcas" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -375,7 +375,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "idSubmarca" })
+                        .HtmlAttributes(new { style = "width:100%;",id = "idSubmarca" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -1447,6 +1447,11 @@
     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
         var value = $(this).val();
         _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
+         var labelExistente = $("label[for='Persona_PersonaDireccion_idMunicipioFisico']");
+    if (labelExistente.length === 0) {
+        var nuevoLabel = $("<label for='Persona_PersonaDireccion_idMunicipioFisico'>Municipio (obligatorio):</label>");
+        $("#divMunicipio").prepend(nuevoLabel);
+    }
         $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
 
     });

@@ -47,8 +47,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +
                         "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
                         "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
-                        "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
-                        "WHERE sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud) AND sol.estatus = 1", connection);
+                        "left join depositos d on sol.idSolicitud=d.idSolicitud " +
+                        "WHERE d.idDeposito is null AND sol.folio = @folioBusqueda OR sol.fechaSolicitud = @fechaSolicitud AND sol.estatus = 1", connection);
+
 
 
                     command.CommandType = System.Data.CommandType.Text;

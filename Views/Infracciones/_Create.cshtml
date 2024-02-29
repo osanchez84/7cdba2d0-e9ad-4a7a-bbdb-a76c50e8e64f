@@ -1442,6 +1442,11 @@
     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
         var value = $(this).val();
         _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
+         var labelExistente = $("label[for='Persona_PersonaDireccion_idMunicipioFisico']");
+    if (labelExistente.length === 0) {
+        var nuevoLabel = $("<label for='Persona_PersonaDireccion_idMunicipioFisico'>Municipio (obligatorio):</label>");
+        $("#divMunicipio").prepend(nuevoLabel);
+    }
         $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
 
     });

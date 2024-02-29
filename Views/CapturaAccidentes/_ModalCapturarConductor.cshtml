@@ -55,7 +55,7 @@
 	<div class="row my-2">
 		<div class="col-md-4">
 			<div class="controlForm">
-				<label>Fecha de nacimiento <b>(obligatorio)</b>:</label>
+				<label>Fecha de nacimiento:</label>
 				@(Html.Kendo().DatePickerFor(t => t.fechaNacimiento)
 .Culture("es-ES")
 					.HtmlAttributes(new { style = "width: 100%;" })
@@ -287,7 +287,7 @@
 		var isValid = true;
 
 		controlsValidate.push({ 'controlName': 'nombre' });
-		controlsValidate.push({ 'controlName': 'fechaNacimiento' });
+		//controlsValidate.push({ 'controlName': 'fechaNacimiento' });
 		//controlsValidate.push({ 'controlName': 'PersonaDireccion_codigoPostal' });
 		controlsValidate.push({ 'controlName': 'PersonaDireccion_colonia' });
 		controlsValidate.push({ 'controlName': 'PersonaDireccion_calle' });

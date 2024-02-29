@@ -33,7 +33,7 @@
         </div>
     </div>
     <form id="agregarhospitalForm" class="row px-4 mb-4 align-items-end justify-content-center">
-        <div class="col-12 col-md-6">
+        @*<div class="col-12 col-md-6">
             <div class="controlForm my-3">
                 <label>Municipio <b>(obligatorio)</b>:</label>
                 <span>
@@ -51,7 +51,43 @@
                         }))
                 </span>
             </div>
+        </div>*@
+
+        <div class="col-12 col-md-6">
+            <div class="controlForm my-3">
+                <label>Entidad:</label>
+                @(Html.Kendo().DropDownListFor(m => m.idEntidad).Filter(FilterType.Contains)
+                    .BindTo((SelectList)ViewBag.Entidades)
+                    .OptionLabel("- Todos -")
+                    .Events(e => e.Change("Municipios_DropChange"))
+                    .HtmlAttributes(new { style = "width:100%;", Id = "idEntidad" })
+                    .Filter(FilterType.Contains)
+                    )
+            </div>
         </div>
+        <div class="col-12 col-md-6">
+            <div class="controlForm my-3">
+                <label>Municipio <b>(obligatorio)</b>:</label>
+                <span>
+                    @Html.HiddenFor(m=>m.IdHospital)
+                    @(Html.Kendo().DropDownListFor(t=>t.IdMunicipio)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                        .OptionLabel("Selecciona un Municipio").Filter(FilterType.Contains)
+                    .HtmlAttributes(new { @class ="CentradoList",style = "width:100%;" })
+                    .DataSource(source =>
+                    {
+                    source.Read(read =>
+                    {
+                    read.Action("Municipios_Drop", "CatHospitales");
+                    });
+                    }))
+
+                </span>
+            </div>
+        </div>
+
+
         <div class="col-12 col-md-6">
             <div class="controlForm my-3">
                 @(Html.Kendo().TextBoxFor(t=>t.NombreHospital)

@@ -1,4 +1,14 @@
-﻿<div class="row">
+﻿<script>
+    function returnData() {
+        var nombre = $("#Municipio2").val();
+        var idEntidad = $("#IdEntidad2").val();
+        var IdOficinaTransporte = $("#IdOficinaTransporte2").val();
+
+        return { nombre: nombre, idEntidad: idEntidad, IdOficinaTransporte: IdOficinaTransporte }
+    }
+</script>
+
+<div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
         @(
@@ -24,7 +34,7 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("GetMun", "CatMunicipios"))
+            .Read(read => read.Action("GetMun", "CatMunicipios").Data("returnData"))
             .PageSize(5).Model(model => model.Id(p => p.IdMunicipio))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))

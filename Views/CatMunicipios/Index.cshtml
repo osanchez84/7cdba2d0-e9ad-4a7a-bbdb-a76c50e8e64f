@@ -1,4 +1,4 @@
-﻿@model List<GuanajuatoAdminUsuarios.Models.CatMunicipiosModel>
+﻿@model CatMunicipiosDTO
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
@@ -59,6 +59,65 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="controlForm my-3">
+                    @(Html.Kendo().TextBoxFor(t => t.Municipio2)
+                        .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
+                        .Placeholder("Ingresa el nombre del municipio")
+                        .HtmlAttributes(new { style = "width: 100%" })
+                        )
+
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="controlForm my-3">
+                    <label>Entidad <b>(obligatorio)</b>:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t => t.IdEntidad2).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una Entidad")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Entidades_Drop", "CatMunicipios");
+                                });
+                            })
+                            .HtmlAttributes(new { style = "width:100%;" })
+                            )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="controlForm my-3">
+                    <label>Delegación <b>(obligatorio)</b>:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t => t.IdOficinaTransporte2).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una Delegacion")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Drop", "CatMunicipios");
+                                });
+                            })
+                           
+                            .HtmlAttributes(new { style = "width:100%;" })
+                            )
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="controlForm my-5">
+                    <div class="controlButton">
+                        <button class="btnPrimary" id="btnBuscar" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12 mb-4 px-4 rounded gridCustom">
                 <div class="row justify-content-between mb-1 titleCustom">
                     <div class="col-12 col-md-auto mt-4 mb-2">
@@ -67,7 +126,7 @@
                     </div>
                 </div>
                 <div id="tablaMunicipios">
-                    <partial name="_ListaMunicipios" model="Model" />
+                    <partial name="_ListaMunicipios" model="Model.MunicipiosModel" />
                 </div>
             </div>
 
@@ -111,6 +170,12 @@
                 $('#agregarMunicipio').modal('show');
             }
         });
+    }
+
+
+    function submitSearch() {
+        var grid = $("#gridMunicipios").data("kendoGrid").dataSource;
+        grid.read();
     }
 
 

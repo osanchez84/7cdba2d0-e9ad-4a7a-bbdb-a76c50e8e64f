@@ -1,4 +1,4 @@
-﻿@model List<CatOficinasRentaModel>
+﻿@model CatOficinasRentaDTO
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
@@ -60,17 +60,50 @@
             </div>
         </div>
         <div class="row">
+
+            <div class="col-12 col-md-4">
+                <div class="controlForm my-3">
+                    <label>Delegación <b>(obligatorio)</b>:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t => t.IdDelegacion)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona un Municipio").Filter(FilterType.Contains)
+                            .HtmlAttributes(new { style = "width:100%;", Id = "IdDelegacion2" })
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Drop", "CatOficinasRenta");
+                                });
+                            })
+                            )
+
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="controlForm my-5">
+                    <div class="controlButton">
+                        <button class="btnPrimary" id="btnBuscar" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="col-12 mb-4 px-4 rounded gridCustom">
                 <div class="row justify-content-between mb-1 titleCustom">
-                    <div class="col-12 col-md-auto mt-4 mb-2">@* 
+                    <div class="col-12 col-md-auto mt-4 mb-2">
+                        @*
                         <p><h5 class="px-4"><b>Listado oficinas rentas</b></h5></p>
                         <p><h6 class="px-4 text-muted">Edita o inactiva las oficinas rentas.</h6></p> *@
                     </div>
                 </div>
                 <div id="tablaOficinasRenta">
-                    <partial name="_ListaOficinasRenta" model="Model" />
+                    <partial name="_ListaOficinasRenta" model="Model.OficinasRentaModel" />
                     <!-----------------------------------------------------------UPDATE--------------------------------------------------------------------------------------------->
-                    <div class="modal fade modalCustom" id="editarOficinasRenta"  aria-labelledby="editarOficinasRenta" aria-hidden="true">
+                    <div class="modal fade modalCustom" id="editarOficinasRenta" aria-labelledby="editarOficinasRenta" aria-hidden="true">
                         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body" id="ModalBodEditarOficinasRenta">
@@ -80,7 +113,7 @@
                     </div>
 
                     <!-----------------------------------------------------------DELETE--------------------------------------------------------------------------------------------->
-                    <div class="modal fade modalCustom" id="eliminarOficinasRenta"  aria-labelledby="eliminarOficinasRentaLabel" aria-hidden="true">
+                    <div class="modal fade modalCustom" id="eliminarOficinasRenta" aria-labelledby="eliminarOficinasRentaLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body" id="ModalBodyEliminarOficinasRenta">
@@ -92,23 +125,23 @@
                 </div>
             </div>
         </div>
-    
-                
-               
 
-         
 
-                <div class="modal fade modalCustom" id="agregarOficinasRenta"  aria-labelledby="agregarOficinasRentaLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body" id="ModalBodyaAgregarOficinasRenta">
-                            </div>
-                        </div>
+
+
+
+
+        <div class="modal fade modalCustom" id="agregarOficinasRenta" aria-labelledby="agregarOficinasRentaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="ModalBodyaAgregarOficinasRenta">
                     </div>
                 </div>
+            </div>
+        </div>
     </section>
- </div>
-    <script>
+</div>
+<script>
     function mostrarModal() {
         $.ajax({
             url: '@Url.Action("AgregarOficinaRentaModal")',
@@ -132,5 +165,9 @@
 
         })
     }
-    </script>
-            
+
+    function submitSearch() {
+        var grid = $("#gridCatOficinasRenta").data("kendoGrid").dataSource;
+        grid.read();
+    }
+</script>

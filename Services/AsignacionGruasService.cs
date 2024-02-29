@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
-                        "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension,sol.idPropietarioGrua, " +
+                        "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
                         "mun.municipio, " +
                         "car.carretera, " +
                         "ent.nombreEntidad, " +
@@ -47,7 +47,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +
                         "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
                         "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
-                        "WHERE sol.folio = @folioBusqueda OR sol.fechaSolicitud = @fechaSolicitud AND sol.estatus = 1", connection);
+                        "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
+                        "WHERE sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud) AND sol.estatus = 1", connection);
 
 
                     command.CommandType = System.Data.CommandType.Text;
@@ -267,7 +268,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
                     // Consulta para buscar si el folio ya existe en la tabla depositos
-                    SqlCommand searchCommand = new SqlCommand("SELECT idSolicitud,idDeposito,folio,observaciones,numeroInventario,inventario FROM depositos WHERE folio = @FolioSolicitud", connection);
+                    SqlCommand searchCommand = new SqlCommand("SELECT ISNULL(idSolicitud,0) idSolicitud, ISNULL(idDeposito,0) idDeposito ,ISNULL(folio,'') folio ,observaciones,numeroInventario,inventario FROM depositos WHERE folio = @FolioSolicitud", connection);
                     searchCommand.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = iSo;
 
                     // Ejecutar la consulta de búsqueda
@@ -305,7 +306,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     // Continuar con la consulta y la inserción
-                    SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.fechaSolicitud,sol.folio,sol.idPropietarioGrua,sol.idPension,sol.idTramoUbicacion, " +
+                    SqlCommand command = new SqlCommand("SELECT ISNULL(sol.idSolicitud,0) idSolicitud,sol.fechaSolicitud,ISNULL(sol.folio,'') folio ,ISNULL(sol.idPropietarioGrua,0) idPropietarioGrua,ISNULL(sol.idPension,0) idPension,ISNULL(sol.idTramoUbicacion,0) idTramoUbicacion, " +
                                                         "sol.vehiculoKm " +
                                                         "FROM solicitudes AS sol " +
                                                         "WHERE folio = @FolioSolicitud", connection);

@@ -95,7 +95,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					pi.numeroLicencia,
                     cv.nombreSubmarca,ctc.nombreCortesia, g.garantia, tp.tipoPlaca, i.placasVehiculo,
                     tl.tipoLicencia, v.tarjeta, i.monto, i.reciboPago, i.fechaPago, i.lugarPago,
-                    i.oficioEnvio, i.placasVehiculo, CONCAT( pV.nombre,' ', pV.apellidoPaterno,' ', pV.apellidoMaterno)AS Propietario,
+                    i.oficioEnvio, i.placasVehiculo, CONCAT(isnull( pV.nombre,''),' ', isnull(pV.apellidoPaterno,''),' ', isnull(pV.apellidoMaterno,''))AS Propietario,
                     i.observaciones,i.ObservacionesSub,i.FechaVencimiento,e.estatusInfraccion,
                     CONVERT(varchar,i.fechaInfraccion,103) AS fechaInfraccion, v.serie,
                     (Case When i.estatus = 1 Then 'si' 
@@ -144,7 +144,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             //infraccion.Licencia = reader["tipoLicencia"].ToString();
                             infraccion.Tarjeta = reader["tarjeta"].ToString();
                             //infraccion.ArchivoInventario = reader["ArchivoInventario"].ToString();
-                            infraccion.FechaVencimiento = Convert.ToDateTime(reader["FechaVencimiento"].ToString());
+                            infraccion.FechaVencimiento = reader["FechaVencimiento"].GetType()==typeof(DBNull)?null:  Convert.ToDateTime(reader["FechaVencimiento"].ToString());
                             infraccion.MontoCalificacion = reader["monto"].ToString();
                             infraccion.MontoPagado = reader["monto"].ToString();
                             infraccion.Recibo = reader["reciboPago"].ToString();

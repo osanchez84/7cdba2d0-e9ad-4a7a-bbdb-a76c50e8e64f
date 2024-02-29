@@ -341,7 +341,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                        .HtmlAttributes(new { style = "width:100%;" })
                                             .Filter(FilterType.Contains)
 
                         .DataSource(source =>
@@ -395,7 +395,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlidSubmarcaDisabled" })
+                        .HtmlAttributes(new { style = "width:100%;",id = "ddlidSubmarcaDisabled" })
                         .DataSource(source =>
                         {
                             source.Read(read =>

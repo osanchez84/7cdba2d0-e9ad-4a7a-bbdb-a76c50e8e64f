@@ -127,10 +127,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (ModelState.IsValid)
             {
                 int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+                
 
                 _oficialesService.SaveOficial(model,idDependencia);
-                var ListOficialesModel = _oficialesService.GetOficiales();
-                return Json(ListOficialesModel);
+                //var ListOficialesModel = _oficialesService.GetOficiales();
+                return Json(1);
             }
 
             return PartialView("_Crear");

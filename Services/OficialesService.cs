@@ -279,12 +279,15 @@ Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
                 try
                 {
                     connection.Open();
-                    SqlCommand sqlCommand = new SqlCommand("Insert into catOficiales(Nombre, estatus,ApellidoPaterno,ApellidoMaterno,idOficina) values(@Nombre,@estatus,@ApellidoPaterno,@ApellidoMaterno,@idDependencia)", connection);
+                    SqlCommand sqlCommand = new SqlCommand(@"
+                                Insert into catOficiales (Nombre, estatus,ApellidoPaterno,ApellidoMaterno,idOficina,transito) values
+                                                        (@Nombre,@estatus,@ApellidoPaterno,@ApellidoMaterno,@idDependencia,@tran)", connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@Nombre", SqlDbType.VarChar)).Value = oficial.Nombre;
                     sqlCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     sqlCommand.Parameters.Add(new SqlParameter("@ApellidoPaterno", SqlDbType.VarChar)).Value = oficial.ApellidoPaterno==null ? "": oficial.ApellidoPaterno;
                     sqlCommand.Parameters.Add(new SqlParameter("@ApellidoMaterno", SqlDbType.VarChar)).Value = oficial.ApellidoMaterno==null ? "": oficial.ApellidoMaterno;
                     sqlCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = oficial.IdOficina == null ? 0 : oficial.IdOficina;
+                    sqlCommand.Parameters.Add(new SqlParameter("@tran", SqlDbType.Int)).Value = idDependencia == null ? 0 : idDependencia;
 
                     sqlCommand.CommandType = CommandType.Text;
                     result = sqlCommand.ExecuteNonQuery();

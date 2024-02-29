@@ -48,8 +48,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var resultadoSolicitudes = _asignacionGruasService.BuscarSolicitudes(model);
 
                 return Json(resultadoSolicitudes);
-            }
-            public IActionResult DatosGruas(string iSo, int iPg,int idDeposito)
+        }
+
+        public IActionResult DatosGruas(string iSo, int iPg,int idDeposito)
         {
             HttpContext.Session.SetString("iSo", iSo);
             HttpContext.Session.SetInt32("iPg", iPg);

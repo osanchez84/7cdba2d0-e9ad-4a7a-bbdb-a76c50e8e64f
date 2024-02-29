@@ -38,14 +38,14 @@
 				<div class="col-md-3">
 					<h6 class="px-4 text-muted"><b>Archivo inventario:</b>@Model.ArchivoInventario</h6>
 					<h6 class="px-4 text-muted"><b>Fecha vencimiento:</b>
-						@(Model.FechaVencimiento != DateTime.MinValue ? Model.FechaVencimiento.ToString("dd/MM/yyyy") : "-")
+						@(Model.FechaVencimiento.HasValue && Model.FechaVencimiento != DateTime.MinValue ? Model.FechaVencimiento.Value.ToString("dd/MM/yyyy") : "-")
 						</h6>
 					<h6 class="px-4 text-muted"><b>Monto calificación:</b>@Model.MontoCalificacion</h6>
 					<h6 class="px-4 text-muted"><b>Monto pagado:</b>@Model.MontoPagado</h6>
 					<h6 class="px-4 text-muted"><b>Recibo:</b>@Model.Recibo</h6>
 					<h6 class="px-4 text-muted">
 						<b>Fecha de pago:</b>
-						@(Model.FechaPago != DateTime.MinValue ? Model.FechaPago.ToString("dd/MM/yyyy") : "-")
+						@(Model.FechaPago.HasValue && Model.FechaPago != DateTime.MinValue ? Model.FechaPago.Value.ToString("dd/MM/yyyy") : "-")
 					</h6>
 					<h6 class="px-4 text-muted"><b>Lugar de pago:</b>@Model.LugarPago</h6>
 					<h6 class="px-4 text-muted"><b>Oficio con donación:</b>@Model.OficioConDonacion</h6>
@@ -73,7 +73,7 @@
 
 
 		<div  class="row">
-			<h6 class="px-4 text-muted"><b>Concepto infraccion:</b>@Model.Observaciones</h6>
+			<h6 class="px-4 text-muted"><b>Concepto infraccion:</b>@(Model?.Observaciones??"")</h6>
 		</div>
 		<br />
 		<div class="controlForm my-3">

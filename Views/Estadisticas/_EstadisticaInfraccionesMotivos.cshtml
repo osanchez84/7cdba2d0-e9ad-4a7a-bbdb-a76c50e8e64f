@@ -1,5 +1,4 @@
 @model List<EstadisticaInfraccionMotivosModel>
-
 <div class="row my-5 px-4">
     <div class="col-12 col-xl-4">
         <button type="button" id="btnGenerarExcel" class="btn btn-outline-success" onclick="generateExcel();">
@@ -8,6 +7,8 @@
             </svg>
             Generar excel
         </button>
+    </div>
+    <div class="col-12">
         @(Html.Kendo().Grid(Model)
             .Name("gridInfraccionesPersonas")
             .Columns(columns =>
@@ -21,7 +22,7 @@
             .Scrollable(scr => scr.Enabled(false))
             .DataSource(dataSource => dataSource
             .Ajax()
-            .ServerOperation(false)
+            .ServerOperation(true)
             .Aggregates(aggregates =>
             {
                 aggregates.Add(p => p.Contador).Sum();
@@ -29,11 +30,10 @@
             )
             )
     </div>
-    <div class="col-12 col-xl-8">
-        <div class="demo-section wide" >
+    <div class="col-12">
+        <div id="chart-container" style="height: 500px; overflow-y: auto;">
             @(Html.Kendo().Chart(Model)
                 .Name("chart")
-   
                 .Title("Incidencias / Motivos Infracciones")
                 .Subtitle("/Motivos Infracciones/")
                 .Legend(legend => legend
@@ -55,30 +55,25 @@
                 .Line(line => line.Visible(false))
                 .MajorGridLines(lines => lines.Visible(true))
                 )
-                 @*.ChartArea(height => height.Height(3000))*@
                 .Tooltip(tooltip => tooltip
-                .Visible(true) 
+                .Visible(true)
                 @*.Template("#= dataItem.Motivo #: #= value #")*@
                 )
                 )
-                <script>
-                $(document).ready(function () {
-            var c = $("#chart");
-            c.css("height", "2200px")
-            .data("kendoChart").resize();
-                });
-            </script>
-
         </div>
+        <script>
+            $(document).ready(function () {
+                var c = $("#chart");
+                c.css("height", "2200px").data("kendoChart").resize();
+            });
+        </script>
     </div>
 </div>
-
 <script>
     var promises = [
         $.Deferred(),
         $.Deferred()
     ];
-    	var workbookArr = [];
 
     function ConteoMotivos_excelExport(e) {
         e.preventDefault();
@@ -91,32 +86,50 @@
     }
 
     function generateExcel() {
-        $("#gridConteoMotivos").data("kendoGrid").saveAsExcel();
-        $("#gridInfraccionesPersonas").data("kendoGrid").saveAsExcel();
+        // Exportar a Excel los grids
+        var grid1 = $("#gridConteoMotivos").data("kendoGrid");
+        var grid2 = $("#gridInfraccionesPersonas").data("kendoGrid");
 
-        $.when.apply(null, promises)
-            .then(function (conteoMotivosWorkbook, infraccionesPersonasWorkbook) {
-                var sheets = [
-                    conteoMotivosWorkbook.sheets[0],
-                    infraccionesPersonasWorkbook.sheets[0]
-                ];
+        var exportPromises = [
+            grid1.saveAsExcel(),
+            grid2.saveAsExcel()
+        ];
 
-                sheets[0].title = "Estadisticas por motivos";
-                sheets[1].title = "Estadisticas Generales";
+        $.when.apply($, exportPromises)
+            .then(function () {
+                promises[0].resolve(grid1.options.excel.workbook);
+                promises[1].resolve(grid2.options.excel.workbook);
 
-                var workbook = new kendo.ooxml.Workbook({
-                    sheets: sheets
-                });
+                $.when.apply($, promises)
+                    .then(function (conteoMotivosWorkbook, infraccionesPersonasWorkbook) {
+                        var sheets = [
+                            conteoMotivosWorkbook.sheets[0],
+                            infraccionesPersonasWorkbook.sheets[0]
+                        ];
 
-                kendo.saveAs({
-                    dataURI: workbook.toDataURL(),
-                    fileName: "EstadisticasInfracciones.xlsx"
-                });
+                        sheets[0].title = "Estadisticas por motivos";
+                        sheets[1].title = "Estadisticas Generales";
+
+                        var workbook = new kendo.ooxml.Workbook({
+                            sheets: sheets
+                        });
+
+                        kendo.saveAs({
+                            dataURI: workbook.toDataURL(),
+                            fileName: "EstadisticasInfracciones.xlsx"
+                        });
+                    });
             });
     }
 
 
 
 </script>
+<style>
+    #chart-container {
+    height: 500px; /* Altura fija del contenedor */
+    overflow-y: auto; /* Habilita el desbordamiento vertical */
+}
+</style>
 
 

@@ -195,7 +195,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
                             model.Contador = reader["Contador"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["Contador"].ToString());
                             model.Motivo = reader["Motivo"].ToString();
-
                             modelList.Add(model);
                         }
                     }

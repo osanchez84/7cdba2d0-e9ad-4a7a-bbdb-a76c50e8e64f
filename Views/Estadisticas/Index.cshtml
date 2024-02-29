@@ -111,9 +111,20 @@
                     <div class="controlForm">
                         <label>Delegación:</label>
                         @(Html.Kendo().DropDownListFor(m => m.idDelegacion).Filter(FilterType.Contains)
-                            .BindTo((SelectList)ViewBag.CatDelegaciones)
-                            .OptionLabel("-- Seleccione --")
+                             .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Selecciona una delegación")
+                            .Filter(FilterType.Contains)
+
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Drop", "Estadisticas");
+                                });
+                            })
                             .HtmlAttributes(new { style = "width:100%;" })
+                            .Filter(FilterType.Contains)
                             )
                     </div>
                 </div>

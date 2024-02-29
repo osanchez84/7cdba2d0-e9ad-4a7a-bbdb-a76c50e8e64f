@@ -1332,7 +1332,7 @@ namespace GuanajuatoAdminUsuarios.Services
             insertarDireccion(personaDatos, idPersona);
             return (idPersona);
         }
-        public int InsertarPersonaDeLicencias(LicenciaPersonaDatos personaDatos)
+        public int InsertarPersonaDeLicencias(PersonaLicenciaModel personaDatos)
         {
             int idPersona = -1;
 
@@ -1343,32 +1343,33 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     connection.Open();
 
-                    string query = "INSERT INTO personas (numeroLicencia,CURP,RFC,nombre,apellidoPaterno,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona,idGenero,fechaNacimiento,idTipoLicencia,vigenciaLicencia) " +
-                                         "VALUES (@NumeroLicencia,@curp,@rfc,@nombre,@apellidoPaterno,@apellidoMaterno,@fechaActualizacion,@actualizadoPor,@estatus,@tipoPersona,@genero,@fechaNacimiento,@idTipolicencia,@fechaVigencia);SELECT SCOPE_IDENTITY()";
+                    string query = "INSERT INTO personas (numeroLicencia,CURP,RFC,nombre,apellidoPaterno,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona,idGenero,fechaNacimiento,idTipoLicencia,vigenciaLicencia,origen) " +
+                                         "VALUES (@NumeroLicencia,@curp,@rfc,@nombre,@apellidoPaterno,@apellidoMaterno,@fechaActualizacion,@actualizadoPor,@estatus,@tipoPersona,@genero,@fechaNacimiento,@idTipolicencia,@fechaVigencia,@origen);SELECT SCOPE_IDENTITY()";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@NumeroLicencia", (object)personaDatos.NUM_LICENCIA ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@curp", string.IsNullOrEmpty(personaDatos.CURP) ? "" : personaDatos.CURP);
-                        command.Parameters.AddWithValue("@rfc", string.IsNullOrEmpty(personaDatos.RFC) ? "" : personaDatos.RFC);
-                        command.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(personaDatos.NOMBRE) ? "" : personaDatos.NOMBRE);
-                        command.Parameters.AddWithValue("@apellidoPaterno", string.IsNullOrEmpty(personaDatos.PRIMER_APELLIDO) ? "" : personaDatos.PRIMER_APELLIDO);
-                        command.Parameters.AddWithValue("@apellidoMaterno", string.IsNullOrEmpty(personaDatos.SEGUNDO_APELLIDO) ? "" : personaDatos.SEGUNDO_APELLIDO);
+                        command.Parameters.AddWithValue("@NumeroLicencia", (object)personaDatos.NumeroLicencia ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@curp", string.IsNullOrEmpty(personaDatos.Curp) ? "" : personaDatos.Curp);
+                        command.Parameters.AddWithValue("@rfc", string.IsNullOrEmpty(personaDatos.Rfc) ? "" : personaDatos.Rfc);
+                        command.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(personaDatos.Nombre) ? "" : personaDatos.Nombre);
+                        command.Parameters.AddWithValue("@apellidoPaterno", string.IsNullOrEmpty(personaDatos.PrimerApellido) ? "" : personaDatos.PrimerApellido);
+                        command.Parameters.AddWithValue("@apellidoMaterno", string.IsNullOrEmpty(personaDatos.SegundoApellido) ? "" : personaDatos.SegundoApellido);
 
                         command.Parameters.AddWithValue("@tipoPersona", (int)TipoPersona.Fisica);
-                        command.Parameters.AddWithValue("@genero", personaDatos.ID_GENERO == null ? "" : personaDatos.ID_GENERO);
-                        command.Parameters.AddWithValue("@fechaNacimiento", (personaDatos.FECHA_NACIMIENTO == null || personaDatos.FECHA_NACIMIENTO.Value.Year == 0) ? DBNull.Value : personaDatos.FECHA_NACIMIENTO);
-                        command.Parameters.AddWithValue("@idTipolicencia", personaDatos.ID_TIPO_LICENCIA == null ? "" : personaDatos.ID_TIPO_LICENCIA);
-                        command.Parameters.AddWithValue("@fechaVigencia", (personaDatos.FECHA_TERMINO_VIGENCIA == null || personaDatos.FECHA_TERMINO_VIGENCIA.Value.Year == 0) ? DBNull.Value : personaDatos.FECHA_TERMINO_VIGENCIA);
+                        _ = command.Parameters.AddWithValue("@genero",  personaDatos.IdGenero);
+                        command.Parameters.AddWithValue("@fechaNacimiento", personaDatos.FechaNacimiento == null ? DBNull.Value : personaDatos.FechaNacimiento);
+                        _ = command.Parameters.AddWithValue("@idTipolicencia",  personaDatos.IdTipoLicencia);
+                        command.Parameters.AddWithValue("@fechaVigencia", personaDatos.FechaTerminoVigencia == null ? DBNull.Value : personaDatos.FechaTerminoVigencia);
 
                         command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                         command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
                         command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                           command.Parameters.Add(new SqlParameter("@origen", SqlDbType.VarChar)).Value = (object)"LICENCIAS";
 
                         command.CommandType = CommandType.Text;
                         idPersona = Convert.ToInt32(command.ExecuteScalar());
 
-                        insertarDireccion(personaDatos, idPersona);
+                        InsertarDomicilioPersonaLicencia(personaDatos, idPersona);
                     }
 
                 }
@@ -1408,6 +1409,38 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@numero", string.IsNullOrEmpty(personaDatos.NUM_EXT) ? "" : personaDatos.NUM_EXT);
                     command.Parameters.AddWithValue("@telefono", string.IsNullOrEmpty(personaDatos.TELEFONO1) ? "" : personaDatos.TELEFONO1);
                     command.Parameters.AddWithValue("@correo", string.IsNullOrEmpty(personaDatos.EMAIL) ? "" : personaDatos.EMAIL);
+                    command.Parameters.AddWithValue("@idPersona", insertado);
+                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+
+                    command.CommandType = CommandType.Text;
+                    insertedDireccion = Convert.ToInt32(command.ExecuteScalar());
+                }
+            }
+        }
+
+         public void InsertarDomicilioPersonaLicencia(PersonaLicenciaModel personaDatos, int insertado)
+        {
+            int insertedDireccion = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                connection.Open();
+                CatEntidadesModel entidad = _catEntidadesService.ObtenerEntidadesByNombre(personaDatos.EstadoNacimiento);
+                string qryDomicilio = "INSERT INTO personasDirecciones (idEntidad,idMunicipio,codigoPostal,colonia,calle,numero,telefono,correo,idPersona,actualizadoPor,fechaActualizacion,estatus)" +
+                       "VALUES(@idEntidad,@idMunicipio,@codigoPostal,@colonia,@calle,@numero,@telefono,@correo,@idPersona,@actualizadoPor,@fechaActualizacion,@estatus)";
+
+                using (SqlCommand command = new SqlCommand(qryDomicilio, connection))
+                {
+
+                    command.Parameters.AddWithValue("@idEntidad", entidad.idEntidad);
+                    command.Parameters.AddWithValue("@idMunicipio", personaDatos.IdMunicipio == null ? "" : personaDatos.IdMunicipio);
+                    command.Parameters.AddWithValue("@codigoPostal", string.IsNullOrEmpty(personaDatos.Cp) ? "" : personaDatos.Cp);
+                    command.Parameters.AddWithValue("@colonia", string.IsNullOrEmpty(personaDatos.Colonia) ? "" : personaDatos.Colonia);
+                    command.Parameters.AddWithValue("@calle", string.IsNullOrEmpty(personaDatos.Calle) ? "" : personaDatos.Calle);
+                    command.Parameters.AddWithValue("@numero", string.IsNullOrEmpty(personaDatos.NumExt) ? "" : personaDatos.NumExt);
+                    command.Parameters.AddWithValue("@telefono", string.IsNullOrEmpty(personaDatos.Telefono) ? "" : personaDatos.Telefono);
+                    command.Parameters.AddWithValue("@correo", string.IsNullOrEmpty(personaDatos.Email) ? "" : personaDatos.Email);
                     command.Parameters.AddWithValue("@idPersona", insertado);
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;

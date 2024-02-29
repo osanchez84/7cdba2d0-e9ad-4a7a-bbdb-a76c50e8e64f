@@ -4,8 +4,8 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Wed Feb 28 2024
- * Última modificación: Wed Feb 28 2024
+ * Última modificación: Thu Feb 29 2024
+ * Última modificación: Thu Feb 29 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -204,13 +204,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// Muestra vista para crear persona fisica
         /// </summary>
         /// <returns></returns>
-        public ActionResult MostrarPersonaFisica()
+        public ActionResult MostrarPersonaFisica(int idPersona)
         {
-            var model = new PersonaModel
-            {
-                PersonaDireccion = new PersonaDireccionModel()
-            };
-            return PartialView("_PersonaFisica", model);
+
+            return ViewComponent("CrearPersona", new { idPersona });
         }
         /// <summary>
         /// Muestra vista para crear persona moral
@@ -321,42 +318,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult MostrarListaPersonasLicenciasEncontradas(BusquedaPersonaModel model)
         {
-            return ViewComponent("ListaPersonasEncontradasLicencias", new { listaPersonas = model.ListadoPersonas });
+            return ViewComponent("ListaPersonasEncontradasLicencias", new { listaPersonas = model.ListadoPersonasLicencia });
         }
 
-        public IActionResult GuardaPersonaLicenciasEnRiag([FromServices] IPersonasService personasService,[FromServices]IBitacoraService _bitacoraServices,string nombre, string apellidoPaterno, string apellidoMaterno, string CURP, string RFC, string numeroLicencia, string tipoLicencia,
-                                                                    string idGenero, DateTime fechaNacimiento, DateTime fechaVigencia)
+        public IActionResult GuardaPersonaLicenciasEnRiag([FromServices] IPersonasService personasService, [FromServices] IBitacoraService bitacoraServices, PersonaLicenciaModel personaLicencia)
         {
-        
-                LicenciaPersonaDatos personaDatos = new()
-                {
-                    NOMBRE = nombre,
-                    PRIMER_APELLIDO = apellidoPaterno,
-                    SEGUNDO_APELLIDO = apellidoMaterno,
-                    CURP = CURP,
-                    RFC = RFC,
-                    NUM_LICENCIA = numeroLicencia,
-                    ID_TIPO_LICENCIA = Convert.ToInt32(tipoLicencia),
-                    ID_GENERO = Convert.ToInt32(idGenero),
-                    FECHA_NACIMIENTO = fechaNacimiento,
-                    FECHA_TERMINO_VIGENCIA = fechaVigencia
-                };
 
-                //Se busca a la persona por licencia o curp
-                int idPersona = personasService.ExistePersona(personaDatos.NUM_LICENCIA, personaDatos.CURP);
+            //Se busca a la persona por licencia o curp
+            int idPersona = personasService.ExistePersona(personaLicencia.NumeroLicencia, personaLicencia.Curp);
 
-                //Si no existe la persona se inserta
-                if(idPersona<=0)
-                    idPersona = personasService.InsertarPersonaDeLicencias(personaDatos);
+            //Si no existe la persona se inserta
+            if (idPersona <= 0)
+                idPersona = personasService.InsertarPersonaDeLicencias(personaLicencia);
 
-                //Se obtienen los datos de la persona por id
-                PersonaModel persona = personasService.GetPersonaById(idPersona);
-              
+            //Se obtienen los datos de la persona por id
+            PersonaModel persona = personasService.GetPersonaById(idPersona);
 
-                //BITACORA
-                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                _bitacoraServices.insertBitacora(idPersona, ip, "Personas_DesdeServicio", "Insertar", "insert", user);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            bitacoraServices.insertBitacora(idPersona, ip, "Personas_DesdeServicio", "Insertar", "insert", user);
 
             BusquedaPersonaModel modelo = new()
             {
@@ -374,29 +356,29 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// <exception cref="Exception"></exception>
         public ActionResult CrearPersonaFisica([FromServices] IPersonasService personasService, PersonaModel Persona)
         {
-            Persona.nombre = Persona.nombreFisico;
-            Persona.apellidoMaterno = Persona.apellidoMaternoFisico;
-            Persona.apellidoPaterno = Persona.apellidoPaternoFisico;
-            Persona.CURP = Persona.CURPFisico;
-            Persona.RFC = Persona.RFCFisico;
-            Persona.numeroLicencia = Persona.numeroLicenciaFisico;
-            Persona.idTipoLicencia = Persona.idTipoLicencia;
-            Persona.vigenciaLicencia = Persona.vigenciaLicencia;
-            Persona.PersonaDireccion.idEntidad = Persona.PersonaDireccion.idEntidadFisico;
-            Persona.PersonaDireccion.idMunicipio = Persona.PersonaDireccion.idMunicipioFisico;
-            Persona.PersonaDireccion.correo = Persona.PersonaDireccion.correoFisico;
-            Persona.PersonaDireccion.telefono = Persona.PersonaDireccion.telefonoFisico;
-            Persona.PersonaDireccion.colonia = Persona.PersonaDireccion.coloniaFisico;
-            Persona.PersonaDireccion.calle = Persona.PersonaDireccion.calleFisico;
-            Persona.PersonaDireccion.numero = Persona.PersonaDireccion.numeroFisico;
-            Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
-            var IdPersonaFisica = personasService.CreatePersona(Persona);
+            int IdPersonaFisica=0;
+            if (Persona.idPersona > 0)
+            {
+                Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                int result = personasService.UpdatePersona(Persona);
+                if(result>0)
+                IdPersonaFisica = (int)Persona.idPersona;
+            }
+            else
+            {
+                Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                IdPersonaFisica = personasService.CreatePersona(Persona);
+            }
             if (IdPersonaFisica == 0)
             {
                 throw new Exception("Ocurrio un error al dar de alta la persona");
             }
-            var modelList = personasService.ObterPersonaPorIDList(IdPersonaFisica); ;
-            return PartialView("_PersonasFisicas", modelList);
+            var modelList = personasService.ObterPersonaPorIDList(IdPersonaFisica);
+            BusquedaPersonaModel model = new()
+            {
+                ListadoPersonas = modelList
+            };
+            return Json(new { success = true, data = model });
         }
         /// <summary>
         /// Crea un nuevo registro en la bd de una persona moral
@@ -422,7 +404,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         }
         /// <summary>
-        /// Busca personas en el sistema de licencias
+        /// Busca personas en el sistema de licencias a través de un servicio web publicado
         /// </summary>
         /// <param name="_httpClientFactory"></param>
         /// <param name="model"></param>
@@ -440,55 +422,35 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (ultimo.Equals("&"))
                 parametros = parametros[..^1];
 
-            try
+            string urlServ = Request.GetDisplayUrl();
+            Uri uri = new(urlServ);
+            string requested = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+
+            var url = requested + $"/api/Licencias/datos_generales?" + parametros;
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
             {
-                string urlServ = Request.GetDisplayUrl();
-                Uri uri = new(urlServ);
-                string requested = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+                var content = await response.Content.ReadAsStringAsync();
 
-                var url = requested + $"/api/Licencias/datos_generales?" + parametros;
 
-                var httpClient = _httpClientFactory.CreateClient();
-                var response = await httpClient.GetAsync(url);
+                List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
 
-                if (response.IsSuccessStatusCode)
+                List<PersonaLicenciaModel> resultado = new();
+
+                foreach (LicenciaPersonaDatos p in respuesta)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-
-
-                    List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
-
-                    List<PersonaModel> pEncontradas = new();
-                    foreach (LicenciaPersonaDatos pivote in respuesta)
-                    {
-                        PersonaModel pm = new()
-                        {
-                            idPersona = (int)pivote.ID_PERSONA,
-                            nombre = pivote.NOMBRE,
-                            apellidoPaterno = pivote.PRIMER_APELLIDO,
-                            apellidoMaterno = pivote.SEGUNDO_APELLIDO,
-                            CURP = pivote.CURP,
-                            RFC = pivote.RFC,
-                            numeroLicencia = pivote.NUM_LICENCIA,
-                            tipoLicencia = pivote.TIPOLICENCIA,
-                            idGenero = pivote.ID_GENERO == null ? 0 : (int)pivote.ID_GENERO,
-                            fechaNacimiento = pivote.FECHA_NACIMIENTO,
-                            vigenciaLicencia = pivote.FECHA_TERMINO_VIGENCIA
-                        };
-                        pEncontradas.Add(pm);
-                    }
-
-                    return Json(pEncontradas);
+                    PersonaLicenciaModel pm = new();
+                    pm.ConvertirModelo(p);
+                    resultado.Add(pm);
                 }
-            }
-            catch (Exception ex)
-            {
-                // En caso de errores, devolver una respuesta JSON con licencia no encontrada
-                return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
+
+                return Json(new { success = true, data = resultado });
             }
 
-            //Si no se cumple la condición anterior, devolver una respuesta JSON indicando que no se encontraron resultados
-            return Json(new { encontrada = false, Data = "", message = "No se encontraron resultados." });
+            return Json(new { success = true, message = "No se pudo conectar al servicio de licencias" });
         }
 
 

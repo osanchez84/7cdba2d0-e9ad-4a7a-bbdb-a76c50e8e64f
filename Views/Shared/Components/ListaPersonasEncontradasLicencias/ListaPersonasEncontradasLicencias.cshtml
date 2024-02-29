@@ -1,4 +1,4 @@
-@model List<PersonaModel>
+@model List<PersonaLicenciaModel>
    <div class="row  my-2 mb-3">
     <div class="col-12 mt-4 mb-2">
         <h5 class="px-4"><b>Personas encontradas en Licencias</b></h5>
@@ -14,12 +14,11 @@
         .Columns(columns =>
         {
             columns.Select().Width(50).ClientHeaderTemplate(" ");
-            columns.Bound(c => c.idPersona).Hidden();
-            columns.Bound(c => c.nombreCompleto).Title("Nombre");
-            columns.Bound(p => p.CURP).Title("CURP");
-            columns.Bound(p => p.RFC).Title("RFC");
-            columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
-            columns.Bound(p => p.tipoLicencia).Title("Tipo de Licencia");
+            columns.Bound(c => c.NombreCompleto).Title("Nombre");
+            columns.Bound(c => c.Curp).Title("CURP");
+            columns.Bound(c => c.Rfc).Title("RFC");
+            columns.Bound(c => c.NumeroLicencia).Title("No. Licencia");
+            columns.Bound(c => c.TipoLicencia).Title("Tipo de Licencia");
         })
 
         )

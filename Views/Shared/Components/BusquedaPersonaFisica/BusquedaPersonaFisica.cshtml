@@ -4,6 +4,8 @@
 }
 <script>
 function buscarPersonaFisica(){
+         $('#ddlIdPersona').val('');
+        $('#ddlIdPersona').change();
         var licenciaBusqueda = $("#NumeroLicenciaBusqueda").val().trim();
         var rfcBusqueda = $("#RFCBusqueda").val().trim();
         var curpBusqueda = $("#CURPBusqueda").val().trim();
@@ -110,12 +112,18 @@ function buscarPersonaFisica(){
             data: formData,
             success: function (response) {
                     resetMensajeBuscando();
-                    if (response.length >0) {
-                        cargaListaPersonasLicenciasEncontradas({ListadoPersonas:response});
+                    if(!response.success){
+                        sitteg_warning(response.message);
+                        return;
+                    }
+                    if (response.data.length >0) {
+                        cargaListaPersonasLicenciasEncontradas({ListadoPersonasLicencia:response.data});
                     }
                     else {
                         mostrarMensajeBuscando('No se encontraron personas con los datos introducidos, intenta con otros o agrega a la persona');
-                }
+                        $('#btnBuscarPersonasFisicas').prop('disabled', false);
+                    }
+
             },
             error: function (error) {
                 sitteg_warning('Ocurrió un error en la búsqueda.');
@@ -124,14 +132,32 @@ function buscarPersonaFisica(){
         });
 
     }
+
+     function abrirModalPersonaFisica(idPersona){
+        $.ajax({
+        url: '@Url.Action("MostrarPersonaFisica","BusquedaVehiculoPropietario")',
+        type: 'POST',
+        data: {idPersona},
+        success: function (result) {
+            $('#personaFisicaContainer').html(result);
+            $('#addFisico').modal('show');
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+        }
+    });
+    }
+
      function mostrarMensajeBuscando(mensaje){
      $('#divMensajeBuscando').show();
      $('#spanMensajeBuscando').html(`<b>${mensaje}</b>`);
+     $('#btnBuscarPersonasFisicas').prop('disabled', true);
     }
 
     function resetMensajeBuscando(){
      $('#divMensajeBuscando').hide();
      $('#spanMensajeBuscando').html('');
+      $('#btnBuscarPersonasFisicas').prop('disabled', false);
     }
 
     function resetPersonasContainer(){
@@ -171,7 +197,7 @@ function buscarPersonaFisica(){
         <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
             <div class="row">
                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                    <button href="#" id="btnCrearPersona" onclick="btnModalCrearPersona()">
+                    <button href="#" id="btnCrearPersona" onclick="abrirModalPersonaFisica()">
                         <h6 class="m-0 d-flex align-items-center"><i class="icon-addConcecionario h2 mb-0 me-2"></i><b>Agregar nueva persona</b></h6>
                     </button>
                 </div>
@@ -244,7 +270,7 @@ function buscarPersonaFisica(){
         <div class="controlButton my-3">
                 @(Html.Kendo().Button()
                     .Name("buscarOtroConductor")
-                    .HtmlAttributes(new {type = "button", @class = "btnPrimary" })
+                    .HtmlAttributes(new {id="btnBuscarPersonasFisicas",type = "button", @class = "btnPrimary" })
                      .Events(ev => ev.Click("buscarPersonaFisica"))
                     .Content("<h5 class=\"m-0\"><b>Buscar</b></h5>"))
         </div>
@@ -285,65 +311,9 @@ function buscarPersonaFisica(){
         </div>
     </div>
 </section>
-<div id="modalLicencias" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Contenido del modal se llenará con la función mostrarModal -->
-        </div>
-    </div>
-</div>
-<div id="modalLicenciasList" class="modal">
-    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
-        <div class="modal-content">
-            
-                <partial name="_ListaPersonasEnLicencias"   model="Model.PersonaModel" />
-            
-            <!-- Contenido del modal se llenará con la función mostrarModal -->
-        </div>
-    </div>
-</div>
-<div class="modal fade modalCustom" id="modalEditarPersona" aria-labelledby="modalEditarPersona" aria-hidden="true">
-    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
-        <div class="modal-content">
-            <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-                <div class="col-auto pe-0">
-                    <div class="row align-items-center justify-content-center justify-content-md-start">
-                        <div class="col-auto pe-0">
-                            <i class="icon-addConcecionario h1 colorPrimary"></i>
-                        </div>
-                        <div class="col-auto my-3">
-                            <h2 class="m-0 h3"><b>Editar Persona</b></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="row">
-                        <div class="col-auto my-3">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="bg-light py-1"></div>
-                </div>
-            </div>
-            <div class="modal-body" id="modalBodyEditarPersona">
-            </div>
-        </div>
-    </div>
-    <div class="modal fade modalCustom" id="detalleLicencias"  aria-labelledby="detalleLicenciasLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body" id="ModalBodyDetalleLicencias">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@if (Model.IsModal)
-{
+ <div id="personaFisicaContainer"></div>
+
+
     <div class="modal fade" id="confirmacionModal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -355,48 +325,19 @@ function buscarPersonaFisica(){
                 ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="cerrarModalPer()">Aceptar</button>
-                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+                <button type="button" id="confirmarCerrar">Aceptar</button>
+                <button type="button" class="btn btn-secondary" id="cancelarConfirmacion" onclick="cancelarConfirmacion()">Cancelar</button>
             </div>
         </div>
     </div>
 </div>
-}
+
 
 <script>
     $(document).ready(function () {
        
-        $("#modalCrearPersona").on("show.bs.modal shown.bs.modal", function (e) {
-            $("body").removeClass("modal-open").find(".modal-backdrop").remove();
-        });
-        $("#modalCrearPersona").on('hide.bs.modal', function () {
-            $('#modalBodyEditarPersona').html('');
-        });
-
-        $("#modalEditarPersona").on("show.bs.modal shown.bs.modal", function (e) {
-            $("body").removeClass("modal-open").find(".modal-backdrop").remove();
-        });
-        $("#modalEditarPersona").on('hide.bs.modal', function () {
-            $('#modalBodyEditarPersona').html('');
-        });
-        
-        $("#modalLicenciasList").on("show.bs.modal shown.bs.modal", function (e) {
-            $("body").removeClass("modal-open").find(".modal-backdrop").remove();
-        });
     });
 
-    function btnModalCrearPersona() {
-        $.ajax({
-            url: '@Url.Action("ajax_ModalCrearPersona","Infracciones")',
-            type: 'GET',
-            contentType: "application/json; charset=utf-8",
-            dataType: "html",
-            success: function (data) {
-                $('#modalBodyCrearPersona').html(data);
-                $('#modalCrearPersona').modal('show');
-            }
-        });
-    }
     function btnModalEditarPersona(id) {
         showLoading();
         $.ajax({
@@ -419,11 +360,11 @@ function buscarPersonaFisica(){
  function guadarPersonaLicenciasEnRiag() {
         var grid = $("#gridPersonasLicencia").data("kendoGrid");
         var selectedRowData = grid.dataItem(grid.select());
-        alert(selectedRowData);
-        const tipoLicenciaMapping = {
+   
+           var tipoLicenciaMapping = {
                 "TIPO A  CHOFER AUTOMOVILISTA": 1,
                 "TIPO B CHOFER SERVICIO PÚBLICO": 2,
-                "TIPO C  Chofer Servicio de Carga": 3,
+                "TIPO C  CHOFER SERVICIO DE CARGA": 3,
                 "TIPO D -MOTOCICLISTA": 4,
                 "PERMISO A -AUTOMOVIL-": 6,
                 "PERMISO D -MOTOCICLETA-": 7,
@@ -441,23 +382,33 @@ function buscarPersonaFisica(){
                 "PA-PERMISO AUTOMOVILISTA": 6,
                 "PD-PERMISO MOTOCICLISTA": 7,
 
-            };
+            }
+       
+            const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.TipoLicencia] || 0;
            
-            const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.tipoLicencia] || 0;
-           
-            selectedRowData.idTipoLicencia = tipoLicenciaNumero;
-     
+          
             var fd = new FormData();
-            fd.append("nombre", selectedRowData.nombre);
-            fd.append("apellidoPaterno", selectedRowData.apellidoPaterno);
-            fd.append("apellidoMaterno", selectedRowData.apellidoMaterno);
-            fd.append("CURP", selectedRowData.CURP);
-            fd.append("RFC", selectedRowData.RFC);
-            fd.append("numeroLicencia", selectedRowData.numeroLicencia);
-            fd.append("tipoLicencia", tipoLicenciaNumero);
-           fd.append("idGenero", selectedRowData.idGenero);
-           fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
-           fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+            fd.append("NombreCompleto", selectedRowData.NombreCompleto);
+            fd.append("Nombre", selectedRowData.Nombre);
+            fd.append("PrimerApellido", selectedRowData.PrimerApellido);
+            fd.append("SegundoApellido", selectedRowData.SegundoApellido);
+            fd.append("Curp", selectedRowData.Curp);
+            fd.append("Rfc", selectedRowData.Rfc);
+            fd.append("NumeroLicencia", selectedRowData.NumeroLicencia);
+            fd.append("IdTipoLicencia", tipoLicenciaNumero);
+           fd.append("IdGenero", selectedRowData.IdGenero);
+           fd.append("FechaNacimiento", selectedRowData.FechaNacimiento);
+           fd.append("FechaTerminoVigencia", selectedRowData.FechaTerminoVigencia);
+           fd.append("Calle", selectedRowData.Calle);
+           fd.append("NumExt", selectedRowData.NumExt);
+           fd.append("Colonia", selectedRowData.Colonia);
+            fd.append("Cp", selectedRowData.Cp);
+           fd.append("IdMunicipio", selectedRowData.IdMunicipio);
+           fd.append("Municipio", selectedRowData.Municipio);
+           fd.append("EstadoNacimiento", selectedRowData.EstadoNacimiento);
+             fd.append("Telefono", selectedRowData.Telefono);
+               fd.append("Email", selectedRowData.Email);
+
 
             mostrarMensajeBuscando('Guardando persona en RIAG...');
         
@@ -470,9 +421,8 @@ function buscarPersonaFisica(){
                  success: function (result) {
                     sitteg_success('Persona registrada exitosamente')
                     resetMensajeBuscando();
-                    var model ={ListadoPersonas:[result.data]};
-                    console.log(model);
-                     cargaListaPersonasRiagEncontradas(mode);
+                    var model ={ListadoPersonas:result.data.ListadoPersonas};
+                     cargaListaPersonasRiagEncontradas(model);
                  },
                  error: function (error) {
                      sitteg_warning('Error al guardar persona');
@@ -502,5 +452,8 @@ function buscarPersonaFisica(){
      $('#modalCrearPersona').modal('hide');
      $('#confirmacionModal').modal('hide');
 
+    }
+    function cancelarConfirmacion(){
+     $('#confirmacionModal').modal('hide');
     }
 </script>

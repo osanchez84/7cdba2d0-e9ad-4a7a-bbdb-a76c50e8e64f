@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Components
 {
     public class ListaPersonasEncontradasLicenciasViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(List<PersonaModel> listaPersonas)
+        public async Task<IViewComponentResult> InvokeAsync(List<PersonaLicenciaModel> listaPersonas)
         {
             return await Task.FromResult((IViewComponentResult)View("ListaPersonasEncontradasLicencias", listaPersonas));
         }

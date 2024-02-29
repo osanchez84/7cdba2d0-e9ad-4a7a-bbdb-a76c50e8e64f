@@ -41,6 +41,6 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public int ExistePersona(string licencia, string curp);
 
-        public int InsertarPersonaDeLicencias(LicenciaPersonaDatos personaDatos);
+        public int InsertarPersonaDeLicencias(PersonaLicenciaModel personaDatos);
     }
 }

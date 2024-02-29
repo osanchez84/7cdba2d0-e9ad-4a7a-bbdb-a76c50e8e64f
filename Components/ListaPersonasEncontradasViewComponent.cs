@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 27th 2024 12:36:56 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Wed Feb 28 2024
+ * Última modificación: Thu Feb 29 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -15,6 +15,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GuanajuatoAdminUsuarios.Models;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GuanajuatoAdminUsuarios.Components
@@ -23,7 +25,7 @@ namespace GuanajuatoAdminUsuarios.Components
     {
         public async Task<IViewComponentResult> InvokeAsync(List<PersonaModel> listaPersonas)
         {
-            return await Task.FromResult((IViewComponentResult)View("ListaPersonasEncontradas", listaPersonas));
+            return await Task.FromResult((IViewComponentResult)View("ListaPersonasEncontradas", listaPersonas ));
         }
     }
 }

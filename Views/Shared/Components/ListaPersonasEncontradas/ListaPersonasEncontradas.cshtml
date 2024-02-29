@@ -1,4 +1,4 @@
-@model List<PersonaModel>
+@model List<GuanajuatoAdminUsuarios.Models.PersonaModel>
         <div class="row justify-content-between my-2 mb-3 titleCustom">
     <div class="offset-1 col-12 mt-4 mb-2">
         <h5 class="px-4"><b>Personas encontradas en RIAG</b></h5>
@@ -6,9 +6,9 @@
     </div>
 </div>
 <div class="col-12 mb-4 px-4 rounded gridCustom">
-    @(
-         Html.Kendo().Grid(Model)
+    @(Html.Kendo().Grid(Model)
         .Name("gridPersonas")
+            .EnableCustomBinding(true)
         .Columns(columns =>
         {
             columns.Bound(c => c.idPersona).Hidden();
@@ -20,17 +20,14 @@
             columns.Bound(p => p.tipoLicencia).Title("Tipo de Licencia");
             columns.Bound(c => c.tipoPersona).Title("Tipo persona");
             columns.Bound(p => p.idPersona).ClientTemplate(
-            "<button onclick=\"btnModalEditarPersona('#= idPersona #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
+            "<button onclick=\"abrirModalPersonaFisica('#: idPersona #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
             ).Title("Acciones").Sortable(false).Width(100);
         })
         .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
         .Sortable()
         .Scrollable(scr => scr.Enabled(true))
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .ServerOperation(false)
-        .PageSize(5)
-        )
+         .DataSource(dataSource => dataSource
+         .Custom().PageSize(5))
         .ToolBar(t => t.Custom().Text("Buscar...").Name("search"))
         .Search(s =>
         {

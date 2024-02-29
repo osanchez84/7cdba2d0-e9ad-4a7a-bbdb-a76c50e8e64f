@@ -39,13 +39,14 @@
                 .Legend(legend => legend
                 .Visible(true)
                 .Position(ChartLegendPosition.Top)
+                .Height(5000).Spacing(10)
                 )
                 .ChartArea(chartArea => chartArea
-                .Background("transparent")
+                .Background("transparent").Height(5000)
                 )
                 .Series(series =>
                 {
-                    series.Bar(model => model.Contador);
+                    series.Bar(model => model.Contador).MinSize(50).DynamicHeight(true).MaxSize(5000).AutoFit().Padding(10).Padding(10);
                 })
                 .CategoryAxis(axis => axis
                 .Categories(c => c.Motivo)

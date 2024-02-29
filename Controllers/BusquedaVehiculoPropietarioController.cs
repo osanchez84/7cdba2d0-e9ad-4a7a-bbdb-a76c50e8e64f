@@ -31,6 +31,9 @@ using Microsoft.IdentityModel.Tokens;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http.Extensions;
+using System.Net.Http;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -311,11 +314,57 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(new { encontrada = false, tipo = "sin datos", message = "busca en licencias" });
         }
 
-        public IActionResult MostrarListaPersonasFisicaEncontradas(BusquedaPersonaModel model)
+        public IActionResult MostrarListaPersonasRiagEncontradas(BusquedaPersonaModel model)
         {
-            return ViewComponent("ListaPersonasEncontradas", new { listaPersonas=model.ListadoPersonas });
+            return ViewComponent("ListaPersonasEncontradas", new { listaPersonas = model.ListadoPersonas });
         }
 
+        public IActionResult MostrarListaPersonasLicenciasEncontradas(BusquedaPersonaModel model)
+        {
+            return ViewComponent("ListaPersonasEncontradasLicencias", new { listaPersonas = model.ListadoPersonas });
+        }
+
+        public IActionResult GuardaPersonaLicenciasEnRiag([FromServices] IPersonasService personasService,[FromServices]IBitacoraService _bitacoraServices,string nombre, string apellidoPaterno, string apellidoMaterno, string CURP, string RFC, string numeroLicencia, string tipoLicencia,
+                                                                    string idGenero, DateTime fechaNacimiento, DateTime fechaVigencia)
+        {
+        
+                LicenciaPersonaDatos personaDatos = new()
+                {
+                    NOMBRE = nombre,
+                    PRIMER_APELLIDO = apellidoPaterno,
+                    SEGUNDO_APELLIDO = apellidoMaterno,
+                    CURP = CURP,
+                    RFC = RFC,
+                    NUM_LICENCIA = numeroLicencia,
+                    ID_TIPO_LICENCIA = Convert.ToInt32(tipoLicencia),
+                    ID_GENERO = Convert.ToInt32(idGenero),
+                    FECHA_NACIMIENTO = fechaNacimiento,
+                    FECHA_TERMINO_VIGENCIA = fechaVigencia
+                };
+
+                //Se busca a la persona por licencia o curp
+                int idPersona = personasService.ExistePersona(personaDatos.NUM_LICENCIA, personaDatos.CURP);
+
+                //Si no existe la persona se inserta
+                if(idPersona<=0)
+                    idPersona = personasService.InsertarPersonaDeLicencias(personaDatos);
+
+                //Se obtienen los datos de la persona por id
+                PersonaModel persona = personasService.GetPersonaById(idPersona);
+              
+
+                //BITACORA
+                var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+                var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+                _bitacoraServices.insertBitacora(idPersona, ip, "Personas_DesdeServicio", "Insertar", "insert", user);
+
+            BusquedaPersonaModel modelo = new()
+            {
+                ListadoPersonas = new List<PersonaModel>()
+            };
+            modelo.ListadoPersonas.Add(persona);
+            return Json(new { data = modelo });
+        }
         /// <summary>
         /// Crea un nuevo registro en la bd de una persona fisica
         /// </summary>
@@ -372,6 +421,76 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //var personasMoralesModel = _personasService.GetAllPersonasMorales();
 
         }
+        /// <summary>
+        /// Busca personas en el sistema de licencias
+        /// </summary>
+        /// <param name="_httpClientFactory"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> BuscarPersonasEnLicencias([FromServices] IHttpClientFactory _httpClientFactory, BusquedaPersonaModel model)
+        {
+            string parametros = "";
+            parametros += string.IsNullOrEmpty(model.NumeroLicenciaBusqueda) ? "" : "licencia=" + model.NumeroLicenciaBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.CURPBusqueda) ? "" : "curp=" + model.CURPBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.RFCBusqueda) ? "" : "rfc=" + model.RFCBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.NombreBusqueda) ? "" : "nombre=" + model.NombreBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.ApellidoPaternoBusqueda) ? "" : "primer_apellido=" + model.ApellidoPaternoBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.ApellidoMaternoBusqueda) ? "" : "segundo_apellido=" + model.ApellidoMaternoBusqueda;
+            string ultimo = parametros[^1..];
+            if (ultimo.Equals("&"))
+                parametros = parametros[..^1];
+
+            try
+            {
+                string urlServ = Request.GetDisplayUrl();
+                Uri uri = new(urlServ);
+                string requested = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+
+                var url = requested + $"/api/Licencias/datos_generales?" + parametros;
+
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+
+
+                    List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
+
+                    List<PersonaModel> pEncontradas = new();
+                    foreach (LicenciaPersonaDatos pivote in respuesta)
+                    {
+                        PersonaModel pm = new()
+                        {
+                            idPersona = (int)pivote.ID_PERSONA,
+                            nombre = pivote.NOMBRE,
+                            apellidoPaterno = pivote.PRIMER_APELLIDO,
+                            apellidoMaterno = pivote.SEGUNDO_APELLIDO,
+                            CURP = pivote.CURP,
+                            RFC = pivote.RFC,
+                            numeroLicencia = pivote.NUM_LICENCIA,
+                            tipoLicencia = pivote.TIPOLICENCIA,
+                            idGenero = pivote.ID_GENERO == null ? 0 : (int)pivote.ID_GENERO,
+                            fechaNacimiento = pivote.FECHA_NACIMIENTO,
+                            vigenciaLicencia = pivote.FECHA_TERMINO_VIGENCIA
+                        };
+                        pEncontradas.Add(pm);
+                    }
+
+                    return Json(pEncontradas);
+                }
+            }
+            catch (Exception ex)
+            {
+                // En caso de errores, devolver una respuesta JSON con licencia no encontrada
+                return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
+            }
+
+            //Si no se cumple la condición anterior, devolver una respuesta JSON indicando que no se encontraron resultados
+            return Json(new { encontrada = false, Data = "", message = "No se encontraron resultados." });
+        }
+
 
         #endregion
         #region Catalogos

@@ -910,7 +910,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                 //ACTUALIZACION DE PERSONASDIRECCIONES ***********************
-               
+
                 try
                 {
                     connection.Open();
@@ -942,7 +942,7 @@ namespace GuanajuatoAdminUsuarios.Services
             }
 
 
-            
+
 
             return result;
         }
@@ -1331,6 +1331,60 @@ namespace GuanajuatoAdminUsuarios.Services
             idPersona = ExistePersona(personaDatos.NUM_LICENCIA, personaDatos.CURP);
             insertarDireccion(personaDatos, idPersona);
             return (idPersona);
+        }
+        public int InsertarPersonaDeLicencias(LicenciaPersonaDatos personaDatos)
+        {
+            int idPersona = -1;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+
+                    connection.Open();
+
+                    string query = "INSERT INTO personas (numeroLicencia,CURP,RFC,nombre,apellidoPaterno,apellidoMaterno,fechaActualizacion,actualizadoPor,estatus,idCatTipoPersona,idGenero,fechaNacimiento,idTipoLicencia,vigenciaLicencia) " +
+                                         "VALUES (@NumeroLicencia,@curp,@rfc,@nombre,@apellidoPaterno,@apellidoMaterno,@fechaActualizacion,@actualizadoPor,@estatus,@tipoPersona,@genero,@fechaNacimiento,@idTipolicencia,@fechaVigencia);SELECT SCOPE_IDENTITY()";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@NumeroLicencia", (object)personaDatos.NUM_LICENCIA ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@curp", string.IsNullOrEmpty(personaDatos.CURP) ? "" : personaDatos.CURP);
+                        command.Parameters.AddWithValue("@rfc", string.IsNullOrEmpty(personaDatos.RFC) ? "" : personaDatos.RFC);
+                        command.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(personaDatos.NOMBRE) ? "" : personaDatos.NOMBRE);
+                        command.Parameters.AddWithValue("@apellidoPaterno", string.IsNullOrEmpty(personaDatos.PRIMER_APELLIDO) ? "" : personaDatos.PRIMER_APELLIDO);
+                        command.Parameters.AddWithValue("@apellidoMaterno", string.IsNullOrEmpty(personaDatos.SEGUNDO_APELLIDO) ? "" : personaDatos.SEGUNDO_APELLIDO);
+
+                        command.Parameters.AddWithValue("@tipoPersona", (int)TipoPersona.Fisica);
+                        command.Parameters.AddWithValue("@genero", personaDatos.ID_GENERO == null ? "" : personaDatos.ID_GENERO);
+                        command.Parameters.AddWithValue("@fechaNacimiento", (personaDatos.FECHA_NACIMIENTO == null || personaDatos.FECHA_NACIMIENTO.Value.Year == 0) ? DBNull.Value : personaDatos.FECHA_NACIMIENTO);
+                        command.Parameters.AddWithValue("@idTipolicencia", personaDatos.ID_TIPO_LICENCIA == null ? "" : personaDatos.ID_TIPO_LICENCIA);
+                        command.Parameters.AddWithValue("@fechaVigencia", (personaDatos.FECHA_TERMINO_VIGENCIA == null || personaDatos.FECHA_TERMINO_VIGENCIA.Value.Year == 0) ? DBNull.Value : personaDatos.FECHA_TERMINO_VIGENCIA);
+
+                        command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                        command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
+                        command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+
+                        command.CommandType = CommandType.Text;
+                        idPersona = Convert.ToInt32(command.ExecuteScalar());
+
+                        insertarDireccion(personaDatos, idPersona);
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                    Logger.Error("Error al guardar persona de licencias:" + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return idPersona;
         }
 
         public void insertarDireccion(LicenciaPersonaDatos personaDatos, int insertado)
@@ -1813,8 +1867,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 connection.Open();
                 using SqlCommand cmd = new("[usp_ObtieneBusquedaPersonas]", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value =  pagination.PageIndex;
-                cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)).Value =  pagination.PageSize;
+                cmd.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value = pagination.PageIndex;
+                cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)).Value = pagination.PageSize;
                 cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.NumeroLicenciaBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.CURPBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.RFCBusqueda ?? DBNull.Value;
@@ -1949,11 +2003,11 @@ namespace GuanajuatoAdminUsuarios.Services
             {
                 try
                 {
-                    
+
                     connection.Open();
                     using (SqlCommand cmd = new SqlCommand("[usp_ObtienePersonas]", connection))
                     {
-                        
+
                         cmd.CommandType = CommandType.StoredProcedure;
                         using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
@@ -1983,7 +2037,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                     vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString()),
                                 });
 
-                                
+
                             }
 
                         }
@@ -1997,7 +2051,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 finally
                 {
                     connection.Close();
-                    
+
                 }
                 return ListaPersonas;
 

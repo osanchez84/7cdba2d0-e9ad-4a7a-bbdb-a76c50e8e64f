@@ -1,9 +1,8 @@
 @model List<PersonaModel>
-
-   <div class="row justify-content-between my-2 mb-1 titleCustom">
-    <div class="offset-1 col-12 mt-4 mb-2">
-        <h5 class="px-4"><b>Personas en Licencias</b></h5>
-        <h6 class="px-4 text-muted">Selecciona un registro para agregarla a RIAG</h6>
+   <div class="row  my-2 mb-3">
+    <div class="col-12 mt-4 mb-2">
+        <h5 class="px-4"><b>Personas encontradas en Licencias</b></h5>
+        <h6 class="px-4 colorDanger d-flex align-items-center"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>Selecciona una persona para agregarla a RIAG</b></h6>
     </div>
 </div>
     
@@ -11,7 +10,7 @@
 @(
         Html.Kendo().Grid(Model)
         .Name("gridPersonasLicencia")
-        .Events(events => events.Change("onRowSelect"))
+        .Events(events => events.Change("guadarPersonaLicenciasEnRiag"))
         .Columns(columns =>
         {
             columns.Select().Width(50).ClientHeaderTemplate(" ");

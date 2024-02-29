@@ -38,5 +38,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         int UpdateConductor(PersonaModel model);
 
         List<PersonaModel> BuscarPersonasWithPagination(BusquedaPersonaModel model, Pagination pagination);
+
+        public int ExistePersona(string licencia, string curp);
+
+        public int InsertarPersonaDeLicencias(LicenciaPersonaDatos personaDatos);
     }
 }

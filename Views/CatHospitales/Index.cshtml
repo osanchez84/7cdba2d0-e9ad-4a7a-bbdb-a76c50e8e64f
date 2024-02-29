@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CatHospitalesDTO
+@{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
@@ -58,21 +59,64 @@
                 <div class="bg-light py-1"></div>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-12 mb-4 px-4 rounded gridCustom">
-                <div class="row justify-content-between mb-1 titleCustom">
-                    <div class="col-12 col-md-auto mt-4 mb-2">
-                        <h5 class="px-4"><b>Listado de hospitales</b></h5>
-                        <h6 class="px-4 text-muted">Edita o elimina los hospitales.</h6>
+        <form id="frm">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <div class="controlForm my-3">
+                        <label>Entidad:</label>
+                        @(Html.Kendo().DropDownListFor(m => m.idEntidad2).Filter(FilterType.Contains)
+                            .BindTo((SelectList)ViewBag.Entidades)
+                            .OptionLabel("- Todos -")
+                            .Events(e => e.Change("Municipios_DropChange2"))
+                            .HtmlAttributes(new { style = "width:100%;", Id = "idEntidad2" })
+                            .Filter(FilterType.Contains)
+                            )
                     </div>
                 </div>
-                <div id="tablaHospitales">
-                    <partial name="_ListaHospitales" model="Model" />
+                <div class="col-12 col-md-4">
+                    <div class="controlForm my-3">
+                        <label>Municipio <b>(obligatorio)</b>:</label>
+                        <span>
+                            @(Html.Kendo().DropDownListFor(t => t.idMunicipio2)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .OptionLabel("Selecciona un Municipio").Filter(FilterType.Contains)
+                                .HtmlAttributes(new { style = "width:100%;", Id = "IdMunicipio2" })
+                                @*                           .DataSource(source =>
+                            {
+                            source.Read(read =>
+                            {
+                            read.Action("Municipios_Drop", "CatHospitales");
+                            });
+                            })*@
+
+                                )
+
+                        </span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="controlForm my-5">
+                        <div class="controlButton">
+                            <button class="btnPrimary" id="btnBuscar" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
+                        </div>
+                    </div>
+                </div>
 
 
+                <div class="col-12 mb-4 px-4 rounded gridCustom">
+                    <div class="row justify-content-between mb-1 titleCustom">
+                        <div class="col-12 col-md-auto mt-4 mb-2">
+                            <h5 class="px-4"><b>Listado de hospitales</b></h5>
+                            <h6 class="px-4 text-muted">Edita o elimina los hospitales.</h6>
+                        </div>
+                    </div>
+                    <div id="tablaHospitales">
+                        <partial name="_ListaHospitales" model="Model.HospitalesModel" />
+                    </div>
 
-                    <div class="modal fade modalCustom" id="agregarHospital"  aria-labelledby="agregarHospitalLabel" aria-hidden="true">
+
+                    <div class="modal fade modalCustom" id="agregarHospital" aria-labelledby="agregarHospitalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body" id="ModalBodyaAgregarHospital">
@@ -84,7 +128,7 @@
 
 
                     <!-----------------------------------------------------------UPDATE--------------------------------------------------------------------------------------------->
-                    <div class="modal fade modalCustom" id="editarHospital"  aria-labelledby="editarHospitalLabel" aria-hidden="true">
+                    <div class="modal fade modalCustom" id="editarHospital" aria-labelledby="editarHospitalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body" id="ModalBodEditarHospital">
@@ -94,7 +138,7 @@
                     </div>
 
                     <!-----------------------------------------------------------DELETE--------------------------------------------------------------------------------------------->
-                    <div class="modal fade modalCustom" id="eliminarHospital"  aria-labelledby="eliminarHospitalLabel" aria-hidden="true">
+                    <div class="modal fade modalCustom" id="eliminarHospital" aria-labelledby="eliminarHospitalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg boxShadow modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-body" id="ModalBodyEliminarHospital">
@@ -103,15 +147,17 @@
                         </div>
                     </div>
 
+
                 </div>
             </div>
-        </div>
+        </form>
     </section>
 
 </div>
 
 
 <script>
+
     function mostrarModal() {
         $.ajax({
             url: '@Url.Action("AgregarHospitalModal")',
@@ -125,6 +171,77 @@
         });
     }
 
+
+    function Municipios_DropChange2() {
+        var idEntidad = $("#idEntidad2").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/CatHospitales/Municipios_DropChange",
+            type: "POST",
+            data: { idEntidad: idEntidad },
+            success: function (data) {
+                var IdMunicipio2 = $("#IdMunicipio2").data("kendoDropDownList");
+                //console.log(data);
+                IdMunicipio2.dataSource.data(data);
+                hideLoading();
+                //$("#IdMunicipio2").trigger("onFinishLoading");
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+
+    function Municipios_DropChange() {
+        var idEntidad = $("#idEntidad").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/CatHospitales/Municipios_DropChange",
+            type: "POST",
+            data: { idEntidad: idEntidad },
+            success: function (data) {
+                var IdMunicipio = $("#IdMunicipio").data("kendoDropDownList");
+                console.log(data);
+                IdMunicipio.dataSource.data(data);
+                hideLoading();
+                $("#IdMunicipio").trigger("onFinishLoading");
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+
+    function submitSearch() {
+        var grid = $("#gridCatHospitales").data("kendoGrid").dataSource;
+        grid.read();
+
+        ////var año1 = $("#año1").val()
+        ////var año2 = document.getElementById("año2").value
+
+        ////if (año1 === "" && año2 === "") {
+
+        ////    sitteg_warning("Debe ingresar años de busqueda.");
+        ////    return
+        ////}
+
+        //var Mydata = $("#frm").serialize();
+        ////console.log(Mydata);
+        //showLoading();
+        //$.ajax({
+        //    url: '@Url.Action("BusquedaHospitales")',
+        //    type: 'POST',
+        //    data: Mydata,
+        //    success: function (result) {
+        //        $("#tablaHospitales").html(result);
+        //        console.log(result);
+        //        hideLoading();
+        //    }, error: function () {
+        //        sitteg_warning("Ocurrio un error al procesar su solicitud.");
+        //        hideLoading();
+        //    }
+        //});
+    }
 
 
 </script>

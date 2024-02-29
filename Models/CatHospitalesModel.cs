@@ -22,6 +22,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string estatusDesc { get; set; }
 
         public bool ValorEstatusHospitales { get; set; }
+        public int idEntidad { get; set; }
 
     }
 }

@@ -1,4 +1,12 @@
-﻿<div class="row">
+﻿<script>
+    function returnData() {
+        var idMun = $("#IdDelegacion2").val();
+
+        return { idDelegacion: idMun }
+    }
+</script>
+
+<div class="row">
     <div class="row justify-content-between mb-1 titleCustom">
         <div class="col-12 col-md-auto mt-4 mb-2">
             <p><h5 class="px-4"><b>Listado de oficinas en renta</b></h5></p>
@@ -28,7 +36,7 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("GetOfiRent", "CatOficinasRenta"))
+            .Read(read => read.Action("GetOfiRent", "CatOficinasRenta").Data("returnData"))
             .PageSize(5).Model(model => model.Id(p => p.IdOficinaRenta))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))

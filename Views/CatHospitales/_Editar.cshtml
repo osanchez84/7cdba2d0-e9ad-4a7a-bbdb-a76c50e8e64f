@@ -1,4 +1,7 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.CatHospitalesModel
+@{
+    bool status = (Model.Estatus == 1) ? true : false;
+}
 
 <section class=" bg-white rounded">
     <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -36,13 +39,25 @@
             <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusHospitales)
                 .Name("hospitalesSwitch")
-                .Checked(true)
+                    .Checked(status)
                 .Messages(c => c.Checked("Activo").Unchecked("Inactivo"))
                 .HtmlAttributes(new { data_valor = 1 })
 
                 )
         </div>
     </div>
+        <div class="col-12 col-md-6">
+            <div class="controlForm my-3">
+                <label>Entidad:</label>
+                @(Html.Kendo().DropDownListFor(m => m.idEntidad).Filter(FilterType.Contains)
+                    .BindTo((SelectList)ViewBag.Entidades)
+                    .OptionLabel("- Todos -")
+                    .Events(e => e.Change("Municipios_DropChange"))
+                    .HtmlAttributes(new { style = "width:100%;", Id = "idEntidad" })
+                    .Filter(FilterType.Contains)
+                    )
+            </div>
+        </div>
         <div class="col-12 col-md-6">
             <div class="controlForm my-3">
                 <label>Municipio <b>(obligatorio)</b>:</label>
@@ -101,6 +116,8 @@
 </section>
 
 <script>
+
+
     function editarHospital() {
 
         var Mydata = $("#editarHospitalForm").serialize();
@@ -125,4 +142,26 @@
         });
     }
 
+
+    //function Municipios_DropChange() {
+    //    var idEntidad = $("#idEntidad").data("kendoDropDownList").value();
+    //    showLoading();
+    //    $.ajax({
+    //        url: "/CatHospitales/Municipios_Drop",
+    //        type: "POST",
+    //        data: { idEntidad: idEntidad },
+    //        success: function (data) {
+    //            var IdMunicipio = $("#IdMunicipio").data("kendoDropDownList");
+    //            console.log(data);
+    //            IdMunicipio.dataSource.data(data);
+    //            hideLoading();
+    //            $("#IdMunicipio").trigger("onFinishLoading");
+    //        },
+    //        error: function (xhr, status, error) {
+    //            hideLoading();
+    //        }
+    //    });
+    //}
+
+ 
 </script>

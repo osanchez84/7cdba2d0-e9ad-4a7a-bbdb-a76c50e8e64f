@@ -226,6 +226,21 @@
         }
     }
     function guardarDatos() {
+        var controlsValidate = [];
+        var isValid = true;
+
+        controlsValidate.push({ 'controlName': 'recibe' });
+        controlsValidate.push({ 'controlName': 'entrega' });
+
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+         if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+
+
         var Mydata = $("#dataSalidaForm").serialize();
         console.log(Mydata);
         showLoading();

@@ -126,7 +126,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-            var modelMotivosList =_infraccionesService.GetAllMotivosPorInfraccion(idOficina, idDependencia);
+            var modelMotivosList =_infraccionesService.GetAllMotivosPorInfraccionBusqueda(model,idOficina, idDependencia);
             /*var modelMotivosList = _estadisticasService.GetAllInfraccionesEstadisticas(model, idDependencia)
                 .SelectMany(s => s.MotivosInfraccion)
                 .GroupBy(g => g.idInfraccion)

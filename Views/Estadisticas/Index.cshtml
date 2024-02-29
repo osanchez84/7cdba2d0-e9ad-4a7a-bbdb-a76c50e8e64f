@@ -324,7 +324,6 @@
             success: function (result) {
                 $("#estadisticasInfracciones3").html(result);
 
-                // Esta es la primera llamada AJAX, por lo que no la comentamos
                 $.ajax({
                     url: '@Url.Action("ajax_BusquedaIncidenciasInfracciones")',
                     type: 'POST',

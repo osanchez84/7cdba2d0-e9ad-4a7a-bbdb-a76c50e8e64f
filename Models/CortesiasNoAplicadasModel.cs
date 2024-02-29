@@ -35,11 +35,11 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Tarjeta { get; set; }
         public string ArchivoInventario { get; set; }
 
-        public DateTime FechaVencimiento { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
         public string MontoCalificacion { get; set; }
         public string MontoPagado { get; set; }
         public string Recibo { get; set; }
-        public DateTime FechaPago { get; set; }
+        public DateTime? FechaPago { get; set; }
         public string LugarPago { get; set; }
         public string OficioConDonacion { get; set; }
         public string Observaciones { get; set; }

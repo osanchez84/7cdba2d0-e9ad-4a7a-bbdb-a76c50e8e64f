@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
@@ -21,20 +22,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class OficialesController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
+        
         public IActionResult Index()
         {
             var ListOficialesModel = _oficialesService.GetOficiales();
             ViewBag.ListadoOficiales = ListOficialesModel;
+            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
 
             return View();
             }
         private readonly IOficiales _oficialesService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
-
-        public OficialesController(IOficiales oficialesService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
+        private readonly ICatDictionary _catDictionary;
+        public OficialesController(IOficiales oficialesService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, ICatDictionary catDictionary)
         {
             _oficialesService = oficialesService;
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
+            _catDictionary = catDictionary;
         }
 
 		public JsonResult OficialesDependencia_Drop()
@@ -235,9 +239,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Delegaciones_Drop()
         {
-            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            //var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var result = ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+            
             return Json(result);
         }
+        
 
 
         public OficialesModel GetOficialByID(int IdOficial)

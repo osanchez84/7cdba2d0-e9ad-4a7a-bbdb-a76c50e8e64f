@@ -10,7 +10,12 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<CatMunicipiosModel> GetMunicipiosPorEntidad(int entidadDDlValue);
 
         List<CatMunicipiosModel> GetMunicipiosPorDelegacion(int idOficina);
-        List<CatMunicipiosModel> GetMunicipiosGuanajuato();
+
+
+		List<CatMunicipiosModel> GetMunicipiosPorDelegacion2(int idOficina);
+
+
+		List<CatMunicipiosModel> GetMunicipiosGuanajuato();
 
         public CatMunicipiosModel GetMunicipioByID(int IdMunicipio);
         public int AgregarMunicipio(CatMunicipiosModel model);

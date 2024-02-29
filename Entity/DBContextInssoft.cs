@@ -144,8 +144,8 @@ public partial class DBContextInssoft : DbContext
             entity.Property(e => e.Rango)
                 .HasMaxLength(50)
                 .IsUnicode(false)
-                .HasColumnName("rango"); 
-
+                .HasColumnName("rango");
+           
         });
 
         modelBuilder.Entity<SubmarcasVehiculo>(entity =>
@@ -196,7 +196,12 @@ public partial class DBContextInssoft : DbContext
              .HasColumnType("datetime")
              .HasColumnName("fechaActualizacion");
             entity.Property(e => e.Estatus).HasColumnName("Estatus");
-
+            entity.Property(e => e.IdMunicipio)
+               .IsUnicode(false)
+               .HasColumnName("idMunicipio");
+            entity.Property(e => e.Transito)
+               .IsUnicode(false)
+               .HasColumnName("transito");
         });
 
         modelBuilder.Entity<CatColores>(entity =>

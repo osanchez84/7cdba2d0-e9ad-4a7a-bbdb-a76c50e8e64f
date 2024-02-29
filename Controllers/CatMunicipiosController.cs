@@ -33,10 +33,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-
+            //var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
+            var municipios = new CatMunicipiosDTO();
             var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
+            municipios.MunicipiosModel = ListMunicipiosModel;
 
-            return View(ListMunicipiosModel);
+            return View(municipios);
         }
 
 
@@ -102,9 +104,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_Editar");
         }
 
-        public JsonResult GetMun([DataSourceRequest] DataSourceRequest request)
+        public JsonResult GetMun([DataSourceRequest] DataSourceRequest request, string nombre, int idEntidad, int IdOficinaTransporte)
         {
             var ListMunicipiosModel = _catMunicipiosService.GetMunicipios();
+            if (!String.IsNullOrEmpty(nombre) && idEntidad>0 && IdOficinaTransporte>0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x=>x.Municipio.ToUpper().Contains(nombre.ToUpper()) && x.IdEntidad == idEntidad && x.IdOficinaTransporte == IdOficinaTransporte ).ToList();
+            else if (!String.IsNullOrEmpty(nombre) && idEntidad == 0 && IdOficinaTransporte == 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.Municipio.ToUpper().Contains(nombre.ToUpper())).ToList();
+            else if (!String.IsNullOrEmpty(nombre) && idEntidad > 0 && IdOficinaTransporte == 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.Municipio.ToUpper().Contains(nombre.ToUpper()) && x.IdEntidad == idEntidad).ToList();
+            else if (String.IsNullOrEmpty(nombre) && idEntidad > 0 && IdOficinaTransporte > 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.IdEntidad == idEntidad && x.IdOficinaTransporte == IdOficinaTransporte).ToList();
+            else if (!String.IsNullOrEmpty(nombre) && idEntidad == 0 && IdOficinaTransporte > 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.Municipio.ToUpper().Contains(nombre.ToUpper()) && x.IdOficinaTransporte == IdOficinaTransporte).ToList();
+            else if (String.IsNullOrEmpty(nombre) && idEntidad == 0 && IdOficinaTransporte > 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.IdOficinaTransporte == IdOficinaTransporte).ToList();
+            else if (String.IsNullOrEmpty(nombre) && idEntidad > 0 && IdOficinaTransporte == 0)
+                ListMunicipiosModel = ListMunicipiosModel.Where(x => x.IdEntidad == idEntidad).ToList();
 
             return Json(ListMunicipiosModel.ToDataSourceResult(request));
         }

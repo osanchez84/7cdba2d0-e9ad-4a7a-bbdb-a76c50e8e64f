@@ -1,6 +1,7 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.CatMunicipiosModel
 
 @{
+    var estatus = Model.Estatus == 1 ? true : false;
     Layout = null;
 }
 <div>
@@ -39,7 +40,7 @@
         <div class="col-12 col-lg-6 my-4 btnToggleActive">
             @(Html.Kendo().SwitchFor(t => t.ValorEstatusMunicipio)
                 .Name("municipiosSwitch")
-                .Checked(true)
+                        .Checked(estatus)
                 .Messages(c => c.Checked("Activo").Unchecked("Inactivo"))
                 .HtmlAttributes(new { data_valor = 1 })
 

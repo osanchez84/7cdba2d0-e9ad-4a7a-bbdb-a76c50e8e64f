@@ -20,7 +20,7 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
-        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string nombreOficina, string abreviaturaMunicipio, int anio, int dependencia)
+        public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string oficina, string abreviaturaMunicipio, int anio, int dependencia)
 
         {
             int result = 0;
@@ -430,7 +430,7 @@ namespace GuanajuatoAdminUsuarios.Services
             return resultado;
         }
 
-        public SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion)
+        public SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion,int idDependencia)
         {
             SolicitudDepositoModel model = new SolicitudDepositoModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -494,10 +494,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
                                                     left join personas per on inf.idPersona = per.idPersona
-                                                    WHERE inf.folioInfraccion=@folioInfraccion ORDER BY inf.fechaInfraccion desc";
+                                                    WHERE inf.folioInfraccion=@folioInfraccion AND inf.transito = @idDependencia ORDER BY inf.fechaInfraccion desc";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioBusquedaInfraccion;
-                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.VarChar)).Value = idDependencia;
+					command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
@@ -535,7 +536,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-        public SolicitudDepositoModel ImportarInfraccion(int folioBusquedaInfraccion)
+        public SolicitudDepositoModel ImportarInfraccion(int folioBusquedaInfraccion, int idDependencia)
         {
             SolicitudDepositoModel model = new SolicitudDepositoModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -543,7 +544,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string SqlTransact =
-                                           @"SELECT TOP 1 inf.idInfraccion
+										   @"SELECT TOP 1 inf.idInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -599,10 +600,12 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     left join catCarreteras catCarre on catTra.IdCarretera = catCarre.idCarretera
                                                     left join vehiculos veh on inf.idVehiculo = veh.idVehiculo
                                                     left join personas per on inf.idPersona = per.idPersona
-                                                    WHERE inf.idInfraccion=@folioInfraccion ORDER BY inf.fechaInfraccion desc";
+                                                    WHERE inf.idInfraccion=@folioInfraccion AND inf.transito = @idDependencia ORDER BY inf.fechaInfraccion desc";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.Int)).Value = folioBusquedaInfraccion;
-                    command.CommandType = CommandType.Text;
+					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+
+					command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

@@ -46,7 +46,7 @@
                 )
                 .Series(series =>
                 {
-                    series.Bar(model => model.Contador).MinSize(50).DynamicHeight(true).MaxSize(5000).AutoFit().Padding(10).Padding(10);
+                    series.Bar(model => model.Contador).MinSize(50).DynamicHeight(true).MaxSize(500).AutoFit().Padding(10).Padding(10);
                 })
                 .CategoryAxis(axis => axis
                 .Categories(c => c.Motivo)

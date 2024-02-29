@@ -75,9 +75,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
       
 
-        public ActionResult ModalCostosGrua(int idDeposito)
+        public ActionResult ModalCostosGrua(int idDeposito, int idGrua)
         {
-            var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito);
+            var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito, idGrua);
 
             return PartialView("_ModalCostosServicio", DatosGruaSeleccionada);
         }

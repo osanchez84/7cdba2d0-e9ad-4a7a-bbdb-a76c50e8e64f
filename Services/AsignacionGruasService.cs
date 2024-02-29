@@ -593,6 +593,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     string query = "UPDATE depositos SET " +
                                     "observaciones=@observaciones " +
+                                    "estatusSolicitud= 4 " +
                                     "Where depositos.idDeposito = @idDeposito";
 
 
@@ -600,6 +601,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     command.Parameters.AddWithValue("@observaciones", formData.observaciones);
+
                     command.Parameters.AddWithValue("@idDeposito", iDep);
 
 

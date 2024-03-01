@@ -17,7 +17,6 @@
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
 
-        console.log(auth);
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
@@ -46,9 +45,7 @@
 
         $(document).ready(function () {
             var value = $('#hdnIsFromUpdate').val();
-            console.log("valor update", value);
             var isTrueSet = (value.toLowerCase() === 'true');
-            console.log("valor evaluado", isTrueSet);
             if (isTrueSet) {
                 document.getElementById("sec0").style.display = "none";
                 document.getElementById("VehiculoLocalizado").style.display = "block";
@@ -59,22 +56,18 @@
             var placasValue = $("#PlacasBusqueda").val().trim();
             $("#PlacasBusqueda").val(placasValue);
     var Mydata = $("#frmSearch").serialize();
-    console.log("entro",Mydata);
     showLoading();
     $.ajax({
         url: '@Url.Action("ajax_BuscarVehiculo")',
         type: 'POST',
         data: Mydata,
         success: function (result) {
-            if (result.success === false) {
-                $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
-            } else {
                 document.getElementById("sec0").style.display = "none";
                 document.getElementById("VehiculoLocalizado").style.display = "block";
                 $("#VehiculoLocalizado").html(result);
-            }
             hideLoading();
                 }, error: function () {
+                     $("#ErrorMessageContainer").html('<div class="error-message">' + result.message + '</div>');
                     sitteg_warning("Ocurrio un error al procesar su solicitud.");
                     hideLoading();
                 }
@@ -400,9 +393,6 @@
                                     .DataValueField("")
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .Filter(FilterType.Contains)
-                                    .DataSource(source => source
-                                    .Read(read => read.Action("GetProducts", "Home"))
-                                    )
                                     )
                             </span>
                         </div>
@@ -452,8 +442,6 @@
                                     .DataValueField("")
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .Filter(FilterType.Contains)
-                                    .DataSource(source => source
-                                    .Read(read => read.Action("GetProducts", "Home"))
                                     )
                                     )
                             </span>
@@ -489,8 +477,6 @@
                                     .DataValueField("")
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .Filter(FilterType.Contains)
-                                    .DataSource(source => source
-                                    .Read(read => read.Action("GetProducts", "Home"))
                                     )
                                     )
                             </span>
@@ -507,8 +493,6 @@
                                     .DataValueField("")
                                     .HtmlAttributes(new { style = "width:100%;" })
                                     .Filter(FilterType.Contains)
-                                    .DataSource(source => source
-                                    .Read(read => read.Action("GetProducts", "Home"))
                                     )
                                     )
                             </span>

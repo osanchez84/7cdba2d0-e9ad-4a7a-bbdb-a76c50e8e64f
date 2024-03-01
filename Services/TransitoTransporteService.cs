@@ -200,7 +200,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.placa LIKE '%' + @Placa + '%' ";
                     condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND sol.folio LIKE '%' + @FolioSolicitud + '%' ";
                     condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
-                    condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND Propietario  LIKE '%' + @Propietario + '%' ";
+                    condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,''))  LIKE '%' + @Propietario + '%' ";
                     condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
                     condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND d.idDelegacion = @IdDelegacion ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idpension = @IdPension ";
@@ -213,13 +213,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         condiciones += "and (";
 
                         if (model.FechaIngreso != null && model.FechaIngresoFin != null)
-                            condiciones += " fechaingreso between @FechaInicio and @FechaFin";
+                            condiciones += " CONVERT(VARCHAR,fechaingreso,112) between CONVERT(VARCHAR,@FechaInicio,112) and CONVERT(VARCHAR,@FechaFin,112)";
 
                         else if (model.FechaIngreso != null)
-                            condiciones += "fechaingreso >= @FechaInicio";
+                            condiciones += "CONVERT(VARCHAR,fechaingreso,112) >= CONVERT(VARCHAR,@FechaInicio,112)";
                                                                                                
                         else if (model.FechaIngresoFin != null)
-                            condiciones += "d.fechaingreso <= @FechaFin";
+                            condiciones += "CONVERT(VARCHAR,d.fechaingreso,112) <= CONVERT(VARCHAR,@FechaFin,112)";
 
                         else
                             condiciones += "1 = 1";
@@ -297,8 +297,6 @@ namespace GuanajuatoAdminUsuarios.Services
 
                         else if (model.FechaIngresoFin != null)
                             command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
-
-
                     }
 
                     command.CommandType = CommandType.Text;

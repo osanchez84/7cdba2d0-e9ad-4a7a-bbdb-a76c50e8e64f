@@ -75,18 +75,16 @@
                         </div>
                     </div>
                 </div>
-            </div>       
-        <div>
-        <partial name="_ListadoGruas" model="Model" />
-        </div>
+            </div>
+            <h4 class="colorPrimary"><b>Entrega</b></h4>
+
             <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
-                        <label>Fecha Ingreso:</label>
-                        @(Html.Kendo().TextBoxFor(t => t.recibe)
+                        <label>Oficio:</label>
+                        @(Html.Kendo().TextBoxFor(t => t.oficio)
                             .HtmlAttributes(new { style = "width: 80%" })
-                            .Label(l => l.Content("Recibe:"))
-                            .Placeholder("Nombre de quien recibe")
+                            .Label(l => l.Content("Oficio:"))
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
@@ -95,11 +93,10 @@
                <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
-                        <label>Fecha Ingreso:</label>
-                        @(Html.Kendo().TextBoxFor(t => t.entrega)
+                        <label>Fecha Oficio:</label>
+                        @(Html.Kendo().DatePickerFor(t => t.fechaOficio)
                             .HtmlAttributes(new { style = "width: 80%" })
-                            .Label(l => l.Content("Entrega:"))
-                            .Placeholder("Nombre de quien entrega")
+                            .Label(l => l.Content("Fecha  Oficio:"))
                             .HtmlAttributes(new { style = "width: 100%" })
                             )
                     </div>
@@ -107,7 +104,51 @@
             </div>   <div class="row">
                 <div class="col-12 col-md-7">
                     <div class="controlForm my-3 selecciondeFecha">
-                        <label>Fecha Ingreso:</label>
+                        <label>Autoriza salida:</label>
+                        @(Html.Kendo().TextBoxFor(t => t.autorizaSalida)
+                            .HtmlAttributes(new { style = "width: 80%" })
+                            .Label(l => l.Content("Autoriza salida:"))
+                            .Placeholder("")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                </div>
+            </div>
+             <div class="row">
+                <div class="col-12 col-md-7">
+                    <div class="controlForm my-3 selecciondeFecha">
+                        <label>Entrega vehículo:</label>
+                        @(Html.Kendo().TextBoxFor(t => t.entrega)
+                            .HtmlAttributes(new { style = "width: 80%" })
+                            .Label(l => l.Content("Observaciones:"))
+                            .Placeholder("")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                </div>
+                  <div class="col-12 col-md-7">
+                    <div class="controlForm my-3 selecciondeFecha">
+                        <label>Entrega vehículo:</label>
+                        @(Html.Kendo().TextBoxFor(t => t.entrega)
+                            .HtmlAttributes(new { style = "width: 80%" })
+                            .Label(l => l.Content("Entrega vehículo:"))
+                            .Placeholder("")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                </div>  <div class="col-12 col-md-7">
+                    <div class="controlForm my-3 selecciondeFecha">
+                        <label>Recibe vehículo:</label>
+                        @(Html.Kendo().TextBoxFor(t => t.recibe)
+                            .HtmlAttributes(new { style = "width: 80%" })
+                            .Label(l => l.Content("Recibe vehículo:"))
+                            .Placeholder("")
+                            .HtmlAttributes(new { style = "width: 100%" })
+                            )
+                    </div>
+                </div>  <div class="col-12 col-md-7">
+                    <div class="controlForm my-3 selecciondeFecha">
+                        <label>Observaciones:</label>
                         @(Html.Kendo().TextBoxFor(t => t.observaciones)
                             .HtmlAttributes(new { style = "width: 80%" })
                             .Label(l => l.Content("Observaciones:"))
@@ -121,17 +162,16 @@
         <div id="datosDepositoContainer">
             <div style="width: 50%; float: left;">
                 <h4 class="colorPrimary"><b>Vehículo</b></h4>
-                <p><b>Folio Inventario:</b> <span id="folioInventario">-</span></p>
-                <p><b>Modelo:</b> <span id="modelo">-</span></p>
+                 <p><b>Tipo de Vehículo:</b> <span id="tipoVehiculo">-</span></p>
                 <p><b>Marca:</b> <span id="marca">-</span></p>
-                <p><b>Tipo de Vehículo:</b> <span id="tipoVehiculo">-</span></p>
+                <p><b>Modelo:</b> <span id="modelo">-</span></p>
                 <p><b>Color:</b> <span id="color">-</span></p>
+                <p><b>Folio Inventario:</b> <span id="folioInventario">-</span></p>
+
             </div>
             <div style="width: 50%; float: left;">
                 <h4 class="colorPrimary"><b>Propietario</b></h4>
-                <p><b>Nombre:</b> <span id="propietario">-</span></p>
-                <h5 class="colorPrimary"><b>Solicitante</b></h5>
-                <p><b>Nombre solicitante:</b> <span id="solicitante">-</span></p>
+                <p><b>Nombre:</b> <span id="propietario">-</span></p>        
             </div>
             <div style="width: 50%; float: left;">
                 <h4 class="colorPrimary"><b>Evento</b></h4>
@@ -154,7 +194,7 @@
             <div style="clear: both;"></div>
         </div>
         <div id="idDepContainer" style="display:none"></div>
-        </form>
+  </form>
 
     </section>
     <section>

@@ -1750,24 +1750,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
-            if (IdVehiculo != 0)
+            if (IdVehiculo > 0)
             {
 
                 var Placa = model.placas;
                 var Serie = model.serie;
                 var folio = "";
                 var resultados = _vehiculosService.GetVehiculoById(IdVehiculo);
-
-                return Json(new { data = resultados });
+                return Json(new { success = true, data = resultados });
+            }
+            else if (IdVehiculo == -1)
+            {
+                return Json(new { success = false, duplicate = true });
             }
             else
             {
-                return null;
+                return Json(new { success = false, error = "Error al guardar el vehículo." });
             }
         }
 
-
-        [HttpPost]
+            [HttpPost]
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
         {
             int IdVehiculo = 0;

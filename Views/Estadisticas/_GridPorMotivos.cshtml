@@ -4,7 +4,9 @@
     <div class="col-md-6">
        
         @(Html.Kendo().Grid(Model)
-            .Name("gridConteoMotivos")
+                .Name("gridConteoMotivos")
+                .Excel(ex => ex.AllPages(true))
+
             .Columns(columns =>
             {
                     columns.Bound(model => model.NumeroMotivos).Title("Cantidad").ClientTemplate("Con #: NumeroMotivos # motivo(s)");
@@ -17,8 +19,8 @@
 				}).HtmlAttributes(new { style = "height:auto" })
                 .Events(events => events.ExcelExport("ConteoMotivos_excelExport")) // Agregar el manejador de eventos ExcelExport
 
-				   .Pageable(pager => pager.AlwaysVisible(false).Position(GridPagerPosition.Bottom).PageSizes(false))
-				   .Sortable()
+                .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
+                .Sortable()
 				   .Scrollable(scr => scr.Enabled(false))
 				   .DataSource(dataSource => dataSource
 				   .Ajax()

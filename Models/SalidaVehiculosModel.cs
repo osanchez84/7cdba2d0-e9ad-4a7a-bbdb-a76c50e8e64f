@@ -28,6 +28,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public float costoDeposito { get; set; }
         public string marca { get; set; }
+        
+                    public string oficio { get; set; }
+        public DateTime fechaOficio { get; set; }
+        public string autorizaSalida { get; set; }
+
         public string submarca { get; set; }
         public string color { get; set; }
         public string propietario { get; set; }

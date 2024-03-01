@@ -1652,74 +1652,76 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     submitCreateVehiculo();
     }
 
+    function submitCreateVehiculo() {
 
-  function submitCreateVehiculo() {
-      
-    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
+        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
-    var controlsValidate = [];
-    var isValid = true;
+        var controlsValidate = [];
+        var isValid = true;
 
-    var idEntidad = $("#idEntidad").val();
-    var idMarca = $("#ddlMarcas").val();
-    var idSubmarca = $("#idSubmarca").val();
-    var idTipoVehiculo = $("idTipoVehiculo").val();
-    var idPersona = $("#ddlIdPersona").val();
-     if ($("#ddlIdPersona").val() == '') {
+        var idEntidad = $("#idEntidad").val();
+        var idMarca = $("#ddlMarcas").val();
+        var idSubmarca = $("#idSubmarca").val();
+        var idTipoVehiculo = $("#idTipoVehiculo").val(); // Corregido aquí
+        var idPersona = $("#ddlIdPersona").val();
+        if ($("#ddlIdPersona").val() == '') {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
-         var carga = $("#cargaSwitch").prop("checked");
+        var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
-         var idTipoSer = $('#hdnIdCatTipoServicio').val();
+        var idTipoSer = $('#hdnIdCatTipoServicio').val(); // Revisar la duplicación de esta variable
 
-    controlsValidate.push({ 'controlName': 'idEntidad' });
-    controlsValidate.push({ 'controlName': 'ddlMarcas' });
-    controlsValidate.push({ 'controlName': 'idSubmarca' });
-    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'ddlMarcas' });
+        controlsValidate.push({ 'controlName': 'idSubmarca' });
+        controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
 
-    // INPUTS
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
+        // INPUTS
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }   
-       // if (validator.validate()) {
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+        // if (validator.validate()) {
 
-            var formData = $("#frmCreateVehiculo").serialize();
-            var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            var idTipoSer = $('#hdnIdCatTipoServicio').val();
-               showLoading();
-            $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
-                type: 'POST',
-                data: formData,
-             success: function (result) {
-                        console.log("Resultado:", result);
-                        sitteg_success('Elemento guardado correctamente');
-                        $('#VehiculoServiceModal').modal('hide');
-                        var grid = $("#gridPrevioVehiculo").data("kendoGrid");
-                        if (result && result.data) {
-                            var dataArray = Array.isArray(result.data) ? result.data : [result.data];
-
-                            grid.dataSource.data(dataArray);
-                        } else {
-                            console.error("La respuesta no tiene la estructura esperada:", result);
-                        }
-                        hideLoading();
-                    },
-
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
-                    hideLoading();
+        var formData = $("#frmCreateVehiculo").serialize();
+        var idVeh = $('#hdnIdVehiculo').val();
+        console.log("Id vehiculo: ", idVeh);
+        var idTipoSer = $('#hdnIdCatTipoServicio').val(); // Revisar la duplicación de esta variable
+        showLoading();
+        $.ajax({
+             url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
+            type: 'POST',
+            data: formData,
+            success: function (result) {
+                if (result.success) {
+                    sitteg_success('Elemento guardado correctamente');
+                    $('#VehiculoServiceModal').modal('hide');
+                    var grid = $("#gridPrevioVehiculo").data("kendoGrid");
+                    if (result.data) {
+                        var dataArray = Array.isArray(result.data) ? result.data : [result.data];
+                        grid.dataSource.data(dataArray);
+                    }
+                } else {
+                    if (result.duplicate) {
+                        sitteg_warning('Placa o serie ya registrado en RIAG');
+                    } else {
+                        sitteg_warning('Ha ocurrido un error al guardar el elemento. Comuníquese con su mesa de ayuda.');
+                    }
                 }
-            });
-        }       
+                hideLoading();
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg);
+                sitteg_warning('Lo sentimos, ha ocurrido un error. Comuníquese con su mesa de ayuda');
+                hideLoading();
+            }
+        });
+    }
+
     
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();

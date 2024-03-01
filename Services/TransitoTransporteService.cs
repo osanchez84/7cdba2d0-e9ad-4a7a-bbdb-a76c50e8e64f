@@ -244,7 +244,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                          ISNULL(del.delegacion,'') delegacion , d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
                                          sol.solicitanteap, sol.solicitanteam, col.color, pen.pension, ctra.tramo,                       
                                          sol.fechasolicitud, sol.folio AS FolioSolicitud, inf.idinfraccion, inf.folioinfraccion,
-                                         veh.idvehiculo, veh.numeroeconomico, veh.modelo, ISNULL(cett.nombreEstatus,'') ,
+                                         veh.idvehiculo, veh.numeroeconomico, veh.modelo, ISNULL(cett.nombreEstatus,'') nombreEstatus,
                                          con.IdConcesionario, con.concesionario, d.FechaLiberacion,
                                          d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
                                          dep.idDependencia, dep.nombreDependencia,

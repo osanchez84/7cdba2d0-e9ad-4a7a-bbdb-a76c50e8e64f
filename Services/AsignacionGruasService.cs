@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
-                        "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
+                        "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(d.IdConcesionario,0) idPropietarioGrua, " +
                         "mun.municipio, " +
                         "car.carretera, " +
                         "ent.nombreEntidad, " +
@@ -48,12 +48,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
                         "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                         "left join depositos d on sol.idSolicitud=d.idSolicitud " +
-                        "WHERE d.idDeposito is null AND sol.folio = @folioBusqueda OR sol.fechaSolicitud = @fechaSolicitud AND sol.estatus = 1", connection);
+                        "WHERE d.idDeposito is null AND (sol.folio like '%'+@folioBusqueda+'%' ) AND sol.estatus = 1", connection);
 
 
 
                     command.CommandType = System.Data.CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.NVarChar)).Value = model.FolioSolicitud;
+                    command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.NVarChar)).Value = model.FolioSolicitud??"";
                     command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value = model.fecha;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -594,15 +594,15 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string query = "UPDATE depositos SET " +
-                                    "observaciones=@observaciones " +
-                                    "estatusSolicitud= 4 " +
+                                    "observaciones=@observaciones, " +
+                                    "estatusSolicitud = 4 " +
                                     "Where depositos.idDeposito = @idDeposito";
 
 
                     SqlCommand command = new SqlCommand(query, connection);
 
 
-                    command.Parameters.AddWithValue("@observaciones", formData.observaciones);
+                    command.Parameters.AddWithValue("@observaciones", formData.observaciones??"");
 
                     command.Parameters.AddWithValue("@idDeposito", iDep);
 

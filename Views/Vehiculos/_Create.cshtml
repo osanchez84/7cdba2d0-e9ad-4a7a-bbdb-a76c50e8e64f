@@ -18,13 +18,32 @@
 
     var mensaje = Model.ErrorRepube;
     ViewBag.serie = Model.serie;
+
+    //En caso de exitir un reporte de robo de REPUVE se asignan las variables para mostrar alerta
+    string placaRoboRepuve="";
+    string nivRoboRepuve="";
+    string fechaRoboRepuve="";
+    string fuenteRoboRepuve="";
+    string averiguacionRoboRepuve="";
+    string fechaAveriguacionRoboRepuve="";
+    string agenteRoboRepuve="";
+
+    if(Model.RepuveRobo!=null){
+     placaRoboRepuve =Model.RepuveRobo.Placa;
+     nivRoboRepuve = Model.RepuveRobo.Niv;
+     fechaRoboRepuve = Model.RepuveRobo.Fecha ;
+     fuenteRoboRepuve = Model.RepuveRobo.FuenteRobo;
+     averiguacionRoboRepuve = Model.RepuveRobo.Averiguacion;
+     fechaAveriguacionRoboRepuve = Model.RepuveRobo.FechaAveriguacion;
+     agenteRoboRepuve = Model.RepuveRobo.AgenteMinisterioPublico;
+    }
+    
 }
 
 <script>
 
     $(document).ready(()=>{
  var esRobado = "@Model.ReporteRobo";
-    var t = "@mensaje"
     var access = @listaIdsPermitidosJson;
     var auth = @autorizaciones;
 
@@ -54,7 +73,7 @@
         }, 200);
     }
 
-     if (t != '' && t != undefined) {
+     if ( t != undefined && t!='No') {
             sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
         }
      //Si el vehículo tiene reporte de robo se muestra mensaje
@@ -63,21 +82,15 @@
         }
  
 })
-function mostrarMensajeRobado() {
-        var placa = "@Model.RepuveRobo.Placa";
-        var niv = "@Model.RepuveRobo.Niv";
-        var fecha = "@Model.RepuveRobo.Fecha";
-        var fuenteRobo = "@Model.RepuveRobo.FuenteRobo";
-        var averiguacion = "@Model.RepuveRobo.Averiguacion";
-        var fechaAveriguacion = "@Model.RepuveRobo.FechaAveriguacion";
-        var agente = "@Model.RepuveRobo.AgenteMinisterioPublico";
 
+function mostrarMensajeRobado() {
         Swal.fire({
             icon: "error",
             title: "Vehículo con REPORTE DE ROBO",
-            html: `PLACA: ${placa}<br>NIV: ${niv}<br>FECHA: ${fecha}<br>AVERIGUACION: ${averiguacion}<br>FECHA DE AVERIGUACION: ${fechaAveriguacion}<br>FUENTE DE ROBO: ${fuenteRobo}<br>AGENTE: ${agente}`
+            html: `PLACA: ${"@placaRoboRepuve"}<br>NIV: ${"@nivRoboRepuve"}<br>FECHA: ${"@fechaRoboRepuve"}<br>AVERIGUACION: ${"@averiguacionRoboRepuve"}<br>FECHA DE AVERIGUACION: ${"@fechaAveriguacionRoboRepuve"}<br>FUENTE DE ROBO: ${"@fuenteRoboRepuve"}<br>AGENTE: ${"@agenteRoboRepuve"}`
         });
     }
+
 
 
      function EntidadDDChangeAccFis() {

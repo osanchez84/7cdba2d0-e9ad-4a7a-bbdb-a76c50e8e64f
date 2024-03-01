@@ -4,7 +4,7 @@
  * Fecha de creación: Wednesday, February 21st 2024 9:56:46 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Tue Feb 27 2024
+ * Última modificación: Fri Mar 01 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -12,6 +12,7 @@
  * HISTORIAL:
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,6 +20,8 @@ using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -33,12 +36,13 @@ namespace GuanajuatoAdminUsuarios.Services
         private readonly ICatMarcasVehiculosService _marcaVehiculoService;
         private readonly ICatSubmarcasVehiculosService _submarcaVehiculoService;
         private readonly ICatDictionary _catDictionary;
+        private readonly AppSettings _appSettings;
         [GeneratedRegex("[0-9-]")]
         private static partial Regex MyRegex();
         #endregion
 
         public VehiculoPlataformaService(IRepuveService repuveService, ICatEntidadesService entidadService,ICatMunicipiosService municipioService, IColores colorService,
-        ICatMarcasVehiculosService marcaVehiculoService, ICatSubmarcasVehiculosService submarcaVehiculoService, ICatDictionary catDictionary)
+        ICatMarcasVehiculosService marcaVehiculoService, ICatSubmarcasVehiculosService submarcaVehiculoService, ICatDictionary catDictionary,IOptions<AppSettings> appSettings)
         {
             _repuveService = repuveService;
             _entidadService = entidadService;
@@ -47,6 +51,161 @@ namespace GuanajuatoAdminUsuarios.Services
             _marcaVehiculoService = marcaVehiculoService;
             _submarcaVehiculoService = submarcaVehiculoService;
             _catDictionary = catDictionary;
+            _appSettings = appSettings.Value;
+        }
+
+         public VehiculoModel ConsultaVehiculoRepuve(VehiculoBusquedaModel model)
+        {
+            try
+            {
+                var request = JsonConvert.SerializeObject(model);
+               // Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
+                var vehiculosModel = new VehiculoModel();
+
+                //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
+                RepuveConsgralRequestModel repuveGralModel = new(model.PlacasBusqueda, model.SerieBusqueda);
+               // Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
+                RepuveRoboModel repuveRoboModel = new();
+
+                try
+                {
+                    repuveRoboModel = ValidarRoboRepuve(repuveGralModel);
+                }
+                catch (Exception e)
+                {
+                   // Logger.Error("Ocurrió un error al consultar robados en REPUVE:" + e);
+                }
+
+
+                vehiculosModel.RepuveRobo = repuveRoboModel;
+                vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
+
+                var buscarEnServicios = _appSettings.AllowWebServicesRepuve;
+                //Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVehiculoToAnexo");
+                vehiculosModel = GetVehiculoToAnexo(model);
+                vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
+                vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+                vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+
+                if (vehiculosModel.idVehiculo > 0)
+                {
+                    return vehiculosModel;
+
+                }
+
+                if (allowSistem)
+                {
+                    CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
+                    cotejarDatosRequestModel.Tp_folio = "4";
+                    cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
+                    cotejarDatosRequestModel.tp_consulta = "3";
+                    var endPointName = "CotejarDatosEndPoint";
+                   // Logger.Debug("Infracciones - ajax_BuscarVehiculo - CotejarDatos");
+                    var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
+                    if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+                    {
+                       // Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
+                        vehiculosModel = GetVEiculoModelFromFinanzas(result);
+
+                        vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
+
+                        //Se asigna el objeto de la consulta de robado a repuve
+                        vehiculosModel.RepuveRobo = repuveRoboModel;
+                        vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
+
+                        //Se establece el origen de datos
+                        vehiculosModel.origenDatos = "Padrón Estatal";
+
+                        return vehiculosModel;
+                    }
+                }
+
+                if (allowSistem)
+                {
+                    //Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
+                    RepuveConsgralResponseModel repuveConsGralResponse = new();
+                    try
+                    {
+                        repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Ocurrió un error al consultar vehículo en REPUVE:" + ex);
+                    }
+                    //Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
+                    var idEntidad = !string.IsNullOrEmpty(repuveConsGralResponse.entidad_expide)
+                          ? ObtenerIdEntidadRepuve(repuveConsGralResponse.entidad_expide)
+                          : 0;
+                    var idColor = !string.IsNullOrEmpty(repuveConsGralResponse.color)
+                        ? ObtenerIdColor(repuveConsGralResponse.color)
+                        : 0;
+
+                    var idMarca = !string.IsNullOrEmpty(repuveConsGralResponse.marca_padron)
+                        ? ObtenerIdMarcaRepuve(repuveConsGralResponse.marca_padron)
+                        : 0;
+
+                    var idSubmarca = !string.IsNullOrEmpty(repuveConsGralResponse.submarca_padron)
+                        ? ObtenerIdSubmarcaRepuve(repuveConsGralResponse.submarca_padron)
+                        : 0;
+                    var submarcaLimpio = !string.IsNullOrEmpty(repuveConsGralResponse.submarca_padron)
+                        ? ObtenerIdSubmarcaRepuve(repuveConsGralResponse.submarca_padron)
+                        : 0;
+
+                    var idTipo = !string.IsNullOrEmpty(repuveConsGralResponse.tipo_vehiculo_padron)
+                     ? ObtenerIdTipoVehiculo(repuveConsGralResponse.tipo_vehiculo_padron)
+                     : 0;
+                    var idTipoServicio = !string.IsNullOrEmpty(repuveConsGralResponse.tipo_uso_padron)
+                    ? ObtenerIdTipoServicioRepuve(repuveConsGralResponse.tipo_uso_padron)
+                    : 0;
+
+                    var vehiculoEncontrado = new VehiculoModel
+                    {
+                        placas = repuveConsGralResponse.placa.IsNullOrEmpty() ? repuveRoboModel.Placa : repuveConsGralResponse.placa,
+                        serie = repuveConsGralResponse.niv_padron.IsNullOrEmpty() ? repuveRoboModel.Niv : repuveConsGralResponse.niv_padron,
+                        // numeroEconomico = repuveConsGralResponse.tnia,
+                        motor = repuveConsGralResponse.motor,
+                        //otros = repuveConsGralResponse.
+                        idColor = idColor,
+                        idEntidad = idEntidad,
+                        idMarcaVehiculo = idMarca,
+                        idSubmarca = idSubmarca,
+                        //submarca = submarcaLimpio,
+                        idTipoVehiculo = idTipo,
+                        modelo = repuveConsGralResponse.modelo,
+                        idCatTipoServicio = idTipoServicio,
+                        Persona = new PersonaModel(),
+                        PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
+                        RepuveRobo = repuveRoboModel,
+                        ReporteRobo = repuveRoboModel.EsRobado,
+                        ErrorRepube = !repuveConsGralResponse.estatus.IsCaseInsensitiveEqual(RepuveConsgralResponseModel.CONSULTA_CORRECTA) ? "No" : ""
+                    };
+
+                    //Se establece el origen de datos
+                    vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
+
+
+
+
+
+                    vehiculoEncontrado.placas = model.PlacasBusqueda ?? vehiculoEncontrado.placas;
+                    vehiculoEncontrado.serie = model.SerieBusqueda ?? vehiculoEncontrado.serie;
+
+                    return vehiculoEncontrado;
+
+                }
+                else
+                {
+                    Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE (BANDERA DESACTIVADA)");
+                }
+
+
+                return vehiculosModel;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Infracciones - ajax_BuscarVehiculo: " + ex.Message);
+                return null;
+            }
         }
 
         /// <summary>

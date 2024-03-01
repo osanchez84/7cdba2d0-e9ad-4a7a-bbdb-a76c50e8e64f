@@ -483,7 +483,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                WHERE 
                                 cmi.transito = @idDependencia
                                 AND cmi.estatus = 1 
-                                AND (cmi.fechaFinVigencia >= GETDATE() OR cmi.fechaFinVigencia IS NULL);
+                                AND (cmi.fechaFinVigencia >= GETDATE() OR cmi.fechaFinVigencia IS NULL)
 
                                     {0}
                                 ";

@@ -89,7 +89,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Carreteras_Drop([FromServices] ICatCarreterasService catCarreterasService)
         {
-            var result = new SelectList(catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(catCarreterasService.GetCarreterasPorDelegacion2(idOficina), "IdCarretera", "Carretera");
             return Json(result);
         }
 

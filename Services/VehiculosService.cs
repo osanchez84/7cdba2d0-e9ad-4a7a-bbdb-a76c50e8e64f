@@ -637,57 +637,70 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CreateVehiculo(VehiculoModel model)
         {
             int result = 0;
-            string strQuery = @"INSERT INTO vehiculos(
-                                 placas
-                                ,serie
-                                ,tarjeta
-                                ,vigenciaTarjeta
-                                ,idMarcaVehiculo
-                                ,idSubmarca
-                                ,idTipoVehiculo
-                                ,modelo
-                                ,idColor
-                                ,idEntidad
-                                ,idCatTipoServicio
-                                ,propietario
-                                ,numeroEconomico
-                                ,paisManufactura
-                                ,idPersona
-                                ,fechaActualizacion
-                                ,actualizadoPor
-                                ,estatus
-                                ,motor
-                                ,capacidad
-                                ,poliza
-                                ,carga
-                                ,otros
-                                ,idSubtipoServicio
-                                ) VALUES (
-                                @placas
-                                ,@serie
-                                ,@tarjeta
-                                ,@vigenciaTarjeta
-                                ,@idMarcaVehiculo
-                                ,@idSubmarca
-                                ,@idTipoVehiculo
-                                ,@modelo
-                                ,@idColor
-                                ,@idEntidad
-                                ,@idCatTipoServicio
-                                ,@propietario
-                                ,@numeroEconomico
-                                ,@paisManufactura
-                                ,@idPersona
-                                ,@fechaActualizacion
-                                ,@actualizadoPor
-                                ,@estatus
-                                ,@motor
-                                ,@capacidad
-                                ,@poliza
-                                ,@carga
-                                ,@otros
-                                ,@idSubtipoServicio
-                                );select CAST (SCOPE_IDENTITY() As int)";
+            string strQuery = @"
+        IF NOT EXISTS (
+            SELECT 1 FROM vehiculos 
+            WHERE placas = @placas OR serie = @serie
+        )
+        BEGIN
+            INSERT INTO vehiculos (
+                placas,
+                serie,
+                tarjeta,
+                vigenciaTarjeta,
+                idMarcaVehiculo,
+                idSubmarca,
+                idTipoVehiculo,
+                modelo,
+                idColor,
+                idEntidad,
+                idCatTipoServicio,
+                propietario,
+                numeroEconomico,
+                paisManufactura,
+                idPersona,
+                fechaActualizacion,
+                actualizadoPor,
+                estatus,
+                motor,
+                capacidad,
+                poliza,
+                carga,
+                otros,
+                idSubtipoServicio
+            ) 
+            VALUES (
+                @placas,
+                @serie,
+                @tarjeta,
+                @vigenciaTarjeta,
+                @idMarcaVehiculo,
+                @idSubmarca,
+                @idTipoVehiculo,
+                @modelo,
+                @idColor,
+                @idEntidad,
+                @idCatTipoServicio,
+                @propietario,
+                @numeroEconomico,
+                @paisManufactura,
+                @idPersona,
+                @fechaActualizacion,
+                @actualizadoPor,
+                @estatus,
+                @motor,
+                @capacidad,
+                @poliza,
+                @carga,
+                @otros,
+                @idSubtipoServicio
+            );
+            SELECT CAST (SCOPE_IDENTITY() AS int)
+        END
+        ELSE
+        BEGIN
+            SELECT -1
+        END";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try

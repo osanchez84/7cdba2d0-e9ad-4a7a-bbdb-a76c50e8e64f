@@ -16,9 +16,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public PersonaModel PersonaModel { get; set; }
 
 
-        public List<PersonaModel> ListadoPersonas { get; set; }
+        public List<PersonaModel> ListadoPersonas { get; set; } = new();
 
-        public List<PersonaLicenciaModel> ListadoPersonasLicencia { get; set; }
+        public List<PersonaModel> ListadoPersonasOtras { get; set; } = new();
 
         public override string ToString()
         {

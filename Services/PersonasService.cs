@@ -720,6 +720,7 @@ namespace GuanajuatoAdminUsuarios.Services
                               ,fechaNacimiento
                               ,vigenciaLicencia
                               ,idGenero
+                              ,origen
                               ) VALUES (@numeroLicencia
 							,@CURP
 							,@RFC
@@ -734,6 +735,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             ,@fechaNacimiento
                             ,@vigenciaLicencia
                             ,@idGenero
+                            ,@origen
 							);SELECT SCOPE_IDENTITY()";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -741,15 +743,15 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombre ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoPaterno ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoMaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = model.numeroLicencia!=null?model.numeroLicencia.Trim(): DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = model.CURP!=null?model.CURP.Trim() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = model.RFC!=null?model.RFC.Trim(): DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = model.nombre!=null?model.nombre.Trim() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = model.apellidoPaterno!=null?model.apellidoPaterno.Trim() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = model.apellidoMaterno!=null?model.apellidoMaterno.Trim() : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value =1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
 
                     command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
@@ -759,7 +761,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     //DateTime vigenciaLicenciaValue = (model.vigenciaLicencia != DateTime.MinValue) ? model.vigenciaLicencia : DateTime.MinValue;
                     command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)vigenciaLicenciaValue ?? DBNull.Value;
-
+                    command.Parameters.Add(new SqlParameter("@origen", SqlDbType.VarChar)).Value = (object)model.Origen ?? "RIAG";
 
                     command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
                     command.CommandType = CommandType.Text;
@@ -810,15 +812,15 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.Parameters.Add(new SqlParameter("@idPersona", SqlDbType.Int)).Value = (object)model.idPersona ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.numeroLicencia ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = (object)model.CURP ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = (object)model.RFC ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.nombre ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoPaterno ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.apellidoMaterno ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = model.numeroLicencia!=null ?model.numeroLicencia.Trim() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@CURP", SqlDbType.NVarChar)).Value = model.CURP!=null?model.CURP.Trim() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@RFC", SqlDbType.NVarChar)).Value = model.RFC!=null?model.RFC.Trim(): DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = model.nombre!=null?model.nombre.Trim(): DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = model.apellidoPaterno!=null?model.apellidoPaterno.Trim(): DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = model.apellidoMaterno!=null?model.apellidoMaterno.Trim(): DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
-                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = (object)1;
-                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = (object)1;
+                    command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value =1;
                     command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;

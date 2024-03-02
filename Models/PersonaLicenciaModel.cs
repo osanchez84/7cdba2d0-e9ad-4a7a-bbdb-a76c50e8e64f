@@ -4,7 +4,7 @@
  * Fecha de creación: Wednesday, February 28th 2024 11:07:23 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Thu Feb 29 2024
+ * Última modificación: Sat Mar 02 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -76,7 +76,6 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             Nombre = p.NOMBRE;
             NombreCompleto = p.NOMBRE_COMPLETO;
-            Nombre = p.NOMBRE;
             PrimerApellido = p.PRIMER_APELLIDO;
             SegundoApellido = p.SEGUNDO_APELLIDO;
             FechaNacimiento = (p.FECHA_NACIMIENTO.Value.Year < 1800) ? null : p.FECHA_NACIMIENTO.Value.ToString("yyyy-MM-dd");

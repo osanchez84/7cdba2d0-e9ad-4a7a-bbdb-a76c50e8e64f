@@ -288,6 +288,124 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+        public  List<CatalogModel> GetMunicipiosFilter()
+        {
+            var result = new List<CatalogModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"select idMunicipio,municipio from catMunicipios where idEntidad=11 ", connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            var aux = new CatalogModel();
+
+                            aux.value = reader["idMunicipio"].ToString();
+                            aux.text = reader["municipio"].ToString();
+
+                            result.Add(aux);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            return result;
+        }
+        public List<CatalogModel> GetCarreterasFilter()
+        {
+            var result = new List<CatalogModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"select idCarretera,carretera from catCarreteras c where estatus=1 ", connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            var aux = new CatalogModel();
+
+                            aux.value = reader["idCarretera"].ToString();
+                            aux.text = reader["carretera"].ToString();
+
+                            result.Add(aux);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            return result;
+        }
+
+
+        public List<CatalogModel> GetTramosFilter()
+        {
+            var result = new List<CatalogModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"select idCarretera,carretera from catCarreteras c where estatus=1 ", connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            var aux = new CatalogModel();
+
+                            aux.value = reader["idCarretera"].ToString();
+                            aux.text = reader["carretera"].ToString();
+
+                            result.Add(aux);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            return result;
+        }
+
+
         // public List<ListadoAccidentesPorAccidenteModel> AccidentesPorAccidente(BusquedaAccidentesModel recibido)
         public IEnumerable<ListadoAccidentesPorAccidenteModel> AccidentesPorAccidente(BusquedaAccidentesModel recibido)
 
@@ -448,7 +566,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             tv.tipoVehiculo, ', Servicio: ', 
                                                             ts.tipoServicio, ', Placa: ', 
                                                             veh.placas, ', Serie: ', 
-                                                            veh.serie
+                                                            veh.serie, ' , Propietario: ',
+                                                            pro.nombre,' ',pro.apellidoPaterno,' ',pro.apellidoMaterno,' , Conductor: ',
+                                                            con.nombre,' ',con.apellidoPaterno,' ',con.apellidoMaterno
                                                         ) AS Vehiculos
                                                     FROM 
                                                         accidentes ac
@@ -460,6 +580,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN catColores cc ON cc.idColor = veh.idColor
                                                         LEFT JOIN catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
                                                         LEFT JOIN catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
+                                                        left join Personas con on con.idpersona=vehacc.idpersona
+                                                        left join Personas pro on pro.idpersona=veh.idpersona
                                                 ) AS veh
                                             GROUP BY 
                                                 idAccidente
@@ -517,7 +639,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.carretera = reader["carretera"] == System.DBNull.Value ? default(string) : reader["carretera"].ToString();
                             model.municipio = reader["municipio"] == System.DBNull.Value ? default(string) : reader["municipio"].ToString();
                             model.tramo = reader["tramo"] == System.DBNull.Value ? default(string) : reader["tramo"].ToString();
-                            model.kilometro = reader["kilometro"] == System.DBNull.Value ? default(string) : reader["kilometro"].ToString();
+                            model.kilometro = reader["kilometro"] == System.DBNull.Value ? default(string) :  Decimal.Parse((string)reader["kilometro"]).ToString("G29");
                             model.latitud = reader["latitud"] == System.DBNull.Value ? default(string) : reader["latitud"].ToString();
                             model.longitud = reader["longitud"] == System.DBNull.Value ? default(string) : reader["longitud"].ToString();
                             model.Vehiculo = reader["Vehiculo"] == System.DBNull.Value ? default(string) : reader["Vehiculo"].ToString();

@@ -11,7 +11,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
 
         public bool ReporteRobo { get; set; }  
-        public string ErrorRepube { get; set; } = ""; 
+        public bool ErrorConsultaRepuve { get; set; }
         public bool showclose { get; set; } = true;
         
         public int idVehiculo { get; set; }

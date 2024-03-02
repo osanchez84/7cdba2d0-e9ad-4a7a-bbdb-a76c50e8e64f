@@ -91,8 +91,8 @@ function buscarPersonaFisica(){
             data: model,
             success: function (response) {
                 $("#listadoPersonasContainer").fadeIn();
-                 $("#listadoPersonasLicenciasContainer").html(response);
-                 $("#listadoPersonasLicenciasContainer").show();
+                 $("#listadoPersonasOtrasContainer").html(response);
+                 $("#listadoPersonasOtrasContainer").show();
                 resetMensajeBuscando();
             },
             error: function (error) {
@@ -117,7 +117,7 @@ function buscarPersonaFisica(){
                         return;
                     }
                     if (response.data.length >0) {
-                        cargaListaPersonasLicenciasEncontradas({ListadoPersonasLicencia:response.data});
+                        cargaListaPersonasLicenciasEncontradas({ListadoPersonasOtras:response.data});
                     }
                     else {
                         mostrarMensajeBuscando('No se encontraron personas con los datos introducidos, intenta con otros o agrega a la persona');
@@ -133,11 +133,19 @@ function buscarPersonaFisica(){
 
     }
 
-     function abrirModalPersonaFisica(idPersona){
-        $.ajax({
+     function abrirModalPersonaFisica(idPersona,itemPersona){
+        var persona={};
+        //Si no se obtiene un id, se obtiene el objeto del grid
+        if(idPersona===0){
+        persona=JSON.parse(JSON.stringify(itemPersona));
+        }
+        else{
+            persona['idPersona']=idPersona;
+        }
+    $.ajax({
         url: '@Url.Action("MostrarPersonaFisica","BusquedaVehiculoPropietario")',
         type: 'POST',
-        data: {idPersona},
+        data: persona,
         success: function (result) {
             $('#personaFisicaContainer').html(result);
             $('#addFisico').modal('show');
@@ -162,7 +170,7 @@ function buscarPersonaFisica(){
 
     function resetPersonasContainer(){
         $("#listadoPersonasContainer").fadeOut();
-        $("#listadoPersonasLicenciasContainer").html('');
+        $("#listadoPersonasOtrasContainer").html('');
         $("#listadoPersonasRiagContainer").html('');
     }
 </script>
@@ -287,7 +295,11 @@ function buscarPersonaFisica(){
             </div>
         @*Table*@
         <div id="listadoPersonasContainer">
-            <div id="listadoPersonasLicenciasContainer"></div>
+            <div id="listadoPersonasOtrasContainer">
+                @if(Model.ListadoPersonasOtras.Count>0){
+                     @await Component.InvokeAsync("ListaPersonasEncontradasOtras",new{listaPersonas=Model.ListadoPersonasOtras})
+                }
+            </div>
             <div id="listadoPersonasRiagContainer"></div>
        </div>
     <div id="resultadoLicencia" style="display: none;">

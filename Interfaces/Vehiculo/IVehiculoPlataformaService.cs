@@ -4,7 +4,7 @@
  * Fecha de creación: Monday, February 19th 2024 4:11:01 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Tue Feb 27 2024
+ * Última modificación: Fri Mar 01 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -21,5 +21,6 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         RepuveRoboModel ValidarRoboRepuve(RepuveConsgralRequestModel repuveGralModel);
         VehiculoModel GetVehiculoModelFromFinanzas(RootCotejarDatosRes result);
+        VehiculoModel BuscarVehiculoEnPlataformas(VehiculoBusquedaModel busquedaModel);
     }
 }

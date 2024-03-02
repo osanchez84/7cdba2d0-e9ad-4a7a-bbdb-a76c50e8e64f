@@ -17,7 +17,7 @@
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
 
-        var mensaje = Model.ErrorRepube;
+        bool errorConsultaRepuve = Model.ErrorConsultaRepuve;
 
     ViewBag.serie = Model.serie;
 
@@ -45,9 +45,9 @@
     var personaFisicaControlsValidate=[];
     $(document).ready(()=>{
        var esRobado = "@Model.ReporteRobo";
-    var t = "@mensaje"
+        var errorConsultaRep = "@errorConsultaRepuve";
 
-    if (t != '' && t != undefined) {
+    if (errorConsultaRep === 'True') {
                   sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
   }
     //Si el vehículo tiene reporte de robo se muestra mensaje
@@ -792,7 +792,7 @@ function mostrarMensajeRobado() {
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
-                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
+                   @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
 
                 </div>
                <div class="row">

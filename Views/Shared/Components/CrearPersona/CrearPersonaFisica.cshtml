@@ -4,14 +4,16 @@
         var entidadDDlValue = $("#PersonaDireccion_idEntidad").data("kendoDropDownList").value();
         showLoading();
         $.ajax({
-            url: "/Personas/Municipios_Drop",
+            url: '@Url.Action( "Municipios_Drop", "BusquedaVehiculoPropietario")',
             type: "POST",
             data: { entidadDDlValue: entidadDDlValue },
             success: function (data) {
+                
                  var municipiosDropDown = $("#PersonaDireccion_idMunicipio").data("kendoDropDownList");
-    
+        
+     
                 var idMunicipio = @((Model.PersonaDireccion.idMunicipio != null) ? Model.PersonaDireccion.idMunicipio : 0);
-                      municipiosDropDown.dataSource.data(data);
+                municipiosDropDown.dataSource.data(data);
 
                 // Establece el valor de idMunicipio si está presente en los nuevos datos
                 if (idMunicipio !== null && idMunicipio !== undefined &&
@@ -63,6 +65,7 @@
                     </div>
                 </div>
                 <form id="personaFisicaForm" class="row px-4 mb-4 align-items-end">
+                    @Html.HiddenFor(m=> m.Origen, new { @id = "origen" })
                     @Html.HiddenFor(m=> m.idPersona, new { @id = "idPersona" })
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="controlForm mb-3">
@@ -353,12 +356,6 @@
             EntidadDropDownChange();
           }
 
-        /*$("#PersonaDireccion_idEntidad").on("change", function () {
-            var value = $(this).val();
-            _set_combo_catalog("CatMunicipiosByEntidad", value, "PersonaDireccion_idMunicipio", "false", "divMunicipioLista", "");
-            $('#PersonaDireccion_idMunicipio').kendoDropDownList();
-
-        });*/
     });
 
     
@@ -387,6 +384,7 @@
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+                sitteg_error("Ocurrió un error al guardar a la persona");
                 hideLoading();
             }
         });

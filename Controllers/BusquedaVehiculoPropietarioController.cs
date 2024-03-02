@@ -4,8 +4,8 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Fri Mar 01 2024
- * Última modificación: Fri Mar 01 2024
+ * Última modificación: Sat Mar 02 2024
+ * Última modificación: Sat Mar 02 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -72,27 +72,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [FromServices] IVehiculoPlataformaService vehiculoPlataformaService, [FromServices] IVehiculosService vehiculoService, [FromServices] ICotejarDocumentosClientService cotejarDocumentosService, VehiculoPropietarioBusquedaModel model)
         {
 
-            RepuveConsgralRequestModel repuveGralModel = new(model.PlacaBusqueda, model.SerieBusqueda);
-            //VehiculoModel vehiculoModel = new();
-            //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
-            RepuveRoboModel repuveRoboModel = new();
-
-            try
-            {
-                repuveRoboModel = vehiculoPlataformaService.ValidarRoboRepuve(repuveGralModel);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("Ocurrió un error al consultar robados en REPUVE:" + e);
-            }
-
-
-            vehiculoModel.RepuveRobo = repuveRoboModel;
-            vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
-
-
-
-            var buscarEnServicios = appSettings.Value.AllowWebServicesRepuve;
             VehiculoBusquedaModel busquedaModel = new()
             {
                 IdEntidadBusqueda = model.IdEntidadBusqueda,
@@ -116,63 +95,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(new { listaVehiculos.FirstOrDefault().idVehiculo });
             }
 
-            if (buscarEnServicios && !string.IsNullOrEmpty(busquedaModel.PlacasBusqueda))
-            {
-                CotejarDatosRequestModel cotejarDatosRequestModel = new()
-                {
-                    Tp_folio = "4",
-                    Folio = busquedaModel.PlacasBusqueda,
-                    tp_consulta = "3"
-                };
-                var endPointName = "CotejarDatosEndPoint";
-                var result = cotejarDocumentosService.CotejarDatos(cotejarDatosRequestModel, endPointName);
-                if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
-                {
-                    vehiculoModel = vehiculoPlataformaService.GetVehiculoModelFromFinanzas(result);
+            VehiculoModel vehiculo = vehiculoPlataformaService.BuscarVehiculoEnPlataformas(busquedaModel);
 
-                    //Se asigna el objeto de la consulta de robado a repuve
-                    vehiculoModel.RepuveRobo = repuveRoboModel;
-                    vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
-
-                    //Se establece el origen de datos
-                    vehiculoModel.origenDatos = "Padrón Estatal";
-                    var view2 = this.RenderViewAsync("_Vehiculo", vehiculoModel, true);
-                    return Json(new { crearVehiculo = true, view = view2 });
-                }
-            }
-
-            if (buscarEnServicios)
-            {
-                var repuveConsGralResponse = repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsgralResponseModel();
-
-                var vehiculoEncontrado = new VehiculoModel
-                {
-                    placas = repuveConsGralResponse.placa.IsNullOrEmpty() ? repuveRoboModel.Placa : repuveConsGralResponse.placa,
-                    serie = repuveConsGralResponse.niv_padron.IsNullOrEmpty() ? repuveRoboModel.Niv : repuveConsGralResponse.niv_padron,
-                    motor = repuveConsGralResponse.motor,
-                    color = repuveConsGralResponse.color,
-                    submarca = repuveConsGralResponse.submarca,
-                    modelo = repuveConsGralResponse.modelo,
-
-                    Persona = new PersonaModel(),
-
-                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
-                    RepuveRobo = repuveRoboModel,
-                    ReporteRobo = repuveRoboModel.EsRobado,
-                    ErrorRepube = !repuveConsGralResponse.estatus.IsCaseInsensitiveEqual(RepuveConsgralResponseModel.CONSULTA_CORRECTA) ? "No" : ""
-                };
-                vehiculoEncontrado.ErrorRepube = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? "No" : "";
-
-                //Se establece el origen de datos
-                vehiculoEncontrado.origenDatos = string.IsNullOrEmpty(vehiculoEncontrado.placas) ? null : "REPUVE";
-
-                var view3 = this.RenderViewAsync("_Vehiculo", vehiculoEncontrado, true);
-                return Json(new { crearVehiculo = true, view = view3 });
-
-
-            }
-            var view4 = this.RenderViewAsync("_Vehiculo", vehiculoModel, true);
-            return Json(new { crearVehiculo = true, view = view4 });
+            var view = this.RenderViewAsync("_Vehiculo", vehiculo, true);
+            return Json(new { crearVehiculo = true, view });
         }
         /// <summary>
         /// Crea o actualiza un registro de un vehiculo en la bd
@@ -204,10 +130,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// Muestra vista para crear persona fisica
         /// </summary>
         /// <returns></returns>
-        public ActionResult MostrarPersonaFisica(int idPersona)
+        public ActionResult MostrarPersonaFisica(PersonaModel persona)
         {
 
-            return ViewComponent("CrearPersona", new { idPersona });
+            return ViewComponent("CrearPersona", new { persona });
         }
         /// <summary>
         /// Muestra vista para crear persona moral
@@ -318,7 +244,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult MostrarListaPersonasLicenciasEncontradas(BusquedaPersonaModel model)
         {
-            return ViewComponent("ListaPersonasEncontradasLicencias", new { listaPersonas = model.ListadoPersonasLicencia });
+            return ViewComponent("ListaPersonasEncontradasOtras", new { listaPersonas = model.ListadoPersonasOtras });
         }
 
         public IActionResult GuardaPersonaLicenciasEnRiag([FromServices] IPersonasService personasService, [FromServices] IBitacoraService bitacoraServices, PersonaLicenciaModel personaLicencia)
@@ -356,13 +282,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// <exception cref="Exception"></exception>
         public ActionResult CrearPersonaFisica([FromServices] IPersonasService personasService, PersonaModel Persona)
         {
-            int IdPersonaFisica=0;
+            int IdPersonaFisica = 0;
             if (Persona.idPersona > 0)
             {
                 Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
                 int result = personasService.UpdatePersona(Persona);
-                if(result>0)
-                IdPersonaFisica = (int)Persona.idPersona;
+                if (result > 0)
+                    IdPersonaFisica = (int)Persona.idPersona;
             }
             else
             {
@@ -409,7 +335,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// <param name="_httpClientFactory"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<IActionResult> BuscarPersonasEnLicencias([FromServices] IHttpClientFactory _httpClientFactory, BusquedaPersonaModel model)
+        public async Task<IActionResult> BuscarPersonasEnLicencias([FromServices] IHttpClientFactory _httpClientFactory, [FromServices] ICatEntidadesService catEntidadesService, BusquedaPersonaModel model)
         {
             string parametros = "";
             parametros += string.IsNullOrEmpty(model.NumeroLicenciaBusqueda) ? "" : "licencia=" + model.NumeroLicenciaBusqueda + "&";
@@ -438,12 +364,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
 
-                List<PersonaLicenciaModel> resultado = new();
+                List<PersonaModel> resultado = new();
 
                 foreach (LicenciaPersonaDatos p in respuesta)
                 {
-                    PersonaLicenciaModel pm = new();
-                    pm.ConvertirModelo(p);
+                    PersonaModel pm = new();
+                    pm.ConvertirModeloDeLicencias(p);
+                    CatEntidadesModel entidad = catEntidadesService.ObtenerEntidadesByNombre(p.ESTADO_NACIMIENTO);
+                    if (entidad != null && entidad.idEntidad > 0)
+                        pm.PersonaDireccion.idEntidad = entidad.idEntidad;
                     resultado.Add(pm);
                 }
 

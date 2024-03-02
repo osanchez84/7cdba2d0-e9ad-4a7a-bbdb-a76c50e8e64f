@@ -16,7 +16,7 @@
         myAttributes = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? new { disabled = "disabled", style = "width:100%;" } : new { disabled = "", style = "width:100%;" };
     }
 
-    var mensaje = Model.ErrorRepube;
+     bool errorConsultaRepuve = Model.ErrorConsultaRepuve;
     ViewBag.serie = Model.serie;
 
     //En caso de exitir un reporte de robo de REPUVE se asignan las variables para mostrar alerta
@@ -46,6 +46,7 @@
  var esRobado = "@Model.ReporteRobo";
     var access = @listaIdsPermitidosJson;
     var auth = @autorizaciones;
+    var errorConsultaRep = "@errorConsultaRepuve";
 
     if (access != undefined && access != '') {
         if (!access.toString().includes(localStorage.getItem("menuId"))) {
@@ -73,7 +74,7 @@
         }, 200);
     }
 
-     if ( t != undefined && t!='No') {
+     if (errorConsultaRep === 'True') {
             sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
         }
      //Si el vehículo tiene reporte de robo se muestra mensaje

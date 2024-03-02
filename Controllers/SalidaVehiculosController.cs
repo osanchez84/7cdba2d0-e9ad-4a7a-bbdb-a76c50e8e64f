@@ -67,6 +67,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return View(infoDeposito);
         }
+        public IActionResult DatosServicio(int iDp)
+        {
+            HttpContext.Session.SetInt32("idDeposito", iDp);
+            int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
+
+            var infoDeposito = _salidaVehiculosService.DetallesDepositoOtraDep(iDp, idPension);
+
+            return View(infoDeposito);
+        }
         public JsonResult GetGruasAsignadas([DataSourceRequest] DataSourceRequest request)
         {
             int iDp = HttpContext.Session.GetInt32("idDeposito") ?? 0; 
@@ -103,6 +112,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalida(model);
 
             return PartialView("_ListadoGruas");
+        }
+
+        public ActionResult GuardarDatosSalidaDep(SalidaVehiculosModel model)
+        {
+
+            var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalidaOtrasDep(model);
+
+            return View("Index");
         }
 
     }

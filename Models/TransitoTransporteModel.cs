@@ -282,8 +282,8 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             get
             {
-                return @"Envia: " + NombreDependencia + "\r\n\n " +
-                     "Estatus: " + estatusSolicitud;
+                return @"Estatus: " + estatusSolicitud + "\r\n\n";
+                                        //NombreDependencia;
             }
         }
         public string propietarioNombre { get; set; }

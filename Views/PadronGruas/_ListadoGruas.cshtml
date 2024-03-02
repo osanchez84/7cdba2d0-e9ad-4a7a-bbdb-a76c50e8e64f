@@ -19,7 +19,11 @@
                 columns.Bound(c => c.modelo).Title("Modelo").Width(90);
                 columns.Bound(c => c.placas).Title("Placas").Width(90);
                 columns.Bound(c => c.tipoGrua).Title("Tipo").Width(90);
-                columns.Bound(c => c.capacidad).Title("Capacidad").Width(90);
+                columns.Bound(c => c.capacidad)
+                .Title("Capacidad")
+                .Width(90)
+                .ClientTemplate("#= kendo.toString(Math.round(capacidad * 100) / 100, '0.00') #");
+
                 //columns.Command(c => c.Custom("Editar").Click("editar")).Width(100);
             }).HtmlAttributes(new { style = "height:350" })
             .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))

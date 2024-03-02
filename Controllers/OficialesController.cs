@@ -59,7 +59,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult OficialesDependenciaTodos_Drop()
         {
-            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             var oficiales = _oficialesService.GetOficialesPorDependencia()
                 .Select(o => new
                 {

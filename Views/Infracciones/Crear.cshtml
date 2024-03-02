@@ -216,7 +216,7 @@
 
 									<div class="form-group col-md-2 controlForm">
 										<label class="text-muted">Hora:</label>
-										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1).Max(DateTime.Now)
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
 											.Label(l => l.Content("Hora:"))
 											.Value("")
 											.Format("HH:mm")

@@ -5,6 +5,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IConcesionariosService
     {
+        List<ConcesionariosModel> GetAllConcesionarios();
+
         List<ConcesionariosModel> GetConcesionarios(int idOficina);
         public List<Concesionarios2Model> GetConcesionarios2ByIdDelegacion(int idDelegacion);
         public int CrearConcesionario(Concesionarios2Model model);

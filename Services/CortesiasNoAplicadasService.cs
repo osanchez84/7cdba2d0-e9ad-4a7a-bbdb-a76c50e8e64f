@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT TOP 200 i.folioInfraccion,
+                    SqlCommand command = new SqlCommand(@"SELECT i.folioInfraccion,
                                                         CONVERT(varchar,i.fechaInfraccion,103) AS fechaInfraccion, 
                                                         CONCAT(pI.nombre,' ',pI.apellidoPaterno,' ', pI.apellidoMaterno)AS Conductor,
                                                         i.placasVehiculo, v.serie,
@@ -42,7 +42,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                                                         LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion  
                                                         WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2
-                                                        and i.transito=1
+                                                        and i.transito=@corporacion
                                                         ORDER BY i.idInfraccion DESC ", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion??"";

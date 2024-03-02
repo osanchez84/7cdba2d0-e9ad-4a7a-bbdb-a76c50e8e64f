@@ -70,8 +70,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-            var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina, idDependencia);
-            var modelListProMotivos = _infraccionesService.GetAllMotivosPorInfraccion(idOficina, idDependencia);
+            //var modelList = _infraccionesService.GetAllEstadisticasInfracciones(idOficina, idDependencia);
+            //var modelListProMotivos = _infraccionesService.GetAllMotivosPorInfraccion(idOficina, idDependencia);
             var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
             var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
             var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
@@ -95,8 +95,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
             ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
-            ViewBag.Estadisticas = modelList;
-            ViewBag.GridPorMotivos = modelListProMotivos;
+           // ViewBag.Estadisticas = modelList;
+            //ViewBag.GridPorMotivos = modelListProMotivos;
 
 
             // var modelGridInfracciones = _infraccionesService.GetAllInfraccionesEstadisticasGrid(idDependencia);

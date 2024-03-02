@@ -273,9 +273,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Tramos_Drop(int carreteraDDValue)
         {
-            var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+            var tramos = _catTramosService.ObtenerTamosPorCarretera(carreteraDDValue);
+
+            var result = new List<SelectListItem>();
+
+            result.AddRange(new SelectList(tramos, "IdTramo", "Tramo"));
+
+            result.Add(new SelectListItem { Value = "1", Text = "No aplica" });
+            result.Add(new SelectListItem { Value = "2", Text = "No especificado" });
+
             return Json(result);
         }
+
 
         public JsonResult TramosTodos_Drop(int carreteraDDValue)
         {

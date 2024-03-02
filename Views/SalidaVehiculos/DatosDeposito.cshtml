@@ -188,7 +188,31 @@
                     <h4 class="colorPrimary"><b>Ubicación</b></h4>
                     <p><b>Tramo:</b> <span id="tramo">@{ if (Model.tramo != null) { @Model.tramo; } else { @("-"); } }</span></p>
                     <p><b>Carretera:</b> <span id="carretera">@{ if (Model.carretera != null) { @Model.carretera; } else { @("-"); } }</span></p>
-                    <p><b>Kilometro:</b> <span id="kilometro">@{ if (Model.kilometro != null) { @Model.kilometro; } else { @("-"); } }</span></p>
+                    <p><b>Kilometro:</b> 
+                        <span id="kilometro">
+                            @{
+                                int km;
+                                bool success = int.TryParse(Model.kilometro, out km);
+                                if (success)
+                                {
+                                   Convert.ToInt32(@km).ToString("N1");
+                                }
+                                else
+                                {
+                                    @("-");
+                                }
+
+
+                                //if (!String.IsNullOrEmpty(Model.kilometro)) { Convert.ToInt32(@Model.kilometro).ToString("N1"); }
+                                //else
+                                //{
+                                //    @("-")
+                                //    ;
+                                //}
+                            }
+
+                        </span></p>
+
                     <p><b>Colonia:</b> <span id="colonia">@{ if (Model.colonia != null) { @Model.colonia; } else { @("-"); } }</span></p>
                     <p><b>Calle:</b> <span id="calle">@{ if (Model.calle != null) { @Model.calle; } else { @("-"); } }</span></p>
                     <p><b>Número:</b> <span id="numero">@{ if (Model.numero != null) { @Model.numero; } else { @("-"); } }</span></p>
@@ -228,7 +252,7 @@
     function guardarDatos() {
         var controlsValidate = [];
         var isValid = true;
-
+        controlsValidate.push({ 'controlName': 'fechaSalida' });
         controlsValidate.push({ 'controlName': 'recibe' });
         controlsValidate.push({ 'controlName': 'entrega' });
 
@@ -236,6 +260,50 @@
         if (!isControlsValid(controlsValidate)) { isValid = false; }
 
          if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+
+        //$("#costoDeposito").removeClass("errorData");
+        if ( parseInt($("#costoDeposito").val())<=0 ) {
+            //$("#costoDeposito").addClass("errorData");
+            sitteg_warning('El Costo depósito es un dato requerido.');
+            return;
+        }
+
+
+        var Mydata = $("#dataSalidaForm").serialize();
+        console.log(Mydata);
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("GuardarDatosSalida")',
+            type: 'POST',
+            data: Mydata,
+            success: function (data) {
+                sitteg_success('Se ha actualizado la información');
+
+               hideLoading();
+                window.location.href = '@Url.Action("Index", "SalidaVehiculos")';
+            },
+            error: function (error) {
+                sitteg_warning('Sucedió un error, intente mas tarde...');
+                hideLoading();
+            }
+        });
+    }
+
+
+    function guardarDatos2() {
+        var controlsValidate = [];
+        var isValid = true;
+
+        controlsValidate.push({ 'controlName': 'recibe' });
+        controlsValidate.push({ 'controlName': 'entrega' });
+
+        // INPUTS
+        if (!isControlsValid(controlsValidate)) { isValid = false; }
+
+        if (!isValid) {
             sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
             return;
         }
@@ -250,7 +318,7 @@
             data: Mydata,
             success: function (data) {
                 sitteg_success('Se ha actualizado la información');
-               hideLoading();
+                hideLoading();
             },
             error: function (error) {
                 sitteg_warning('Sucedió un error, intente mas tarde...');

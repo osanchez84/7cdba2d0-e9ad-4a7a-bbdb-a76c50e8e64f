@@ -33,23 +33,23 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
+                    string SQL = "SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
+                                "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
+                                "mun.municipio, " +
+                                "car.carretera, " +
+                                "ent.nombreEntidad, " +
+                                "tip_us.tipoUsuario, " +
+                                "ofi.nombre,ofi.apellidoPaterno,ofi.apellidoMaterno " +
+                                "From solicitudes AS sol " +
+                                "LEFT JOIN catMunicipios AS mun ON sol.idMunicipioUbicacion = mun.idMunicipio " +
+                                "LEFT JOIN catCarreteras AS car ON sol.idCarreteraUbicacion = car.idCarretera " +
+                                "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +
+                                "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
+                                "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
+                                "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
+                                "WHERE sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud) AND sol.estatus = 1";
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
-                        "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(d.IdConcesionario,0) idPropietarioGrua, " +
-                        "mun.municipio, " +
-                        "car.carretera, " +
-                        "ent.nombreEntidad, " +
-                        "tip_us.tipoUsuario, " +
-                        "ofi.nombre,ofi.apellidoPaterno,ofi.apellidoMaterno " +
-                        "From solicitudes AS sol " +
-                        "LEFT JOIN catMunicipios AS mun ON sol.idMunicipioUbicacion = mun.idMunicipio " +
-                        "LEFT JOIN catCarreteras AS car ON sol.idCarreteraUbicacion = car.idCarretera " +
-                        "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +
-                        "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
-                        "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
-                        "left join depositos d on sol.idSolicitud=d.idSolicitud " +
-                        "WHERE d.idDeposito is null AND (sol.folio like '%'+@folioBusqueda+'%' ) AND sol.estatus = 1", connection);
-
+                    SqlCommand command = new SqlCommand(SQL, connection);
 
 
                     command.CommandType = System.Data.CommandType.Text;
@@ -269,7 +269,41 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
 
                     // Consulta para buscar si el folio ya existe en la tabla depositos
-                    SqlCommand searchCommand = new SqlCommand("SELECT ISNULL(idSolicitud,0) idSolicitud, ISNULL(idDeposito,0) idDeposito ,ISNULL(folio,'') folio ,observaciones,numeroInventario,inventario FROM depositos WHERE folio = @FolioSolicitud", connection);
+                    SqlCommand searchCommand = new SqlCommand(@"SELECT	ISNULL(A.idSolicitud,0) idSolicitud, 
+		                                                                ISNULL(A.idDeposito,0) idDeposito ,
+		                                                                ISNULL(A.folio,'') folio ,
+		                                                                A.observaciones,
+		                                                                A.numeroInventario,
+		                                                                A.inventario,
+		                                                                inf.idInfraccion, 
+		                                                                inf.idVehiculo,
+		                                                                inf.idPersona,
+		                                                                inf.folioInfraccion,
+		                                                                inf.fechaInfraccion,
+                                                                        v.placas,v.serie,
+		                                                                v.idMarcaVehiculo,
+		                                                                v.idSubmarca,
+		                                                                v.modelo,
+		                                                                v.idPersona,
+		                                                                v.tarjeta,
+                                                                        p.nombre,
+		                                                                p.apellidoPaterno,
+		                                                                p.apellidoMaterno,
+		                                                                p.CURP,
+		                                                                p.RFC,
+                                                                        cmv.marcaVehiculo,
+		                                                                csv.nombreSubmarca,
+		                                                                col.color,
+		                                                                inf.folioInfraccion FolioVinculado
+                                                                FROM depositos			A 
+                                                                LEFT JOIN solicitudes	B	ON A.idSolicitud = B.idSolicitud
+                                                                LEFT JOIN infracciones	inf ON B.idInfraccion = inf.idInfraccion
+                                                                LEFT JOIN vehiculos		v	ON inf.idVehiculo = v.idVehiculo
+                                                                LEFT JOIN personas		p	ON v.idPersona = p.idPersona
+                                                                LEFT JOIN catMarcasVehiculos as cmv ON v.idMarcaVehiculo = cmv.idMarcaVehiculo
+                                                                LEFT JOIN catSubmarcasVehiculos as csv ON v.idSubmarca = csv.idSubmarca
+                                                                LEFT JOIN catColores  col ON v.idColor = col.idColor
+                                                                WHERE A.folio = @FolioSolicitud", connection);
                     searchCommand.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = iSo;
 
                     // Ejecutar la consulta de búsqueda
@@ -282,6 +316,25 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
+
+
+                            //HMG - NUEVOS CAMPOS
+                            solicitud.idInfraccion = searchReader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(searchReader["idInfraccion"].ToString());
+                            solicitud.IdVehiculo = (int)(searchReader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(searchReader["idVehiculo"].ToString()));
+                            solicitud.folioInfraccion = searchReader["FolioVinculado"].ToString();
+                            solicitud.fechaInfraccion = searchReader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(searchReader["fechaInfraccion"].ToString());
+                            solicitud.IdMarcaVehiculo = Convert.IsDBNull(searchReader["IdMarcaVehiculo"]) ? 0 : Convert.ToInt32(searchReader["IdMarcaVehiculo"]);
+                            solicitud.IdSubmarca = Convert.IsDBNull(searchReader["IdSubmarca"]) ? 0 : Convert.ToInt32(searchReader["IdSubmarca"]);
+                            solicitud.Marca = searchReader["marcaVehiculo"].ToString();
+                            solicitud.Submarca = searchReader["nombreSubmarca"].ToString();
+                            solicitud.Modelo = searchReader["Modelo"].ToString();
+                            solicitud.Color = searchReader["color"].ToString();
+                            solicitud.Placa = searchReader["placas"].ToString();
+                            solicitud.Serie = searchReader["serie"].ToString();
+                            solicitud.Tarjeta = searchReader["tarjeta"].ToString();
+                            solicitud.Propietario = $"{searchReader["nombre"]} {searchReader["apellidoPaterno"]} {searchReader["apellidoMaterno"]}";
+                            solicitud.CURP = searchReader["CURP"].ToString();
+                            solicitud.RFC = searchReader["RFC"].ToString();
 
                             string filePath = searchReader["inventario"].ToString(); 
 

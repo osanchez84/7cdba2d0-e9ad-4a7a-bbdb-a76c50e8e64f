@@ -65,19 +65,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
                 var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
-                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
                 var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
 
 
             var catMunicipios = _estadisticasAccidentesService.GetMunicipiosFilter(); //_catDictionary.GetCatalog("CatMunicipios", "0");
             var catCarreteras = _estadisticasAccidentesService.GetCarreterasFilter();
             var catTramos = _catDictionary.GetCatalog("CatTramos", "0");
+			var catDelegaciones = _estadisticasAccidentesService.GetDelegacionesFilter();
 
 
 
 
 
-            var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+			var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
                 var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
                 var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
                 var catClasificacionAccidentes = _catDictionary.GetCatalog("CatClasificacionAccidentes", "0");
@@ -89,7 +89,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatMotivosInfraccion = new SelectList(catMotivosInfraccion.CatalogList, "Id", "Text");
                 ViewBag.CatTipoServicio = new SelectList(catTipoServicio.CatalogList, "Id", "Text");
                 ViewBag.CatTiposVehiculo = new SelectList(catTiposVehiculo.CatalogList, "Id", "Text");
-                ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+                ViewBag.CatDelegaciones = new SelectList(catDelegaciones, "value", "text");
                 ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
                 ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
                 ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");

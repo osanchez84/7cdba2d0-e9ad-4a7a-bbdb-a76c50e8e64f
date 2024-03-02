@@ -8,7 +8,7 @@
 					<i class="icon-involucrado h1 colorPrimary"></i>
 				</div>
 				<div class="col-md-9 my-3">
-					<h2 class="m-0 h3"><b>Datos de persona Involucradaxxxxxxxxxxxxxxx</b></h2>
+					<h2 class="m-0 h3"><b>Datos de persona Involucrada</b></h2>
 				</div>
 				<div class="col-auto">
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -246,21 +246,10 @@
 						<div class="controlForm my-3">
 							<label>Asiento que ocupaba:</label>
 							<span>
-
-								@(Html.Kendo().DropDownListFor(t => t.IdAsiento)
-									.DataTextField("Text")
-									.DataValueField("Value")
-									.OptionLabel("Selecciona una opción")
-									.Filter(FilterType.Contains)
-									.DataSource(source =>
-									{
-										source.Read(read =>
-										{
-											read.Action("Asiento_Drop", "CapturaAccidentes");
-										});
-									})
-									.HtmlAttributes(new { style = "width:100%;" })
-									)
+							@(Html.Kendo().NumericTextBoxFor(t => t.IdAsiento)
+								.HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number" })
+								.Spinners(true)
+								)
 							</span>
 						</div>
 					</div>

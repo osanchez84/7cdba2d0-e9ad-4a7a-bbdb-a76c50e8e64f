@@ -240,22 +240,11 @@
                         <div class="controlForm my-3">
                              <label>Asiento que ocupaba:</label>
                             <span>
-
-                            @(Html.Kendo().DropDownListFor(t => t.IdAsiento)
-                                .DataTextField("Text")
-                                .DataValueField("Value")
-                                .OptionLabel("Selecciona una opción")
-                                    .Filter(FilterType.Contains)
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("Asiento_Drop", "CapturaAccidentes");
-                                    });
-                                })
-                                .HtmlAttributes(new { style = "width:100%;" })
-                                )
-                                </span>
+                                @(Html.Kendo().TextBoxFor(t => t.IdAsiento)
+                                    .HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number" })
+                                    //.Spinners(true)
+                                    )
+                            </span>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">

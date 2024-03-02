@@ -1763,7 +1763,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         idDelegacion = @IdDelegacion,
                                         idPension = @IdPension,
                                         idFormaTraslado = @IdFormaTraslado,
-                                        fechaActualizacion = @fechaActualizacion,
+                                        fechaActualizacion = getdate(),
                                         actualizadoPor = @actualizadoPor,
                                         estatus = @estatus
                                     WHERE idVehiculo = @IdVehiculo AND idAccidente = @IdAccidente;";
@@ -1782,7 +1782,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdFormaTraslado", SqlDbType.Int)).Value = (object)model.IdFormaTraslado ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdVehiculo", SqlDbType.Int)).Value = (object)IdVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdAccidente", SqlDbType.Int)).Value = (object)idAccidente ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
 
@@ -2283,7 +2282,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.Cinturon = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
 							involucrado.NumeroEconomico = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
 							involucrado.NoAccidente = reader["NoAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["NoAccidente"].ToString());
-                            involucrado.IdTipoInvolucrado = reader["idCinturon"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoInvolucrado"].ToString()); 
+                            involucrado.IdTipoInvolucrado = reader["idTipoInvolucrado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoInvolucrado"].ToString()); 
 
                             involucrado.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
 

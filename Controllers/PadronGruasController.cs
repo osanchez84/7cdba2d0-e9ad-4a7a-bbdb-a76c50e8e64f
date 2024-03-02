@@ -83,6 +83,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
          
                 var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+
+
+
+
             var catClasificacionGruas = _catDictionary.GetCatalog("CatClasificacionGruas", "0");
             var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
             var catSituacionGruas = _catDictionary.GetCatalog("CatSituacionGruas", "0");

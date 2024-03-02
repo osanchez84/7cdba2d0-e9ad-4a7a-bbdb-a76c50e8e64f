@@ -23,8 +23,23 @@
                 .Title("Capacidad")
                 .Width(90)
                 .ClientTemplate("#= kendo.toString(Math.round(capacidad * 100) / 100, '0.00') #");
+                //columns.Command(c => c.Custom("Editar").Click("editar")).Width(100).Title("Editar");
+                columns.Template(
+                "<button class='w-100 btn colorPrimary " +
+                "<h6 class='m-0' onclick='editar(event)'>" +
+                "<i class='h5 icon-edit me-2'></i><b>Editar</b>" +
+                "</h6></button>"
+                ).Width(80).Title("Editar");
 
-                //columns.Command(c => c.Custom("Editar").Click("editar")).Width(100);
+                columns.Template(
+                "<button class='w-100 btn colorDanger" +
+                "<h6 class='m-0' onclick='activar(event)'>" +
+                "<i class='h5'></i><b>Desactivar</b>" +
+                "</h6></button>"
+                ).Width(80).Title("Edo");
+
+               // columns.Command(c => c.Custom("Activo").Click("activar")).Width(100).Title("Estado");
+
             }).HtmlAttributes(new { style = "height:350" })
             .Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
             .Sortable()
@@ -77,16 +92,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
-                    <div class="col-auto pe-0">
-                        <div class="row align-items-center justify-content-center justify-content-md-start">
-                            <div class="col-auto pe-0">
-                                <i class="icon-editGrua h1 colorPrimary"></i>
-                            </div>
-                            <div class="col-auto my-3">
-                                <h2 class="m-0 h3"><b>Editar grúa</b></h2>
-                            </div>
-                        </div>
-                    </div>
+                   
                 </div>
                 @*<h4 class="modal-title">Agregar grúa</h4>*@
                 <div class="col-auto">
@@ -125,9 +131,9 @@
         });
     });
     function editar(e) {
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        console.log(dataItem);
-
+       var grid = $("#Grid").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
         var idGrua = dataItem.idGrua;
         console.log(idGrua);
         showLoading();
@@ -139,8 +145,33 @@
                 if (result.error) {
                     sitteg_warning("El usuario no tienen los permisos para esta acción");
                 } else {
-                $('#ModalBodyEdit').html(result);
-                $('#editGrua').modal('show');
+                    $('#ModalBodyCreate').html(result);
+                $('#addGrua').modal('show');
+                }
+                hideLoading();
+            }, error: function () {
+                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                hideLoading();
+            }
+        })
+    }
+
+    function activar(e) {
+       var grid = $("#Grid").data("kendoGrid");
+        var row = $(event.target).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var idGrua = dataItem.idGrua;
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ajax_activar")', 
+            type: 'POST',
+            data: { idGrua: idGrua }, 
+            success: function (result) {
+                if (result.error) {
+                    sitteg_warning("El usuario no tienen los permisos para esta acción");
+                } else {
+                    $('#ModalBodyCreate').html(result);
+                    $('#addGrua').modal('show');
                 }
                 hideLoading();
             }, error: function () {

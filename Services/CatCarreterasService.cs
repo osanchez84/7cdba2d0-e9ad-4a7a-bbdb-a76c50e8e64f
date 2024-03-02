@@ -177,7 +177,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus 
                                                         inner join catDelegacionesOficinasTransporte b on c.idOficinaTransporte = b.idOficinaTransporte
                                                         INNER JOIN catDelegaciones d ON b.idOficinaTransporte = d.idDelegacion
-                                                        WHERE c.estatus = 1
+                                                        WHERE (c.estatus = 1 aND c.idOficinaTransporte= @idOficina) OR (c.idOficinaTransporte = 1) 
 
                                                         ", connection);
                     command.CommandType = CommandType.Text;

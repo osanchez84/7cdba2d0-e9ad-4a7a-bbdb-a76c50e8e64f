@@ -154,7 +154,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     string condiciones = "";
                
-                    condiciones += model.IdGrua.Equals(null) || model.IdGrua == 0 ? "" : " AND ga.IdGrua = @IdGrua ";
+                    condiciones += model.IdGrua.Equals(null) || model.IdGrua == 0 ? "" : " AND g.idConcesionario = @IdGrua ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idPension = @IdPension ";
                     condiciones += model.IdEvento.Equals(null) || model.IdEvento == 0 ? "" : " AND sol.idEvento = @IdEvento ";
 

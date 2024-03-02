@@ -25,7 +25,7 @@
                             <div class="form-group col-md-6">
                                 <div class="controlForm">
                                     @(Html.Kendo().TextBoxFor(t => t.Permiso)
-                                        .Label(l => l.Content("Permiso <b>(obligatorio)</b>:"))
+                                        .Label(l => l.Content("Permiso:"))
                                         .Placeholder("Ingresa Permiso")
                                         .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                         )
@@ -154,7 +154,6 @@
         //}
 
         controlsValidate.push({ 'controlName': 'Pension' });
-        controlsValidate.push({ 'controlName': 'Permiso' });
         controlsValidate.push({ 'controlName': 'Direccion' });
         controlsValidate.push({ 'controlName': 'Telefono' });
         controlsValidate.push({ 'controlName': 'Correo' });

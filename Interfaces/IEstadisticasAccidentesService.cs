@@ -12,7 +12,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 
         public List<CatalogModel> GetMunicipiosFilter();
         List<CatalogModel> GetCarreterasFilter();
-        List<CatalogModel> GetTramosFilter();
+        List<CatalogModel> GetDelegacionesFilter();
+
+		List<CatalogModel> GetTramosFilter();
 
         public IEnumerable<ListadoAccidentesPorVehiculoModel> AccidentesPorVehiculo(BusquedaAccidentesModel model);
 

@@ -133,6 +133,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<InfraccionesModel> listInfracciones = new List<InfraccionesModel>();
             //_infraccionesService.GetAllInfracciones(idOficina);
             searchModel.ListInfracciones = listInfracciones;
+
+
+
             return View(searchModel);
         }
 
@@ -221,13 +224,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Municipios_Por_Delegacion_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            var tt = _catMunicipiosService.GetMunicipiosPorDelegacion(idOficina);
+            var tt = _catMunicipiosService.GetMunicipiosPorDelegacion2(idOficina);
 
 			tt.Add(new CatMunicipiosModel() { IdMunicipio = 1, Municipio = "No aplica" });
 			tt.Add(new CatMunicipiosModel() { IdMunicipio = 2, Municipio = "No especificado" });
 
 
-			var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion(idOficina), "IdMunicipio", "Municipio");
+			var result = new SelectList(tt, "IdMunicipio", "Municipio");
 
 			
 
@@ -297,7 +300,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
+            ViewBag.CatCarreteras = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion2(idOficina), "IdCarretera", "Carretera");
             ViewBag.EditarVehiculo = false;
             ViewBag.Regreso= 1;
                        
@@ -537,8 +540,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (model.idGarantia == null || model.idGarantia == 0)
             {
                 model.Garantia.numPlaca = model.Vehiculo.placas;
-                model.Garantia.numLicencia = model.PersonaInfraccion2.numeroLicencia;
-                model.Garantia.idTipoLicencia = model.PersonaInfraccion2.idTipoLicencia;
+                model.Garantia.numLicencia = model.PersonaInfraccion2?.numeroLicencia?? model.Garantia.numLicencia;
+                model.Garantia.idTipoLicencia = model.PersonaInfraccion2?.idTipoLicencia?? model.Garantia.idTipoLicencia;
                 idGarantia = _infraccionesService.CrearGarantiaInfraccion(model.Garantia, idInf);
                 model.idGarantia = idGarantia;
             }
@@ -1017,6 +1020,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
             models.placas = "XXXXOXO";
             models.serie = "XXXXOXOhf5321";
+            models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;
         }
@@ -1546,7 +1550,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public ActionResult ModalAgregarConductor()
         {
-            PersonasModel model = new PersonasModel();
+            BusquedaPersonaModel model = new BusquedaPersonaModel();
             return View("_ModalBusquedaPersonas", model);
         }
 
@@ -1746,24 +1750,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
-            if (IdVehiculo != 0)
+            if (IdVehiculo > 0)
             {
 
                 var Placa = model.placas;
                 var Serie = model.serie;
                 var folio = "";
                 var resultados = _vehiculosService.GetVehiculoById(IdVehiculo);
-
-                return Json(new { data = resultados });
+                return Json(new { success = true, data = resultados });
+            }
+            else if (IdVehiculo == -1)
+            {
+                return Json(new { success = false, duplicate = true });
             }
             else
             {
-                return null;
+                return Json(new { success = false, error = "Error al guardar el vehículo." });
             }
         }
 
-
-        [HttpPost]
+            [HttpPost]
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
         {
             int IdVehiculo = 0;

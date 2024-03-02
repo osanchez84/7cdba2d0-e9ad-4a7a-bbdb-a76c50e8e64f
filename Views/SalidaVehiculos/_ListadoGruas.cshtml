@@ -7,13 +7,14 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.idDeposito).Hidden();
+                columns.Bound(c => c.idGrua).Hidden();
                 columns.Bound(c => c.abanderamiento).Hidden();
                 columns.Bound(c => c.arrastre).Hidden();
                 columns.Bound(c => c.salvamento).Hidden();
                 columns.Bound(c => c.grua).Title("Grúa").Width(50);
                 columns.Bound(c => c.tipoGrua).Title("Tipo de grúa").Width(90);
                 columns.Bound(c => c.costoTotalPorGrua).Title("Costo total").Width(90);
-                columns.Template("<button data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarCosto(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(80);
+                columns.Template("<button type='button' data-bs-toggle='modal' class='w-100 btn'><h6 class='m-0 colorPrimary' onclick='editarCosto(event)'><i class='h5 icon-edit me-2'></i><b>Editar</b></h6></button>").Width(80);
 
 
             }).HtmlAttributes(new { style = "height:550px" })
@@ -56,12 +57,13 @@
         var grid = $("#GruasAsignadasGrid").data("kendoGrid");
         var row = $(event.target).closest("tr");
         var dataItem = grid.dataItem(row);
-        var idDeposito = dataItem.idDeposito;     
-        showLoading();
+        var idDeposito = dataItem.idDeposito;
+            var idGrua = dataItem.idGrua;
+           showLoading();
         $.ajax({
             url: '@Url.Action("ModalCostosGrua", "SalidaVehiculos")',
             type: 'POST',
-            data: { idDeposito: idDeposito },
+                data: { idDeposito: idDeposito, idGrua : idGrua },
             success: function (result) {
                 $('#ModalBodyCostosGrua').html(result);
                 $('#editarCostosModal').modal('show');

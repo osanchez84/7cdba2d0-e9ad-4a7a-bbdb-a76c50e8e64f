@@ -235,8 +235,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     connection.Open();
                     SqlCommand insertCommand = new SqlCommand("INSERT INTO depositos " +
-                                                            "(idTramo,idPension,km,liberado,idDelegacion,estatus,esExterno,idMarca,idSubmarca,idVehiculo,idColor,placa,serie,fechaIngreso,idPropietario,idEnviaVehiculo,idMotivoIngreso,folio,fechaActualizacion,estatusSolicitud) " +
-                                                            "VALUES (@idTramo,@idPension,@km,@liberado,@idDelegacion,@estatus,@esExterno,@idMarca,@idSubmarca,@idVehiculo,@idColor,@placa,@serie,@fechaIngreso,@idPropietario,@idEnviaVehiculo,@idMotivoIngreso,@folio,@fechaActualizacion,@estatusSolicitud);" +
+                                                            "(idTramo,idPension,km,liberado,idDelegacion,estatus,esExterno,idMarca,idSubmarca,idVehiculo,idColor,placa,serie,fechaIngreso,idPropietario,idEnviaVehiculo,idMotivoIngreso,folio,fechaActualizacion,estatusSolicitud,idMunicipioEnvia) " +
+                                                            "VALUES (@idTramo,@idPension,@km,@liberado,@idDelegacion,@estatus,@esExterno,@idMarca,@idSubmarca,@idVehiculo,@idColor,@placa,@serie,@fechaIngreso,@idPropietario,@idEnviaVehiculo,@idMotivoIngreso,@folio,@fechaActualizacion,@estatusSolicitud,@idMunicipioEnvia);" +
                                                             "SELECT SCOPE_IDENTITY()", connection);
                     insertCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
                     insertCommand.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
@@ -258,6 +258,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     insertCommand.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = folio;
                     insertCommand.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now;
                     insertCommand.Parameters.Add(new SqlParameter("@estatusSolicitud", SqlDbType.Int)).Value = 5;
+                    insertCommand.Parameters.Add(new SqlParameter("@idMunicipioEnvia", SqlDbType.Int)).Value = model.IdMunicipoEnvia;
+
 
                     resultado = Convert.ToInt32(insertCommand.ExecuteScalar());
                 }

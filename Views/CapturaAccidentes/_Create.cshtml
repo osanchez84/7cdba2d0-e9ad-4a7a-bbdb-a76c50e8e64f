@@ -322,7 +322,7 @@ function mostrarMensajeRobado() {
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly" })
+                        .HtmlAttributes(new { style = "width:100%;" })
                                             .Filter(FilterType.Contains)
 
                         .DataSource(source =>
@@ -377,7 +377,7 @@ function mostrarMensajeRobado() {
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlidSubmarcaDisabled" })
+                        .HtmlAttributes(new { style = "width:100%;",id = "ddlidSubmarcaDisabled" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -783,23 +783,23 @@ function mostrarMensajeRobado() {
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
-@*
-                    <div id="personasFisicasAcc">
-                    </div>*@
 
-
-
-                    
-
-                    <div id="ListPersonasFisicas">
-                        @*<partial name="_PersonasFisicas"  />*@
-
-                    </div>
+                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
 
                 </div>
-                <div class="row">
+               <div class="row">
                     <div class="col-12">
                         <div class="tabCustomEnd">
+                            <div class="row ">
+                                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                                            <div class="controlButton my-3" onclick="submitCreateVehiculo()">
+                                                @(Html.Kendo().Button()
+                                                    .Name("buscarFisica")
+                                                    .HtmlAttributes(new { @class = "btnPrimary" })
+                                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -1173,7 +1173,7 @@ function mostrarMensajeRobado() {
 
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm mb-3">
-                            <label>Fecha de nacimiento <b>(obligatorio)</b></label>
+                            <label>Fecha de nacimiento:</label>
                             <span>
                                 @(Html.Kendo().DatePickerFor(t => t.Persona.fechaNacimiento)
                                     .Format("dd/MM/yyyy")
@@ -1387,7 +1387,7 @@ function mostrarMensajeRobado() {
     </div>
 </div>
 
-<div class="modal fade" id="confirmacionModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmacionModalA" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1398,8 +1398,8 @@ function mostrarMensajeRobado() {
                 ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
-                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+                <button type="button" class="btn btn-primary"  id="confirmarCerrar" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-secondary" id="cancelarConfirmacion" onclick="cancelarConfirmacionA()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1652,74 +1652,76 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     submitCreateVehiculo();
     }
 
+    function submitCreateVehiculo() {
 
-  function submitCreateVehiculo() {
-      
-    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
+        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
 
-    var controlsValidate = [];
-    var isValid = true;
+        var controlsValidate = [];
+        var isValid = true;
 
-    var idEntidad = $("#idEntidad").val();
-    var idMarca = $("#ddlMarcas").val();
-    var idSubmarca = $("#idSubmarca").val();
-    var idTipoVehiculo = $("idTipoVehiculo").val();
-    var idPersona = $("#ddlIdPersona").val();
-     if ($("#ddlIdPersona").val() == '') {
+        var idEntidad = $("#idEntidad").val();
+        var idMarca = $("#ddlMarcas").val();
+        var idSubmarca = $("#idSubmarca").val();
+        var idTipoVehiculo = $("#idTipoVehiculo").val(); // Corregido aquí
+        var idPersona = $("#ddlIdPersona").val();
+        if ($("#ddlIdPersona").val() == '') {
             sitteg_info('Debe seleccionar una Persona');
             return;
         }
-         var carga = $("#cargaSwitch").prop("checked");
+        var carga = $("#cargaSwitch").prop("checked");
         $("#idCarga").val(carga ? 1 : 0);
-         var idTipoSer = $('#hdnIdCatTipoServicio').val();
+        var idTipoSer = $('#hdnIdCatTipoServicio').val(); // Revisar la duplicación de esta variable
 
-    controlsValidate.push({ 'controlName': 'idEntidad' });
-    controlsValidate.push({ 'controlName': 'ddlMarcas' });
-    controlsValidate.push({ 'controlName': 'idSubmarca' });
-    controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
+        controlsValidate.push({ 'controlName': 'idEntidad' });
+        controlsValidate.push({ 'controlName': 'ddlMarcas' });
+        controlsValidate.push({ 'controlName': 'idSubmarca' });
+        controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
 
-    // INPUTS
-    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }    
+        // INPUTS
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-    if (!isValid) {
-	    sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-        return;
-    }   
-       // if (validator.validate()) {
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+        // if (validator.validate()) {
 
-            var formData = $("#frmCreateVehiculo").serialize();
-            var idVeh = $('#hdnIdVehiculo').val();
-            console.log("Id vehiculo: ", idVeh)
-            var idTipoSer = $('#hdnIdCatTipoServicio').val();
-               showLoading();
-            $.ajax({
-                url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
-                type: 'POST',
-                data: formData,
-             success: function (result) {
-                        console.log("Resultado:", result);
-                        sitteg_success('Elemento guardado correctamente');
-                        $('#VehiculoServiceModal').modal('hide');
-                        var grid = $("#gridPrevioVehiculo").data("kendoGrid");
-                        if (result && result.data) {
-                            var dataArray = Array.isArray(result.data) ? result.data : [result.data];
-
-                            grid.dataSource.data(dataArray);
-                        } else {
-                            console.error("La respuesta no tiene la estructura esperada:", result);
-                        }
-                        hideLoading();
-                    },
-
-                error: function (xhr, status) {
-                    var errmsg = xhr.responseText;
-                    console.log(errmsg)
-                    sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
-                    hideLoading();
+        var formData = $("#frmCreateVehiculo").serialize();
+        var idVeh = $('#hdnIdVehiculo').val();
+        console.log("Id vehiculo: ", idVeh);
+        var idTipoSer = $('#hdnIdCatTipoServicio').val(); // Revisar la duplicación de esta variable
+        showLoading();
+        $.ajax({
+             url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
+            type: 'POST',
+            data: formData,
+            success: function (result) {
+                if (result.success) {
+                    sitteg_success('Elemento guardado correctamente');
+                    $('#VehiculoServiceModal').modal('hide');
+                    var grid = $("#gridPrevioVehiculo").data("kendoGrid");
+                    if (result.data) {
+                        var dataArray = Array.isArray(result.data) ? result.data : [result.data];
+                        grid.dataSource.data(dataArray);
+                    }
+                } else {
+                    if (result.duplicate) {
+                        sitteg_warning('Placa o serie ya registrado en RIAG');
+                    } else {
+                        sitteg_warning('Ha ocurrido un error al guardar el elemento. Comuníquese con su mesa de ayuda.');
+                    }
                 }
-            });
-        }       
+                hideLoading();
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg);
+                sitteg_warning('Lo sentimos, ha ocurrido un error. Comuníquese con su mesa de ayuda');
+                hideLoading();
+            }
+        });
+    }
+
     
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();
@@ -1729,12 +1731,16 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
     });
     
     function cerrarModalV() {
-        $('#confirmacionModal').modal('show');
+        $('#confirmacionModalA').modal('show');
 
         $('#confirmarCerrar').on('click', function () {
-            $('#confirmacionModal').modal('hide');
+            $('#confirmacionModalA').modal('hide');
             window.close(); 
         });
+    }
+      function cancelarConfirmacionA() {
+        $('#confirmacionModalA').modal('hide');
+
     }
 
     $(document).ready(function () {

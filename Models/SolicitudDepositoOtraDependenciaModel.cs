@@ -28,6 +28,8 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public int IdDependenciaEnvia { get; set; }
         public int IdTipoMotivoIngreso { get; set; }
+         public int IdMunicipoEnvia { get; set; }
+
         public int IdMunicipioUbicacion { get; set; }
         public int IdCarretera { get; set; }
         public int IdTramo { get; set; }

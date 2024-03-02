@@ -272,7 +272,7 @@
                            
                                 <div class="form-group col-md-2 controlForm">
                                     <label class="text-muted">Hora:</label>
-                                    @(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1).Max(DateTime.Now)
+                                    @(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
                                         .Label(l => l.Content("Hora:"))
                                         .Format("HH:mm")
                                          .Enable(!ViewBag.EsSoloLectura)
@@ -789,7 +789,6 @@
                                                     )
                                                     }
                                            
-                                                   </div> 
                                             </div>
                                         </div>
                                     </div>
@@ -1128,7 +1127,7 @@
                 }
                 hideLoading();
             }, error: function () {
-                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+               // sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
 
@@ -1145,7 +1144,7 @@
                 $("#listadoPersonas").html(data);
                 hideLoading();
             }, error: function () {
-                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                //sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
 

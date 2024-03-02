@@ -53,7 +53,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     command.CommandType = System.Data.CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.NVarChar)).Value = model.FolioSolicitud;
+                    command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.NVarChar)).Value = model.FolioSolicitud??"";
                     command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value = model.fecha;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -647,14 +647,16 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string query = "UPDATE depositos SET " +
-                                    "observaciones=@observaciones " +
+                                    "observaciones=@observaciones, " +
+                                    "estatusSolicitud = 4 " +
                                     "Where depositos.idDeposito = @idDeposito";
 
 
                     SqlCommand command = new SqlCommand(query, connection);
 
 
-                    command.Parameters.AddWithValue("@observaciones", formData.observaciones);
+                    command.Parameters.AddWithValue("@observaciones", formData.observaciones??"");
+
                     command.Parameters.AddWithValue("@idDeposito", iDep);
 
 

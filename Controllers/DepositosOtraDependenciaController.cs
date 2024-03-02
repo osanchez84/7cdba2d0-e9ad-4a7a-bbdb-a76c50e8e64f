@@ -4,7 +4,7 @@
  * Fecha de creación: Sunday, February 18th 2024 9:40:13 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Fri Feb 23 2024
+ * Última modificación: Tue Feb 27 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -89,7 +89,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Carreteras_Drop([FromServices] ICatCarreterasService catCarreterasService)
         {
-            var result = new SelectList(catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(catCarreterasService.GetCarreterasPorDelegacion2(idOficina), "IdCarretera", "Carretera");
             return Json(result);
         }
 

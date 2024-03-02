@@ -9,6 +9,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public List<BusquedaAccidentesModel> ObtenerAccidentes();
         //public List<ListadoAccidentesPorAccidenteModel> AccidentesPorAccidente();
         public IEnumerable<ListadoAccidentesPorAccidenteModel> AccidentesPorAccidente(BusquedaAccidentesModel model);
+
+        public List<CatalogModel> GetMunicipiosFilter();
+        List<CatalogModel> GetCarreterasFilter();
+        List<CatalogModel> GetTramosFilter();
+
         public IEnumerable<ListadoAccidentesPorVehiculoModel> AccidentesPorVehiculo(BusquedaAccidentesModel model);
 
         //public List<ListadoAccidentesPorVehiculoModel> AccidentesPorVehiculo();

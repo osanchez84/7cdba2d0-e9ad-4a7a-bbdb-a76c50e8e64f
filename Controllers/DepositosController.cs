@@ -69,7 +69,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             else
             {
-                return View("Depositos");
+                SolicitudDepositoModel modelo = new SolicitudDepositoModel
+                {
+                    idEntidad = 11,
+                    entidad = "Guanajuato",
+                };
+                return View(modelo);
             }       
         }
 
@@ -80,8 +85,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             HttpContext.Session.Remove("LastInfCapturada");
 
-
-            var complemntarRegistro = _catDepositosService.ImportarInfraccion(infraccionID);
+           int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var complemntarRegistro = _catDepositosService.ImportarInfraccion(infraccionID, idDependencia);
 
             if(complemntarRegistro.idInfraccion!=null && complemntarRegistro.idInfraccion!=0 )
                 return View("Depositos", complemntarRegistro);
@@ -140,6 +145,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Municipios_Drop(int entidadDDlValue)
         {
 
+            if (entidadDDlValue == 0)
+            {
+                entidadDDlValue = 11;
+            }
 
             var tt = _catMunicipiosService.GetMunicipiosPorEntidad(entidadDDlValue);
 
@@ -217,7 +226,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
                 else
             {
-                var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
+                var oficina = User.FindFirst(CustomClaims.Oficina).Value;
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 string  abreviaturaMunicipio = User.FindFirst(CustomClaims.AbreviaturaMunicipio).Value;
                 int dependencia = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia"));
@@ -227,7 +236,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 }
 
-                var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina,nombreOficina,abreviaturaMunicipio,DateTime.Now.Year,dependencia);
+                var resultadoBusqueda = _catDepositosService.GuardarSolicitud(model, idOficina,oficina,abreviaturaMunicipio,DateTime.Now.Year,dependencia);
 
                     //BITACORA
                     //var ip = HttpContext.Connection.RemoteIpAddress.ToString();
@@ -252,8 +261,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Ok();
         }
         public ActionResult ajax_ImportarInfoInfraccion(string folioBusquedaInfraccion)
-        {
-            var complemntarRegistro = _catDepositosService.ImportarInfraccion(folioBusquedaInfraccion);
+		{            
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			var complemntarRegistro = _catDepositosService.ImportarInfraccion(folioBusquedaInfraccion, idDependencia);
             return Json(complemntarRegistro);
         }
         

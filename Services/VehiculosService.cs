@@ -637,57 +637,70 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CreateVehiculo(VehiculoModel model)
         {
             int result = 0;
-            string strQuery = @"INSERT INTO vehiculos(
-                                 placas
-                                ,serie
-                                ,tarjeta
-                                ,vigenciaTarjeta
-                                ,idMarcaVehiculo
-                                ,idSubmarca
-                                ,idTipoVehiculo
-                                ,modelo
-                                ,idColor
-                                ,idEntidad
-                                ,idCatTipoServicio
-                                ,propietario
-                                ,numeroEconomico
-                                ,paisManufactura
-                                ,idPersona
-                                ,fechaActualizacion
-                                ,actualizadoPor
-                                ,estatus
-                                ,motor
-                                ,capacidad
-                                ,poliza
-                                ,carga
-                                ,otros
-                                ,idSubtipoServicio
-                                ) VALUES (
-                                @placas
-                                ,@serie
-                                ,@tarjeta
-                                ,@vigenciaTarjeta
-                                ,@idMarcaVehiculo
-                                ,@idSubmarca
-                                ,@idTipoVehiculo
-                                ,@modelo
-                                ,@idColor
-                                ,@idEntidad
-                                ,@idCatTipoServicio
-                                ,@propietario
-                                ,@numeroEconomico
-                                ,@paisManufactura
-                                ,@idPersona
-                                ,@fechaActualizacion
-                                ,@actualizadoPor
-                                ,@estatus
-                                ,@motor
-                                ,@capacidad
-                                ,@poliza
-                                ,@carga
-                                ,@otros
-                                ,@idSubtipoServicio
-                                );select CAST (SCOPE_IDENTITY() As int)";
+            string strQuery = @"
+        IF NOT EXISTS (
+            SELECT 1 FROM vehiculos 
+            WHERE placas = @placas OR serie = @serie
+        )
+        BEGIN
+            INSERT INTO vehiculos (
+                placas,
+                serie,
+                tarjeta,
+                vigenciaTarjeta,
+                idMarcaVehiculo,
+                idSubmarca,
+                idTipoVehiculo,
+                modelo,
+                idColor,
+                idEntidad,
+                idCatTipoServicio,
+                propietario,
+                numeroEconomico,
+                paisManufactura,
+                idPersona,
+                fechaActualizacion,
+                actualizadoPor,
+                estatus,
+                motor,
+                capacidad,
+                poliza,
+                carga,
+                otros,
+                idSubtipoServicio
+            ) 
+            VALUES (
+                @placas,
+                @serie,
+                @tarjeta,
+                @vigenciaTarjeta,
+                @idMarcaVehiculo,
+                @idSubmarca,
+                @idTipoVehiculo,
+                @modelo,
+                @idColor,
+                @idEntidad,
+                @idCatTipoServicio,
+                @propietario,
+                @numeroEconomico,
+                @paisManufactura,
+                @idPersona,
+                @fechaActualizacion,
+                @actualizadoPor,
+                @estatus,
+                @motor,
+                @capacidad,
+                @poliza,
+                @carga,
+                @otros,
+                @idSubtipoServicio
+            );
+            SELECT CAST (SCOPE_IDENTITY() AS int)
+        END
+        ELSE
+        BEGIN
+            SELECT -1
+        END";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -1319,12 +1332,12 @@ namespace GuanajuatoAdminUsuarios.Services
             try
             {
                 var request = JsonConvert.SerializeObject(model);
-                Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
+               // Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
                 var vehiculosModel = new VehiculoModel();
 
                 //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
                 RepuveConsgralRequestModel repuveGralModel = new(model.PlacasBusqueda, model.SerieBusqueda);
-                Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
+               // Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
                 RepuveRoboModel repuveRoboModel = new();
 
                 try
@@ -1342,7 +1355,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 var allowSistem = _appSettings.AllowWebServicesRepuve;
 
-                Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVehiculoToAnexo");
+                //Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVehiculoToAnexo");
                 vehiculosModel = GetVehiculoToAnexo(model);
                 vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
                 vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
@@ -1361,11 +1374,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
                     cotejarDatosRequestModel.tp_consulta = "3";
                     var endPointName = "CotejarDatosEndPoint";
-                    Logger.Debug("Infracciones - ajax_BuscarVehiculo - CotejarDatos");
+                   // Logger.Debug("Infracciones - ajax_BuscarVehiculo - CotejarDatos");
                     var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
                     if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                     {
-                        Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
+                       // Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
                         vehiculosModel = GetVEiculoModelFromFinanzas(result);
 
                         vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
@@ -1383,7 +1396,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 if (allowSistem)
                 {
-                    Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
+                    //Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
                     RepuveConsgralResponseModel repuveConsGralResponse = new();
                     try
                     {
@@ -1393,7 +1406,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         Logger.Error("Ocurrió un error al consultar vehículo en REPUVE:" + ex);
                     }
-                    Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
+                    //Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
                     var idEntidad = !string.IsNullOrEmpty(repuveConsGralResponse.entidad_expide)
                           ? ObtenerIdEntidadRepuve(repuveConsGralResponse.entidad_expide)
                           : 0;

@@ -1,6 +1,6 @@
 @inject IHttpContextAccessor Accessor
 @{
-    var nombreOficina = User.FindFirst(CustomClaims.NombreOficina);
+    var nombreOficina = User.FindFirst(CustomClaims.Oficina);
 
     var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
     var nombrePension = User.FindFirst(CustomClaims.Pension);
@@ -660,8 +660,9 @@
 
             },
             error: function (error) {
-                if (error.status == 401)
+                if (error.status === 401)
                     window.location.href = '/';
+                    
             }
         });
 

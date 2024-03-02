@@ -4,6 +4,7 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+
 }
 
 <script>
@@ -306,7 +307,7 @@
             </div>
         </div>
         <div id="listadoInfracciones">
-            <partial name="_ListadoInfracciones" model="Model.ListInfracciones" />
+            <partial name="_ListadoInfracciones" model="Model.ListInfracciones"    />
         </div>
 
 

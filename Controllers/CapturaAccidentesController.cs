@@ -265,15 +265,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Carreteras_Drop()
         {
-            var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_catCarreterasService.GetCarreterasPorDelegacion(idOficina), "IdCarretera", "Carretera");
             return Json(result);
         }
 
         public JsonResult Tramos_Drop(int carreteraDDValue)
         {
-            var result = new SelectList(_catTramosService.ObtenerTamosPorCarretera(carreteraDDValue), "IdTramo", "Tramo");
+            var tramos = _catTramosService.ObtenerTamosPorCarretera(carreteraDDValue);
+
+            var result = new List<SelectListItem>();
+
+            result.AddRange(new SelectList(tramos, "IdTramo", "Tramo"));
+
+            result.Add(new SelectListItem { Value = "1", Text = "No aplica" });
+            result.Add(new SelectListItem { Value = "2", Text = "No especificado" });
+
             return Json(result);
         }
+
 
         public JsonResult TramosTodos_Drop(int carreteraDDValue)
         {
@@ -306,11 +317,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
             {
 
-                var nombreOficina = User.FindFirst(CustomClaims.NombreOficina).Value;
+                var oficina = User.FindFirst(CustomClaims.Oficina).Value;
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina, nombreOficina);
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina, oficina);
                 HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId);
                 return Json(new { success = true });
 
@@ -2069,24 +2080,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
-            if (IdVehiculo != 0)
+            if (IdVehiculo > 0)
             {
 
                 var Placa = model.placas;
                 var Serie = model.serie;
                 var folio = "";
                 var resultados = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
-
-                return Json(new { data = resultados });
+                return Json(new { success = true, data = resultados });
+            }
+            else if (IdVehiculo == -1)
+            {
+                return Json(new { success = false, duplicate = true });
             }
             else
             {
-                return null;
+                return Json(new { success = false, error = "Error al guardar el vehículo." });
             }
         }
 
 
-        [HttpPost]
+                [HttpPost]
         public ActionResult ajax_CrearVehiculo(VehiculoModel model)
         {
             int IdVehiculo = 0;
@@ -2341,7 +2355,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //    perModel = model;
             //else
             //   model = perModel;
-            PersonasModel  model= new PersonasModel();
+            BusquedaPersonaModel  model= new BusquedaPersonaModel();
             PersonaModel personaM = new PersonaModel();
             personaM.CURPBusqueda =capturaModel.CURPBusqueda;
             personaM.RFCBusqueda = capturaModel.RFCBusqueda;
@@ -2353,7 +2367,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.PersonaModel = personaM;
 
            var findAll = false;
-            var personas = new PersonasModel();
+            var personas = new BusquedaPersonaModel();
             Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
             if (model != null)

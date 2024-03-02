@@ -32,8 +32,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
 
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinas();
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
 
             return View("Index", ListDelegacionesOficinasTModel);
         }
@@ -44,7 +45,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinas();
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
             return View("Index", ListDelegacionesOficinasTModel);
         }
 
@@ -125,7 +127,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult GetDelegacionOfs([DataSourceRequest] DataSourceRequest request)
         {
-            var ListDelegacionesOficinasTModel = GetDelegacionesOficinas();
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
 
             return Json(ListDelegacionesOficinasTModel.ToDataSourceResult(request));
         }
@@ -139,7 +143,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Delegaciones_Drop()
         {
-            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia),"IdDelegacion", "Delegacion");
             return Json(result);
         }
 

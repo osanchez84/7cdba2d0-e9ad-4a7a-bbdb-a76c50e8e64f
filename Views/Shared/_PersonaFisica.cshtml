@@ -370,4 +370,16 @@
             }
         });
     }
+
+    function cerrarModalFisica(){
+        $('#confirmacionModal').modal('show');
+          // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
+          $('#confirmarCerrar').on('click', function () {
+         $('#confirmacionModal').modal('hide');
+                 // Cierra la ventana
+            $('#addFisico').modal('hide');
+        });
+       
+ 
+}
 </script>

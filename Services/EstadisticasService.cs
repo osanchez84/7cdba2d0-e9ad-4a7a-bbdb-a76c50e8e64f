@@ -96,6 +96,7 @@ namespace GuanajuatoAdminUsuarios.Services
         public List<EstadisticaInfraccionMotivosModel> GetAllInfraccionesEstadisticas(IncidenciasBusquedaModel modelBusqueda, int idDependencia)
         {
             string condiciones = "";
+            //condiciones += modelBusqueda.idTipoMotivo.Equals(null) ? "" : " AND inf.transito = @transito ";
 
             condiciones += modelBusqueda.idDelegacion.Equals(null) || modelBusqueda.idDelegacion == 0 ? "" : " AND inf.idDelegacion = @idDelegacion ";
             condiciones += modelBusqueda.idOficial.Equals(null) || modelBusqueda.idOficial == 0 ? "" : " AND inf.idOficial =@idOficial ";
@@ -139,7 +140,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN vehiculos veh
                                ON inf.idVehiculo = veh.idVehiculo
                                 WHERE m.estatus = 1
-                               AND inf.estatus = 1 AND inf.transito = @idDependencia" + condiciones + condicionFecha +
+                               AND inf.estatus = 1 AND inf.transito = @transito" + condiciones + condicionFecha +
 							   "group by ci.nombre;";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -149,6 +150,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
+                    if (modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = idDependencia;
+                   
+                    if (!modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoMotivo ?? DBNull.Value;
 
                     if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
                         command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)modelBusqueda.idDelegacion ?? DBNull.Value;
@@ -195,7 +201,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             EstadisticaInfraccionMotivosModel model = new EstadisticaInfraccionMotivosModel();
                             model.Contador = reader["Contador"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["Contador"].ToString());
                             model.Motivo = reader["Motivo"].ToString();
-
                             modelList.Add(model);
                         }
                     }

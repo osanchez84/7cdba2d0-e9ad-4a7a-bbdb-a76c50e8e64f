@@ -327,7 +327,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "ddlMarcas" })
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMarcas" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -375,7 +375,7 @@
                         .DataTextField("Text")
                         .DataValueField("Value")
                         .OptionLabel("Seleccione Sub-Marca...")
-                        .HtmlAttributes(new { style = "width:100%;", @readonly = "readonly", id = "idSubmarca" })
+                        .HtmlAttributes(new { style = "width:100%;",id = "idSubmarca" })
                         .DataSource(source =>
                         {
                             source.Read(read =>
@@ -689,7 +689,7 @@
                             </div>
                         </div>
                     </button>
-                    @*<button class="nav-link col" id="none-person-tab" data-bs-toggle="tab"
+                    <button class="nav-link col" id="none-person-tab" data-bs-toggle="tab"
                     data-bs-target="#none-person" type="button" role="tab" aria-controls="none-person"
                     aria-selected="false">
                     <div class="row justify-content-center align-items-center px-3 py-2">
@@ -700,7 +700,7 @@
                     <h5 class="m-0"><i class="icon-sinPropietario h4"></i> <b>Se ignora propietario</b></h5>
                     </div>
                     </div>
-                    </button>*@
+                    </button>
                 </div>
             </nav>
 
@@ -775,6 +775,30 @@
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
                 aria-labelledby="person-fisica-tab">
+                <div class="row px-4 mt-4 pb-4">
+                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
+                </div>
+ <div class="row">
+                    <div class="col-12">
+                        <div class="tabCustomEnd">
+                            <div class="row ">
+                                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                                            <div class="controlButton my-3" onclick="submitCreateVehiculo()">
+                                                @(Html.Kendo().Button()
+                                                    .Name("buscarFisica")
+                                                    .HtmlAttributes(new { @class = "btnPrimary" })
+                                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                                            </div>
+                                        </div>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            @*SE IGNORA*@
+            <div class="tab-pane tabCustomConteiner fade" id="none-person" role="tabpanel"
+                aria-labelledby="none-person-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
                     <div id="personasFisicasInf">
@@ -784,6 +808,16 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="tabCustomEnd">
+                            <div class="row ">
+                                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                                            <div class="controlButton my-3" onclick="submitCreateVehiculo()">
+                                                @(Html.Kendo().Button()
+                                                    .Name("buscarFisica")
+                                                    .HtmlAttributes(new { @class = "btnPrimary" })
+                                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -1372,7 +1406,7 @@
                     sitteg_error('El vehículo cuenta con reporte de robo')
         </text>
     }
-            buscarPersonasFisicas();
+           // buscarPersonasFisicas();
     });
 
     function validarNumero(event) {
@@ -1413,6 +1447,11 @@
     $("#Persona_PersonaDireccion_idEntidadFisico").on("change", function () {
         var value = $(this).val();
         _set_combo_catalog("CatMunicipiosByEntidad", value, "Persona_PersonaDireccion_idMunicipioFisico", "false", "divMunicipio", "");
+         var labelExistente = $("label[for='Persona_PersonaDireccion_idMunicipioFisico']");
+    if (labelExistente.length === 0) {
+        var nuevoLabel = $("<label for='Persona_PersonaDireccion_idMunicipioFisico'>Municipio (obligatorio):</label>");
+        $("#divMunicipio").prepend(nuevoLabel);
+    }
         $('#Persona_PersonaDireccion_idMunicipioFisico').kendoDropDownList();
 
     });
@@ -1621,67 +1660,68 @@
     }
 
 
-    function submitCreateVehiculo() {
-        var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
-
-        var controlsValidate = [];
-        var isValid = true;
-        idMarca = $("#ddlMarcas").val();
-        var idSubmarca = $("#idSubmarca").val();
-        var idTipoVehiculo = $("idTipoVehiculo").val();
-        var idPersona = $("#ddlIdPersona").val();
-        if ($("#ddlIdPersona").val() == '') {
-            sitteg_info('Debe seleccionar una Persona');
-            return;
-        }
-        var carga = $("#cargaSwitch").prop("checked");
-        $("#idCarga").val(carga ? 1 : 0);
-        var idTipoSer = $('#hdnIdCatTipoServicio').val();
+function submitCreateVehiculo() {
+    var validator = $("#frmCreateVehiculo").kendoValidator().data('kendoValidator');
+    var controlsValidate = [];
+    var isValid = true;
+    var idMarca = $("#ddlMarcas").val();
+    var idSubmarca = $("#idSubmarca").val();
+    var idTipoVehiculo = $("#idTipoVehiculo").val();
+    var idPersona = $("#ddlIdPersona").val();
+    var carga = $("#cargaSwitch").prop("checked");
+    $("#idCarga").val(carga ? 1 : 0);
 
     controlsValidate.push({ 'controlName': 'idEdntidad2' });
     controlsValidate.push({ 'controlName': 'ddlMarcas' });
     controlsValidate.push({ 'controlName': 'idSubmarca' });
     controlsValidate.push({ 'controlName': 'idTipoVehiculo' });
-    //controlsValidate.push({ 'controlName': 'ddlIdPersona' });
 
-        // INPUTS
-        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+    if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-        if (!isValid) {
-            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-            return;
-        }
+    if (!isValid) {
+        sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+        return;
+    }
 
-        var formData = $("#frmCreateVehiculo").serialize();
-        var idVeh = $('#hdnIdVehiculo').val();
-        console.log("Id vehiculo: ", idVeh)
-        showLoading();
-        $.ajax({
-            url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
-            type: 'POST',
-            data: formData,
-            success: function (result) {
-                sitteg_success('Elemento guardado correctamente')
+    var formData = $("#frmCreateVehiculo").serialize();
+    var idVeh = $('#hdnIdVehiculo').val();
+    console.log("Id vehiculo: ", idVeh);
+    showLoading();
+
+    $.ajax({
+        url: '@Url.Action("ajax_CrearVehiculo_Ejemplo2")',
+        type: 'POST',
+        data: formData,
+        success: function(result) {
+            if (result.success) {
+                sitteg_success('Elemento guardado correctamente');
                 $('#VehiculoServiceModal').modal('hide');
                 $('#agregarVehiculoModal').modal('hide');
                 var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
-                if (result && result.data) {
+                if (result.data) {
                     var dataArray = Array.isArray(result.data) ? result.data : [result.data];
-
                     grid.dataSource.data(dataArray);
-                } else {
-                    console.error("La respuesta no tiene la estructura esperada:", result);
                 }
-                hideLoading();
-            },
-            error: function (xhr, status) {
-                var errmsg = xhr.responseText;
-                console.log(errmsg)
-                sitteg_warning('Lo sentimos, ha ocurrido un error.Comuníquese con su mesa de ayuda');
-                hideLoading();
+            } else {
+                if (result.duplicate) {
+                    sitteg_warning('Placa o serie ya registrado en RIAG');
+                } else {
+                    sitteg_warning('Ha ocurrido un error al guardar el elemento. Comuníquese con su mesa de ayuda.');
+                }
+           
             }
-        });
-    }
+            hideLoading();
+        },
+        error: function(xhr, status) {
+            var errmsg = xhr.responseText;
+            console.log(errmsg);
+            sitteg_warning('Lo sentimos, ha ocurrido un error. Comuníquese con su mesa de ayuda');
+            hideLoading();
+        }
+    });
+}
+
+
 
     $("#ddlCatTipoServicio").on("change", function () {
         var value = $(this).val();

@@ -153,7 +153,8 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     connection.Open();
                     string condiciones = "";
-               
+                    condiciones += model.idDelegacion.Equals(null) || model.IdGrua == 0 ? "" : " AND d.idDelegacion = @IdDelegacion ";
+
                     condiciones += model.IdGrua.Equals(null) || model.IdGrua == 0 ? "" : " AND g.idConcesionario = @IdGrua ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idPension = @IdPension ";
                     condiciones += model.IdEvento.Equals(null) || model.IdEvento == 0 ? "" : " AND sol.idEvento = @IdEvento ";
@@ -192,10 +193,12 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN  catDescripcionesEvento ev ON ev.idDescripcion = sol.idEvento
                                     LEFT JOIN catMunicipios mun ON mun.idMunicipio = sol.solicitanteMunicipio
                                     LEFT JOIN catTiposVehiculo tve ON tve.idTipoVehiculo = sol.idTipoVehiculo
-                                    WHERE d.idDelegacion = @idOficina " + condiciones;                          
+                                    WHERE sol.estatus = 1 " + condiciones;                          
 
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion ?? DBNull.Value;
+
                     command.Parameters.Add(new SqlParameter("@IdGrua", SqlDbType.Int)).Value = (object)model.IdGrua ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdEvento", SqlDbType.NVarChar)).Value = (object)model.Evento != null ? model.Evento.ToUpper() : DBNull.Value;

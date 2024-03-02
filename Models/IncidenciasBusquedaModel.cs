@@ -4,7 +4,7 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class IncidenciasBusquedaModel
     {
-        public int idTipoMotivo { get; set; }
+        public int? idTipoMotivo { get; set; }
         public int idDelegacion { get; set; }
         public int idOficial { get; set; }
         public int idCarretera { get; set; }

@@ -54,6 +54,11 @@
         if (esRobado == "True") {
             setTimeout(() => { mostrarMensajeRobado() }, 400);
         }
+
+         //Si existe un registro en la tabla de persona fisicas se muestra el tab
+        if ( $( "#divAlertaPersonaFisica" ).length ) {
+                $('#person-fisica-tab').click();
+        }
  
 });
 function mostrarMensajeRobado() {
@@ -659,9 +664,9 @@ function mostrarMensajeRobado() {
 {
     if (Model.idTipoPersona == 1)
     {
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning" role="alert" id="divAlertaPersonaFisica">
             <h4 class="alert-heading">Se encontraron datos de persona física</h4>
-            <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+            <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
         </div>
     }
     else if (Model.idTipoPersona == 2)
@@ -1577,7 +1582,6 @@ function submitCreateMoral() {
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
-        console.log(Mydata);
         showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
@@ -1621,7 +1625,6 @@ function submitCreateMoral() {
         type: 'POST',
         data: Mydata,
         success: function (result) {
-            console.log(result);
             $("#personasFisicasAcc").html(result);
             $("#Persona_apellidoPaterno").val(null);
             $("#Persona_apellidoMaterno").val(null);

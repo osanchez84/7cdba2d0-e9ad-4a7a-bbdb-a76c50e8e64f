@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Net.Http;
+using Kendo.Mvc.Infrastructure;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -199,11 +200,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     model.PersonaModel.numeroLicenciaBusqueda == null &&
                     model.PersonaModel.nombreBusqueda == null)
                 {
-                    pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
+                    pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10000;
                 }
                 else
                 {
-                    pagination.PageSize = 1000000;
+                    pagination.PageSize = 10000;
                 }
             }
             else
@@ -211,27 +212,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 pagination.PageSize = (request.PageSize > 0) ? request.PageSize : 10;
             }
 
-            var personasList = personasService.BuscarPersonasWithPagination(model, pagination);
+            int total = personasService.ObtenerTotalBusquedaPersona(model, pagination);
+            model.Total = total;
 
+            model.Pagination = pagination;
             // Verificar si se encontraron resultados en la búsqueda de personas
-            if (personasList.Any())
-            {
-                List<PersonaModel> personas = personasList;
-                var total = 0;
-                if (personasList.Count > 0)
-                    total = personasList.ToList().FirstOrDefault().total;
-
-                //if (findAll)
-                request.PageSize = pagination.PageSize;
-
-                /* var result = new DataSourceResult()
-                 {
-                     Data = personas,
-                     Total = total
-                 };*/
-                model.ListadoPersonas = personasList;
+            if (total > 0)
                 return Json(new { encontrada = true, result = model });
-            }
+
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
             return Json(new { encontrada = false, tipo = "sin datos", message = "busca en licencias" });
@@ -239,7 +227,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult MostrarListaPersonasRiagEncontradas(BusquedaPersonaModel model)
         {
-            return ViewComponent("ListaPersonasEncontradas", new { listaPersonas = model.ListadoPersonas });
+            return ViewComponent("ListaPersonasEncontradas", new {  model });
         }
 
         public IActionResult MostrarListaPersonasLicenciasEncontradas(BusquedaPersonaModel model)

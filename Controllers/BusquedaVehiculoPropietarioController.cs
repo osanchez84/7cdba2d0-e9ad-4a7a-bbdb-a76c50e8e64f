@@ -73,7 +73,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
 
             RepuveConsgralRequestModel repuveGralModel = new(model.PlacaBusqueda, model.SerieBusqueda);
-            VehiculoModel vehiculoModel = new();
+            //VehiculoModel vehiculoModel = new();
             //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
             RepuveRoboModel repuveRoboModel = new();
 

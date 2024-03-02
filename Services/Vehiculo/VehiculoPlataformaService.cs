@@ -36,13 +36,15 @@ namespace GuanajuatoAdminUsuarios.Services
         private readonly ICatMarcasVehiculosService _marcaVehiculoService;
         private readonly ICatSubmarcasVehiculosService _submarcaVehiculoService;
         private readonly ICatDictionary _catDictionary;
+        private readonly IVehiculosService _vehiculoService;
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
         private readonly AppSettings _appSettings;
         [GeneratedRegex("[0-9-]")]
         private static partial Regex MyRegex();
         #endregion
 
         public VehiculoPlataformaService(IRepuveService repuveService, ICatEntidadesService entidadService,ICatMunicipiosService municipioService, IColores colorService,
-        ICatMarcasVehiculosService marcaVehiculoService, ICatSubmarcasVehiculosService submarcaVehiculoService, ICatDictionary catDictionary,IOptions<AppSettings> appSettings)
+        ICatMarcasVehiculosService marcaVehiculoService, ICatSubmarcasVehiculosService submarcaVehiculoService, ICatDictionary catDictionary,IOptions<AppSettings> appSettings,IVehiculosService vehiculoService,ICotejarDocumentosClientService cotejarDocumentosClientService)
         {
             _repuveService = repuveService;
             _entidadService = entidadService;
@@ -52,18 +54,22 @@ namespace GuanajuatoAdminUsuarios.Services
             _submarcaVehiculoService = submarcaVehiculoService;
             _catDictionary = catDictionary;
             _appSettings = appSettings.Value;
+            _vehiculoService = vehiculoService;
+            _cotejarDocumentosClientService =cotejarDocumentosClientService;
+
         }
 
-         public VehiculoModel ConsultaVehiculoRepuve(VehiculoBusquedaModel model)
+         public VehiculoModel BuscarVehiculoEnPlataformas(VehiculoPropietarioBusquedaModel model)
         {
             try
             {
+                List<VehiculoModel> listaVehiculos = new();
                 var request = JsonConvert.SerializeObject(model);
                // Logger.Debug("Infracciones - ajax_BuscarVehiculo - Request:" + request);
-                var vehiculosModel = new VehiculoModel();
+                var vehiculoModel = new VehiculoModel();
 
                 //Se realiza la consulta para validar si el vehiculo tiene reporte de robo
-                RepuveConsgralRequestModel repuveGralModel = new(model.PlacasBusqueda, model.SerieBusqueda);
+                RepuveConsgralRequestModel repuveGralModel = new(model.PlacaBusqueda, model.SerieBusqueda);
                // Logger.Debug("Infracciones - ajax_BuscarVehiculo - ValidarRobo ");
                 RepuveRoboModel repuveRoboModel = new();
 
@@ -76,51 +82,59 @@ namespace GuanajuatoAdminUsuarios.Services
                    // Logger.Error("Ocurrió un error al consultar robados en REPUVE:" + e);
                 }
 
+VehiculoBusquedaModel busquedaModel = new()
+            {
+                IdEntidadBusqueda = model.IdEntidadBusqueda,
+                PlacasBusqueda = model.PlacaBusqueda,
+                SerieBusqueda = model.SerieBusqueda
+            };
 
-                vehiculosModel.RepuveRobo = repuveRoboModel;
-                vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
+                vehiculoModel.RepuveRobo = repuveRoboModel;
+                vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
 
                 var buscarEnServicios = _appSettings.AllowWebServicesRepuve;
                 //Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVehiculoToAnexo");
-                vehiculosModel = GetVehiculoToAnexo(model);
-                vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
-                vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
-                vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-
-                if (vehiculosModel.idVehiculo > 0)
-                {
-                    return vehiculosModel;
-
+                
+                listaVehiculos = _vehiculoService.GetVehiculoPropietario(busquedaModel);
+                
+                if(listaVehiculos.Count>0){
+                    return listaVehiculos;
                 }
+                
+                vehiculoModel.idSubmarcaUpdated = vehiculoModel.idSubmarca;
+                vehiculoModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+                vehiculoModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
 
-                if (allowSistem)
+                
+                if (buscarEnServicios && !string.IsNullOrEmpty(busquedaModel.PlacasBusqueda))
                 {
-                    CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
-                    cotejarDatosRequestModel.Tp_folio = "4";
-                    cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
-                    cotejarDatosRequestModel.tp_consulta = "3";
+                    CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel
+                    {
+                        Tp_folio = "4",
+                        Folio = model.PlacaBusqueda,
+                        tp_consulta = "3"
+                    };
                     var endPointName = "CotejarDatosEndPoint";
                    // Logger.Debug("Infracciones - ajax_BuscarVehiculo - CotejarDatos");
                     var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
                     if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
                     {
                        // Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
-                        vehiculosModel = GetVEiculoModelFromFinanzas(result);
+                        vehiculoModel = GetVehiculoModelFromFinanzas(result);
 
-                        vehiculosModel.ErrorRepube = string.IsNullOrEmpty(vehiculosModel.placas) ? "No" : "";
-
-                        //Se asigna el objeto de la consulta de robado a repuve
-                        vehiculosModel.RepuveRobo = repuveRoboModel;
-                        vehiculosModel.ReporteRobo = repuveRoboModel.EsRobado;
+                         //Se asigna el objeto de la consulta de robado a repuve
+                    vehiculoModel.RepuveRobo = repuveRoboModel;
+                    vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
 
                         //Se establece el origen de datos
-                        vehiculosModel.origenDatos = "Padrón Estatal";
+                        vehiculoModel.origenDatos = "Padrón Estatal";
+                        listaVehiculos.Add(vehiculoModel);
 
-                        return vehiculosModel;
+                        return listaVehiculos;
                     }
                 }
 
-                if (allowSistem)
+                if (buscarEnServicios)
                 {
                     //Logger.Debug("Infracciones - ajax_BuscarVehiculo - ConsultaGeneral - REPUVE");
                     RepuveConsgralResponseModel repuveConsGralResponse = new();
@@ -130,7 +144,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("Ocurrió un error al consultar vehículo en REPUVE:" + ex);
+                        //Logger.Error("Ocurrió un error al consultar vehículo en REPUVE:" + ex);
                     }
                     //Logger.Debug(" - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
                     var idEntidad = !string.IsNullOrEmpty(repuveConsGralResponse.entidad_expide)

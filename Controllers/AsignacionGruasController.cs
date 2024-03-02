@@ -100,7 +100,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             try
             {
                 int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+
                 _asignacionGruasService.ActualizarDatos(selectedRowData, iDep);
+
+                selectedRowData.folioInfraccion = string.IsNullOrEmpty(selectedRowData.folioInfraccion) ? "-" : selectedRowData.folioInfraccion; 
                 selectedRowData.Placa = string.IsNullOrEmpty(selectedRowData.Placa) ? "-" : selectedRowData.Placa;
                 selectedRowData.Serie = string.IsNullOrEmpty(selectedRowData.Serie) ? "-" : selectedRowData.Serie;
                 selectedRowData.Tarjeta = string.IsNullOrEmpty(selectedRowData.Tarjeta) ? "-" : selectedRowData.Tarjeta;

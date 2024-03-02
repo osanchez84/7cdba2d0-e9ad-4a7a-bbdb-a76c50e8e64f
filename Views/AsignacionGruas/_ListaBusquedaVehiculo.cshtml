@@ -25,6 +25,8 @@
                 document.getElementById("PropietarioSpan").textContent = result.Propietario;
                 document.getElementById("CurpSpan").textContent = result.CURP;
                 document.getElementById("RfcSpan").textContent = result.RFC;
+
+                document.getElementById("FolioInfraccion").textContent = result.folioInfraccion;
                 hideLoading();
             },
             error: function (error) {

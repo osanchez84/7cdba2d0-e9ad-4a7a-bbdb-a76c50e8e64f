@@ -26,6 +26,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatDictionary _catDictionary;
         private readonly ITransitoTransporteService _transitoTransporteService;
         private readonly IConcesionariosService _concesionariosService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+
 
         public ReporteAsignacionServiciosController(
             ITransitoTransporteService transitoTransporteService,
@@ -33,7 +35,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
              IGruasService gruasService, IEventoService eventoService,
              IReporteAsignacionService reporteAsignacionService, IPdfGenerator pdfService
             , ICatDictionary catDictionary,
-             IConcesionariosService concesionariosService
+             IConcesionariosService concesionariosService,
+             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService
+
 
             )
         {
@@ -45,6 +49,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _catDictionary = catDictionary;
             _transitoTransporteService = transitoTransporteService;
             _concesionariosService = concesionariosService;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
         public IActionResult Index()
         {        
@@ -134,5 +139,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_concesionariosService.GetAllConcesionarios(), "IdConcesionario", "Concesionario");
             return Json(result);
         }
+        public JsonResult Delegaciones_Read()
+        {
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinas(), "IdOficinaTransporte", "NombreOficina");
+            return Json(result);
+        }
+
     }
 }

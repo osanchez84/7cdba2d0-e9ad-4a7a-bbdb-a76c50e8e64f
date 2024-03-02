@@ -2456,8 +2456,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		public List<EstadisticaInfraccionMotivosModel> GetAllMotivosPorInfraccionBusqueda(IncidenciasBusquedaModel modelBusqueda,int idoficina, int idDependencia)
 		{
 			string condiciones = "";
+            //condiciones += modelBusqueda.idTipoMotivo.Equals(null)  ? "" : " AND i.transito = @transito ";
 
-			condiciones += modelBusqueda.idDelegacion.Equals(null) || modelBusqueda.idDelegacion == 0 ? "" : " AND i.idDelegacion = @idDelegacion ";
+            condiciones += modelBusqueda.idDelegacion.Equals(null) || modelBusqueda.idDelegacion == 0 ? "" : " AND i.idDelegacion = @idDelegacion ";
 			condiciones += modelBusqueda.idOficial.Equals(null) || modelBusqueda.idOficial == 0 ? "" : " AND i.idOficial =@idOficial ";
 			condiciones += modelBusqueda.idCarretera.Equals(null) || modelBusqueda.idCarretera == 0 ? "" : " AND i.idCarretera = @idCarretera ";
 			condiciones += modelBusqueda.idTramo.Equals(null) || modelBusqueda.idTramo == 0 ? "" : " AND i.idTramo = @idTramo ";
@@ -2485,7 +2486,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         FROM infracciones i
                                         LEFT JOIN motivosInfraccion mi ON i.idInfraccion = mi.idInfraccion
                                         LEFT JOIN vehiculos veh ON i.idVehiculo = veh.idVehiculo
-                                        WHERE i.transito = @idDependencia AND i.estatus = 1 " + condiciones + condicionFecha + @"
+                                        WHERE i.estatus = 1 AND i.transito = @transito" + condiciones + condicionFecha + @"
                                         GROUP BY mi.idInfraccion
                                     ) AS InfraccionesConMotivos
                                     GROUP BY numeroMotivos
@@ -2498,7 +2499,12 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
-					if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
+                    if (modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = idDependencia;
+                    if (!modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoMotivo ?? DBNull.Value;
+
+                    if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
 						command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)modelBusqueda.idDelegacion ?? DBNull.Value;
 
 					if (!modelBusqueda.idOficial.Equals(null) && modelBusqueda.idOficial != 0)
@@ -2533,7 +2539,6 @@ namespace GuanajuatoAdminUsuarios.Services
 					if (modelBusqueda.fechaFin != DateTime.MinValue)
 						command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
 
-					command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -2668,8 +2673,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		public List<InfoInfraccion> GetAllInfraccionesEstadisticasGrid(IncidenciasBusquedaModel modelBusqueda, int idDependencia)
 		{
 			string condiciones = "";
+            //condiciones += modelBusqueda.idTipoMotivo.Equals(null) ? "" : " AND inf.transito = @transito ";
 
-			condiciones += modelBusqueda.idDelegacion.Equals(null) || modelBusqueda.idDelegacion == 0 ? "" : " AND inf.idDelegacion = @idDelegacion ";
+            condiciones += modelBusqueda.idDelegacion.Equals(null) || modelBusqueda.idDelegacion == 0 ? "" : " AND inf.idDelegacion = @idDelegacion ";
 			condiciones += modelBusqueda.idOficial.Equals(null) || modelBusqueda.idOficial == 0 ? "" : " AND inf.idOficial =@idOficial ";
 			condiciones += modelBusqueda.idCarretera.Equals(null) || modelBusqueda.idCarretera == 0 ? "" : " AND inf.idCarretera = @idCarretera ";
 			condiciones += modelBusqueda.idTramo.Equals(null) || modelBusqueda.idTramo == 0 ? "" : " AND inf.idTramo = @idTramo ";
@@ -2777,7 +2783,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         left join catTiposVehiculo tv ON tv.idTipoVehiculo = veh.idTipoVehiculo
                         left join catTipoServicio ts ON ts.idCatTipoServicio = veh.idCatTipoServicio
                         WHERE 
-                        inf.estatus = 1" + condiciones + condicionFecha;
+                        inf.estatus = 1 AND inf.transito = @transito" + condiciones + condicionFecha;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -2787,8 +2793,13 @@ namespace GuanajuatoAdminUsuarios.Services
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
 					int numeroSecuencial = 1;
+                    if (modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = idDependencia;
+                    
+					if (!modelBusqueda.idTipoMotivo.Equals(null))
+                        command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = (object)modelBusqueda.idTipoMotivo ?? DBNull.Value;
 
-					if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
+                    if (!modelBusqueda.idDelegacion.Equals(null) && modelBusqueda.idDelegacion != 0)
 						command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)modelBusqueda.idDelegacion ?? DBNull.Value;
 
 					if (!modelBusqueda.idOficial.Equals(null) && modelBusqueda.idOficial != 0)
@@ -2823,7 +2834,6 @@ namespace GuanajuatoAdminUsuarios.Services
 					if (modelBusqueda.fechaFin != DateTime.MinValue)
 						command.Parameters.Add(new SqlParameter("@fechaFin", SqlDbType.DateTime)).Value = (object)modelBusqueda.fechaFin ?? DBNull.Value;
 
-					command.Parameters.Add(new SqlParameter("@transito", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
 
 
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

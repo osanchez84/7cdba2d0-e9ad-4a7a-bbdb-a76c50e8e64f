@@ -1951,7 +1951,41 @@ namespace GuanajuatoAdminUsuarios.Services
             }
             return ListaPersonas;
         }
+public int ObtenerTotalBusquedaPersona(BusquedaPersonaModel model, Pagination pagination)
+        {
+            int total = -1;
 
+            using SqlConnection connection = new(_sqlClientConnectionBD.GetConnection());
+            try
+            {
+                connection.Open();
+                using SqlCommand cmd = new("[usp_ObtieneTotalBusquedaPersonas]", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value = pagination.PageIndex;
+                cmd.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)).Value = pagination.PageSize;
+                cmd.Parameters.Add(new SqlParameter("@numeroLicencia", SqlDbType.NVarChar)).Value = (object)model.NumeroLicenciaBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@curp", SqlDbType.NVarChar)).Value = (object)model.CURPBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@rfc", SqlDbType.NVarChar)).Value = (object)model.RFCBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.NombreBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoPaternoBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoMaternoBusqueda ?? DBNull.Value;
+                using SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                while (reader.Read())
+                {
+                    total = Convert.ToInt32(reader["total"]);
+                }
+            }
+            catch (SqlException ex)
+            {
+                //Guardar la excepcion en algun log de errores
+                Logger.Error("Error al buscar personas en RIAG:" + ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return total;
+        }
 
         public IEnumerable<PersonaModel> GetAllPersonasFisicasPagination(Pagination pagination)
         {

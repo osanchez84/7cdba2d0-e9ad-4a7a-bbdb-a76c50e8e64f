@@ -15,7 +15,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string NumeroLicenciaBusqueda { get; set; }
         public PersonaModel PersonaModel { get; set; }
 
-
+        public Pagination Pagination { get; set; }
+        public int Total { get; set; }
         public List<PersonaModel> ListadoPersonas { get; set; } = new();
 
         public List<PersonaModel> ListadoPersonasOtras { get; set; } = new();

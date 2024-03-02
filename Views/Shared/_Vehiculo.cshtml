@@ -551,9 +551,9 @@
                             })
                             )
             </div>
-            }          
-    </div>
-    @if (Model.Persona.idPersona>0)
+            }   
+
+                @if (Model.Persona.idPersona>0)
 {
     if (Model.Persona.idCatTipoPersona == 1)
     {
@@ -562,14 +562,16 @@
             <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
         </div>
     }
-    else if (Model.Persona.idCatTipoPersona == 2)
+    /*else if (Model.Persona.idCatTipoPersona == 2)
     {
         <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
             <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
         </div>
-    }
-}
+    }*/
+}       
+    </div>
+
 
 
 
@@ -606,6 +608,23 @@
 
 
         </div>
+        @if (Model.idTipoPersona.HasValue)
+{
+    if (Model.idTipoPersona == 1)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
+            <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
+        </div>
+    }
+    else if (Model.idTipoPersona == 2)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
+        </div>
+    }
+}
 
         <div class="tab-content" id="nav-tabContent">
 

@@ -33,6 +33,7 @@
 			type: 'POST',
 			data: Mydata,
 			success: function (response) {
+				console.log("RESP",response)
 				if (response.tipo === "success") {
 					mostrarModal(response.datos);
 					hideLoading();

@@ -1855,6 +1855,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 foreach (PersonaModel pivote in personas.ListadoPersonas)
                 {
                     CapturaAccidentesModel capAcc = new CapturaAccidentesModel();
+                    capAcc.IdPersona = (int)pivote.idPersona;
                     capAcc.nombre = pivote.nombre;
                     capAcc.apellidoPaterno = pivote.apellidoPaterno;
                     capAcc.apellidoMaterno = pivote.apellidoMaterno;
@@ -1865,7 +1866,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
 
-                return Json(new { encontrada = true, Data = resultado, tipo = "success", message = "busqueda exitosa" });
+                return Json(new { encontrada = true, Data = resultado, tipo = "riag", message = "busqueda exitosa" });
 
 //                
             }

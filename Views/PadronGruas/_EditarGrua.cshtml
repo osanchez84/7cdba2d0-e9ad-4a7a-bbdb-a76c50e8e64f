@@ -1,5 +1,14 @@
 ﻿@model Gruas2Model
-
+<div class="col-auto pe-0">
+    <div class="row align-items-center justify-content-center justify-content-md-start">
+        <div class="col-auto pe-0">
+            <i class="icon-editGrua h1 colorPrimary"></i>
+        </div>
+        <div class="col-auto my-3">
+            <h2 class="m-0 h3"><b>Editar grúa</b></h2>
+        </div>
+    </div>
+</div>
 <div class="panel">
     <div class="panel-body container-fluid">
         <div class="row row-lg">
@@ -17,13 +26,12 @@
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
                                     <label>Delegación:</label>
-                                    @(Html.Kendo().DropDownList()
-                                        .Name("idDelegacion")
+                                    @(Html.Kendo().DropDownListFor(f =>f.idDelegacion)
                                         .BindTo((SelectList)ViewBag.CatDelegaciones)
                                         .OptionLabel("-- Seleccione --")
-                                        .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
+                                        .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacionesed" })
                                         .Filter(FilterType.Contains)
-                                        .Popup(p => p.AppendTo("frmEditarGrua"))
+                                        //.Popup(p => p.AppendTo("frmEditarGrua"))
                                         )
                                 </div>
                             </div>
@@ -31,10 +39,10 @@
                                 <div class="controlForm">
                                     <label>Concesionario:</label>
                                     <div id="divConcesionario">
-                                        @(Html.Kendo().DropDownListFor(f => f.idConcesionario).Filter(FilterType.Contains)
+                                        @(Html.Kendo().DropDownListFor(f =>f.idConcesionario).Filter(FilterType.Contains)
                                             .BindTo(ViewData["CatConcesionarios"] as SelectList)
                                             .OptionLabel("-- Seleccione --")
-                                            .HtmlAttributes(new { style = "width:100%;" })
+                                            .HtmlAttributes(new { style = "width:100%;", id = "idConcesionario" })
                                             .Filter(FilterType.Contains))
                                     </div>
                                 </div>
@@ -148,7 +156,7 @@
             data: formData,
             success: function (result) {
                 $("#listadoGruas").html(result);
-                $('#editGrua').modal('hide');
+                $('#addGrua').modal('hide');
                 sitteg_success('Elemento guardado correctamente')
                 hideLoading();
             },
@@ -165,18 +173,6 @@
         //$('.modal-backdrop').remove();
     }
 
-    $(document).ready(function () {
-        $("#ddlDelegaciones").on("change", function () {
-            var value = $(this).val();
-            if (value == "") {
-                $("#idConcesionario option[value!='']").remove();
-            }
-            else {
-                _set_combo_catalog("CatConcesionariosByIdDelegacion", value, "idConcesionario", "false", "divConcesionario", "");
-                $('#idConcesionario').kendoDropDownList();
-            }
-        });
-
-    });
-
+  
+    
 </script>

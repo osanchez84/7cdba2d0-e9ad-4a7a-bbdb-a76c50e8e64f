@@ -332,7 +332,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								on g.idConcesionario = c.idConcesionario AND c.estatus = 1
 								INNER JOIN catMunicipios cm
 								on c.idMunicipio = cm.idMunicipio AND c.estatus = 1
-                                WHERE g.estatus = 1 AND  c.idDelegacion = @idOficina";
+                                WHERE g.estatus = 1";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {

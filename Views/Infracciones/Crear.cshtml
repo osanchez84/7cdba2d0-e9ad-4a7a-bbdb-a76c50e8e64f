@@ -709,6 +709,9 @@
 				"idPersona": pidPersona,
 			},
 			success: function (data) {
+				console.log("DATPERS",data)
+						$("#listadoPersonas").hide();
+
 				$("#detallePersonas").html(data);
 				$("#idPersona").val(pidPersona);
 

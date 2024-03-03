@@ -167,7 +167,7 @@
                                             read.Action("Tipos_Drop", "CapturaAccidentes");
                                         });
                                     })
-                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .HtmlAttributes(new { style = "width:100%;", id = "IdTipoInvolucrado" })
                                     )
                             </span>
                         </div>
@@ -188,7 +188,7 @@
                                             read.Action("EstadoVictima_Drop", "CapturaAccidentes");
                                         });
                                     })
-                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .HtmlAttributes(new { style = "width:100%;",id = "IdEstadoVictima" })
                                     )
                             </span>
                         </div>
@@ -263,7 +263,7 @@
                                             read.Action("Cinturon_Drop", "CapturaAccidentes");
                                         });
                                     })
-                                    .HtmlAttributes(new { style = "width:100%;" })
+                                    .HtmlAttributes(new { style = "width:100%;", id = "IdCinturon" })
                                     )
                             </span>
                         </div>
@@ -323,8 +323,28 @@
      var idPersona = $("#idPersonaInput").val();
         if (idPersona === "") {        
         sitteg_warning("Debe seleccionar una persona involucrada");
-        return; 
-        var Mydata = $("#complementoInvolucradoForm").serialize();
+        return;
+            var validator = $("#complementoInvolucradoForm").kendoValidator().data('kendoValidator');
+       
+            var controlsValidate = [];
+            var isValid = true;
+            var IdTipoInvolucrado = $("#IdTipoInvolucrado").val();
+            var IdEstadoVictima = $("#IdEstadoVictima").val();
+            var IdCinturon = $("#IdCinturon").val();
+            console.log("AA",IdTipoInvolucrado)
+            controlsValidate.push({ 'controlName': 'IdTipoInvolucrado' });
+            controlsValidate.push({ 'controlName': 'IdEstadoVictima' });
+            controlsValidate.push({ 'controlName': 'IdCinturon' });
+
+
+            // INPUTS
+            if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+            if (!isValid) {
+                sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+                return;
+            }
+            var Mydata = $("#complementoInvolucradoForm").serialize();
         showLoading();
         $.ajax({
             url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',

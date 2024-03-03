@@ -108,15 +108,18 @@
                     processData: false, // Not to process data
                  data: fd,
                  success: function (result) {
+                     console.log("RESPUESTA:", result)
                        $('#modalLicenciasList').modal('hide');
                      var grid = $("#gridConductores").data("kendoGrid");
-                     if (result && result.data) {
-                         var dataArray = [result.data];
-                         grid.dataSource.data(dataArray);
-                     } else {
-                         console.error("La respuesta no tiene la estructura esperada:", result);
-                     }
-                     sitteg_success('Elemento guardado correctamente')
+                if (result) {
+                    grid.dataSource.data([result]);
+                    sitteg_success('Elemento guardado correctamente');
+                } else {
+                    console.error("La respuesta no tiene la estructura esperada:", result);
+                    sitteg_warning('Ocurrio un error en la importación de los datos');
+
+                }
+                    // sitteg_success('Elemento guardado correctamente')
                      hideLoading();
                  },
                  error: function (error) {

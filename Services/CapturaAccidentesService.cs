@@ -1763,7 +1763,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         idDelegacion = @IdDelegacion,
                                         idPension = @IdPension,
                                         idFormaTraslado = @IdFormaTraslado,
-                                        fechaActualizacion = @fechaActualizacion,
+                                        fechaActualizacion = getdate(),
                                         actualizadoPor = @actualizadoPor,
                                         estatus = @estatus
                                     WHERE idVehiculo = @IdVehiculo AND idAccidente = @IdAccidente;";
@@ -1782,7 +1782,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@IdFormaTraslado", SqlDbType.Int)).Value = (object)model.IdFormaTraslado ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdVehiculo", SqlDbType.Int)).Value = (object)IdVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdAccidente", SqlDbType.Int)).Value = (object)idAccidente ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
 

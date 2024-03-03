@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using GuanajuatoAdminUsuarios.Common;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GuanajuatoAdminUsuarios.Models
@@ -13,8 +15,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numeroLicenciaFisico { get; set; }
 
         public string CURP { get; set; }
-       
-        
+
+
         [MinLength(10, ErrorMessage = "El CURO debe tener al menos 10 caracteres.")]
         public string CURPBusqueda { get; set; }
         public string CURPFisico { get; set; }
@@ -27,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombre { get; set; }
         public string nombreBusqueda { get; set; }
         public string nombreFisico { get; set; }
-        
+
         public string apellidoPaterno { get; set; }
         public string apellidoPaternoBusqueda { get; set; }
         public string apellidoPaternoFisico { get; set; }
@@ -36,9 +38,14 @@ namespace GuanajuatoAdminUsuarios.Models
         public string apellidoMaternoBusqueda { get; set; }
         public string apellidoMaternoFisico { get; set; }
 
-        public string nombreCompleto { get {
-                
-                return (nombre??"-") + " " + (apellidoPaterno??"-") + " " + (apellidoMaterno ?? "-"); } }
+        public string nombreCompleto
+        {
+            get
+            {
+
+                return (nombre ?? "-") + " " + (apellidoPaterno ?? "-") + " " + (apellidoMaterno ?? "-");
+            }
+        }
         public int? idCatTipoPersona { get; set; }
         public string? tipoPersona { get; set; }
         public int? idGenero { get; set; }
@@ -59,13 +66,45 @@ namespace GuanajuatoAdminUsuarios.Models
         public string? numero { get; set; }
         public string correo { get; set; }
         public string correoInfraccion { get; set; }
+        public string Origen { get; set; }
         public bool generoBool { get; set; }
-      
+
         public DateTime? vigenciaLicencia { get; set; }
         public DateTime? vigenciaLicenciaFisico { get; set; }
 
         public virtual PersonaDireccionModel PersonaDireccion { get; set; }
 
         public int total { get; set; }
+
+        public void ConvertirModeloDeLicencias(LicenciaPersonaDatos p)
+        {
+            TipoLicencia tipoLic = Constants.tipoLicencias.SingleOrDefault(item => item.Descripcion.Equals(p.TIPOLICENCIA));
+            nombre = p.NOMBRE;
+            apellidoPaterno = p.PRIMER_APELLIDO;
+            apellidoMaterno = p.SEGUNDO_APELLIDO;
+            fechaNacimiento = (p.FECHA_NACIMIENTO.Value.Year < 1800) ? null : p.FECHA_NACIMIENTO.Value;
+            vigenciaLicencia = (p.FECHA_TERMINO_VIGENCIA.Value.Year < 1800) ? null : p.FECHA_TERMINO_VIGENCIA.Value;
+            CURP = p.CURP;
+            RFC = p.RFC;
+            numeroLicencia = p.NUM_LICENCIA;
+            idTipoLicencia = tipoLic != null ? tipoLic.Id : 0;
+            calle = p.CALLE;
+            numero = p.NUM_EXT;
+            colonia = p.COLONIA;
+            idGenero = p.ID_GENERO == null ? 1 : Convert.ToInt16(p.ID_GENERO);
+            generoBool = idGenero == 1;
+            Origen = "Licencias";
+            PersonaDireccion = new PersonaDireccionModel
+            {
+                idMunicipio = p.ID_MUNICIPIO,
+                municipio = p.MUNICIPIO,
+                codigoPostal = p.CP,
+                entidad = p.ESTADO_NACIMIENTO,
+                telefono = p.TELEFONO1,
+                correo = p.EMAIL,
+            };
+        }
     }
+
 }
+

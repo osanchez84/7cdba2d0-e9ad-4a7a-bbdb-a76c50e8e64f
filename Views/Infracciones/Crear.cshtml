@@ -719,11 +719,9 @@
 				if (fila.length > 0) {
 					grid.select(fila);
 				}
-				hideLoading(); // Mover esta línea dentro de la función success para que se ejecute después de procesar la respuesta
-			},
+				hideLoading();
 			error: function () {
-				sitteg_warning("Ocurrió un error al procesar su solicitud.");
-				hideLoading(); // Mover esta línea dentro de la función error para que se ejecute después de procesar el error
+				hideLoading(); 
 			}
 		});
 	}

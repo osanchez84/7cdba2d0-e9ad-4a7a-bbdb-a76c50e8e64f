@@ -48,6 +48,8 @@
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
             var idPersona = dataItem.idPersona;
+              $("#idPersona").val(idPersona);
+            $("#Vehiculo_idPersona").val(idPersona);
             if (row.hasClass("k-selected")) {
                 setTimeout(function (e) {
                     var grid = $("#gridPersonas").data("kendoGrid");

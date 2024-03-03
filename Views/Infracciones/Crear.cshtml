@@ -692,7 +692,7 @@
 				$("#detalleVehiculo").empty().append(data);
 				hideLoading();
 			}, error: function () {
-				sitteg_warning("Ocurrio un error al procesar su solicitud.");
+				//sitteg_warning("Ocurrio un error al procesar su solicitud.");
 				hideLoading();
 			}
 
@@ -709,25 +709,25 @@
 				"idPersona": pidPersona,
 			},
 			success: function (data) {
-				console.log("DATPERS",data)
-						$("#listadoPersonas").hide();
-
-				$("#detallePersonas").html(data);
+				console.log("DATPERS", data);
+				var dataArray = [data];
+				var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
+				grid.dataSource.data(dataArray);
+				grid.dataSource._total = dataArray.length;
 				$("#idPersona").val(pidPersona);
-
-				$("#detallePersonas").show();
-				hideLoading();
-			}, error: function () {
-				//sitteg_warning("Ocurrio un error al procesar su solicitud.");
-				hideLoading();
+				var fila = grid.tbody.find("tr:first");
+				if (fila.length > 0) {
+					grid.select(fila);
+				}
+				hideLoading(); // Mover esta línea dentro de la función success para que se ejecute después de procesar la respuesta
+			},
+			error: function () {
+				sitteg_warning("Ocurrió un error al procesar su solicitud.");
+				hideLoading(); // Mover esta línea dentro de la función error para que se ejecute después de procesar el error
 			}
-			//,
-			//error: function (xhr, status) {
-			//    var errmsg = msg_err_gral;
-			//    semg_error(errmsg);
-			//}
 		});
 	}
+
 	function getListadoPersonasInfracciones() {
 		$("#listadoPersonas").show();
 		showLoading();

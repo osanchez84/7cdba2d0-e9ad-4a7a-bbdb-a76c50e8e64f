@@ -324,8 +324,8 @@
         if (idPersona === "") {        
         sitteg_warning("Debe seleccionar una persona involucrada");
         return;
+        }
             var validator = $("#complementoInvolucradoForm").kendoValidator().data('kendoValidator');
-       
             var controlsValidate = [];
             var isValid = true;
             var IdTipoInvolucrado = $("#IdTipoInvolucrado").val();
@@ -363,22 +363,7 @@
         });
     }
 
-    var Mydata = $("#complementoInvolucradoForm").serialize();
     
-    $.ajax({
-        url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
-        type: 'POST',
-        data: Mydata,
-        success: function (result) {
-            $('#agregarInvolucradoModal').modal('hide');
-            $('.modal-backdrop').remove();
-            sitteg_success("Se ha actualizado la información");
-            actualizarGrid();
-        },
-        error: function (error) {
-        }
-    });
-}
 
     function actualizarGrid() {
         var grid = $("#gridInvolucradosTodo").data("kendoGrid");

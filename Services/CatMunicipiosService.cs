@@ -87,6 +87,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             municipio.nombreOficina = reader["nombreOficina"].ToString();
                             municipio.nombreEntidad = reader["nombreEntidad"].ToString();
                             municipio.Municipio = reader["Municipio"].ToString();
+                            municipio.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+
                         }
                     }
                 }

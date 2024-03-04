@@ -62,9 +62,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito==0?idDeposito: solicitud.IdDeposito);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
 
-            //var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
+            var datosInfraccion = _asignacionGruasService.DatosInfraccionAsociada(solicitud.FolioSolicitud);
 
-            return View("capturaGruas", solicitud);
+            return View("capturaGruas", datosInfraccion);
         }
         public IActionResult GruasAsignadasTabla([DataSourceRequest] DataSourceRequest request)
         {

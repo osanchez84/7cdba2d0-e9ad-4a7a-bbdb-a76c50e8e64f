@@ -1938,6 +1938,41 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
         }
+        public async Task<IActionResult> CrearvehiculoSinPlaca()
+        {
+            try
+            {
+                //var SeleccionVehiculo = _capturaAccidentesService.BuscarPorParametro(model.PlacasBusqueda, model.SerieBusqueda, model.FolioBusqueda);
+
+
+
+
+                var jsonPartialVehiculosByWebServices = await ajax_CrearVehiculoSinPlacasVehiculo();
+
+                return Json(new { noResults = true, data = jsonPartialVehiculosByWebServices });
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { noResults = true, error = "Se produjo un error al procesar la solicitud", data = "" });
+            }
+        }
+        private async Task<string> ajax_CrearVehiculoSinPlacasVehiculo()
+        {
+
+            var models = new VehiculoModel();
+            models.Persona = new PersonaModel();
+            models.Persona.PersonaDireccion = new PersonaDireccionModel();
+            models.PersonasFisicas = new List<PersonaModel>();
+            models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
+            models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+            models.placas = "XXXXOXO";
+            models.serie = "XXXXOXOhf5321";
+            models.RepuveRobo = new RepuveRoboModel();
+            var result = await this.RenderViewAsync2("", models);
+            return result;
+        }
 
     }
 }

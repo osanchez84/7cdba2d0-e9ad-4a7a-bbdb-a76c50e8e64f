@@ -19,16 +19,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IGruasService _gruasService;
         private readonly IConcesionariosService _concesionariosService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+        private readonly IEstadisticasAccidentesService _estadisticasAccidentesService;
 
         public PadronGruasController(ICatDictionary catDictionary,
                                      IGruasService gruasService,
                                      IConcesionariosService concesionariosService,
-                                     ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
+                                     IEstadisticasAccidentesService estadisticasAccidentesService,
+
+                                     ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService
+            
+            )
         {
             _catDictionary = catDictionary;
             _gruasService = gruasService;
             _concesionariosService = concesionariosService;
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
+            _estadisticasAccidentesService = estadisticasAccidentesService;
+
+
         }
         public IActionResult Index()
         {
@@ -37,11 +45,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //IEnumerable<Gruas2Model> listGruas = _gruasService.GetAllGruas(idOficina);
             var listGruas = new List<Gruas2Model>();
             var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
-            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            var catDelegaciones = _estadisticasAccidentesService.GetDelegacionesFilter();
+            
+
+
+
             // var catConcesionario = _concesionariosService.GetAllConcesionariosConMunicipio(idOficina);
 
             ViewBag.CatTipoGruas = new SelectList(catTipoGruas.CatalogList, "Id", "Text");
-            ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+            ViewBag.CatDelegaciones = new SelectList(catDelegaciones, "value", "text");
             // ViewBag.CatConcesionario = new SelectList(catConcesionario, "Id", "Text");
 
             return View(listGruas);

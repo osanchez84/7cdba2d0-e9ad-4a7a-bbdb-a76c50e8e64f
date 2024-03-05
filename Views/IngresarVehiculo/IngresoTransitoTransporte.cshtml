@@ -242,6 +242,7 @@
             contentType: false,
             success: function (response) {
                 sitteg_success("Se ha guardado la información correctamente");
+                location.reload();
                 hideLoading();
             },
             error: function (error) {

@@ -24,6 +24,7 @@ using System.ComponentModel;
 using GuanajuatoAdminUsuarios.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace GuanajuatoAdminUsuarios
 {
@@ -45,7 +46,7 @@ namespace GuanajuatoAdminUsuarios
 
             var mvcBuilder = services.AddControllersWithViews();
 
-            #if DEBUG
+#if DEBUG
             mvcBuilder.AddRazorRuntimeCompilation();
 #endif
             //Connection Strings
@@ -81,7 +82,7 @@ namespace GuanajuatoAdminUsuarios
             services.AddHttpClient();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            
+
 
             services.AddRouting(setupAction =>
             {
@@ -108,7 +109,7 @@ namespace GuanajuatoAdminUsuarios
             //Servicios 
             services.AddScoped(typeof(IPdfGenerator), typeof(PdfGenerator));
             services.AddScoped<ISqlClientConnectionBD, SqlClientConnectionBD>();
-            
+
             services.AddScoped<IMarcasVehiculos, MarcasVehiculoService>();
             services.AddScoped<ICatFormasTrasladoService, CatFormasTrasladoService>();
             services.AddScoped<ICatEntidadesService, CatEntidadesService>();
@@ -226,6 +227,17 @@ namespace GuanajuatoAdminUsuarios
             services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddKendo();
             services.AddHttpContextAccessor();
+            // If using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -246,7 +258,7 @@ namespace GuanajuatoAdminUsuarios
             // implementa la validacion de sesion
             app.UseSession();
             app.UseRouting();
-            
+
 
             //Autorizacion y autenticacion de usuario
             app.UseAuthentication();

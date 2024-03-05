@@ -365,8 +365,47 @@ namespace GuanajuatoAdminUsuarios.Services
             return result;
         }
 
+		public List<CatalogModel> GetDelegacionesFilter()
+		{
+			var result = new List<CatalogModel>();
 
-        public List<CatalogModel> GetTramosFilter()
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+				try
+				{
+					connection.Open();
+					SqlCommand command = new SqlCommand(@"select idDelegacion,delegacion from catDelegaciones c where estatus=1 and transito=1 ", connection);
+					command.CommandType = CommandType.Text;
+					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+					{
+						while (reader.Read())
+						{
+							var aux = new CatalogModel();
+
+							aux.value = reader["idDelegacion"].ToString();
+							aux.text = reader["delegacion"].ToString();
+
+							result.Add(aux);
+
+						}
+
+					}
+
+				}
+				catch (SqlException ex)
+				{
+
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+
+			return result;
+		}
+
+
+		public List<CatalogModel> GetTramosFilter()
         {
             var result = new List<CatalogModel>();
 
@@ -777,7 +816,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 ,sm.nombreSubmarca		as Submarca
                 ,veh.modelo				as Modelo
                 ,CONCAT(cond.nombre, ' ',cond.apellidoPaterno,' ',cond.apellidoMaterno) 	as ConductorVeh
-                ,''						as DepositoVehículo
+                ,pe.pension				as DepositoVehículo
                 ,del.delegacion			as Delegacion
                 ,mun.municipio			as Municipio
                 ,car.carretera			as Carretera
@@ -818,8 +857,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 inner join involucradosAccidente invacc on invacc.idAccidente = acc.idAccidente
                 GROUP by acc.idAccidente) inv on inv.idAccidente = ac.idAccidente
                 LEFT JOIN conductoresVehiculosAccidente cva ON cva.idAccidente = ac.idAccidente 
+				left join pensiones pe on pe.idPension = cva.idPension
                 LEFT JOIN personas cond ON cond.idPersona = cva.idPersona
-                LEFT JOIN personas prop on prop.idPersona = veh.propietario
+                LEFT JOIN personas prop on prop.idPersona = veh.idpersona
                 WHERE ac.estatus <> 0";
 			if (!string.IsNullOrWhiteSpace(condicionesSql))
 			{

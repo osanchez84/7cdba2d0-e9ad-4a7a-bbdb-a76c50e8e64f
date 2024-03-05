@@ -21,39 +21,54 @@
     }
 
 
-    var mensaje = Model.ErrorRepube;
+    bool errorConsultaRepuve = Model.ErrorConsultaRepuve;
+
+    //En caso de exitir un reporte de robo de REPUVE se asignan las variables para mostrar alerta
+    string placaRoboRepuve="";
+    string nivRoboRepuve="";
+    string fechaRoboRepuve="";
+    string fuenteRoboRepuve="";
+    string averiguacionRoboRepuve="";
+    string fechaAveriguacionRoboRepuve="";
+    string agenteRoboRepuve="";
+
+    if(Model.RepuveRobo!=null){
+     placaRoboRepuve =Model.RepuveRobo.Placa;
+     nivRoboRepuve = Model.RepuveRobo.Niv;
+     fechaRoboRepuve = Model.RepuveRobo.Fecha ;
+     fuenteRoboRepuve = Model.RepuveRobo.FuenteRobo;
+     averiguacionRoboRepuve = Model.RepuveRobo.Averiguacion;
+     fechaAveriguacionRoboRepuve = Model.RepuveRobo.FechaAveriguacion;
+     agenteRoboRepuve = Model.RepuveRobo.AgenteMinisterioPublico;
+    }
 
 }
 <script>
 
     $(document).ready(() => {
 
-        var t = "@mensaje"
+          var errorConsultaRep = "@errorConsultaRepuve";
         var esRobado = "@Model.ReporteRobo";
 
-        if (t != '' && t != undefined) {
+        if (errorConsultaRep === 'True') {
             sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
         }
         //Si el vehículo tiene reporte de robo se muestra mensaje
         if (esRobado == "True") {
             setTimeout(() => { mostrarMensajeRobado() }, 400);
         }
+        //Si existe un registro en la tabla de persona fisicas se muestra el tab
+        if ( $( "#divAlertaPersonaFisica" ).length ) {
+                $('#person-fisica-tab').click();
+        }
 
     });
 
     function mostrarMensajeRobado() {
-        var placa = "@Model.RepuveRobo.Placa";
-        var niv = "@Model.RepuveRobo.Niv";
-        var fecha = "@Model.RepuveRobo.Fecha";
-        var fuenteRobo = "@Model.RepuveRobo.FuenteRobo";
-        var averiguacion = "@Model.RepuveRobo.Averiguacion";
-        var fechaAveriguacion = "@Model.RepuveRobo.FechaAveriguacion";
-        var agente = "@Model.RepuveRobo.AgenteMinisterioPublico";
-
         Swal.fire({
             icon: "error",
             title: "Vehículo con REPORTE DE ROBO",
-            html: `PLACA: ${placa}<br>NIV: ${niv}<br>FECHA: ${fecha}<br>AVERIGUACION: ${averiguacion}<br>FECHA DE AVERIGUACION: ${fechaAveriguacion}<br>FUENTE DE ROBO: ${fuenteRobo}<br>AGENTE: ${agente}`
+            html: `PLACA: ${"@placaRoboRepuve"}<br>NIV: ${"@nivRoboRepuve"}<br>FECHA: ${"@fechaRoboRepuve"}<br>AVERIGUACION: ${"@averiguacionRoboRepuve"}<br>FECHA DE AVERIGUACION: ${"@fechaAveriguacionRoboRepuve"}<br>FUENTE DE ROBO: ${"@fuenteRoboRepuve"}<br>AGENTE: ${"@agenteRoboRepuve"}`
         });
     }
 
@@ -641,9 +656,9 @@
     {
         if (Model.idTipoPersona == 1)
         {
-            <div class="alert alert-warning" role="alert">
+            <div class="alert alert-warning" role="alert" id="divAlertaPersonaFisica">
                 <h4 class="alert-heading">Se encontraron datos de persona física</h4>
-                <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+                <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
             </div>
         }
         else if (Model.idTipoPersona == 2)
@@ -776,7 +791,7 @@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
                 aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4">
-                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
+                     @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
                 </div>
  <div class="row">
                     <div class="col-12">
@@ -1379,7 +1394,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="confirmacionModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmacionModalV" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1391,7 +1406,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
-                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Cancelar</button>
+                <button type="button" class="btn btn-secondary" id="confirmarCerrarV" onclick="cancelarConfirmacionV()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1730,11 +1745,11 @@ function submitCreateVehiculo() {
 
     });
     function cerrarModalV() {
-        $('#confirmacionModal').modal('show');
+        $('#confirmacionModalV').modal('show');
 
         // Maneja el clic en el botón "Aceptar" dentro del modal de confirmación
         $('#confirmarCerrar').on('click', function () {
-            $('#confirmacionModal').modal('hide');
+            $('#confirmacionModalV').modal('hide');
             window.close(); // Cierra la ventana
         });
     }
@@ -1763,5 +1778,8 @@ function submitCreateVehiculo() {
 
     }
 
-
+function cancelarConfirmacionV(){
+   $('#confirmacionModalV').modal('hide');
+ 
+}
 </script>

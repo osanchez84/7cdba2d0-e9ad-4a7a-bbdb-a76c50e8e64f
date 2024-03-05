@@ -1,5 +1,16 @@
 ﻿@model Gruas2Model
-
+<div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
+    <div class="col-auto pe-0">
+        <div class="row align-items-center justify-content-center justify-content-md-start">
+            <div class="col-auto pe-0">
+                <i class="icon icon-grua h1 colorPrimary"></i>
+            </div>
+            <div class="col-auto my-3">
+                <h2 class="m-0 h3"><b>Agregar grúa</b></h2>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="panel">
     <div class="panel-body container-fluid">
         <div class="row row-lg">
@@ -96,7 +107,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
-                                    <label>Tipo:</label>
+                                    <label>Tipo:<b>(obligatorio)</b></label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idTipoGrua")
                                         .BindTo((SelectList)ViewBag.CatTipoGruas)
@@ -109,7 +120,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="controlForm">
-                                    <label>Situación:</label>
+                                    <label>Situación:<b>(obligatorio)</b></label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idSituacion")
                                         .BindTo((SelectList)ViewBag.CatSituacionGruas)
@@ -154,6 +165,8 @@
         controlsValidate.push({ 'controlName': 'noEconomico' });
         controlsValidate.push({ 'controlName': 'modelo' });
         controlsValidate.push({ 'controlName': 'placas' });
+        controlsValidate.push({ 'controlName': 'idTipoGrua' });
+        controlsValidate.push({ 'controlName': 'idSituacion' });
 
         // INPUTS
         if (!isControlsValid(controlsValidate)) { isValid = false; }

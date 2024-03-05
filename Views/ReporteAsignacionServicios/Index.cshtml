@@ -152,7 +152,7 @@
         <form id="frmSearch" class="row px-4 mb-4 align-items-end" method="post">
                  <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
-                    <label>Grúa:</label>
+                    <label>Delegación:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(d => d.idDelegacion).Filter(FilterType.Contains)
                             .DataTextField("Text")
@@ -172,7 +172,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
-                    <label>Delegación:</label>
+                    <label>Grúa:</label>
                     <span>
                         @(Html.Kendo().DropDownListFor(d => d.IdGrua).Filter(FilterType.Contains)
                             .DataTextField("Text")

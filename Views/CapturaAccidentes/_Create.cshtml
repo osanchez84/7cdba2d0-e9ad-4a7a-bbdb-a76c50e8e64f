@@ -4,10 +4,7 @@
 
 @{
 
-
-
-
-    var dateVigencia = Model.vigenciaTarjeta;
+   var dateVigencia = Model.vigenciaTarjeta;
     var myAttributes = new { disabled = "", style = "width:100%;" };
     if (Model != null)
     {
@@ -20,39 +17,55 @@
         disableInput = Model.encontradoEn == (int)EstatusBusquedaVehiculo.Sitteg ? true : false;
     }
 
-        var mensaje = Model.ErrorRepube;
+        bool errorConsultaRepuve = Model.ErrorConsultaRepuve;
 
     ViewBag.serie = Model.serie;
+
+     //En caso de exitir un reporte de robo de REPUVE se asignan las variables para mostrar alerta
+    string placaRoboRepuve="";
+    string nivRoboRepuve="";
+    string fechaRoboRepuve="";
+    string fuenteRoboRepuve="";
+    string averiguacionRoboRepuve="";
+    string fechaAveriguacionRoboRepuve="";
+    string agenteRoboRepuve="";
+
+    if(Model.RepuveRobo!=null){
+     placaRoboRepuve =Model.RepuveRobo.Placa;
+     nivRoboRepuve = Model.RepuveRobo.Niv;
+     fechaRoboRepuve = Model.RepuveRobo.Fecha ;
+     fuenteRoboRepuve = Model.RepuveRobo.FuenteRobo;
+     averiguacionRoboRepuve = Model.RepuveRobo.Averiguacion;
+     fechaAveriguacionRoboRepuve = Model.RepuveRobo.FechaAveriguacion;
+     agenteRoboRepuve = Model.RepuveRobo.AgenteMinisterioPublico;
+    }
 }
 
 <script>
     var personaFisicaControlsValidate=[];
     $(document).ready(()=>{
        var esRobado = "@Model.ReporteRobo";
-    var t = "@mensaje"
+        var errorConsultaRep = "@errorConsultaRepuve";
 
-    if (t != '' && t != undefined) {
+    if (errorConsultaRep === 'True') {
                   sitteg_warning('Lo sentimos, ha ocurrido un error con la consulta de Repuve.');
   }
     //Si el vehículo tiene reporte de robo se muestra mensaje
         if (esRobado == "True") {
             setTimeout(() => { mostrarMensajeRobado() }, 400);
         }
+
+         //Si existe un registro en la tabla de persona fisicas se muestra el tab
+        if ( $( "#divAlertaPersonaFisica" ).length ) {
+                $('#person-fisica-tab').click();
+        }
  
 });
 function mostrarMensajeRobado() {
-        var placa = "@Model.RepuveRobo.Placa";
-        var niv = "@Model.RepuveRobo.Niv";
-        var fecha = "@Model.RepuveRobo.Fecha";
-        var fuenteRobo = "@Model.RepuveRobo.FuenteRobo";
-        var averiguacion = "@Model.RepuveRobo.Averiguacion";
-        var fechaAveriguacion = "@Model.RepuveRobo.FechaAveriguacion";
-        var agente = "@Model.RepuveRobo.AgenteMinisterioPublico";
-
         Swal.fire({
             icon: "error",
             title: "Vehículo con REPORTE DE ROBO",
-            html: `PLACA: ${placa}<br>NIV: ${niv}<br>FECHA: ${fecha}<br>AVERIGUACION: ${averiguacion}<br>FECHA DE AVERIGUACION: ${fechaAveriguacion}<br>FUENTE DE ROBO: ${fuenteRobo}<br>AGENTE: ${agente}`
+            html: `PLACA: ${"@placaRoboRepuve"}<br>NIV: ${"@nivRoboRepuve"}<br>FECHA: ${"@fechaRoboRepuve"}<br>AVERIGUACION: ${"@averiguacionRoboRepuve"}<br>FECHA DE AVERIGUACION: ${"@fechaAveriguacionRoboRepuve"}<br>FUENTE DE ROBO: ${"@fuenteRoboRepuve"}<br>AGENTE: ${"@agenteRoboRepuve"}`
         });
     }
  
@@ -651,9 +664,9 @@ function mostrarMensajeRobado() {
 {
     if (Model.idTipoPersona == 1)
     {
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning" role="alert" id="divAlertaPersonaFisica">
             <h4 class="alert-heading">Se encontraron datos de persona física</h4>
-            <p class="mb-0">Ingresa a "Agregar Nueva Persona Física" para verificar y guardar los datos.</p>
+            <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
         </div>
     }
     else if (Model.idTipoPersona == 2)
@@ -784,7 +797,7 @@ function mostrarMensajeRobado() {
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
 
-                    @await Component.InvokeAsync("BusquedaPersonaFisica",false)
+                   @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
 
                 </div>
                <div class="row">
@@ -1569,7 +1582,6 @@ function submitCreateMoral() {
 
     function submitSearchPersonaMoral() {
         var Mydata = $("#frmSearchPersonaMoral").serialize();
-        console.log(Mydata);
         showLoading();
         $.ajax({
             url: '@Url.Action("ajax_BuscarPersonaMoral")',
@@ -1613,7 +1625,6 @@ function submitCreateMoral() {
         type: 'POST',
         data: Mydata,
         success: function (result) {
-            console.log(result);
             $("#personasFisicasAcc").html(result);
             $("#Persona_apellidoPaterno").val(null);
             $("#Persona_apellidoMaterno").val(null);

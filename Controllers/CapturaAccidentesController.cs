@@ -320,8 +320,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var oficina = User.FindFirst(CustomClaims.Oficina).Value;
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+                string abreviaturaMunicipio = User.FindFirst(CustomClaims.AbreviaturaMunicipio).Value;
+                int dependencia = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia"));
 
-                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina, oficina);
+                if (abreviaturaMunicipio.IsNullOrEmpty())
+                {
+                    return Json(new { success = false, message = "La delegación del usuario no tiene asociado un municipio, no se puede generar el folio de la solicitud de depósito" });
+
+                }
+                lastInsertedId = _capturaAccidentesService.GuardarParte1(model, idOficina, abreviaturaMunicipio, DateTime.Now.Year, oficina);
                 HttpContext.Session.SetInt32("LastInsertedId", lastInsertedId);
                 return Json(new { success = true });
 

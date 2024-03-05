@@ -48,6 +48,10 @@ namespace GuanajuatoAdminUsuarios.Models
         }
         public int? idCatTipoPersona { get; set; }
         public string? tipoPersona { get; set; }
+         public int? idVigencia { get; set; }
+        
+        public string? vigencia { get; set; }
+
         public int? idGenero { get; set; }
         public string genero { get; set; }
         public DateTime? fechaNacimiento { get; set; }

@@ -86,6 +86,15 @@
 
         window.location = '/TransitoTransporte/CreatePdfUnRegistro?IdDeposito=' + Id;
     }
+
+
+    function EstatusTemplate(data){
+
+        return `<p>${data.fullDependencia}</p><p> Dependencia: ${data.transito==1?"TTO":"TTE"} </p>`
+    }
+
+
+
 </script>
 <div class="row">
     <div class="col-md-12">
@@ -140,7 +149,7 @@
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
                     ).Title("Descargar detalle").Sortable(false).Width(100);
-                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(190);
+                    columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
                     columns.Bound(p => p.IdGrua).ClientTemplate(
                     "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"

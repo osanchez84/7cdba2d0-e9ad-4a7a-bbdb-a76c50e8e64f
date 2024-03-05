@@ -7,7 +7,7 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class TransitoTransporteModel : EntityModel
 	{
-
+        public int transito { get; set; }
         public int cons { get; set; }
 
         #region Depositos

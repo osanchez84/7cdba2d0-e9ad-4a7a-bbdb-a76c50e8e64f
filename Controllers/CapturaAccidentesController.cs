@@ -1515,7 +1515,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var IdPersonaFisica = _personasService.CreatePersona(persona);
                 model.idPersona = IdPersonaFisica;
                 model.Persona.idPersona = IdPersonaFisica;
-                model.propietario = persona.nombre;
+                model.propietario = IdPersonaFisica.ToString();
             }
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 

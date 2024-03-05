@@ -249,7 +249,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                          d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
                                          dep.idDependencia, dep.nombreDependencia,
                                          CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
-                                         ISNULL(evt.DescripcionEvento,'') Evento
+                                         ISNULL(evt.DescripcionEvento,'') Evento,
+                                         inf.transito
                                 FROM depositos d
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
@@ -313,6 +314,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             TransitoTransporteModel transito = new TransitoTransporteModel();
+                            transito.transito = reader["transito"].GetType() == typeof(DBNull) ? 0 : (int)reader["transito"];
                             transito.cons = Convert.ToInt32(reader["cons"].ToString());
                             transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"] is DBNull ? 0 : reader["IdDeposito"]);
                             transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"] is DBNull ? 0 : reader["IdSolicitud"]);

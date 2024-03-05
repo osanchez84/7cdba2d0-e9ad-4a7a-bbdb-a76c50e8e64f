@@ -1560,6 +1560,27 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             model.idEntidad = model.idEdntidad2;
 
+            if (model.Persona.idPersona == null)
+            {
+
+                PersonaDireccionModel direccion = new PersonaDireccionModel();
+                direccion.idEntidad = 35;
+                direccion.colonia = "se ignora";
+                direccion.calle = "se ignora";
+                direccion.numero = "se ignora";
+                PersonaModel persona = new PersonaModel();
+                persona.nombre = "se ignora";
+                persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                persona.PersonaDireccion = direccion;
+                persona.idGenero = 1;
+                var IdPersonaFisica = _personasService.CreatePersona(persona);
+                model.idPersona = IdPersonaFisica;
+                model.Persona.idPersona = IdPersonaFisica;
+                model.propietario = IdPersonaFisica.ToString();
+            }
+
+
+
             var IdVehiculo = _vehiculosService.CreateVehiculo(model);
 
             if (IdVehiculo > 0)

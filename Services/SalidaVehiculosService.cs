@@ -199,7 +199,8 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     const string SqlTransact =
-                                            @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,d.km,
+                                            @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,munDep.municipio,car.carretera,tra.tramo,d.km,d.depenColonia,d.depenCalle
+											,d.depenNumero,d.depenInterseccion,
                                             v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,
                                             mv.marcaVehiculo,tv.tipoVehiculo,c.color,
                                             per.nombre,per.apellidoPaterno,per.apellidoMaterno,cde.nombreDependencia,
@@ -212,6 +213,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                             LEFT JOIN personas AS per ON per.idPersona = v.idPersona
                                             LEFT JOIN catDependenciasEnvian cde ON cde.idDependenciaEnvia = d.idEnviaVehiculo
                                             LEFT JOIN catMunicipios mun ON mun.idMunicipio = d.idMunicipioEnvia
+											Left JOIN catCarreteras car ON car.idCarretera = d.depenIdCarretera
+											LEFT JOIN catTramos tra ON tra.idTramo = d.idTramo
+                                            LEFT JOIN catMunicipios munDep ON munDep.idMunicipio = d.depenIdMunicipio
 											LEFT JOIN catTipoMotivoIngreso ti ON ti.id = d.idMotivoIngreso
 											WHERE d.idDeposito = @idDeposito AND d.idPension = @idPension";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
@@ -233,14 +237,15 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.motivoIngreso = reader["motivoIngreso"].ToString();
                             model.enviaVehiculo = reader["nombreDependencia"].ToString();
                             model.fechaIngreso = reader["fechaIngreso"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaIngreso"]);
-                             // model.tramo = reader["tramo"].ToString();
-                            //model.carretera = reader["carretera"].ToString();
-                            //model.kilometro = reader["vehiculoKm"].ToString();
-                            //model.colonia = reader["vehiculoColonia"].ToString();
-                            //model.calle = reader["vehiculoCalle"].ToString();
-                            //model.numero = reader["vehiculoNumero"].ToString();
-                            //model.municipio = reader["municipio"].ToString();
-                          
+                            model.tramo = reader["tramo"].ToString();
+                            model.carretera = reader["carretera"].ToString();
+                            model.kilometro = reader["km"].ToString();
+                            model.colonia = reader["depenColonia"].ToString();
+                            model.calle = reader["depenCalle"].ToString();
+                            model.numero = reader["depenNumero"].ToString();
+                            model.municipio = reader["municipio"].ToString();
+                            model.interseccion = reader["depenInterseccion"].ToString();
+
 
 
                         }

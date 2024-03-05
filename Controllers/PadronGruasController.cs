@@ -94,13 +94,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_create()
         {
 
-            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            var catDelegaciones = _estadisticasAccidentesService.GetDelegacionesFilter();
             var catClasificacionGruas = _catDictionary.GetCatalog("CatClasificacionGruas", "0");
             var catTipoGruas = _catDictionary.GetCatalog("CatTiposGrua", "0");
             var catSituacionGruas = _catDictionary.GetCatalog("CatSituacionGruas", "0");
             var catConcesionario = _concesionariosService.GetAllConcesionariosConMunicipio();
             ViewBag.CatConcesionario = new SelectList(catConcesionario, "IdConcesionario", "Concesionario");
-            ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+            ViewBag.CatDelegaciones = new SelectList(catDelegaciones, "value", "text");
             ViewBag.CatClasificacionGruas = new SelectList(catClasificacionGruas.CatalogList, "Id", "Text");
             ViewBag.CatTipoGruas = new SelectList(catTipoGruas.CatalogList, "Id", "Text");
             ViewBag.CatSituacionGruas = new SelectList(catSituacionGruas.CatalogList, "Id", "Text");

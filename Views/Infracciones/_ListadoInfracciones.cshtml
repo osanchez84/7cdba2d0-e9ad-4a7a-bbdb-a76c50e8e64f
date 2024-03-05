@@ -5,7 +5,8 @@
 
 	var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 
-
+	var Consulta = autorizaciones.Contains("461") ? 1 : 0;
+	var Imprimir = autorizaciones.Contains("463") ? 1 : 0;
 	var modificar = autorizaciones.Contains("465")?1:0;
 	var modificarP = autorizaciones.Contains("466")?1:0;
 
@@ -21,7 +22,12 @@
 
 
 	window.modificar =  "@modificar";
-	window.modificarP = "@modificarP"
+	window.modificarP =  "@modificarP"
+	window.Consulta = "@Consulta"
+	window.Imprimir = "@Imprimir"
+
+
+
 	window.dependencia = "@dependencia"
 	window.Oficina = "@Oficina"
 
@@ -65,30 +71,29 @@
 
 	function TemplateVer(a) {
 
-		if (a.transito == window.dependencia)
-			return `<button onclick="ConsultarInfraccion('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Editar</b></h6></button>`
+		if (a.transito == window.dependencia && a.idDelegacion == window.Oficina)
+			return `<button onclick="ConsultarInfraccion('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>`
 		//			return `<button onclick="ConsultarInfraccion('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>`
-				else if(window.modificar==1)
+		else if (window.Consulta == 1)
 					return `<button onclick="ConsultarInfraccion('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>`
 		else
 			return ''
 	}
 
 	function TemplateEditar(a){
-		console.log(a)
-		if ((a.idEstatusInfraccion == 1 || a.idEstatusInfraccion == 2 || a.idEstatusInfraccion == 7) && a.idDelegacion == window.Oficina && a.transito == window.dependencia)
+		if ((a.idEstatusInfraccion == 1 || a.idEstatusInfraccion == 2 || a.idEstatusInfraccion == 7) 
+			&& a.idDelegacion == window.Oficina && a.transito == window.dependencia && (window.modificar == 1 || modificarP == 1))
 			return `<button onclick="ShowUpdate('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>`
-		else if (modificarP == 1 && (a.idEstatusInfraccion == 3 || a.idEstatusInfraccion == 4 || a.idEstatusInfraccion == 5 || a.idEstatusInfraccion == 6))
+			else if (modificarP == 1 && a.transito == window.dependencia)
 			return `<button onclick="ShowUpdate('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>`
 			else
 			return ''
 	}
 
 	function TemplateExcel(a){
-		`<button onclick="downLoadPdf('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>`
-		if ((a.idEstatusInfraccion == 1 || a.idEstatusInfraccion == 2 || a.idEstatusInfraccion == 7) && a.idDelegacion == window.Oficina && a.transito == window.dependencia)
+		if (a.transito == window.dependencia && a.idDelegacion == window.Oficina)
 			return `<button onclick="downLoadPdf('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>`
-		else if (modificarP == 1 && (a.idEstatusInfraccion == 3 || a.idEstatusInfraccion == 4 || a.idEstatusInfraccion == 5 || a.idEstatusInfraccion == 6))
+		else if (window.Imprimir == 1)
 			return `<button onclick="downLoadPdf('${a.idInfraccion}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>`
 		else
 			return ''

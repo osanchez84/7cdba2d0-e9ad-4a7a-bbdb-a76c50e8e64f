@@ -27,6 +27,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             string strQuery = @"INSERT INTO solicitudes( 
                                         [fechaSolicitud]
+                                        ,[idInfraccion]
                                         ,[idTipoVehiculo]
                                         ,[idPropietarioGrua]
                                         ,[idOficial]
@@ -58,6 +59,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[idServicioRequiere])
                                 VALUES (
                                         @fechaSolicitud
+                                        ,@idInfraccion
                                         ,@idTipoVehiculo
                                         ,@idPropietaroGrua
                                         ,@idOficial
@@ -96,6 +98,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietaroGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;

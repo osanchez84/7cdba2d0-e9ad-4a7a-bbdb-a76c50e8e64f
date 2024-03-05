@@ -76,7 +76,13 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito) {
+    function ShowUpdatePopUp(Id,IdDeposito,IdGrua) {
+        //Si la solicitud no tiege grua asociada se oculta el boton del modal
+        if(IdGrua===undefined || IdGrua<=0)
+        $('#divGruaModal').hide();
+        else
+           $('#divGruaModal').show();
+
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
         $('#myUpdateModal').modal('show');
@@ -152,7 +158,7 @@
                     columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
                     columns.Bound(p => p.IdGrua).ClientTemplate(
-                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
+                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#','#= IdGrua#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
                     ).Title("Editar").Sortable(false).Width(100);
 
                     columns.Bound(p => p.IdDeposito).ClientTemplate(
@@ -386,7 +392,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <div id="divGruaModal" class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <div class="controlButton">
                             <button type="button" class="btn btn-primary btn-sm" data-id="gruas" onclick="datosGruas()">
                                 Datos de las Grúas Asignadas

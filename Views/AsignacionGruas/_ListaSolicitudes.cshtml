@@ -76,6 +76,6 @@
         var dataItem = e.sender.dataItem(selectedRow); 
         var FolioSolicitud = dataItem.FolioSolicitud;
         var idPropietarioGrua = dataItem.idPropietarioGrua;
-        window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?iSo=' + FolioSolicitud + '&iPg=' + idPropietarioGrua;
+        window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?folio=' + FolioSolicitud + '&iPg=' + idPropietarioGrua;
     }
 </script>

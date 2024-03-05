@@ -1152,6 +1152,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.IdTramo = (int)DatosAccidente.IdTramo;
             model.Kilometro = DatosAccidente.Kilometro;
 
+            DateTime fechaInfraccion = (DateTime)DatosAccidente.Fecha;
+       //     string horaInfraccion = DatosAccidente.Hora.ToString("hhmm");
+            
+
+
+            model.fechaInfraccion = fechaInfraccion;
             var errors = ModelState.Values.Select(s => s.Errors);
             if (ModelState.IsValid)
             {

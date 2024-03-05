@@ -1843,52 +1843,55 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand("(SELECT " +
-                        "CASE WHEN i.infraccionCortesia = 1 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia," +
-                        "v.idVehiculo, v.placas, propietario.idPersona AS propietario, i.folioInfraccion, i.fechaInfraccion,i.idInfraccion,i.idPersona,i.idPersonaInfraccion, conductor.idPersona AS conductor, ent.nombreEntidad, " +
-                        "propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
-                        "FROM conductoresVehiculosAccidente AS cva " +
-                        "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
-                        "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
-                        "LEFT JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
-                        "LEFT JOIN infraccionesAccidente AS infAcc ON i.idInfraccion = infAcc.idInfraccion " +
-                        "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
-                        "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
-                        "WHERE infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
-                        "AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
+                    /*                connection.Open();
+
+                                    SqlCommand command = new SqlCommand("SELECT " +
+                                        "CASE WHEN i.infraccionCortesia = 1 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia," +
+                                        "v.idVehiculo, v.placas, propietario.idPersona AS propietario, i.folioInfraccion, i.fechaInfraccion,i.idInfraccion,i.idPersona,i.idPersonaInfraccion, conductor.idPersona AS conductor, ent.nombreEntidad, " +
+                                        "propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
+                                        "FROM conductoresVehiculosAccidente AS cva " +
+                                        "LEFT JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo " +
+                                        "LEFT JOIN catEntidades AS ent ON v.idEntidad = ent.idEntidad " +
+                                        "LEFT JOIN infracciones AS i ON cva.idVehiculo = i.idVehiculo " +
+                                        "LEFT JOIN infraccionesAccidente AS infAcc ON i.idInfraccion = infAcc.idInfraccion " +
+                                        "LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
+                                        "LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
+                                        "WHERE infAcc.estatus = 1 AND cva.idAccidente = @idAccidente " +
+                                        "AND EXISTS(SELECT 1 FROM infracciones AS i1 WHERE i1.idVehiculo = v.idVehiculo) " +
+                                        " order by i.idInfraccion desc", connection);
 
 
 
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
-                   // command.Parameters.AddWithValue("@idDependencia", idDependencia);
+                                    command.CommandType = CommandType.Text;
+                                    command.Parameters.AddWithValue("@idAccidente", idAccidente);
+                                   // command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            CapturaAccidentesModel elemnto = new CapturaAccidentesModel();
-                            elemnto.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"].ToString());
-                            elemnto.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
-                            elemnto.Placa = reader["placas"].ToString();
-                            elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
-                            elemnto.Fecha = Convert.ToDateTime(reader["fechaInfraccion"].ToString());
-                            elemnto.ConductorInvolucrado = reader["conductor_nombre"].ToString() + " " + reader["conductor_apellidoPaterno"].ToString() + " " + reader["conductor_apellidoMaterno"].ToString();
-                            elemnto.Propietario = reader["propietario_nombre"].ToString() + " " + reader["propietario_apellidoPaterno"].ToString() + " " + reader["propietario_apellidoMaterno"].ToString();
-                            elemnto.EntidadRegistro = reader["nombreEntidad"].ToString();
-                            elemnto.Cortesia = reader["TipoCortesia"].ToString();
+                                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            CapturaAccidentesModel elemnto = new CapturaAccidentesModel();
+                                            elemnto.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"].ToString());
+                                            elemnto.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
+                                            elemnto.Placa = reader["placas"].ToString();
+                                            elemnto.folioInfraccion = reader["folioInfraccion"].ToString();
+                                            elemnto.Fecha = Convert.ToDateTime(reader["fechaInfraccion"].ToString());
+                                            elemnto.ConductorInvolucrado = reader["conductor_nombre"].ToString() + " " + reader["conductor_apellidoPaterno"].ToString() + " " + reader["conductor_apellidoMaterno"].ToString();
+                                            elemnto.Propietario = reader["propietario_nombre"].ToString() + " " + reader["propietario_apellidoPaterno"].ToString() + " " + reader["propietario_apellidoMaterno"].ToString();
+                                            elemnto.EntidadRegistro = reader["nombreEntidad"].ToString();
+                                            elemnto.Cortesia = reader["TipoCortesia"].ToString();
 
-							ListaVehiculosInfracciones.Add(elemnto);
+                                            ListaVehiculosInfracciones.Add(elemnto);
 
-                        }
+                                        }
 
-                    }
+                                    }
+                    */
                     // en caso de no haber por accidente se mostraran las infracciones de los vehiculo
                     if (ListaVehiculosInfracciones.Count == 0) {
 						connection.Open();
-						command = new SqlCommand("(SELECT " +
-						"CASE WHEN i.infraccionCortesia = 1 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia," +
+                        SqlCommand command = new SqlCommand("SELECT " +
+						"CASE WHEN i.infraccionCortesia = 2 THEN 'Cortesia' ELSE 'No Cortesia' END TipoCortesia," +
 						"v.idVehiculo, v.placas, propietario.idPersona AS propietario, i.folioInfraccion, i.fechaInfraccion,i.idInfraccion,i.idPersona,i.idPersonaInfraccion, conductor.idPersona AS conductor, ent.nombreEntidad, " +
 						"propietario.nombre AS propietario_nombre, propietario.apellidoPaterno AS propietario_apellidoPaterno, propietario.apellidoMaterno AS propietario_apellidoMaterno, conductor.nombre AS conductor_nombre, conductor.apellidoPaterno AS conductor_apellidoPaterno, conductor.apellidoMaterno AS conductor_apellidoMaterno " +
 						"FROM conductoresVehiculosAccidente AS cva " +
@@ -1898,7 +1901,9 @@ namespace GuanajuatoAdminUsuarios.Services
 						"LEFT JOIN personas AS propietario ON v.idPersona = propietario.idPersona " +
 						"LEFT JOIN personas AS conductor ON i.idPersonaInfraccion= conductor.idPersona " +
 						"WHERE cva.idAccidente = @idAccidente " +
-						"AND EXISTS(SELECT 1 FROM infracciones AS i WHERE i.idVehiculo = v.idVehiculo))", connection);
+						" AND EXISTS(SELECT 1 FROM infracciones AS i1 WHERE i1.idVehiculo = v.idVehiculo) " +
+                        " AND NOT EXISTS (SELECT 1 FROM infraccionesAccidente infAc WHERE infAc.idVehiculo = v.idVehiculo and infAc.idInfraccion = i.idInfraccion) " +
+                        " order by i.idInfraccion desc", connection);
 
 
 
@@ -2627,6 +2632,7 @@ namespace GuanajuatoAdminUsuarios.Services
             int result = 0;
             string strQuery = @"INSERT INTO infracciones
                                             (fechaInfraccion
+                                            ,horaInfraccion    
                                             ,folioInfraccion
                                             ,idOficial
                                             ,idMunicipio
@@ -2644,6 +2650,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,estatus
                                             ,transito)
                                      VALUES (@fechaInfraccion
+                                            ,@horaInfraccion
                                             ,@folioInfraccion
                                             ,@idOficial
                                             ,@idMunicipio
@@ -2668,7 +2675,16 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    //   command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    //  command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
+                    command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
+                    DateTime fechaInfraccion = model.fechaInfraccion;
+                    TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
+                    string horaFormateada = horaInfraccion.ToString("hhmm");
+                    string horaInfraccionString = horaFormateada;
+                    command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.NVarChar)).Value = horaInfraccionString;
+
+
                     command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion ?? "-";
                     command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? 0;
                     command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? 0;

@@ -1135,7 +1135,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_detallePersona(int idPersona)
         {
             var model = _personasService.GetPersonaById(idPersona);
-            return PartialView("_DetallePersona",model);
+          
+
+            return PartialView("_DetallePersona", model);
         }
 
         [HttpGet]

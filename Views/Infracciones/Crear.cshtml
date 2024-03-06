@@ -689,6 +689,7 @@
 				"idVehiculo": pidVehiculo,
 			},
 			success: function (data) {
+				console.log("DATVE",data)
                 $("#detalleVehiculo").html(data);
 				hideLoading();
 			}, error: function () {
@@ -709,18 +710,7 @@
 				"idPersona": pidPersona,
 			},
 			success: function (data) {
-				console.log("DATPERS", data);
-				/*var dataArray = [data];
-				var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
-				grid.dataSource.data(dataArray);
-				grid.dataSource._total = dataArray.length;
-				$("#idPersona").val(pidPersona);
-				var fila = grid.tbody.find("tr:first");
-				if (fila.length > 0) {
-					grid.select(fila);
-				}
-				hideLoading();*/
-				  $("#detallePersonas").html(data);
+				$("#detallePersonas").html(data);
 				hideLoading();
 			},
 			error: function () {

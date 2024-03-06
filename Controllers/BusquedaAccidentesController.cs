@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Kendo.Mvc;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {

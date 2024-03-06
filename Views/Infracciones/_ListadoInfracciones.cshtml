@@ -254,7 +254,8 @@
 
 	function ShowUpdate(Id) {
 		//console.log(Id);
-		window.location = '/Infracciones/Editar?id=' + Id;
+		sessionStorage.setItem('redirectTo', '/Infracciones/Index/');
+		window.location = '/Infracciones/Editar?id=' + Id + '&regreso=1';
 	}
 
 	function ShowCortesia(Id) {

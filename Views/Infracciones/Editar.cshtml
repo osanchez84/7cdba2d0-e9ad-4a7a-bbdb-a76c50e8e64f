@@ -1078,7 +1078,7 @@
                     sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
                     shouldGoBack = true;
                 }
-                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {
+                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {                   
                     sitteg_warning("La infracción no fue enviada a Secretaría de Finanzas.");
                     shouldGoBack = true;
                 }
@@ -1099,14 +1099,16 @@
                 console.log("RED", redirectTo);
                 if (shouldGoBack && redirectTo) {
                     // alert("@ViewBag.GoDEpositos")
-                    if (@regreso == "1")
-                        window.location.href = "/Infracciones/Crear";
-                    else {
-                        setTimeout(function () {
-                            window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
-                        }, 2000);
-                    }
+                    window.location.href = redirectTo;
+                   // if (@regreso == "1")
+                   //     window.location.href = "/Infracciones/Crear";
+                   // else {
+                    //    setTimeout(function () {
+                     //       window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
+                      //  }, 2000);
+                   // }
                 }
+                
 
                 hideLoading();
             },

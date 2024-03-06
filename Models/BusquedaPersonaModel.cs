@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
+using GuanajuatoAdminUsuarios.Models.Components;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
     public class BusquedaPersonaModel
     {
-        public bool IsModal { get; set; }
-
         public string NombreBusqueda { get; set; }
         public string ApellidoPaternoBusqueda { get; set; }
         public string ApellidoMaternoBusqueda { get; set; }
@@ -16,6 +15,8 @@ namespace GuanajuatoAdminUsuarios.Models
         public PersonaModel PersonaModel { get; set; }
 
         public Pagination Pagination { get; set; }
+
+        public BusquedaPersonaFisicaConfig Config { get; set; }
         public int Total { get; set; }
         public List<PersonaModel> ListadoPersonas { get; set; } = new();
 

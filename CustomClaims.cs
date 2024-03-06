@@ -11,6 +11,8 @@ namespace GuanajuatoAdminUsuarios
         public const string TipoOficina = "TipoOficina";
         public const string AbreviaturaMunicipio = "AbreviaturaMunicipio";
 		public const string Oficina= "Oficina";
+		public const string OficinaDelegacion= "OficinaDelegacion";
+
 
 
 	}

@@ -45,6 +45,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
                 //List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
                 //searchModel.ListTransitoTransporte = listTransitoTransporte;
+
                 return View(searchModel);
             
         }
@@ -75,7 +76,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"FechaIngreso","Fecha Ingreso"},
             {"FechaLiberacion","Fecha Liberación"},
             };
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idOficina = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value); //HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model,idOficina);
             var result = _pdfService.CreatePdf("ReporteTransitoTransporte", "Tránsito Transporte", ColumnsNames, ListTransitoModel,Array.Empty<float>());
@@ -104,8 +105,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarTransito(TransitoTransporteBusquedaModel model)
         {
-          
-                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            int idOficina = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value);   //HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var ListTransitoModel = _transitoTransporteService.GetTransitoTransportes(model, idOficina);
                 if (ListTransitoModel.Count == 0)
                 {
@@ -171,9 +172,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = _transitoTransporteService.DeleteTransitoTransporte(Convert.ToInt32(idsList[0]), Convert.ToInt32(idsList[1]));
             if (result > 0)
             {
-                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-                List<TransitoTransporteModel> ListTransitoTransporteModel = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
+                int idOficina = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value); //HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                var aux = new TransitoTransporteBusquedaModel();
+                List<TransitoTransporteModel> ListTransitoTransporteModel = _transitoTransporteService.GetTransitoTransportes(aux, idOficina);
                 return PartialView("_ListadoTransitoTransporte", ListTransitoTransporteModel);
             }
             else

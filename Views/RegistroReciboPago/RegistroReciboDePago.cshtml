@@ -24,10 +24,7 @@
                 }, 200);
             } else {
                 // BUSCAR - CONSULTAR
-                if (!auth.toString().includes("421")) {
-                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-                    $("#folioInfraccion").prop('disabled', true).css({ "opacity": "0.7" });
-                }
+
             }
         } else {
             Swal.fire({

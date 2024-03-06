@@ -103,7 +103,6 @@
         }
 
         function downLoadPdfFiltered() {
-            if ('@autorizaciones' && '@autorizaciones'.indexOf('242') !== -1) {
 
             var data = {
                 IdGrua: $('#ddlGrua').val(),
@@ -115,10 +114,7 @@
             };
             var json = JSON.stringify(data);
             window.location = '/ReporteAsignacionServicios/CreatePdf?data=' + json;
-            }
-            else {
-                sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
-            }
+  
         }
 
     </script>

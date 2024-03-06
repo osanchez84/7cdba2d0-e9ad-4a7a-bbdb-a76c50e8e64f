@@ -113,15 +113,15 @@
 
 
         // EDITAR
-        if (!auth.toString().includes("275")) {
-            Swal.fire({
-                icon: "error",
-                title: "¡El usuario no tiene acceso a esta opción!",
-            });
-            setTimeout(() => {
-            }, 200);
-            return;
-        }
+        //if (!auth.toString().includes("275")) {
+        //    Swal.fire({
+        //        icon: "error",
+        //        title: "¡El usuario no tiene acceso a esta opción!",
+        //    });
+        //    setTimeout(() => {
+        //    }, 200);
+        //    return;
+        //}
 
         var dataItem = grid.dataItem($(event.srcElement).closest("tr").next());
         showLoading();
@@ -132,6 +132,7 @@
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (value) {
+                console.log(value)
                 if (value.error) {
                     sitteg_warning("El usuario no tienen los permisos para esta acción");
                 } else {
@@ -155,11 +156,7 @@
         var auth = @autorizaciones;
         var grid = $("#GridP").data("kendoGrid");
 
-        if (!auth.toString().includes("275")) {
-           // grid.hideColumn(9); 
-            $("#btnEditarPension").prop('disabled', true).css({ "opacity": "0.3" });
 
-        }
 
     });
 </script>

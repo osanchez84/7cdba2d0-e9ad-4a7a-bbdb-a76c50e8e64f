@@ -28,19 +28,18 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             get
             {
-                return nombreEntidad + "\r\n\n " +
-                 municipio + "\r\n\n " + vehiculoColonia
-                 + vehiculoCalle + "\r\n\n ";
-
-
+                return nombreEntidad + "   " +
+                       municipio + "<br /><br />" +
+                       vehiculoColonia + "  " +
+                       vehiculoCalle + "<br /><br />";
             }
         }
         public string Oficial
         {
             get
             {
-                return nombreOficial +apellidoPaternoOficial+ "\r\n\n "+
-                 apellidoMaternoOficial;
+                return nombreOficial + "  " + apellidoPaternoOficial + "  " + apellidoMaternoOficial;
+
 
 
             }

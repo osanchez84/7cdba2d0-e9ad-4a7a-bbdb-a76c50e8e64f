@@ -93,7 +93,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         "LEFT JOIN " +
                                          "   catCarreteras car ON car.idCarretera = sol.idCarreteraUbicacion " +
                                         "WHERE " +
-                                            "d.liberado = 0 AND d.estatusSolicitud = 4 AND d.idDelegacion = @idPension GROUP BY " +
+                                            "d.liberado = 0 AND d.estatusSolicitud = 3 AND d.idDelegacion = @idPension GROUP BY " +
                                             "d.IdDeposito, " +
                                             "sol.solicitanteNombre, " +
                                             "sol.solicitanteAp, " +

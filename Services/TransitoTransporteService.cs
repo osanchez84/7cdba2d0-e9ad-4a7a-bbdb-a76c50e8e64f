@@ -250,7 +250,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                          dep.idDependencia, dep.nombreDependencia,
                                          CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
                                          ISNULL(evt.DescripcionEvento,'') Evento,
-                                         inf.transito
+                                         inf.transito,d.idGrua
                                 FROM depositos d
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
@@ -266,7 +266,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
                                 LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-                                WHERE d.estatus != 0  AND (esExterno<>1 OR esExterno IS NULL)  " + condiciones;
+                                WHERE d.estatus != 0  AND (esExterno<>1 OR esExterno IS NULL)and d.idDelegacion=@idOficina" + condiciones;
 
                     //HMG - 01-03-24 Se quita la oficina por acuerdo en comun con Criss
                     //and d.idDelegacion = @idOficina
@@ -279,7 +279,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.FolioInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.Propietario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.NumeroEconomico ?? DBNull.Value;
-                    //command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;
                     //command.Parameters.Add(new SqlParameter("@IdDependenciaGenera", SqlDbType.Int)).Value = (object)model.IdDependenciaGenera ?? DBNull.Value;
@@ -345,6 +345,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.Color = reader["Color"].ToString();
                             transito.pension = reader["pension"].ToString();
                             transito.tramo = reader["tramo"].ToString();
+                            transito.IdGrua = Convert.ToInt32(reader["idGrua"] is DBNull ? 0 : reader["idGrua"]);
 
                             // Nuevos
                             transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"] is DBNull ? DateTime.MinValue : reader["FechaSolicitud"]);
@@ -358,6 +359,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.FolioSolicitud = reader["FolioSolicitud"].ToString();
                             transito.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"] is DBNull ? 0 : reader["IdConcesionario"]);
                             transito.estatusSolicitud = string.Concat(reader["nombreEstatus"], " ", reader["delegacion"]);
+                            transito.SolicitudEstatus = Convert.ToInt32(reader["estatusSolicitud"] is DBNull ? 0 : reader["estatusSolicitud"]);
                             transito.Concesionario = reader["concesionario"].ToString();
                             transito.IdDependenciaGenera = reader["IdDependenciaGenera"] is DBNull ? 0 : (int)reader["IdDependenciaGenera"];
                             transito.IdDependenciaTransito = reader["IdDependenciaTransito"] is DBNull ? 0 : (int)reader["IdDependenciaTransito"];

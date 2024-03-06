@@ -38,7 +38,7 @@
     <div class="form-group col-md-3">
         <div class="controlForm">
             <label>Vigencia tarjeta:</label>
-            @(Html.Kendo().DateTimePickerFor(t => t.Vehiculo.vigenciaTarjeta)
+            @(Html.Kendo().DateTimePickerFor(t => t.Vehiculo.vigenciaTarjeta).Interval(1)
                 @*.Min(DateTime.Now)*@
                 .Label(l => l.Content("Vigencia tarjeta:"))
                 .Format("dd/MM/yyyy")

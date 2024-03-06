@@ -73,6 +73,7 @@
                         @(Html.Kendo().DateTimePickerFor(t => t.FechaSolicitud)
                         .Value(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
                         .Max(DateTime.Now).Format("dd/MM/yyyy HH:mm:ss")
+                        .Interval(1)
                         .HtmlAttributes(new { style = "width: 100%", 
                             title = "datepicker", 
                             required = "required" })

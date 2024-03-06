@@ -318,10 +318,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
 
 
+                            solicitud.observaciones = searchReader["observaciones"].ToString();
+                            solicitud.IdDeposito = int.Parse(searchReader["idDeposito"].ToString());
                             //HMG - NUEVOS CAMPOS
                             solicitud.idInfraccion = searchReader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(searchReader["idInfraccion"].ToString());
-                            solicitud.IdVehiculo = (int)(searchReader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(searchReader["idVehiculo"].ToString()));
-                            solicitud.folioInfraccion = searchReader["FolioVinculado"].ToString();
+                            if (searchReader["idVehiculo"] != System.DBNull.Value && searchReader["idVehiculo"] != null)
+                            {
+                                solicitud.IdVehiculo = Convert.ToInt32(searchReader["idVehiculo"]);
+                            }
+                            else
+                            {
+                                solicitud.IdVehiculo = 0; 
+                            }
                             solicitud.fechaInfraccion = searchReader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(searchReader["fechaInfraccion"].ToString());
                             solicitud.IdMarcaVehiculo = Convert.IsDBNull(searchReader["IdMarcaVehiculo"]) ? 0 : Convert.ToInt32(searchReader["IdMarcaVehiculo"]);
                             solicitud.IdSubmarca = Convert.IsDBNull(searchReader["IdSubmarca"]) ? 0 : Convert.ToInt32(searchReader["IdSubmarca"]);
@@ -353,8 +361,6 @@ namespace GuanajuatoAdminUsuarios.Services
                                 solicitud.MyFile = null; 
                             }
 
-                            solicitud.observaciones = searchReader["observaciones"].ToString();
-                            solicitud.IdDeposito = int.Parse(searchReader["idDeposito"].ToString());
                             return solicitud;
                         }
                     }
@@ -540,10 +546,21 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
                     SqlCommand command = new SqlCommand(query, connection);
+                    DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
+                    TimeSpan horaInicio = TimeSpan.Parse(formData["horaInicio"]);
+                    DateTime fechaHoraInicio = fechaInicio.Date.Add(horaInicio);
+                    command.Parameters.AddWithValue("@fechaInicio", fechaHoraInicio);
 
-                    command.Parameters.AddWithValue("@fechaArribo", DateTime.Parse(formData["fechaArribo"].ToString()));
-                    command.Parameters.AddWithValue("@fechaInicio", DateTime.Parse(formData["fechaInicio"].ToString()));
-                    command.Parameters.AddWithValue("@fechaFinal", DateTime.Parse(formData["fechaFinal"].ToString()));
+                    DateTime fechaArribo = DateTime.Parse(formData["fechaArribo"]);
+                    TimeSpan horaArribo = TimeSpan.Parse(formData["horaArribo"]);
+                    DateTime fechaHoraArribo = fechaArribo.Date.Add(horaArribo);
+                    command.Parameters.AddWithValue("@fechaArribo", fechaHoraArribo);
+
+                    DateTime fechaFinal = DateTime.Parse(formData["fechaFinal"]);
+                    TimeSpan horaTermino = TimeSpan.Parse(formData["horaTermino"]);
+                    DateTime fechaHoraFinal = fechaFinal.Date.Add(horaTermino);
+                    command.Parameters.AddWithValue("@fechaFinal", fechaHoraFinal);
+
                     command.Parameters.AddWithValue("@operadorGrua", formData["operadorGrua"].ToString());
                     command.Parameters.AddWithValue("@abanderamiento", abanderamiento);
                     command.Parameters.AddWithValue("@arrastre", arrastre);

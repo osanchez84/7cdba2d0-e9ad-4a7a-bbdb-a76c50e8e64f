@@ -1057,11 +1057,35 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catAgenciasMinisterioService.ObtenerAgenciasActivasPorDelegacion(idOficina), "IdAgenciaMinisterio", "NombreAgencia");
             return Json(result);
         }
+
+        public JsonResult AgMinisterioDelegacion_DropTodas()
+        {
+            //int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_catAgenciasMinisterioService.ObtenerAgenciasActivas(), "IdAgenciaMinisterio", "NombreAgencia");
+            return Json(result);
+        }
         public JsonResult Oficiales_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
             var oficiales = _oficialesService.GetOficialesFiltrados(idOficina, idDependencia)
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+                });
+            oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+
+        public JsonResult Oficiales_DropTodos()
+        {
+            //int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            //int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficiales()// .GetOficialesFiltrados(idOficina, idDependencia)
                 .Select(o => new
                 {
                     IdOficial = o.IdOficial,

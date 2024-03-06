@@ -771,14 +771,20 @@
         <div class="row my-3 mb-4">
             <div class="col-12 col-md-6 mx-md-auto">
                 <div class="row justify-content-around">
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                    <div id="botnEnvio" class="controlButton" onclick="enviarDatos()" style="@(esSoloLectura ? "display:none;" : "")" >
+                <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
+                    @(Html.Kendo().Button()
+                        .Name("back")
+                        .HtmlAttributes(new { @class = "px-5" })
+                        .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\"></i><b>Regresar</b></h6>"))
+                </div>
+                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">                    
+                        <div id="botnEnvio" class="controlButton" onclick="enviarDatos()" style="@(esSoloLectura ? "display:none;" : "")" >
                         @(Html.Kendo().Button()
                             .Name("Finalizar")
                                 .HtmlAttributes(new { @class = "btnPrimary px-5" })
                                 .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
-                        </div>
-                    <div id="botnReturn" class="controlButton" onclick="regresarBusqueda()" style="@(esSoloLectura ? "" : "display:none;")">
+                        </div>                    
+                        <div id="botnReturn" class="controlButton" onclick="regresarBusqueda()" style="@(esSoloLectura ? "" : "display:none;")">
                         @(Html.Kendo().Button()
                             .Name("Finalizar")
                                 .HtmlAttributes(new { @class = "btnPrimary px-5" })
@@ -825,6 +831,9 @@
         }
     });
 }
+
+
+
 
     function enviarDatos() {
 
@@ -877,6 +886,12 @@
 
 
     $(document).ready(function () {
+           var v = '@ViewBag.EsSoloLectura';
+           if (v=='True'){
+                var btn = $("#cambiarContenidoButton");
+                btn.css("visibility", "hidden");
+           }
+
             var switchElementA = $("#armasSwitch").data("kendoSwitch");
             var campoArmasTexto = $("#campoArmasTexto");
 
@@ -1166,6 +1181,10 @@
                 }
             });
         });*/
+
+    function goBack() {
+        window.location.href = '/CapturaAccidentes/CapturaBAccidente/'
+    }
 </script>
 
 

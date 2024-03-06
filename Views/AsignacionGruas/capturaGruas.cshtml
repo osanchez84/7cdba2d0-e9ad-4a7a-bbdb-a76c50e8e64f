@@ -335,7 +335,10 @@
             success: function (data) {
                 sitteg_success("Información guardada con éxito");
                 document.getElementById("grua2").style.display = "block";
-                window.location.href = '@Url.Action("Index", "AsignacionGruas")';
+                setTimeout(function(){
+                    window.location.href = '@Url.Action("Index", "AsignacionGruas")';
+                }, 500);
+               
                 hideLoading();
             },
             error: function (error) {

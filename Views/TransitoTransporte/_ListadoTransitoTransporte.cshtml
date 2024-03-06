@@ -83,7 +83,13 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito) {
+    function ShowUpdatePopUp(Id,IdDeposito,IdGrua) {
+        //Si la solicitud no tiege grua asociada se oculta el boton del modal
+        if(IdGrua===undefined || IdGrua<=0)
+        $('#divGruaModal').hide();
+        else
+           $('#divGruaModal').show();
+
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
         $('#myUpdateModal').modal('show');
@@ -418,7 +424,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <div id="divGruaModal" class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <div class="controlButton">
                             <button type="button" class="btn btn-primary btn-sm" data-id="gruas" onclick="datosGruas()">
                                 Datos de las Grúas Asignadas

@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -259,9 +260,13 @@ namespace GuanajuatoAdminUsuarios.Services
             return Vehiculo;
         }
 
-        public AsignacionGruaModel BuscarSolicitudPord(string iSo, int idOficina,int idDependencia)
+        public AsignacionGruaModel BuscarSolicitudPord(int iSo,string folio, int idOficina,int idDependencia)
         {
             AsignacionGruaModel solicitud = new AsignacionGruaModel();
+            string whereDeposito = " WHERE A.idSolicitud = @FolioIdSolicitud";
+            if(!folio.IsNullOrEmpty()){
+                whereDeposito = " WHERE A.folio = @FolioIdSolicitud";
+            }
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -302,9 +307,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 LEFT JOIN personas		p	ON v.idPersona = p.idPersona
                                                                 LEFT JOIN catMarcasVehiculos as cmv ON v.idMarcaVehiculo = cmv.idMarcaVehiculo
                                                                 LEFT JOIN catSubmarcasVehiculos as csv ON v.idSubmarca = csv.idSubmarca
-                                                                LEFT JOIN catColores  col ON v.idColor = col.idColor
-                                                                WHERE A.folio = @FolioSolicitud", connection);
-                    searchCommand.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = iSo;
+                                                                LEFT JOIN catColores  col ON v.idColor = col.idColor "+whereDeposito, connection);
+                    if(!folio.IsNullOrEmpty())
+                    searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
+                    else
+                    searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.Int)).Value = iSo;
 
                     // Ejecutar la consulta de búsqueda
                     using (SqlDataReader searchReader = searchCommand.ExecuteReader())
@@ -312,6 +319,12 @@ namespace GuanajuatoAdminUsuarios.Services
                         // ...
                         if (searchReader.Read())
                         {
+                            //Se obtiene el nombre del propietario
+                            string nombrePropietario = searchReader["nombre"] == System.DBNull.Value ? "" : searchReader["nombre"].ToString().Trim();
+                            string apellidoPaternoPropietario = searchReader["apellidoPaterno"] == System.DBNull.Value ? "" : searchReader["apellidoPaterno"].ToString().Trim();
+                            string apellidoMaternoPropietario = searchReader["apellidoMaterno"] == System.DBNull.Value ? "" : searchReader["apellidoMaterno"].ToString().Trim();
+                            string nombreCompletoPropietario = nombrePropietario+" "+apellidoPaternoPropietario+" "+apellidoMaternoPropietario;
+
                             solicitud.idSolicitud = int.Parse(searchReader["idSolicitud"].ToString());
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
                             solicitud.observaciones = searchReader["observaciones"].ToString();
@@ -332,7 +345,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.Placa = searchReader["placas"].ToString();
                             solicitud.Serie = searchReader["serie"].ToString();
                             solicitud.Tarjeta = searchReader["tarjeta"].ToString();
-                            solicitud.Propietario = $"{searchReader["nombre"]} {searchReader["apellidoPaterno"]} {searchReader["apellidoMaterno"]}";
+                            solicitud.Propietario = nombreCompletoPropietario.Trim();
                             solicitud.CURP = searchReader["CURP"].ToString();
                             solicitud.RFC = searchReader["RFC"].ToString();
 
@@ -360,11 +373,17 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     // Continuar con la consulta y la inserción
+                    string whereSolicitud = "WHERE folio = @FolioIdSolicitud";
+                    if (iSo > 0)
+                        whereSolicitud = "WHERE idSolicitud = @FolioIdSolicitud";
                     SqlCommand command = new SqlCommand("SELECT ISNULL(sol.idSolicitud,0) idSolicitud,sol.fechaSolicitud,ISNULL(sol.folio,'') folio ,ISNULL(sol.idPropietarioGrua,0) idPropietarioGrua,ISNULL(sol.idPension,0) idPension,ISNULL(sol.idTramoUbicacion,0) idTramoUbicacion, " +
                                                         "sol.vehiculoKm, sol.idInfraccion " +
                                                         "FROM solicitudes AS sol " +
-                                                        "WHERE folio = @FolioSolicitud", connection);
-                    command.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = iSo;
+                                                        whereSolicitud, connection);
+                    if(!folio.IsNullOrEmpty())
+                    command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
+                    else
+                    command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = iSo;
 
                     command.CommandType = System.Data.CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -664,7 +683,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@idDeposito", iDep);
 
 
-                    command.ExecuteNonQuery();
+                    result = command.ExecuteNonQuery();
                 }
                 catch (SqlException ex)
                 {

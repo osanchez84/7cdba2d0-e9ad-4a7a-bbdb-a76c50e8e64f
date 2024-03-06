@@ -6,7 +6,7 @@
 	var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 
 	var Consulta = autorizaciones.Contains("461") ? 1 : 0;
-	var Imprimir = autorizaciones.Contains("463") ? 1 : 0;
+	var Imprimir = autorizaciones.Contains("462") ? 1 : 0;
 	var modificar = autorizaciones.Contains("465")?1:0;
 	var modificarP = autorizaciones.Contains("466")?1:0;
 
@@ -45,18 +45,7 @@
 					window.location.href = "/Principal";
 				}, 200);
 			} else {
-				// BUSCAR - CONSULTAR
-				if (!auth.toString().includes("461")) {
-					$("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-				}
-				//IMPRIMIR
-				if (!auth.toString().includes("462")) {
-					$("#btnPDFReporte").prop('disabled', true).css({ "opacity": "0.3" });
-				}
-				// AGREGAR
-				if (!auth.toString().includes("463")) {
-					$("#btnGuardarInfraccion").prop('disabled', true).css({ "opacity": "0.3" });
-				}
+
 			}
 		} else {
 			Swal.fire({
@@ -198,23 +187,7 @@
 
 
 		<script>
-			$(document).ready(function () {
-				var auth = @autorizaciones;
-				var grid = $("#GridInf").data("kendoGrid");
-
-				if (!auth.toString().includes("461")) {
-					grid.hideColumn(14);
-				}
-
-				if (!auth.toString().includes("465")) {
-					grid.hideColumn(12);
-					grid.hideColumn(13);
-				}
-
-				if (!auth.toString().includes("462")) {
-					grid.hideColumn(15);
-				}
-			});		
+	
 		</script>
 	</div>
 </div>
@@ -327,14 +300,6 @@
 	}
 
 	$(document).ready(function () {
-		var auth = @autorizaciones;
-		var grid = $("#GridInf").data("kendoGrid");
 
-		if (!auth.toString().includes("465")) {
-			grid.hideColumn(12);
-		}
-		if (!auth.toString().includes("462")) {
-			grid.hideColumn(14);
-		}
 	});
 </script>

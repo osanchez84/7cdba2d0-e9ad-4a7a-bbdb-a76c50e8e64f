@@ -118,6 +118,19 @@
 
 
 
+    function EditarTemplate(data){
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
+            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
+        else 
+        return ""
+
+
+    }
+
+
+
+
 </script>
 <div class="row">
     <div class="col-md-12">
@@ -174,9 +187,7 @@
                     ).Title("Descargar detalle").Sortable(false).Width(100);
                     columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
-                    columns.Bound(p => p.IdGrua).ClientTemplate(
-                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                    ).Title("Editar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
                     columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
                     columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(

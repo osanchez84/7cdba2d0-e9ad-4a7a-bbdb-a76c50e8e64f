@@ -23,10 +23,7 @@
                     window.location.href = "/Principal";
                 }, 200);
             } else {
-                // BUSCAR - CONSULTAR
-                if (!auth.toString().includes("461")) {
-                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-                }
+
                 //IMPRIMIR
                 if (!auth.toString().includes("462")) {
                     $("#btnPDFReporte").prop('disabled', true).css({ "opacity": "0.3" });

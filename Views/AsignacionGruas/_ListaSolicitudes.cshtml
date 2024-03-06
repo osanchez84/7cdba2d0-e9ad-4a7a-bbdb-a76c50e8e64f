@@ -38,9 +38,15 @@
                 columns.Bound(c => c.idPropietarioGrua).Hidden();
                 columns.Bound(c => c.FolioSolicitud).Title("Folio").Width(100);
                 columns.Bound(c => c.fechaSolicitud).Title("Fecha").Format("{0:dd/MM/yyyy}").Width(100);
-                columns.Bound(c => c.Ubicacion).Title("Ubicación").Width(100);
-                columns.Bound(c => c.Grua).Title("Grúa").Width(100);
-                columns.Bound(c => c.Oficial).Title("Oficial").Width(100);
+                columns.Bound(c => c.Ubicacion)
+                    .Title("Ubicación")
+                    .Width(380)
+                    .ClientTemplate("#= espacios(Ubicacion) #");
+                                columns.Bound(c => c.Grua).Title("Grúa").Width(200);
+                columns.Bound(c => c.Oficial)
+                    .Title("Oficial")
+                    .Width(300)
+                    .ClientTemplate("#= espacios(Oficial) #");
                 columns.Bound(c => c.tipoUsuario).Title("Solicitante").Width(100);
             })
             .HtmlAttributes(new { style = "height:400px" })
@@ -78,4 +84,12 @@
         var idPropietarioGrua = dataItem.idPropietarioGrua;
         window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?folio=' + FolioSolicitud + '&iPg=' + idPropietarioGrua;
     }
+
+    function espacios(oficial) {
+        return oficial.replace(/\s/g, "&nbsp;&nbsp;&nbsp;");
+    }
+    function espacios(ubicacion) {
+        return ubicacion.replace(/\s/g, "&nbsp;");
+    }
+
 </script>

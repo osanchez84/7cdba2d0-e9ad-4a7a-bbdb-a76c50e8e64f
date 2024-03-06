@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="controlForm mb-3">
-            <label>Cortesá aplicada:</label>
+            <label>Cortesiá aplicada:</label>
             <div class="btnToggleActive">
                      @Html.HiddenFor(m=>m.idInfraccion)
                     @(Html.Kendo().SwitchFor(t => t.infraccionCortesia)
@@ -39,7 +39,7 @@
                     .Messages(c => c.Checked("No aplicada").Unchecked("Aplicada"))
                     )
             </div>
-
+            <br />
             <div class="row">
 
                 @(Html.Kendo().TextAreaFor(s=>s.ObsevacionesApl)

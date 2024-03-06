@@ -25,8 +25,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatusDesc,del.nombreOficina FROM catCarreteras AS c INNER JOIN estatus AS e ON c.estatus = e.estatus" +
-                                                       " INNER JOIN catDelegacionesOficinasTransporte AS del ON c.idOficinaTransporte = del.idOficinaTransporte" +
+                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatusDesc,del.nombreOficina, ISNULL(D.transito,0) transito  " +
+                                                       " FROM catCarreteras AS c INNER JOIN estatus AS e ON c.estatus = e.estatus" +
+                                                       " INNER JOIN catDelegacionesOficinasTransporte AS del ON c.idOficinaTransporte = del.idOficinaTransporte " +
+                                                       " INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion " + 
                                                        " ORDER BY Carretera ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -44,7 +46,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             carretera.FechaActualizacion = reader["FechaActualizacion"] != DBNull.Value ? Convert.ToDateTime(reader["FechaActualizacion"]) : DateTime.MinValue;
                             carretera.Estatus = reader["estatus"] != DBNull.Value ? Convert.ToInt32(reader["estatus"]) : 0;
                             carretera.ActualizadoPor = reader["ActualizadoPor"] != DBNull.Value ? Convert.ToInt32(reader["ActualizadoPor"]) : 0;
-
+                            carretera.Transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
                             ListaCarreteras.Add(carretera);
 
                         }

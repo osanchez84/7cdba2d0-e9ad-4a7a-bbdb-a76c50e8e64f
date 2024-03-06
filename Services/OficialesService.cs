@@ -215,7 +215,7 @@ Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
                             oficial.estatusDesc = reader["estatusDesc"].ToString();
                             //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
-
+                            oficial.transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
 
                             oficiales.Add(oficial);
 

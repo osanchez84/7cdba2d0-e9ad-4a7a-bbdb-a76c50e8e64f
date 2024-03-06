@@ -68,6 +68,7 @@
                         <div class="controlForm my-3">
                             <label for="datetimepicker1">Fecha de arribo <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().DateTimePickerFor(t => t.fechaArribo).Max(DateTime.Now)
+
                                 .Format("dd/MM/yyyy hh:mm tt")
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 )

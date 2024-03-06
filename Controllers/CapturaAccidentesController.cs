@@ -980,6 +980,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
             return Json(result);
         }
+
+        public JsonResult Delegaciones_Drop2()
+        {
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos().Where(X => X.Transito == 1), "IdDelegacion", "Delegacion");
+            return Json(result);
+        }
+
         public JsonResult Pensiones_Drop(int delegacionDDValue)
         {
             var result = new SelectList(_pensionesService.GetPensionesByDelegacion(delegacionDDValue), "IdPension", "Pension");
@@ -1152,6 +1159,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.IdTramo = (int)DatosAccidente.IdTramo;
             model.Kilometro = DatosAccidente.Kilometro;
 
+            DateTime fechaInfraccion = (DateTime)DatosAccidente.Fecha;
+       //     string horaInfraccion = DatosAccidente.Hora.ToString("hhmm");
+            
+
+
+            model.fechaInfraccion = fechaInfraccion;
             var errors = ModelState.Values.Select(s => s.Errors);
             if (ModelState.IsValid)
             {

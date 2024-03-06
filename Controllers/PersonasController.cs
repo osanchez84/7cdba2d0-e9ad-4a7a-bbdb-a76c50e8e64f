@@ -429,6 +429,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             catch (Exception ex)
             {
+                List<PersonaModel> pEncontradas = new List<PersonaModel>();
                 // En caso de errores, devolver una respuesta JSON con licencia no encontrada
                 return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
             }

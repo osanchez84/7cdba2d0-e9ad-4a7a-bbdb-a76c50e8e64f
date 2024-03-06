@@ -826,6 +826,9 @@
     });
 }
 
+
+
+
     function enviarDatos() {
 
         var datosFormulario = $("#detalleAccidenteForm").serialize();
@@ -877,6 +880,12 @@
 
 
     $(document).ready(function () {
+           var v = '@ViewBag.EsSoloLectura';
+           if (v=='True'){
+                var btn = $("#cambiarContenidoButton");
+                btn.css("visibility", "hidden");
+           }
+
             var switchElementA = $("#armasSwitch").data("kendoSwitch");
             var campoArmasTexto = $("#campoArmasTexto");
 

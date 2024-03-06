@@ -199,6 +199,7 @@
 					<label>Kilómetro:</label>
 					@(Html.Kendo().TextBoxFor(t => t.Kilometro)
 						.Placeholder("Ingresa Kilometro")
+						
 						.Enable(!ViewBag.EsSoloLectura)
 						.HtmlAttributes(new { style = "width: 100%", Id = "txtKilometro" })
 						)

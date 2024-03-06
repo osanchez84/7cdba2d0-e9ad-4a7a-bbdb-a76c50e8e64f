@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
 using System.Globalization;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -148,8 +149,19 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Tramo = reader["Tramo"].ToString();
                             accidente.DescripcionCausa = reader["descripcionCausas"].ToString();
                             accidente.Carretera = reader["Carretera"].ToString();
-                            accidente.Kilometro = reader["Kilometro"].ToString();
-                            accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
+                            
+                            var valueDec = 0;
+                            var km = "";
+                            if (reader["Kilometro"].ToString().Split('.').Length>1)
+                                valueDec = Convert.ToInt32(reader["Kilometro"].ToString().Split('.')[1]);
+
+                            if (valueDec > 0)
+                                km = reader["Kilometro"].ToString().Split('.')[0] + "." + valueDec.ToString();
+                            else
+                                km = reader["Kilometro"].ToString().Split('.')[0];
+
+							accidente.Kilometro = km;
+							accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
 							accidente.DelegacionOficina = reader["nombreOficina"].ToString();
                             accidente.jefeOficina = reader["jefeOficina"].ToString();
                             accidente.Fecha=accidente.Fecha.Value.Add(accidente.Hora.Value);
@@ -1641,7 +1653,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         tc.tipoCarga, pen.pension, ft.formaTraslado, cent.nombreEntidad,va.montoVehiculo ,p.vigenciaLicencia ,
 						isnull(epd.nombreentidad,'') +', '+isnull(mpd.municipio,'') +', '+isnull(pd.colonia,'') +', '+ isnull(pd.calle,'') +', '+isnull(pd.numero,'') as direccion,
 						isnull(epdc.nombreentidad,'')+', '+isnull(mpdc.municipio,'')+', '+isnull(pdc.colonia,'')+', '+ isnull(pdc.calle,'')+', '+isnull(pdc.numero,'') as direccionc,
-						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,v.numeroeconomico as numeroeconomico
+						p.nombre,pcv.nombre, GC.genero,pcv.numeroLicencia,tl.tipoLicencia,v.numeroeconomico as numeroeconomico, '' grua, 0 MontoDanos
 
                         FROM conductoresVehiculosAccidente AS cva 
 						INNER JOIN vehiculos AS v ON cva.idVehiculo = v.idVehiculo  
@@ -1713,12 +1725,13 @@ namespace GuanajuatoAdminUsuarios.Services
 							vehiculo.DireccionConductor = reader["direccionc"].ToString();
                             vehiculo.Sexo = reader["genero"].ToString();
                             vehiculo.numeroLicencia = reader["numeroLicencia"].ToString();
+                            vehiculo.Grua = reader["grua"].ToString();
                             vehiculo.TipoLicencia = reader["tipoLicencia"].ToString();
 							vehiculo.ConductorInvolucrado = $"{reader["nombreConductor"]} {reader["apellidoPConductor"]} {reader["apellidoMConductor"]}";
                             vehiculo.vigenciaLicencia = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? DateTime.MinValue : (DateTime)reader["vigenciaLicencia"];
                             vehiculo.NumeroEconomico = reader["numeroeconomico"].GetType() == typeof(DBNull) ? "" : reader["numeroeconomico"].ToString();
                             vehiculo.IdVehiculo = Convert.IsDBNull(reader["idVehiculo"]) ? 0 : Convert.ToInt32(reader["idVehiculo"]);
-
+                            //vehiculo.MontoDanos = Convert.ToDecimal(reader["MontoDanos"]);
                             string montoVehiculoString = reader["montoVehiculo"].ToString();
                             float montoVehiculo;
 

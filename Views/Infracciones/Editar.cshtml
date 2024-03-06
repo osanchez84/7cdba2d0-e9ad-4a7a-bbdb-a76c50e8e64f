@@ -44,40 +44,88 @@
 
 
     function EditarVehiculo() {
-        $("#Vehiculo_tarjeta").addClass("activeData");
-        $('#Vehiculo_tarjeta').data("kendoTextBox").enable();
+        var v = '@ViewBag.EsSoloLectura';
+        if (v == 'False') {
+            $("#Vehiculo_tarjeta").addClass("activeData");
+            $('#Vehiculo_tarjeta').data("kendoTextBox").enable(true);
 
-        //$("#Persona_nombreCompleto").addClass("activeData");
-        //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
+            //$("#Persona_nombreCompleto").addClass("activeData");
+            //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
 
-        $("#Vehiculo_motor").addClass("activeData");
-        $("#Vehiculo_motor").data("kendoTextBox").enable();
+            $("#Vehiculo_motor").addClass("activeData");
+            $("#Vehiculo_motor").data("kendoTextBox").enable(true);
 
-        $("#Vehiculo_numeroEconomico").addClass("activeData");
-        $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable();
+            $("#Vehiculo_numeroEconomico").addClass("activeData");
+            $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable(true);
 
-        $("#Vehiculo_otros").addClass("activeData");
-        $("#Vehiculo_otros").data("kendoTextBox").enable();
+            $("#Vehiculo_otros").addClass("activeData");
+            $("#Vehiculo_otros").data("kendoTextBox").enable(true);
 
-        $("#Vehiculo_poliza").addClass("activeData");
-        $("#Vehiculo_poliza").data("kendoTextBox").enable();
-        //
-        $("#Vehiculo_capacidad").addClass("activeData");
-        $("#Vehiculo_capacidad").data("kendoTextBox").enable();
+            $("#Vehiculo_poliza").addClass("activeData");
+            $("#Vehiculo_poliza").data("kendoTextBox").enable(true);
+            //
+            $("#Vehiculo_capacidad").addClass("activeData");
+            $("#Vehiculo_capacidad").data("kendoTextBox").enable(true);
 
-        $("#Vehiculo_placas").addClass("activeData");
-        $("#Vehiculo_placas").data("kendoTextBox").enable()
+            $("#Vehiculo_placas").addClass("activeData");
+            $("#Vehiculo_placas").data("kendoTextBox").enable(true)
 
-        $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
-        $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable();
+            $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
+            $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable(true);
 
-        $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
-        $("#Vehiculo_idEntidad").data("kendoDropDownList").enable();
+            $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(true);
 
-        $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
-        $("#Vehiculo_idColor").data("kendoDropDownList").enable();
+            $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(true);
 
-        // $("#Vehiculo_btnSelect").prop("disabled", false);
+             $("#Vehiculo_idColor").data("kendoDropDownList").enable(true);
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(true);
+
+            $("#btnSelect1").prop("disabled", false);
+            $("#btnEditarConductor").prop("disabled", false);
+            $("#btnNuevoMotivo").prop("disabled", false);
+        } else {
+            $("#btnSelect1").prop("disabled", true);
+            $("#btnEditarConductor").prop("disabled", true);
+            $("#btnNuevoMotivo").prop("disabled", true);
+
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(false);
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(false);
+
+            $("#Vehiculo_tarjeta").addClass("activeData");
+            $('#Vehiculo_tarjeta').data("kendoTextBox").enable(false);
+
+            //$("#Persona_nombreCompleto").addClass("activeData");
+            //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
+
+            $("#Vehiculo_motor").addClass("activeData");
+            $("#Vehiculo_motor").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_numeroEconomico").addClass("activeData");
+            $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_otros").addClass("activeData");
+            $("#Vehiculo_otros").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_poliza").addClass("activeData");
+            $("#Vehiculo_poliza").data("kendoTextBox").enable(false);
+            //
+            $("#Vehiculo_capacidad").addClass("activeData");
+                $("#Vehiculo_capacidad").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_placas").addClass("activeData");
+            $("#Vehiculo_placas").data("kendoTextBox").enable(false)
+
+            $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
+            $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable(false);
+
+            $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(false);
+
+            $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(false);
+        }
         $("#Vehiculo_placas").focus();
     }
 

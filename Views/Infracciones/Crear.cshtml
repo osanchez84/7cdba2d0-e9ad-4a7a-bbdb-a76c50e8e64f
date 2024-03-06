@@ -689,7 +689,7 @@
 				"idVehiculo": pidVehiculo,
 			},
 			success: function (data) {
-				$("#detalleVehiculo").empty().append(data);
+                $("#detalleVehiculo").html(data);
 				hideLoading();
 			}, error: function () {
 				//sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -710,7 +710,7 @@
 			},
 			success: function (data) {
 				console.log("DATPERS", data);
-				var dataArray = [data];
+				/*var dataArray = [data];
 				var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
 				grid.dataSource.data(dataArray);
 				grid.dataSource._total = dataArray.length;
@@ -719,6 +719,8 @@
 				if (fila.length > 0) {
 					grid.select(fila);
 				}
+				hideLoading();*/
+				  $("#detallePersonas").html(data);
 				hideLoading();
 			},
 			error: function () {

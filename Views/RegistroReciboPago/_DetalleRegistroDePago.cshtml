@@ -52,7 +52,7 @@
     <div class="col-12 col-md-5">
         <div class="controlForm my-3">
             <label>Fecha:</label>
-            @(Html.Kendo().DateTimePickerFor(t => t.FechaPago)
+            @(Html.Kendo().DateTimePickerFor(t => t.FechaPago).Interval(1)
                 .Label(l => l.Content("Fecha de pago:"))
                 .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly" })
                 )

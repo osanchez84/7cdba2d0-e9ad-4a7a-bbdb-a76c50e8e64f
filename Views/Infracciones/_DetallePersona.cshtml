@@ -62,7 +62,7 @@
         <div class="form-group col-md-3">
             <div class="controlForm">
                 <label>Fecha Nacimiento:</label>
-                @(Html.Kendo().DateTimePickerFor(t => t.fechaNacimiento).Max(DateTime.Now)
+                @(Html.Kendo().DateTimePickerFor(t => t.fechaNacimiento).Max(DateTime.Now).Interval(1)
                                                 .Label(l => l.Content("Fecha Nacimiento:"))
                                                 .Format("dd/MM/yyyy")
                                                 .Enable(!ViewBag.EsSoloLectura)
@@ -178,7 +178,7 @@
         <div class="form-group col-md-3">
             <div class="controlForm">
                 <label>Vigencia Licencia:</label>
-                @(Html.Kendo().DateTimePickerFor(t => t.vigenciaLicencia)
+                @(Html.Kendo().DateTimePickerFor(t => t.vigenciaLicencia).Interval(1)
                                                 .Label(l => l.Content("Vigencia Licencia:"))
                                                 .Format("dd/MM/yyyy")
                                                 .Enable(!ViewBag.EsSoloLectura)

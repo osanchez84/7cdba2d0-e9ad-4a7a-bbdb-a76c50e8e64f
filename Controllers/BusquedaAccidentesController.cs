@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Kendo.Mvc;
 
+
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Authorize]

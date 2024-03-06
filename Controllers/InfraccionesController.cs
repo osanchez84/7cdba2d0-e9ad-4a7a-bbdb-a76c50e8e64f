@@ -1128,14 +1128,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
-            return Json("_DetalleVehiculo", model);
+            return PartialView("_DetalleVehiculo", model);
         }
 
         [HttpGet]
         public ActionResult ajax_detallePersona(int idPersona)
         {
             var model = _personasService.GetPersonaById(idPersona);
-            return Json(model);
+          
+
+            return PartialView("_DetallePersona", model);
         }
 
         [HttpGet]

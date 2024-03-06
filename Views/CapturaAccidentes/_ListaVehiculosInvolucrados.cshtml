@@ -3,18 +3,94 @@
     string claseColor = esSoloLectura ? "colorDisabled" : "colorDanger";
 }
 <div class="row">
+
+
+    <script type="kendo-template" id="my-template">
+        <table style="width:100%">
+          <tr>
+            <td><strong>Vehículo</strong></td>
+            <td>#= Marca # #= Submarca #  #= Modelo #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Placas</strong></td>
+             <td> #= Placa #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Tarjeta</strong></td>
+             <td>#= Tarjeta #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Número vehículo</strong></td>
+             <td>#= numeroConsecutivo #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Tipo carga</strong></td>
+             <td>#= TipoCarga #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Póliza carga</strong></td>
+             <td>#= Poliza #</td>
+          </tr>
+        </table>
+        
+    </script>
+    <script>
+     var myTemplate = kendo.template($('#my-template').html());
+    </script>
+
+
+    <script type="kendo-template" id="my-template2">
+        <table style="width:100%">
+          <tr>
+            <td><strong>Pensión</strong></td>
+            <td>#= Pension #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Grua</strong></td>
+             <td> #= Grua #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Forma de Traslado</strong></td>
+             <td>#= FormaTrasladoInvolucrado #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Tipo vehiculo</strong></td>
+             <td>#= TipoVehiculo #</td>
+          </tr>
+
+          <tr>
+            <td><strong>Monto daños</strong></td>
+             <td>#= montoVehiculo #</td>
+          </tr>
+
+        </table>
+
+    </script>
+    <script>
+        var myTemplate2 = kendo.template($('#my-template2').html());
+    </script>
 <div class="col-12 mb-4 px-4 rounded gridCustom">
     @(
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
         .Name("gridVehiculosInvolucrados")
+
         .Columns(columns =>
         {
             columns.Bound(c => c.IdPersona).Hidden();
             columns.Bound(c => c.IdVehiculo).Hidden();
-            columns.Bound(p => p.fullVehiculo).Title("Vehículo").Width(190);
+                columns.Bound(p => p.numeroConsecutivo).Title("Vehículo").Width(250).ClientTemplate("#=myTemplate(data)#");
+
             columns.Bound(c => c.ConductorInvolucrado).Title("Conductor").Width(130);
             columns.Bound(c => c.PropietarioInvolucrado).Title("Propietario").Width(130);
-            columns.Bound(p => p.fullDetalles).Title("Detalles").Width(190);
+                columns.Bound(p => p.montoVehiculo).Title("Detalles").Width(250).ClientTemplate("#=myTemplate2(data)#");
             columns.Template("<button onclick='mostrarDetalle()' class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Detalle</b></h6></button>").Width(110);
                 columns.Template(
                 "<button class='w-100 btn " + claseColor + "'>" +
@@ -23,7 +99,7 @@
                 "</h6></button>"
                 ).Width(110);
         })
-        .HtmlAttributes(new { style = "height:400px" })
+        .HtmlAttributes(new { style = "height:480px" })
         .Sortable()
         .Groupable()
         .Scrollable()

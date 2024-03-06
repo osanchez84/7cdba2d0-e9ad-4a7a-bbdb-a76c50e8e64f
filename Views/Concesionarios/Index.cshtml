@@ -22,13 +22,13 @@
                 }, 200);
             } else {
                 // BUSQUEA
-                if (!auth.toString().includes("291")) {
-                    $("#btnBuscarConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
-                }
-                //AGREGAR
-                if (!auth.toString().includes("293")) {
-                    $("#btnCrearConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
-                }
+                //if (!auth.toString().includes("291")) {
+                //    $("#btnBuscarConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
+                //}
+                ////AGREGAR
+                //if (!auth.toString().includes("293")) {
+                //    $("#btnCrearConcesionario").prop('disabled', true).css({ "opacity": "0.3" });
+                //}
 
 
             }
@@ -154,10 +154,10 @@
         var auth = @autorizaciones;
         var grid = $("#GridCon").data("kendoGrid");
 
-        if (!auth.toString().includes("295")) {
-            grid.hideColumn(5); 
+        //if (!auth.toString().includes("295")) {
+        //    grid.hideColumn(5); 
 
-        }
+        //}
 
     });
 

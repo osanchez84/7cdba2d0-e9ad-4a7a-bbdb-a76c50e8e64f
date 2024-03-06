@@ -20,14 +20,14 @@
                     window.location.href = "/Principal";
                 }, 200);
             } else {
-                // BUSQUEA
-                if (!auth.toString().includes("271")) {
-                    $("#btnBucarPension").prop('disabled', true).css({ "opacity": "0.3" });
-                }
-                //AGREGAR
-                if (!auth.toString().includes("273")) {
-                    $("#btnNuevaGrua").prop('disabled', true).css({ "opacity": "0.3" });
-                }
+                //// BUSQUEA
+                //if (!auth.toString().includes("271")) {
+                //    $("#btnBucarPension").prop('disabled', true).css({ "opacity": "0.3" });
+                //}
+                ////AGREGAR
+                //if (!auth.toString().includes("273")) {
+                //    $("#btnNuevaGrua").prop('disabled', true).css({ "opacity": "0.3" });
+                //}
            
 
             }
@@ -88,8 +88,16 @@
             <div class="controlForm col-md-6 col-lg-3 my-3">
                 <label>Delegación:</label>
                 @(Html.Kendo().DropDownList()
+                    .DataTextField("Text")
+                    .DataValueField("Value")
                     .Name("ddlIdDelegacion")
-                    .BindTo((SelectList)ViewBag.CatDelegaciones)
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("Delegaciones_Drop", "Estadisticas");
+                        });
+                    })
                     .OptionLabel("-- Seleccione --")
                     .HtmlAttributes(new { style = "width:100%;", id = "ddlIdDelegacion" })
                     .Filter(FilterType.Contains))
@@ -190,11 +198,11 @@
         var auth = @autorizaciones;
         var grid = $("#GridP").data("kendoGrid");
 
-        if (!auth.toString().includes("275")) {
-           // grid.hideColumn(9); 
-            $("#btnEditarPension").prop('disabled', true).css({ "opacity": "0.3" });
+        //if (!auth.toString().includes("275")) {
+        //   // grid.hideColumn(9); 
+        //    $("#btnEditarPension").prop('disabled', true).css({ "opacity": "0.3" });
 
-        }
+        //}
 
     });
 

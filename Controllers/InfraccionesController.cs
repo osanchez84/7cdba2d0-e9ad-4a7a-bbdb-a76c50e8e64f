@@ -580,7 +580,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
-                model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.idDelegacion = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value);     //HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion, idDependencia);
                 //    model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion);
 
@@ -1694,8 +1694,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(481))
-            {
+
                 Pagination pagination = new Pagination();
                 pagination.PageIndex = request.Page - 1;
                 pagination.PageSize = (request.PageSize != 0) ? request.PageSize : 10;
@@ -1714,17 +1713,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
 
                 return Json(result);
-            }
-            else
-            {
-                var result = new DataSourceResult()
-                {
-                    Data = new List<InfraccionesModel>(),
-                    Total = 0
-                };
 
-                return Json(result);
-            }
         }
 
 

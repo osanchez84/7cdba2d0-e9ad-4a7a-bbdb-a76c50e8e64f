@@ -3,8 +3,15 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+
+    var Eliminar = autorizaciones.Contains("205") ? 1 : 0;
+
 }
 <script>
+
+    window.Eliminar = "@Eliminar"
+
+
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
@@ -101,6 +108,35 @@
 
 
 
+    function eliminarTemplate(data){
+
+
+        console.log(data)
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3))
+            return `<button onclick="ShowDeletePopUp('${data.IdDeposito},${data.IdSolicitud}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>`
+        else if (window.Eliminar == '1')
+            return `<button onclick="ShowDeletePopUp('${data.IdDeposito},${data.IdSolicitud}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>`
+            else
+            return ''
+    }
+
+
+
+
+    function EditarTemplate(data){
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
+            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
+        else 
+        return ""
+
+
+    }
+
+
+
+
 </script>
 <div class="row">
     <div class="col-md-12">
@@ -157,13 +193,9 @@
                     ).Title("Descargar detalle").Sortable(false).Width(100);
                     columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
-                    columns.Bound(p => p.IdGrua).ClientTemplate(
-                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#','#= IdGrua#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                    ).Title("Editar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
-                    columns.Bound(p => p.IdDeposito).ClientTemplate(
-                    "<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
-                    ).Title("Eliminar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
                     columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
                     "<div class='turno-captura'>" +
                     "<div class='tto-marked'>TTO: #= IdDependenciaGenera === 1 ? '✓' : '' #</div>" +

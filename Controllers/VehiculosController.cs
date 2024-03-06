@@ -354,8 +354,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(251))
-            {
+
                 Pagination pagination = new Pagination();
                 pagination.PageIndex = request.Page - 1;
                 pagination.PageSize = 10;
@@ -381,17 +380,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
 
                 return Json(result);
-            }
-            else
-            {
-                var result = new DataSourceResult()
-                {
-                    Data = new List<VehiculoModel>(),
-                    Total = 0
-                };
 
-                return Json(result);
-            }
 
         }
 

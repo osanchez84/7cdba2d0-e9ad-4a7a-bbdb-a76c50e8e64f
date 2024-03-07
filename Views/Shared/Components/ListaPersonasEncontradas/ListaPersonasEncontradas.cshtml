@@ -74,10 +74,10 @@
             } else {
                 grid.clearSelection();
             };
-            //Se asigna el valor al id de persona
-            $('#@ViewBag.VariableToChange').val(idPersona);
-             $('#@ViewBag.VariableToChange').change();
-            $('#agregarConductorModal').modal('hide');
+            //Se invoca el método configurado para el trigger y cachar el evento de persona seleccionada
+            //$('#@ViewBag.VariableToChange').val(idPersona);
+             $('#@ViewBag.VariableToChange').trigger('@ViewBag.NombreMetodoToTrigger',JSON.parse(JSON.stringify(dataItem)));
+            //$('#agregarConductorModal').modal('hide');
         };
     })
 </script>

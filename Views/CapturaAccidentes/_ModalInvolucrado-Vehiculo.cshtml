@@ -308,17 +308,40 @@
 
 <script>
     $(document).ready(function () {
-        //Evento cuando se agrega un involucrado, detecta automaticamente cuando cambia el valor
-        $("#idPersonaInput").bind("change", function() {
-            if ($(this).val() === '' || $(this).val() == 0 || $(this).val() === undefined)
+        //Funcion que se ejecuta cuando una persona es seleccionada
+        $('#idPersonaInput').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
                 $('#involucradoSeleccionado').hide();
             else {
+                var idPersona = data.IdPersona;
+                var nombre = data.nombre
+                var apellidoPaterno = data.apellidoPaterno
+                var apellidoMaterno = data.apellidoMaterno
+                var curp = data.CURP==null?'':data.CURP;
+                var rfc = data.RFC==null?'':data.RFC;
+                var fechaNacimiento = data.fechaNacimiento.includes('0001-01-01')?'':data.fechaNacimiento;
+
+                if(fechaNacimiento.length>0){
+                    fechaNacimiento = kendo.toString(new Date(fechaNacimiento), "dd/MM/yyyy");
+                }
+
+                var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+                $('#gridVehiculosInvolucrados').data('idPersona', idPersona);
+
+                //Se asignan valores de persona seleccionada
+                $('#idPersonaInput').val(data.idPersona);
+                $('#nombreModal').text(nombreCompleto.trim().toUpperCase());
+                $('#curpModal').text(curp.toUpperCase());
+                $('#fechaNacimientoModal').text(fechaNacimiento);
+                $('#rfcModal').text(rfc.toUpperCase());
+
                 $('#buscarInvolucradoModal').modal('hide');
                 $('body').removeClass('model-open');
                 $('.modal-backdrop').remove();
                 $('#sinBuqueda').hide();
                 $('#involucradoSeleccionado').fadeIn();
             }
+
         });
     });
     function busquedaPersona() {

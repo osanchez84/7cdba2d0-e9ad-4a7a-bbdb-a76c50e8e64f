@@ -28,12 +28,20 @@ namespace GuanajuatoAdminUsuarios.Components
         public ListaPersonasEncontradasViewComponent(IPersonasService personasService){
             _personasService = personasService;
         }
+        /// <summary>
+        /// Lista de personas encontradas en RIAG
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<IViewComponentResult> InvokeAsync(BusquedaPersonaModel model)
         {
             List<PersonaModel> listaPersonas = model.ListadoPersonas;
             if (model.ListadoPersonas==null || model.ListadoPersonas.Count==0)
              listaPersonas = _personasService.BuscarPersonasWithPagination(model, model.Pagination);
+
+             //Se asignan las opciones una vez seleccionada una persona
             ViewBag.VariableToChange = model.Config.NombreVariableToChange;
+            ViewBag.NombreMetodoToTrigger = model.Config.NombreMetodoToTrigger;
 
             return await Task.FromResult((IViewComponentResult)View("ListaPersonasEncontradas", listaPersonas ));
         }

@@ -4,8 +4,9 @@
 }
 <script>
 function buscarPersonaFisica(){
-         $('#ddlIdPersona').val('');
-        $('#ddlIdPersona').change();
+        ocultarMensajeError();
+        //$('#ddlIdPersona').val('');
+        //$('#ddlIdPersona').change();
         var licenciaBusqueda = $("#NumeroLicenciaBusqueda").val().trim();
         var rfcBusqueda = $("#RFCBusqueda").val().trim();
         var curpBusqueda = $("#CURPBusqueda").val().trim();
@@ -15,25 +16,25 @@ function buscarPersonaFisica(){
 
         if (licenciaBusqueda !== "") {
             if (licenciaBusqueda.length < 10) {
-                sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
+               mostrarMensajeError("El número de licencia debe tener al menos 10 caracteres.");
                 return;
             }
         }
         if (rfcBusqueda !== "") {
             if (rfcBusqueda.length < 10) {
-                sitteg_warning("El RFC debe tener al menos 10 caracteres.");
+                mostrarMensajeError("El RFC debe tener al menos 10 caracteres.");
                 return;
             }
         }
         if (curpBusqueda !== "") {
             if (curpBusqueda.length < 10) {
-                sitteg_warning("El CURP debe tener al menos 10 caracteres.");
+                mostrarMensajeError("El CURP debe tener al menos 10 caracteres.");
                 return;
             }
         }
         if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
             (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
-            sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
+            mostrarMensajeError("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
             return;
         }
 
@@ -62,6 +63,7 @@ function buscarPersonaFisica(){
     }
 
      function cargaListaPersonasRiagEncontradas(model){
+             ocultarMensajeError();
          resetPersonasContainer();
         mostrarMensajeBuscando('Cargando personas de RIAG...');
          $.ajax({
@@ -83,6 +85,7 @@ function buscarPersonaFisica(){
     }
 
     function cargaListaPersonasLicenciasEncontradas(model){
+             ocultarMensajeError();
          resetPersonasContainer();
         mostrarMensajeBuscando('Cargando personas de Licencias...');
          $.ajax({
@@ -103,6 +106,7 @@ function buscarPersonaFisica(){
     }
 
      function buscaEnLicencias() {
+             ocultarMensajeError();
        mostrarMensajeBuscando('Buscando personas en Licencias...');
          resetPersonasContainer();
         var formData = $("#buscarPersonaFisicaForm").serialize();
@@ -142,10 +146,12 @@ function buscarPersonaFisica(){
         else{
             persona['idPersona']=idPersona;
         }
+        var modeloBusqueda=JSON.parse(JSON.stringify(@Json.Serialize(@Model)));
+        modeloBusqueda['PersonaModel']=persona;
     $.ajax({
         url: '@Url.Action("MostrarPersonaFisica","BusquedaVehiculoPropietario")',
         type: 'POST',
-        data: persona,
+        data: JSON.parse(JSON.stringify(modeloBusqueda)),
         success: function (result) {
             $('#personaFisicaContainer').html(result);
             $('#addFisico').modal('show');
@@ -166,6 +172,14 @@ function buscarPersonaFisica(){
      $('#divMensajeBuscando').hide();
      $('#spanMensajeBuscando').html('');
       $('#btnBuscarPersonasFisicas').prop('disabled', false);
+    }
+    function mostrarMensajeError(mensaje){
+        $('#divMensajeError').fadeIn();
+        $('#spanMensajeError').text(mensaje);
+    }
+     function ocultarMensajeError(){
+        $('#divMensajeError').fadeOut();
+        $('#spanMensajeError').text('');
     }
 
     function resetPersonasContainer(){
@@ -215,6 +229,8 @@ function buscarPersonaFisica(){
     </div>
     <form id="buscarPersonaFisicaForm">
     @Html.HiddenFor(m=> m.Config.NombreVariableToChange)
+    @Html.HiddenFor(m=> m.Config.NombreMetodoToTrigger)
+    
         <div class="row px-4 mt-4 pb-4 align-items-end">
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlForm my-3">
@@ -285,13 +301,18 @@ function buscarPersonaFisica(){
         </div>
     </div>
         </div>
+        <div class="row" id="divMensajeError">
+            <div class="col-md-10 my-2 px-4 mx-2">
+                    <span id="spanMensajeError" class="colorDanger"></span>
+            </div>
+        </div>
     </form>
     <div class="row">
         <div class="col-12">
             <div class="bg-light py-1"></div>
         </div>
     </div>
-           <div id="divMensajeBuscando" class="col-md-10 my-2 py-3">
+           <div id="divMensajeBuscando" class="col-md-10 my-2 py-3 mx-2 px-4">
                         <span id="spanMensajeBuscando"></span>
             </div>
         @*Table*@
@@ -338,8 +359,8 @@ function buscarPersonaFisica(){
                 ¿Está seguro de que desea cerrar la ventana y perder la información ingresada?
             </div>
             <div class="modal-footer">
-                <button type="button" id="confirmarCerrar">Aceptar</button>
-                <button type="button" class="btn btn-secondary" id="cancelarConfirmacion" onclick="cancelarConfirmacion()">Cancelar</button>
+                <button type="button" class="btn btn-secondary" id="confirmarCerrar">Aceptar</button>
+                <button type="button" class="btn btn-primary" id="cancelarConfirmacion" onclick="cancelarConfirmacion()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -348,7 +369,8 @@ function buscarPersonaFisica(){
 
 <script>
     $(document).ready(function () {
-       
+       $('#divMensajeBuscando').hide();
+       $('#divMensajeError').hide();
     });
 
     function btnModalEditarPersona(id) {

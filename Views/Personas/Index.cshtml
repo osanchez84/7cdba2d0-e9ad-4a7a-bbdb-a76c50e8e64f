@@ -432,6 +432,14 @@
                     buscaEnLicencias()
                     return;
                 }
+                if (response.Data == "2") {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    console.log("no arrojo resultados 2");
+                    setTimeout(function () {
+                        console.log("timeout");
+                        window.location.href = "/Personas/Index"; //will redirect to your blog page (an ex: blog.html)
+                    }, 1200);
+                }
                 var personasList = response.Data;
                 if (personasList != null) {
                     var grid = $("#gridPersonas").data("kendoGrid");

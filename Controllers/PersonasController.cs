@@ -172,8 +172,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(result);
             }
 
-            // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
-            return Json(new { encontrada = false, Data = "1", tipo = "sin datos", message = "busca en licencias" });
+            if (model.PersonaModel.tipoPersona == "2")
+            {
+                return Json(new { encontrada = false, Data = "2", tipo = "sin datos", message = "No busca en licencias por ser moral" });
+                
+            } else
+            {
+                // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
+                return Json(new { encontrada = false, Data = "1", tipo = "sin datos", message = "busca en licencias" });
+            }
+
+            
 
 
 

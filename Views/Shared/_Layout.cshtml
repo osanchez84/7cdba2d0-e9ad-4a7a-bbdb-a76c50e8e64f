@@ -1,12 +1,15 @@
 @inject IHttpContextAccessor Accessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
 @{
     var nombreOficina = User.FindFirst(CustomClaims.Oficina);
 
-    var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
+
     var nombrePension = User.FindFirst(CustomClaims.Pension);
     var tipoOficina = User.FindFirst(CustomClaims.TipoOficina);
-
-
+    var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
+    var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
+    var isDEp = autorizaciones.Contains("300");
 
 }
 <!DOCTYPE html>
@@ -583,10 +586,55 @@
                                             <p class="m-0 text-start text-break">Actualizar contraseña</p>
                                         </a>
                                     </li>
+
+                                    @{
+
+                                        if(isDEp){
+
+                                            <li class="nav-item always-visible">
+                                                <a download href="~/files/DEP.pdf" class="nav-link d-flex justify-content-start align-items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="fill: #0d6efd;" width="30" height="20" viewBox="0 0 24 24">
+                                                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" />
+                                                    </svg>
+                                                    <h5 class="my-0 ms-2">Manual</h5>
+                                                </a>
+                                            </li>
+
+                                        }
+
+                                        else if(User.FindFirst(CustomClaims.TipoOficina).Value == "1")
+                                        {
+                                            <li class="nav-item always-visible">
+                                                <a download href="~/files/PEC.pdf" class="nav-link d-flex justify-content-start align-items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="fill: #0d6efd;" width="30" height="20" viewBox="0 0 24 24">
+                                                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" />
+                                                    </svg>
+                                                    <h5 class="my-0 ms-2">Manual</h5>
+                                                </a>
+                                            </li>
+                                        }
+                                        else if(User.FindFirst(CustomClaims.TipoOficina).Value == "0" || User.FindFirst(CustomClaims.TipoOficina).Value == "2")
+                                        {
+                                            <li class="nav-item always-visible">
+                                                <a download href="~/files/MOV.pdf" class="nav-link d-flex justify-content-start align-items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="fill: #0d6efd;" width="30" height="20" viewBox="0 0 24 24">
+                                                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" />
+                                                    </svg>
+                                                    <h5 class="my-0 ms-2">Manual</h5>
+                                                </a>
+                                            </li>
+                                        }
+
+
+
+                                    }
+
+
+
                                     <li class="nav-item always-visible">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="#">
                                             
-                                            <p class="m-0 text-start text-break">Riag v1.0.6</p>
+                                            <p class="m-0 text-start text-break">Riag v1.0.7</p>
                                         </a>
                                     </li>
                                 </ul>

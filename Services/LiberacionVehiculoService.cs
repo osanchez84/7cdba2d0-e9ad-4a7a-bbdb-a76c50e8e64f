@@ -241,7 +241,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Placa = reader["Placa"] is DBNull ? string.Empty : reader["Placa"].ToString();
                             deposito.FechaIngreso = reader["FechaIngreso"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaIngreso"]);
                             deposito.Folio = reader["Folio"] is DBNull ? string.Empty : reader["Folio"].ToString();
-                            deposito.Km = reader["Km"] is DBNull ? string.Empty : reader["Km"].ToString();
+                            deposito.Km = reader["Km"] is DBNull ? string.Empty : Decimal.Parse((string)reader["Km"]).ToString("G29");
                             deposito.Liberado = reader["Liberado"] is DBNull ? 0 : Convert.ToInt32(reader["Liberado"]);
                             deposito.Autoriza = reader["Autoriza"] is DBNull ? string.Empty : reader["Autoriza"].ToString();
                             deposito.FechaActualizacion = reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaActualizacion"]);

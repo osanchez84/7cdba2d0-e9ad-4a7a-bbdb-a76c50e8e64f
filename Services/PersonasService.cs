@@ -169,7 +169,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.tipoLicencia = reader["tipoLicencia"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] as DateTime?;
                             //model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? null : (DateTime?)Convert.ToDateTime(reader["fechaNacimiento"].ToString());
-                            model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+                            model.vigenciaLicencia = reader["vigenciaLicencia"] as DateTime?;
+
+                            // model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
                             model.PersonaDireccion = GetPersonaDireccionByIdPersona((int)model.idPersona);
                             modelList.Add(model);
                         }

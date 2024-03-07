@@ -2234,6 +2234,7 @@ namespace GuanajuatoAdminUsuarios.Services
 											 "MAX(p.numeroLicencia) AS numeroLicencia," +
 											 "MAX(cc.cinturon) AS cinturon, " +
                                              "MAX(ct.idTipoInvolucrado) as idTipoInvolucrado " +
+                                            // "MAX(ct.tipoInvolucrado) as tipoInvolucrado " +
 											 "FROM involucradosAccidente ia " +
 											 "LEFT JOIN accidentes a ON ia.idAccidente = a.idAccidente " +
                                              "LEFT JOIN personas p ON ia.idPersona = p.idPersona " +
@@ -2301,7 +2302,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.NumeroEconomico = reader["cinturon"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["cinturon"].ToString());
 							involucrado.NoAccidente = reader["NoAccidente"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["NoAccidente"].ToString());
                             involucrado.IdTipoInvolucrado = reader["idTipoInvolucrado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoInvolucrado"].ToString()); 
-
+							involucrado.TipoInvolucrado = reader["tipoInvolucrado"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoInvolucrado"].ToString());
                             involucrado.FormatDateNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["fechaNacimiento"].ToString());
 
                             

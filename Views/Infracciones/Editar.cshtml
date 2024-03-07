@@ -16,6 +16,12 @@
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
 
+        // var v = '@ViewBag.EsSoloLectura';
+        //if (v == 'False') 
+        //    $("#idMunicipioX").data("kendoDropDownList").enable(true);
+        //else
+        //    $("#idMunicipioX").data("kendoDropDownList").enable(false);
+
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
                 Swal.fire({
@@ -85,7 +91,12 @@
             $("#btnSelect1").prop("disabled", false);
             $("#btnEditarConductor").prop("disabled", false);
             $("#btnNuevoMotivo").prop("disabled", false);
+
+            
+            //alert('dddsa');
+            
         } else {
+            //alert('dddsa asdfasdfasdf');
             $("#btnSelect1").prop("disabled", true);
             $("#btnEditarConductor").prop("disabled", true);
             $("#btnNuevoMotivo").prop("disabled", true);
@@ -112,7 +123,7 @@
             $("#Vehiculo_poliza").data("kendoTextBox").enable(false);
             //
             $("#Vehiculo_capacidad").addClass("activeData");
-                $("#Vehiculo_capacidad").data("kendoTextBox").enable(false);
+            $("#Vehiculo_capacidad").data("kendoTextBox").enable(false);
 
             $("#Vehiculo_placas").addClass("activeData");
             $("#Vehiculo_placas").data("kendoTextBox").enable(false)
@@ -369,7 +380,8 @@
                                             })
                                             .OptionLabel("-- Seleccione --")
                                             .Filter(FilterType.Contains)
-                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required", id="idMunicipio" })
+                                            .Enable(!ViewBag.EsSoloLectura)
                                             )
                                     </div>
                                 </div>
@@ -576,7 +588,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
-                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
+                                    <partial name="_EditarDetallePersona" model="Model.PersonaInfraccion2" />
                                 </div>
                             </div>
                             <input type="hidden" id="hdnIdPersonaTemp" value="" />

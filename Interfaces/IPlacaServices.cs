@@ -6,5 +6,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IPlacaServices
     {
         List<PlacaModel> GetPlacasByDelegacionId(int idPension, bool? noEsPension);
+        public List<PlacaModel> GetPlacasIngresos(int idPension);
+
     }
 }

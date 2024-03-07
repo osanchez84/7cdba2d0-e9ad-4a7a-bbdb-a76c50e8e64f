@@ -89,7 +89,7 @@
 				<tr>
 					<td><p class="s2">@item.TipoVehiculo</p></td>
 					<td><p class="s2">@item.Marca</p></td>
-					<td><p class="s2">@item.Submarca</p></td>
+					<td><p class="s2">@(item.Submarca==null?"":item.Submarca.ToUpper())</p></td>
 					<td><p class="s2">@item.Modelo</p></td>
 					<td><p class="s2">@item.Color</p></td>
 					<td><p class="s2">@item.Serie</p></td>
@@ -108,7 +108,7 @@
 				<tr>
 					<td colspan="3"><p class="s2">@item.Tarjeta</p></td>
 					<td><p class="s2">@(item.vigenciaLicencia == DateTime.MinValue ? "-" : item.vigenciaLicencia.ToString("dd/MM/yyyy"))</p></td>
-					<td><p class="s2">@item.Entidad</p></td>
+					<td><p class="s2">@(item.Entidad==null?"":item.Entidad.ToUpper())</p></td>
 					<td><p class="s2">@item.Capacidad</p></td>
 					<td><p class="s2">@item.NumeroEconomico</p></td>
 					<td><p class="s2">@item.Poliza</p></td>
@@ -121,9 +121,9 @@
 				</tr>
 				@*Datos*@
 				<tr>
-					<td colspan="3"><p class="s2">  @(string.IsNullOrEmpty(item.TipoServicio) ? "-" : item.TipoServicio)</p></td>
+					<td colspan="3"><p class="s2">  @(string.IsNullOrEmpty(item.TipoServicio) ? "-" : item.TipoServicio.ToUpper())</p></td>
 					<td><p class="s2">@item.PropietarioInvolucrado</p></td>
-					<td colspan="4"><p class="s2">@item.Direccion</p></td>
+					<td colspan="4"><p class="s2">@(item.Direccion==null?"":item.Direccion.Trim().ToUpper())</p></td>
 				</tr>
 				@*Columnas*@
 				<tr>
@@ -135,7 +135,7 @@
 				@*Datos*@
 				<tr>
 					<td colspan="3"><p class="s2">@item.ConductorInvolucrado</p></td>
-					<td colspan="3"><p class="s2">@item.DireccionConductor</p></td>
+					<td colspan="3"><p class="s2">@(item.DireccionConductor==null?"":item.DireccionConductor.Trim().ToUpper())</p></td>
 					<td><p class="s2">@(DateTime.Now.Year - Convert.ToDateTime(item.FechaNacimientoFormateada).Year)</p></td>
 					<td><p class="s2">@item.Sexo</p></td>
 				</tr>
@@ -194,7 +194,7 @@
 			@foreach (var item in Model.Factores)
 			{
 				<tr>
-					<td><p class="s2">@item.FactorAccidente</p></td>
+					<td><p class="s2">@(item.FactorAccidente==null?"":item.FactorAccidente.ToUpper())</p></td>
 					<td><p class="s2">@item.FactorOpcionAccidente</p></td>
 				</tr>
 			}
@@ -214,7 +214,7 @@
 				
 				
 					<tr>
-					<td><p class="s5">@( string.Join( ",", Model.CausasDeterminantes.Select(s=> s.indice+" "+s.CausaAccidente).ToArray()))</p></td>
+					<td><p class="s5">@( string.Join( ",", Model.CausasDeterminantes.Select(s=> s.indice+" "+(s.CausaAccidente==null?"":s.CausaAccidente.ToUpper())).ToArray()))</p></td>
 					</tr>
 					<tr>
 					<td><p class="s2">@(Model.CausasDeterminantes == null || Model.CausasDeterminantes.Count() == 0 || string.IsNullOrEmpty(Model.CausasDeterminantes.First().DescripcionCausa) ? "S/C" : Model.CausasDeterminantes.First().DescripcionCausa)</p></td>
@@ -263,8 +263,8 @@
 						{
 							<td><p class="s2"></p></td>
 						}
-						<td><p class="s2">@item.TipoVehiculo</p></td>
-						<td><p class="s2">@item.nombre</p></td>
+						<td><p class="s2">@item.TipoInvolucrado.ToUpper()</p></td>
+						<td><p class="s2">@item.NombreCompleto</p></td>
 						<td><p class="s2">@item.Sexo</p></td>
 						<td>
 							<p class="s2">
@@ -274,7 +274,7 @@
 							</p>
 						</td>
 						<td><p class="s2">@item.Direccion</p></td>
-						<td><p class="s2">@item.EstadoVictima</p></td>
+						<td><p class="s2">@item.EstadoVictima.ToUpper()</p></td>
 						<td><p class="s2">@item.NombreHospital</p></td>
 					</tr>
 				}
@@ -381,7 +381,7 @@
 					<td><p class="s2">@item.Placa</p></td>
 					<td><p class="s2">@item.Serie</p></td>
 					<td><p class="s2">@item.Marca</p></td>
-					<td><p class="s2">@item.Submarca</p></td>
+					<td><p class="s2">@(item.Submarca==null?"":item.Submarca.ToUpper())</p></td>
 					<td><p class="s2">@item.TipoVehiculo</p></td>
 					<td><p class="s2">@item.Color</p></td>
 					<td><p class="s2">@(String.Format("{0:C}", item.montoVehiculo))</p></td>
@@ -431,22 +431,22 @@
 
 				@if (Model.MotivosInfraccion.Where(w => w.idInfraccion == item.IdInfraccion).SelectMany(sm => sm.Motivos).Count() > 0)
 				{
-					int contadorInfracciones = 0;
+					int contadorInfracciones = 1;
 					foreach (var motivo in Model.MotivosInfraccion.Where(w => w.idInfraccion == item.IdInfraccion).SelectMany(sm => sm.Motivos))
 					{
-						if (contadorInfracciones == 0)
+						if (contadorInfracciones == 1)
 						{
 							<tr>
-								<td rowspan="@rowspan" style="width:10px!important"><p>@item.numeroConsecutivo</p></td>
-								<td rowspan="@rowspan" style="width:100px!important"><p>@item.folioInfraccion (@item.garantia)</p></td>
-								<td><p style="width:100px!important">@motivo</p></td>
+								<td rowspan="@rowspan" style="width:12px!important"><p>@item.numeroConsecutivo</p></td>
+								<td rowspan="@rowspan" style="width:100px!important"><p>@item.folioInfraccion (@(item.garantia==null?"":item.garantia.ToUpper()))</p></td>
+								<td><p style="width:100px!important">@(contadorInfracciones+". "+(motivo==null?"":motivo.ToUpper()))</p></td>
 							</tr>
 							contadorInfracciones++;
 						}
 						else
 						{
 							<tr>
-								<td><p class="s2">@motivo</p></td>
+								<td><p>@(contadorInfracciones+". "+(motivo==null?"":motivo.ToUpper()))</p></td>
 							</tr>
 						}
 					}
@@ -455,7 +455,7 @@
 				{
 					<tr>
 						<td><p style="width:10px!important">@item.numeroConsecutivo</p></td>
-						<td><p style="width:100px!important">@item.folioInfraccion (@item.garantia)</p></td>
+						<td><p style="width:100px!important">@item.folioInfraccion (@(item.garantia==null?"":item.garantia.ToUpper()))</p></td>
 						<td><p  style="width:100px!important">---</p></td>
 					</tr>
 				}
@@ -477,9 +477,9 @@
 			</thead>
 			<tr>
 				<td colspan="2"><p class="text-start s5">A DISPOSICIÓN DE:</p></td>
-				<td colspan="2"><p class="s2">@(string.IsNullOrEmpty(Model.ADisposicion) ? "-" : Model.ADisposicion)</p></td>
+				<td colspan="2"><p class="s2">@(string.IsNullOrEmpty(Model.ADisposicion) ? "-" : Model.ADisposicion.ToUpper())</p></td>
 				<td colspan="2"><p class="text-start s5">ENTREGADO A:</p></td>
-				<td colspan="2"><p class="s2">@(string.IsNullOrEmpty(Model.entregadoA) ? "-" : Model.entregadoA)</p></td>
+				<td colspan="2"><p class="s2">@(string.IsNullOrEmpty(Model.entregadoA) ? "-" : Model.entregadoA.ToUpper())</p></td>
 			</tr>
 			<tr>
 				<td colspan="2"><p class="text-start s5">PROCEDE LA CONSIGNACIÓN DE LOS HECHOS AL C:</p></td>

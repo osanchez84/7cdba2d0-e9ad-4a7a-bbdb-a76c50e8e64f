@@ -178,6 +178,15 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string apellidoPaterno { get; set; }
         public string apellidoMaterno { get; set; }
+
+         public string NombreCompleto
+        {
+            get
+            {
+
+                return ((nombre ?? "") + " " + (apellidoPaterno ?? "") + " " + (apellidoMaterno ?? "")).ToUpper().Trim();
+            }
+        }
         public string apellidoPaternoBusqueda { get; set; }
         public string apellidoMaternoBusqueda { get; set; }
         public string Sexo { get; set; }
@@ -211,6 +220,7 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public float montoVehiculo { get; set; }
         public int IdTipoInvolucrado { get; set; }
+        public string TipoInvolucrado { get; set; }
         public int IdEstadoVictima { get; set; }
         public int IdHospital { get; set; }
         public int IdInstitucionTraslado { get; set; }

@@ -5,6 +5,9 @@
 	var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
 	var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 	var regreso = ViewBag.Regreso;
+	var horaMaxima = "00:01";
+	
+
 }
 
 <script>
@@ -204,10 +207,13 @@
 									<div class="form-group col-md-3 controlForm">
 										<label>Fecha infracción <b>(obligatorio)</b>:</label>
 										@(Html.Kendo().DatePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
-
 											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
 											.Format("dd/MM/yyyy")
 											.Culture("es-ES")
+											.Events(e =>
+											{
+												e.Change("cambiaFecha");
+											})
 											.Value("")
 											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
 											)
@@ -215,10 +221,10 @@
 								
 
 									<div class="form-group col-md-2 controlForm">
+										
 										<label class="text-muted">Hora:</label>
-										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
-											.Label(l => l.Content("Hora:"))
-											.Value("")
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)											
+											.Label(l => l.Content("Hora:"))																			
 											.Format("HH:mm")
 											.Culture("es-ES")
 											.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
@@ -689,7 +695,8 @@
 				"idVehiculo": pidVehiculo,
 			},
 			success: function (data) {
-				$("#detalleVehiculo").empty().append(data);
+				console.log("DATVE",data)
+                $("#detalleVehiculo").html(data);
 				hideLoading();
 			}, error: function () {
 				//sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -709,16 +716,7 @@
 				"idPersona": pidPersona,
 			},
 			success: function (data) {
-				console.log("DATPERS", data);
-				var dataArray = [data];
-				var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
-				grid.dataSource.data(dataArray);
-				grid.dataSource._total = dataArray.length;
-				$("#idPersona").val(pidPersona);
-				var fila = grid.tbody.find("tr:first");
-				if (fila.length > 0) {
-					grid.select(fila);
-				}
+				$("#detallePersonas").html(data);
 				hideLoading();
 			},
 			error: function () {
@@ -879,6 +877,38 @@
             });
         }
 
+	function cambiaFecha()
+	{
+		var timepickerControl = $("#dateTime").data("kendoTimePicker");
 
+
+
+
+		var varFechaInfraccion = kendo.toString(this.value(), 'd');
+		var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+
+		varFechaInfraccion =varFechaInfraccion.slice( varFechaInfraccion.indexOf("/") +1,varFechaInfraccion.length);
+		var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));		
+
+		varFechaInfraccion =varFechaInfraccion.slice( varFechaInfraccion.indexOf("/") +1,varFechaInfraccion.length);
+
+		let date = new Date();
+		
+		if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {		
+			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+			var hora = timepickerControl.value()
+			if (hora.getHours() > date.getHours() ) {
+				if (hora.getMinutes() > date.getMinutes()) {
+					timepickerControl.value("00:00")
+				}
+			}			
+		}
+		else{
+			
+			timepickerControl.max("23:59");
+		}
+
+		
+	}
 </script>
 

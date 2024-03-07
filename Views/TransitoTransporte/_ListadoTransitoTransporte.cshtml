@@ -83,7 +83,13 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito) {
+    function ShowUpdatePopUp(Id,IdDeposito,IdGrua) {
+        //Si la solicitud no tiege grua asociada se oculta el boton del modal
+        if(IdGrua===undefined || IdGrua<=0)
+        $('#divGruaModal').hide();
+        else
+           $('#divGruaModal').show();
+
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
         $('#myUpdateModal').modal('show');
@@ -113,6 +119,19 @@
             return `<button onclick="ShowDeletePopUp('${data.IdDeposito},${data.IdSolicitud}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>`
             else
             return ''
+    }
+
+
+
+
+    function EditarTemplate(data){
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
+            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
+        else 
+        return ""
+
+
     }
 
 
@@ -167,26 +186,18 @@
                     columns.Bound(c => c.pension).Title("Pensión").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
-                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
+                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #','#= IdDeposito #','#= IdGrua #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
                     ).Title("Detalle Grúa(s)").Sortable(false).Width(100);
+                    
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
                     ).Title("Descargar detalle").Sortable(false).Width(100);
                     columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
-                    columns.Bound(p => p.IdGrua).ClientTemplate(
-                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                    ).Title("Editar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
                     columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
-                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
-                    "<div class='turno-captura'>" +
-                    "<div class='tto-marked'>TTO: #= IdDependenciaGenera === 1 ? '✓' : '' #</div>" +
-                    
-                    "<div class='dep-marked'>Dep: #= IdDependenciaGenera === 0 ? '✓' : '' #</div>" +
-                 
-                    "</div>"
-                    ).Title("Turno Captura").Width(250);
+                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate("#= EstatusTemplate(data) #").Title("Turno Captura").Width(250);
 
 
 
@@ -407,7 +418,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <div id="divGruaModal" class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <div class="controlButton">
                             <button type="button" class="btn btn-primary btn-sm" data-id="gruas" onclick="datosGruas()">
                                 Datos de las Grúas Asignadas

@@ -50,6 +50,7 @@
     $(document).ready(function () {
         var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
         grid.tbody.on("click", ".k-checkbox", onClickInfraccionesVehiculo);
+
         function onClickInfraccionesVehiculo(e) {
             var grid = $("#gridInfraccionesVehiculo").data("kendoGrid");
             var row = $(e.target).closest("tr");
@@ -63,7 +64,6 @@
             $("#NumTarjetaCirculacion").val(dataItem.tarjeta);
             $("#hdnIdPersonaTemp").val(idPersonaVehiculo);
            
-
 
             buscarVehiculo(idVehiculo);
             var isPropietarioConductor = $("#isPropietarioConductor").parent().attr('aria-checked');

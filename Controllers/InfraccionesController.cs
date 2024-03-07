@@ -580,7 +580,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
-                model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.idDelegacion = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value);     //HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion, idDependencia);
                 //    model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion);
 
@@ -1128,14 +1128,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
-            return Json("_DetalleVehiculo", model);
+            return PartialView("_DetalleVehiculo", model);
         }
 
         [HttpGet]
         public ActionResult ajax_detallePersona(int idPersona)
         {
             var model = _personasService.GetPersonaById(idPersona);
-            return Json(model);
+          
+
+            return PartialView("_DetallePersona", model);
         }
 
         [HttpGet]

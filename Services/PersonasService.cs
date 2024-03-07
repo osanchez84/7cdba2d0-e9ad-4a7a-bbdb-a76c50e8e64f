@@ -1856,7 +1856,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.nombreBusqueda ?? DBNull.Value;
                         cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoPaternoBusqueda ?? DBNull.Value;
                         cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoMaternoBusqueda ?? DBNull.Value;
-                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        cmd.Parameters.Add(new SqlParameter("@tipoPersona", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.tipoPersona ?? DBNull.Value;
+                        using (
+                            SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             while (reader.Read())
                             {

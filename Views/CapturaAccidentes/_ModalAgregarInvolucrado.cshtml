@@ -2,13 +2,38 @@
 
 <script>
 	function buscarConductor() {
-		var Mydata = $("#buscarInvolucradoForm").serialize();
+		//var Mydata = $("#buscarInvolucradoForm").serialize();
+		 var formData = $("#buscarInvolucradoForm").serializeArray();
+
+		 
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        var findData = false;
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+            if (!findData) {
+                if (field.value != '' && field.value != undefined) {
+                    findData = true;
+                }
+            }
+        });
+
+
+
 		showLoading();
+		console.log(trimmedData);
 		$.ajax({
-			url: '/CapturaAccidentes/BuscarPorParametro',
+		//	url: '/CapturaAccidentes/BuscarPorParametro',
+			url: '/CapturaAccidentes/BuscarPorParametroPaginado',
 			type: 'POST',
 			data: Mydata,
 			success: function (response) {
+				console.log("RESP",response)
 				if (response.tipo === "success") {
 					mostrarModal(response.datos);
 					hideLoading();
@@ -371,7 +396,7 @@
 					<div class="row ">
 						<div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
 							<div class="controlButton my-3">
-								<button class="btnPrimary" name="conductorNone" id="conductorNone" type="button"><h5 class="m-0"><b>Finalizar captura</b></h5></button>
+								<button class="btnPrimary" name="conductorNone" id="conductorNone" type="button" onclick="sinInvolucrado()"><h5 class="m-0"><b>Finalizar captura</b></h5></button>
 							</div>
 						</div>
 					</div>
@@ -401,3 +426,54 @@
 		</div>
 	</div>
 </div>
+<script>
+function sinInvolucrado() {
+    showLoading();
+    $.ajax({
+        url: '@Url.Action("SinInvolucrado", "CapturaAccidentes")',
+        type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,
+        success: function (data) {
+			var idPersona = data.idPersona;
+            var nombre = data.nombre;
+            var apellidoPaterno = data.apellidoPaterno;
+            var apellidoMaterno = data.apellidoMaterno;
+            var CURP = data.CURP;
+            var fechaNacimiento = data.fechaNacimiento;
+            console.log("FEC", fechaNacimiento);
+            fechaNacimiento = fechaNacimiento == "01/01/0001" ? "" : fechaNacimiento;
+            var RFC = data.RFC;
+
+          var nombreCompleto = nombre;
+
+			if (apellidoPaterno !== null) {
+				nombreCompleto += " " + apellidoPaterno;
+			}
+
+			if (apellidoMaterno !== null) {
+				nombreCompleto += " " + apellidoMaterno;
+			}
+			$('#idPersonaInput').val(idPersona);
+			document.getElementById("nombreModal").innerText = nombreCompleto;
+            document.getElementById("curpModal").innerText = CURP;
+            document.getElementById("fechaNacimientoModal").innerText = fechaNacimiento;
+            document.getElementById("rfcModal").innerText = RFC;
+
+            $('#buscarInvolucradoModal').modal('hide');
+            $('body').removeClass('model-open');
+            $('.modal-backdrop').remove();
+            $('#sinBuqueda').hide();
+            $('#involucradoSeleccionado').show();
+
+            hideLoading();
+        },
+        error: function () {
+            sitteg_warning("Ocurrió un error al procesar su solicitud.");
+            hideLoading();
+        }
+    });
+}
+
+</script>

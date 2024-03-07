@@ -193,7 +193,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         LEFT JOIN
                                             catCarreteras car ON car.idCarretera = sol.idCarreteraUbicacion
                                         WHERE
-                                            d.liberado = 0 AND d.estatus = 1 AND d.idDelegacion = @idOficina" + condiciones +
+                                            d.liberado = 0 AND d.estatusSolicitud = 4 AND d.idDelegacion = @idOficina" + condiciones +
                                         @" GROUP BY
                                             d.IdDeposito,
                                             sol.solicitanteNombre,
@@ -241,7 +241,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Placa = reader["Placa"] is DBNull ? string.Empty : reader["Placa"].ToString();
                             deposito.FechaIngreso = reader["FechaIngreso"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaIngreso"]);
                             deposito.Folio = reader["Folio"] is DBNull ? string.Empty : reader["Folio"].ToString();
-                            deposito.Km = reader["Km"] is DBNull ? string.Empty : reader["Km"].ToString();
+                            deposito.Km = reader["Km"] is DBNull ? string.Empty : Decimal.Parse((string)reader["Km"]).ToString("G29");
                             deposito.Liberado = reader["Liberado"] is DBNull ? 0 : Convert.ToInt32(reader["Liberado"]);
                             deposito.Autoriza = reader["Autoriza"] is DBNull ? string.Empty : reader["Autoriza"].ToString();
                             deposito.FechaActualizacion = reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaActualizacion"]);
@@ -364,7 +364,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact =
                         @"Update depositos set AcreditacionPropiedad=@AcreditacionPropiedad,AcreditacionPersonalidad=@AcreditacionPersonalidad,
                           ReciboPago=@ReciboPago, Observaciones=@Observaciones, Autoriza=@Autoriza,Liberado=@liberado,FechaActualizacion=@FechaActualizacion,
-                          FechaLiberacion=@FechaLiberacion
+                          FechaLiberacion=@FechaLiberacion, estatusSolicitud = 5 
                           where IdDeposito=@IdDeposito";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)model.IdDeposito ?? DBNull.Value;

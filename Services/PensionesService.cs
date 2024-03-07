@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact = @"SELECT 
                                                   p.idPension
                                                  ,p.indicador
-                                                 ,p.pension
+                                                 ,m.municipio+'-'+p.pension  pension
                                                  ,p.permiso
                                                  ,p.idDelegacion
                                                  ,p.idMunicipio
@@ -147,6 +147,7 @@ namespace GuanajuatoAdminUsuarios.Services
                       LEFT JOIN gruas g on pg.idGrua = g.idGrua AND g.estatus = 1
                       LEFT JOIN concesionarios c on g.idConcesionario = c.idConcesionario AND c.estatus = 1
                       WHERE p.estatus = 1
+                      AND p.idDelegacion = @idOficina
                       AND p.pension LIKE @strPension ORDER BY p.idPension DESC";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
@@ -570,7 +571,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     const string SqlTransact = @"SELECT 
                                                   p.idPension
-                                                 ,p.pension
+                                                 , m.municipio+'-'+ p.pension  pension
                                                  ,p.idDelegacion
                                                  ,p.fechaActualizacion
                                                  ,p.actualizadoPor
@@ -578,6 +579,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                                  FROM pensiones p
                                                  INNER JOIN catDelegaciones d
                                                  on p.idDelegacion = d.idDelegacion 
+                                                 INNER JOIN catMunicipios m
+                                                 on p.idMunicipio = m.idMunicipio 
                                                  AND d.estatus = 1
                                                  WHERE p.estatus = 1 AND p.idDelegacion = @delegacionDDValue";
 

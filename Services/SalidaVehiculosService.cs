@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using GuanajuatoAdminUsuarios.Util;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -33,7 +34,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 condiciones += " AND CONVERT (date,d.fechaIngreso) = @fechaIngreso";
             };
             string strQuery = @"SELECT d.idDeposito,d.idVehiculo,d.numeroInventario,d.idSolicitud,
-	                                    d.idMarca,d.placa,d.serie,d.idPension,d.fechaIngreso,
+	                                    d.idMarca,d.placa,d.serie,d.idPension,d.fechaIngreso,d.esExterno,
 	                                    v.modelo,v.idSubmarca,
 	                                    v.idColor,v.idPersona,
 	                                    mv.marcaVehiculo,co.color,sol.fechaSolicitud,
@@ -47,7 +48,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					   		        LEFT JOIN personas AS per ON v.idPersona = per.idPersona
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
 	                                LEFT JOIN pensiones AS pen ON d.idPension = pen.idPension
-                                    WHERE d.idPension = @idPension" + condiciones;
+                                    WHERE d.idPension = @idPension and estatusSolicitud=5 and d.liberado = 1 " + condiciones;
                                    
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -82,6 +83,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.pension = reader["pension"].ToString();
                             deposito.color = reader["color"].ToString();
                             deposito.fechaIngreso = reader["fechaIngreso"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaIngreso"].ToString());
+                            deposito.esExterno = reader["esExterno"] == System.DBNull.Value ? false : Convert.ToBoolean(reader["esExterno"]);
 
 
                             modelList.Add(deposito);
@@ -188,6 +190,78 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return model;
         }
+
+        public SalidaVehiculosModel DetallesDepositoOtraDep(int iDp, int idPension)
+        {
+            SalidaVehiculosModel model = new SalidaVehiculosModel();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact =
+                                            @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,munDep.municipio,car.carretera,tra.tramo,d.km,d.depenColonia,d.depenCalle
+											,d.depenNumero,d.depenInterseccion,
+                                            v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,
+                                            mv.marcaVehiculo,tv.tipoVehiculo,c.color,
+                                            per.nombre,per.apellidoPaterno,per.apellidoMaterno,cde.nombreDependencia,
+											ti.nombre AS motivoIngreso                                              
+										    FROM depositos AS d
+                                            LEFT JOIN vehiculos AS v ON d.idVehiculo = v.idVehiculo
+                                            LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo
+                                            LEFT JOIN catTiposVehiculo AS tv ON tv.idTipoVehiculo = v.idTipoVehiculo
+                                            LEFT JOIN catColores AS c ON c.idColor = v.idColor
+                                            LEFT JOIN personas AS per ON per.idPersona = v.idPersona
+                                            LEFT JOIN catDependenciasEnvian cde ON cde.idDependenciaEnvia = d.idEnviaVehiculo
+                                            LEFT JOIN catMunicipios mun ON mun.idMunicipio = d.idMunicipioEnvia
+											Left JOIN catCarreteras car ON car.idCarretera = d.depenIdCarretera
+											LEFT JOIN catTramos tra ON tra.idTramo = d.idTramo
+                                            LEFT JOIN catMunicipios munDep ON munDep.idMunicipio = d.depenIdMunicipio
+											LEFT JOIN catTipoMotivoIngreso ti ON ti.id = d.idMotivoIngreso
+											WHERE d.idDeposito = @idDeposito AND d.idPension = @idPension";
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+                    command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDp;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            model.idDeposito = reader["idDeposito"] == DBNull.Value ? 0 : Convert.ToInt32(reader["idDeposito"]);
+                            model.idVehiculo = reader["idVehiculo"] == DBNull.Value ? 0 : Convert.ToInt32(reader["idVehiculo"]);
+                            model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                            model.marca = reader["marcaVehiculo"].ToString();
+                            model.modelo = reader["modelo"].ToString();
+                            model.color = reader["color"].ToString();
+                            model.propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
+                            model.motivoIngreso = reader["motivoIngreso"].ToString();
+                            model.enviaVehiculo = reader["nombreDependencia"].ToString();
+                            model.fechaIngreso = reader["fechaIngreso"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaIngreso"]);
+                            model.tramo = reader["tramo"].ToString();
+                            model.carretera = reader["carretera"].ToString();
+                            model.kilometro = reader["km"].ToString();
+                            model.colonia = reader["depenColonia"].ToString();
+                            model.calle = reader["depenCalle"].ToString();
+                            model.numero = reader["depenNumero"].ToString();
+                            model.municipio = reader["municipio"].ToString();
+                            model.interseccion = reader["depenInterseccion"].ToString();
+
+
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return model;
+        }
         public List<GruasSalidaVehiculosModel> ObtenerDatosGridGruas(int iDp)
         {
             //
@@ -242,7 +316,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
-        public CostosServicioModel CostosServicio(int idDeposito)
+        public CostosServicioModel CostosServicio(int idDeposito, int idGrua)
         {
             CostosServicioModel model = new CostosServicioModel();
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -253,21 +327,24 @@ namespace GuanajuatoAdminUsuarios.Services
                                             @"SELECT ga.idDeposito,ga.idGrua,ga.abanderamiento,ga.arrastre,  
                                                                 ga.salvamento,ga.costoTotal,ga.costoAbanderamiento,ga.costoArrastre,ga.costoBanderazo,ga.costoSalvamento
                                                                 From gruasAsignadas AS ga  
-                                                                WHERE ga.idDeposito = @idDeposito";
+                                                                WHERE ga.idDeposito = @idDeposito AND ga.idGrua = @idGrua";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = idDeposito;
+                    command.Parameters.Add(new SqlParameter("@idGrua", SqlDbType.Int)).Value = idGrua;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
                         {
                             model.idDeposito = Convert.ToInt32(reader["idDeposito"]?.ToString() ?? "0");
+                            model.idGrua = Convert.ToInt32(reader["idGrua"]?.ToString() ?? "0");
                             model.costoArrastre = float.TryParse(reader["costoArrastre"]?.ToString(), out float costoArrastre) ? costoArrastre : 0.0f;
                             model.costoSalvamento = float.TryParse(reader["costoSalvamento"]?.ToString(), out float costoSalvamento) ? costoSalvamento : 0.0f;
                             model.costoBanderazo = float.TryParse(reader["costoBanderazo"]?.ToString(), out float costoBanderazo) ? costoBanderazo : 0.0f;
-
                             model.costoAbanderamiento = float.TryParse(reader["costoAbanderamiento"]?.ToString(), out float costoAbanderamiento) ? costoAbanderamiento : 0.0f;
                             model.costoTotalPorGrua = float.TryParse(reader["costoTotal"]?.ToString(), out float costoTotal) ? costoTotal : 0.0f;
+                           
                             model.abanderamiento = Convert.ToInt32(reader["abanderamiento"]?.ToString() ?? "0");
                             model.salvamento = Convert.ToInt32(reader["salvamento"]?.ToString() ?? "0");
                             model.arrastre = Convert.ToInt32(reader["arrastre"]?.ToString() ?? "0");
@@ -301,10 +378,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                    "costoBanderazo = @costoBanderazo, " +
                                    "costoSalvamento = @costoSalvamento, " +
                                    "costoTotal = @costoTotal " +
-                                   "where idDeposito=@idDeposito",
+                                   "where idDeposito=@idDeposito AND idGrua = @idGrua",
                         connection);
                     
                     sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@idGrua", SqlDbType.Int)).Value = model.idGrua;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoAbanderamiento", SqlDbType.Float)).Value = model.costoAbanderamiento;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoArrastre", SqlDbType.Float)).Value = model.costoArrastre;
                     sqlCommand.Parameters.Add(new SqlParameter("@costoBanderazo", SqlDbType.Float)).Value = model.costoBanderazo;
@@ -352,7 +430,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         nombreRecibe = @nombreRecibe,
                         nombreEntrega = @nombreEntrega,
                         observaciones = @observaciones,
-                        estatus = @estatus,
+                        estatus = @estatus,                       
                         actualizadoPor = @actualizadoPor,
                         fechaActualizacion = @fechaActualizacion
                 WHEN NOT MATCHED THEN
@@ -375,9 +453,22 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
 
                     command.ExecuteNonQuery();
+
+
+
+                  //  connection.Open();
+                    SqlCommand sqlCommand = new(@"update depositos set estatusSolicitud=6,fechaActualizacion=@fechaAct where idDeposito=@idDeposito;",connection);
+
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@fechaAct", SqlDbType.DateTime)).Value = DateTime.Now;
+                    sqlCommand.CommandType = CommandType.Text;
+                    result = sqlCommand.ExecuteNonQuery();
+
+
                 }
                 catch (SqlException ex)
                 {
+                    Logger.Error("Ocurrió un error al proporcionar salida de vehiculo:" + ex);
                     return result;
                 }
                 finally
@@ -389,7 +480,80 @@ namespace GuanajuatoAdminUsuarios.Services
             }
         }
 
+        public int GuardarInforSalidaOtrasDep(SalidaVehiculosModel model)
+        {
+            int result = 0;
 
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string mergeQuery =
+                        @"MERGE INTO serviciosDepositos AS target
+                USING (SELECT @idDeposito AS idDeposito) AS source
+                ON target.idDeposito = source.idDeposito
+                WHEN MATCHED THEN
+                    UPDATE SET
+                        fechaIngreso = @fechaIngreso,
+                        fechaSalida = @fechaSalida,
+                        diasResguardo = @diasResguardo,
+                        costoDeposito = @costoDeposito,
+                        oficio = @oficio,
+                        fechaOficio = @fechaOficio,
+                        nombreRecibe = @nombreRecibe,
+                        nombreEntrega = @nombreEntrega,
+                        observaciones = @observaciones,
+                        estatus = @estatus,                       
+                        actualizadoPor = @actualizadoPor,
+                        fechaActualizacion = @fechaActualizacion
+                WHEN NOT MATCHED THEN
+                    INSERT (idDeposito, fechaIngreso, fechaSalida, diasResguardo, costoDeposito, oficio,fechaOficio, nombreRecibe, nombreEntrega, observaciones, estatus, actualizadoPor, fechaActualizacion)
+                    VALUES (@idDeposito, @fechaIngreso, @fechaSalida, @diasResguardo, @costoDeposito, @oficio,@fechaOficio, @nombreRecibe, @nombreEntrega, @observaciones, @estatus, @actualizadoPor, @fechaActualizacion);";
+
+                    SqlCommand command = new SqlCommand(mergeQuery, connection);
+
+                    command.Parameters.AddWithValue("@idDeposito", model.idDeposito);
+                    command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);
+                    command.Parameters.AddWithValue("@fechaSalida", model.fechaSalida);
+                    command.Parameters.AddWithValue("@diasResguardo", model.diasResguardo);
+                    command.Parameters.AddWithValue("@costoDeposito", model.costoDeposito);
+                    command.Parameters.AddWithValue("@oficio", model.oficio);
+                    command.Parameters.AddWithValue("@fechaOficio", model.fechaOficio);
+                    command.Parameters.AddWithValue("@nombreRecibe", model.recibe != null ? model.recibe : DBNull.Value);
+                    command.Parameters.AddWithValue("@nombreEntrega", model.entrega != null ? model.entrega : DBNull.Value);
+                    command.Parameters.AddWithValue("@observaciones", model.observaciones != null ? model.observaciones : DBNull.Value);
+                    command.Parameters.AddWithValue("@estatus", 1);
+                    command.Parameters.AddWithValue("@actualizadoPor", 1);
+                    command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
+
+                    command.ExecuteNonQuery();
+
+
+
+                    //  connection.Open();
+                    SqlCommand sqlCommand = new(@"update depositos set estatusSolicitud=6,fechaActualizacion=@fechaAct where idDeposito=@idDeposito;", connection);
+
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = model.idDeposito;
+                    sqlCommand.Parameters.Add(new SqlParameter("@fechaAct", SqlDbType.DateTime)).Value = DateTime.Now;
+                    sqlCommand.CommandType = CommandType.Text;
+                    result = sqlCommand.ExecuteNonQuery();
+
+
+                }
+                catch (SqlException ex)
+                {
+                    Logger.Error("Ocurrió un error al proporcionar salida de vehiculo:" + ex);
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
         public List<SalidaVehiculosModel> ObtenerTotal(int iDp)
         {
             List<SalidaVehiculosModel> resultados = new List<SalidaVehiculosModel>();

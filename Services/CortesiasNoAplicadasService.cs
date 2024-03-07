@@ -21,7 +21,7 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        List<CortesiasNoAplicadasModel> ICortesiasNoAplicadas.ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion)
+        List<CortesiasNoAplicadasModel> ICortesiasNoAplicadas.ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion,int corporacion)
         {
             List<CortesiasNoAplicadasModel> ListaInfracciones = new List<CortesiasNoAplicadasModel>();
 
@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT TOP 200 i.folioInfraccion,
+                    SqlCommand command = new SqlCommand(@"SELECT i.folioInfraccion,
                                                         CONVERT(varchar,i.fechaInfraccion,103) AS fechaInfraccion, 
                                                         CONCAT(pI.nombre,' ',pI.apellidoPaterno,' ', pI.apellidoMaterno)AS Conductor,
                                                         i.placasVehiculo, v.serie,
@@ -38,12 +38,15 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         FROM infracciones AS i 
                                                         LEFT JOIN vehiculos AS v ON i.idVehiculo = v.idVehiculo 
                                                         LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion 
-                                                        LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
+                                                        LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersonaInfraccion 
                                                         LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                                                         LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion  
-                                                        WHERE folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2 ORDER BY i.idInfraccion DESC ", connection);
+                                                        WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%' AND i.infraccionCortesia = 2
+                                                        and i.transito=@corporacion
+                                                        ORDER BY i.idInfraccion DESC ", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion??"";
+                    command.Parameters.Add(new SqlParameter("@corporacion", SqlDbType.Int)).Value = corporacion;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -89,28 +92,29 @@ namespace GuanajuatoAdminUsuarios.Services
                     i.folioInfraccion,m.municipio,cde.delegacion,
                     CONCAT(f.nombre,' ',f.apellidoPaterno,' ', f.apellidoMaterno)AS Oficial, t.tramo,
                     i.kmCarretera, CONCAT(pI.nombre,' ',pI.apellidoPaterno,' ', pI.apellidoMaterno)AS Conductor,
-                    cv.nombreSubmarca, (Case When i.infraccionCortesia = 1 Then 'Aplica' 
-                    ELse 'No Aplica' END ) AS infraccionCortesia, g.garantia, tp.tipoPlaca, i.placasVehiculo,
+					pi.numeroLicencia,
+                    cv.nombreSubmarca,ctc.nombreCortesia, g.garantia, tp.tipoPlaca, i.placasVehiculo,
                     tl.tipoLicencia, v.tarjeta, i.monto, i.reciboPago, i.fechaPago, i.lugarPago,
-                    i.oficioEnvio, i.placasVehiculo, CONCAT( pV.nombre,' ', pV.apellidoPaterno,' ', pV.apellidoMaterno)AS Propietario,
-                    i.observaciones, e.estatusInfraccion,
+                    i.oficioEnvio, i.placasVehiculo, CONCAT(isnull( pV.nombre,''),' ', isnull(pV.apellidoPaterno,''),' ', isnull(pV.apellidoMaterno,''))AS Propietario,
+                    i.observaciones,i.ObservacionesSub,i.FechaVencimiento,e.estatusInfraccion,
                     CONVERT(varchar,i.fechaInfraccion,103) AS fechaInfraccion, v.serie,
                     (Case When i.estatus = 1 Then 'si' 
                     ELse 'No' END ) AS estatus
                     FROM infracciones AS i 
                     LEFT JOIN vehiculos AS v ON i.idVehiculo = v.idVehiculo 
                     LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion 
-                    LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
+                    LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersonaInfraccion 
                     LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
                     LEFT JOIN catDelegaciones cde ON cde.idDelegacion = i.idDelegacion 
                     LEFT JOIN CatMunicipios AS m ON m.idMunicipio = i.idMunicipio
                     LEFT JOIN catOficiales As f ON f.idOficial = i.idOficial
                     LEFT JOIN catTramos AS t ON t.idTramo = i.idTramo
                     LEFT JOIN catSubmarcasVehiculos AS cv On cv.idSubmarca = v.idSubmarca
-                    LEFT JOIN catGarantias AS g ON g.idGarantia = i.idGarantia
-                    LEFT JOIN garantiasInfraccion gi ON gi.idGarantia = g.idGarantia
+                    LEFT JOIN garantiasInfraccion gi ON gi.idInfraccion = i.idInfraccion
+			        LEFT JOIN catGarantias AS g ON g.idGarantia = gi.idCatGarantia
                     LEFT JOIN catTipoPlaca AS tp ON tp.idTipoPlaca = gi.idTipoPlaca
                     LEFT JOIN catTipoLicencia AS tl ON tl.idTipoLicencia = pi.idTipoLicencia
+				    LEFT JOIN catTipoCortesia AS ctc ON ctc.id = i.infraccionCortesia
                     WHERE i.folioInfraccion like '%' + @id + '%' and i.infraccionCortesia = 2", connection);
                     command.Parameters.Add(new SqlParameter("@id", SqlDbType.NVarChar)).Value = id;
                     command.CommandType = CommandType.Text;
@@ -129,16 +133,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccion.Conductor = reader["Conductor"].ToString();
                             infraccion.Vehiculo = reader["nombreSubmarca"].ToString();
                             //infraccion.TipoAplicacion = reader["TipoAplicacion"].ToString();
-                            infraccion.TipoCortesia = reader["infraccionCortesia"].ToString();
+                            infraccion.TipoCortesia = reader["nombreCortesia"].ToString();
                             //infraccion.CalificacionTotal = reader["CalificacionTotal"].ToString();
                             infraccion.TipoGarantia = reader["garantia"].ToString();
                             infraccion.TipoPlaca = reader["tipoPlaca"].ToString();
                             infraccion.Placas = reader["placasVehiculo"].ToString();
                             infraccion.TipoLicencia = reader["tipoLicencia"].ToString();
+                            infraccion.Licencia = reader["numeroLicencia"].ToString();
+
                             //infraccion.Licencia = reader["tipoLicencia"].ToString();
                             infraccion.Tarjeta = reader["tarjeta"].ToString();
                             //infraccion.ArchivoInventario = reader["ArchivoInventario"].ToString();
-                            //infraccion.FechaVencimiento = Convert.ToDateTime(reader["FechaVencimiento"].ToString());
+                            infraccion.FechaVencimiento = reader["FechaVencimiento"].GetType()==typeof(DBNull)?null:  Convert.ToDateTime(reader["FechaVencimiento"].ToString());
                             infraccion.MontoCalificacion = reader["monto"].ToString();
                             infraccion.MontoPagado = reader["monto"].ToString();
                             infraccion.Recibo = reader["reciboPago"].ToString();
@@ -158,6 +164,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             infraccion.Tarjeta = reader["tarjeta"].ToString();
                             infraccion.Propietario = reader["Propietario"].ToString();
                             infraccion.Observaciones = reader["observaciones"].ToString();
+                            infraccion.ObservacionesSub = reader["ObservacionesSub"].GetType() == typeof(DBNull) ? "" : (string)reader["ObservacionesSub"];
                             infraccion.Estatus = reader["estatusInfraccion"].ToString();
                             //infraccion.Capturista = reader["Capturista"].ToString();
                             infraccion.Baja = reader["estatus"].ToString();
@@ -193,7 +200,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand("Update infracciones set observaciones = @observaciones,infraccionCortesia=3 where folioInfraccion = @folioInfraccion", connection);
+					SqlCommand command = new SqlCommand("Update infracciones set ObservacionesSub = @observaciones,infraccionCortesia=3 where folioInfraccion = @folioInfraccion", connection);
 					command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = folioInfraccion;
 					command.Parameters.Add(new SqlParameter("@observaciones", SqlDbType.NVarChar)).Value = observaciones;
 

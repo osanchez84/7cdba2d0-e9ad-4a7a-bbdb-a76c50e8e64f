@@ -6,7 +6,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     public interface IRepuveService
     {
         List<RepuveConsgralResponseModel> ConsultaGeneral(RepuveConsgralRequestModel model);
-        List<RepuveConsRoboResponseModel> ConsultaRobo(RepuveConsgralRequestModel model);
+        List<RepuveRoboModel> ConsultaRobo(RepuveConsgralRequestModel model);
 
 	}
 }

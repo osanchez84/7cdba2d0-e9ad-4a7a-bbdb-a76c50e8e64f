@@ -10,7 +10,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         
         public List<AsignacionGruaModel> BuscarSolicitudes(AsignacionGruaModel model);
         List<AsignacionGruaModel> BuscarPorParametro(string Placa, string Serie);
-        public AsignacionGruaModel BuscarSolicitudPord(string iSo, int idOficina);
+        public AsignacionGruaModel BuscarSolicitudPord(int iSo,string folio, int idOficina,int idDependencia);
+        public AsignacionGruaModel DatosInfraccionAsociada(string folioSolicitud);
+
         public int ActualizarDatos(AsignacionGruaModel selectedRowData,int iDep);
         List<AsignacionGruaModel> ObtenerInfracciones(string folioInfraccion);
         public int UpdateDatosGrua(IFormCollection formData, int abanderamiento,int arrastre,int salvamento,int iDep,int iSo);

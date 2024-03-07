@@ -17,7 +17,7 @@
 					<h6 class="px-4 text-muted"><b>Municipio:</b> @Model.Municipio</h6>
 					<h6 class="px-4 text-muted"><b>Delegación:</b>@Model.Delegacion</h6>
 					<h6 class="px-4 text-muted"><b>Oficial:</b>@Model.Oficial</h6>
-					<h6 class="px-4 text-muted"><b>Camino:</b>@Model.Camino</h6>
+					<!--<h6 class="px-4 text-muted"><b>Camino:</b>@Model.Camino</h6>-->
 					<h6 class="px-4 text-muted"><b>Tramo:</b> @Model.Tramo</h6>
 					<h6 class="px-4 text-muted"><b>Kilómetro:</b>@Model.KmCarretera</h6>
 					<h6 class="px-4 text-muted"><b>Conductor:</b>@Model.Conductor</h6>
@@ -37,26 +37,27 @@
 				</div>
 				<div class="col-md-3">
 					<h6 class="px-4 text-muted"><b>Archivo inventario:</b>@Model.ArchivoInventario</h6>
-					<h6 class="px-4 text-muted"><b>Fecha vencimiento:</b> </h6>
+					<h6 class="px-4 text-muted"><b>Fecha vencimiento:</b>
+						@(Model.FechaVencimiento.HasValue && Model.FechaVencimiento != DateTime.MinValue ? Model.FechaVencimiento.Value.ToString("dd/MM/yyyy") : "-")
+						</h6>
 					<h6 class="px-4 text-muted"><b>Monto calificación:</b>@Model.MontoCalificacion</h6>
 					<h6 class="px-4 text-muted"><b>Monto pagado:</b>@Model.MontoPagado</h6>
 					<h6 class="px-4 text-muted"><b>Recibo:</b>@Model.Recibo</h6>
 					<h6 class="px-4 text-muted">
 						<b>Fecha de pago:</b>
-						@(Model.FechaPago != DateTime.MinValue ? Model.FechaPago.ToString("dd/MM/yyyy") : "-")
+						@(Model.FechaPago.HasValue && Model.FechaPago != DateTime.MinValue ? Model.FechaPago.Value.ToString("dd/MM/yyyy") : "-")
 					</h6>
 					<h6 class="px-4 text-muted"><b>Lugar de pago:</b>@Model.LugarPago</h6>
-					<h6 class="px-4 text-muted"><b>Oficio con donación:</b>@Model.OficioConDonacion</h6>
+					<h6 class="px-4 text-muted"><b>Oficio condonación:</b>@Model.OficioConDonacion</h6>
 					<h6 class="px-4 text-muted"><b>Placas del vehículo:</b>@Model.Placas</h6>
 				</div>
 				<div class="col-md-3">
 					<h6 class="px-4 text-muted"><b>Tarjeta del vehículo:</b>@Model.Tarjeta</h6>
 					<h6 class="px-4 text-muted"><b>Propietario:</b> @Model.Propietario</h6>
-					<h6 class="px-4 text-muted"><b>Observaciones:</b>@Model.Observaciones</h6>
+					<h6 class="px-4 text-muted"><b>Concepto infraccion:</b>@Model.Observaciones</h6>
 					<h6 class="px-4 text-muted"><b>Estatus:</b>@Model.Estatus</h6>
-					<h6 class="px-4 text-muted"><b>Capturista:</b>@Model.Capturista</h6>
-
-					<h6 class="px-4 text-muted"><b>Baja:</b>@Model.Baja</h6>
+					<!--<h6 class="px-4 text-muted"><b>Capturista:</b>@Model.Capturista</h6>-->
+					<!--<h6 class="px-4 text-muted"><b>Baja:</b>@Model.Baja</h6>-->
 					<h6 class="px-4 text-muted"><b>Fecha:</b> @Model.FechaInfraccion</h6>
 
 				</div>
@@ -70,10 +71,15 @@
 
 	<form id="ObservacionesForm" class="row px-4 mb-4 align-items-end justify-content-center">
 
+
+		<div  class="row">
+			<h6 class="px-4 text-muted"><b>Concepto infraccion:</b>@(Model?.Observaciones??"")</h6>
+		</div>
+		<br />
 		<div class="controlForm my-3">
 			@Html.HiddenFor(m=>m.folioInfraccion)
 
-			@(Html.Kendo().TextBoxFor(m => m.Observaciones)
+			@(Html.Kendo().TextBoxFor(m => m.ObservacionesSub)
 				.Label(l => l.Content("Observaciones"))
 				.Placeholder("Ingresa sus observaciones")
 				)
@@ -83,7 +89,7 @@
 	<div class="col-md-3">
 		<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
 			<div class="controlButton">
-				<button class="btnPrimary my-sm-3" onclick="guardar()">
+				<button class="btnPrimary my-sm-3" id="btncrearnoInf" onclick="guardar()">
 					<h5><b>Guardar</b></h5>
 				</button>
 			</div>
@@ -101,7 +107,7 @@
 		var controlsValidate = [];
 		var isValid = true;
 
-		controlsValidate.push({ 'controlName': 'Observaciones' });
+		controlsValidate.push({ 'controlName': 'ObservacionesSub' });
 
 		// INPUTS
 		if (!isControlsValid(controlsValidate)) { isValid = false; }
@@ -110,7 +116,7 @@
 			sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
 			return;
 		}
-
+		$("#btncrearnoInf").prop("disabled",true)
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("GuardarObservaciones", "CortesiasNoAplicadas")',
@@ -118,7 +124,14 @@
 			data: Mydata,
 			success: function (result) {
 				sitteg_success('La observación se ha guardado exitosamenten.');
-				hideLoading();
+				
+				setTimeout(()=>{
+					hideLoading();
+					location.reload()
+
+				},1500)
+				
+
 			},
 			error: function (error) {
 				sitteg_warning('Sucedió un error, intente mas tarde...');

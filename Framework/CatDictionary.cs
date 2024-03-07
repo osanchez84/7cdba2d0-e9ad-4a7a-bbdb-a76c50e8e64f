@@ -189,6 +189,9 @@ namespace GuanajuatoAdminUsuarios.Framework
 									Id = Convert.ToInt32(s["idTramo"]),
 									Text = Convert.ToString(s["tramo"])
 								}).ToList();
+						catalogModel.CatalogList.Add(new SystemCatalogListModel() { Id = 1, Text = "No aplica" });
+						catalogModel.CatalogList.Add(new SystemCatalogListModel() { Id = 2, Text = "No especificado" });
+
 					}
 					break;
 				case "CatTramos":
@@ -290,12 +293,13 @@ namespace GuanajuatoAdminUsuarios.Framework
 					if (int.TryParse(parameter, out intId))
 					{
 						catalogModel.CatalogName = catalog;
-						campos = new string[] { "idCatMotivoInfraccion", "nombre" };
+						campos = new string[] { "idCatMotivoInfraccion", "nombre", "transito" };
 						catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catMotivosInfraccion", campos)
 								.Select(s => new SystemCatalogListModel()
 								{
 									Id = Convert.ToInt32(s["idCatMotivoInfraccion"]),
-									Text = Convert.ToString(s["nombre"])
+									Text = Convert.ToString(s["nombre"]),
+									Transito = Convert.ToInt32(s["transito"])==1 ? true:false
 								})
 								.OrderBy(s => s.Text)
 								.ToList();
@@ -418,13 +422,13 @@ namespace GuanajuatoAdminUsuarios.Framework
 					break;
 				case "CatDelegaciones":
 					catalogModel.CatalogName = catalog;
-					campos = new string[] { "idDelegacion", "delegacion" };
-					catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catDelegaciones", campos)
+					campos = new string[] { "idOficinaTransporte", "nombreOficina" };
+					catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("catDelegacionesOficinasTransporte", campos)
 							.Select(s =>
 							new SystemCatalogListModel()
 							{
-								Id = Convert.ToInt32(s["idDelegacion"]),
-								Text = Convert.ToString(s["delegacion"])
+								Id = Convert.ToInt32(s["idOficinaTransporte"]),
+								Text = Convert.ToString(s["nombreOficina"])
 							})
 							.OrderBy(s => s.Text)
 							.ToList();

@@ -3,6 +3,8 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+    var oficinadelegacion = User.FindFirst(CustomClaims.OficinaDelegacion).Value;
+
 }
 
 <script>
@@ -21,14 +23,11 @@
                     window.location.href = "/Principal";
                 }, 200);
             } else {
-                //IMPRIMIR
                 if (!auth.toString().includes("203")) {
                     $("#btnExcelTransito").prop('disabled', true).css({ "opacity": "0.3" });
                     $("#btnPDFTransito").prop('disabled', true).css({ "opacity": "0.3" });
                 }
-                if (!auth.toString().includes("202")) {
-                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-                }
+
             }
         } else {
             Swal.fire({
@@ -173,11 +172,14 @@
                 <div class="controlForm mb-3">
                     <label>Delegación/Oficina:</label>
                     <span>
-                        @(Html.Kendo().DropDownListFor(d => d.IdDelegacion).Filter(FilterType.Contains)
-                            .DataTextField("Text")
-                            .DataValueField("Value")
-                            .OptionLabel("Seleccione Delegación...")
-                            .HtmlAttributes(new { style = "width:100%;", Id = "txtDelegacion" })
+                        @(
+                            Html.Kendo().DropDownListFor(d => d.IdDelegacion).Filter(FilterType.Contains)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .Value(oficinadelegacion)
+                        .Enable(false)
+                                        .OptionLabel("Seleccione Delegación...")
+                                        .HtmlAttributes(new { style = "width:100%;", Id = "txtDelegacion" })
                             .Filter(FilterType.Contains)
                             .DataSource(source =>
                             {
@@ -185,7 +187,8 @@
                                 {
                                     read.Action("Delegacion_Read", "TransitoTransporte");
                                 });
-                            }))
+                            })
+                        )
                     </span>
                 </div>
             </div>

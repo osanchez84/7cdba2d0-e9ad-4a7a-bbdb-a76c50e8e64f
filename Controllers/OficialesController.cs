@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
+using GuanajuatoAdminUsuarios.Framework;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
@@ -21,20 +22,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class OficialesController : BaseController
     {
         DBContextInssoft dbContext = new DBContextInssoft();
+        
         public IActionResult Index()
         {
-            var ListOficialesModel = _oficialesService.GetOficiales();
+            var corp = HttpContext.Session.GetInt32("IdDependencia").Value;
+            var ListOficialesModel = _oficialesService.GetOficialesByCorporacion(corp);
             ViewBag.ListadoOficiales = ListOficialesModel;
+            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
 
             return View();
             }
         private readonly IOficiales _oficialesService;
         private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
-
-        public OficialesController(IOficiales oficialesService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
+        private readonly ICatDictionary _catDictionary;
+        public OficialesController(IOficiales oficialesService, ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService, ICatDictionary catDictionary)
         {
             _oficialesService = oficialesService;
             _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
+            _catDictionary = catDictionary;
         }
 
 		public JsonResult OficialesDependencia_Drop()
@@ -51,12 +56,28 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			return Json(result);
 		}
-		#region Modal Action
-		public ActionResult IndexModal()
+
+        public JsonResult OficialesDependenciaTodos_Drop()
+        {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficialesPorDependencia()
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+                });
+            //oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+        #region Modal Action
+        public ActionResult IndexModal()
         {
 
-            var ListOficialesModel = _oficialesService.GetOficiales();
-            ViewBag.ListadoOficiales = ListOficialesModel;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficialesPorDependencia(idDependencia);
+           ViewBag.ListadoOficiales = oficiales;
 
             return View("Index");
         }
@@ -106,10 +127,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (ModelState.IsValid)
             {
                 int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+                
 
                 _oficialesService.SaveOficial(model,idDependencia);
-                var ListOficialesModel = _oficialesService.GetOficiales();
-                return Json(ListOficialesModel);
+                //var ListOficialesModel = _oficialesService.GetOficiales();
+                return Json(1);
             }
 
             return PartialView("_Crear");
@@ -158,7 +180,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult DelegacionesOficinas_Drop()
         {
-            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos().Where(x=>x.Transito == tipo), "IdDelegacion", "Delegacion");
             return Json(result);
         }
 
@@ -219,9 +242,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Delegaciones_Drop()
         {
-            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            //var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var result = ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+            
             return Json(result);
         }
+        
 
 
         public OficialesModel GetOficialByID(int IdOficial)
@@ -268,40 +295,42 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return ListOficialessModel;
         }
         #endregion
-        [HttpGet]
-        public ActionResult ajax_BuscarDelegacion(int idDelegacionFiltro)
+     //   [HttpGet]
+        public ActionResult ajax_BuscarDelegacion ([DataSourceRequest] DataSourceRequest request, int idDelegacionFiltro, string nombre, string apellidoPaterno, string apellidoMaterno)
         {
             List<CatOficialesModel> ListOfcialesDelegacion = new List<CatOficialesModel>();
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
+            ListOfcialesDelegacion = _oficialesService.GetOficialesByCorporacion(idDependencia);
 
-            ListOfcialesDelegacion = (from oficiales in _oficialesService.GetOficiales().ToList()
-                                         // join delegacion in _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos().ToList()
-                                          //on oficiales.IdOficina equals delegacion.IdOficinaTransporte
-                                          // join estatus in dbContext.Estatus.ToList()
-                                          //on diasInhabiles.Estatus equals estatus.estatus
+          
 
-                                      select new CatOficialesModel
-                                      {
-                                          IdOficial = oficiales.IdOficial,
-                                          Nombre = oficiales.Nombre,
-                                          ApellidoPaterno = oficiales.ApellidoPaterno,
-                                          ApellidoMaterno = oficiales.ApellidoMaterno,
-                                          IdOficina = oficiales.IdOficina,
-                                          Estatus = oficiales.Estatus,
-                                          nombreOficina = oficiales.nombreOficina,
-                                          // EstatusDesc = estatus.estatusDesc,
-                                          // = diasInhabiles.Municipio
-                                      }).ToList();
-
-      
              if (idDelegacionFiltro > 0)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
                                           where s.IdOficina == idDelegacionFiltro
                                           select s).ToList();
             }
+            if (nombre != null)
+            {
+                ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
+                                          where s.Nombre == nombre.ToUpper()
+                                          select s).ToList();
+            }
+            if (apellidoPaterno != null)
+            {
+                ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
+                                          where s.ApellidoPaterno == apellidoPaterno.ToUpper()
+                                          select s).ToList();
+            }
+            if (apellidoMaterno != null)
+            {
+                ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
+                                          where s.ApellidoMaterno == apellidoMaterno.ToUpper()
+                                          select s).ToList();
+            }
 
-            return Json(ListOfcialesDelegacion);
+            return Json(ListOfcialesDelegacion.ToDataSourceResult(request));
         }
 
     }

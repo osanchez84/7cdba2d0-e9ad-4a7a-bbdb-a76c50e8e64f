@@ -8,7 +8,7 @@
 					<i class="icon-involucrado h1 colorPrimary"></i>
 				</div>
 				<div class="col-md-9 my-3">
-					<h2 class="m-0 h3"><b>Datos de persona Involucradaxxxxxxxxxxxxxxx</b></h2>
+					<h2 class="m-0 h3"><b>Datos de persona Involucrada</b></h2>
 				</div>
 				<div class="col-auto">
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -246,21 +246,10 @@
 						<div class="controlForm my-3">
 							<label>Asiento que ocupaba:</label>
 							<span>
-
-								@(Html.Kendo().DropDownListFor(t => t.IdAsiento)
-									.DataTextField("Text")
-									.DataValueField("Value")
-									.OptionLabel("Selecciona una opción")
-									.Filter(FilterType.Contains)
-									.DataSource(source =>
-									{
-										source.Read(read =>
-										{
-											read.Action("Asiento_Drop", "CapturaAccidentes");
-										});
-									})
-									.HtmlAttributes(new { style = "width:100%;" })
-									)
+							@(Html.Kendo().NumericTextBoxFor(t => t.IdAsiento)
+								.HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number" })
+								.Spinners(true)
+								)
 							</span>
 						</div>
 					</div>
@@ -368,11 +357,32 @@
 	}
 
 	function agregarComplementos() {
-		var idPersona = $("#idPersonaInput1").val();
+		console.log("AQUI SI ES")
+		var idPersona = $("#idPersonaInput").val();
 		if (idPersona === "") {
-			console.log("VALP",idPersona)
 			sitteg_warning("Debe seleccionar una persona involucrada");
 			return;
+		}
+			var validator = $("#complementoInvolucradoForm").kendoValidator().data('kendoValidator');
+
+			var controlsValidate = [];
+			var isValid = true;
+			var IdTipoInvolucrado = $("#IdTipoInvolucrado").val();
+			var IdEstadoVictima = $("#IdEstadoVictima").val();
+			var IdCinturon = $("#IdCinturon").val();
+			console.log("AA", IdTipoInvolucrado)
+			controlsValidate.push({ 'controlName': 'IdTipoInvolucrado' });
+			controlsValidate.push({ 'controlName': 'IdEstadoVictima' });
+			controlsValidate.push({ 'controlName': 'IdCinturon' });
+
+
+			// INPUTS
+			if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+
+			if (!isValid) {
+				sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+				return;
+			}
 			var Mydata = $("#complementoInvolucradoForm").serialize();
 			showLoading();
 			$.ajax({
@@ -391,23 +401,6 @@
 				}
 			});
 		}
-
-		var Mydata = $("#complementoInvolucradoForm").serialize();
-
-		$.ajax({
-			url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
-			type: 'POST',
-			data: Mydata,
-			success: function (result) {
-				$('#agregarInvolucradoModal').modal('hide');
-				$('.modal-backdrop').remove();
-				sitteg_success("Se ha actualizado la información");
-				actualizarGrid();
-			},
-			error: function (error) {
-			}
-		});
-	}
 
 	function actualizarGrid() {
 		var grid = $("#gridInvolucradosTodo").data("kendoGrid");

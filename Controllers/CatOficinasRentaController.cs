@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -19,10 +20,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
     public class CatOficinasRentaController : BaseController
     {
         private readonly ICatOficinasRentaService _catOficinasRentaService;
+        private readonly IDelegacionesService _delegacionesService;
 
-        public CatOficinasRentaController(ICatOficinasRentaService catOficinasRentaService)
+        public CatOficinasRentaController(ICatOficinasRentaService catOficinasRentaService, IDelegacionesService delegacionesService)
         {
             _catOficinasRentaService = catOficinasRentaService;
+            _delegacionesService = delegacionesService;
         }
         DBContextInssoft dbContext = new DBContextInssoft();
 
@@ -34,12 +37,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult Index()
         {
-         
-                var ListOficinasRentaModel = GetOficinas();
+            var catOficinasDTO = new CatOficinasRentaDTO();
+            var ListOficinasRentaModel = GetOficinas();
+            catOficinasDTO.OficinasRentaModel = ListOficinasRentaModel;
+            return View("Index", catOficinasDTO);
+        }
 
-            return View("Index", ListOficinasRentaModel);
-            }
-     
 
         public ActionResult Index2(int idDelegacion)
         {
@@ -50,17 +53,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult AgregarOficinaRentaModal()
         {
-          
-                Delegaciones_Drop();
+
+            Delegaciones_Drop();
             return PartialView("_Crear");
-            }
-     
+        }
+
 
 
         public ActionResult EditarOficinaRentaModal(int IdOficinaRenta, int IdDelegacion)
         {
-          
-                Delegaciones_Drop();
+
+            Delegaciones_Drop();
             var oficinasRentaModel = GetOficinaRentaByID(IdOficinaRenta);
             return PartialView("_Editar", oficinasRentaModel);
         }
@@ -126,9 +129,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_Eliminar");
         }
 
-        public JsonResult GetOfiRent([DataSourceRequest] DataSourceRequest request)
+        public JsonResult GetOfiRent([DataSourceRequest] DataSourceRequest request, int idDelegacion)
         {
             var ListOficinasRentaModel = GetOficinas();
+
+            if (idDelegacion > 0)
+                ListOficinasRentaModel = ListOficinasRentaModel.Where(x => x.IdDelegacion == idDelegacion).ToList();
 
             return Json(ListOficinasRentaModel.ToDataSourceResult(request));
         }
@@ -188,11 +194,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         }
 
-       
+
 
         public JsonResult Delegaciones_Drop()
         {
-            var result = new SelectList(dbContext.Delegaciones.ToList(), "IdDelegacion", "Delegacion");
+            var tipo = 1; //Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var result = new SelectList(_delegacionesService.GetDelegaciones().Where(x => x.Transito == (tipo == 1) ? true : false), "IdDelegacion", "Delegacion");
             return Json(result);
         }
         public CatOficinasRentaModel GetOficinaRentaByID(int IdOficinaRenta)
@@ -207,6 +214,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                           IdOficinaRenta = catOficinasRenta.IdOficinaRenta,
                                           NombreOficina = catOficinasRenta.NombreOficina,
                                           IdDelegacion = catOficinasRenta.IdDelegacion,
+                                          Estatus = catOficinasRenta.Estatus
 
 
                                       }).Where(w => w.IdOficinaRenta == IdOficinaRenta).FirstOrDefault();
@@ -221,8 +229,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// <returns></returns>
         public List<CatOficinasRentaModel> GetOficinas()
         {
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var deleg = _delegacionesService.GetDelegaciones().Where(x => x.Transito == (tipo == 1) ? true : false);
             var ListOficinasRentaModel = (from catOficinasRenta in dbContext.CatOficinasRenta.ToList()
-                                          join delegaciones in dbContext.Delegaciones.ToList()
+                                          join delegaciones in deleg.ToList()
                                           on catOficinasRenta.IdDelegacion equals delegaciones.IdDelegacion
                                           join estatus in dbContext.Estatus.ToList()
                                           on catOficinasRenta.Estatus equals estatus.estatus
@@ -233,16 +243,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                               DelegacionDesc = delegaciones.Delegacion,
                                               IdDelegacion = delegaciones.IdDelegacion,
                                               estatusDesc = estatus.estatusDesc,
-
-
+                                              Transito = delegaciones.Transito ? 1 : 0
                                           }).ToList();
             return ListOficinasRentaModel;
         }
 
         public List<CatOficinasRentaModel> ObtenerPorDel(int IdDelegacion)
         {
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var deleg = _delegacionesService.GetDelegaciones().Where(x => x.Transito == (tipo == 1) ? true : false);
             var ListaPorDelegacion = (from catOficinasRenta in dbContext.CatOficinasRenta.ToList()
-                                      join delegaciones in dbContext.Delegaciones.ToList()
+                                      join delegaciones in deleg.ToList()
                                       on catOficinasRenta.IdDelegacion equals delegaciones.IdDelegacion
                                       select new CatOficinasRentaModel
                                       {
@@ -250,7 +261,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                           NombreOficina = catOficinasRenta.NombreOficina,
                                           DelegacionDesc = delegaciones.Delegacion,
                                           IdDelegacion = delegaciones.IdDelegacion,
-
+                                          Transito = delegaciones.Transito ? 1 : 0
 
                                       }).Where(w => w.IdDelegacion == IdDelegacion).ToList();
             return ListaPorDelegacion;

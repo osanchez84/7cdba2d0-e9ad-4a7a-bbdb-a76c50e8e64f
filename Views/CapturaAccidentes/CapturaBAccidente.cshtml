@@ -56,12 +56,13 @@
         });
     }
     function buscarInvolucrado() {
+        
         var licenciaBusqueda = $("#numeroLicenciaBusqueda").val().trim();
         var rfcBusqueda = $("#RFCBusqueda").val().trim();
         var curpBusqueda = $("#CURPBusqueda").val().trim();
         var nombreBusqueda = $("#nombreBusqueda").val().trim();
         var apellidoPaternoBusqueda = $("#apellidoPaternoBusqueda").val().trim();
-
+       
         if (licenciaBusqueda !== "") {
             if (licenciaBusqueda.length < 10) {
                 sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
@@ -88,35 +89,58 @@
             return;
         }
         var Mydata = $("#buscarInvolucradoForm").serialize();
+        console.log("capturaBAccidente2:" + Mydata);
+        var formData = $("#buscarInvolucradoForm").serializeArray();
+        console.log("capturaBAccidente3:" + formData);
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        var findData = false;
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+            if (!findData) {
+                if (field.value != '' && field.value != undefined) {
+                    findData = true;
+                }
+            }
+        });
+
+
         showLoading();
+         
         $.ajax({
-            url: '/CapturaAccidentes/BuscarPorParametro',
+            //url: '/CapturaAccidentes/BuscarPorParametro',
+            url: '/CapturaAccidentes/BuscarPorParametroPaginado',
             type: 'POST',
-            data: Mydata,
+            data: trimmedData,
             success: function (response) {
+                console.log("RESP:",response)                
                 if (response.tipo == "success") {
                     // Crear instancia del modelo con los datos recibidos
-                    mostrarModal(response.datos);
+                    
+                    console.log("resultado de busqueda: " + response.Data)
+                                    
+                    hideLoading();
+                     
+                     $('#modalLicenciasList').modal('show');
+                    var grid = $("#gridPersonasLicencia").data("kendoGrid");
+                       grid.dataSource.data(response.Data);
+                       grid.dataSource._total = response.length;
 
                 } else {
                     // Mostrar los resultados de personas encontradas en la búsqueda
                     if (response.encontrada == false) {
                         sitteg_warning("La búsqueda no arrojó resultados.");
                     } else {
-                        if (response.data != null || response.data != undefined) {
-                            var personasList = response.data;
+                        if (response.tipo == "riag") {
+                            var dataArray = response.Data;
                             var grid = $("#gridConductores").data("kendoGrid");
-
-                            [].forEach.call(personasList, function (persona) {
-                                persona.fechaNacimiento = convertDate(persona.fechaNacimiento);
-                                persona.fechaNacimiento = persona.fechaNacimiento == "01/01/0001" ? "" : persona.fechaNacimiento;
-                            });
-
-                            grid.dataSource.data(personasList);
-
-                            if (personasList.length === 0) {
-                                sitteg_warning("La búsqueda no arrojó resultados.");
-                            }
+                            grid.dataSource.data(dataArray);
+                           // grid.dataSource._total = dataArray.length;
                         } else {
                             sitteg_warning("La búsqueda no arrojó resultados.");
                         }
@@ -132,8 +156,9 @@
     }
 
     function mostrarModal(jsonData) {
+        console.log("jsonData: " + jsonData)
         const modal = document.getElementById('modalLicencias');
-
+        
         const modalContent = `
                             <div class="modal-header">
                                 <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
@@ -143,10 +168,10 @@
                             </div>
                             <div class="modal-body">
                                 <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                                <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                                <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+                                <p><strong>Apellido Paterno:</strong> ${jsonData.apellidoPaterno}</p>
+                                <p><strong>Apellido Materno:</strong> ${jsonData.apellidoMaterno}</p>
                                 <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                                <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+                                <p><strong>Número de Licencia:</strong> ${jsonData.numeroLicencia}</p>
                                 <p><strong>Fecha de Expedición:</strong> ${jsonData.fecha_inicio_vigencia}</p>
                                 <p><strong>Fecha de Vigencia:</strong> ${jsonData.fecha_termino_vigencia}</p>
                             </div>
@@ -261,6 +286,11 @@
     }
 
 
+    function goBack() {
+        window.location.href = '/CapturaAccidentes/CapturaAaccidente/'
+
+    }
+
 </script>
 <div class="mainContainer bg-light">
 
@@ -286,7 +316,7 @@
             <div class="col-12 col-lg-auto text-center">
                 <div class="btnOutline btnOutlinePrimary px-4 my-3">
                     <button data-bs-toggle="modal" onclick="mostrarModalAgregarFactor()" @(ViewBag.EsSoloLectura ? "disabled" : "")>
-                        <h6 class="m-0"><i class="me-2 icon-addFactorAccidente"></i><b>Agregar factor</b></h6>
+                        <h6 class="m-0"><i class="me-2 icon-addFactorAccidente"></i><b>Agregar factor de accidente</b></h6>
                     </button>
                 </div>
             </div>
@@ -417,6 +447,12 @@
             <div class="row my-3 mb-4">
                 <div class="col-12 col-md-6 mx-md-auto">
                     <div class="row justify-content-around">
+                        <div class="col-auto btnOutline my-2 mx-auto mx-xl-2 p-0" onclick="goBack()">
+                            @(Html.Kendo().Button()
+                                .Name("back")
+                                .HtmlAttributes(new { @class = "px-5" })
+                                .Content("<h6 class=\"m-0\"><i class=\"icon-back me-2\"></i><b>Regresar</b></h6>"))
+                        </div>
                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                             <div class="controlButton" onclick="dirigirParteC()">
                                 @(Html.Kendo().Button()
@@ -425,7 +461,10 @@
                                     .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
                             </div>
                         </div>
+                           
                     </div>
+
+                    
                 </div>
             </div>
         </section>
@@ -446,6 +485,16 @@
             </div>
         </div>
     </div>
+    <div id="modalLicenciasList" class="modal">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+            
+                <partial name="_ListaPersonasEnLicencias" model="Model" />
+            
+            <!-- Contenido del modal se llenará con la función mostrarModal -->
+        </div>
+    </div>
+</div>
 
 
 

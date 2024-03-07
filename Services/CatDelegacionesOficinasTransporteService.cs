@@ -25,7 +25,11 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT del.*, e.estatusDesc,m.municipio FROM catDelegacionesOficinasTransporte AS del INNER JOIN estatus AS e ON del.estatus = e.estatus INNER JOIN catMunicipios AS m ON del.idMunicipio = m.idMunicipio;", connection);
+                    SqlCommand command = new SqlCommand(@"SELECT del.*, e.estatusDesc,m.municipio, ISNULL(d.Transito,0) Transito 
+                                                          FROM catDelegacionesOficinasTransporte AS del 
+                                                          INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion
+                                                          INNER JOIN estatus AS e ON del.estatus = e.estatus 
+                                                          INNER JOIN catMunicipios AS m ON del.idMunicipio = m.idMunicipio;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -40,6 +44,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             delegacionOficina.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
                             delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
                             delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            delegacionOficina.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
                             //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
                             ListaDelegacionsOficinas.Add(delegacionOficina);
 
@@ -71,8 +76,12 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT del.*, e.estatusDesc FROM catDelegacionesOficinasTransporte AS del INNER JOIN estatus AS e ON del.estatus = e.estatus" +
-                        " WHERE del.estatus = 1 ORDER BY nombreOficina ASC;", connection);
+                    SqlCommand command = new SqlCommand(@"  SELECT del.*, e.estatusDesc, ISNULL(D.transito,0) transito 
+                                                            FROM catDelegacionesOficinasTransporte AS del 
+                                                            INNER JOIN estatus AS e ON del.estatus = e.estatus 
+                                                            INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion 
+                                                            WHERE del.estatus = 1  
+                                                            ORDER BY nombreOficina ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -84,6 +93,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             delegacionOficina.FechaActualizacion = (reader["FechaActualizacion"] as DateTime?) ?? DateTime.MinValue;
                             delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
                             delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            delegacionOficina.Transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
                             //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
                             ListaDelegacionsOficinas.Add(delegacionOficina);
 
@@ -113,7 +123,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT TOP 1 nombreOficina FROM catDelegacionesOficinasTransporte WHERE idOficinaTransporte = @IdOficina AND estatus = 1 ORDER BY nombreOficina ASC;", connection);
+                    SqlCommand command = new SqlCommand("SELECT TOP 1 nombreOficina FROM catDelegacionesOficinasTransporte WHERE idOficinaTransporte = @IdOficina  ORDER BY nombreOficina ASC;", connection);
                     command.Parameters.AddWithValue("@IdOficina", idOficina);
                     command.CommandType = CommandType.Text;
 
@@ -133,7 +143,91 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
         }
+       
+        public int EditarDelegacion(CatDelegacionesOficinasTransporteModel model)
+        {
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new
+                        SqlCommand("Update catDelegacionesOficinasTransporte set jefeOficina=@jefeOficina WHERE idOficinaTransporte = @idOficinaTransporte",connection);
+                    sqlCommand.Parameters.Add(new SqlParameter("@idOficinaTransporte", SqlDbType.Int)).Value = model.IdOficinaTransporte;
+                    sqlCommand.Parameters.Add(new SqlParameter("@jefeOficina", SqlDbType.NVarChar)).Value = model.JefeOficina;        
+                    sqlCommand.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now;
+                    sqlCommand.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
+                    sqlCommand.CommandType = CommandType.Text;
+                    result = sqlCommand.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    //---Log
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return result;
+        }
 
+        public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasFiltrado(int idDependencia)
+        {
+            //
+            List<CatDelegacionesOficinasTransporteModel> ListaDelegacionsOficinas = new List<CatDelegacionesOficinasTransporteModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT del.*, e.estatusDesc,m.municipio, ISNULL(d.Transito,0) Transito 
+                                                          FROM catDelegacionesOficinasTransporte AS del 
+                                                          INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion
+                                                          INNER JOIN estatus AS e ON del.estatus = e.estatus 
+                                                          INNER JOIN catMunicipios AS m ON del.idMunicipio = m.idMunicipio
+                                                            WHERE d.transito = @idDependencia;", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatDelegacionesOficinasTransporteModel delegacionOficina = new CatDelegacionesOficinasTransporteModel();
+                            delegacionOficina.IdOficinaTransporte = Convert.ToInt32(reader["IdOficinaTransporte"].ToString());
+                            delegacionOficina.NombreOficina = reader["NombreOficina"].ToString();
+                            delegacionOficina.JefeOficina = reader["JefeOficina"].ToString();
+                            delegacionOficina.Municipio = reader["Municipio"].ToString();
+                            delegacionOficina.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
+                            delegacionOficina.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
+                            delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
+                            delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            delegacionOficina.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
+                            //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
+                            ListaDelegacionsOficinas.Add(delegacionOficina);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaDelegacionsOficinas;
+
+
+        }
     }
 
 }

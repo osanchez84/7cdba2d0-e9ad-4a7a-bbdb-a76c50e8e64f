@@ -17,6 +17,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int idTramo { get; set; }            
         public int idTipoLicencia { get; set; }
         public int idMunicipio { get; set; }
+        public int idTipo { get; set; }
     }
 
     public class ComparativoInfraccionesResumenModel

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Kendo.Mvc.UI;
 using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 using static GuanajuatoAdminUsuarios.Models.LicenciaTipoRespuesta;
+using Kendo.Mvc.Extensions;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -28,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly ICatEntidadesService _catEntidadesService;
         private readonly ICatMunicipiosService _catMunicipiosService;
         private readonly IBitacoraService _bitacoraServices;
-        private static PersonasModel perModel = new PersonasModel();
+        private static BusquedaPersonaModel perModel = new BusquedaPersonaModel();
         public PersonasController(ICatDictionary catDictionary, IPersonasService personasService, IHttpClientFactory httpClientFactory, ICatEntidadesService catEntidadesService
             , ICatMunicipiosService catMunicipiosService
 , IBitacoraService bitacoraServices)
@@ -42,9 +43,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index()
         {
-            perModel = new PersonasModel();
+            perModel = new BusquedaPersonaModel();
             var catTipoPersona = _catDictionary.GetCatalog("CatTipoPersona", "0");
-            var personaModel = new PersonasModel();
+            var personaModel = new BusquedaPersonaModel();
             personaModel.ListadoPersonas = new List<PersonaModel>();
 
             ViewBag.CatTipoPersona = new SelectList(catTipoPersona.CatalogList, "Id", "Text");
@@ -109,14 +110,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(new { encontrada = false, data = personasList, message = "No se encontraron resultados." });
         }
 
-        public IActionResult GetBuscar([DataSourceRequest] DataSourceRequest request, PersonasModel model)
+        public IActionResult GetBuscar([DataSourceRequest] DataSourceRequest request, BusquedaPersonaModel model)
         {
             perModel = model;
             return PartialView("_ListadoPersonas", new List<PersonaModel>());
         }
 
         [HttpPost]
-        public async Task<IActionResult> BuscarPorParametroPaginado([DataSourceRequest] DataSourceRequest request, PersonasModel model)
+        public async Task<IActionResult> BuscarPorParametroPaginado([DataSourceRequest] DataSourceRequest request, BusquedaPersonaModel model)
         {
             // Realizar la búsqueda de personas
             if (model.PersonaModel != null)
@@ -125,7 +126,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 model = perModel;
 
             var findAll = false;
-            var personas = new PersonasModel();
+            var personas = new BusquedaPersonaModel();
             Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
             if (model.PersonaModel != null)
@@ -172,6 +173,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             // Si no se encontraron resultados en la búsqueda de personas, realizar la búsqueda por licencia
+            return Json(new { encontrada = false, Data = "1", tipo = "sin datos", message = "busca en licencias" });
+
+
+
             string parametros = "";
             parametros += string.IsNullOrEmpty(model.PersonaModel.numeroLicenciaBusqueda) ? "" : "licencia=" + model.PersonaModel.numeroLicenciaBusqueda;
             parametros += string.IsNullOrEmpty(model.PersonaModel.CURPBusqueda) ? "" : "curp=" + model.PersonaModel.CURPBusqueda + "&";
@@ -314,12 +319,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        [HttpPost]
+        //  [HttpPost]
 
-        public ActionResult GuardaDesdeServicio(LicenciaPersonaDatos personaDatos)
+        //public ActionResult GuardaDesdeServicio(PersonaModel personaDatos)
+        public async Task<IActionResult> GuardaDesdeServicio(string nombre, string apellidoPaterno, string apellidoMaterno, string CURP, string RFC, string numeroLicencia, string tipoLicencia,
+                                                             string idGenero, DateTime fechaNacimiento, DateTime fechaVigencia)
         {
             try
             {
+                LicenciaPersonaDatos personaDatos = new LicenciaPersonaDatos();
+                personaDatos.NOMBRE = nombre;
+                personaDatos.PRIMER_APELLIDO = apellidoPaterno;
+                personaDatos.SEGUNDO_APELLIDO = apellidoMaterno;
+                personaDatos.CURP= CURP;    
+                personaDatos.RFC= RFC;
+                personaDatos.NUM_LICENCIA= numeroLicencia;
+                personaDatos.ID_TIPO_LICENCIA = Convert.ToInt32(tipoLicencia);
+                personaDatos.ID_GENERO = Convert.ToInt32(idGenero);
+                personaDatos.FECHA_NACIMIENTO = fechaNacimiento;
+                personaDatos.FECHA_TERMINO_VIGENCIA = fechaVigencia;
+
                 int idPersona = _personasService.InsertarDesdeServicio(personaDatos);
                 //var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
                 var datosTabla = _personasService.GetPersonaById(idPersona);
@@ -328,8 +347,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                 var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
                 _bitacoraServices.insertBitacora(idPersona, ip, "Personas_DesdeServicio", "Insertar", "insert", user);
+                
+                  return Json(new { data = datosTabla });
+                //return Json(new { data = "hola" });
 
-                return Json(new { data = datosTabla });
             }
             catch (Exception ex)
             {
@@ -342,6 +363,82 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return Json("session activa");
         }
+
+
+
+        public async Task<IActionResult> PersonasEnLicencias([DataSourceRequest] DataSourceRequest request, BusquedaPersonaModel model)
+        {
+           
+
+
+
+            string parametros = "";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.numeroLicenciaBusqueda) ? "" : "licencia=" + model.PersonaModel.numeroLicenciaBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.CURPBusqueda) ? "" : "curp=" + model.PersonaModel.CURPBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.RFCBusqueda) ? "" : "rfc=" + model.PersonaModel.RFCBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.nombreBusqueda) ? "" : "nombre=" + model.PersonaModel.nombreBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.apellidoPaternoBusqueda) ? "" : "primer_apellido=" + model.PersonaModel.apellidoPaternoBusqueda + "&";
+            parametros += string.IsNullOrEmpty(model.PersonaModel.apellidoMaternoBusqueda) ? "" : "segundo_apellido=" + model.PersonaModel.apellidoMaternoBusqueda  ;
+             string ultimo = parametros.Substring(parametros.Length - 1);
+            if (ultimo.Equals("&"))
+                parametros = parametros.Substring(0, parametros.Length - 1);
+
+            try
+            {
+                string urlServ = Request.GetDisplayUrl();
+                Uri uri = new Uri(urlServ);
+                string requested = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+
+                var url = requested + $"/api/Licencias/datos_generales?" + parametros;
+
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    //    LicenciaRespuestaPersona respuesta = JsonConvert.DeserializeObject<LicenciaRespuestaPersona>(content);
+                    // var personasEncontradas = content.
+                    //  return Json(new { encontrada = false, Data = respuesta.datos, tipo = respuesta.datos == null ? "sin datos" : "success", message = respuesta.mensaje });
+
+
+                    List<LicenciaPersonaDatos> respuesta = JsonConvert.DeserializeObject<List<LicenciaPersonaDatos>>(content);
+
+                    List<PersonaModel> pEncontradas = new List<PersonaModel>();
+                    foreach (LicenciaPersonaDatos pivote in respuesta)
+                    {
+                        PersonaModel pm = new PersonaModel();
+                        pm.idPersona = (int)pivote.ID_PERSONA;
+                        pm.nombre = pivote.NOMBRE;
+                        pm.apellidoPaterno = pivote.PRIMER_APELLIDO;
+                        pm.apellidoMaterno = pivote.SEGUNDO_APELLIDO;
+                        pm.CURP = pivote.CURP;
+                        pm.RFC = pivote.RFC;
+                        pm.numeroLicencia = pivote.NUM_LICENCIA;
+                        pm.tipoLicencia = pivote.TIPOLICENCIA;
+                        pm.idGenero = pivote.ID_GENERO==null? 0 :(int)pivote.ID_GENERO;
+                        pm.fechaNacimiento = pivote.FECHA_NACIMIENTO;
+                        pm.vigenciaLicencia = pivote.FECHA_TERMINO_VIGENCIA;
+                        pEncontradas.Add(pm);
+                    }
+
+                   
+                    
+                    return Json(pEncontradas);
+                }
+            }
+            catch (Exception ex)
+            {
+                // En caso de errores, devolver una respuesta JSON con licencia no encontrada
+                return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
+            }
+
+            //Si no se cumple la condición anterior, devolver una respuesta JSON indicando que no se encontraron resultados
+            return Json(new { encontrada = false, Data = "", message = "No se encontraron resultados." });
+        }
+
+
+
 
     }
 }

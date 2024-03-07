@@ -16,9 +16,11 @@ namespace GuanajuatoAdminUsuarios.Models
         public string propietarioGrua { get; set; }
         public DateTime fechaIngreso { get; set; }
         public string fechaIngresoFormateada => fechaIngreso.ToString("dd/MM/yyyy");
+        public bool esExterno { get; set; }
 
         public string folioInventario { get; set; }
         public int? idMarca { get; set; }
+        
         public int idSubMarca { get; set; }
         public int idColor { get; set; }
         public int idPropietario { get; set; }
@@ -28,6 +30,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public float costoDeposito { get; set; }
         public string marca { get; set; }
+        
+                    public string oficio { get; set; }
+        public DateTime fechaOficio { get; set; }
+        public string autorizaSalida { get; set; }
+
         public string submarca { get; set; }
         public string color { get; set; }
         public string propietario { get; set; }
@@ -54,6 +61,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string entrega { get; set; }
         public string observaciones { get; set; }
+        public string enviaVehiculo { get; set; }
+         public string motivoIngreso { get; set; }
+
         public float costoTotalPorGrua{ get; set; }
         public float costoTotalTodasGruas { get; set; }
 

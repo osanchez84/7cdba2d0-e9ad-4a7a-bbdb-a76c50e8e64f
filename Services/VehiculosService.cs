@@ -7,17 +7,59 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Drawing;
 using static GuanajuatoAdminUsuarios.Utils.CatalogosEnums;
+using GuanajuatoAdminUsuarios.Util;
+
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Newtonsoft.Json;
+using GuanajuatoAdminUsuarios.RESTModels;
+using Microsoft.Extensions.Options;
+using static GuanajuatoAdminUsuarios.RESTModels.CotejarDatosResponseModel;
+using GuanajuatoAdminUsuarios.Framework;
+using System.Text;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
+using Kendo.Mvc.Extensions;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
     public class VehiculosService : IVehiculosService
     {
         private readonly ISqlClientConnectionBD _sqlClientConnectionBD;
+        private readonly AppSettings _appSettings;
 
-        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD)
+        private readonly ICotejarDocumentosClientService _cotejarDocumentosClientService;
+        private readonly IRepuveService _repuveService;
+        private readonly ICatDictionary _catDictionary;
+        private readonly IColores _coloresService;
+        private readonly ICatMarcasVehiculosService _catMarcasVehiculosService;
+        private readonly ICatSubmarcasVehiculosService _catSubmarcasVehiculosService;
+        private readonly ICatEntidadesService _catEntidadesService;
+
+
+
+
+
+
+
+
+        public VehiculosService(ISqlClientConnectionBD sqlClientConnectionBD, IOptions<AppSettings> appSettings, IRepuveService repuveService, ICotejarDocumentosClientService cotejarDocumentosClientService,
+            ICatDictionary catDictionary, IColores coloresService, ICatMarcasVehiculosService catMarcasVehiculosService, ICatSubmarcasVehiculosService catSubmarcasVehiculosService,
+            ICatEntidadesService catEntidadesService)
         {
             _sqlClientConnectionBD = sqlClientConnectionBD;
+            _appSettings = appSettings.Value;
+            _repuveService = repuveService;
+            _cotejarDocumentosClientService = cotejarDocumentosClientService;
+            _catDictionary = catDictionary;
+            _coloresService = coloresService;
+            _catMarcasVehiculosService = catMarcasVehiculosService;
+            _catSubmarcasVehiculosService = catSubmarcasVehiculosService;
+            _catEntidadesService = catEntidadesService;
+
+
+
+
         }
 
         public IEnumerable<VehiculoModel> GetAllVehiculos()
@@ -105,7 +147,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idEntidad = Convert.ToInt32(reader["idEntidad"].ToString());
                             model.idSubtipoServicio = reader["idSubtipoServicio"].GetType() == typeof(DBNull) ? 0 : Convert.ToInt32(reader["idSubtipoServicio"].ToString());
                             model.numeroEconomico = reader["numeroEconomico"].ToString();
-                            model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ?  "" : reader["servicio"].ToString();
+                            model.subTipoServicio = reader["servicio"].GetType() == typeof(DBNull) ? "" : reader["servicio"].ToString();
                             model.fechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             model.actualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
                             model.estatus = Convert.ToInt32(reader["estatus"].ToString());
@@ -147,6 +189,74 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
             return modelList;
+        }
+        public int BuscarPorParametro(string Placa, string Serie, string Folio)
+        {
+            var Vehiculo = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command;
+
+                    var query = @"SELECT count(*) result
+                        FROM vehiculos v 
+                        WHERE v.estatus = 1 AND {0}";
+
+
+                    if (!string.IsNullOrEmpty(Serie))
+                    {
+                        query = string.Format(query, "(v.serie = @Serie  )");
+                    }
+                    else if (!string.IsNullOrEmpty(Placa))
+                    {
+                        query = string.Format(query, "( v.placas = + @placas  )");
+                    }
+                    else
+                    {
+                        query = string.Format(query, "");
+                    }
+
+
+                    command = new SqlCommand(
+                        query, connection);
+
+                    if (!string.IsNullOrEmpty(Serie))
+                    {
+                        command.Parameters.AddWithValue("@Serie", Serie);
+                    }
+                    else if (!string.IsNullOrEmpty(Placa))
+                    {
+                        command.Parameters.AddWithValue("@placas", Placa);
+                    }
+
+
+
+
+                    command.CommandType = CommandType.Text;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+
+                            Vehiculo = (int)reader["result"];
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    return Vehiculo;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return Vehiculo;
         }
 
         public VehiculoModel GetVehiculoById(int idVehiculo)
@@ -278,7 +388,7 @@ namespace GuanajuatoAdminUsuarios.Services
             VehiculoModel model22 = new VehiculoModel();
             model22.Persona = new PersonaModel();
 
-            return modelList.FirstOrDefault()??model22;
+            return modelList.FirstOrDefault() ?? model22;
         }
 
         public VehiculoModel GetVehiculoToAnexo(VehiculoBusquedaModel modelSearch)
@@ -472,7 +582,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.serie = reader["serie"].ToString();
                             model.tarjeta = reader["tarjeta"].ToString();
                             model.vigenciaTarjeta = reader["vigenciaTarjeta"] == DBNull.Value
-                                ? (DateTime?)null 
+                                ? (DateTime?)null
                                 : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString());
                             model.idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]);
                             model.idSubmarca = Convert.ToInt32(reader["idSubmarca"]);
@@ -525,57 +635,70 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CreateVehiculo(VehiculoModel model)
         {
             int result = 0;
-            string strQuery = @"INSERT INTO vehiculos(
-                                 placas
-                                ,serie
-                                ,tarjeta
-                                ,vigenciaTarjeta
-                                ,idMarcaVehiculo
-                                ,idSubmarca
-                                ,idTipoVehiculo
-                                ,modelo
-                                ,idColor
-                                ,idEntidad
-                                ,idCatTipoServicio
-                                ,propietario
-                                ,numeroEconomico
-                                ,paisManufactura
-                                ,idPersona
-                                ,fechaActualizacion
-                                ,actualizadoPor
-                                ,estatus
-                                ,motor
-                                ,capacidad
-                                ,poliza
-                                ,carga
-                                ,otros
-                                ,idSubtipoServicio
-                                ) VALUES (
-                                @placas
-                                ,@serie
-                                ,@tarjeta
-                                ,@vigenciaTarjeta
-                                ,@idMarcaVehiculo
-                                ,@idSubmarca
-                                ,@idTipoVehiculo
-                                ,@modelo
-                                ,@idColor
-                                ,@idEntidad
-                                ,@idCatTipoServicio
-                                ,@propietario
-                                ,@numeroEconomico
-                                ,@paisManufactura
-                                ,@idPersona
-                                ,@fechaActualizacion
-                                ,@actualizadoPor
-                                ,@estatus
-                                ,@motor
-                                ,@capacidad
-                                ,@poliza
-                                ,@carga
-                                ,@otros
-                                ,@idSubtipoServicio
-                                );select CAST (SCOPE_IDENTITY() As int)";
+            string strQuery = @"
+        IF NOT EXISTS (
+            SELECT 1 FROM vehiculos 
+            WHERE placas = @placas OR serie = @serie
+        )
+        BEGIN
+            INSERT INTO vehiculos (
+                placas,
+                serie,
+                tarjeta,
+                vigenciaTarjeta,
+                idMarcaVehiculo,
+                idSubmarca,
+                idTipoVehiculo,
+                modelo,
+                idColor,
+                idEntidad,
+                idCatTipoServicio,
+                propietario,
+                numeroEconomico,
+                paisManufactura,
+                idPersona,
+                fechaActualizacion,
+                actualizadoPor,
+                estatus,
+                motor,
+                capacidad,
+                poliza,
+                carga,
+                otros,
+                idSubtipoServicio
+            ) 
+            VALUES (
+                @placas,
+                @serie,
+                @tarjeta,
+                @vigenciaTarjeta,
+                @idMarcaVehiculo,
+                @idSubmarca,
+                @idTipoVehiculo,
+                @modelo,
+                @idColor,
+                @idEntidad,
+                @idCatTipoServicio,
+                @propietario,
+                @numeroEconomico,
+                @paisManufactura,
+                @idPersona,
+                @fechaActualizacion,
+                @actualizadoPor,
+                @estatus,
+                @motor,
+                @capacidad,
+                @poliza,
+                @carga,
+                @otros,
+                @idSubtipoServicio
+            );
+            SELECT CAST (SCOPE_IDENTITY() AS int)
+        END
+        ELSE
+        BEGIN
+            SELECT -1
+        END";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
@@ -893,5 +1016,137 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListVehiculos;
         }
 
+
+        /// <summary>
+        /// Busca en la base de datos si hay vehiculos que coincidan con los parametros de busqueda
+        /// </summary>
+        /// <param name="modelSearch"></param>
+        /// <returns></returns>
+        public List<VehiculoModel> GetVehiculoPropietario(VehiculoBusquedaModel modelSearch)
+        {
+            List<VehiculoModel> listaVehiculos = new();
+
+
+            string strQuery = @"SELECT
+                                v.idVehiculo, v.placas, v.serie, v.tarjeta, v.vigenciaTarjeta, v.idMarcaVehiculo
+                                ,v.idSubmarca, v.idTipoVehiculo, v.modelo, v.idColor, v.idEntidad, v.idCatTipoServicio
+                                ,v.propietario, v.numeroEconomico, v.paisManufactura, v.idPersona
+                                ,v.motor,v.capacidad,v.poliza,v.otros, v.carga
+                                ,catMV.marcaVehiculo, catTV.tipoVehiculo, catSV.nombreSubmarca, catTS.tipoServicio
+                                ,catE.nombreEntidad, catC.color
+                                ,p.numeroLicencia,p.curp,p.rfc,nombre,p.apellidoPaterno,p.apellidoMaterno,p.idCatTipoPersona,p.idGenero,p.fechaNacimiento,p.idTipoLicencia,p.vigenciaLicencia
+                                FROM vehiculos v
+                                INNER JOIN catMarcasVehiculos catMV on v.idMarcaVehiculo = catMV.idMarcaVehiculo 
+                                left JOIN catTiposVehiculo catTV on v.idTipoVehiculo = catTV.idTipoVehiculo 
+                                left JOIN catSubmarcasVehiculos catSV on v.idSubmarca = catSV.idSubmarca 
+                                left JOIN catTipoServicio catTS on v.idCatTipoServicio = catTS.idCatTipoServicio 
+                                left JOIN catEntidades catE on v.idEntidad = catE.idEntidad  
+                                left JOIN catColores catC on v.idColor = catC.idColor  
+                                left join personas p on v.idPersona=p.idPersona
+                                WHERE v.estatus = 1
+                                AND 
+                                (
+                                (v.idEntidad = @idEntidad  and v.serie= @Serie)
+                                OR v.serie= @Serie
+                                OR v.placas= @Placas 
+                                )";
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)modelSearch.IdEntidadBusqueda ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Placas", SqlDbType.NVarChar)).Value = (object)modelSearch.PlacasBusqueda != null ? modelSearch.PlacasBusqueda.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = (object)modelSearch.SerieBusqueda != null ? modelSearch.SerieBusqueda.ToUpper() : DBNull.Value;
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            VehiculoModel model = new()
+                            {
+                                Persona = new PersonaModel(),
+                                idVehiculo = Convert.ToInt32(reader["idVehiculo"]),
+                                placas = reader["placas"].ToString(),
+
+                                serie = reader["serie"].ToString(),
+                                tarjeta = reader["tarjeta"].ToString(),
+                                vigenciaTarjeta = reader["vigenciaTarjeta"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaTarjeta"].ToString()),
+                                idMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"]),
+                                idSubmarca = Convert.ToInt32(reader["idSubmarca"]),
+                                idTipoVehiculo = Convert.ToInt32(reader["idTipoVehiculo"]),
+
+                                modelo = reader["modelo"].ToString(),
+                                idColor = Convert.ToInt32(reader["idColor"]),
+                                idEntidad = Convert.ToInt32(reader["idEntidad"]),
+                                idCatTipoServicio = Convert.ToInt32(reader["idCatTipoServicio"]),
+                                propietario = reader["propietario"].ToString(),
+                                numeroEconomico = reader["numeroEconomico"].ToString(),
+                                idPersona = reader["idPersona"] == System.DBNull.Value ? default(int?) : (int?)reader["idPersona"],
+                                paisManufactura = reader["paisManufactura"].ToString()
+                            };
+                            model.numeroEconomico = reader["numeroEconomico"].ToString();
+
+                            model.marca = model.otros = reader["otros"].ToString(); ;
+                            model.submarca = reader["nombreSubmarca"].ToString();
+                            model.tipoVehiculo = reader["tipoVehiculo"].ToString();
+                            model.color = reader["color"].ToString();
+                            model.entidadRegistro = reader["nombreEntidad"].ToString();
+                            model.tipoServicio = reader["tipoServicio"].ToString();
+
+                            model.motor = reader["motor"].ToString();
+                            model.capacidad = reader["capacidad"] == System.DBNull.Value ? default(int?) : (int?)reader["capacidad"];
+                            model.poliza = reader["poliza"].ToString();
+                            model.carga = reader["carga"] == System.DBNull.Value ? default(bool?) : Convert.ToBoolean(reader["carga"].ToString());
+                            model.otros = reader["otros"].ToString();
+
+                            model.idSubmarcaUpdated = model.idSubmarca;
+                            model.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
+                            {
+                                PersonasMorales = new List<PersonaModel>()
+                            };
+
+                            //Propietario
+                            model.Persona.idPersona = reader["idPersona"] == System.DBNull.Value ? default : (int?)reader["idPersona"];
+                            model.Persona.numeroLicencia = reader["numeroLicencia"].ToString();
+                            model.Persona.CURP = reader["curp"].ToString();
+                            model.Persona.RFC = reader["rfc"].ToString();
+                            model.Persona.nombre = reader["nombre"].ToString();
+                            model.Persona.apellidoPaterno = reader["apellidoPaterno"].ToString();
+                            model.Persona.apellidoMaterno = reader["apellidoMaterno"].ToString();
+                            model.Persona.idCatTipoPersona = reader["idCatTipoPersona"] == System.DBNull.Value ? default : (int?)reader["idCatTipoPersona"];
+                            model.Persona.idGenero = reader["idGenero"] == System.DBNull.Value ? default : (int?)reader["idGenero"];
+                            model.Persona.fechaNacimiento = reader["fechaNacimiento"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+                            model.Persona.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default : (int?)reader["idTipoLicencia"];
+                            model.Persona.vigenciaLicenciaFisico = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+                            model.Persona.vigenciaLicencia = reader["vigenciaLicencia"].GetType() == typeof(DBNull) ? null : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+
+                            if (model.idVehiculo != 0)
+                            {
+                                model.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
+                            }
+                            else
+                            {
+                                model.encontradoEn = (int)EstatusBusquedaVehiculo.NoEncontrado;
+                                model.serie = modelSearch.SerieBusqueda;
+                            }
+                            listaVehiculos.Add(model);
+
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return listaVehiculos;
+        }
     }
 }

@@ -113,13 +113,37 @@
                 <div class="form-group col-md-4 my-3">
                     <div class="controlForm">
                         <label>Tipo Motivo:</label>
-                        @(Html.Kendo().DropDownListFor(m => m.idTipoMotivo).Filter(FilterType.Contains)
-                            .BindTo((SelectList)ViewBag.CatMotivosInfraccion)
-                            .OptionLabel("-- Todos --")
-                            .HtmlAttributes(new { style = "width:100%;" })
+                        @(Html.Kendo().DropDownListFor(m => m.idTipo).Filter(FilterType.Contains)
+                            .BindTo((SelectList)ViewBag.TiposMotivos)
+                            .OptionLabel("- Todos -")
+                            @*.Events(e => e.Change("tipoMotivoDropDownChange"))*@
+                            .HtmlAttributes(new { style = "width:100%;", Id = "idTipo" })
+                            .Filter(FilterType.Contains)
                             )
                     </div>
                 </div>
+
+               @* <div class="form-group col-md-3 my-3">
+                    <div class="controlForm">
+                        <label>Tipo Motivo:</label>
+                        @(Html.Kendo().DropDownListFor(m => m.idTipoMotivo)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("-- Todos --")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("TiposMotivos_Drop", "ComparativoInfracciones");
+                                });
+                            })
+                            .HtmlAttributes(new { style = "width:100%;", Id = "idTipoMotivo" })
+                            .Filter(FilterType.Contains)
+                            )
+                    </div>
+                </div>*@
+
+
                 <div class="form-group col-md-4 my-3">
                     <div class="controlForm">
                         <label>Delegación:</label>
@@ -140,7 +164,7 @@
 											{
 												source.Read(read =>
 												{
-													read.Action("OficialesDependencia_Drop", "Oficiales");
+                                    read.Action("OficialesDependenciaTodos_Drop", "Oficiales");
 												});
 											})
 											.OptionLabel("-- Seleccione --")
@@ -336,6 +360,27 @@
                 TramosDropDown.dataSource.data(data);
                 hideLoading();
                 $("#idTramo").trigger("onFinishLoading");
+            },
+            error: function (xhr, status, error) {
+                hideLoading();
+            }
+        });
+    }
+
+
+    function tipoMotivoDropDownChange() {
+        var idTipo = $("#idTipo").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/ComparativoInfracciones/TiposMotivos_Drop",
+            type: "POST",
+            data: { idTipo: idTipo },
+            success: function (data) {
+                var idTipoMotivo = $("#idTipoMotivo").data("kendoDropDownList");
+                console.log(data);
+                idTipoMotivo.dataSource.data(data);
+                hideLoading();
+                $("#idTipoMotivo").trigger("onFinishLoading");
             },
             error: function (xhr, status, error) {
                 hideLoading();

@@ -2,7 +2,6 @@
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
-using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +58,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Placas_Read()
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var result = new SelectList(_placaServices.GetPlacasByDelegacionId(idOficina), "IdDepositos", "Placa");
+			var result = new SelectList(_placaServices.GetPlacasByDelegacionId(idOficina,true), "IdDepositos", "Placa");
             return Json(result);
         }
 
@@ -112,8 +111,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
                 _bitacoraServices.insertBitacora(Id, ip, "LiberacionVehiculo_Liberacion", "Actualizar", "update", user);
 
-                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
-                ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
+                  var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel).FirstOrDefault();
+                 ViewBag.ReporteRobo = repuveConsRoboResponse.EsRobado;
+           
                 //model.FechaIngreso.ToString("dd/MM/yyyy");
                 return PartialView("_UpdateLiberacion", model);
             }

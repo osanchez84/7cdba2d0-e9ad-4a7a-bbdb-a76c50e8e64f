@@ -7,7 +7,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface ICortesiasNoAplicadas
     {
-        List<CortesiasNoAplicadasModel> ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion);
+        List<CortesiasNoAplicadasModel> ObtInfraccionesCortesiasNoAplicadas(string FolioInfraccion,int corporacion);
 
         CortesiasNoAplicadasModel ObtenerDetalleCortesiasNoAplicada(string Id);
 

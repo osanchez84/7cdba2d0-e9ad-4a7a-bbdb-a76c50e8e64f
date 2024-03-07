@@ -58,9 +58,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		public async Task<FileResult> AccidentesDetallado(int idAccidente)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-           // int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			// int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
+			var AccidenteSeleccionado = _capturaAccidentesService.ObtenerAccidentePorId(idAccidente, idOficina);
 			DatosAccidenteModel datosAccidente = _capturaAccidentesService.ObtenerDatosFinales(idAccidente);
 			var ListVehiculosInvolucrados = _capturaAccidentesService.VehiculosInvolucrados(idAccidente);
 
@@ -71,17 +71,33 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 			var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 
-			foreach (var invo in ListVehiculosInvolucrados) 
+			foreach (var invo in ListVehiculosInvolucrados)
 			{
 				foreach (var lst in ListInvolucrados.Where(r => r.IdVehiculo == invo.IdVehiculo))
 				{
 					lst.numeroConsecutivo = invo.numeroConsecutivo;
-				} 
+				}
+
+				foreach (var lst in ListInfracciones.Where(r => r.IdVehiculo == invo.IdVehiculo))
+				{
+					lst.numeroConsecutivo = invo.numeroConsecutivo;
+				}
+
+				foreach (var lst in ListFactores.Where(r => r.IdVehiculo == invo.IdVehiculo))
+				{
+					lst.numeroConsecutivo = invo.numeroConsecutivo;
+				}
+
+				foreach (var lst in ListCausas.Where(r => r.IdVehiculo == invo.IdVehiculo))
+				{
+					lst.numeroConsecutivo = invo.numeroConsecutivo;
+				}
 			}
 
-            var ParteNombre = _appSettingsService.GetAppSetting("ParteNombre").SettingValue;
+			var ParteNombre = _appSettingsService.GetAppSetting("ParteNombre").SettingValue;
 			var PartePuesto = _appSettingsService.GetAppSetting("PartePuesto").SettingValue;
-			List<PDFMotivosInfracciones> motivosInfraccion = ListInfracciones.Select(s => new PDFMotivosInfracciones { idInfraccion = s.IdInfraccion, Motivos = _infraccionesService.GetMotivosInfraccionByIdInfraccion((int)s.IdInfraccion).Select(ss => ss.Concepto+"-"+ss.Fundamento).ToList() }).ToList();
+			List<PDFMotivosInfracciones> motivosInfraccion = ListInfracciones.Select(s => new PDFMotivosInfracciones { idInfraccion = s.IdInfraccion, Motivos = _infraccionesService.GetMotivosInfraccionByIdInfraccion((int)s.IdInfraccion).Select(ss => ss.Motivo + " (" + ss.Fundamento+")").ToList() }).ToList();
+
 
 			PDFAccidenteDetalladoModel model = new PDFAccidenteDetalladoModel();
 			model.Involucrados = ListInvolucrados;
@@ -89,20 +105,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.ParteAccidente = AccidenteSeleccionado;
 			model.ParteAccidenteComplemento = datosAccidente;
 			model.VehiculosInvolucrados = ListVehiculosInvolucrados;
-			
+
 			model.Clasificaciones = ListClasificaciones;
 			model.Factores = ListFactores;
 			model.CausasDeterminantes = ListCausas;
-
-			foreach (var invo in ListVehiculosInvolucrados)
-			{
-				foreach (var lst in ListInfracciones.Where(r => r.IdVehiculo == invo.IdVehiculo))
-				{
-					lst.numeroConsecutivo = invo.numeroConsecutivo;
-				}
-			}
 			model.Infracciones = ListInfracciones;
-			
+
 
 			model.ParteNombre = ParteNombre;
 			model.PartePuesto = PartePuesto;
@@ -111,7 +119,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			model.sede = _catEntidadesService.ObtenerEntidades().Where(w => w.idEntidad == datosAccidente.IdEntidadCompetencia).Select(s => s.nombreEntidad).FirstOrDefault();
 
 
-			model.ElaboraConsignacion = _oficialesService.GetOficialesActivos().Where(w=> w.IdOficial == datosAccidente.IdElaboraConsignacion)
+			model.ElaboraConsignacion = _oficialesService.GetOficialesActivos().Where(w => w.IdOficial == datosAccidente.IdElaboraConsignacion)
 				.Select(o => CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}")).FirstOrDefault();
 			model.NoOficio = datosAccidente.numeroOficio;
 			model.AgenciaRecibe = _catAgenciasMinisterioService.ObtenerAgenciasActivas().Where(w => w.IdAgenciaMinisterio == datosAccidente.IdAgenciaMinisterio).Select(s => s.NombreAgencia).FirstOrDefault();
@@ -138,12 +146,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 		}
 
 		[HttpPost]
-		public ContentResult AccidentesGeneral(BusquedaAccidentesModel model)
+		public ActionResult AccidentesGeneral(BusquedaAccidentesModel model)
 		{
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var modelList = _busquedaAccidentesService.GetAllAccidentes()
+			var modelList = _busquedaAccidentesService.GetAllAccidentes()
 												.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
 													&& w.idSupervisa == (model.IdOficialBusqueda > 0 ? model.IdOficialBusqueda : w.idSupervisa)
 													&& w.idCarretera == (model.IdCarreteraBusqueda > 0 ? model.IdCarreteraBusqueda : w.idCarretera)
@@ -170,24 +178,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			{"estatusReporte", "Estatus" }
 			};
 
-			var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", 8, ColumnsNames, modelList);
+			//No se encontraron datos
+			if (modelList.Count == 0)
+				return Json(new { success = false, message = "No se encontraron registros con los parámetros de búsqueda" });
+
+			var result = _pdfService.CreatePdf("ReporteAccidentesGeneral", "Reporte General de Accidentes", ColumnsNames, modelList, Array.Empty<float>());
 			//return File(result.Item1, "application/pdf", result.Item2);
 			byte[] bytes = result.Item1.ToArray();
 			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
-			return Content(base64);
+			return Json(new { success = true, data = base64 });
 		}
 
 		[HttpPost]
-		public ContentResult InfraccionesGeneral(InfraccionesBusquedaModel model)
+		public ActionResult InfraccionesGeneral(InfraccionesBusquedaModel model)
 		{
 
-
 			int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-			Pagination pagination = new Pagination();
-			pagination.PageIndex = 0;
-			pagination.PageSize = 1000000;
 			int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-			var modelList = _infraccionesService.GetAllInfraccionesPagination(model, idOficina, idDependencia, pagination);
+
+			//Se valida si ambas fecha vienen nulas se limita la consulta a un rango de 45 dias
+			/*if(model.FechaInicio.Year<=1900 && model.FechaFin.Year<=1900){
+				model.FechaInicio=DateTime.Now.AddDays(-45);
+				model.FechaFin=DateTime.Now;
+			}*/
+			var modelList = _infraccionesService.GetReporteInfracciones(model, idOficina, idDependencia);
 			var pdfModel = modelList.Select(s => new InfraccionesGeneralPDFModel
 			{
 				folioInfraccion = s.folioInfraccion,
@@ -199,7 +213,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				placas = s.Vehiculo.placas,
 				delegacion = s.delegacion,
 				estatusInfraccion = s.estatusInfraccion,
-				aplicacion=s.aplicacion
+				aplicacion = s.aplicacion
 			}).ToList();
 			Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
 			{
@@ -213,12 +227,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
 				{"placas","Placas"},
 				{"delegacion","Delegación"},
 				{ "estatusInfraccion", "Estatus"},
-				{ "aplicacion","Aplicadoa"}
+				{ "aplicacion","Aplicada a"}
 			};
-			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", 10, ColumnsNames, pdfModel);
+
+			//Si no se encontraron datos
+			if (pdfModel.Count == 0)
+				return Json(new { success = false, message = "No se encontraron registros con los parámetros de búsqueda" });
+
+			float[]columnWidth = {10f,10f,10f,10f,10f,10f,10f,10f,10f,10f};
+			var result = _pdfService.CreatePdf("ReporteInfraccionesGeneral", "Reporte General de Infracciones", ColumnsNames, pdfModel,columnWidth);
 			byte[] bytes = result.Item1.ToArray();
 			string base64 = Convert.ToBase64String(bytes, 0, bytes.Length);
-			return Content(base64);
+			return  Json(new { success = true, data = base64 });;
 		}
 
 	}

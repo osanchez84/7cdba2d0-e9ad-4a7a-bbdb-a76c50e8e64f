@@ -1,10 +1,12 @@
 ﻿using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Util;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -34,13 +36,13 @@ namespace GuanajuatoAdminUsuarios.Services
                                     LEFT JOIN catColores AS co ON v.idColor = co.idColor
                                     LEFT JOIN catTiposVehiculo AS tv ON v.idTipoVehiculo = tv.idTipoVehiculo
                                     LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud
-                                    WHERE d.idPension = @idPension AND d.liberado = 0  " + condiciones;
+                                    WHERE d.fechaIngreso is null AND d.idPension = @idPension AND d.liberado = 0 AND d.estatusSolicitud = 3 " + condiciones;
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     connection.Open();
-                 
+
 
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
@@ -196,6 +198,87 @@ namespace GuanajuatoAdminUsuarios.Services
             }
 
             return depositoModificado;
+        }
+
+        public int GuardarDepositoOtraDependencia(SolicitudDepositoOtraDependenciaModel model, int idOficina, int idPension)
+        {
+            int resultado = -1;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+
+                    //Folio
+                    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    var allNumbers = "0123456789";
+
+
+                    Random random = new();
+
+                    var letters = new string(
+                                Enumerable.Repeat(chars, 2)
+                                .Select(s => s[random.Next(s.Length)])
+                                .ToArray());
+
+
+                    var numbers = new string(
+                                    Enumerable.Repeat(allNumbers, 3)
+                                    .Select(s => s[random.Next(s.Length)])
+                                    .ToArray());
+
+                    string anio = "/" + (DateTime.Now.Year % 100);
+                    string primeraParte = "EX-";
+                    string segundaParte = letters + numbers;
+
+                    string folio = $"{primeraParte}{segundaParte}{anio}";
+
+                    connection.Open();
+                    SqlCommand insertCommand = new SqlCommand("INSERT INTO depositos " +
+                                                            "(idTramo,idPension,km,liberado,idDelegacion,estatus,esExterno,idMarca,idSubmarca,idVehiculo,idColor,placa,serie,fechaIngreso,idPropietario,idEnviaVehiculo,idMotivoIngreso,folio,fechaActualizacion,estatusSolicitud,idMunicipioEnvia,depenIdMunicipio,depenIdCarretera,depenColonia,depenCalle,depenNumero,depenInterseccion) " +
+                                                            "VALUES (@idTramo,@idPension,@km,@liberado,@idDelegacion,@estatus,@esExterno,@idMarca,@idSubmarca,@idVehiculo,@idColor,@placa,@serie,@fechaIngreso,@idPropietario,@idEnviaVehiculo,@idMotivoIngreso,@folio,@fechaActualizacion,@estatusSolicitud,@idMunicipioEnvia,@depenIdMunicipio,@depenIdCarretera,@depenColonia,@depenCalle,@depenNumero,@depenInterseccion);" +
+                                                            "SELECT SCOPE_IDENTITY()", connection);
+                    insertCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
+                    insertCommand.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
+                    insertCommand.Parameters.Add(new SqlParameter("@km", SqlDbType.NVarChar)).Value = (object)model.KilometroUbicacion ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@liberado", SqlDbType.Int)).Value = 1;
+                    insertCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    insertCommand.Parameters.Add(new SqlParameter("@esExterno", SqlDbType.Bit)).Value = 1;
+                    insertCommand.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = (object)model.Vehiculo.idMarcaVehiculo?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@idSubmarca", SqlDbType.Int)).Value = (object)model.Vehiculo.idSubmarca?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@idVehiculo", SqlDbType.Int)).Value = (object)model.Vehiculo.idVehiculo?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)model.Vehiculo.idColor ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@placa", SqlDbType.VarChar)).Value = (object)model.Vehiculo.placas ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@serie", SqlDbType.VarChar)).Value = (object)model.Vehiculo.serie ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@fechaIngreso", SqlDbType.DateTime)).Value = model.FechaSolicitud;
+                    insertCommand.Parameters.Add(new SqlParameter("@idPropietario", SqlDbType.Int)).Value = (object)model.Vehiculo.idPersona?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@idEnviaVehiculo", SqlDbType.Int)).Value = model.IdDependenciaEnvia;
+                    insertCommand.Parameters.Add(new SqlParameter("@idMotivoIngreso", SqlDbType.Int)).Value = model.IdTipoMotivoIngreso;
+                    insertCommand.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = folio;
+                    insertCommand.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now;
+                    insertCommand.Parameters.Add(new SqlParameter("@estatusSolicitud", SqlDbType.Int)).Value = 5;
+                    insertCommand.Parameters.Add(new SqlParameter("@idMunicipioEnvia", SqlDbType.Int)).Value = model.IdMunicipoEnvia;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenIdMunicipio", SqlDbType.Int)).Value = model.IdMunicipioUbicacion;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenIdCarretera", SqlDbType.Int)).Value = model.IdCarretera;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenColonia", SqlDbType.VarChar)).Value = (object)model.ColoniaUbicacion ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenCalle", SqlDbType.VarChar)).Value = (object)model.CalleUbicacion ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenNumero", SqlDbType.VarChar)).Value = (object)model.NumeroUbicacion ?? DBNull.Value;
+                    insertCommand.Parameters.Add(new SqlParameter("@depenInterseccion", SqlDbType.VarChar)).Value = (object)model.InterseccionUbicacion ?? DBNull.Value;
+
+                    resultado = Convert.ToInt32(insertCommand.ExecuteScalar());
+                }
+                catch (SqlException ex)
+                {
+                    Logger.Error("Ocurrió un error al guardar deposito de otra dependencia:" + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+            }
+            return resultado;
         }
     }
 }

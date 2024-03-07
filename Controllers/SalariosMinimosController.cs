@@ -52,6 +52,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
           
                 var salariosModel = GetSalarioByID(IdSalario);
+            //salariosModel.Fecha = salariosModel.Fecha.ToString("dd/MM/yyy");
             return View("_Editar", salariosModel);
             }
       
@@ -95,7 +96,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             bool switchSalarios = Request.Form["salariosSwitch"].Contains("true");
             model.Estatus = switchSalarios ? 1 : 0;
             var errors = ModelState.Values.Select(s => s.Errors);
-            ModelState.Remove("Salario");
+            //ModelState.Remove("Salario");
             if (ModelState.IsValid)
             {
                
@@ -149,21 +150,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
             salario.Salario = model.Salario;
             salario.Fecha = model.Fecha;
             salario.Estatus = 1;
+          //  salario.ActualizadoPor= model.ActualizadoPor;
             salario.FechaActualizacion = DateTime.Now;
+           // salario.Anio = model.Anio;  
             dbContext.CatSalariosMinimos.Add(salario);
             dbContext.SaveChanges();
         }
 
         public void UpdateSalario(SalariosMinimosModel model)
         {
-            CatSalariosMinimos salario = new CatSalariosMinimos();
+            //CatSalariosMinimos salario = new CatSalariosMinimos();
+            var salario = dbContext.CatSalariosMinimos.FirstOrDefault(u => u.IdSalario == model.IdSalario);
             salario.IdSalario = model.IdSalario;
             salario.Area = model.Area;
             salario.Salario = model.Salario;
             salario.Fecha = model.Fecha;
             salario.Estatus = model.Estatus;
             salario.FechaActualizacion = DateTime.Now;
-            dbContext.Entry(salario).State = EntityState.Modified;
+            dbContext.CatSalariosMinimos.Update(salario);
+
+            //dbContext.Entry(salario).State = EntityState.Modified;
             dbContext.SaveChanges();
 
         }
@@ -203,7 +209,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                     Salario = salariosMinimos.Salario,
                                     Fecha = salariosMinimos.Fecha,
                                     Estatus = salariosMinimos.Estatus,
-
+                                    Anio = 0
 
 
                                 }).Where(w => w.IdSalario == IdSalario).FirstOrDefault();
@@ -221,7 +227,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var ListSalariosModel = (from salariosMinimos in dbContext.CatSalariosMinimos.ToList()
                                      join estatus in dbContext.Estatus.ToList()
                                     on salariosMinimos.Estatus equals estatus.estatus
-                                     where salariosMinimos.Estatus == 1
+                                    // where salariosMinimos.Estatus == 1
 
                                      select new SalariosMinimosModel
                                      {
@@ -231,7 +237,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                                          Fecha = salariosMinimos.Fecha,
                                          Estatus = salariosMinimos.Estatus,
                                          estatusDesc = estatus.estatusDesc,
-
+                                         Anio = 0,
+                                         
                                      }).ToList();
             return ListSalariosModel;
         }

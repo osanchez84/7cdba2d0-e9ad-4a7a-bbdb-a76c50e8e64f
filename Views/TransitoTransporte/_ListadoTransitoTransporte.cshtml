@@ -3,8 +3,15 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+
+    var Eliminar = autorizaciones.Contains("205") ? 1 : 0;
+
 }
 <script>
+
+    window.Eliminar = "@Eliminar"
+
+
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
@@ -76,7 +83,13 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito) {
+    function ShowUpdatePopUp(Id,IdDeposito,IdGrua) {
+        //Si la solicitud no tiege grua asociada se oculta el boton del modal
+        if(IdGrua===undefined || IdGrua<=0)
+        $('#divGruaModal').hide();
+        else
+           $('#divGruaModal').show();
+
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
         $('#myUpdateModal').modal('show');
@@ -86,6 +99,44 @@
 
         window.location = '/TransitoTransporte/CreatePdfUnRegistro?IdDeposito=' + Id;
     }
+
+
+    function EstatusTemplate(data){
+
+        return `<p>${data.fullDependencia}</p><p> Dependencia: ${data.transito==1?"TTO":"TTE"} </p>`
+    }
+
+
+
+    function eliminarTemplate(data){
+
+
+        console.log(data)
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3))
+            return `<button onclick="ShowDeletePopUp('${data.IdDeposito},${data.IdSolicitud}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>`
+        else if (window.Eliminar == '1')
+            return `<button onclick="ShowDeletePopUp('${data.IdDeposito},${data.IdSolicitud}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>`
+            else
+            return ''
+    }
+
+
+
+
+    function EditarTemplate(data){
+
+        if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
+            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
+        else 
+        return ""
+
+
+    }
+
+
+
+
 </script>
 <div class="row">
     <div class="col-md-12">
@@ -135,28 +186,18 @@
                     columns.Bound(c => c.pension).Title("Pensión").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
-                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
+                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #','#= IdDeposito #','#= IdGrua #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
                     ).Title("Detalle Grúa(s)").Sortable(false).Width(100);
+                    
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
                     ).Title("Descargar detalle").Sortable(false).Width(100);
-                    columns.Bound(c => c.fullDependencia).Title("Estatus").Width(190);
+                    columns.Bound(c => c.fullDependencia).ClientTemplate("#= EstatusTemplate(data) #")  .Title("Estatus").Width(190);
 
-                    columns.Bound(p => p.IdGrua).ClientTemplate(
-                    "<button onclick=\"ShowUpdatePopUp('#= IdSolicitud #','#= IdDeposito#')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>"
-                    ).Title("Editar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
-                    columns.Bound(p => p.IdDeposito).ClientTemplate(
-                    "<button onclick=\"ShowDeletePopUp('#= IdDeposito #,#= IdSolicitud # ')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-delete me-2'></i></h6></button>"
-                    ).Title("Eliminar").Sortable(false).Width(100);
-                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
-                    "<div class='turno-captura'>" +
-                    "<div class='tto-marked'>TTO:</div>" +
-                    "#= IdDependenciaGenera === 1 ? '✓' : '' #" +
-                    "<div class='dep-marked'>Dep:</div>" +
-                    "#= IdDependenciaGenera === 2 ? '✓' : '' #" +
-                    "</div>"
-                    ).Title("Turno Captura").Width(150);
+                    columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
+                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate("#= EstatusTemplate(data) #").Title("Turno Captura").Width(250);
 
 
 
@@ -377,7 +418,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                    <div id="divGruaModal" class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <div class="controlButton">
                             <button type="button" class="btn btn-primary btn-sm" data-id="gruas" onclick="datosGruas()">
                                 Datos de las Grúas Asignadas

@@ -57,6 +57,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             gruasConcesionario.IdTipoGrua = reader["IdTipoGrua"] is DBNull ? 0 : Convert.ToInt32(reader["IdTipoGrua"]);
                             gruasConcesionario.placas = reader["placas"] is DBNull ? string.Empty : reader["placas"].ToString();
                             gruasConcesionario.capacidad = reader["capacidad"] is DBNull ? string.Empty : reader["capacidad"].ToString();
+                            gruasConcesionario.capacidad = gruasConcesionario.capacidad + " t";
                             gruasConcesionario.TipoGrua = reader["TipoGrua"] is DBNull ? string.Empty : reader["TipoGrua"].ToString();
                             gruasConcesionario.operadorGrua = reader["operadorGrua"] is DBNull ? string.Empty : reader["operadorGrua"].ToString();
 
@@ -160,7 +161,18 @@ namespace GuanajuatoAdminUsuarios.Services
         public int CrearGrua(Gruas2Model model)
         {
             int result = 0;
-            string strQuery = @"INSERT INTO gruas VALUES(@idConcesionario
+            string strQuery = @"INSERT INTO gruas (idConcesionario
+                                                        ,idClasificacion
+                                                        ,idTipoGrua
+                                                        ,idSituacion
+                                                        ,noEconomico
+                                                        ,placas
+                                                        ,modelo
+                                                        ,capacidad
+                                                        ,fechaActualizacion
+                                                        ,actualizadoPor
+                                                        ,estatus
+                                                    ) VALUES(@idConcesionario
                                                         ,@idClasificacion
                                                         ,@idTipoGrua
                                                         ,@idSituacion
@@ -320,7 +332,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								on g.idConcesionario = c.idConcesionario AND c.estatus = 1
 								INNER JOIN catMunicipios cm
 								on c.idMunicipio = cm.idMunicipio AND c.estatus = 1
-                                WHERE g.estatus = 1 AND  c.idDelegacion = @idOficina";
+                                WHERE g.estatus = 1";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {
@@ -367,20 +379,25 @@ namespace GuanajuatoAdminUsuarios.Services
         {
             List<Gruas2Model> ListGruas = new List<Gruas2Model>();
             string strQuery = @"SELECT
-                                 idGrua
-                                ,idConcesionario
-                                ,idClasificacion
-                                ,idTipoGrua
-                                ,idSituacion
-                                ,noEconomico
-                                ,placas
-                                ,modelo
-                                ,capacidad
-                                ,fechaActualizacion
-                                ,actualizadoPor
-                                ,estatus
-                                FROM gruas
-                                WHERE idGrua = @idGrua AND estatus = 1";
+                                 g.idGrua
+                                ,g.idConcesionario        
+                                ,con.idDelegacion
+								,con.concesionario
+								,cdo.nombreOficina
+                                ,g.idClasificacion
+                                ,g.idTipoGrua
+                                ,g.idSituacion
+                                ,g.noEconomico
+                                ,g.placas
+                                ,g.modelo
+                                ,g.capacidad
+                                ,g.fechaActualizacion
+                                ,g.actualizadoPor
+                                ,g.estatus
+                                FROM gruas g 
+								LEFT JOIN concesionarios con ON con.idConcesionario = g.idConcesionario
+								LEFT JOIN catDelegacionesOficinasTransporte cdo ON cdo.idOficinaTransporte = con.idDelegacion
+                                WHERE idGrua = @idGrua AND g.estatus = 1";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {
@@ -394,11 +411,16 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             Gruas2Model gruasModel = new Gruas2Model();
                             gruasModel.idGrua = Convert.ToInt32(reader["idGrua"].ToString());
+                            gruasModel.idDelegacion = Convert.ToInt32(reader["idDelegacion"].ToString());
+
                             gruasModel.idConcesionario = Convert.ToInt32(reader["idConcesionario"].ToString());
                             gruasModel.idClasificacion = Convert.ToInt32(reader["idClasificacion"].ToString());
                             gruasModel.idTipoGrua = Convert.ToInt32(reader["idTipoGrua"].ToString());
                             gruasModel.idSituacion = Convert.ToInt32(reader["idSituacion"].ToString());
                             gruasModel.noEconomico = reader["noEconomico"].ToString();
+                            gruasModel.concesionario = reader["concesionario"].ToString();
+                            gruasModel.Delegacion = reader["nombreOficina"].ToString();
+
                             gruasModel.placas = reader["placas"].ToString();
                             gruasModel.modelo = reader["modelo"].ToString();
                             gruasModel.capacidad = reader["capacidad"].ToString();

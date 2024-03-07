@@ -22,10 +22,7 @@
                     window.location.href = "/Principal";
                 }, 200);
             } else {
-                // BUSCAR - CONSULTAR
-                if (!auth.toString().includes("251")) {
-                    $("#btnBuscar").prop('disabled', true).css({ "opacity": "0.3" });
-                }
+
             }
         } else {
             Swal.fire({

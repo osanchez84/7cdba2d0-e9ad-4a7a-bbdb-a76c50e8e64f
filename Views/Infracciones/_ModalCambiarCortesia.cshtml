@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="controlForm mb-3">
-            <label>Cortesá aplicada:</label>
+            <label>Cortesiá aplicada:</label>
             <div class="btnToggleActive">
                      @Html.HiddenFor(m=>m.idInfraccion)
                     @(Html.Kendo().SwitchFor(t => t.infraccionCortesia)
@@ -39,6 +39,19 @@
                     .Messages(c => c.Checked("No aplicada").Unchecked("Aplicada"))
                     )
             </div>
+            <br />
+            <div class="row">
+
+                @(Html.Kendo().TextAreaFor(s=>s.ObsevacionesApl)
+                    .HtmlAttributes(new { style = "width: 400px; height: 60px;" })
+                    .Placeholder("Ingresa las observaciones de la aplicacion")
+                    .MaxLength(2000)
+                    
+                )
+                
+
+            </div>
+
         </div>
                                             
     </form>
@@ -83,6 +96,8 @@
                     var idInfraccion = response.idInfraccion;
                    // sitteg_success("Informacion Actualizada");
                     serviceCrearInfraccion(idInfraccion);
+                    sitteg_success("Informacion Actualizada");
+
                 } else {
                   sitteg_success("Informacion Actualizada");
                   $('#editarCortesiaModal').modal('hide');

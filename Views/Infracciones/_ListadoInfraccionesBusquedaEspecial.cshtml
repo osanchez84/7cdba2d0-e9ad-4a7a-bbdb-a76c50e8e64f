@@ -3,7 +3,57 @@
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+
+    var modificarP = autorizaciones.Contains("486") ? 1 : 0;
+
+
+
 }
+
+
+
+<script>
+
+    window.modificarP = "@modificarP"
+
+
+    function TemplateEliminar(data) {
+
+
+        if (window.modificarP == 1)
+        return `<button class='btn btn - danger'>
+                <h6 class='m-0 colorDanger' onclick='eliminarInfraccion(event)'>
+                <i class='h5 icon-delete me-2'></i><b>Eliminar</b>
+                </h6></button>`    
+         else
+         return ""
+    }
+
+
+    function TemplateCortecia(data){
+        console.log(data)
+        var element = `<div> ${data.infraccionCortesiaString == null ? "" : data.infraccionCortesiaString} </div>`
+
+        if (data.infraccionCortesiaString !== null && data.infraccionCortesiaString === 'Cortesía' && window.modificarP==1) {
+            element=`    ${element}                
+            <button id = 'btnCortesia' onclick ="ModalEditarCortesia('${data.idInfraccion}','${data.folioInfraccion}')" class='w-100 btn'>
+                    <h6 class='m-0 colorPrimary' > <i class='icon-edit me-2' > </i><b></b > </h6>
+                        </button>`
+        }
+
+
+
+        return `<div style='display: flex; align - items: center; '> ${element} </div>`
+
+
+    }
+
+
+
+
+    </script>
+
+
 
 <div class="row justify-content-between align-items-end mb-1">
     <div class="col-12 col-md-auto mt-4 mb-2">
@@ -42,31 +92,12 @@
                 columns.Bound(c => c.fechaInfraccion).Title("Fecha Aplicada a").Width(100).Format("{0:dd/MM/yyyy}");
                 columns.Bound(c => c.estatusInfraccion).Title("Estatus").Width(90);
                 columns.Bound(c => c.delegacion).Title("Delegación/Oficina").Width(150);
-                columns.Bound(c => c.infraccionCortesiaString)
-                .Title("Cortesia")
-                .Width(150)
-                .ClientTemplate(
-                "<div style='display:flex; align-items:center;'>" +
-                "# if (infraccionCortesiaString !== null && infraccionCortesiaString === 'Cortesía') { #" +
-                "<div>#= infraccionCortesiaString #</div>" +
-                "<button id='btnCortesia' onclick=\"ModalEditarCortesia('#= idInfraccion #')\" class='w-100 btn'>" +
-                "<h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b></b></h6>" +
-                "</button>" +
-                "# } else if (infraccionCortesiaString !== null) { #" +
-                "<div>#= infraccionCortesiaString #</div>" +
-                "# } #" +
-                "</div>"
-                );
+                columns.Bound(c => c.delegacion).Title("Cortesia").Width(150).ClientTemplate("#= TemplateCortecia(data) #");
 
                 //columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateCortecia(data) #").Title("Cortesía").Sortable(false).Width(90);
                 columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateEditar(data) #").Title("Ver Registro").Sortable(false).Width(90);
                 columns.Bound(p => p.idInfraccion).ClientTemplate("#= TemplateMostrar(data)  #").Title("Mostrar").Sortable(false).Width(90);
-                columns.Template(
-                "<button class='btn btn - danger'>" +
-                "<h6 class='m-0 colorDanger' onclick='eliminarInfraccion(event)'>" +
-                "<i class='h5 icon-delete me-2'></i><b>Eliminar</b>" +
-                "</h6></button>"
-                ).Width(150);
+                columns.Bound(r=>r.actualizadoPor).ClientTemplate("#= TemplateEliminar(data)  #" ).Width(150);
             }).HtmlAttributes(new { style = "height:450" })
             .Pageable(p => p.Enabled(true).PageSizes(new[] { 10, 20, 30 }))
             
@@ -87,13 +118,13 @@
                 var grid = $("#GridInf").data("kendoGrid");
 
                 // IMPRIMIR
-                if (!auth.toString().includes("482")) {
-                    $("#btnPDFReporteBusquedaEspecial").prop('disabled', true).css({ "opacity": "0.3" });
+                //if (!auth.toString().includes("482")) {
+                //    $("#btnPDFReporteBusquedaEspecial").prop('disabled', true).css({ "opacity": "0.3" });
         
-                }
-                if (!auth.toString().includes("484")) {
-                    grid.hideColumn(11);
-                }
+                //}
+                //if (!auth.toString().includes("484")) {
+                //    grid.hideColumn(11);
+                //}
                 //if (!auth.toString().includes("462")) {
                 //    grid.hideColumn(14);
                 //}
@@ -122,6 +153,7 @@ function eliminarInfraccion(){
 }
 
     function ModalEditarCortesia(idInfraccion) {
+
         showLoading();
         $.ajax({
             url: '/Infracciones/ModalEditarCortesia',

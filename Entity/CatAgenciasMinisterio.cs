@@ -11,7 +11,8 @@ namespace GuanajuatoAdminUsuarios.Entity
 
         public int IdDelegacion { get; set; }
 
-        public DateTime? FechaActualizacion { get; set; }
+
+		public DateTime? FechaActualizacion { get; set; }
 
         public int? ActualizadoPor { get; set; }
 

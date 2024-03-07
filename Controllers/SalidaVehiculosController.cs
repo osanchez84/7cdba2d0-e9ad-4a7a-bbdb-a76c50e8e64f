@@ -46,7 +46,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             //int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
 
-            var result = new SelectList(_placaServices.GetPlacasByDelegacionId(idPension), "IdDepositos", "Placa");
+            var result = new SelectList(_placaServices.GetPlacasByDelegacionId(idPension,false), "IdDepositos", "Placa");
             return Json(result);
         }
         public IActionResult ajax_BusquedaIngresos(SalidaVehiculosModel model)
@@ -67,6 +67,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return View(infoDeposito);
         }
+        public IActionResult DatosServicio(int iDp)
+        {
+            HttpContext.Session.SetInt32("idDeposito", iDp);
+            int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
+
+            var infoDeposito = _salidaVehiculosService.DetallesDepositoOtraDep(iDp, idPension);
+
+            return View(infoDeposito);
+        }
         public JsonResult GetGruasAsignadas([DataSourceRequest] DataSourceRequest request)
         {
             int iDp = HttpContext.Session.GetInt32("idDeposito") ?? 0; 
@@ -75,9 +84,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
       
 
-        public ActionResult ModalCostosGrua(int idDeposito)
+        public ActionResult ModalCostosGrua(int idDeposito, int idGrua)
         {
-            var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito);
+            var DatosGruaSeleccionada = _salidaVehiculosService.CostosServicio(idDeposito, idGrua);
 
             return PartialView("_ModalCostosServicio", DatosGruaSeleccionada);
         }
@@ -103,6 +112,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalida(model);
 
             return PartialView("_ListadoGruas");
+        }
+
+        public ActionResult GuardarDatosSalidaDep(SalidaVehiculosModel model)
+        {
+
+            var DatosGruaSeleccionada = _salidaVehiculosService.GuardarInforSalidaOtrasDep(model);
+
+            return View("Index");
         }
 
     }

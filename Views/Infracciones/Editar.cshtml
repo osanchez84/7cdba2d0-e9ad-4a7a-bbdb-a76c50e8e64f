@@ -7,6 +7,7 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+    var regreso = ViewBag.Regreso.ToString();
 }
 
 <script>
@@ -14,6 +15,12 @@
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
+
+        // var v = '@ViewBag.EsSoloLectura';
+        //if (v == 'False') 
+        //    $("#idMunicipioX").data("kendoDropDownList").enable(true);
+        //else
+        //    $("#idMunicipioX").data("kendoDropDownList").enable(false);
 
         if (access != undefined && access != '') {
             if (!access.toString().includes(localStorage.getItem("menuId"))) {
@@ -40,6 +47,99 @@
             }, 200);
         }
     });
+
+
+    function EditarVehiculo() {
+        var v = '@ViewBag.EsSoloLectura';
+        if (v == 'False') {
+            $("#Vehiculo_tarjeta").addClass("activeData");
+            $('#Vehiculo_tarjeta').data("kendoTextBox").enable(true);
+
+            //$("#Persona_nombreCompleto").addClass("activeData");
+            //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
+
+            $("#Vehiculo_motor").addClass("activeData");
+            $("#Vehiculo_motor").data("kendoTextBox").enable(true);
+
+            $("#Vehiculo_numeroEconomico").addClass("activeData");
+            $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable(true);
+
+            $("#Vehiculo_otros").addClass("activeData");
+            $("#Vehiculo_otros").data("kendoTextBox").enable(true);
+
+            $("#Vehiculo_poliza").addClass("activeData");
+            $("#Vehiculo_poliza").data("kendoTextBox").enable(true);
+            //
+            $("#Vehiculo_capacidad").addClass("activeData");
+            $("#Vehiculo_capacidad").data("kendoTextBox").enable(true);
+
+            $("#Vehiculo_placas").addClass("activeData");
+            $("#Vehiculo_placas").data("kendoTextBox").enable(true)
+
+            $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
+            $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable(true);
+
+            $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(true);
+
+            $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(true);
+
+             $("#Vehiculo_idColor").data("kendoDropDownList").enable(true);
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(true);
+
+            $("#btnSelect1").prop("disabled", false);
+            $("#btnEditarConductor").prop("disabled", false);
+            $("#btnNuevoMotivo").prop("disabled", false);
+
+            
+            //alert('dddsa');
+            
+        } else {
+            //alert('dddsa asdfasdfasdf');
+            $("#btnSelect1").prop("disabled", true);
+            $("#btnEditarConductor").prop("disabled", true);
+            $("#btnNuevoMotivo").prop("disabled", true);
+
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(false);
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(false);
+
+            $("#Vehiculo_tarjeta").addClass("activeData");
+            $('#Vehiculo_tarjeta').data("kendoTextBox").enable(false);
+
+            //$("#Persona_nombreCompleto").addClass("activeData");
+            //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
+
+            $("#Vehiculo_motor").addClass("activeData");
+            $("#Vehiculo_motor").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_numeroEconomico").addClass("activeData");
+            $("#Vehiculo_numeroEconomico").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_otros").addClass("activeData");
+            $("#Vehiculo_otros").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_poliza").addClass("activeData");
+            $("#Vehiculo_poliza").data("kendoTextBox").enable(false);
+            //
+            $("#Vehiculo_capacidad").addClass("activeData");
+            $("#Vehiculo_capacidad").data("kendoTextBox").enable(false);
+
+            $("#Vehiculo_placas").addClass("activeData");
+            $("#Vehiculo_placas").data("kendoTextBox").enable(false)
+
+            $("#Vehiculo_vigenciaTarjeta").addClass("activeData");
+            $("#Vehiculo_vigenciaTarjeta").data("kendoDateTimePicker").enable(false);
+
+            $("#Vehiculo_idEntidad").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idEntidad").data("kendoDropDownList").enable(false);
+
+            $("#Vehiculo_idColor").closest('.k-dropdown').addClass("activeData");
+            $("#Vehiculo_idColor").data("kendoDropDownList").enable(false);
+        }
+        $("#Vehiculo_placas").focus();
+    }
+
 
 </script>
 
@@ -94,6 +194,8 @@
                 <nav class="tabCustom">
                     @*navegador tabs*@
                     <div class="nav nav-tabs row mx-0" id="nav-tab" role="tablist">
+
+
                         <button class="nav-link active col" id="informacionInfraccion-tab" data-bs-toggle="tab" data-bs-target="#informacionInfraccion-container" type="button" role="tab" aria-controls="informacionInfraccion-container" aria-selected="true">
                             <div class="row justify-content-center align-items-center px-2 py-1">
                                 <div class="col-auto radioCustom p-0">
@@ -110,7 +212,7 @@
                                 </div>
                             </div>
                         </button>
-                        <button class="nav-link col" id="lugar-tab" data-bs-toggle="tab" data-bs-target="#lugar-container"  href="#lugar" type="button" role="tab" aria-controls="lugar-container" aria-selected="false">
+                        <button class="nav-link col" id="lugar-tab" data-bs-toggle="tab" data-bs-target="#lugar-container" href="#lugar" type="button" role="tab" aria-controls="lugar-container" aria-selected="false">
                             <div class="row justify-content-center align-items-center px-2 py-1">
                                 <div class="col-auto radioCustom p-0">
                                     <div class="rounded-circle m-1"></div>
@@ -199,7 +301,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row my-4 px-4">
+                            @*<div class="row my-4 px-4">
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Fecha infracción <b>(obligatorio)</b>:</label>
@@ -211,7 +313,34 @@
                                             )
                                     </div>
                                 </div>
+                            </div>*@
+
+                            <div class="row my-4 px-4">
+                                <div class="form-group col-md-3 controlForm">
+                                    <label>Fecha infracción <b>(obligatorio)</b>:</label>
+                                    @(Html.Kendo().DatePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
+
+                                        .Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
+                                        .Format("dd/MM/yyyy")
+                                        .Enable(!ViewBag.EsSoloLectura)
+                                        .Culture("es-ES")
+                                        .DateInput()
+                                        .HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion", required = "required" })
+                                        )
+                                </div>
+                           
+                                <div class="form-group col-md-2 controlForm">
+                                    <label class="text-muted">Hora:</label>
+                                    @(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
+                                        .Label(l => l.Content("Hora:"))
+                                        .Format("HH:mm")
+                                         .Enable(!ViewBag.EsSoloLectura)
+                                        .Culture("es-ES")
+                                        .HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
+                                        )
+                                </div>
                             </div>
+
                             <div class="row my-4 px-4">
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
@@ -238,11 +367,21 @@
                                 <div class="form-group col-md-4">
                                     <div class="controlForm">
                                         <label>Municipio <b>(obligatorio)</b>:</label>
-                                        @(Html.Kendo().DropDownListFor(m => m.idMunicipio).Filter(FilterType.Contains)
-                                            .BindTo((SelectList)ViewBag.CatMunicipios)
+                                        @(Html.Kendo().DropDownListFor(s => s.idMunicipio)
+                                        //                                            .Name("idMunicipio")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .DataSource(source =>
+                                            {
+                                                source.Read(read =>
+                                                {
+                                                    read.Action("Municipios_Por_Delegacion_Drop", "Infracciones");
+                                                });
+                                            })
                                             .OptionLabel("-- Seleccione --")
+                                            .Filter(FilterType.Contains)
+                                            .HtmlAttributes(new { style = "width:100%;", required = "required", id="idMunicipio" })
                                             .Enable(!ViewBag.EsSoloLectura)
-                                            .HtmlAttributes(new { style = "width:100%;", required = "required" })
                                             )
                                     </div>
                                 </div>
@@ -392,7 +531,9 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detalleVehiculo">
-                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model.Vehiculo" />
+                                    @Html.HiddenFor(s=>s.Vehiculo.idPersona)
+
+                                    <partial name="_EditarDetalleVehiculo.cshtml" model="Model" />
                                 </div>
                             </div>
                             @*<div class="row my-4 px-4">
@@ -420,6 +561,9 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
                                 @*<div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                                 <div class="row">
                                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
@@ -429,10 +573,22 @@
                                 </div>
                                 </div>
                                 </div>*@
+
+                                <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
+                                <div class="row">
+                                <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                <button href="#" id="btnEditarConductor" onclick="editarConductor()">
+                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Editar conductor</b></h6>
+                                </button>
+                                </div>
+                                </div>
+                                </div>
+
+                                
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
-                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
+                                    <partial name="_EditarDetallePersona" model="Model.PersonaInfraccion2" />
                                 </div>
                             </div>
                             <input type="hidden" id="hdnIdPersonaTemp" value="" />
@@ -654,16 +810,28 @@
                                     <div class="row my-4">
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
-                                                <label>Licencia:</label>
+
+                                                 @if(Model.Garantia.idTipoLicencia != null){
                                                 @(Html.Kendo().DropDownListFor(m => m.Garantia.idTipoLicencia).Filter(FilterType.Contains)
                                                     .BindTo((SelectList)ViewBag.CatTipoLicencia)
+                                                     .Label(l => l.Content("Tipo de licencia:"))
                                                     .OptionLabel("-- Seleccione --")
                                                     .Enable(!ViewBag.EsSoloLectura)
                                                     .HtmlAttributes(new { style = "width:100%;" }))
+                                                    }else{
+                                                    @(Html.Kendo().DropDownListFor(m => m.PersonaInfraccion2.idTipoLicencia).Filter(FilterType.Contains)
+                                                    .BindTo((SelectList)ViewBag.CatTipoLicencia)
+                                                     .Label(l => l.Content("Tipo de licencia:"))
+                                                    .OptionLabel("-- Seleccione --")
+                                                    .Enable(!ViewBag.EsSoloLectura)
+                                                    .HtmlAttributes(new { style = "width:100%;" }))
+                                                    }
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <div class="controlForm">
+
+                                                @if(Model.Garantia.numLicencia != null){
                                                 @(Html.Kendo().TextBoxFor(t => t.Garantia.numLicencia)
                                                     .Label(l => l.Content("Número licencia:"))
                                                     .Placeholder("Ingresa licencia")
@@ -671,6 +839,16 @@
                                                     .Enable(!ViewBag.EsSoloLectura)
                                                     .HtmlAttributes(new { style = "width: 100%", id = "numLicGar" })
                                                     )
+                                                    }else{
+                                                @(Html.Kendo().TextBoxFor(t => t.PersonaInfraccion2.numeroLicencia)
+                                                    .Label(l => l.Content("Número licencia:"))
+                                                    .Placeholder("Ingresa licencia")
+                                                    //.Events(s => s.Change("updateNumLic"))
+                                                    .Enable(!ViewBag.EsSoloLectura)
+                                                    .HtmlAttributes(new { style = "width: 100%", id = "numLicGar" })
+                                                    )
+                                                    }
+                                           
                                             </div>
                                         </div>
                                     </div>
@@ -742,12 +920,12 @@
     </div>
 </div>
 <script>
-    
+
 
     function updateNumLic() {
 
         var numvalue = $("#numLicGar").val()
-
+        console.log("VAL", numvalue)
         $("#Garantia_numLicencia").val(numvalue)
 
 
@@ -770,7 +948,7 @@
         $("#idEntidad").closest('.k-dropdown').removeClass("activeData");
         $("#idColor").closest('.k-dropdown').removeClass("activeData");
 
-        $("#btnSelect").prop("disabled",true);
+        $("#btnSelect").prop("disabled", true);
     });
 
 
@@ -860,9 +1038,11 @@
 
         if (isValid) {
             var formData = $("#frmEditarInfraccion").serialize();
-            var vehiculo =  {   tarjeta: $("#tarjeta").val(),
-                                placas: $("#placas").val(),
-                                vigenciaTarjeta: $("#vigenciaTarjeta").val()
+            var vehiculo = {
+                tarjeta: $("#tarjeta").val(),
+                placas: $("#placas").val(),
+                vigenciaTarjeta: $("#vigenciaTarjeta").val()
+
             };
 
 
@@ -871,7 +1051,7 @@
             $.ajax({
                 url: '@Url.Action("ajax_editarInfraccion")',
                 type: 'POST',
-                data: JSON.stringify({ model: formData, vehiculo: vehiculo }),
+                data: formData,
                 success: function (response) {
                     if (response.success) {
                         var idInfraccion = response.idInfraccion;
@@ -910,7 +1090,7 @@
                     sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
                     shouldGoBack = true;
                 }
-                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {
+                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {                   
                     sitteg_warning("La infracción no fue enviada a Secretaría de Finanzas.");
                     shouldGoBack = true;
                 }
@@ -918,13 +1098,29 @@
                     sitteg_warning(response.message);
                 }
 
+
+                var valgar = $("#ddlTipoGarantia").val()
+
+                if ("@ViewBag.GoDEpositos" == "0" && valgar == "4") {
+                    window.location.href = '/Depositos/DepositosInfraccion'
+                }
+
+
+
                 var redirectTo = sessionStorage.getItem('redirectTo');
                 console.log("RED", redirectTo);
                 if (shouldGoBack && redirectTo) {
-                    setTimeout(function () {
-                        window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
-                    }, 2000);
+                    // alert("@ViewBag.GoDEpositos")
+                    window.location.href = redirectTo;
+                   // if (@regreso == "1")
+                   //     window.location.href = "/Infracciones/Crear";
+                   // else {
+                    //    setTimeout(function () {
+                     //       window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
+                      //  }, 2000);
+                   // }
                 }
+                
 
                 hideLoading();
             },
@@ -985,15 +1181,15 @@
             success: function (data) {
                 $("#detallePersonas").html(data);
                 $("#idPersona").val(pidPersona);
-                 
-                if (editarVehiculo==false)
+
+                if (editarVehiculo == false)
                     $("#detallePersonas").show();
                 else {
-                     $('#listadoPersonas').css('display', 'none');
+                    $('#listadoPersonas').css('display', 'none');
                 }
                 hideLoading();
             }, error: function () {
-                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+               // sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
 
@@ -1010,7 +1206,7 @@
                 $("#listadoPersonas").html(data);
                 hideLoading();
             }, error: function () {
-                sitteg_warning("Ocurrio un error al procesar su solicitud.");
+                //sitteg_warning("Ocurrio un error al procesar su solicitud.");
                 hideLoading();
             }
 
@@ -1154,22 +1350,26 @@
         return null;
     }
 
-	
 
-	function onChange() {
-    var min = parseInt($("#calificacionMinima").val() || "0");
-    var currentval = parseInt($("#calificacion").val() || "0");
 
-    if (currentval >= min) {
-    } else {
-        $("#calificacion").val(min);
-        sitteg_info("La calificación es menor");
+    function onChange() {
+        var min = parseInt($("#calificacionMinima").val() || "0");
+        var currentval = parseInt($("#calificacion").val() || "0");
+
+        if (currentval >= min) {
+        } else {
+            $("#calificacion").val(min);
+            sitteg_info("La calificación es menor");
+        }
     }
-}
 
-	function goBack() {
-		window.history.back();
-	}
+    function goBack() {
+        console.log("regreso: " + @regreso)
+        if (@regreso == "1")
+            window.location.href = "/Infracciones/Crear";
+        else
+            window.history.back();
+    }
 
 
 
@@ -1186,99 +1386,63 @@
     }
 
     //$(document).ready(function () {
-        
+
     //});
 
-    function EditarVehiculo() {
-        $("#tarjeta").addClass("activeData");
-        $('#tarjeta').data("kendoTextBox").enable();
 
-        //$("#Persona_nombreCompleto").addClass("activeData");
-        //$('#Persona_nombreCompleto').data("kendoTextBox").enable();
-
-        $("#motor").addClass("activeData");
-        $("#motor").data("kendoTextBox").enable();
-
-        $("#numeroEconomico").addClass("activeData");
-        $("#numeroEconomico").data("kendoTextBox").enable();
-        
-        $("#otros").addClass("activeData");
-        $("#otros").data("kendoTextBox").enable();
-        
-        $("#poliza").addClass("activeData");
-        $("#poliza").data("kendoTextBox").enable();
-        //
-        $("#capacidad").addClass("activeData");
-        $("#capacidad").data("kendoTextBox").enable();
-
-        $("#placas").addClass("activeData");
-        $("#placas").data("kendoTextBox").enable()
-
-        $("#vigenciaTarjeta").addClass("activeData");
-        $("#vigenciaTarjeta").data("kendoDateTimePicker").enable();
-
-        $("#idEntidad").closest('.k-dropdown').addClass("activeData");
-        $("#idEntidad").data("kendoDropDownList").enable();
-        
-        $("#idColor").closest('.k-dropdown').addClass("activeData");
-        $("#idColor").data("kendoDropDownList").enable();    
-        
-        $("#btnSelect").prop("disabled",false);       
-        $("#placas").focus();
-    }
-
-    function btnEditarPersona() {
+    function editarConductor() {
 		
-        var idPersona = $("#idPersona").val();
+        var idPersona = $("#idPersonaInfraccion").val();
         var isValid = false;
 
         if (!idPersona) {
-			sitteg_info('Debe haber preestablecido un conductor');
-			return;
-		} else {
+            sitteg_info('Debe haber preestablecido un conductor');
+            return;
+        } else {
             isValid = true;
         }
 
 		if (isValid) {
-            //console.log("entra");
+            console.log("entra");
             var curp = $("#CURP").val();
             var rfc = $("#RFC").val();
             var fechaNacimiento = $("#fechaNacimiento").val();
             var personaDireccionCalle = $("#PersonaDireccion_calle").val();
-            var personaDireccionNumero = $("#PersonaDireccion_numero").val();
+            var numero = $("#PersonaDireccion_numero").val();
             var colonia = $("#PersonaDireccion_colonia").val();
             var telefono = $("#PersonaDireccion_telefono").val();
             var correo = $("#PersonaDireccion_correo").val();
-            var licencia = $("#numeroLicencia").val();
+            var calle = $("#PersonaDireccion_calle").val();
+            var numeroLicencia = $("#numeroLicencia").val();
             var vigenciaLicencia = $("#vigenciaLicencia").val();
-            var serial = {curp,rfc,fechaNacimiento,personaDireccionCalle,personaDireccionNumero,colonia,telefono,correo,licencia,vigenciaLicencia};
+            var serial = {idPersona,curp,rfc,fechaNacimiento,personaDireccionCalle,numero,colonia,telefono,correo,numeroLicencia,vigenciaLicencia,calle};
             //console.log("serial",serial);
-			
-			showLoading();
-            
-			$.ajax({
-				url: '@Url.Action("ajax_EditarConductor")',
-				type: 'POST',
-				data: serial,
-				success: function (response) {
-					if (response.success) {
-						sitteg_success("Información Actualizada");
-					} else {
-						sitteg_warning(response.message);
-					}
-					hideLoading();
-				},
-				error: function (error) {
-					sitteg_warning('Lo sentimos, ha ocurrido un error.' );
-					hideLoading();
-				}
-			});
-		} else {
-			sitteg_info('No se encontró al condutor');
-		}
-	}
+
+            showLoading();
+
+            $.ajax({
+                url: '@Url.Action("ajax_EditarConductor")',
+                type: 'POST',
+                data: serial,
+                success: function (response) {
+                    if (response.success) {
+                        sitteg_success("Información Actualizada");
+                    } else {
+                        sitteg_warning(response.message);
+                    }
+                    hideLoading();
+                },
+                error: function (error) {
+                    sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                    hideLoading();
+                }
+            });
+        } else {
+            sitteg_info('No se encontró al condutor');
+        }
+    }
     function SeleccionarPropietario() {
-         $('#listadoPersonas').css('display', 'block');
+        $('#listadoPersonas').css('display', 'block');
     }
 </script>
 

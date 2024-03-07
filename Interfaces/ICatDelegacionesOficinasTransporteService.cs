@@ -8,8 +8,12 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinas();
         List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasActivos();
+        List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasFiltrado(int idDependencia);
 
-       public string GetDelegacionOficinaById(int idOficina);
+
+
+            public string GetDelegacionOficinaById(int idOficina);
+        public int EditarDelegacion(CatDelegacionesOficinasTransporteModel model);
 
 
 

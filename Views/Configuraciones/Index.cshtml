@@ -79,11 +79,18 @@
 
 <script>
 	function btnActualizar() {
+				var Contrasena = $("#Contrasena").val();
 
 		var NuevaContrasena = $("#NuevaContrasena").val();
 		var ConfirmarContrasena = $("#ConfirmarContrasena").val();
 		showLoading();
+		if (NuevaContrasena === Contrasena){
+			sitteg_warning('La contraseña nueva no puede ser la misma que la actual');
+						hideLoading();
 
+			return
+
+		}
 		if (NuevaContrasena == ConfirmarContrasena){ 
 
 		$.ajax({

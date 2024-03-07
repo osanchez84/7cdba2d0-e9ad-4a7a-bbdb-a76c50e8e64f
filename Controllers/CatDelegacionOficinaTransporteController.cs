@@ -1,6 +1,7 @@
 ﻿using GuanajuatoAdminUsuarios.Entity;
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.Services;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -31,8 +32,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult Index()
         {
 
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinas();
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
 
             return View("Index", ListDelegacionesOficinasTModel);
         }
@@ -43,7 +45,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         #region Modal Action
         public ActionResult IndexModal()
         {
-            var ListDelegacionesOficinasTModel = GetDelegacionesOficinas();
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
             return View("Index", ListDelegacionesOficinasTModel);
         }
 
@@ -101,8 +104,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
 
 
-                EditarDelegacionOficina(model);
-                var ListDelegacionesOficinasTModel = GetDelegacionesOficinas();
+                _catDelegacionesOficinasTransporteService.EditarDelegacion(model);
+                var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinas();
                 return Json(ListDelegacionesOficinasTModel);
             }
             return PartialView("_Editar");
@@ -124,7 +127,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult GetDelegacionOfs([DataSourceRequest] DataSourceRequest request)
         {
-            var ListDelegacionesOficinasTModel = GetDelegacionesOficinas();
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var ListDelegacionesOficinasTModel = _catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia);
 
             return Json(ListDelegacionesOficinasTModel.ToDataSourceResult(request));
         }
@@ -135,15 +140,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(dbContext.CatMunicipios.ToList(), "IdMunicipio", "Municipio");
             return Json(result);
         }
-    
+
+        public JsonResult Delegaciones_Drop()
+        {
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia),"IdDelegacion", "Delegacion");
+            return Json(result);
+        }
 
 
-    #endregion
+
+        #endregion
 
 
-    #region Acciones a base de datos
+        #region Acciones a base de datos
 
-    public void CrearDelegacionOficina(CatDelegacionesOficinasTransporteModel model)
+        public void CrearDelegacionOficina(CatDelegacionesOficinasTransporteModel model)
         {
             CatDelegacionesOficinasTransporte delOficina = new CatDelegacionesOficinasTransporte();
             delOficina.IdOficinaTransporte = model.IdOficinaTransporte;
@@ -160,10 +173,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             CatDelegacionesOficinasTransporte delOficina = new CatDelegacionesOficinasTransporte();
             delOficina.IdOficinaTransporte = model.IdOficinaTransporte;
-            delOficina.NombreOficina = model.NombreOficina;
+            //delOficina.NombreOficina = model.NombreOficina;
             delOficina.JefeOficina = model.JefeOficina;
-            delOficina.IdMunicipio = model.IdMunicipio;
-            delOficina.Estatus = model.Estatus;
+            //delOficina.IdMunicipio = model.IdMunicipio;
+            //delOficina.Estatus = model.Estatus;
             delOficina.FechaActualizacion = DateTime.Now;
             dbContext.Entry(delOficina).State = EntityState.Modified;
             dbContext.SaveChanges();

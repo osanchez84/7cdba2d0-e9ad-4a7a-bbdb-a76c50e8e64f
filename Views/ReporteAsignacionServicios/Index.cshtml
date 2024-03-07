@@ -103,7 +103,6 @@
         }
 
         function downLoadPdfFiltered() {
-            if ('@autorizaciones' && '@autorizaciones'.indexOf('241') !== -1) {
 
             var data = {
                 IdGrua: $('#ddlGrua').val(),
@@ -115,10 +114,7 @@
             };
             var json = JSON.stringify(data);
             window.location = '/ReporteAsignacionServicios/CreatePdf?data=' + json;
-            }
-            else {
-                sitteg_warning("El usuario no tiene permisos suficientes para esta acción.");
-            }
+  
         }
 
     </script>
@@ -150,7 +146,26 @@
             <h6 class="px-4 text-muted">Realiza una búsqueda personalizada de solicitudes.</h6>
         </div>
         <form id="frmSearch" class="row px-4 mb-4 align-items-end" method="post">
-
+                 <div class="col-12 col-md-6 col-lg-4">
+                <div class="controlForm mb-3">
+                    <label>Delegación:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(d => d.idDelegacion).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .OptionLabel("Seleccione oficina/delegación...")
+                            .HtmlAttributes(new { style = "width:100%;", Id = "ddlDelegacion" })
+                            .Filter(FilterType.Contains)
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("Delegaciones_Read", "ReporteAsignacionServicios");
+                                });
+                            }))
+                    </span>
+                </div>
+            </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="controlForm mb-3">
                     <label>Grúa:</label>

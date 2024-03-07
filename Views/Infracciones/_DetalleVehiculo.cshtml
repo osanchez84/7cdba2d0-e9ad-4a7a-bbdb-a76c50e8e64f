@@ -2,6 +2,7 @@
 
 
 <hr />
+@Html.HiddenFor(s=>s.Persona.idPersona)
 <div class="row my-4 px-4">
     <div class="form-group col-md-3">
         <div class="controlForm">
@@ -62,7 +63,7 @@
     </div>
     <div class="form-group col-md-3">
         <div class="controlForm">
-            <label>Capacidad:</label>&nbsp;@(Model.color != null ? Model.color.ToString() : "-")
+            <label>Color:</label>&nbsp;@(Model.color != null ? Model.color.ToString() : "-")
             
         </div>
     </div>

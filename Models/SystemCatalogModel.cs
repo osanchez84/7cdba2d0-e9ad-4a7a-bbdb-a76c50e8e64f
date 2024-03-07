@@ -19,5 +19,6 @@ namespace GuanajuatoAdminUsuarios.Models
         public string GuidId { get; set; }
         public int Id { get; set; }
         public string Text { get; set; }
+        public bool? Transito { get; set; }
     }
 }

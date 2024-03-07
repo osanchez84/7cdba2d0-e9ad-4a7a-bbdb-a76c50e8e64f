@@ -25,13 +25,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPdfGenerator _pdfService;
         private readonly ICatDictionary _catDictionary;
         private readonly ITransitoTransporteService _transitoTransporteService;
+        private readonly IConcesionariosService _concesionariosService;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
+
 
         public ReporteAsignacionServiciosController(
             ITransitoTransporteService transitoTransporteService,
             IPadronDepositosGruasService padronDepositosGruasService,
              IGruasService gruasService, IEventoService eventoService,
              IReporteAsignacionService reporteAsignacionService, IPdfGenerator pdfService
-            , ICatDictionary catDictionary
+            , ICatDictionary catDictionary,
+             IConcesionariosService concesionariosService,
+             ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService
+
+
             )
         {
             _padronDepositosGruasService = padronDepositosGruasService;
@@ -41,6 +48,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             _pdfService = pdfService;
             _catDictionary = catDictionary;
             _transitoTransporteService = transitoTransporteService;
+            _concesionariosService = concesionariosService;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
         public IActionResult Index()
         {        
@@ -108,7 +117,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
             var listReporteAsignacion = _reporteAsignacionService.GetAllReporteAsignaciones(model,idOficina);
-            var result = _pdfService.CreatePdf<ReporteAsignacionModel>("ReporteAsignacionServicios", "Asignación de Servicios", 7, ColumnsNames, listReporteAsignacion);
+            var result = _pdfService.CreatePdf<ReporteAsignacionModel>("ReporteAsignacionServicios", "Asignación de Servicios", ColumnsNames, listReporteAsignacion,Array.Empty<float>());
             return File(result.Item1, "application/pdf", result.Item2);
         }
 
@@ -127,8 +136,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Grua_Read()
         {
-            var result = new SelectList(_gruasService.GetGruas(), "IdGrua", "noEconomico");
+            var result = new SelectList(_concesionariosService.GetAllConcesionarios(), "IdConcesionario", "Concesionario");
             return Json(result);
         }
+        public JsonResult Delegaciones_Read()
+        {
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinas(), "IdOficinaTransporte", "NombreOficina");
+            return Json(result);
+        }
+
     }
 }

@@ -25,8 +25,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatusDesc,del.nombreOficina FROM catCarreteras AS c INNER JOIN estatus AS e ON c.estatus = e.estatus" +
-                                                       " INNER JOIN catDelegacionesOficinasTransporte AS del ON c.idOficinaTransporte = del.idOficinaTransporte" +
+                    SqlCommand command = new SqlCommand("SELECT c.*, e.estatusDesc,del.nombreOficina, ISNULL(D.transito,0) transito  " +
+                                                       " FROM catCarreteras AS c INNER JOIN estatus AS e ON c.estatus = e.estatus" +
+                                                       " INNER JOIN catDelegacionesOficinasTransporte AS del ON c.idOficinaTransporte = del.idOficinaTransporte " +
+                                                       " INNER JOIN catDelegaciones d ON del.idOficinaTransporte = d.idDelegacion " + 
                                                        " ORDER BY Carretera ASC;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -44,7 +46,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             carretera.FechaActualizacion = reader["FechaActualizacion"] != DBNull.Value ? Convert.ToDateTime(reader["FechaActualizacion"]) : DateTime.MinValue;
                             carretera.Estatus = reader["estatus"] != DBNull.Value ? Convert.ToInt32(reader["estatus"]) : 0;
                             carretera.ActualizadoPor = reader["ActualizadoPor"] != DBNull.Value ? Convert.ToInt32(reader["ActualizadoPor"]) : 0;
-
+                            carretera.Transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
                             ListaCarreteras.Add(carretera);
 
                         }
@@ -80,6 +82,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             carretera.IdCarretera = Convert.ToInt32(reader["IdCarretera"].ToString());
                             carretera.idOficinaTransporte = Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+                            carretera.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+
                             carretera.Carretera = reader["Carretera"].ToString();
                             carretera.nombreOficina = reader["nombreOficina"].ToString();
 
@@ -168,11 +172,16 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
 
                 {
+                    //c.idOficinaTransporte = @idOficina OR c.idOficinaTransporte = 1 AND
                     connection.Open();
                     SqlCommand command = new SqlCommand(@"SELECT c.idCarretera,c.idOficinaTransporte,UPPER(c.carretera) AS carretera,
-                                                        c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus 
+                                                        c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus, ISNULL(d.Transito,0) Transito 
                                                         FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus 
-                                                        WHERE c.idOficinaTransporte = @idOficina OR c.idOficinaTransporte = 1 AND c.estatus = 1", connection);
+                                                        inner join catDelegacionesOficinasTransporte b on c.idOficinaTransporte = b.idOficinaTransporte
+                                                        INNER JOIN catDelegaciones d ON b.idOficinaTransporte = d.idDelegacion
+                                                        WHERE (c.estatus = 1 aND c.idOficinaTransporte= @idOficina) OR (c.idOficinaTransporte = 1) 
+
+                                                        ", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 
@@ -188,6 +197,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             carretera.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
                             carretera.Estatus = Convert.ToInt32(reader["estatus"] is DBNull ? 0 : reader["estatus"]);
                             carretera.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+                            carretera.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
                             ListaCarreteras.Add(carretera);
 
                         }
@@ -208,6 +218,67 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+
+
+
+
+
+        public List<CatCarreterasModel> GetCarreterasPorDelegacion2(int idOficina)
+        {
+            //
+            List<CatCarreterasModel> ListaCarreteras = new List<CatCarreterasModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    //c.idOficinaTransporte = @idOficina OR c.idOficinaTransporte = 1 AND
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT c.idCarretera,c.idOficinaTransporte,UPPER(c.carretera) AS carretera,
+                                                        c.estatus,c.FechaActualizacion,c.ActualizadoPor,e.estatus, ISNULL(d.Transito,0) Transito 
+                                                        FROM catCarreteras AS c LEFT JOIN estatus AS e ON c.estatus = e.estatus 
+                                                        inner join catDelegacionesOficinasTransporte b on c.idOficinaTransporte = b.idOficinaTransporte
+                                                        INNER JOIN catDelegaciones d ON b.idOficinaTransporte = d.idDelegacion
+                                                        WHERE c.estatus = 1 and  (c.idOficinaTransporte=@idOficina  or c.idOficinaTransporte=1)
+
+                                                        ", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatCarreterasModel carretera = new CatCarreterasModel();
+                            carretera.IdCarretera = Convert.ToInt32(reader["idCarretera"].ToString());
+                            carretera.idOficinaTransporte = Convert.ToInt32(reader["idOficinaTransporte"].ToString());
+                            carretera.Carretera = reader["carretera"].ToString();
+                            carretera.estatusDesc = reader["estatus"].ToString();
+                            carretera.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
+                            carretera.Estatus = Convert.ToInt32(reader["estatus"] is DBNull ? 0 : reader["estatus"]);
+                            carretera.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
+                            carretera.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
+                            ListaCarreteras.Add(carretera);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaCarreteras;
+
+
+        }
+
 
 
     }

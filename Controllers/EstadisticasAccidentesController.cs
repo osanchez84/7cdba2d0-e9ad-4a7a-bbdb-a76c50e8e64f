@@ -57,7 +57,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 	}
         public IActionResult Index()
         {
-
+            var corp = HttpContext.Session.GetInt32("IdDependencia");
                 // var modelList = _infraccionesService.GetAllAccidentes2()
                 //.GroupBy(g => g.municipio)
                 // .Select(s => new EstadisticaAccidentesMotivosModel() { Motivo = s.Key.ToString(), Contador = s.Count() }).ToList();
@@ -65,12 +65,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var catMotivosInfraccion = _catDictionary.GetCatalog("CatAllMotivosInfraccion", "0");
                 var catTipoServicio = _catDictionary.GetCatalog("CatTipoServicio", "0");
                 var catTiposVehiculo = _catDictionary.GetCatalog("CatTiposVehiculo", "0");
-                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
-                var catTramos = _catDictionary.GetCatalog("CatTramos", "0");
                 var catOficiales = _catDictionary.GetCatalog("CatOficiales", "0");
-                var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
-                var catCarreteras = _catDictionary.GetCatalog("CatCarreteras", "0");
-                var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
+
+
+            var catMunicipios = _estadisticasAccidentesService.GetMunicipiosFilter(); //_catDictionary.GetCatalog("CatMunicipios", "0");
+            var catCarreteras = _estadisticasAccidentesService.GetCarreterasFilter();
+            var catTramos = _catDictionary.GetCatalog("CatTramos", "0");
+			var catDelegaciones = _estadisticasAccidentesService.GetDelegacionesFilter();
+
+
+
+
+
+			var catGarantias = _catDictionary.GetCatalog("CatGarantias", "0");
                 var catTipoLicencia = _catDictionary.GetCatalog("CatTipoLicencia", "0");
                 var catTipoPlaca = _catDictionary.GetCatalog("CatTipoPlaca", "0");
                 var catClasificacionAccidentes = _catDictionary.GetCatalog("CatClasificacionAccidentes", "0");
@@ -82,14 +89,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 ViewBag.CatMotivosInfraccion = new SelectList(catMotivosInfraccion.CatalogList, "Id", "Text");
                 ViewBag.CatTipoServicio = new SelectList(catTipoServicio.CatalogList, "Id", "Text");
                 ViewBag.CatTiposVehiculo = new SelectList(catTiposVehiculo.CatalogList, "Id", "Text");
-                ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+                ViewBag.CatDelegaciones = new SelectList(catDelegaciones, "value", "text");
                 ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
                 ViewBag.CatTipoPlaca = new SelectList(catTipoPlaca.CatalogList, "Id", "Text");
-                ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "Id", "Text");
                 ViewBag.CatOficiales = new SelectList(catOficiales.CatalogList, "Id", "Text");
-                ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
-                ViewBag.CatCarreteras = new SelectList(catCarreteras.CatalogList, "Id", "Text");
-                ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
+
+                ViewBag.CatMunicipios = new SelectList(catMunicipios, "value", "text");
+            
+            
+            ViewBag.CatCarreteras = new SelectList(catCarreteras, "value", "text");
+            ViewBag.CatTramos = new SelectList(catTramos.CatalogList, "value", "text");
+
+
+            ViewBag.CatGarantias = new SelectList(catGarantias.CatalogList, "Id", "Text");
                 ViewBag.CatClasificacionAccidentes = new SelectList(catClasificacionAccidentes.CatalogList, "Id", "Text");
                 ViewBag.CatCausasAccidentes = new SelectList(catCausasAccidentes.CatalogList, "Id", "Text");
                 ViewBag.CatFactoresAccidentes = new SelectList(catFactoresAccidentes.CatalogList, "Id", "Text");
@@ -106,9 +118,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             //int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
-        
-                var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
-                                                           .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+
+            var modelList = _estadisticasAccidentesService.ObtenerAccidentes();
+
+            modelList= modelList.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                                && w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
                                                                && w.IdOficial == (model.IdOficial > 0 ? model.IdOficial : w.IdOficial)
                                                                && w.idCarretera == (model.idCarretera > 0 ? model.idCarretera : w.idCarretera)

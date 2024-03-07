@@ -39,9 +39,9 @@
 
                         @(Html.Kendo().SwitchFor(t=>t.EstatusValue)
                         .Name("agenciasSwitch")
-                            .Checked(true)
+                            .Checked(Model.Estatus == 1)
                             .Messages(c => c.Checked("Activo").Unchecked("Inactivo"))
-                            .HtmlAttributes(new { data_valor = 1 })
+                            .HtmlAttributes(new { data_valor = Model.Estatus })
 
                             )
                     </div>
@@ -92,7 +92,7 @@
                         </button>
                     </div>
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
-                        <div type="button" class="controlButton" onclick="editarAgencia()">
+                        <div type="button" class="controlButton" onclick="editarAgencia(event)">
                             @(Html.Kendo().Button()
                             .Name("EditMinisterio")
                             .HtmlAttributes(new { @class = "btnPrimary px-3" })
@@ -109,6 +109,7 @@
 
 <script>
     function editarAgencia() {
+        event.preventDefault();
         var Mydata = $("#editarAgenciaministerioForm").serialize();
         var controlsValidate = [];
         var isValid = true;
@@ -136,8 +137,11 @@
             type: 'POST',
             data: Mydata,
             success: function (result) {
-                $("#gridAgenciasMinisterio").data("kendoGrid").dataSource.data(result);
-                sitteg_info('Se ha actualizado la información');
+                var grid = $("#gridAgenciasMinisterio").data("kendoGrid");
+                grid.dataSource.read();
+                sitteg_success('Se ha actualizado la información');
+                $('#editarAgenciaministerio').modal('hide');
+
                 hideLoading();
             },
             error: function (error) { 

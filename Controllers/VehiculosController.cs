@@ -1,10 +1,12 @@
-﻿using GuanajuatoAdminUsuarios.Interfaces;
+﻿using GuanajuatoAdminUsuarios.Helpers;
+using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.RESTModels;
 using GuanajuatoAdminUsuarios.Services;
 using GuanajuatoAdminUsuarios.Util;
 using iTextSharp.text;
 using Kendo.Mvc;
+using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -93,19 +97,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Editar()
         {
-           // var vehiculosModel = _vehiculosService.GetAllVehiculos();
+            // var vehiculosModel = _vehiculosService.GetAllVehiculos();
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-           // vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
+            // vehiculoBusquedaModel.ListVehiculo = vehiculosModel.ToList();
             return View(vehiculoBusquedaModel);
         }
 
         public ActionResult EditarVehiculo(int id)
         {
-          
-                var vehiculosModel = _vehiculosService.GetVehiculoById(id);
+
+            var vehiculosModel = _vehiculosService.GetVehiculoById(id);
             VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
             vehiculoBusquedaModel.Vehiculo = vehiculosModel;
             vehiculoBusquedaModel.Vehiculo.idSubmarcaUpdated = vehiculosModel.idSubmarca;
@@ -115,15 +119,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             vehiculosModel.encontradoEn = (int)EstatusBusquedaVehiculo.Sitteg;
 
 
-            vehiculoBusquedaModel.Vehiculo.ErrorRepube = "No";
             vehiculoBusquedaModel.Vehiculo.showclose = false;
             vehiculoBusquedaModel.Vehiculo.showSubTipo = (vehiculoBusquedaModel.Vehiculo.idCatTipoServicio == 1 || vehiculoBusquedaModel.Vehiculo.idCatTipoServicio == 5) ? true : false;
 
 
 
             return View("EditarVehiculo", vehiculoBusquedaModel.Vehiculo);
-            }
-    
+        }
+
 
         public JsonResult Entidades_Read()
         {
@@ -186,423 +189,87 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+     
+
         [HttpPost]
-        public ActionResult ajax_BuscarVehiculo2(VehiculoBusquedaModel model)
+        public async Task<string> ajax_BuscarVehiculo([FromServices] IVehiculoPlataformaService vehiculoPlataformaService, VehiculoBusquedaModel model)
+        {
+            //Se busca el vehiculo en el padron RIAG, Finanzas y REPUVE
+            VehiculoModel vehiculo = vehiculoPlataformaService.BuscarVehiculoEnPlataformas(model);
+
+            return await this.RenderViewAsync("_Create", vehiculo, true);
+        }
+       
+
+        [HttpPost]
+        public ActionResult ajax_BuscarPersonasFiscasPagination([DataSourceRequest] DataSourceRequest request, int id = 0)
         {
             try
             {
-                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - Request - " + JsonConvert.SerializeObject(model));
-                RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel()
+                filterValue(request.Filters);
+                Pagination pagination = new Pagination();
+                pagination.PageIndex = request.Page - 1;
+                pagination.PageSize = request.PageSize;
+                pagination.Filter = resultValue;
+
+                var personasFisicas = _personasService.GetAllPersonasFisicasPagination(pagination);
+                request.PageSize = pagination.PageSize;
+                var total = 0;
+                if (personasFisicas.Count() > 0)
+                    total = personasFisicas.ToList().FirstOrDefault().total;
+
+                var result = new DataSourceResult()
                 {
-                    placa = model.PlacasBusqueda,
-                    niv = model.SerieBusqueda
+                    Data = personasFisicas,
+                    Total = total
                 };
 
-                //verificar si tiene robo
-                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo");
-                var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-                if (repuveConsRoboResponse!=null)
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaRobo - Response - " + JsonConvert.SerializeObject(repuveConsRoboResponse));
-
-                ViewBag.ReporteRobo = repuveConsRoboResponse.estatus == "1";
-
-                ///validar si esta habilitado el sp repuve
-                if (_appSettings.AllowWebServices)
-                {
-                    //base
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
-                    var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(vehiculosModel));
-
-                    vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
-                    vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
-                    vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-
-                    if (!string.IsNullOrEmpty(model.PlacasBusqueda))
-                    {
-                        try
-                        {
-                            CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
-                            cotejarDatosRequestModel.Tp_folio = "4";
-                            cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
-                            cotejarDatosRequestModel.tp_consulta = "3";
-
-                            var endPointName = "CotejarDatosEndPoint";
-                            //finanzas
-                            Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - CotejarDatos");
-                            var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
-                            Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - CotejarDatos - Response - " + JsonConvert.SerializeObject(result));
-
-                            if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
-                            {
-
-                                var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
-                                var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
-                                var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
-                                var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
-                                      ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
-                                      : 0;
-
-                                var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
-                                    ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
-                                    : 0;
-
-                                var idColor = !string.IsNullOrEmpty(vehiculoEncontradoData.color)
-                                    ? ObtenerIdColor(vehiculoEncontradoData.color)
-                                    : 0;
-
-                                var idMarca = !string.IsNullOrEmpty(vehiculoEncontradoData.marca)
-                                    ? ObtenerIdMarca(vehiculoEncontradoData.marca)
-                                    : 0;
-
-                                var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
-                                    ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
-                                    : 0;
-                                var submarcaLimpio = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
-                                    ? ObtenerSubmarca(vehiculoEncontradoData.linea)
-                                    : "NA";
-                                var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
-                                    ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
-                                    : 0;
-                                var cargaBool = ConvertirBool(vehiculoEncontradoData.carga);
-                                var generoBool = ConvertirGeneroBool(vehiculoInterlocutorData.es_per_fisica?.sexo);
-
-                                var idTipo = !string.IsNullOrEmpty(vehiculoEncontradoData.categoria)
-                                 ? ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria)
-                                 : 0;
-
-                                var vehiculoEncontrado = new VehiculoModel
-                                {
-                                    placas = vehiculoEncontradoData.no_placa,
-                                    serie = vehiculoEncontradoData.no_serie,
-                                    tarjeta = vehiculoEncontradoData.no_tarjeta,
-                                    motor = vehiculoEncontradoData.no_motor,
-                                    otros = vehiculoEncontradoData.otros,
-                                    idColor = idColor,
-                                    idEntidad = idEntidad,
-                                    idMarcaVehiculo = idMarca,
-                                    idSubmarca = idSubmarca,
-                                    submarca = submarcaLimpio,
-                                    idTipoVehiculo = idTipo,
-                                    modelo = vehiculoEncontradoData.modelo,
-                                    capacidad = vehiculoEncontradoData.numpersona,
-                                    carga = cargaBool,
-
-                                    Persona = new PersonaModel
-                                    {
-                                        RFC = vehiculoInterlocutorData.Nro_rfc,
-                                        RFCFisico = vehiculoInterlocutorData.Nro_rfc,
-                                        CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
-                                        nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
-                                        apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
-                                        apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
-                                        fechaNacimiento = vehiculoInterlocutorData.es_per_fisica?.Fecha_nacimiento,
-                                        generoBool = generoBool,
-
-                                        nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
-                                        PersonaDireccion = new PersonaDireccionModel
-                                        {
-                                            telefonoFisico = telefonoValido.ToString(),
-                                            telefono = telefonoValido.ToString(),
-                                            colonia = vehiculoDireccionData.colonia,
-                                            coloniaFisico = vehiculoDireccionData.colonia,
-                                            calleFisico = vehiculoDireccionData.calle,
-                                            calle = vehiculoDireccionData.calle,
-                                            numero = vehiculoDireccionData.nro_exterior,
-                                            numeroFisico = vehiculoDireccionData.nro_exterior,
-                                            idMunicipioFisico = idMunicipio,
-                                            idMunicipio = idMunicipio,
-                                        }
-                                    },
-
-                                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-                                    {
-                                        PersonasMorales = new List<PersonaModel>()
-                                    }
-                                };
-                                return PartialView("_Create", vehiculoEncontrado);
-                            }
-                            else if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("E", StringComparison.OrdinalIgnoreCase))
-                            {
-
-
-                                //repube
-                                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Repuve");
-                                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
-                                Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Repuve - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse));
-
-
-                                var vehiculoEncontrado = new VehiculoModel
-                                {
-                                    placas = repuveConsGralResponse.placa,
-                                    serie = repuveConsGralResponse.niv_padron,
-                                    //tarjeta = repuveConsGralResponse.ta,
-                                    motor = repuveConsGralResponse.motor,
-                                    //otros = repuveConsGralResponse.
-                                    color = repuveConsGralResponse.color,
-                                    //idEntidad = idEntidad,
-                                    //idMarcaVehiculo = idMarca,
-                                    //idSubmarca = idSubmarca,
-                                    submarca = repuveConsGralResponse.submarca,
-                                    //idTipoVehiculo = idTipo,
-                                    modelo = repuveConsGralResponse.modelo,
-                                    //capacidad = repuveConsGralResponse.c,
-                                    //carga = repuveConsGralResponse.ca,
-
-                                    Persona = new PersonaModel(),
-
-                                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
-                                };
-                                return PartialView("_Create", vehiculoEncontrado);
-
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error("VehículosController - ajax_BuscarVehiculo2 - " + ex.Message);
-                            return Json(new { success = false, message = "Ha ocurrido un error al comunicarse con el servicio web." });
-                        }
-                    }
-
-
-                    //repuve
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral");
-                    var repuveConsGralResponse1 = _repuveService.ConsultaGeneral(repuveGralModel).FirstOrDefault();
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - ConsultaGeneral - Response - " + JsonConvert.SerializeObject(repuveConsGralResponse1));
-
-
-                    var vehiculoEncontrado1 = new VehiculoModel
-                    {
-                        placas = repuveConsGralResponse1.placa,
-                        serie = repuveConsGralResponse1.niv_padron,
-                        //tarjeta = repuveConsGralResponse.ta,
-                        motor = repuveConsGralResponse1.motor,
-                        //otros = repuveConsGralResponse.
-                        color = repuveConsGralResponse1.color,
-                        //idEntidad = idEntidad,
-                        //idMarcaVehiculo = idMarca,
-                        //idSubmarca = idSubmarca,
-                        submarca = repuveConsGralResponse1.submarca,
-                        //idTipoVehiculo = idTipo,
-                        modelo = repuveConsGralResponse1.modelo,
-                        //capacidad = repuveConsGralResponse.c,
-                        //carga = repuveConsGralResponse.ca,
-
-                        Persona = new PersonaModel(),
-
-                        PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
-                    };
-                    return PartialView("_Create", vehiculoEncontrado1);
-
-                }
-                else
-                {
-                    //base
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo");
-                    var vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
-                    Logger.Debug("VehículosController - ajax_BuscarVehiculo2 - GetVehiculoToAnexo - Response - " + JsonConvert.SerializeObject(vehiculosModel));
-
-                    vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
-                    vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
-                    vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-                    return PartialView("_Create", vehiculosModel);
-                }
-            }catch(Exception ex)
+                return Json(result);
+            }
+            catch
             {
-                Logger.Error("VehículosController - ajax_BuscarVehiculo2 - " + ex.Message);
-                return PartialView("_Create");
+                return null;
             }
         }
 
 
-
-        private bool ValidarRobo(RepuveConsgralRequestModel repuveGralModel)
-        {
-            var estatus = false;
-
-            var repuveConsRoboResponse = _repuveService.ConsultaRobo(repuveGralModel)?.FirstOrDefault() ?? new RepuveConsRoboResponseModel();
-
-            estatus = repuveConsRoboResponse.estatus == "1";
-
-            return estatus;
-        }
-
-        /// <summary>
-        /// //CONSULTA SERVICIO FINANZAS PADRON ESTATAL
-        /// </summary>
-        /// <returns></returns>
-
-        public VehiculoModel GetVEiculoModelFromFinanzas(RootCotejarDatosRes result)
-        {
-            var vehiculoEncontradoData = result.MT_CotejarDatos_res.tb_vehiculo[0];
-            var vehiculoDireccionData = result.MT_CotejarDatos_res.tb_direccion[0];
-            var vehiculoInterlocutorData = result.MT_CotejarDatos_res;
-            var idMunicipio = !string.IsNullOrEmpty(vehiculoDireccionData.municipio)
-                  ? ObtenerIdMunicipioDesdeBD(vehiculoDireccionData.municipio)
-                  : 0;
-
-            var idEntidad = !string.IsNullOrEmpty(vehiculoDireccionData.entidadreg)
-                ? ObtenerIdEntidadDesdeBD(vehiculoDireccionData.entidadreg)
-                : 0;
-
-            var idColor = !string.IsNullOrEmpty(vehiculoEncontradoData.color)
-                ? ObtenerIdColor(vehiculoEncontradoData.color)
-                : 0;
-
-            var idMarca = !string.IsNullOrEmpty(vehiculoEncontradoData.marca)
-                ? ObtenerIdMarca(vehiculoEncontradoData.marca)
-                : 0;
-
-            var idSubmarca = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
-                ? ObtenerIdSubmarca(vehiculoEncontradoData.linea)
-                : 0;
-            var submarcaLimpio = !string.IsNullOrEmpty(vehiculoEncontradoData.linea)
-                ? ObtenerSubmarca(vehiculoEncontradoData.linea)
-                : "NA";
-            var telefonoValido = !string.IsNullOrEmpty(vehiculoDireccionData.telefono)
-                ? LimpiarValorTelefono(vehiculoDireccionData.telefono)
-                : 0;
-            var cargaBool = ConvertirBool(vehiculoEncontradoData.carga);
-            var generoBool = ConvertirGeneroBool(vehiculoInterlocutorData.es_per_fisica?.sexo);
-
-            var idTipo = !string.IsNullOrEmpty(vehiculoEncontradoData.categoria)
-             ? ObtenerIdTipoVehiculo(vehiculoEncontradoData.categoria)
-             : 0;
-
-            var vehiculoEncontrado = new VehiculoModel
-            {
-                placas = vehiculoEncontradoData.no_placa,
-                serie = vehiculoEncontradoData.no_serie,
-                tarjeta = vehiculoEncontradoData.no_tarjeta,
-                motor = vehiculoEncontradoData.no_motor,
-                otros = vehiculoEncontradoData.otros,
-                idColor = idColor,
-                idEntidad = idEntidad,
-                idMarcaVehiculo = idMarca,
-                idSubmarca = idSubmarca,
-                submarca = submarcaLimpio,
-                idTipoVehiculo = idTipo,
-                modelo = vehiculoEncontradoData.modelo,
-                capacidad = vehiculoEncontradoData.numpersona,
-                carga = cargaBool,
-
-                Persona = new PersonaModel
-                {
-                    RFC = vehiculoInterlocutorData.Nro_rfc,
-                    RFCFisico = vehiculoInterlocutorData.Nro_rfc,
-                    CURPFisico = vehiculoInterlocutorData.es_per_fisica?.Nro_curp,
-                    nombreFisico = vehiculoInterlocutorData.es_per_fisica?.Nombre,
-                    apellidoPaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_paterno,
-                    apellidoMaternoFisico = vehiculoInterlocutorData.es_per_fisica?.Ape_materno,
-                    fechaNacimiento = vehiculoInterlocutorData.es_per_fisica?.Fecha_nacimiento,
-                    generoBool = generoBool,
-
-                    nombre = vehiculoInterlocutorData.es_per_moral?.name_org1,
-                    PersonaDireccion = new PersonaDireccionModel
-                    {
-                        telefonoFisico = telefonoValido.ToString(),
-                        telefono = telefonoValido.ToString(),
-                        colonia = vehiculoDireccionData.colonia,
-                        coloniaFisico = vehiculoDireccionData.colonia,
-                        calleFisico = vehiculoDireccionData.calle,
-                        calle = vehiculoDireccionData.calle,
-                        numero = vehiculoDireccionData.nro_exterior,
-                        numeroFisico = vehiculoDireccionData.nro_exterior,
-                        idMunicipioFisico = idMunicipio,
-                        idMunicipio = idMunicipio,
-                    }
-                },
-
-                PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel
-                {
-                    PersonasMorales = new List<PersonaModel>()
-                }
-            };
-
-            return vehiculoEncontrado;
-
-        }
-
-
-
-        [HttpPost]
-        public ActionResult ajax_BuscarVehiculo(VehiculoBusquedaModel model)
+        public IActionResult pruebapartial()
         {
 
-                var vehiculosModel = new VehiculoModel();
-
-            RepuveConsgralRequestModel repuveGralModel = new RepuveConsgralRequestModel(model.PlacasBusqueda, model.SerieBusqueda);
-
-            ViewBag.ReporteRobo = ValidarRobo(repuveGralModel);
-
-            var allowSistem = _appSettings.AllowWebServicesRepuve;
+            var q = PartialView("_PersonasFisicas");
+            return q;
+        }
 
 
-            vehiculosModel = _vehiculosService.GetVehiculoToAnexo(model);
-            vehiculosModel.idSubmarcaUpdated = vehiculosModel.idSubmarca;
-            vehiculosModel.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
-            vehiculosModel.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
+        public static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
 
-            if (vehiculosModel.idVehiculo > 0)
+            foreach (var c in normalizedString)
             {
-                return PartialView("_Create", vehiculosModel);
-
-            }
-
-            if (allowSistem && !string.IsNullOrEmpty(model.PlacasBusqueda))
-            {
-                CotejarDatosRequestModel cotejarDatosRequestModel = new CotejarDatosRequestModel();
-                cotejarDatosRequestModel.Tp_folio = "4";
-                cotejarDatosRequestModel.Folio = model.PlacasBusqueda;
-                cotejarDatosRequestModel.tp_consulta = "3";
-                var endPointName = "CotejarDatosEndPoint";
-                var result = _cotejarDocumentosClientService.CotejarDatos(cotejarDatosRequestModel, endPointName);
-                if (result.MT_CotejarDatos_res != null && result.MT_CotejarDatos_res.Es_mensaje != null && result.MT_CotejarDatos_res.Es_mensaje.TpMens.ToString().Equals("I", StringComparison.OrdinalIgnoreCase))
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
                 {
-                    vehiculosModel = GetVEiculoModelFromFinanzas(result);
-                    return PartialView("_Create", vehiculosModel);
+                    stringBuilder.Append(c);
                 }
             }
 
-            if (allowSistem)
-            {
-                var repuveConsGralResponse = _repuveService.ConsultaGeneral(repuveGralModel)?.FirstOrDefault()?? new RepuveConsgralResponseModel();
-
-                var vehiculoEncontrado = new VehiculoModel
-                {
-                    placas = repuveConsGralResponse.placa,
-                    serie = repuveConsGralResponse.niv_padron,
-                    //tarjeta = repuveConsGralResponse.ta,
-                    motor = repuveConsGralResponse.motor,
-                    //otros = repuveConsGralResponse.
-                    color = repuveConsGralResponse.color,
-                   // Entidad = repuveConsGralResponse.entidad_expide,
-                    //MarcaVehiculo = repuveConsGralResponse.marca_padron,
-                    //idSubmarca = idSubmarca,
-                    submarca = repuveConsGralResponse.submarca,
-                    //idTipoVehiculo = idTipo,
-                    modelo = repuveConsGralResponse.modelo,
-                    //capacidad = repuveConsGralResponse.c,
-                    //carga = repuveConsGralResponse.ca,
-
-                    Persona = new PersonaModel(),
-
-                    PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel(),
-                };
-                return PartialView("_Create", vehiculoEncontrado);
-
-            }
-
-            return PartialView("_Create", vehiculosModel);
-
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
-
 
 
 
         private int ObtenerIdMunicipioDesdeBD(string municipio)
         {
-            var idMunicipio = _catMunicipiosService.obtenerIdPorNombre(municipio);
+            int idMunicipio = 0;
+
+            var municipioStr = _catDictionary.GetCatalog("CatMunicipios", "0");
+
+            idMunicipio = municipioStr.CatalogList
+                            .Where(w => RemoveDiacritics(w.Text.ToLower()).Contains(RemoveDiacritics(municipio.ToLower())))
+                            .Select(s => s.Id)
+                            .FirstOrDefault();
             return (idMunicipio);
         }
         private int ObtenerIdEntidadDesdeBD(string entidad)
@@ -672,60 +339,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         }
 
-        private bool ConvertirBool(string carga)
-        {
-            bool cargaBool = false;
-
-            if (carga.Trim() == "1.00")
-            {
-                cargaBool = true;
-            }
-            else if (carga.Trim() == "0.00")
-            {
-                cargaBool = false;
-            }
-            return (cargaBool);
-        }
-
-        private bool ConvertirGeneroBool(string sexo)
-        {
-            if (sexo == "2")
-            {
-                return true;
-            }
-            else if (sexo == "1")
-            {
-                return false;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private long LimpiarValorTelefono(string telefono)
-        {
-            telefono = telefono.Replace(" ", "");
-
-            long telefonoValido;
-
-            if (long.TryParse(telefono, out telefonoValido))
-            {
-                return telefonoValido;
-            }
-            else
-            {
-                return 0; // O algún otro valor que indique que no es válido
-            }
-        }
+      
 
         public IActionResult GetBuscarVehiculos([DataSourceRequest] DataSourceRequest request, VehiculoBusquedaModel model)
         {
             vehModel = model;
             return PartialView("_ListVehiculos", new List<VehiculoModel>());
         }
-        
+
 
 
         [HttpPost]
@@ -733,8 +354,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             string listaIdsPermitidosJson = HttpContext.Session.GetString("Autorizaciones");
             List<int> listaIdsPermitidos = JsonConvert.DeserializeObject<List<int>>(listaIdsPermitidosJson);
-            if (listaIdsPermitidos != null && listaIdsPermitidos.Contains(251))
-            {
+
                 Pagination pagination = new Pagination();
                 pagination.PageIndex = request.Page - 1;
                 pagination.PageSize = 10;
@@ -742,7 +362,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 model = vehModel;
 
-                var vehiculosModel = _vehiculosService.GetVehiculosPagination(model,pagination);
+                var vehiculosModel = _vehiculosService.GetVehiculosPagination(model, pagination);
                 VehiculoBusquedaModel vehiculoBusquedaModel = new VehiculoBusquedaModel();
                 vehiculoBusquedaModel.Vehiculo = new VehiculoModel();
                 vehiculoBusquedaModel.Vehiculo.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
@@ -760,22 +380,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 };
 
                 return Json(result);
-            }
-            else
-            {
-                var result = new DataSourceResult()
-                {
-                    Data = new List<VehiculoModel>(),
-                    Total = 0
-                };
 
-                return Json(result);
-            }
 
         }
 
         private void filterValue(IEnumerable<IFilterDescriptor> filters)
         {
+            if (filters == null)
+                return;
+
             if (filters.Any())
             {
                 foreach (var filter in filters)
@@ -814,7 +427,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_BuscarPersonasFiscas()
         {
-           var personasFisicas = _personasService.GetAllPersonasFisicas();
+            var personasFisicas = _personasService.GetAllPersonasFisicas();
             return PartialView("_PersonasFisicas", personasFisicas);
         }
 
@@ -837,6 +450,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_CrearPersonaFisica(PersonaModel Persona)
         {
+            Persona.nombre = Persona.nombreFisico;
+            Persona.apellidoMaterno = Persona.apellidoMaternoFisico;
+            Persona.apellidoPaterno = Persona.apellidoPaternoFisico;
+            Persona.CURP = Persona.CURPFisico;
+            Persona.RFC = Persona.RFCFisico;
+            Persona.numeroLicencia = Persona.numeroLicenciaFisico;
+            Persona.idTipoLicencia = Persona.idTipoLicencia;
+            Persona.vigenciaLicencia = Persona.vigenciaLicencia;
+            Persona.PersonaDireccion.idEntidad = Persona.PersonaDireccion.idEntidadFisico;
+            Persona.PersonaDireccion.idMunicipio = Persona.PersonaDireccion.idMunicipioFisico;
+            Persona.PersonaDireccion.correo = Persona.PersonaDireccion.correoFisico;
+            Persona.PersonaDireccion.telefono = Persona.PersonaDireccion.telefonoFisico;
+            Persona.PersonaDireccion.colonia = Persona.PersonaDireccion.coloniaFisico;
+            Persona.PersonaDireccion.calle = Persona.PersonaDireccion.calleFisico;
+            Persona.PersonaDireccion.numero = Persona.PersonaDireccion.numeroFisico;
             Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
             var IdPersonaFisica = _personasService.CreatePersona(Persona);
             if (IdPersonaFisica == 0)

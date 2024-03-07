@@ -74,6 +74,66 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+
+        public List<CatOficialesModel> GetOficialesByCorporacion(int corporacion)
+        {
+            //
+            List<CatOficialesModel> oficiales = new List<CatOficialesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"
+Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
+                                                            LEFT JOIN catDelegacionesOficinasTransporte cd ON cd.idOficinaTransporte = co.idOficina
+                                                            LEFT JOIN estatus e ON e.estatus = co.estatus
+															where co.transito=@corp", connection);
+                    command.CommandType = CommandType.Text;
+                    //sqlData Reader sirve para la obtencion de datos 
+                    command.Parameters.Add(new SqlParameter("@corp", SqlDbType.Int)).Value = (object)corporacion ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatOficialesModel oficial = new CatOficialesModel();
+                            oficial.IdOficial = Convert.ToInt32(reader["IdOficial"].ToString());
+                            oficial.Rango = reader["Rango"].ToString();
+                            oficial.Nombre = reader["Nombre"].ToString();
+                            oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
+                            oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
+                            oficial.nombreOficina = reader["nombreOficina"].ToString();
+                            oficial.estatusDesc = reader["estatusDesc"].ToString();
+                            object idOficinaValue = reader["idOficina"];
+                            oficial.IdOficina = Convert.IsDBNull(idOficinaValue) ? 0 : Convert.ToInt32(idOficinaValue);
+
+
+
+
+                            oficiales.Add(oficial);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return oficiales;
+
+
+        }
+
+
         public List<CatOficialesModel> GetCatalogoOficialesDependencia(int idDependencia)
         {
             //
@@ -155,7 +215,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             oficial.estatusDesc = reader["estatusDesc"].ToString();
                             //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
-
+                            oficial.transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
 
                             oficiales.Add(oficial);
 
@@ -196,7 +256,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             oficial.Nombre = reader["Nombre"].ToString();
                             oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
                             oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
-
+                            oficial.IdOficina = Convert.ToInt32(reader["idOficina"]);
                         }
                     }
                 }
@@ -219,12 +279,15 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand sqlCommand = new SqlCommand("Insert into catOficiales(Nombre, estatus,ApellidoPaterno,ApellidoMaterno,transito) values(@Nombre,@estatus,@ApellidoPaterno,@ApellidoMaterno,@idDependencia)", connection);
+                    SqlCommand sqlCommand = new SqlCommand(@"
+                                Insert into catOficiales (Nombre, estatus,ApellidoPaterno,ApellidoMaterno,idOficina,transito) values
+                                                        (@Nombre,@estatus,@ApellidoPaterno,@ApellidoMaterno,@idDependencia,@tran)", connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@Nombre", SqlDbType.VarChar)).Value = oficial.Nombre;
                     sqlCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
-                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoPaterno", SqlDbType.VarChar)).Value = oficial.ApellidoPaterno;
-                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoMaterno", SqlDbType.VarChar)).Value = oficial.ApellidoMaterno;
-                    sqlCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoPaterno", SqlDbType.VarChar)).Value = oficial.ApellidoPaterno==null ? "": oficial.ApellidoPaterno;
+                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoMaterno", SqlDbType.VarChar)).Value = oficial.ApellidoMaterno==null ? "": oficial.ApellidoMaterno;
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = oficial.IdOficina == null ? 0 : oficial.IdOficina;
+                    sqlCommand.Parameters.Add(new SqlParameter("@tran", SqlDbType.Int)).Value = idDependencia == null ? 0 : idDependencia;
 
                     sqlCommand.CommandType = CommandType.Text;
                     result = sqlCommand.ExecuteNonQuery();
@@ -250,14 +313,14 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     SqlCommand sqlCommand = new
-                        SqlCommand("Update catOficiales set Nombre = @Nombre, ApellidoPaterno=@ApellidoPaterno, ApellidoMaterno=@ApellidoMaterno, estatus = @estatus where idOficial=@idOficial",
+                        SqlCommand("Update catOficiales set Nombre = @Nombre, ApellidoPaterno=@ApellidoPaterno, ApellidoMaterno=@ApellidoMaterno, estatus = @estatus, idOficina=@idDependencia where idOficial=@idOficial",
                         connection);
                     sqlCommand.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = oficial.IdOficial;
                     sqlCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = oficial.Estatus;
                     sqlCommand.Parameters.Add(new SqlParameter("@Nombre", SqlDbType.VarChar)).Value = oficial.Nombre;
-                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoPaterno", SqlDbType.VarChar)).Value = oficial.ApellidoPaterno;
-                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoMaterno", SqlDbType.VarChar)).Value = oficial.ApellidoMaterno;
-                   // sqlCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoPaterno", SqlDbType.VarChar)).Value = oficial.ApellidoPaterno == null ? "" : oficial.ApellidoPaterno;
+                    sqlCommand.Parameters.Add(new SqlParameter("@ApellidoMaterno", SqlDbType.VarChar)).Value = oficial.ApellidoMaterno == null ? "" : oficial.ApellidoMaterno;
+                    sqlCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = oficial.IdOficina == null ? 0 : oficial.IdOficina;
 
                     sqlCommand.CommandType = CommandType.Text;
                     result = sqlCommand.ExecuteNonQuery();
@@ -370,6 +433,58 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             ORDER BY Nombre ASC;", connection);
                     command.CommandType = CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatOficialesModel oficial = new CatOficialesModel();
+                            oficial.IdOficial = Convert.ToInt32(reader["IdOficial"].ToString());
+                            oficial.Rango = reader["Rango"].ToString();
+                            oficial.Nombre = reader["Nombre"].ToString();
+                            oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
+                            oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
+                            oficial.estatusDesc = reader["estatusDesc"].ToString();
+                            //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
+
+                            oficiales.Add(oficial);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return oficiales;
+
+
+        }
+
+
+        public List<CatOficialesModel> GetOficialesPorDependencia()
+        {
+            //
+            List<CatOficialesModel> oficiales = new List<CatOficialesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT ofi.*, e.estatusDesc 
+                                                            FROM catOficiales AS ofi 
+                                                            INNER JOIN estatus AS e ON ofi.estatus = e.estatus
+                                                            WHERE ofi.estatus = 1 
+                                                            ORDER BY Nombre ASC;", connection);
+                    command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

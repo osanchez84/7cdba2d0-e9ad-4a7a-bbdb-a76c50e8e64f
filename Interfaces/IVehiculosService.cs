@@ -1,4 +1,5 @@
 ﻿using GuanajuatoAdminUsuarios.Models;
+using GuanajuatoAdminUsuarios.RESTModels;
 using System.Collections.Generic;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
@@ -10,8 +11,11 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<VehiculoModel> GetVehiculos(VehiculoBusquedaModel modelSearch);
         List<VehiculoModel> GetVehiculosPagination(VehiculoBusquedaModel modelSearch, Pagination pagination);
         public VehiculoModel GetVehiculoById(int idVehiculo);
+        int BuscarPorParametro(string Placa, string Serie, string Folio);
         public VehiculoModel GetVehiculoToAnexo(VehiculoBusquedaModel model);
         public int CreateVehiculo(VehiculoModel model);
         public int UpdateVehiculo(VehiculoModel model);
+
+        public List<VehiculoModel> GetVehiculoPropietario(VehiculoBusquedaModel model);
     }
 }

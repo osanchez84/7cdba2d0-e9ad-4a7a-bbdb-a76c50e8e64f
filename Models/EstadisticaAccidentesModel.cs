@@ -35,8 +35,7 @@ namespace GuanajuatoAdminUsuarios.Models
 		public int NumeroSecuencial { get; set; }
 		public int idMunicipio { get; set; }
 		public int idDelegacion { get; set; }
-
-
+        
 		public int IdOficial { get; set; }
 		public int idCarretera { get; set; }
 		public int idTramo { get; set; }

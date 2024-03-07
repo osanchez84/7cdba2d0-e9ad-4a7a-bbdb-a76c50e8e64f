@@ -1,4 +1,13 @@
-﻿<div class="row">
+﻿<script>
+    function returnData(){
+        var idMun = $("#IdMunicipio2").val();
+       
+        return { idMunicipio: idMun }
+    }
+</script>
+
+
+<div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
         @(
             Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CatHospitalesModel>()
@@ -19,7 +28,7 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("GetHospitalesLista", "CatHospitales"))
+            .Read(read => read.Action("GetHospitalesLista", "CatHospitales").Data("returnData"))
             .PageSize(5).Model(model => model.Id(p => p.IdHospital))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))
@@ -94,4 +103,6 @@
         var titulo = e.target.context.dataset.title;
         return titulo;
     }
+
+   
 </script>

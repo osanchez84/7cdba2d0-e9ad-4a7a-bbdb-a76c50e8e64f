@@ -303,7 +303,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Color: ", ModelDataInfracciones.color));
                 nested.AddCell(FieldCellTitleBox("Propietario"));
                 nested.AddCell(FieldCellBox("Nombre: ", ModelDataInfracciones.nombrePropietario));
-                nested.AddCell(FieldCellBox("Domicilio: ", ModelDataInfracciones.domicilioPropietario));
+                //     nested.AddCell(FieldCellBox("Domicilio: ", ModelDataInfracciones.domicilioPropietario));
+                          
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -321,13 +322,21 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellBox("Tipo de servicio: ", ModelDataInfracciones.tipoServicio));
                 nested.AddCell(FieldCellBox("No. Económico: ", ModelDataInfracciones.numeroEconomico));
                 nested.AddCell("");
+               
+
+
+                
+
+
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
                 nesthousing.Rowspan = 5;
                 nesthousing.PaddingBottom = 5f;
                 Invoicetable.AddCell(nesthousing);
             }
-
+            PdfPCell domicilioProp = new PdfPCell(FieldCellBox("Domicilio: ", (ModelDataInfracciones.domicilioPropietario == null) ? "" : ModelDataInfracciones.domicilioPropietario.ToString()));
+            domicilioProp.Colspan = 2;
+            Invoicetable.AddCell(domicilioProp);
 
             Invoicetable.PaddingTop = 10f;
 
@@ -371,7 +380,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
             {
                 PdfPTable nested = new PdfPTable(1);
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
-                nested.AddCell(FieldCellBox("Cortesía: ", (ModelDataInfracciones.tieneCortesia? "Con cortesía" : "No cortesía") ));
+                nested.AddCell(FieldCellBox("Cortesía: ", ModelDataInfracciones.cortesia ));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -548,8 +557,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellTitleBox("Garantía"));
                 nested.AddCell(FieldCellBox("Tipo de garantía: ", ModelDataInfracciones.Garantia?.garantia));
-                nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placas"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
-                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placas"? ModelDataInfracciones.placas:"-"));
+                nested.AddCell(FieldCellBox("Tipo placa: ", tipoGar == "Placa"? ModelDataInfracciones.Garantia?.tipoPlaca:"-"));
+                nested.AddCell(FieldCellBox("No. de placa: ", tipoGar== "Placa"? ModelDataInfracciones.placas:"-"));
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -563,7 +572,7 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
 				nested.AddCell("   ");
 				nested.AddCell(FieldCellBox("Tipo licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.tipoLicencia:"-"));
                 nested.AddCell(FieldCellBox("No. de licencia: ", tipoGar == "Licencia"? ModelDataInfracciones.Garantia?.numLicencia:"-"));
-                nested.AddCell(FieldCellBox("No. de tarjeta: ", tipoGar== "Tarjeta de circulación"? ModelDataInfracciones.NumTarjetaCirculacion:"-"));//VALIDAR
+                nested.AddCell(FieldCellBox("No. de tarjeta: ", tipoGar== "Tarjeta"? ModelDataInfracciones.NumTarjetaCirculacion:"-"));//VALIDAR
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

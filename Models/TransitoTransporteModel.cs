@@ -7,10 +7,13 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class TransitoTransporteModel : EntityModel
 	{
-
+        public int transito { get; set; }
         public int cons { get; set; }
 
         #region Depositos
+
+
+
         public int IdDeposito { get; set; }
 
         public int IdSolicitud { get; set; }
@@ -282,8 +285,8 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             get
             {
-                return @"Envia: " + NombreDependencia + "\r\n\n " +
-                     "Estatus: " + estatusSolicitud;
+                return @"Estatus: " + estatusSolicitud + "\r\n\n";
+                                        //NombreDependencia;
             }
         }
         public string propietarioNombre { get; set; }

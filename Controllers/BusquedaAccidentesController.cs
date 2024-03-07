@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Kendo.Mvc;
 
+
 namespace GuanajuatoAdminUsuarios.Controllers
 {
     [Authorize]
@@ -76,12 +77,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Delegaciones_Drop()
         {
-            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos().Where(x => x.Transito == tipo), "IdDelegacion", "Delegacion");
+            //var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasActivos(), "IdDelegacion", "Delegacion");
             return Json(result);
         }
         public JsonResult Carreteras_Drop()
         {
-            var result = new SelectList(_catCarreterasService.ObtenerCarreteras(), "IdCarretera", "Carretera");
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var result = new SelectList(_catCarreterasService.ObtenerCarreteras().Where(x=>x.Transito == tipo), "IdCarretera", "Carretera");
             return Json(result);
         }
 
@@ -92,7 +96,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Oficiales_Drop()
         {
-            var oficiales = _oficialesService.GetOficialesActivos()
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var oficiales = _oficialesService.GetOficialesActivos().Where(x => x.transito == tipo)
                 .Select(o => new
                 {
                     IdOficial = o.IdOficial,

@@ -8,8 +8,9 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<GruasConcesionariosModel> GetGruasConcesionariosByIdCocesionario(int Id);
         List<TipoGruaModel> GetTipoGruas();
         List<GruasModel> GetGruas();
-        public int CrearGrua(Gruas2Model model);
+        public int CrearGrua(Gruas2Model model); 
         public int EditarGrua(Gruas2Model model);
+
         public int EliminarGrua(Gruas2Model model);
         public Gruas2Model GetGruaById(int idGrua);
         List<Gruas2Model> GetGruaByPension(int iPg);

@@ -1,6 +1,6 @@
 @inject IHttpContextAccessor Accessor
 @{
-    var nombreOficina = User.FindFirst(CustomClaims.NombreOficina);
+    var nombreOficina = User.FindFirst(CustomClaims.Oficina);
 
     var nombreUsuario = User.FindFirst(CustomClaims.Nombre);
     var nombrePension = User.FindFirst(CustomClaims.Pension);
@@ -14,7 +14,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RIAG Registro de Infracciones y Accidentes de Guanajuato</title>
+    <title>@ViewData["Title"]RIAG Registro Infracciones y Accidentes de Guanajuato</title>
+
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
@@ -332,12 +333,12 @@
                                             <p class="m-0 text-start text-break">Registro de recibo de pago</p>
                                         </a>
                                     </li>
-                                    <li class="nav-item active" data-id="440">
+@*                                    <li class="nav-item active" data-id="440">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/EnvioInfracciones/Index">
                                             <i class="icon icon-enviar h6 m-0 me-2"></i>
                                             <p class="m-0 text-start text-break">Envío de infracciones</p>
                                         </a>
-                                    </li>
+                                    </li>*@
                                     <li class="nav-item active" data-id="490">
                                         <a class="nav-link d-flex justify-content-start align-items-center" href="/ComparativoInfracciones/Index">
                                             <i class="icon icon-filter h6 m-0 me-2"></i>
@@ -582,6 +583,12 @@
                                             <p class="m-0 text-start text-break">Actualizar contraseña</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item always-visible">
+                                        <a class="nav-link d-flex justify-content-start align-items-center" href="#">
+                                            
+                                            <p class="m-0 text-start text-break">Riag v1.0.6</p>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
 
@@ -659,8 +666,9 @@
 
             },
             error: function (error) {
-                if (error.status == 401)
+                if (error.status === 401)
                     window.location.href = '/';
+                    
             }
         });
 

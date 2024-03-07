@@ -40,8 +40,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
                // List<PensionModel> pensionesList = _pensionesService.GetAllPensiones(idOficina);
-            var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
-            ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+          //  var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+          //  ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
             return View();
  
         }
@@ -52,7 +52,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
           
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
-                var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idOficina);
+                var ListPensionesModel = _pensionesService.GetPensionesToGrid(pension, idDelegacion);
                 if (ListPensionesModel.Count == 0)
                 {
                     ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";

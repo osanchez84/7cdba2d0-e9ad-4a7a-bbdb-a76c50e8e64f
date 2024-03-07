@@ -1,4 +1,4 @@
-@model PersonasModel
+@model BusquedaPersonaModel
 
 
 @{
@@ -66,13 +66,41 @@
 
 
         <form id="buscarConductorForm">
+
+
+
+        <div class="row px-4 mt-4 align-items-end">
+           <div class="col-12 col-md-6 col-lg-6" id="dataDep">
+                <div class="controlForm mb-3">
+                    <label>Tipo Persona:</label>
+                    <span>
+                        @(Html.Kendo().DropDownListFor(t => t.PersonaModel.nombreBusqueda).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .Events(e => e.Change("tipoPersona"))
+                            .SelectedIndex(0)
+                            .HtmlAttributes(new { style = "width:100%;", Id = "ddlTipoPersona" })
+                            .Filter(FilterType.Contains)
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "Física", Value = "1" },
+                        new SelectListItem { Text = "Moral", Value = "0" }
+                        })
+                            )
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+
             <div class="row px-4 mt-4 align-items-end">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.numeroLicenciaBusqueda)
                             .Label(l => l.Content("No. de licencia:"))
                             .Placeholder("Ingresa el número de licencia válido")
-                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
+                            .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
                     </div>
                 </div>
@@ -89,7 +117,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.RFCBusqueda)
                             .Label(l => l.Content("RFC:"))
                             .Placeholder("Ingresa el RFC del propietario")
-                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
+                            .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -97,30 +125,31 @@
 
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
+                    <label class="control-label" id="nombreP">Nombre(s): </label>
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.nombreBusqueda)
-                            .Label(l => l.Content("Nombre(s):"))
+                            
                             .Placeholder("Ingresa el nombre(s) del propietario")
-                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
+                            .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3" id="ap">
                     <div class="controlForm my-3">
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.apellidoPaternoBusqueda)
                             .Label(l => l.Content("Apellido paterno:"))
                             .Placeholder("Ingresa el apellido paterno")
-                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
+                            .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3" id="am">
                     <div class="controlForm my-3">
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.apellidoMaternoBusqueda)
                             .Label(l => l.Content("Apellido materno:"))
                             .Placeholder("Ingresa el apellido materno")
-                            .HtmlAttributes(new {@class = "trimmable", style = "width: 100%" })
+                            .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
@@ -175,19 +204,19 @@
             <div>
                 SE ENCONTRARON PERSONAS
             </div>
-           
+
         }
         @*<script>
-            $(document).ready(function () {
+        $(document).ready(function () {
 
-                $("#gridPersonas").on("change", function () {
-                    alert("Handler for `change` called.");
-                });
-            });
+        $("#gridPersonas").on("change", function () {
+        alert("Handler for `change` called.");
+        });
+        });
 
-            $("#gridPersonas").on("change", function () {
-                alert("Handler for `change` called.");
-            });
+        $("#gridPersonas").on("change", function () {
+        alert("Handler for `change` called.");
+        });
         </script>*@
     </section>
 </div>
@@ -213,6 +242,16 @@
 <div id="modalLicencias" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
+            <!-- Contenido del modal se llenará con la función mostrarModal -->
+        </div>
+    </div>
+</div>
+<div id="modalLicenciasList" class="modal">
+    <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+        <div class="modal-content">
+            
+                <partial name="_ListaPersonasEnLicencias" model="Model.PersonaModel" />
+            
             <!-- Contenido del modal se llenará con la función mostrarModal -->
         </div>
     </div>
@@ -301,7 +340,7 @@
 
 
 
-           
+
     function buscarConductor() {
         // HMG: Se cambian funcionalidades por lentitud en la carga y se hace el paginado.
         var licenciaBusqueda = $("#PersonaModel_numeroLicenciaBusqueda").val().trim();
@@ -309,7 +348,7 @@
         var curpBusqueda = $("#PersonaModel_CURPBusqueda").val().trim();
         var nombreBusqueda = $("#PersonaModel_nombreBusqueda").val().trim();
         var apellidoPaternoBusqueda = $("#PersonaModel_apellidoPaternoBusqueda").val().trim();
-       
+
         if (licenciaBusqueda !== "") {
             if (licenciaBusqueda.length < 10) {
                 sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
@@ -329,15 +368,25 @@
                 return;
             }
         }
+        
 
+        if($("#ddlTipoPersona").data("kendoDropDownList").value()==0){
+            if ((nombreBusqueda !== "") &&
+            (nombreBusqueda.length < 3)) {
+            sitteg_warning("La razón social debe tener al menos 3 caracteres.");
+            return;
+        }
+        } else {
         if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
             (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
             sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
             return;
         }
-       
-   
+    }
+
+
         var formData = $("#buscarConductorForm").serializeArray();
+        console.log("busqueda: " + formData);
 
         // Aplica Trim a cada valor en formData
         $.each(formData, function (index, field) {
@@ -351,8 +400,8 @@
             trimmedData[field.name] = field.value;
             if (!findData) {
                 if (field.value != '' && field.value != undefined) {
-                   findData = true;
-               }
+                    findData = true;
+                }
             }
         });
 
@@ -362,7 +411,7 @@
             grid.dataSource.read();
             grid.dataSource.refresh();
             return;
-        } 
+        }
 
         showLoading();
         console.log(trimmedData);
@@ -371,19 +420,25 @@
             type: 'POST',
             data: trimmedData,
             success: function (response) {
-                
+                console.log("encontrado: " + response.tipo);
                 if (response.tipo === "success") {
-                    mostrarModal(response.Data);
+                 //   mostrarModal(response.Data);
                     hideLoading();
                     return;
                 }
-                var personasList = response.Data;
-                if(personasList != null){
-                var grid = $("#gridPersonas").data("kendoGrid");
-                grid.dataSource.data(response.Data);
-                grid.dataSource._total = response.Total;
+                console.log("encontrado: " + response.Data);
+                if (response.Data == "1") {
+                    hideLoading();
+                    buscaEnLicencias()
+                    return;
                 }
-                else{    
+                var personasList = response.Data;
+                if (personasList != null) {
+                    var grid = $("#gridPersonas").data("kendoGrid");
+                    grid.dataSource.data(response.Data);
+                    grid.dataSource._total = response.Total;
+                }
+                else {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     var grid = $("#gridPersonas").data("kendoGrid");
                     grid.dataSource.data([]);
@@ -401,6 +456,7 @@
 
 
     function mostrarModal(jsonData) {
+        
         const modal = document.getElementById('modalLicencias');
         const mostrarFecha = (fechaCompleta) => {
             if (fechaCompleta) {
@@ -414,28 +470,28 @@
             }
             return '';
         };
-
+        
         const modalContent = `
-                    <div class="modal-header">
-                        <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
-                        <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
-                        <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
-                        <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
-                        <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
-                        <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
-                        <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
-                    </div>
-                  <div class="modal-footer">
-                    <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
-                    <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
-                  </div>
-                `;
+                            <div class="modal-header">
+                                <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Nombre:</strong> ${jsonData.nombre}</p>
+                                <p><strong>Apellido Paterno:</strong> ${jsonData.primer_apellido}</p>
+                                <p><strong>Apellido Materno:</strong> ${jsonData.segundo_apellido}</p>
+                                <p><strong>Tipo de Licencia:</strong> ${jsonData.tipolicencia}</p>
+                                <p><strong>Número de Licencia:</strong> ${jsonData.num_licencia}</p>
+                                <p><strong>Fecha de Expedición:</strong> ${mostrarFecha(jsonData.fecha_inicio_vigencia)}</p>
+                                <p><strong>Fecha de Vigencia:</strong> ${mostrarFecha(jsonData.fecha_termino_vigencia)}</p>
+                            </div>
+                          <div class="modal-footer">
+                            <button type="button" id="cerrarModalBtn" class="btn btn-secondary controlButton" data-dismiss="modal">Cerrar</button>
+                            <button type="button" id="guardarEnBaseDeDatosBtn" class="btn btn-primary controlButton">Guardar en Base de Datos</button>
+                          </div>
+                        `;
 
         modal.querySelector('.modal-content').innerHTML = modalContent;
         const cerrarModalBtn = document.getElementById('cerrarModalBtn');
@@ -514,4 +570,212 @@
             }
         });
     }
+
+    function buscaEnLicencias() {
+
+        var formData = $("#buscarConductorForm").serializeArray();
+
+        // Aplica Trim a cada valor en formData
+        $.each(formData, function (index, field) {
+            field.value = $.trim(field.value);
+        });
+
+        // Convierte de nuevo a objeto
+        var trimmedData = {};
+        var findData = false;
+        $.each(formData, function (index, field) {
+            trimmedData[field.name] = field.value;
+            if (!findData) {
+                if (field.value != '' && field.value != undefined) {
+                    findData = true;
+                }
+            }
+        });
+        showLoading();
+        console.log("se envian parametros de busqueda: " + trimmedData);
+        $.ajax({
+            url: '@Url.Action("PersonasEnLicencias")',
+            type: 'POST',
+            data: trimmedData,
+            success: function (response) {
+
+                console.log("encontrado length: " + response.length);
+                console.log("encontrado: " + response);
+
+             //   alert("regreso de resultado")
+             //   var ListaPersonaLicencias = JSON.parse(response);
+
+
+                if (response.length >0) {
+                    
+                    hideLoading();
+                   
+                    var grid = $("#gridPersonasLicencia").data("kendoGrid");
+                       grid.dataSource.data(response);
+                       grid.dataSource._total = response.length;
+
+                    
+
+                    $('#modalLicenciasList').modal('show');
+
+                 
+
+                }
+                else {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    hideLoading();
+                    return;
+                }
+
+
+
+                hideLoading();
+            },
+            error: function (error) {
+                sitteg_warning('Ocurrió un error en la búsqueda.');
+                hideLoading();
+            }
+        });
+
+    }
+
+    function mostrarModalGrid(jsonData) {
+
+        alert("muestra grid 1")
+        var grid = $("#gridPersonasLicencia").data("kendoGrid");
+        grid.dataSource.data(jsonData);
+        grid.dataSource._total = jsonData.length;
+        $('#modalLicenciasList').modal('show');
+
+       
+
+        return;
+
+
+        const modal = document.getElementById('modalLicenciasList');
+        /* const mostrarFecha = (fechaCompleta) => {
+             if (fechaCompleta) {
+                 const fecha = new Date(fechaCompleta);
+                 if (!isNaN(fecha.getTime())) {
+                     const dia = fecha.getDate().toString().padStart(2, '0');
+                     const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                     const anio = fecha.getFullYear();
+                     return `${dia}-${mes}-${anio}`;
+                 }
+             }
+             return '';
+         };
+         */
+        const modalContent = `
+                            <div class="modal-header">
+                                <h5 class="modal-title">Datos encontrados en el sistema de licencias</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                 <div class="col-12 mb-4 px-4 rounded gridCustom">
+
+                                            <div id="gridPL"></div>
+
+
+
+
+
+                                 </div>
+                            </div>
+
+                        `;
+        mustraGridPersonasLicencias();
+        modal.querySelector('.modal-content').innerHTML = modalContent;
+        //   const cerrarModalBtn = document.getElementById('cerrarModalBtn');
+        //  cerrarModalBtn.addEventListener('click', () => {
+        //    $('#modalLicenciasList').modal('hide');
+        // });
+        $('#modalLicenciasList').modal('show');
+        /* const guardarEnBaseDeDatosBtn = document.getElementById('guardarEnBaseDeDatosBtn');
+         guardarEnBaseDeDatosBtn.addEventListener('click', () => {
+             const tipoLicenciaMapping = {
+                 "TIPO A  CHOFER AUTOMOVILISTA": 1,
+                 "TIPO B CHOFER SERVICIO PÚBLICO": 2,
+                 "TIPO C  Chofer Servicio de Carga": 3,
+                 "TIPO D -MOTOCICLISTA": 4,
+                 "PERMISO A -AUTOMOVIL-": 6,
+                 "PERMISO D -MOTOCICLETA-": 7,
+                 "NO APLICA": 8,
+                 "TIPO A": 1,
+                 "TIPO B": 2,
+                 "TIPO C": 3,
+                 "TIPO D": 4,
+                 "PERMISO A": 6,
+                 "PERMISO D": 7,
+                 "A-AUTOMOVILISTA": 1,
+                 "B-CHOFER DE SERVICIO PÚBLICO": 2,
+                 "C-CHOFER DE SERVICIO DE CARGA": 3,
+                 "D-MOTOCICLISTA": 4,
+                 "PA-PERMISO AUTOMOVILISTA": 6,
+                 "PD-PERMISO MOTOCICLISTA": 7,
+
+             };
+             const tipoLicenciaNumero = tipoLicenciaMapping[jsonData.tipolicencia] || 0;
+             jsonData.id_tipo_licencia = tipoLicenciaNumero;
+             showLoading();
+             $.ajax({
+                 type: 'POST',
+                 url: '/Personas/guardaDesdeServicio',
+                 data: jsonData,
+                 success: function (result) {
+                     $('#modalLicencias').modal('hide');
+                     var grid = $("#gridPersonas").data("kendoGrid");
+                     if (result && result.data) {
+                         var dataArray = [result.data];
+                         grid.dataSource.data(dataArray);
+                     } else {
+                         console.error("La respuesta no tiene la estructura esperada:", result);
+                     }
+                     sitteg_success('Elemento guardado correctamente')
+                     hideLoading();
+                 },
+                 error: function (error) {
+                     sitteg_warning('Error al guardar en la base de datos:');
+                     hideLoading();
+                 }
+             });
+         });
+
+         $('#modalLicencias').modal('show');
+         */
+    }
+
+
+    function mustraGridPersonasLicencias() {
+        alert("muestra grid")
+        var grid = $("#gridPersonasLicencia").data("kendoGrid");
+        grid.dataSource.data(response.Data);
+        grid.dataSource._total = response.Total;
+        $('#modalLicenciasList').modal('show');
+
+    }
+
+
+    function tipoPersona() {
+        var tipoPersonaValue = $("#ddlTipoPersona").data("kendoDropDownList").value() ||1;
+        console.log("tipoPersonaValue",tipoPersonaValue);
+
+
+        if(tipoPersonaValue==1){
+           $("#nombreP").html("Nombre(s): ");
+           $('#ap').show();
+           $('#am').show();
+        } else {
+            $("#nombreP").html("Razón Social: ");
+            $('#ap').hide();
+            $('#am').hide();
+        }
+        
+
+        //showLoading();
+
+    }
+
 </script>

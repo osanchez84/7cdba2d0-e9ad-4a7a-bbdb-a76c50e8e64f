@@ -48,21 +48,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var resultadoSolicitudes = _asignacionGruasService.BuscarSolicitudes(model);
 
                 return Json(resultadoSolicitudes);
-            }
-            public IActionResult DatosGruas(string iSo, int iPg,int idDeposito)
+        }
+
+        public IActionResult DatosGruas(int iSo,string folio, int iPg,int idDeposito)
         {
-            HttpContext.Session.SetString("iSo", iSo);
+            string folioOId=iSo>0?iSo.ToString():folio;
+            HttpContext.Session.SetString("iSo", folioOId);
             HttpContext.Session.SetInt32("iPg", iPg);
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = HttpContext.Session.GetInt32("IdDependencia") ?? 0;
 
-            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo, idOficina);
+            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo,folio,idOficina, idDependencia);
             HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito==0?idDeposito: solicitud.IdDeposito);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
 
-            //var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
+            var datosInfraccion = _asignacionGruasService.DatosInfraccionAsociada(solicitud.FolioSolicitud);
 
-            return View("capturaGruas", solicitud);
+            return View("capturaGruas", datosInfraccion);
         }
         public IActionResult GruasAsignadasTabla([DataSourceRequest] DataSourceRequest request)
         {
@@ -99,7 +102,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             try
             {
                 int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+
                 _asignacionGruasService.ActualizarDatos(selectedRowData, iDep);
+
+                selectedRowData.folioInfraccion = string.IsNullOrEmpty(selectedRowData.folioInfraccion) ? "-" : selectedRowData.folioInfraccion; 
                 selectedRowData.Placa = string.IsNullOrEmpty(selectedRowData.Placa) ? "-" : selectedRowData.Placa;
                 selectedRowData.Serie = string.IsNullOrEmpty(selectedRowData.Serie) ? "-" : selectedRowData.Serie;
                 selectedRowData.Tarjeta = string.IsNullOrEmpty(selectedRowData.Tarjeta) ? "-" : selectedRowData.Tarjeta;

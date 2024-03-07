@@ -5,6 +5,12 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public string numeroEconomico { get; set; }
         public DateTime fechaArribo { get; set; }
+        
+
+         public TimeSpan horaArribo{ get; set; }
+        public TimeSpan horaInicio { get; set; }
+        public TimeSpan horaTermino { get; set; }
+
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFinal { get; set; }
 

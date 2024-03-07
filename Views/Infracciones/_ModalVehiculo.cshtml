@@ -72,6 +72,17 @@
                             </div>
                         </div>
                     </button>
+            <button class="nav-link col" id="serie-vehiculo-tab" data-bs-toggle="tab" data-bs-target="#splaca-vehiculo" type="button" role="tab" aria-controls="splaca-vehiculo" aria-selected="false"
+                    onclick="crearSinPlaca()">
+                <div class="row justify-content-center align-items-center px-3 py-2">
+                    <div class="col-auto radioCustom p-0">
+                        <div class="rounded-circle m-2"></div>
+                    </div>
+                    <div class="col-auto p-0">
+                        <h5 class="m-0"><i class="icon-fisica h4"></i> <b>Sin serie o placa</b></h5>
+                    </div>
+                </div>
+            </button>
                    
                 </div>
             </nav>
@@ -108,6 +119,24 @@
 
                         </div>
                     </div>
+
+            <div class="tab-pane tabCustomConteiner fade" id="splaca-vehiculo" role="tabpanel" aria-labelledby="splaca-vehiculo-tab">
+                <div class="row px-4 mt-4 pb-4 align-items-end">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="controlForm my-3">
+                            <div class="col-12 col-md-6 mx-md-auto col-lg-4 mx-lg-0 ">
+                                <div class="controlButton my-3" onclick="crearSinPlaca()">
+                                    @(Html.Kendo().Button()
+                                        .Name("buscar")
+                                        .HtmlAttributes(new { @class = "btnPrimary" })
+                                        .Content("<h5 class=\"m-0\"><b>Crear</b></h5>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
                     
                    
                 </div>
@@ -196,6 +225,48 @@
     }
 
 
+    $(document).ready(()=>{
+
+        var fr = document.getElementById("buscarVehiculoForm")
+
+        fr.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        })
+    
+    })
+
+
+    function crearSinPlaca(){
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("CrearvehiculoSinPlaca")',
+            type: 'POST',
+            data: {},
+            success: function (response) {
+                Swal.fire({
+                    icon: "info",
+                    title: "Vehículo no registrado en RIAG",
+                    text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonText: "Cerrar",
+                });
+                    $('#ModalBodyVehiculoService').html(response.data);
+                    $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
+                    $('#VehiculoServiceModal').modal('show');
+                    hideLoading();
+                
+
+            },
+            error: function () {
+                sitteg_warning("Sucedio un error intente de nuevo mas tarde");
+                hideLoading();
+            }
+        });
+
+    }
+
+
     function busquedaVehiculo() {
         var placasValue = $("#PlacasBusqueda").val().trim();
         $("#PlacasBusqueda").val(placasValue);
@@ -212,38 +283,34 @@
                 }
 
                 if (response.noResults) {
-                    //alert("IF")
-                    //$('#errorMessage').text("Se han encontrado datos en el Registo Estatal, complete o corrija para importar los datos a RIAG");
-                    //$('#errorModal').modal('show');
-
                     Swal.fire({
                         icon: "info",
                         title: "Vehículo no registrado en RIAG",
                         text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
                         showCancelButton: true,
                         showConfirmButton: false,
-                        cancelButtonText: "Cerrar",
+                        cancelButtonText: "Cerrar", 
                     });
                     $('#ModalBodyVehiculoService').html(response.data);
                     $('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
                     $('#VehiculoServiceModal').modal('show');
-                } else {
-                    //$('#errorMessage').text("Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato");
-                    //$('#errorModal').modal('show');
+                    hideLoading();
+                } else if (response.data) {
+
+                    try{
+                    $("#gridInfraccionesVehiculo").data("kendoGrid").dataSource.filter({ field: response.field, operator: "contains", value: response.data })
+                    }
+                    catch{
+
+                    }
+                    setTimeout(() => { $('#agregarVehiculoModal').modal('hide'); },400)
+                    hideLoading();
+                }else{
                     $('#agregarVehiculoModal').modal('hide');
-                    //Swal.fire({
-                    //    icon: "info",
-                    //    title: "Vehículo no registrado en RIAG",
-                    //    text: "¡Vehículo sin captura en el Registro de Infracciones y Accidentes de Guanajuato!",
-                    //    showCancelButton: true,
-                    //    showConfirmButton: false,
-                    //    cancelButtonText: "Cerrar",
-                    //});
-                    //$('#ModalBodyVehiculoService').html(response);
-                    //$('#VehiculoServiceModal').modal({ backdrop: 'static', keyboard: false });
-                    //$('#VehiculoServiceModal').modal('show');
+                    hideLoading();
+                    sitteg_warning('Sucedio un error intente de nuevo mas tarde.');
                 }
-                hideLoading();
+                
             },
             error: function () {
                 sitteg_warning("Sucedio un error intente de nuevo mas tarde");
@@ -264,4 +331,15 @@
         $('#errorModal').modal('hide');
 
     }
+
+    function cerrarModalV() {
+        $('#confirmacionModal').modal('show');
+
+        $('#confirmarCerrar').on('click', function () {
+            $('#confirmacionModal').modal('hide');
+            $('#VehiculoServiceModal').modal('hide');
+        });
+    }
+
+
 </script>

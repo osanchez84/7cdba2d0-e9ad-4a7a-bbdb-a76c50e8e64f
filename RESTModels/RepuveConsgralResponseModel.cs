@@ -37,5 +37,7 @@
         public string estatus { get; set; }
         public string ip { get; set; }
 
+        public static string CONSULTA_CORRECTA = "Consulta Correcta";
+
     }
 }

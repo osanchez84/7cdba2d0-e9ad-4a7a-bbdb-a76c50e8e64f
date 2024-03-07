@@ -61,7 +61,14 @@
         if ( $( "#divAlertaPersonaFisica" ).length ) {
                 $('#person-fisica-tab').click();
         }
-
+//Funcion que se ejecuta cuando una persona es seleccionada
+        $('#ddlIdPersona').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
+                $('#ddlIdPersona').val('');
+            else {
+                 $('#ddlIdPersona').val(data.idPersona);
+                }
+        });
     });
 
     function mostrarMensajeRobado() {
@@ -790,7 +797,7 @@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
                 aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4">
-                     @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
+     				@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig(),persona=Model.Persona})
                 </div>
  <div class="row">
                     <div class="col-12">

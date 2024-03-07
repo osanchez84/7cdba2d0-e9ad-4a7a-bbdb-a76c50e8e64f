@@ -1923,6 +1923,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.NombreBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoPaternoBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoMaternoBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@tipoPersona", SqlDbType.Int)).Value = (object)model.IdTipoPersona ?? DBNull.Value;
                 using SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {

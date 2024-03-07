@@ -92,6 +92,7 @@ namespace GuanajuatoAdminUsuarios.Models
             RFC = p.RFC;
             numeroLicencia = p.NUM_LICENCIA;
             idTipoLicencia = tipoLic != null ? tipoLic.Id : 0;
+            tipoLicencia = tipoLic == null ? "" : tipoLic.Descripcion;
             calle = p.CALLE;
             numero = p.NUM_EXT;
             colonia = p.COLONIA;

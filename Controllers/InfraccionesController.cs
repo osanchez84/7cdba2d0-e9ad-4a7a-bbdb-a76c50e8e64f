@@ -580,7 +580,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {
                 // model.idPersonaInfraccion = idPersonaInfraccion;
                 model.idEstatusInfraccion = (int)CatEnumerator.catEstatusInfraccion.EnProceso;
-                model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                model.idDelegacion = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value);     //HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion, idDependencia);
                 //    model.fechaVencimiento = getFechaVencimiento(model.fechaInfraccion);
 

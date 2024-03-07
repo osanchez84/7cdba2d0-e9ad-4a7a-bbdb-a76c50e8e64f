@@ -250,7 +250,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                          dep.idDependencia, dep.nombreDependencia,
                                          CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
                                          ISNULL(evt.DescripcionEvento,'') Evento,
-                                         inf.transito
+                                         inf.transito,d.idGrua
                                 FROM depositos d
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
@@ -345,6 +345,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.Color = reader["Color"].ToString();
                             transito.pension = reader["pension"].ToString();
                             transito.tramo = reader["tramo"].ToString();
+                            transito.IdGrua = Convert.ToInt32(reader["idGrua"] is DBNull ? 0 : reader["idGrua"]);
 
                             // Nuevos
                             transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"] is DBNull ? DateTime.MinValue : reader["FechaSolicitud"]);

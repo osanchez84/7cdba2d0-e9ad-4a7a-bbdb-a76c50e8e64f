@@ -12,8 +12,8 @@
 
 
 	var dependencia = @HttpContextAccessor.HttpContext.Session.GetInt32("IdDependencia");
-	var Oficina = @HttpContextAccessor.HttpContext.Session.GetInt32("IdOficina");
-	 
+	var Oficina = User.FindFirst(CustomClaims.OficinaDelegacion).Value; //@HttpContextAccessor.HttpContext.Session.GetInt32("IdOficina");
+
 	
 
 }

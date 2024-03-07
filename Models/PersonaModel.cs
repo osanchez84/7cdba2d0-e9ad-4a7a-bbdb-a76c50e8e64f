@@ -48,6 +48,10 @@ namespace GuanajuatoAdminUsuarios.Models
         }
         public int? idCatTipoPersona { get; set; }
         public string? tipoPersona { get; set; }
+         public int? idVigencia { get; set; }
+        
+        public string? vigencia { get; set; }
+
         public int? idGenero { get; set; }
         public string genero { get; set; }
         public DateTime? fechaNacimiento { get; set; }
@@ -88,6 +92,7 @@ namespace GuanajuatoAdminUsuarios.Models
             RFC = p.RFC;
             numeroLicencia = p.NUM_LICENCIA;
             idTipoLicencia = tipoLic != null ? tipoLic.Id : 0;
+            tipoLicencia = tipoLic == null ? "" : tipoLic.Descripcion;
             calle = p.CALLE;
             numero = p.NUM_EXT;
             colonia = p.COLONIA;

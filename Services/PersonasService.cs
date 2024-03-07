@@ -125,6 +125,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							   ,p.fechaNacimiento
 							   ,p.idGenero
 							   ,p.vigenciaLicencia
+                               ,p.idVigencia
                                ,ctp.tipoPersona
 							   ,cl.tipoLicencia
 							   ,cg.genero
@@ -166,6 +167,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idGenero = reader["idGenero"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idGenero"].ToString());
                             model.genero = reader["genero"].ToString();
                             model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
+                            model.idVigencia = reader["idVigencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVigencia"].ToString());
                             model.tipoLicencia = reader["tipoLicencia"].ToString();
                             model.fechaNacimiento = reader["fechaNacimiento"] as DateTime?;
                             //model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? null : (DateTime?)Convert.ToDateTime(reader["fechaNacimiento"].ToString());
@@ -722,6 +724,7 @@ namespace GuanajuatoAdminUsuarios.Services
                               ,idTipoLicencia
                               ,fechaNacimiento
                               ,vigenciaLicencia
+                              ,idVigencia
                               ,idGenero
                               ,origen
                               ) VALUES (@numeroLicencia
@@ -737,6 +740,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							,@idTipoLicencia
                             ,@fechaNacimiento
                             ,@vigenciaLicencia
+                            ,@idVigencia
                             ,@idGenero
                             ,@origen
 							);SELECT SCOPE_IDENTITY()";
@@ -755,6 +759,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = (object)DateTime.Now;
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value =1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    command.Parameters.Add(new SqlParameter("@idVigencia", SqlDbType.Int)).Value = (object)model.idVigencia ?? DBNull.Value;
 
                     command.Parameters.Add(new SqlParameter("@idCatTipoPersona", SqlDbType.Int)).Value = (object)model.idCatTipoPersona ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
@@ -806,6 +811,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             ,idTipoLicencia	   = @idTipoLicencia
                             ,fechaNacimiento = @fechaNacimiento
                             ,vigenciaLicencia = @vigenciaLicencia
+                            ,idVigencia    =@idVigencia
                             ,idGenero = @idGenero
                             where idPersona= @idPersona";
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -828,6 +834,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idTipoLicencia", SqlDbType.Int)).Value = (object)model.idTipoLicencia ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@fechaNacimiento", SqlDbType.DateTime)).Value = (object)model.fechaNacimiento ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@vigenciaLicencia", SqlDbType.DateTime)).Value = (object)model.vigenciaLicencia ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idVigencia", SqlDbType.Int)).Value = (object)model.idVigencia ?? DBNull.Value;
+
                     command.Parameters.Add(new SqlParameter("@idGenero", SqlDbType.Int)).Value = (object)model.idGenero ?? DBNull.Value;
 
                     command.CommandType = CommandType.Text;
@@ -1848,7 +1856,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.nombreBusqueda ?? DBNull.Value;
                         cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoPaternoBusqueda ?? DBNull.Value;
                         cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.apellidoMaternoBusqueda ?? DBNull.Value;
-                        using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                        cmd.Parameters.Add(new SqlParameter("@tipoPersona", SqlDbType.NVarChar)).Value = (object)model.PersonaModel.tipoPersona ?? DBNull.Value;
+                        using (
+                            SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
                         {
                             while (reader.Read())
                             {
@@ -1913,6 +1923,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 cmd.Parameters.Add(new SqlParameter("@nombre", SqlDbType.NVarChar)).Value = (object)model.NombreBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@apellidoPaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoPaternoBusqueda ?? DBNull.Value;
                 cmd.Parameters.Add(new SqlParameter("@apellidoMaterno", SqlDbType.NVarChar)).Value = (object)model.ApellidoMaternoBusqueda ?? DBNull.Value;
+                cmd.Parameters.Add(new SqlParameter("@tipoPersona", SqlDbType.Int)).Value = (object)model.IdTipoPersona ?? DBNull.Value;
                 using SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
@@ -2133,6 +2144,50 @@ public int ObtenerTotalBusquedaPersona(BusquedaPersonaModel model, Pagination pa
         public int UpdateConductores(object model)
         {
             throw new NotImplementedException();
+        }
+
+        public List<PersonaModel> ObtenerVigencias()
+        {
+            //
+            List<PersonaModel> ListaVigencias = new List<PersonaModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT cv.idVigencia,cv.vigencia
+                                                        FROM catVigenciaLicencia cv WHERE cv.estatus = 1", connection);
+                    command.CommandType = CommandType.Text;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            PersonaModel vigencia = new PersonaModel();
+                            vigencia.idVigencia = Convert.ToInt32(reader["idVigencia"].ToString());
+                            vigencia.vigencia = reader["vigencia"].ToString();
+                          
+                           
+                            ListaVigencias.Add(vigencia);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaVigencias;
+
+
         }
     }
 }

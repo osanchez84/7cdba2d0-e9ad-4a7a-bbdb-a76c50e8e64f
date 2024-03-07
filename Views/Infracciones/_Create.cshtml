@@ -61,7 +61,14 @@
         if ( $( "#divAlertaPersonaFisica" ).length ) {
                 $('#person-fisica-tab').click();
         }
-
+//Funcion que se ejecuta cuando una persona es seleccionada
+        $('#ddlIdPersona').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
+                $('#ddlIdPersona').val('');
+            else {
+                 $('#ddlIdPersona').val(data.idPersona);
+                }
+        });
     });
 
     function mostrarMensajeRobado() {
@@ -197,6 +204,7 @@
                           <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
                     }
                     <h6 class="px-4 text-muted">El vehículo ya está capturado en la plataforma. Puede actualizar o corregir la información del vehículo.</h6>
+
                 </div>
             </div>
         }
@@ -790,7 +798,7 @@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel"
                 aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4">
-                     @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
+     				@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig(),persona=Model.Persona})
                 </div>
  <div class="row">
                     <div class="col-12">
@@ -1352,6 +1360,26 @@
                             </span>
                         </div>
                     </div>
+                     <div class="col-12 col-md-6 col-lg-3">
+                          <div class="controlForm my-3">
+                                    <label>Vigencia:</label>
+                                    <span>
+                                         @(Html.Kendo().DropDownListFor(m => m.Persona.idVigencia).Filter(FilterType.Contains)
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .OptionLabel("Selecciona una opción")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("Tiempo_Vigencia_Drop", "Personas");
+                                            });
+                                        })
+                                        .HtmlAttributes(new { style = "width:50%;",id="idVigencia" })
+                                        )
+                                    </span>
+                           </div>
+                      </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
                             <label>Fecha de vencimiento:</label>

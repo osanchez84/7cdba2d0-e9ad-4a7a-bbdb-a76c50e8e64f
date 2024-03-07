@@ -79,44 +79,58 @@
 
 <script>
 	function btnActualizar() {
-				var Contrasena = $("#Contrasena").val();
-
+		var Contrasena = $("#Contrasena").val();
 		var NuevaContrasena = $("#NuevaContrasena").val();
 		var ConfirmarContrasena = $("#ConfirmarContrasena").val();
+		console.log("VAL",Contrasena)
 		showLoading();
-		if (NuevaContrasena === Contrasena){
+		if (NuevaContrasena == "" || ConfirmarContrasena == "" || Contrasena == "") {
+			sitteg_warning('Ingrese los datos solicitados');
+			hideLoading();
+			return;
+		}
+		if (NuevaContrasena === Contrasena) {
 			sitteg_warning('La contraseña nueva no puede ser la misma que la actual');
-						hideLoading();
-
-			return
-
+			hideLoading();
+			return;
 		}
-		if (NuevaContrasena == ConfirmarContrasena){ 
+	
 
-		$.ajax({
-			url: '@Url.Action("ActualizarContra", "Configuraciones")',
-			type: 'POST',
-			data: {
-				"NuevaContrasena" : NuevaContrasena
-			},
-			success: function (result) {
-				Contrasena = $("#Contrasena").val('');
-				NuevaContrasena = $("#NuevaContrasena").val('');
-				ConfirmarContrasena = $("#ConfirmarContrasena").val('');
-				sitteg_success('La contraseña se actualizo exitosamente.');
-				hideLoading();
-			},
-			error: function (error) {
-				sitteg_warning('Sucedió un error, intente mas tarde...');
-				hideLoading();
-			}
-		});
+
+		if (NuevaContrasena == ConfirmarContrasena) {
+			$.ajax({
+				url: '@Url.Action("ActualizarContra", "Configuraciones")',
+				type: 'POST',
+				data: {
+					"NuevaContrasena": NuevaContrasena,
+					"Contrasena": Contrasena
+				},
+				success: function (result) {
+					Contrasena = $("#Contrasena").val('');
+					NuevaContrasena = $("#NuevaContrasena").val('');
+					ConfirmarContrasena = $("#ConfirmarContrasena").val('');
+					sitteg_success('La contraseña se actualizó exitosamente.');
+					hideLoading();
+				},
+				error: function (error) {
+					if (error.responseJSON && error.responseJSON === "La contraseña proporcionada no es correcta.") {
+						sitteg_warning('La contraseña actual no es correcta.');
+					} else if (error.responseText && error.responseText.includes("La contraseña proporcionada no es correcta.")) {
+						sitteg_warning('La contraseña actual no es correcta.');
+					} else {
+						sitteg_warning('Sucedió un error, intente más tarde...');
+					}
+					hideLoading();
+				}
+
+			});
 		}
-		else{
+		else {
 			sitteg_warning('La contraseña nueva no coinciden');
 			hideLoading();
 		}
 	}
+
 </script>
 
 

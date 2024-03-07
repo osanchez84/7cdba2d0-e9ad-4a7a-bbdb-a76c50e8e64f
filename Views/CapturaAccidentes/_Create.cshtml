@@ -804,7 +804,7 @@ function mostrarMensajeRobado() {
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
-                  	@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig()})
+                  	@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig(),persona=Model.Persona})
                 </div>
                <div class="row">
                     <div class="col-12">

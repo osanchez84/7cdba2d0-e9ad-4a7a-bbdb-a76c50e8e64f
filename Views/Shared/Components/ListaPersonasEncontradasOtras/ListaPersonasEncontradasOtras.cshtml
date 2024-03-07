@@ -4,12 +4,14 @@
 }
  <script>
         function validaFechaGrid(data) {
+            if(data.fechaNacimiento==undefined ||  data.fechaNacimiento==='null' || data.fechaNacimiento==='')
+            return '';
     var minDate = new Date('0001-01-01T00:00:00Z');
     minDate.setDate(minDate.getDate() + 1);
     if (data.fechaNacimiento < minDate) {
-        return "";
+        return '';
     } else {
-        return kendo.toString(data.fechaNacimiento, "dd/MM/yyyy");
+        return kendo.toString(data.fechaNacimiento, 'dd/MM/yyyy');
     }
 }
 

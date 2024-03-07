@@ -186,8 +186,9 @@
                     columns.Bound(c => c.pension).Title("Pensión").Width(100);
                     columns.Bound(c => c.Concesionario).Title("Grúa").Width(90);
                     columns.Bound(p => p.IdConcesionario).ClientTemplate(
-                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
+                    "<button onclick=\"ShowGruaPopUp('#= IdDeposito #','#= IdDeposito #','#= IdGrua #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i></h6></button>"
                     ).Title("Detalle Grúa(s)").Sortable(false).Width(100);
+                    
                     columns.Bound(p => p.IdDependencia).ClientTemplate(
                     "<button onclick=\"downLoadPdf('#= IdDeposito #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-pdf me-2'></i></h6></button>"
                     ).Title("Descargar detalle").Sortable(false).Width(100);
@@ -196,14 +197,7 @@
                     columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
                     columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
-                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate(
-                    "<div class='turno-captura'>" +
-                    "<div class='tto-marked'>TTO: #= IdDependenciaGenera === 1 ? '✓' : '' #</div>" +
-                    
-                    "<div class='dep-marked'>Dep: #= IdDependenciaGenera === 0 ? '✓' : '' #</div>" +
-                 
-                    "</div>"
-                    ).Title("Turno Captura").Width(250);
+                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate("#= EstatusTemplate(data) #").Title("Turno Captura").Width(250);
 
 
 

@@ -146,7 +146,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     s => new EstadisticaAccidentesMotivosModel()
                     {
                         Motivo = s.Key.ToString(),
-                        Delegacion = s.Key.ToString(),
+                        Delegacion = s.First().Delegacion,
                         Contador = s.Count()
 
                     }

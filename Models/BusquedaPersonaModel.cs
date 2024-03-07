@@ -5,7 +5,9 @@ namespace GuanajuatoAdminUsuarios.Models
 {
     public class BusquedaPersonaModel
     {
-        public string NombreBusqueda { get; set; }
+        public int idVigencia { get; set; }
+
+		public string NombreBusqueda { get; set; }
         public string ApellidoPaternoBusqueda { get; set; }
         public string ApellidoMaternoBusqueda { get; set; }
         public string RFCBusqueda { get; set; }

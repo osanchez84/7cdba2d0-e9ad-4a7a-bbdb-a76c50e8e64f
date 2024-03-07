@@ -4,8 +4,8 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sat Mar 02 2024
- * Última modificación: Sat Mar 02 2024
+ * Última modificación: Thu Mar 07 2024
+ * Última modificación: Thu Mar 07 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -185,6 +185,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.ApellidoPaternoBusqueda = model.ApellidoPaternoBusqueda?.Trim();
             model.ApellidoMaternoBusqueda = model.ApellidoMaternoBusqueda?.Trim();
             model.NumeroLicenciaBusqueda = model.NumeroLicenciaBusqueda?.Trim();
+            model.IdTipoPersona = Convert.ToInt16(TipoPersona.Fisica);
 
             //Logger.Info("Buscar persona fisica en RIAG por :" + model);
             Pagination pagination = new()

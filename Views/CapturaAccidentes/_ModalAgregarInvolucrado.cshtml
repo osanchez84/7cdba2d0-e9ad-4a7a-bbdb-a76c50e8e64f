@@ -296,21 +296,16 @@
 	<div class="tab-content" id="nav-tabContent">
 		<div class="tab-pane tabCustomConteiner fade show active" id="busqueda-involucrado" role="tabpanel" aria-labelledby="busqueda-involucrado-tab">
 			<!-- Componente de busqueda de personas físicas -->
-			@{
-				var config =new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig();
-				config.NombreVariableToChange = "idPersonaInput";
-				await Component.InvokeAsync("BusquedaPersonaFisica", config);
-			}
+			
+				@{
+					var config =new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig();
+				    config.NombreVariableToChange = "idPersonaInput";
+				}
+				@await Component.InvokeAsync("BusquedaPersonaFisica",new{config})
+			
 			<div class="row">
 				<div class="col-12">
 					<div class="tabCustomEnd"></div>
-				</div>
-				<div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0 ">
-					<div class="controlButton my-3">
-						<div class="controlButton my-3">
-							<button onclick="buscarInvolucrado()" class="btnPrimary" id="buscarInvolucrado" type="button"><h5 class="m-0"><b>Buscar</b></h5></button>
-						</div>
-					</div>
 				</div>
 			</div>
 			<div class="row px-4 py-5 align-items-end bg-light">

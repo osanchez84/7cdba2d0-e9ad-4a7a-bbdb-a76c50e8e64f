@@ -10,6 +10,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string ApellidoMaternoBusqueda { get; set; }
         public string RFCBusqueda { get; set; }
         public string CURPBusqueda { get; set; }
+        public int IdTipoPersona { get; set; }
 
         public string NumeroLicenciaBusqueda { get; set; }
         public PersonaModel PersonaModel { get; set; }

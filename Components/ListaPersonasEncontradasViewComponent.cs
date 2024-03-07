@@ -4,7 +4,7 @@
  * Fecha de creación: Tuesday, February 27th 2024 12:36:56 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sat Mar 02 2024
+ * Última modificación: Thu Mar 07 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -33,6 +33,7 @@ namespace GuanajuatoAdminUsuarios.Components
             List<PersonaModel> listaPersonas = model.ListadoPersonas;
             if (model.ListadoPersonas==null || model.ListadoPersonas.Count==0)
              listaPersonas = _personasService.BuscarPersonasWithPagination(model, model.Pagination);
+            ViewBag.VariableToChange = model.Config.NombreVariableToChange;
 
             return await Task.FromResult((IViewComponentResult)View("ListaPersonasEncontradas", listaPersonas ));
         }

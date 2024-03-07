@@ -237,6 +237,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             return PartialView("_CrearPersona", new PersonaModel());
         }
+        
+        public JsonResult Tiempo_Vigencia_Drop()
+        {
+            var result = new SelectList(_personasService.ObtenerVigencias(), "idVigencia", "vigencia");
+            return Json(result);
+        }
         public JsonResult Entidades_Drop()
         {
             var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");

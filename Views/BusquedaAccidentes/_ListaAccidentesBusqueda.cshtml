@@ -1,4 +1,42 @@
-﻿<div class="row">
+﻿
+
+
+
+<script>
+
+
+	function TemplateMostrar(data){
+
+		
+		if(data.idEstatusReporte=="3")
+	return	`"<button onclick="mostrarAccidente('${data.IdAccidente}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>`
+	else
+	return ""
+
+	}
+
+	function TemplatePdf(data){
+
+		if (data.idEstatusReporte == "3")
+		return `<button onclick="downLoadPdf('${data.IdAccidente}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>`
+		else
+		return ""
+
+
+	}
+	function TemplateEditar(data) {
+
+		return`<button onclick="editarAccidente('#= IdAccidente #')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>`
+
+
+	}
+
+	</script>
+
+
+
+
+<div class="row">
 	<div class="col-12 mb-4 px-4 rounded gridCustom">
 
 		@(
@@ -24,15 +62,9 @@
 				columns.Bound(c => c.carretera).Title("Carretera").Width(100);
 				columns.Bound(c => c.tramo).Title("Tramo").Width(100);
 				columns.Bound(c => c.estatusReporte).Title("Estatus").Width(100);
-				columns.Bound(p => p.IdAccidente).ClientTemplate(
-				"<button onclick=\"downLoadPdf('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='h5 icon-pdf me-2'></i><b>Descargar</b></h6></button>"
-				).Title("Exportar").Sortable(false).Width(90);
-				columns.Bound(p => p.IdAccidente).ClientTemplate(
-				"<button onclick=\"mostrarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-research me-2'></i><b>Mostrar</b></h6></button>"
-				).Title("Mostrar").Sortable(false).Width(90);
-				columns.Bound(p => p.IdAccidente).ClientTemplate(
-				"<button onclick=\"editarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Editar</b></h6></button>"
-				).Title("Editar").Sortable(false).Width(90);
+				columns.Bound(p => p.IdAccidente).ClientTemplate("#=  TemplatePdf(data) #").Title("Exportar").Sortable(false).Width(90);
+				columns.Bound(p => p.IdAccidente).ClientTemplate("#=  TemplateMostrar(data) #").Title("Mostrar").Sortable(false).Width(90);
+				columns.Bound(p => p.IdAccidente).ClientTemplate("#= TemplateEditar(data) #").Title("Editar").Sortable(false).Width(90);
 				/* columns.Bound(p => p.IdAccidente).ClientTemplate(
 				"<button onclick=\"consultarAccidente('#= IdAccidente #')\" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b>Consultar</b></h6></button>"
 				).Title("Consultar").Sortable(false).Width(90);*/

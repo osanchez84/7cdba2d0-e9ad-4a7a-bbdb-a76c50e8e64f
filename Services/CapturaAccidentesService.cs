@@ -151,14 +151,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Carretera = reader["Carretera"].ToString();
                             
                             var valueDec = 0;
-                            var km = "";
-                            if (reader["Kilometro"].ToString().Split('.').Length>1)
-                                valueDec = Convert.ToInt32(reader["Kilometro"].ToString().Split('.')[1]);
+                            var km = reader["kilometro"] == System.DBNull.Value ? default(string) : Decimal.Parse((string)reader["kilometro"]).ToString("G29");
+                            //if (reader["Kilometro"].ToString().Split('.').Length>1)
+                            //    valueDec = Convert.ToInt32(reader["Kilometro"].ToString().Split('.')[1]);
 
-                            if (valueDec > 0)
-                                km = reader["Kilometro"].ToString().Split('.')[0] + "." + valueDec.ToString();
-                            else
-                                km = reader["Kilometro"].ToString().Split('.')[0];
+                            //if (valueDec > 0)
+                            //    km = reader["Kilometro"].ToString().Split('.')[0] + "." + valueDec.ToString();
+                            //else
+                            //    km = reader["Kilometro"].ToString().Split('.')[0];
 
 							accidente.Kilometro = km;
 							accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());

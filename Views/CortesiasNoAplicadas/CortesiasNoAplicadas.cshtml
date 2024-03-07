@@ -125,6 +125,8 @@
             success: function (result) {
                 if (result.length === 0) {
                     $('#mensajeSinResultados').text("La búsqueda no arrojó resultados.");
+                    var grid = $("#gridRegistro").data("kendoGrid");
+                    grid.dataSource.data(result);
                 } else{
                     var grid = $("#gridRegistro").data("kendoGrid");
                     grid.dataSource.data(result);

@@ -1,4 +1,65 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.SeleccionGruaModel
+<script>
+    function onFechaFinalChange() {
+        var fechaFinal = $("#fechaFinal").data("kendoDatePicker").value();
+        var horaTerminoPicker = $("#horaTermino").data("kendoTimePicker");
+
+        if (fechaFinal == null || fechaFinal === "") {
+            horaTerminoPicker.max(null);
+        } else {
+            var fechaActual = new Date();
+
+            var fechaFinalSoloFecha = new Date(fechaFinal.getFullYear(), fechaFinal.getMonth(), fechaFinal.getDate());
+            var fechaActualSoloFecha = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+
+            if (fechaFinalSoloFecha.getTime() === fechaActualSoloFecha.getTime()) {
+                horaTerminoPicker.max(fechaActual);
+            } else {
+                horaTerminoPicker.max(new Date(fechaFinal.getFullYear(), fechaFinal.getMonth(), fechaFinal.getDate(), 23, 59, 59));
+            }
+        }
+    }
+        function onFechaInicioChange() {
+        var fechaInicio = $("#fechaInicio").data("kendoDatePicker").value();
+        var horaInicioPicker = $("#horaInicio").data("kendoTimePicker");
+
+        if (fechaInicio == null || fechaInicio === "") {
+            horaInicioPicker.max(null);
+        } else {
+            var fechaActual = new Date();
+
+            var fechaInicioSoloFecha = new Date(fechaInicio.getFullYear(), fechaInicio.getMonth(), fechaInicio.getDate());
+            var fechaActualSoloFecha = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+
+            if (fechaInicioSoloFecha.getTime() === fechaActualSoloFecha.getTime()) {
+                horaInicioPicker.max(fechaActual);
+            } else {
+                horaInicioPicker.max(new Date(fechaInicio.getFullYear(), fechaInicio.getMonth(), fechaInicio.getDate(), 23, 59, 59));
+            }
+        }
+    }
+            function onFechaArriboChange() {
+        var fechaArribo = $("#fechaArribo").data("kendoDatePicker").value();
+        var horaArriboPicker = $("#horaArribo").data("kendoTimePicker");
+
+        if (fechaArribo == null || fechaArribo === "") {
+            horaArriboPicker.max(null);
+        } else {
+            var fechaActual = new Date();
+
+            var fechaArriboSoloFecha = new Date(fechaArribo.getFullYear(), fechaArribo.getMonth(), fechaArribo.getDate());
+            var fechaActualSoloFecha = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+
+            if (fechaArriboSoloFecha.getTime() === fechaActualSoloFecha.getTime()) {
+                horaArriboPicker.max(fechaActual);
+            } else {
+                horaArriboPicker.max(new Date(fechaArribo.getFullYear(), fechaArribo.getMonth(), fechaArribo.getDate(), 23, 59, 59));
+            }
+        }
+    }
+
+
+</script>
 <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
     <div class="modal-content">
         <section class=" bg-white rounded">
@@ -51,47 +112,96 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .Filter(FilterType.Contains)
-
                                 .OptionLabel("Selecciona una opcion")
                                 .HtmlAttributes(new { style = "max-width: 340px;width: 100%", required = "required" })
                                 .DataSource(source =>
                                 {
-                                source.Read(read =>
-                                {
-                                    read.Action("Gruas_Drop", "AsignacionGruas");
-                                });
+                                    source.Read(read =>
+                                    {
+                                        read.Action("Gruas_Drop", "AsignacionGruas");
+                                    });
                                 })
                                 )
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label for="datetimepicker1">Fecha de arribo <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.fechaArribo).Max(DateTime.Now).Interval(1)
+                            <label for="datepicker1">Fecha de arribo <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().DatePickerFor(t => t.fechaArribo).Max(DateTime.Now)
+                                .Format("dd/MM/yyyy")
+                                .Events(events =>
+                                {
 
-                                .Format("dd/MM/yyyy hh:mm tt")
-                                .HtmlAttributes(new { style = "width: 100%" })
+
+                                    events.Change("onFechaArriboChange");
+                                })
+                                .HtmlAttributes(new { style = "width: 90%" })
+                                )
+                        </div>
+                        </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+
+                        <div class="controlForm my-3">
+                            <label for="timepicker1">Hora de arribo <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().TimePickerFor(t => t.horaArribo).Max(DateTime.Now)
+                                .Format("HH:mm")
+                                .HtmlAttributes(new { style = "width: 90%" })
+                                )
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            <label for="datepicker2">Fecha de inicio <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().DatePickerFor(t => t.fechaInicio).Max(DateTime.Now)
+                                .Format("dd/MM/yyyy")
+                                .Events(events =>
+                                {
+
+
+                                    events.Change("onFechaInicioChange");
+                                })
+                                .HtmlAttributes(new { style = "width: 90%" })
+                                )
+                        </div>
+                    </div>
+                     <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            <label for="timepicker2">Hora de inicio <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().TimePickerFor(t => t.horaInicio).Max(DateTime.Now)
+                                .Format("HH:mm")
+                                .HtmlAttributes(new { style = "width: 90%" })
+                              
+                                )
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            <label for="datepicker3">Fecha de término <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().DatePickerFor(t => t.fechaFinal).Max(DateTime.Now)
+                                .Format("dd/MM/yyyy")
+                                .HtmlAttributes(new { style = "width: 90%" })
+                                .Events(events =>
+                                {
+
+
+                                    events.Change("onFechaFinalChange");
+                                })
                                 )
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                            <label for="datetimepicker2">Fecha de inicio <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.fechaInicio).Max(DateTime.Now)
-                                .Format("dd/MM/yyyy hh:mm tt").Interval(1)
-                                .HtmlAttributes(new { style = "width: 100%" })
+                            <label for="timepicker3">Hora de término <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().TimePickerFor(t => t.horaTermino).Max(DateTime.Now)
+                                .Format("HH:mm")
+                                .HtmlAttributes(new { style = "width: 90%" })
+                             
                                 )
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm my-3">
-                            <label for="datetimepicker3">Fecha de término <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().DateTimePickerFor(t => t.fechaFinal).Max(DateTime.Now)
-                                .Format("dd/MM/yyyy hh:mm tt").Interval(1)
-                                .HtmlAttributes(new { style = "width: 100%" })
-                                )
-                        </div>
-                    </div>
+
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
                             <label for="timeDifference">Diferencia en minutos <b>(obligatorio)</b>:</label>
@@ -100,45 +210,58 @@
                                 )
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm row justify-content-center btnToggleActive my-3">
-                            <label>Abanderamiento:</label>
-                            <div class="btnToggleActive">
-                                @(Html.Kendo().SwitchFor(t => t.AbanderamientoBool)
-                                    .Name("abanderamientoSwitch1")
-                                    .Checked(false)
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_checked = "true" })
-                                    )
+                    <div class="row px-4" id="contenedor">
+                        <!-- Otras columnas aquí -->
+
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="controlForm my-3">
+                                        <label for="switch2">Abanderamineto:</label>
+                                        <div class="btnToggleActive">
+                                            @(Html.Kendo().SwitchFor(t => t.AbanderamientoBool)
+                                                .Name("abanderamientoSwitch1")
+                                                .Checked(false)
+                                                .Messages(c => c.Checked("Si").Unchecked("No"))
+                                                .HtmlAttributes(new { data_checked = "true" })
+                                                )
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="controlForm my-3">
+                                        <label for="switch2">Salvamento:</label>
+                                        <div class="btnToggleActive">
+                                            @(Html.Kendo().SwitchFor(t => t.SalvamentoBool)
+                                                .Name("salvamentoSwitch1")
+                                                .Checked(false)
+                                                .Messages(c => c.Checked("Si").Unchecked("No"))
+                                                .HtmlAttributes(new { data_valor = 1 })
+                                                )
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="controlForm my-3">
+                                        <label for="switch3">Arrastre:</label>
+                                        <div class="btnToggleActive">
+                                            @(Html.Kendo().SwitchFor(t => t.ArrastreBool)
+                                                .Name("arrastreSwitch1")
+                                                .Checked(false)
+                                                .Messages(c => c.Checked("Si").Unchecked("No"))
+                                                .HtmlAttributes(new { data_checked = "true" })
+                                                )
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Otras columnas aquí -->
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm row justify-content-center btnToggleActive my-3">
-                            <label for="switch2">Salvamento:</label>
-                            <div class="btnToggleActive">
-                                @(Html.Kendo().SwitchFor(t => t.SalvamentoBool)
-                                    .Name("salvamentoSwitch1")
-                                    .Checked(false)
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_valor = 1 })
-                                    )
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="controlForm row justify-content-center btnToggleActive my-3">
-                            <label for="switch3">Arrastre:</label>
-                            <div class="btnToggleActive">
-                                @(Html.Kendo().SwitchFor(t => t.ArrastreBool)
-                                    .Name("arrastreSwitch1")
-                                    .Checked(false)
-                                    .Messages(c => c.Checked("Si").Unchecked("No"))
-                                    .HtmlAttributes(new { data_checked = "true" })
-                                    )
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
                             @(Html.Kendo().TextBoxFor(t => t.operadorGrua)
@@ -149,6 +272,7 @@
                         </div>
                     </div>
                 </div>
+
             </form>
             <!-- Botones -->
             <div class="row my-4">
@@ -173,6 +297,7 @@
         </section>
     </div>
 </div>
+
 <script>
 function enviarDatos() {
     var validator = $("#datosGruaForm").kendoValidator().data('kendoValidator');
@@ -216,9 +341,9 @@ function enviarDatos() {
 }
 
     function updateDifference() {
-        var fechaInicio = $("#fechaInicio").data("kendoDateTimePicker").value();
-        var fechaFinal = $("#fechaFinal").data("kendoDateTimePicker").value();
-        var timeDifferenceMinutes = Math.abs((fechaFinal - fechaInicio) / 60000); // Diferencia en minutos
+        var horaInicio = $("#horaInicio").data("kendoTimePicker").value();
+        var horaFinal = $("#horaTermino").data("kendoTimePicker").value();
+        var timeDifferenceMinutes = Math.abs((horaFinal - horaInicio) / 60000); // Diferencia en minutos
 
         // Redondear y convertir a entero
         timeDifferenceMinutes = Math.round(timeDifferenceMinutes);
@@ -230,7 +355,7 @@ function enviarDatos() {
     }
 
     // Llamar a la función cuando cambie alguna de las fechas
-    $("input[name='fechaInicio'], input[name='fechaFinal']").on("change", function () {
+    $("input[name='horaInicio'], input[name='horaTermino']").on("change", function () {
         updateDifference();
     });
 
@@ -244,5 +369,7 @@ function enviarDatos() {
         $('#modalAgregarGrua').modal('hide');
 
     }
+
+  
 </script>
 

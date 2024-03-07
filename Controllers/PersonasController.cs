@@ -237,6 +237,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.CatTipoLicencia = new SelectList(catTipoLicencia.CatalogList, "Id", "Text");
             return PartialView("_CrearPersona", new PersonaModel());
         }
+        
+        public JsonResult Tiempo_Vigencia_Drop()
+        {
+            var result = new SelectList(_personasService.ObtenerVigencias(), "idVigencia", "vigencia");
+            return Json(result);
+        }
         public JsonResult Entidades_Drop()
         {
             var result = new SelectList(_catEntidadesService.ObtenerEntidades(), "idEntidad", "nombreEntidad");
@@ -429,6 +435,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
             catch (Exception ex)
             {
+                List<PersonaModel> pEncontradas = new List<PersonaModel>();
                 // En caso de errores, devolver una respuesta JSON con licencia no encontrada
                 return Json(new { encontrada = false, Data = "", message = "Ocurrió un error al obtener los datos. " + ex.Message + "; " + ex.InnerException });
             }

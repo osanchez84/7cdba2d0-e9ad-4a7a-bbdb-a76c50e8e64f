@@ -228,6 +228,53 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
         }
+
+        public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesDropDown()
+        {
+            //
+            List<CatDelegacionesOficinasTransporteModel> ListaDelegacionsOficinas = new List<CatDelegacionesOficinasTransporteModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT del.*, e.estatusDesc, ISNULL(del.Transito,0) Transito 
+                                                          FROM catDelegaciones AS del 
+                                                          INNER JOIN estatus AS e ON del.estatus = e.estatus;", connection);
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatDelegacionesOficinasTransporteModel delegacionOficina = new CatDelegacionesOficinasTransporteModel();
+                            delegacionOficina.IdOficinaTransporte = Convert.ToInt32(reader["idDelegacion"].ToString());
+                            delegacionOficina.NombreOficina = reader["delegacion"].ToString();                          
+                            delegacionOficina.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"].ToString());
+                            delegacionOficina.estatusDesc = reader["estatusDesc"].ToString();
+                            delegacionOficina.Estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            delegacionOficina.Transito = Convert.ToBoolean(reader["Transito"]) ? 1 : 0;
+                            //delegacionOficina.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"].ToString());
+                            ListaDelegacionsOficinas.Add(delegacionOficina);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaDelegacionsOficinas;
+
+
+        }
     }
 
 }

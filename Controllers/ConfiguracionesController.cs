@@ -23,30 +23,43 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 		[HttpPost]
-		public async Task<IActionResult> ActualizarContra(string NuevaContrasena)
+		public async Task<IActionResult> ActualizarContra(string NuevaContrasena, string Contrasena)
 		{
-			var usuario = User.FindFirst(CustomClaims.IdUsuario).Value;
+			var usuario = User.FindFirst(CustomClaims.Usuario).Value;
+			var IdUsuario = User.FindFirst(CustomClaims.IdUsuario).Value;
+
 			try
 			{
-				var handler = new HttpClientHandler
+				var credencialesValidas = await VerificarCredenciales(usuario, Contrasena);
+
+				if (credencialesValidas)
 				{
-					ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+					// Las credenciales son válidas, continuar con la lógica de actualización de contraseña
+					var handler = new HttpClientHandler
 					{
-						Console.WriteLine("SSL error skipped");
-						return true;
+						ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+						{
+							Console.WriteLine("SSL error skipped");
+							return true;
+						}
+					};
+
+					using (HttpClient client = new HttpClient(handler))
+					{
+						string url = $"https://10.16.157.142:9096/serviciosinfracciones/getActualizaPwd?userWS=1&claveWS=18&idUsuario={IdUsuario}&contraseña={NuevaContrasena}";
+
+						var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+
+						HttpResponseMessage response = await client.GetAsync(url);
+
+						// Devolver la URL como JSON (puedes ajustar esto según tus necesidades)
+						return Json(url);
 					}
-				};
-
-				using (HttpClient client = new HttpClient(handler))
+				}
+				else
 				{
-					string url = $"https://10.16.157.142:9096/serviciosinfracciones/getActualizaPwd?userWS=1&claveWS=18&idUsuario={usuario}&contraseña={NuevaContrasena}";
-
-					var ip = HttpContext.Connection.RemoteIpAddress.ToString();
-
-					HttpResponseMessage response = await client.GetAsync(url);
-
-
-					return Json(url);
+					// Las credenciales no son válidas, devolver un mensaje indicando al usuario
+					return BadRequest("La contraseña proporcionada no es correcta.");
 				}
 			}
 			catch (Exception ex)
@@ -56,6 +69,44 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			}
 		}
 
+		public async Task<bool> VerificarCredenciales(string usuario, string contrasena)
+		{
+			var handler = new HttpClientHandler
+			{
+				ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+				{
+					Console.WriteLine("SSL error skipped");
+					return true;
+				}
+			};
+
+			using (HttpClient client = new HttpClient(handler))
+			{
+				string url = $"https://10.16.158.31:9096/serviciosinfracciones/getlogin?userWS=1&claveWS=18&usuario={usuario}&contraseña={contrasena}";
+
+				var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+
+				HttpResponseMessage response = await client.GetAsync(url);
+
+				string content = await response.Content.ReadAsStringAsync();
+
+				if (!response.IsSuccessStatusCode)
+				{
+					// Si la respuesta no es exitosa, devolver false indicando que las credenciales no son válidas
+					return false;
+				}
+
+				// Verificar si el contenido indica que las credenciales son incorrectas
+				if (content.Contains("Unable to cast object of type 'System.DBNull' to type 'System.String'"))
+				{
+					// Las credenciales proporcionadas no son correctas, devolver false
+					return false;
+				}
+
+				// Las credenciales son correctas, devolver true
+				return true;
+			}
+		}
 
 
 	}

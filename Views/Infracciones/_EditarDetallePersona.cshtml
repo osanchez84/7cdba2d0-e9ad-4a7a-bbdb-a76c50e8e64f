@@ -1,4 +1,7 @@
 ﻿@model PersonaModel
+@{
+    bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
+}
 
 <div>
 <form id="frmEditarConductor">
@@ -35,7 +38,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.CURP)
                     .Label(l => l.Content("CURP: "))
                     .Placeholder("Ingresa el CURP")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -45,7 +48,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.RFC)
                     .Label(l => l.Content("RFC:"))
                     .Placeholder("Ingresa el RFC")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -66,7 +69,7 @@
                 @(Html.Kendo().DateTimePickerFor(t => t.fechaNacimiento).Max(DateTime.Now)
                                                 .Label(l => l.Content("Fecha Nacimiento:"))
                                                 .Format("dd/MM/yyyy")
-                                                //.Enable(!ViewBag.EsSoloLectura)
+                                                .Enable(!ViewBag.EsSoloLectura)
                                                 .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                                 )
             </div>
@@ -102,7 +105,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.calle)
                     .Label(l => l.Content("Calle: "))
                     .Placeholder("Ingresa la calle")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -112,7 +115,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.numero)
                     .Label(l => l.Content("Número:"))
                     .Placeholder("Ingresa el número")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -126,7 +129,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.colonia)
                     .Label(l => l.Content("Colonia: "))
                     .Placeholder("Ingresa la colonia")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -136,7 +139,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.telefono)
                     .Label(l => l.Content("Teléfono:"))
                     .Placeholder("Ingresa el teléfono")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -146,7 +149,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.PersonaDireccion.correo)
                     .Label(l => l.Content("Correo: "))
                     .Placeholder("Ingresa el correo")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                   .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -171,7 +174,7 @@
                 @(Html.Kendo().TextBoxFor(t => t.numeroLicencia)
                     .Label(l => l.Content("Licencia:"))
                     .Placeholder("Ingresa la Licencia")
-                    //.Enable(!ViewBag.EsSoloLectura)
+                    .Enable(!ViewBag.EsSoloLectura)
                     .HtmlAttributes(new { style = "width: 100%" })
                     )
             </div>
@@ -182,7 +185,7 @@
                 @(Html.Kendo().DateTimePickerFor(t => t.vigenciaLicencia)
                                                 .Label(l => l.Content("Vigencia Licencia:"))
                                                 .Format("dd/MM/yyyy")
-                                                //.Enable(!ViewBag.EsSoloLectura)
+                                                .Enable(!ViewBag.EsSoloLectura)
                                                 .HtmlAttributes(new { style = "width: 100%", required = "required" })
                                                 )
             </div>

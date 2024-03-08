@@ -264,7 +264,29 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-		public JsonResult Cortesias_Read()
+
+        public IActionResult ajax_OmitirConductor2(int idInfraccion)
+        {
+            var personamodel = new PersonaModel();
+            personamodel.nombre = "SE Ignora";
+            personamodel.idCatTipoPersona = 1;
+            personamodel.PersonaDireccion = new PersonaDireccionModel();
+
+            var result = _personasService.CreatePersona(personamodel);
+
+            var persona = _personasService.GetPersonaById(result);
+            _infraccionesService.ActualizConductor(idInfraccion, result);
+
+            ViewBag.EsSoloLectura = false;
+
+            var q = PartialView("_EditarDetallePersona", persona);
+
+            return q;
+        }
+
+
+
+        public JsonResult Cortesias_Read()
         {
             //catTipoCortesia
             var result = new SelectList(_tipoCortesiaService.GetTipoCortesias(), "idTipoCortesia", "tipoCortesia");

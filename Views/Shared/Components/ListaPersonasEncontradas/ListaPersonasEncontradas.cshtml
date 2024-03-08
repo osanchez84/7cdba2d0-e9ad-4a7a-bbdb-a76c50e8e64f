@@ -64,6 +64,7 @@
         grid.tbody.on("click", ".k-checkbox", onClickPersonas);
 
         function onClickPersonas(e) {
+            
             var grid = $("#gridPersonas").data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);

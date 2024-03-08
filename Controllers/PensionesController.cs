@@ -2,6 +2,8 @@
 using GuanajuatoAdminUsuarios.Interfaces;
 using GuanajuatoAdminUsuarios.Models;
 using GuanajuatoAdminUsuarios.Services;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -115,11 +117,44 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+
+        public JsonResult Consesionarios(int idDEl)
+        {
+
+            var data = _pensionesService.GetConcesionarios(idDEl);
+            var result = new SelectList(data, "value", "text");
+            return Json(result);
+        }
+
+
+        public IActionResult ajax_InserAsociado(int idPEncion,int idAsociado)
+        {
+
+            var result = 0;
+
+            var can = _pensionesService.ExistData(idPEncion, idAsociado);
+
+            if (can)
+            {
+                var data = _pensionesService.InsertAsociado(idPEncion, idAsociado);
+                result = 1;
+            }
+
+
+
+            return Json(result);
+        }
+
+
+
+
         [HttpGet]
         public ActionResult ajax_ModalEditarPension(int idPension)
         {
-  
+            HttpContext.Session.SetInt32("IdPenciondata", idPension);
+
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
 
                 var model = _pensionesService.GetPensionById(idPension,idOficina).FirstOrDefault();
             
@@ -137,6 +172,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_EditarPension", model);
             }
 
+
+
+        public IActionResult ajax_GetListAsociadosPenciones([DataSourceRequest] DataSourceRequest request)
+        {
+            int idPension = HttpContext.Session.GetInt32("IdPenciondata").Value;
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var gruasPensionesList = _pensionesService.GetAsociados(idPension, idOficina);
+
+
+            return Json(gruasPensionesList.ToDataSourceResult(request));
+        }
 
 
         [HttpPost]

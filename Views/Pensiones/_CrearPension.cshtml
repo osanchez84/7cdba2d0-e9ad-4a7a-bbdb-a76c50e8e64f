@@ -38,10 +38,18 @@
                                     <label>Delegación:</label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idDelegacion")
-                                        .BindTo((SelectList)ViewBag.CatDelegaciones)
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        // .BindTo((SelectList)ViewBag.CatDelegaciones)
                                         .OptionLabel("-- Seleccione --")
                                         .Filter(FilterType.Contains)
-
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("Delegaciones_DropExt", "Estadisticas");
+                                            });
+                                        })
                                         .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
                                         )
                                 </div>

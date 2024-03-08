@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Telerik.SvgIcons;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -112,6 +113,184 @@ namespace GuanajuatoAdminUsuarios.Services
             return ListPensiones;
         }
 
+        public bool ExistData(int Pencion, int idAsociado)
+        {
+            var result = false;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" select count(*) as result from [dbo].[AsosiadosPension] where idPension=@IdPension and idAsociado=@idAsociado ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)Pencion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idAsociado", SqlDbType.Int)).Value = (object)idAsociado ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                           
+                           result = (int)reader["result"]==0;
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            return result;
+        }
+        public bool InsertAsociado(int Pencion, int idAsociado)
+        {
+            var result = false;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" insert into [dbo].[AsosiadosPension] (idPension,idAsociado) values (@IdPension,@idAsociado);select SCOPE_IDENTITY() as result";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)Pencion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idAsociado", SqlDbType.Int)).Value = (object)idAsociado ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return result;
+        }
+
+
+        public List<Gruas2Model> GetAsociados(int idPension, int Asociado)
+        {
+            var result = new List<Gruas2Model>();
+
+
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" 
+                                            select id,concesionario from [dbo].[AsosiadosPension] a 
+                                                        join concesionarios b on a.idAsociado=b.idConcesionario
+                                                        where idPension=@IdPension";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
+                    
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            var list = new Gruas2Model();
+
+                            list.idDeposito = (int)reader["id"];
+                            list.concesionario = reader["concesionario"].ToString();
+
+                            result.Add(list);
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+
+            return result;
+        }
+
+
+        public List<CatalogModel> GetConcesionarios(int delegacionDDValue)
+        {
+            var result = new List<CatalogModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" select idConcesionario,concesionario from concesionarios where idDelegacion=@idDelegacion ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)delegacionDDValue ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatalogModel data = new CatalogModel();
+
+                            data.value = reader["idConcesionario"].ToString();
+                            data.text = reader["concesionario"].ToString();
+
+
+                            result.Add(data);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+
+            return result;
+        }
+
+
+
         public List<PensionModel> GetPensionesToGrid(string strPension, int? idOficina)
         {
 
@@ -121,6 +300,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string SqlTransact = @"SELECT TOP 200
+isnull((select STRING_AGG(concesionario,',') 
+							from [dbo].[AsosiadosPension] a 
+							join concesionarios b on a.idAsociado=b.idConcesionario
+							where a.idPension=p.idPension
+							),'') asociado ,
                             p.idPension,
                             p.indicador,
                             p.pension,
@@ -178,7 +362,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             pensionModel.responsable = reader["responsable"] != DBNull.Value ? reader["responsable"].ToString() : string.Empty;
                             pensionModel.placas = reader["placas"] != DBNull.Value ? reader["placas"].ToString() : string.Empty;
                             pensionModel.concesionario = reader["concesionario"] != DBNull.Value ? reader["concesionario"].ToString() : string.Empty;
-
+                            pensionModel.Asociados = reader["asociado"].ToString();
                             ListPensiones.Add(pensionModel);
 
                         }

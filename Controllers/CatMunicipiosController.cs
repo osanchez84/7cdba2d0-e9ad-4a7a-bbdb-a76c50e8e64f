@@ -57,7 +57,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public JsonResult Delegaciones_Drop()
         {
             var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
-            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinas().Where(x => x.Transito == tipo), "IdOficinaTransporte", "NombreOficina");
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesDropDown().Where(x => x.Transito == tipo), "IdOficinaTransporte", "NombreOficina");
             return Json(result);
         }
         public ActionResult EditarMunicipioModal(int IdMunicipio)

@@ -112,6 +112,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia), "IdOficinaTransporte", "NombreOficina");
             return Json(result);
         }
+
+
+
+        public JsonResult Delegaciones_DropExt()
+        {
+            int idDependencia = 1;
+
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia), "IdOficinaTransporte", "NombreOficina");
+            return Json(result);
+        }
+
         public JsonResult SubtipoServicio_Drop(int tipoServicioDDlValue)
         {
             var result = new SelectList(_catSubtipoServicio.GetSubtipoPorTipo(tipoServicioDDlValue), "idSubTipoServicio", "subTipoServicio");

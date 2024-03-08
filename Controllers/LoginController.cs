@@ -218,9 +218,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                         if (json != null && json.Count > 0)
                         {
+                            string usuarioLogin = usuario;
                             string nombre = json[0].nombre;
                             string oficina = json[0].oficina;
                             string idDependenciaStr = json[0].tipo_oficina;
+                            
 
                             if (int.TryParse(idDependenciaStr, out int idDependencia))
                             {
@@ -250,6 +252,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             string pension = _pensionesService.GetPensionLogin(idPension);
 
                             string idOficinaStr = json[0].clave_oficina;
+                            string idOfic = json[0].clave_depOficina;
                             // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
                             string TipoOfi = json[0].tipo_oficina;
@@ -268,7 +271,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             //Se obtiene la abreviatura del municipio asociado a la delegacion
                             string abreviaturaMunicipio = _delegacionesService.getAbreviaturaMunicipio(idOficina);
                             
-                            await SignInUser(idUsuario, nombre, oficina, pension, TipoOfi,abreviaturaMunicipio);
+                            await SignInUser(idUsuario, nombre, oficina, pension, TipoOfi,abreviaturaMunicipio,usuarioLogin, idOfic);
 
                             //BITACORA.
                             //var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
@@ -351,19 +354,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 
 
-        private async Task SignInUser(string idUsuario, string nombre, string oficina, string pension, string TipoOfi,string abreviaturaMunicipio)
+        private async Task SignInUser(string idUsuario, string nombre, string oficina, string pension, string TipoOfi,string abreviaturaMunicipio, string usuarioLogin, string dependenciaOficina="0")
         {
             var claims = new List<Claim>
             {
                 new Claim(CustomClaims.IdUsuario, idUsuario),
+                new Claim(CustomClaims.OficinaDelegacion, dependenciaOficina),
                 new Claim(CustomClaims.Nombre, nombre),
 				//new Claim(CustomClaims.Perfil, perfil),
                 new Claim(CustomClaims.Oficina, oficina),
                 new Claim(CustomClaims.TipoOficina, TipoOfi),
                 new Claim(CustomClaims.Pension, pension),
                 new Claim(CustomClaims.AbreviaturaMunicipio, abreviaturaMunicipio),
+				new Claim(CustomClaims.Usuario, usuarioLogin),
 
-            };
+			};
 
 
             var claimsIdentity = new ClaimsIdentity(

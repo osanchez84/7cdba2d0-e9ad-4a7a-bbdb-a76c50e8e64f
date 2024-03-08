@@ -111,9 +111,9 @@
                 sitteg_success("Se ha creado una nueva infracción, proporcione los datos requeridos");
                 $('#crearInfraccionModal').modal('hide');
 
-                sessionStorage.setItem('redirectTo', '/CapturaAccidentes/Editar/' + result.id + '?fromAcc=true');
-
-                window.setTimeout(function () {
+            //    sessionStorage.setItem('redirectTo', '/CapturaAccidentes/Editar/' + result.id + '?fromAcc=true');
+                    sessionStorage.setItem('redirectTo', '/CapturaAccidentes/CapturaAccidenteC/' + result.id + '?fromAcc=true');
+                    window.setTimeout(function () {
                     window.location.href = '/Infracciones/Editar/' + result.id;
                 }, 500);
                 hideLoading();

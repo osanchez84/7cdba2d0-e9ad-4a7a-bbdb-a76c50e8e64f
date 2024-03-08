@@ -10,7 +10,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
          List<CapturaAccidentesModel> ObtenerAccidentes(int idOficina);
         List<CapturaAccidentesModel> ObtenerAccidentesPagination(int idOficina, Pagination pagination);
 
-        public int GuardarParte1(CapturaAccidentesModel model, int idOficina,string nombreOficina="NRA");
+        public int GuardarParte1(CapturaAccidentesModel model, int idOficina, string abreviaturaMunicipio, int anio, string nombreOficina = "NRA");
         public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);
 
         List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio);

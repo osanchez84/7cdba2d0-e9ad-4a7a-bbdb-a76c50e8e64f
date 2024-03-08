@@ -241,7 +241,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Placa = reader["Placa"] is DBNull ? string.Empty : reader["Placa"].ToString();
                             deposito.FechaIngreso = reader["FechaIngreso"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaIngreso"]);
                             deposito.Folio = reader["Folio"] is DBNull ? string.Empty : reader["Folio"].ToString();
-                            deposito.Km = reader["Km"] is DBNull ? string.Empty : reader["Km"].ToString();
+                            deposito.Km = reader["Km"] is DBNull ? string.Empty : Decimal.Parse((string)reader["Km"]).ToString("G29");
                             deposito.Liberado = reader["Liberado"] is DBNull ? 0 : Convert.ToInt32(reader["Liberado"]);
                             deposito.Autoriza = reader["Autoriza"] is DBNull ? string.Empty : reader["Autoriza"].ToString();
                             deposito.FechaActualizacion = reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : Convert.ToDateTime(reader["FechaActualizacion"]);
@@ -289,7 +289,11 @@ namespace GuanajuatoAdminUsuarios.Services
                         @"select d.IdDeposito,d.IdSolicitud,d.idDelegacion,d.IdMarca,d.IdSubmarca,d.IdPension,d.IdTramo,
 		                d.IdColor,d.Serie,d.Placa,d.FechaIngreso,d.Folio,d.Km,d.Liberado,d.Autoriza,d.FechaActualizacion,
 		                del.delegacion, d.ActualizadoPor, d.estatus, m.marcaVehiculo,subm.nombreSubmarca, sol.solicitanteNombre,
-						sol.solicitanteAp,sol.solicitanteAm,sol.idCarreteraUbicacion,car.carretera,col.color,pen.pension, cTra.tramo
+						sol.solicitanteAp,sol.solicitanteAm,sol.idCarreteraUbicacion,car.carretera,col.color,pen.pension, cTra.tramo,
+                                            v.idPersona,
+                                            p.nombre,
+                                            p.apellidoPaterno,
+                                            p.apellidoMaterno
 		                from depositos d left join catDelegaciones del on d.idDelegacion= del.idDelegacion
 		                left join catMarcasVehiculos m on d.idMarca=m.idMarcaVehiculo
 		                left join catSubmarcasVehiculos  subm on m.idMarcaVehiculo=subm.idMarcaVehiculo
@@ -298,6 +302,8 @@ namespace GuanajuatoAdminUsuarios.Services
 	                    left join pensiones pen on d.idPension	= pen.idPension
                         left join catTramos cTra  on d.Idtramo=cTra.idTramo
                         left join catCarreteras car on car.idCarretera = sol.idCarreteraUbicacion
+                        LEFT JOIN vehiculos v ON v.placas = d.Placa
+                        LEFT JOIN personas p ON p.idPersona = v.idPersona
 		                where d.liberado=0 and d.estatus=1 and d.IdDeposito=@IdDeposito and d.idDelegacion = @idOficina";
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdDeposito", SqlDbType.Int)).Value = (object)Id ?? DBNull.Value;
@@ -320,7 +326,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.Placa = reader["Placa"]?.ToString();
                             deposito.FechaIngreso = reader["FechaIngreso"] as DateTime? ?? DateTime.MinValue;
                             deposito.Folio = reader["Folio"]?.ToString();
-                            deposito.Km = reader["Km"]?.ToString();
+                            deposito.Km = reader["Km"] is DBNull ? string.Empty : Decimal.Parse((string)reader["Km"]).ToString("G29");
                             deposito.Liberado = reader["Liberado"] as int? ?? 0;
                             deposito.Autoriza = reader["Autoriza"]?.ToString();
                             deposito.FechaActualizacion = reader["FechaActualizacion"] as DateTime? ?? DateTime.MinValue;
@@ -329,13 +335,16 @@ namespace GuanajuatoAdminUsuarios.Services
                             deposito.marcaVehiculo = reader["marcaVehiculo"]?.ToString();
                             deposito.nombreSubmarca = reader["nombreSubmarca"]?.ToString();
                             deposito.delegacion = reader["delegacion"]?.ToString();
-                            deposito.solicitanteNombre = reader["solicitanteNombre"]?.ToString();
-                            deposito.solicitanteAp = reader["solicitanteAp"]?.ToString();
-                            deposito.solicitanteAm = reader["solicitanteAm"]?.ToString();
+                            deposito.solicitanteNombre = reader["nombre"]?.ToString(); //reader["solicitanteNombre"]?.ToString();
+                            deposito.solicitanteAp = reader["apellidoPaterno"]?.ToString();
+                            deposito.solicitanteAm = reader["apellidoMaterno"]?.ToString();
                             deposito.Color = reader["Color"]?.ToString();
                             deposito.pension = reader["pension"]?.ToString();
                             deposito.tramo = reader["tramo"]?.ToString();
                             deposito.carretera = reader["carretera"]?.ToString();
+                            deposito.nombrePropietario = reader["nombre"]?.ToString();
+                            deposito.apPaternoPropietario = reader["apellidoPaterno"]?.ToString();
+                            deposito.apMaternoPropietario = reader["apellidoMaterno"]?.ToString();
 
                         }
                     }

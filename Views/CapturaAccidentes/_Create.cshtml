@@ -59,7 +59,14 @@
         if ( $( "#divAlertaPersonaFisica" ).length ) {
                 $('#person-fisica-tab').click();
         }
- 
+ //Funcion que se ejecuta cuando una persona es seleccionada
+        $('#ddlIdPersona').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
+                $('#ddlIdPersona').val('');
+            else {
+                 $('#ddlIdPersona').val(data.idPersona);
+                }
+        });
 });
 function mostrarMensajeRobado() {
         Swal.fire({
@@ -187,7 +194,8 @@ function mostrarMensajeRobado() {
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
+
+                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
                     @if (Model.ReporteRobo == true)
                     {
                           <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
@@ -796,9 +804,7 @@ function mostrarMensajeRobado() {
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
-
-                   @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
-
+                  	@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig(),persona=Model.Persona})
                 </div>
                <div class="row">
                     <div class="col-12">
@@ -1355,6 +1361,26 @@ function mostrarMensajeRobado() {
                                         });
                                     })
                                     .HtmlAttributes(new { style = "width:100%;" })
+                                    )
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="controlForm my-3">
+                            <label>Vigencia:</label>
+                            <span>
+                                @(Html.Kendo().DropDownListFor(m => m.Persona.idVigencia).Filter(FilterType.Contains)
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .OptionLabel("Selecciona una opción")
+                                    .DataSource(source =>
+                                    {
+                                        source.Read(read =>
+                                        {
+                                            read.Action("Tiempo_Vigencia_Drop", "Personas");
+                                        });
+                                    })
+                                    .HtmlAttributes(new { style = "width:50%;", id = "idVigencia" })
                                     )
                             </span>
                         </div>

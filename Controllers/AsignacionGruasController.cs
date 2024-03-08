@@ -52,15 +52,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 return Json(resultadoSolicitudes);
         }
 
-        public IActionResult DatosGruas(string iSo, int iPg,int idDeposito)
+        public IActionResult DatosGruas(int iSo,string folio, int iPg,int idDeposito)
         {
-            HttpContext.Session.SetString("iSo", iSo);
+            string folioOId=iSo>0?iSo.ToString():folio;
+            HttpContext.Session.SetString("iSo", folioOId);
             HttpContext.Session.SetInt32("iPg", iPg);
 
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             int idDependencia = HttpContext.Session.GetInt32("IdDependencia") ?? 0;
 
-            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo, idOficina, idDependencia);
+            var solicitud = _asignacionGruasService.BuscarSolicitudPord(iSo,folio,idOficina, idDependencia);
             HttpContext.Session.SetInt32("idDeposito", solicitud.IdDeposito==0?idDeposito: solicitud.IdDeposito);
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
 

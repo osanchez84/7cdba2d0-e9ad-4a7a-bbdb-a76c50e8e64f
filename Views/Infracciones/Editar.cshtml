@@ -1,8 +1,5 @@
 ﻿@model InfraccionesModel
-@{
-    bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
-}
-
+c
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
@@ -588,7 +585,7 @@
                             </div>
                             <div class="row my-4 px-4">
                                 <div id="detallePersonas">
-                                    <partial name="_DetallePersona" model="Model.PersonaInfraccion2" />
+                                    <partial name="_EditarDetallePersona" model="Model.PersonaInfraccion2" />
                                 </div>
                             </div>
                             <input type="hidden" id="hdnIdPersonaTemp" value="" />
@@ -1090,7 +1087,7 @@
                     sitteg_warning("El número de placa excede la longitud máxima, la infracción no se envió a finanzas.");
                     shouldGoBack = true;
                 }
-                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {
+                else if (response.success === false && response.message === "Infracción guardada, no enviada a finanzas") {                   
                     sitteg_warning("La infracción no fue enviada a Secretaría de Finanzas.");
                     shouldGoBack = true;
                 }
@@ -1111,14 +1108,16 @@
                 console.log("RED", redirectTo);
                 if (shouldGoBack && redirectTo) {
                     // alert("@ViewBag.GoDEpositos")
-                    if (@regreso == "1")
-                        window.location.href = "/Infracciones/Crear";
-                    else {
-                        setTimeout(function () {
-                            window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
-                        }, 2000);
-                    }
+                    window.location.href = redirectTo;
+                   // if (@regreso == "1")
+                   //     window.location.href = "/Infracciones/Crear";
+                   // else {
+                    //    setTimeout(function () {
+                     //       window.location.href = '/CapturaAccidentes/CapturaAccidenteC';
+                      //  }, 2000);
+                   // }
                 }
+                
 
                 hideLoading();
             },

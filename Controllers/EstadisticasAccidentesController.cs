@@ -118,9 +118,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_BusquedaAccidentes(BusquedaAccidentesModel model)
         {
             //int idOficina = (int)HttpContext.Session.GetInt32("IdOficina");
-        
-                var modelList = _estadisticasAccidentesService.ObtenerAccidentes()
-                                                           .Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
+
+            var modelList = _estadisticasAccidentesService.ObtenerAccidentes();
+
+            modelList= modelList.Where(w => w.idMunicipio == (model.idMunicipio > 0 ? model.idMunicipio : w.idMunicipio)
                                                                && w.idDelegacion == (model.idDelegacion > 0 ? model.idDelegacion : w.idDelegacion)
                                                                && w.IdOficial == (model.IdOficial > 0 ? model.IdOficial : w.IdOficial)
                                                                && w.idCarretera == (model.idCarretera > 0 ? model.idCarretera : w.idCarretera)
@@ -145,7 +146,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     s => new EstadisticaAccidentesMotivosModel()
                     {
                         Motivo = s.Key.ToString(),
-                        Delegacion = s.Key.ToString(),
+                        Delegacion = s.First().Delegacion,
                         Contador = s.Count()
 
                     }

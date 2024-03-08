@@ -1,4 +1,18 @@
 @model List<GuanajuatoAdminUsuarios.Models.PersonaModel>
+    <script>
+        function validaFechaGrid(data) {
+            if(data.fechaNacimiento==undefined ||  data.fechaNacimiento==='null' || data.fechaNacimiento==='')
+            return '';
+    var minDate = new Date('0001-01-01T00:00:00Z');
+    minDate.setDate(minDate.getDate() + 1);
+    if (data.fechaNacimiento < minDate) {
+        return '';
+    } else {
+        return kendo.toString(data.fechaNacimiento, 'dd/MM/yyyy');
+    }
+}
+
+    </script>
         <div class="row justify-content-between my-2 mb-3 titleCustom">
     <div class="offset-1 col-12 mt-4 mb-2">
         <h5 class="px-4"><b>Personas encontradas en RIAG</b></h5>
@@ -16,6 +30,7 @@
             columns.Bound(c => c.nombreCompleto).Title("Nombre");
             columns.Bound(p => p.CURP).Title("CURP");
             columns.Bound(p => p.RFC).Title("RFC");
+            columns.Bound(p => p.fechaNacimiento).Title("Fecha de nacimiento").ClientTemplate("#=validaFechaGrid(data)#");
             columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
             columns.Bound(p => p.tipoLicencia).Title("Tipo de Licencia");
             columns.Bound(c => c.tipoPersona).Title("Tipo persona");
@@ -34,6 +49,7 @@
             s.Field(c => c.nombreCompleto);
             s.Field(c => c.CURP);
             s.Field(c => c.RFC);
+            s.Field(c => c.fechaNacimiento);
             s.Field(c => c.numeroLicencia);
             s.Field(c => c.tipoPersona);
             s.Field(c => c.tipoLicencia);
@@ -60,10 +76,10 @@
             } else {
                 grid.clearSelection();
             };
-            //Se asigna el valor al id de persona
-            $('#ddlIdPersona').val(idPersona);
-             $('#ddlIdPersona').change();
-            $('#agregarConductorModal').modal('hide');
+            //Se invoca el método configurado para el trigger y cachar el evento de persona seleccionada
+            //$('#@ViewBag.VariableToChange').val(idPersona);
+             $('#@ViewBag.VariableToChange').trigger('@ViewBag.NombreMetodoToTrigger',JSON.parse(JSON.stringify(dataItem)));
+            //$('#agregarConductorModal').modal('hide');
         };
     })
 </script>

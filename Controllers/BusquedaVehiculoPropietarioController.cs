@@ -4,8 +4,8 @@
  * Fecha de creación: Tuesday, February 20th 2024 5:06:14 pm
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sat Mar 02 2024
- * Última modificación: Sat Mar 02 2024
+ * Última modificación: Thu Mar 07 2024
+ * Última modificación: Thu Mar 07 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -131,10 +131,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// Muestra vista para crear persona fisica
         /// </summary>
         /// <returns></returns>
-        public ActionResult MostrarPersonaFisica(PersonaModel persona)
+        public ActionResult MostrarPersonaFisica(BusquedaPersonaModel model)
         {
 
-            return ViewComponent("CrearPersona", new { persona });
+            return ViewComponent("CrearPersona", new { model });
         }
         /// <summary>
         /// Muestra vista para crear persona moral
@@ -185,6 +185,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.ApellidoPaternoBusqueda = model.ApellidoPaternoBusqueda?.Trim();
             model.ApellidoMaternoBusqueda = model.ApellidoMaternoBusqueda?.Trim();
             model.NumeroLicenciaBusqueda = model.NumeroLicenciaBusqueda?.Trim();
+            model.IdTipoPersona = Convert.ToInt16(TipoPersona.Fisica);
 
             //Logger.Info("Buscar persona fisica en RIAG por :" + model);
             Pagination pagination = new()
@@ -268,31 +269,31 @@ namespace GuanajuatoAdminUsuarios.Controllers
         /// <param name="Persona"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public ActionResult CrearPersonaFisica([FromServices] IPersonasService personasService, PersonaModel Persona)
+        public ActionResult CrearPersonaFisica([FromServices] IPersonasService personasService, BusquedaPersonaModel modeloBusqueda)
         {
+            var persona = modeloBusqueda.PersonaModel;
             int IdPersonaFisica = 0;
-            if (Persona.idPersona > 0)
+            if (persona.idPersona > 0)
             {
-                Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
-                int result = personasService.UpdatePersona(Persona);
+                persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                int result = personasService.UpdatePersona(persona);
                 if (result > 0)
-                    IdPersonaFisica = (int)Persona.idPersona;
+                    IdPersonaFisica = (int)persona.idPersona;
             }
             else
             {
-                Persona.idCatTipoPersona = (int)TipoPersona.Fisica;
-                IdPersonaFisica = personasService.CreatePersona(Persona);
+                persona.idCatTipoPersona = (int)TipoPersona.Fisica;
+                IdPersonaFisica = personasService.CreatePersona(persona);
             }
             if (IdPersonaFisica == 0)
             {
                 throw new Exception("Ocurrio un error al dar de alta la persona");
             }
             var modelList = personasService.ObterPersonaPorIDList(IdPersonaFisica);
-            BusquedaPersonaModel model = new()
-            {
-                ListadoPersonas = modelList
-            };
-            return Json(new { success = true, data = model });
+
+            modeloBusqueda.ListadoPersonas = modelList;
+        
+            return Json(new { success = true, data = modeloBusqueda });
         }
         /// <summary>
         /// Crea un nuevo registro en la bd de una persona moral

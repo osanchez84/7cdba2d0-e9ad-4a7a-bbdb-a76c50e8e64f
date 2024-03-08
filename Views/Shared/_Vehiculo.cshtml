@@ -103,7 +103,7 @@
         {
             <div class="row">
                 <div class="col-12 my-4">
-                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes</b></h5>
+                    <h5 class="px-4 colorSuccess d-flex align-items-center"><b class="d-flex align-items-center justify-content-center bgSuccess mb-1 me-2 rounded-circle px-1"><i style="font-size: 10px; padding: 7px 2px;" class="icon-correct text-white"></i></b><b>Vehículo capturado en Registro de Infracciones y Accidentes de Guanajuato</b></h5>
                       @if (Model.ReporteRobo == true)
                     {
                           <div class="row align-items-start"><div class="col-12 col-md-8 col-lg-8"><h5 class="px-4 colorDanger"><b class="text-white bgDanger mb-1 me-2 rounded-circle px-2 h6">i</b><b>El vehículo cuenta con reporte de robo en REPUVE</b><button class="btn" onclick="mostrarMensajeRobado();"><h5 class="colorPrimary"><b>[Ver]</b></h5></button></h5></div></div>
@@ -576,7 +576,24 @@
 
 
     <section id="sec3" style="display:block">
-        <div class="col-12 col-md-8"></div>
+         @if (Model.idTipoPersona.HasValue)
+{
+    if (Model.idTipoPersona == 1)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
+            <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
+        </div>
+    }
+    else if (Model.idTipoPersona == 2)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
+            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
+        </div>
+    }
+}
+
         <div class="col-12 mt-4 controlForm px-4">
             <label>Tipo de propietario:</label>
         </div>
@@ -606,26 +623,8 @@
                 </div>
             </nav>
 
-
         </div>
-        @if (Model.idTipoPersona.HasValue)
-{
-    if (Model.idTipoPersona == 1)
-    {
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Se encontraron datos de persona física</h4>
-            <p class="mb-0">Ingresa a "Editar" para verificar y guardar los datos.</p>
-        </div>
-    }
-    else if (Model.idTipoPersona == 2)
-    {
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Se encontraron datos de persona moral</h4>
-            <p class="mb-0">Ingresa a "Agregar Nueva Persona Moral" para verificar y guardar los datos.</p>
-        </div>
-    }
-}
-
+       
         <div class="tab-content" id="nav-tabContent">
 
             @*PERSONA MORAL*@
@@ -686,8 +685,7 @@
             @*PERSONA FISICA*@
             <div class="tab-pane tabCustomConteiner fade" id="person-fisica" role="tabpanel" aria-labelledby="person-fisica-tab">
                 <div class="row px-4 mt-4 pb-4 align-items-end">
-                     @await Component.InvokeAsync("BusquedaPersonaFisica",new{isModal=false,persona=Model.Persona})
-
+                              	@await Component.InvokeAsync("BusquedaPersonaFisica",new{config=new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig(),persona=Model.Persona})
                 </div>
                 <div class="row">
                     <div class="col-12">
@@ -828,6 +826,14 @@ $("#ddlCatTipoServicio").on("change", function () {
         $('#idSubmarca').kendoDropDownList();
 
     });
+
+     $('#ddlIdPersona').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
+                $('#ddlIdPersona').val('');
+            else {
+                 $('#ddlIdPersona').val(data.idPersona);
+                }
+        });
 
     $('#mensajeBuscandoPersonaFisica').hide();
         buscarPersonasFisicas();

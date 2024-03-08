@@ -66,6 +66,34 @@
 
 
         <form id="buscarConductorForm">
+
+
+
+        <div class="row px-4 mt-4 align-items-end">
+           <div class="col-12 col-md-6 col-lg-6" id="dataDep">
+                <div class="controlForm mb-3">
+                    <label>Tipo Persona:</label>
+                    <span>
+                            @(Html.Kendo().DropDownListFor(t => t.PersonaModel.tipoPersona).Filter(FilterType.Contains)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .Events(e => e.Change("tipoPersona"))
+                            .SelectedIndex(0)
+                            .HtmlAttributes(new { style = "width:100%;", Id = "ddlTipoPersona" })
+                            .Filter(FilterType.Contains)
+                            .BindTo(new List<SelectListItem>
+                        {
+                        new SelectListItem { Text = "Física", Value = "1" },
+                        new SelectListItem { Text = "Moral", Value = "2" }
+                        })
+                            )
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+
             <div class="row px-4 mt-4 align-items-end">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
@@ -97,15 +125,16 @@
 
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="controlForm my-3">
+                    <label class="control-label" id="nombreP">Nombre(s): </label>
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.nombreBusqueda)
-                            .Label(l => l.Content("Nombre(s):"))
+                            
                             .Placeholder("Ingresa el nombre(s) del propietario")
                             .HtmlAttributes(new { @class = "trimmable", style = "width: 100%" })
                             )
 
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3" id="ap">
                     <div class="controlForm my-3">
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.apellidoPaternoBusqueda)
                             .Label(l => l.Content("Apellido paterno:"))
@@ -115,7 +144,7 @@
 
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3" id="am">
                     <div class="controlForm my-3">
                         @(Html.Kendo().TextBoxFor(t => t.PersonaModel.apellidoMaternoBusqueda)
                             .Label(l => l.Content("Apellido materno:"))
@@ -339,12 +368,21 @@
                 return;
             }
         }
+        
 
+        if($("#ddlTipoPersona").data("kendoDropDownList").value()==2){
+            if ((nombreBusqueda !== "") &&
+            (nombreBusqueda.length < 3)) {
+            sitteg_warning("La razón social debe tener al menos 3 caracteres.");
+            return;
+           }
+        } else {
         if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
             (nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
             sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
             return;
         }
+    }
 
 
         var formData = $("#buscarConductorForm").serializeArray();
@@ -394,6 +432,14 @@
                     buscaEnLicencias()
                     return;
                 }
+                if (response.Data == "2") {
+                    sitteg_warning("La búsqueda no arrojó resultados.");
+                    console.log("no arrojo resultados 2");
+                    setTimeout(function () {
+                        console.log("timeout");
+                        window.location.href = "/Personas/Index"; //will redirect to your blog page (an ex: blog.html)
+                    }, 1200);
+                }
                 var personasList = response.Data;
                 if (personasList != null) {
                     var grid = $("#gridPersonas").data("kendoGrid");
@@ -402,13 +448,20 @@
                 }
                 else {
                     sitteg_warning("La búsqueda no arrojó resultados.");
+                    console.log("no arrojo resultados");
                     var grid = $("#gridPersonas").data("kendoGrid");
                     grid.dataSource.data([]);
+                    grid.dataSource.refresh();
+                    setTimeout(function () {
+                        console.log("timeout");
+                        window.location.href = "/Personas/Index"; //will redirect to your blog page (an ex: blog.html)
+                    }, 1500);
                 }
 
                 hideLoading();
             },
             error: function (error) {
+                console.log("error",error);
                 sitteg_warning('Ocurrió un error en la búsqueda.');
                 hideLoading();
             }
@@ -586,6 +639,10 @@
                 else {
                     sitteg_warning("La búsqueda no arrojó resultados.");
                     hideLoading();
+                    setTimeout(function () {
+                        console.log("timeout");
+                        window.location.href = "/Personas/Index"; //will redirect to your blog page (an ex: blog.html)
+                    }, 1500);
                     return;
                 }
 
@@ -594,6 +651,7 @@
                 hideLoading();
             },
             error: function (error) {
+                console.log("buscaEnLicencias error", error)
                 sitteg_warning('Ocurrió un error en la búsqueda.');
                 hideLoading();
             }
@@ -718,4 +776,26 @@
         $('#modalLicenciasList').modal('show');
 
     }
+
+
+    function tipoPersona() {
+        var tipoPersonaValue = $("#ddlTipoPersona").data("kendoDropDownList").value() ||1;
+        console.log("tipoPersonaValue",tipoPersonaValue);
+
+
+        if(tipoPersonaValue==1){
+           $("#nombreP").html("Nombre(s): ");
+           $('#ap').show();
+           $('#am').show();
+        } else {
+            $("#nombreP").html("Razón Social: ");
+            $('#ap').hide();
+            $('#am').hide();
+        }
+        
+
+        //showLoading();
+
+    }
+
 </script>

@@ -295,97 +295,20 @@
 	</nav>
 	<div class="tab-content" id="nav-tabContent">
 		<div class="tab-pane tabCustomConteiner fade show active" id="busqueda-involucrado" role="tabpanel" aria-labelledby="busqueda-involucrado-tab">
-			<form id="buscarInvolucradoForm">
-				<div class="row px-4 mt-4 pb-4 align-items-end">
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.numeroLicenciaBusqueda)
-								.Label(l => l.Content("No. de licencia:"))
-								.Placeholder("Ingresa el número de licencia válido")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.CURPBusqueda)
-								.Label(l => l.Content("CURP:"))
-								.Placeholder("Ingresa el CURP del propietario")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.RFCBusqueda)
-								.Label(l => l.Content("RFC:"))
-								.Placeholder("Ingresa el RFC del propietario")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.nombreBusqueda)
-								.Label(l => l.Content("Nombre(s):"))
-								.Placeholder("Ingresa el nombre(s) del propietario")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoPaternoBusqueda)
-								.Label(l => l.Content("Apellido paterno:"))
-								.Placeholder("Ingresa el apellido paterno")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-
-						</div>
-					</div>
-					<div class="col-12 col-md-6 col-lg-3">
-						<div class="controlForm my-3">
-							@(Html.Kendo().TextBoxFor(t => t.apellidoMaternoBusqueda)
-								.Label(l => l.Content("Apellido materno:"))
-								.Placeholder("Ingresa el apellido materno")
-								.HtmlAttributes(new { style = "width: 100%" })
-								)
-
-						</div>
-					</div>
-				</div>
-			</form>
+			<!-- Componente de busqueda de personas físicas -->
+			
+			@{
+				var config =new GuanajuatoAdminUsuarios.Models.Components.BusquedaPersonaFisicaConfig();
+				config.NombreVariableToChange = "idPersonaInput";
+				config.TextoBotonAgregarPersona = "Agregar un nuevo involucrado";
+			}
+				@await Component.InvokeAsync("BusquedaPersonaFisica",new{config})
+			
 			<div class="row">
 				<div class="col-12">
 					<div class="tabCustomEnd"></div>
 				</div>
-				<div class="col-12 col-md-6 mx-md-auto col-lg-3 mx-lg-0 ">
-					<div class="controlButton my-3">
-						<div class="controlButton my-3">
-							<button onclick="buscarInvolucrado()" class="btnPrimary" id="buscarInvolucrado" type="button"><h5 class="m-0"><b>Buscar</b></h5></button>
-						</div>
-					</div>
-				</div>
 			</div>
-			<div class="row px-4 py-5 align-items-end bg-light">
-                <div class="col-12 col-md-10 mx-md-auto text-center">
-                    <partial name="_InfoPrevioInvolucrados" model="ViewBag.ModeInvolucrado" />
-
-                    <div class="row ">
-                        <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                            <div class="btnOutline btnOutlinePrimary my-3">
-								<button data-bs-toggle="modal" data-bs-target="#addConductor" onclick="mostrarModalCapturarConductor()">
-                                    <h5 class="m-0"><i class="me-2 icon-addInvolucrado"></i><b>Agregar un nuevo involucrado</b></h5>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 		</div>
 
 		<div class="tab-pane tabCustomConteiner fade" id="none-involucrado" role="tabpanel" aria-labelledby="none-involucrado-tab">
@@ -407,22 +330,6 @@
 					<div class="tabCustomEnd"></div>
 				</div>
 			</div>
-		</div>
-	</div>
-
-	<div class="modal fade modalCustom" id="capturarConductorModal" aria-labelledby="capturarConductorLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl" role="document">
-			<div class="modal-content">
-				<div class="modal-body" id="ModalBodyCapturarConductor">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="modalLicencias" class="modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<!-- Contenido del modal se llenará con la función mostrarModal -->
 		</div>
 	</div>
 </div>

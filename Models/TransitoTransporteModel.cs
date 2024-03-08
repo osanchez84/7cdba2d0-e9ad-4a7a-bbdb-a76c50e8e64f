@@ -11,6 +11,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public int cons { get; set; }
 
         #region Depositos
+
+
+
         public int IdDeposito { get; set; }
 
         public int IdSolicitud { get; set; }

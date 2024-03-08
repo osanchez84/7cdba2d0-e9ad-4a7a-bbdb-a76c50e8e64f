@@ -3058,7 +3058,8 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add(new SqlParameter("fechaVencimiento", SqlDbType.Date)).Value = (object)fechaVencimiento; command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
+					command.Parameters.Add(new SqlParameter("fechaVencimiento", SqlDbType.Date)).Value = (object)fechaVencimiento; 
+					command.Parameters.Add(new SqlParameter("fechaInfraccion", SqlDbType.DateTime)).Value = (object)model.fechaInfraccion;
 					DateTime fechaInfraccion = model.horaInfraccion;
 					TimeSpan horaInfraccion = fechaInfraccion.TimeOfDay;
 

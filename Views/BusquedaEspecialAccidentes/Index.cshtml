@@ -411,8 +411,12 @@
 
                 if(data){
 
-                    window.location.reload()
-                    hideLoading();
+                    sitteg_success("Cambio realizado con exito")
+
+                    setTimeout(() => {
+                        window.location.reload()
+                        hideLoading();
+                    }, 550)
                 }
                 else{
                     sitteg_warning("Este folio ya existe")
@@ -420,7 +424,7 @@
                     setTimeout(()=>{
                         window.location.reload()
                         hideLoading();
-                    },250)
+                    },550)
                 }
             },
             error: function (xhr, status, error) {

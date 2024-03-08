@@ -4,7 +4,7 @@
  * Fecha de creación: Thursday, February 29th 2024 2:22:40 am
  * Autor: Osvaldo S. (osvaldo.sanchez@zeitek.net)
  * -----
- * Última modificación: Sat Mar 02 2024
+ * Última modificación: Thu Mar 07 2024
  * Modificado por: Osvaldo S.
  * -----
  * Copyright (c) 2023 - 2024 Accesos Holográficos
@@ -27,24 +27,21 @@ namespace GuanajuatoAdminUsuarios.Components
         {
             _personasService = personasService;
         }
-        public async Task<IViewComponentResult> InvokeAsync(PersonaModel persona)
+        public async Task<IViewComponentResult> InvokeAsync(BusquedaPersonaModel model)
         {
-            if (persona == null)
-            {
-                persona = new PersonaModel();
+            model.PersonaModel ??= new PersonaModel();
 
-            }
-            if (persona.idPersona==null || persona.idPersona == 0)
+            if ( model.PersonaModel.idPersona==null ||  model.PersonaModel.idPersona == 0)
             {
-                persona.PersonaDireccion ??= new PersonaDireccionModel();
+                 model.PersonaModel.PersonaDireccion ??= new PersonaDireccionModel();
             }
             else
             {
-                persona = _personasService.GetPersonaById((int)persona.idPersona);
-                persona.generoBool = persona.idGenero == 1;
+                 model.PersonaModel = _personasService.GetPersonaById((int) model.PersonaModel.idPersona);
+                 model.PersonaModel.generoBool =  model.PersonaModel.idGenero == 1;
             }
 
-            return await Task.FromResult((IViewComponentResult)View("CrearPersonaFisica", persona));
+            return await Task.FromResult((IViewComponentResult)View("CrearPersonaFisica", model));
         }
     }
 }

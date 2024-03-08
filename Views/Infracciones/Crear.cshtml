@@ -212,6 +212,7 @@
 											.Label(l => l.Content("Hora:"))																			
 											.Format("HH:mm")
 											.Culture("es-ES")
+											.Value("")
 											.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
 											)
 									</div>
@@ -881,10 +882,10 @@
 		
 		if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {		
 			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
-			var hora = timepickerControl.value()
-			if (hora.getHours() > date.getHours() ) {
+			var hora = timepickerControl.value()			
+			if (hora != null && hora.getHours() > date.getHours() ) {
 				if (hora.getMinutes() > date.getMinutes()) {
-					timepickerControl.value("00:00")
+					timepickerControl.value("")
 				}
 			}			
 		}

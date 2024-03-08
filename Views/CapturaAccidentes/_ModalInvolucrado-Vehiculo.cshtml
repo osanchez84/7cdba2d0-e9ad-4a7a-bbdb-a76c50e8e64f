@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+                </div>
             </div>
         </div>
     </div>
@@ -50,31 +50,31 @@
     <div id="sinBuqueda" class="col-12 mt-4 controlForm" style="display:block">
         <label>Realiza la busqueda para relacionar un involucrado con un vehículo</label>
     </div>
- <div id="involucradoSeleccionado" style="display:none">
-    <div class="row px-4 align-items-end">
-        <div class="col-12 mt-4 controlForm">
-            <label>Involucrado del accidente:</label>
-        </div>
-        <div class="col-12 mb-4">
-            <h5 class="m-0 colorPrimary"><i class="icon-fisica h4"></i> <b><span id="nombreModal"></span></b></h5>
-        </div>
-         <div class="col-12 mb-4">
-            <label>CURP:</label>
-            <h5 class="m-0 colorPrimary"> <b><span id="curpModal"></span></b></h5>
-        </div>
-         <div class="col-12 mb-4">
-            <label>RFC:</label>
-            <h5 class="m-0 colorPrimary"> <b><span id="rfcModal"></span></b></h5>
-        </div>
-         <div class="col-12 mb-4">
-            <label>Fecha de Nacimiento:</label>
-            <h5 class="m-0 colorPrimary"> <b><span id="fechaNacimientoModal"></span></b></h5>
-        </div>
-         <div class="col-12 mb-4">
-            <h5 class="m-0 colorPrimary"> <b><span id="idInvolucrado"></span></b></h5>
+    <div id="involucradoSeleccionado" style="display:none">
+        <div class="row px-4 align-items-end">
+            <div class="col-12 mt-4 controlForm">
+                <label>Involucrado del accidente:</label>
+            </div>
+            <div class="col-12 mb-4">
+                <h5 class="m-0 colorPrimary"><i class="icon-fisica h4"></i> <b><span id="nombreModal"></span></b></h5>
+            </div>
+            <div class="col-12 mb-4">
+                <label>CURP:</label>
+                <h5 class="m-0 colorPrimary"> <b><span id="curpModal"></span></b></h5>
+            </div>
+            <div class="col-12 mb-4">
+                <label>RFC:</label>
+                <h5 class="m-0 colorPrimary"> <b><span id="rfcModal"></span></b></h5>
+            </div>
+            <div class="col-12 mb-4">
+                <label>Fecha de Nacimiento:</label>
+                <h5 class="m-0 colorPrimary"> <b><span id="fechaNacimientoModal"></span></b></h5>
+            </div>
+            <div class="col-12 mb-4">
+                <h5 class="m-0 colorPrimary"> <b><span id="idInvolucrado"></span></b></h5>
+            </div>
         </div>
     </div>
-  </div>
     <div class="row px-4 align-items-end">
         <div class="col-12 mt-4 controlForm">
             <label>Vehículo donde iba el involucrado durante el accidente:</label>
@@ -83,7 +83,9 @@
     <div>
         <nav class="tabCustom">
             <div class="nav nav-tabs row mx-0" id="nav-tab" role="tablist">
-                <button class="nav-link col active" id="vehiculo-involucrado-tab" data-bs-toggle="tab" data-bs-target="#vehiculo-involucrado" type="button" role="tab" aria-controls="vehiculo-involucrado" aria-selected="true">
+                <button class="nav-link col active" id="vehiculo-involucrado-tab" data-bs-toggle="tab"
+                    data-bs-target="#vehiculo-involucrado" type="button" role="tab" aria-controls="vehiculo-involucrado"
+                    aria-selected="true">
                     <div class="row justify-content-center align-items-center px-3 py-2">
                         <div class="col-auto radioCustom p-0">
                             <div class="rounded-circle m-2"></div>
@@ -93,7 +95,9 @@
                         </div>
                     </div>
                 </button>
-                <button class="nav-link col" id="noneVehiculo-involucrado-tab" data-bs-toggle="tab" data-bs-target="#noneVehiculo-involucrado" type="button" role="tab" aria-controls="noneVehiculo-involucrado" aria-selected="false">
+                <button class="nav-link col" id="noneVehiculo-involucrado-tab" data-bs-toggle="tab"
+                    data-bs-target="#noneVehiculo-involucrado" type="button" role="tab"
+                    aria-controls="noneVehiculo-involucrado" aria-selected="false">
                     <div class="row justify-content-center align-items-center px-3 py-2">
                         <div class="col-auto radioCustom p-0">
                             <div class="rounded-circle m-2"></div>
@@ -106,7 +110,8 @@
             </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane tabCustomConteiner fade show active" id="vehiculo-involucrado" role="tabpanel" aria-labelledby="vehiculo-involucrado-tab">
+            <div class="tab-pane tabCustomConteiner fade show active" id="vehiculo-involucrado" role="tabpanel"
+                aria-labelledby="vehiculo-involucrado-tab">
                 <div class="px-4 mt-4 pb-4 align-items-end">
                     <div class="justify-content-between mb-1">
                         <div class="col-12 col-lg-6 mt-4 mb-4">
@@ -119,34 +124,36 @@
 
                             <partial name="_ListaInvolucrados" model="Model" />
 
-                            <!--tABLA-->        
-                      </div>
+                            <!--tABLA-->
                         </div>
-                       
                     </div>
-<div class="row">
-    <div class="col-12">
-        <div class="tabCustomEnd"></div>
-    </div>
-</div>
 
                 </div>
-<div class="tab-pane tabCustomConteiner fade" id="noneVehiculo-involucrado" role="tabpanel" aria-labelledby="noneVehiculo-involucrado-tab">
-    <div class="row px-4 my-4 py-5 align-items-end">
-        <div class="col-12 col-md-10 mx-md-auto text-center">
-            <h3><b>Se utiliza para capturar un accidente</b></h3>
-            <h4 class="fw-normal">en el que se desconoce el vehículo donde iba el involucrado o no iba en un vehiculo</h4>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="tabCustomEnd"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane tabCustomConteiner fade" id="noneVehiculo-involucrado" role="tabpanel"
+                aria-labelledby="noneVehiculo-involucrado-tab">
+                <div class="row px-4 my-4 py-5 align-items-end">
+                    <div class="col-12 col-md-10 mx-md-auto text-center">
+                        <h3><b>Se utiliza para capturar un accidente</b></h3>
+                        <h4 class="fw-normal">en el que se desconoce el vehículo donde iba el involucrado o no iba en un
+                            vehiculo</h4>
                         <h6 class="fw-normal">Si este es el caso debes dar click en el botón</h6>
 
-            
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="tabCustomEnd"></div>
-        </div>
-    </div>
-</div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="tabCustomEnd"></div>
+                    </div>
+                </div>
+            </div>
             <form id="complementoInvolucradoForm">
                 <div class="row align-items-end mt-4">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -188,7 +195,7 @@
                                             read.Action("EstadoVictima_Drop", "CapturaAccidentes");
                                         });
                                     })
-                                    .HtmlAttributes(new { style = "width:100%;",id = "IdEstadoVictima" })
+                                    .HtmlAttributes(new { style = "width:100%;", id = "IdEstadoVictima" })
                                     )
                             </span>
                         </div>
@@ -238,7 +245,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="controlForm my-3">
-                             <label>Asiento que ocupaba:</label>
+                            <label>Asiento que ocupaba:</label>
                             <span>
                                 @(Html.Kendo().TextBoxFor(t => t.IdAsiento)
                                     .HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number" })
@@ -272,24 +279,25 @@
                 </div>
             </form>
             <div class="row my-3 mb-4">
-    <div class="col-12 col-md-6 mx-md-auto">
-        <div class="row justify-content-around">
-            <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                <div class="col-12 col-md-6 mx-md-auto">
+                    <div class="row justify-content-around">
+                        <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
 
-                <div class="controlButton" onclick="agregarComplementos()">
-                    @(Html.Kendo().Button()
-                        .Name("saveVehiculo")
-                        .HtmlAttributes(new { @class = "btnPrimary px-5" })
-                        .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                            <div class="controlButton" onclick="agregarComplementos()">
+                                @(Html.Kendo().Button()
+                                    .Name("saveVehiculo")
+                                    .HtmlAttributes(new { @class = "btnPrimary px-5" })
+                                    .Content("<h5 class=\"m-0\"><b>Finalizar captura</b></h5>"))
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-            </div>
-        </div>
-    </section>
-    <!--MODAL BUSQUEDA INVOLUCRADO-->
-<div class="modal fade modalCustom" id="buscarInvolucradoModal" aria-labelledby="buscarInvolucradLabel" aria-hidden="true">
+</section>
+<!--MODAL BUSQUEDA INVOLUCRADO-->
+<div class="modal fade modalCustom" id="buscarInvolucradoModal" aria-labelledby="buscarInvolucradLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-body" id="ModalBodyBuscarInvolucrado">
@@ -299,7 +307,44 @@
 </div>
 
 <script>
-    function busquedaPersona(){
+    $(document).ready(function () {
+        //Funcion que se ejecuta cuando una persona es seleccionada
+        $('#idPersonaInput').on('onPersonaSeleccionadaTrigger', function (event, data) {
+            if (data.idPersona === '' || data.idPersona == 0 || data.idPersona === undefined)
+                $('#involucradoSeleccionado').hide();
+            else {
+                var idPersona = data.IdPersona;
+                var nombre = data.nombre
+                var apellidoPaterno = data.apellidoPaterno
+                var apellidoMaterno = data.apellidoMaterno
+                var curp = data.CURP==null?'':data.CURP;
+                var rfc = data.RFC==null?'':data.RFC;
+                var fechaNacimiento = data.fechaNacimiento.includes('0001-01-01')?'':data.fechaNacimiento;
+
+                if(fechaNacimiento.length>0){
+                    fechaNacimiento = kendo.toString(new Date(fechaNacimiento), "dd/MM/yyyy");
+                }
+
+                var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+                $('#gridVehiculosInvolucrados').data('idPersona', idPersona);
+
+                //Se asignan valores de persona seleccionada
+                $('#idPersonaInput').val(data.idPersona);
+                $('#nombreModal').text(nombreCompleto.trim().toUpperCase());
+                $('#curpModal').text(curp.toUpperCase());
+                $('#fechaNacimientoModal').text(fechaNacimiento);
+                $('#rfcModal').text(rfc.toUpperCase());
+
+                $('#buscarInvolucradoModal').modal('hide');
+                $('body').removeClass('model-open');
+                $('.modal-backdrop').remove();
+                $('#sinBuqueda').hide();
+                $('#involucradoSeleccionado').fadeIn();
+            }
+
+        });
+    });
+    function busquedaPersona() {
         showLoading();
         $.ajax({
             url: '@Url.Action("SubmodalBuscarInvolucrado", "CapturaAccidentes")',
@@ -320,31 +365,31 @@
     }
 
     function agregarComplementos() {
-     var idPersona = $("#idPersonaInput").val();
-        if (idPersona === "") {        
-        sitteg_warning("Debe seleccionar una persona involucrada");
-        return;
+        var idPersona = $("#idPersonaInput").val();
+        if (idPersona === "") {
+            sitteg_warning("Debe seleccionar una persona involucrada");
+            return;
         }
-            var validator = $("#complementoInvolucradoForm").kendoValidator().data('kendoValidator');
-            var controlsValidate = [];
-            var isValid = true;
-            var IdTipoInvolucrado = $("#IdTipoInvolucrado").val();
-            var IdEstadoVictima = $("#IdEstadoVictima").val();
-            var IdCinturon = $("#IdCinturon").val();
-            console.log("AA",IdTipoInvolucrado)
-            controlsValidate.push({ 'controlName': 'IdTipoInvolucrado' });
-            controlsValidate.push({ 'controlName': 'IdEstadoVictima' });
-            controlsValidate.push({ 'controlName': 'IdCinturon' });
+        var validator = $("#complementoInvolucradoForm").kendoValidator().data('kendoValidator');
+        var controlsValidate = [];
+        var isValid = true;
+        var IdTipoInvolucrado = $("#IdTipoInvolucrado").val();
+        var IdEstadoVictima = $("#IdEstadoVictima").val();
+        var IdCinturon = $("#IdCinturon").val();
+        console.log("AA", IdTipoInvolucrado)
+        controlsValidate.push({ 'controlName': 'IdTipoInvolucrado' });
+        controlsValidate.push({ 'controlName': 'IdEstadoVictima' });
+        controlsValidate.push({ 'controlName': 'IdCinturon' });
 
 
-            // INPUTS
-            if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
+        // INPUTS
+        if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
-            if (!isValid) {
-                sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
-                return;
-            }
-            var Mydata = $("#complementoInvolucradoForm").serialize();
+        if (!isValid) {
+            sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
+            return;
+        }
+        var Mydata = $("#complementoInvolucradoForm").serialize();
         showLoading();
         $.ajax({
             url: '@Url.Action("ActualizarInfoInvolucrado", "CapturaAccidentes")',
@@ -363,7 +408,7 @@
         });
     }
 
-    
+
 
     function actualizarGrid() {
         var grid = $("#gridInvolucradosTodo").data("kendoGrid");

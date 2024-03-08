@@ -151,14 +151,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             accidente.Carretera = reader["Carretera"].ToString();
                             
                             var valueDec = 0;
-                            var km = "";
-                            if (reader["Kilometro"].ToString().Split('.').Length>1)
-                                valueDec = Convert.ToInt32(reader["Kilometro"].ToString().Split('.')[1]);
+                            var km = reader["kilometro"] == System.DBNull.Value ? default(string) : Decimal.Parse((string)reader["kilometro"]).ToString("G29");
+                            //if (reader["Kilometro"].ToString().Split('.').Length>1)
+                            //    valueDec = Convert.ToInt32(reader["Kilometro"].ToString().Split('.')[1]);
 
-                            if (valueDec > 0)
-                                km = reader["Kilometro"].ToString().Split('.')[0] + "." + valueDec.ToString();
-                            else
-                                km = reader["Kilometro"].ToString().Split('.')[0];
+                            //if (valueDec > 0)
+                            //    km = reader["Kilometro"].ToString().Split('.')[0] + "." + valueDec.ToString();
+                            //else
+                            //    km = reader["Kilometro"].ToString().Split('.')[0];
 
 							accidente.Kilometro = km;
 							accidente.IdTramo = Convert.ToInt32(reader["IdTramo"].ToString());
@@ -185,7 +185,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-        public int GuardarParte1(CapturaAccidentesModel model,int idOficina, string oficina = "NRA")
+        public int GuardarParte1(CapturaAccidentesModel model,int idOficina,string abreviaturaMunicipio, int anio, string oficina = "NRA")
         
         {
             int result = 0;
@@ -237,24 +237,73 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     result = Convert.ToInt32(command.ExecuteScalar());
+                    lastInsertedId = result;
+                    //Se busca el ultimo consecutivo
+                    command = new SqlCommand("select id,consecutivo from foliosAccidentes where abreviaturaMunicipio =@abreviaturaMunicipio and anio=@anio and idDelegacion=@idDelegacion", connection)
+                    {
+                        CommandType = CommandType.Text
+                    };
+                    command.Parameters.Add(new SqlParameter("@abreviaturaMunicipio", SqlDbType.VarChar)).Value = abreviaturaMunicipio;
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.VarChar)).Value = anio;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.VarChar)).Value = idOficina;
 
-                    var ofi = oficina.Trim().Substring(0, 3).ToUpper();
+                    int consecutivo = -1;
+                    int idFolioSolicitud = -1;
 
-                    var newFolio = $"{ofi}{result}{DateTime.Now.Year}";
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read()) // Intenta leer un registro del resultado
+                        {
+                            idFolioSolicitud = reader["id"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["id"]);
+                            consecutivo = reader["consecutivo"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["consecutivo"]);
+                        }
+                    }
+
+                    if (consecutivo == -1)
+                        throw new Exception("No se pudo crear el folio ya que no se encontraron registros con los datos de usuario");
+
+                    //Se incrementa en 1 el consecutivo
+                    consecutivo++;
+
+                    //Se completa con ceros a la izquierda
+                    string consecutivoConCeros = consecutivo.ToString("D5");
+                    string anio2 = "/" + (anio % 100);
+
+                    string newFolio = $"{abreviaturaMunicipio}{consecutivoConCeros}{anio2}";
+
+                    //Se actualiza el consecutivo en la tabla de foliosSolicitud
+                    command = new SqlCommand(@"update foliosAccidentes set consecutivo=@consecutivo where id=@id", connection);
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = idFolioSolicitud;
+                    command.Parameters.Add(new SqlParameter("@consecutivo", SqlDbType.Int)).Value = consecutivo;
+                    command.CommandType = CommandType.Text;
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected <= 0)
+                        throw new Exception("No se pudo crear el folio.");
+
+
 
                     SqlCommand command2 = new SqlCommand(@"
-                            update accidentes set numeroreporte=@folio where idAccidente=@id
+                            update accidentes set numeroReporte=@folio where idAccidente=@id
                                         ", connection);
-                    command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
+                    command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)lastInsertedId ?? DBNull.Value;
                     command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
                     command2.CommandType = CommandType.Text;
-                    var r = command2.ExecuteReader(CommandBehavior.CloseConnection);
+                    rowsAffected = command2.ExecuteNonQuery();
 
-
-                    lastInsertedId = result; 
+                    if (rowsAffected > 0)
+                    {
+                        return lastInsertedId;
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo crear el folio.");
+                    }
                 }
                 catch (SqlException ex)
                 {
+
+                    Console.WriteLine("Error de SQL: " + ex.Message);
                     return lastInsertedId;
                 }
                 finally
@@ -262,9 +311,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Close();
                 }
             }
-            return lastInsertedId;
         }
-
         public List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio)
         {
             List<CapturaAccidentesModel> Vehiculo = new List<CapturaAccidentesModel>();
@@ -1610,9 +1657,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE conductoresVehiculosAccidente SET estatus = 0 WHERE idAccidente = @IdAccidente AND idPersona = @IdPropietarioInvolucrado AND idVehiculo = @IdVehiculoInvolucrado;";
+					string query = "DELETE FROM conductoresVehiculosAccidente WHERE idAccidente = @IdAccidente AND idPersona = @IdPropietarioInvolucrado AND idVehiculo = @IdVehiculoInvolucrado;";
 
-                    SqlCommand command = new SqlCommand(query, connection);
+					SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", IdAccidente);
                     command.Parameters.AddWithValue("@IdPropietarioInvolucrado", IdPropietarioInvolucrado);
@@ -2769,7 +2816,7 @@ namespace GuanajuatoAdminUsuarios.Services
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 string query = @"SELECT idEstatusReporte,
-                                    montoCamino, montoCarga, montoPropietarios, montoOtros,
+                                    montoCamino, montoCarga, CASE WHEN montoPropietarios = 0 THEN B.montoVehiculo ELSE montoPropietarios END montoPropietarios, montoOtros,
                                     latitud ,longitud ,idCertificado ,
                                     armas ,drogas ,valores ,prendas ,otros ,entregaObjetos, entregaOtros ,
                                     consignacionHechos, idCiudad , convenio ,
@@ -2777,8 +2824,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
                                     observacionesConvenio, idEntidadCompetencia
-                                    FROM accidentes a 
-                                    WHERE idAccidente = @IdAccidente
+                                    FROM accidentes a LEFT JOIN vehiculosAccidente b ON A.idAccidente = B.idAccidente 
+                                    WHERE A.idAccidente = @IdAccidente
                                     ";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {

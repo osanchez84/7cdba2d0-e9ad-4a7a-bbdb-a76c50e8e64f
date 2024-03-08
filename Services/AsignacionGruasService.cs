@@ -560,9 +560,20 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "INSERT INTO gruasAsignadas (fechaArribo,fechaInicio,fechaFinal,operadorGrua,abanderamiento,arrastre,salvamento,idGrua,minutosManiobra,idDeposito,actualizadoPor,fechaActualizacion,estatus)" +
-                                    "VALUES(@fechaArribo,@fechaInicio,@fechaFinal,@operadorGrua,@abanderamiento,@arrastre,@salvamento,@idGrua,@minutosManiobra,@idDeposito,@actualizadoPor,@fechaActualizacion,@estatus)";
-
+                    string query = @"UPDATE gruasAsignadas SET  fechaArribo     =   @fechaArribo,
+                                                                fechaInicio     =   @fechaInicio,
+                                                                fechaFinal      =   @fechaFinal,
+                                                                operadorGrua    =   @operadorGrua,
+                                                                abanderamiento  =   @abanderamiento,
+                                                                arrastre        =   @arrastre,
+                                                                salvamento      =   @salvamento,
+                                                                idGrua          =   @idGrua ,
+                                                                minutosManiobra =   @minutosManiobra,
+                                                                idDeposito      =   @idDeposito,
+                                                                actualizadoPor  =   @actualizadoPor,
+                                                                fechaActualizacion= @fechaActualizacion,
+                                                                estatus         =   @estatus
+                                WHERE idDeposito = " + iDep.ToString();
 
                     SqlCommand command = new SqlCommand(query, connection);
                     DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
@@ -618,6 +629,67 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
+
+
+
+        public int InsertDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "INSERT INTO gruasAsignadas (fechaArribo,fechaInicio,fechaFinal,operadorGrua,abanderamiento,arrastre,salvamento,idGrua,minutosManiobra,idDeposito,actualizadoPor,fechaActualizacion,estatus)" +
+                                    "VALUES(@fechaArribo,@fechaInicio,@fechaFinal,@operadorGrua,@abanderamiento,@arrastre,@salvamento,@idGrua,@minutosManiobra,@idDeposito,@actualizadoPor,@fechaActualizacion,@estatus)";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@fechaArribo", DateTime.Parse(formData["fechaArribo"].ToString()));
+                    command.Parameters.AddWithValue("@fechaInicio", DateTime.Parse(formData["fechaInicio"].ToString()));
+                    command.Parameters.AddWithValue("@fechaFinal", DateTime.Parse(formData["fechaFinal"].ToString()));
+                    command.Parameters.AddWithValue("@operadorGrua", formData["operadorGrua"].ToString());
+                    command.Parameters.AddWithValue("@abanderamiento", abanderamiento);
+                    command.Parameters.AddWithValue("@arrastre", arrastre);
+                    command.Parameters.AddWithValue("@salvamento", salvamento);
+                    command.Parameters.AddWithValue("@minutosManiobra", int.Parse(formData["tiempoManiobras"].ToString()));
+                    command.Parameters.AddWithValue("@idDeposito", iDep);
+                    //command.Parameters.AddWithValue("@idSolicitud", iSo);
+
+                    command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
+                    command.Parameters.AddWithValue("@actualizadoPor", 1);
+                    command.Parameters.AddWithValue("@estatus", 1);
+                    int idGrua;
+                    if (int.TryParse(formData["idGrua"].ToString(), out idGrua))
+                    {
+                        command.Parameters.AddWithValue("@idGrua", idGrua);
+                    }
+                    else
+                    {
+
+
+
+                        command.Parameters.AddWithValue("@idGrua", DBNull.Value);
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+        }
+
+
+
         public List<SeleccionGruaModel> BusquedaGruaTabla(int iDep)
         {
             List<SeleccionGruaModel> ListaSolicitudes = new List<SeleccionGruaModel>();

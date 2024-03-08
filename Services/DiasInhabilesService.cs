@@ -33,7 +33,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                            m.municipio,e.estatusDesc
 		                                            from catDiasInhabiles ctd 
 		                                            LEFT JOIN catMunicipios m ON m.idMunicipio = ctd.idMunicipio
-		                                            LEFT JOIN estatus e ON e.estatus = ctd.estatus", connection);
+		                                            LEFT JOIN estatus e ON e.estatus = ctd.estatus order by ctd.idDiaInhabil desc", connection);
                 command.CommandType = CommandType.Text;
                 //sqlData Reader sirve para la obtencion de datos 
                 using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))

@@ -3782,10 +3782,22 @@ namespace GuanajuatoAdminUsuarios.Services
 
            int resultado = 0;
             string strQuery = @"SELECT 1 as resultado	                                  
-                                FROM diasInhabiles as f, delegaciones i  
-                                WHERE f.idMunicipio = i.idMunicipio
-									and i.idDelegacion = @idDelegacion
-									and f.fecha = CONVERT(DATE, @fecha,103) 
+                                FROM catDelegaciones as d, catMunicipios as m, catDiasInhabiles as i
+                                WHERE d.idDelegacion = @idDelegacion
+									and d.idDelegacion = m.idOficinaTransporte
+									and m.estatus=1
+									and i.idMunicipio = m.idMunicipio
+									and i.estatus = 1
+									and i.fecha = CONVERT(DATE, @fecha,103) 
+									
+									
+								UNION 
+
+								select 1 as resultado 
+								from catDiasInhabiles i
+								WHERE i.fecha = CONVERT(DATE, @fecha,103) 
+								and i.todosMunicipiosDesc = 'Si'
+								and i.estatus = 1
 								";
             
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

@@ -1,5 +1,13 @@
 ﻿@model PensionModel
 
+
+<script>
+    window.IdPension = "@Model.IdPension"
+    window.IdDelegacion = "@Model.IdDelegacion"
+
+</script>
+
+
 <div class="panel">
     <div class="panel-body container-fluid">
         <div class="row row-lg">
@@ -119,7 +127,7 @@
                     </form>
                     <div class="row">
                         <div id="listadoGruasPensiones">
-                            <partial name="_ListadoGruasPensiones" model="(List<Gruas2Model>)ViewBag.ListadoGruasPensiones" />
+                            <partial name="_ListadoGruasPensiones"  />
                         </div>
                     </div>
                 </section>

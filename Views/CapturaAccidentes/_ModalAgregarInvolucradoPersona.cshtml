@@ -47,18 +47,19 @@
 					sitteg_warning("No se pudieron obtener resultados.");
 				} else if (response.tipo === "warning") {
 					sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
-				} else {
-					// Otro tipo de respuesta, si es necesario manejarla
+				
+				} else (response.encontrada == true) {
+					var personasList = response.data;
+					var grid = $("#gridConductores").data("kendoGrid");
+					grid.dataSource.data(personasList);
+
+					if (personasList.count === 0 && response.tipo !== "success") {
+						sitteg_warning("La búsqueda no arrojó resultados.");
+						grid.dataSource.data([]);
+					}
 				}
 
-				var personasList = response.data;
-				var grid = $("#gridConductores").data("kendoGrid");
-				grid.dataSource.data(personasList);
-
-				if (personasList.count === 0 && response.tipo !== "success") {
-					sitteg_warning("La búsqueda no arrojó resultados.");
-					grid.dataSource.data([]);
-				}
+			
 
 				hideLoading();
 			},

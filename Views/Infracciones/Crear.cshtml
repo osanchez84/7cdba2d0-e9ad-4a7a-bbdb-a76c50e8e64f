@@ -186,22 +186,7 @@
 								</div>
 							</div>
 							<div class="row my-4 px-4">
-								@*<div class="form-group col-md-4">
-									<div class="controlForm">
-										<label>Fecha infracción <b>(obligatorio)</b>:</label>
-										@(Html.Kendo().DateTimePickerFor(t => t.fechaInfraccion)
-											.Max(DateTime.Now)
-											.Value(DateTime.Now)
-											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
-											.Format("dd/MM/yyyy HH:mm")											
-											.Culture("es-ES")
-											.Interval(10)
-											.DateInput()
-											//.StartTime(DateTime.Now)
-											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
-											)
-									</div>
-								</div>*@
+							
 
 								<div class="row my-4 px-4">
 									<div class="form-group col-md-3 controlForm">
@@ -899,6 +884,7 @@
 			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
 			var hora = timepickerControl.value()
 			if (hora != null && hora.getHours() > date.getHours()) {
+
 				if (hora.getMinutes() > date.getMinutes()) {
 					timepickerControl.value("")
 				}

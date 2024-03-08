@@ -115,14 +115,33 @@
         <div class="row">
             <div class="col-12 col-md-7">
                 <div class="controlForm my-3 selecciondeFecha">
-                    <label>Fecha Ingreso:</label>
-                    @(Html.Kendo().DateTimePickerFor(t => t.fechaIngreso).Max(DateTime.Now).Interval(1)
+                    <label>Fecha Ingreso (obligatorio):</label>
+                        @(Html.Kendo().DatePickerFor(t => t.fechaIngreso).Max(DateTime.Now)
                         .Label(l => l.Content("Fecha Ingreso:"))
-                        .Format("dd/MM/yyyy HH:mm") 
+                            .Value("")
+                            .Culture("es-ES")
+                        .Format("dd/MM/yyyy") 
                         .HtmlAttributes(new { style = "width: 45%", id="ingreso" })
                         )            
                 </div>
             </div>
+
+                <div class="col-12 col-md-6  col-lg-4">
+                    <div class="controlForm my-3">
+                        <label>Hora (obligatorio):</label>
+                        @(Html.Kendo().TimePickerFor(t => t.horaIngreso).Interval(1)
+                            .Label(l => l.Content("Hora:"))
+                            .Format("HH:mm")
+                            .Culture("es-ES")
+                            .HtmlAttributes(new
+                            {
+                                style = "width: 100%",
+                                required = "required",
+                                id="horaIngreso"
+                            })
+                            )
+                    </div>
+                </div>
         </div>
     </section>
     <section>
@@ -209,11 +228,27 @@
     }
 
     function guardarDatos() {
-        var fechaIngresoPicker = $("#ingreso").data("kendoDateTimePicker");
-        var fechaIngreso = fechaIngresoPicker.value();
+        var fechaIngresoPicker = $("#ingreso").data("kendoDatePicker");
+        var horaIngresoPicker = $("#horaIngreso").data("kendoTimePicker");
 
-        if (!fechaIngreso) {
-            alert("Por favor, seleccione una fecha y hora válida.");
+        var fechaIngreso = fechaIngresoPicker.value();
+        var fechaIngresoValidat = fechaIngresoPicker.value();
+        var horaIngreso = horaIngresoPicker.value();
+
+        fechaIngreso = fechaIngreso + horaIngreso;
+
+        var dateObj = new Date(fechaIngreso);
+        var dateObj2 = new Date(fechaIngreso);
+
+        fechaIngreso = new Date(dateObj.getFullYear() + "-" + dateObj.getMonth() + "-" + dateObj.getDay() + " " + dateObj2.getHours() + ":" + dateObj2.getMinutes() + ":00");
+
+
+        console.log("fechaIngresoValidat", fechaIngreso);
+        console.log("horaIngreso", horaIngreso);
+
+        if (!fechaIngresoValidat && !horaIngreso) {
+           // alert("Por favor, seleccione una fecha y hora válida.");
+            sitteg_warning("Por favor, seleccione una fecha y hora válida.");
             return;
         }
 

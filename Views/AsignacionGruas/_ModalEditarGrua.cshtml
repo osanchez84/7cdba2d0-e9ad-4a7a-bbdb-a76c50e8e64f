@@ -1,5 +1,9 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.SeleccionGruaModel
-
+@{
+    var abanderamiento = Model.AbanderamientoBool;
+    var arrastre = Model.ArrastreBool;
+    var salvamento = Model.SalvamentoBool;
+}
 <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
     <div class="modal-content">
         <section class=" bg-white rounded">
@@ -46,23 +50,22 @@
                 <div class="row px-4" id="contenedor">
                     <div class="col-12">
                         <div class="controlForm my-3">
-                            <label for="ddgrua">Número económico <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().DropDownListFor(m => m.idGrua)
-                                .Label(label => label.Content("No. Económico:"))
-                                .Filter(FilterType.Contains)
-
+                            <label>Número económico <b>(obligatorio)</b>:</label>
+                            @(Html.Kendo().DropDownListFor(d => d.idGrua)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
-                                .OptionLabel("Selecciona una opcion")
-                                .HtmlAttributes(new { style = "max-width: 340px;width: 100%" })
+                                .OptionLabel("Seleccione una opción")
+                               
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Gruas_Drop", "AsignacionGruas");
+                                        read.Action("GruasTodas_Drop", "AsignacionGruas");
                                     });
                                 })
+                                .HtmlAttributes(new { style = "width:100%;", id = "idGrua2" })
                                 )
+
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
@@ -103,7 +106,7 @@
                             <div class="btnToggleActive">
                             @(Html.Kendo().SwitchFor(t => t.AbanderamientoBool)
                                 .Name("abanderamientoSwitch")
-                                .Checked(false)
+                                .Checked(abanderamiento)
                                 .Messages(c => c.Checked("Si").Unchecked("No"))
                                 .HtmlAttributes(new { data_checked = "true" })
                                 )
@@ -116,7 +119,7 @@
                             <div class="btnToggleActive">
                             @(Html.Kendo().SwitchFor(t => t.SalvamentoBool)
                                 .Name("salvamentoSwitch")
-                                .Checked(false)
+                                .Checked(salvamento)
                                 .Messages(c => c.Checked("Si").Unchecked("No"))
                                 .HtmlAttributes(new { data_valor = 1 })
                                 )
@@ -129,7 +132,7 @@
                             <div class="btnToggleActive">
                             @(Html.Kendo().SwitchFor(t => t.ArrastreBool)
                                 .Name("arrastreSwitch")
-                                .Checked(false)
+                                .Checked(arrastre)
                                 .Messages(c => c.Checked("Si").Unchecked("No"))
                                 .HtmlAttributes(new { data_checked = "true" })
                                 )

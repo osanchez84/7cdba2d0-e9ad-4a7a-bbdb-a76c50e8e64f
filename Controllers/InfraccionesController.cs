@@ -285,6 +285,31 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
+        public IActionResult AgregarPersonasConductor()
+        {
+			return PartialView("_AgregarEditarConductor");
+        }
+
+
+        public IActionResult ajax_PropietarioConductor2(int idInfraccion,int idConductor)
+        {
+            
+            var persona = _personasService.GetPersonaById(idConductor);
+
+            if(persona.idCatTipoPersona == 2)
+            {
+                return Json(new {Error=1});
+            }
+
+            _infraccionesService.ActualizConductor(idInfraccion, idConductor);
+
+            ViewBag.EsSoloLectura = false;
+
+            var q = PartialView("_EditarDetallePersona", persona);
+
+            return q;
+        }
+
 
         public JsonResult Cortesias_Read()
         {

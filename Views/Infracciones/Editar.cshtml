@@ -10,7 +10,8 @@ c
 <script>
 
     window.idInfraccion = "@Model.idInfraccion"
-
+    window.propietario ="@Model.idPropitario"
+    window.idPersona ="@Model.idPersonaInfraccion"
 
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
@@ -276,7 +277,7 @@ c
 
                     </div>
                 </nav>
-                <form id="frmEditarInfraccion">
+                <form id="frmEditarInfraccion" onsubmit="NoSub(event)">
                     @Html.HiddenFor(m=> m.Garantia.numLicencia)
 
                     @Html.HiddenFor(m=> m.idInfraccion)
@@ -566,11 +567,24 @@ c
                                 <div class="row">
 
                                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                            <button href="#" id="btnOmitirConductor" onclick="PropietarioConductor()">
+                                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Propietario como Conductor</b></h6>
+                                            </button>
+                                        </div>
+
+
+                                        <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                                             <button href="#" id="btnOmitirConductor" onclick="OmitirConductor()">
                                                 <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Se Ignorar Conductor</b></h6>
                                             </button>
                                         </div>
 
+
+                                         <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                            <button href="#" id="btnOmitirConductor" onclick="AgregarConductor2()">
+                                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Agregar Conductor</b></h6>
+                                            </button>
+                                        </div>
 
                                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                                 <button href="#" id="btnEditarConductor" onclick="editarConductor()">
@@ -904,7 +918,24 @@ c
     </div>
 </div>
 
+<div class="modal fade modalCustom" id="ModalAgregarEditarConductor" aria-labelledby="AgregarEditarConductorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-body bg-light" id="ModalBodyAgregarEditarConductor">
+            </div>
+        </div>
+    </div>
+</div>
 
+
+		<div class="modal fade modalCustom" id="agregarConductor2Modal" aria-labelledby="agregarConductor2Label" aria-hidden="true">
+			<div class="modal-dialog modal-xl" role="document">
+				<div class="modal-content">
+					<div class="modal-body" id="ModalBodyAgregar2Conductor">
+					</div>
+				</div>
+			</div>
+		</div>
 
 <!--MODAL ANEXAR INVENTARIO-->
 <div class="modal fade modalCustom" id="anexarInventarioModal" aria-labelledby="anexarInventarioLabel" aria-hidden="true">
@@ -918,6 +949,109 @@ c
 
 
 <script>
+    function NoSub(event){
+        event.preventDefault();
+    }
+
+    function AgregarConductor2(){
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("AgregarPersonasConductor")',
+            type: 'POST',
+            data: { },
+            success: function (result) {
+
+
+                $('#ModalBodyAgregarEditarConductor').html(result);
+                    $('#ModalAgregarEditarConductor').modal({ backdrop: 'static', keyboard: false });
+                $('#ModalAgregarEditarConductor').modal('show');
+                    hideLoading();
+
+
+
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
+            }
+        });
+
+
+    }
+
+
+
+    function PropietarioConductor(){
+
+        showLoading();
+
+        $.ajax({
+            url: '@Url.Action("ajax_PropietarioConductor2")',
+            type: 'POST',
+            data: { idInfraccion: window.idInfraccion, idConductor: window.propietario },
+            success: function (result) {
+
+                if (result.Error) {
+                    sitteg_warning('El propietario es Persona Moral');
+                    hideLoading();
+                    return
+                }
+                else{
+                    sitteg_success("Informacion Actualizada");
+                    $("#detallePersonas").empty().append(result)
+                    hideLoading();
+
+                }
+                
+
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
+            }
+        });
+
+
+    }
+
+
+
+    function GuardarNuevoConductor2() {
+
+
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("ajax_PropietarioConductor2")',
+            type: 'POST',
+            data: { idInfraccion: window.idInfraccion, idConductor: window.idPersona },
+            success: function (result) {
+
+                $('#ModalBodyAgregarEditarConductor').html("");
+                $('#ModalAgregarEditarConductor').modal('hide');
+                
+                    sitteg_success("Informacion Actualizada");
+                    $("#detallePersonas").empty().append(result)
+                    hideLoading();
+
+                
+
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
+            }
+        });
+
+
+    }
+
+
 
 function  OmitirConductor() {
 
@@ -928,7 +1062,7 @@ function  OmitirConductor() {
             type: 'POST',
             data: { idInfraccion: window.idInfraccion },
             success: function (result) {
-
+                sitteg_success("Informacion Actualizada");
                 $("#detallePersonas").empty().append(result)
                 hideLoading();
 
@@ -946,6 +1080,140 @@ function  OmitirConductor() {
 
 
 }
+
+
+
+
+    function buscarPersona2(pidPersona) {
+        showLoading();
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ajax_detallePersona")',
+            data: {
+                "idPersona": pidPersona,
+            },
+            success: function (data) {
+                $("#detallePersonas2").html(data);
+                hideLoading();
+            },
+            error: function () {
+                hideLoading();
+            }
+        });
+    }
+
+
+    function mostrarModalAgregarConductor() {
+        $.ajax({
+            url: '@Url.Action("ModalAgregarConductor")',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (data) {
+
+
+                window.OtherOption = function (idPersona) {
+                    buscarPersona2(idPersona);
+                    window.idPersona=idPersona;
+                    $('#agregarConductor2Modal').modal('hide');
+                     $('#ModalBodyAgregar2Conductor').html("");
+                }
+
+                
+                $('#ModalBodyAgregar2Conductor').html(data);
+                $('#agregarConductor2Modal').modal({ backdrop: 'static', keyboard: false });
+                $('#agregarConductor2Modal').modal('show');
+                $("#btnCrearPersona").hide()
+
+
+                $("#CerrarmodalCond").unbind("click")
+
+                $("#CerrarmodalCond").on("click",()=>{
+                    $('#agregarConductor2Modal').modal('hide');
+                    $('#ModalBodyAgregar2Conductor').html("");
+
+                })
+
+            
+            }
+        });
+    }
+
+
+    function onRowSelect() {
+
+        var grid = $("#gridPersonasLicencia").data("kendoGrid");
+        var selectedRowData = grid.dataItem(grid.select());
+
+        console.log("EE", selectedRowData);
+
+        const tipoLicenciaMapping = {
+            "TIPO A  CHOFER AUTOMOVILISTA": 1,
+            "TIPO B CHOFER SERVICIO PÚBLICO": 2,
+            "TIPO C  Chofer Servicio de Carga": 3,
+            "TIPO D -MOTOCICLISTA": 4,
+            "PERMISO A -AUTOMOVIL-": 6,
+            "PERMISO D -MOTOCICLETA-": 7,
+            "NO APLICA": 8,
+            "TIPO A": 1,
+            "TIPO B": 2,
+            "TIPO C": 3,
+            "TIPO D": 4,
+            "PERMISO A": 6,
+            "PERMISO D": 7,
+            "A-AUTOMOVILISTA": 1,
+            "B-CHOFER DE SERVICIO PÚBLICO": 2,
+            "C-CHOFER DE SERVICIO DE CARGA": 3,
+            "D-MOTOCICLISTA": 4,
+            "PA-PERMISO AUTOMOVILISTA": 6,
+            "PD-PERMISO MOTOCICLISTA": 7,
+
+        };
+
+        const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.tipoLicencia] || 0;
+
+        selectedRowData.idTipoLicencia = tipoLicenciaNumero;
+        console.log("4...")
+        console.log("4.1.." + selectedRowData.nombreCompleto)
+        //   showLoading();
+        var fd = new FormData();
+        fd.append("nombre", selectedRowData.nombre);
+        fd.append("apellidoPaterno", selectedRowData.apellidoPaterno);
+        fd.append("apellidoMaterno", selectedRowData.apellidoMaterno);
+        fd.append("CURP", selectedRowData.CURP);
+        fd.append("RFC", selectedRowData.RFC);
+        fd.append("numeroLicencia", selectedRowData.numeroLicencia);
+        fd.append("tipoLicencia", tipoLicenciaNumero);
+        fd.append("idGenero", selectedRowData.idGenero);
+        fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+        fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Personas/guardaDesdeServicio',
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            data: fd,
+            success: function (result) {
+                $('#modalLicenciasList').modal('hide');
+                var grid = $("#gridPersonas").data("kendoGrid");
+                if (result && result.data) {
+                    var dataArray = [result.data];
+                    grid.dataSource.data(dataArray);
+                } else {
+                    console.error("La respuesta no tiene la estructura esperada:", result);
+                }
+                sitteg_success('Elemento guardado correctamente')
+                hideLoading();
+            },
+            error: function (error) {
+                sitteg_warning('Error al guardar en la base de datos:');
+                hideLoading();
+            }
+        });
+    }
 
 </script>
 

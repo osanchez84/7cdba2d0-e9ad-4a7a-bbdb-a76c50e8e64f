@@ -1927,7 +1927,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		{
 			string strQuery = @"update infracciones set idPersonaInfraccion=@idConductor where idInfraccion=@idInfraccion;
 								update personasInfracciones set nombre=(select concat(isnull(nombre,''),' ',isnull(apellidoPaterno,''),' ',isnull(apellidoMaterno,'')) 
-																		from personas where idpersona=@idConductor) where idInfraccion=@idInfraccion
+																		from personas where idpersona=@idConductor),apellidoPaterno='',apellidoMaterno='' where idInfraccion=@idInfraccion
 ";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{

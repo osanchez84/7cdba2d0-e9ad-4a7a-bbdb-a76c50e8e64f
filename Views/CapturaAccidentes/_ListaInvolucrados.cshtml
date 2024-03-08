@@ -76,11 +76,12 @@
 		var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
 		$('#idPersonaHidden').val(idPersona);
 		$('#idVehiculoHidden').val(IdVehiculoInvolucrado);
+		var IdInvolucrado = $("#IdInvolucradoHidden").val();
 		showLoading();
 		$.ajax({
 			url: '/CapturaAccidentes/GuardarRelacionPersonaVehiculo',
 			type: 'POST',
-			data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado },
+			data: { idPersona: idPersona, IdVehiculoInvolucrado: IdVehiculoInvolucrado, IdInvolucrado: IdInvolucrado },
 			success: function (response) {
 				sitteg_success("Se ha actualizado la información del vehículo");
 				hideLoading();

@@ -359,7 +359,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return PartialView("_ModalEliminarInvolucrado");
         }
-        public ActionResult ModalBorraRegistroPersona(int IdPersona, int IdAccidente)
+        public ActionResult ModalBorraRegistroPersona(int IdPersona, int IdAccidente, int IdInvolucrado)
         {
             return PartialView("_ModalEliminarPersonaInvolucrada");
         }
@@ -798,10 +798,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
             return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
         }
-        public ActionResult NuevoInvolucradoPersona(int IdPersona)
+        public ActionResult NuevoInvolucradoPersona(int IdPersona, int idAccidente, int IdInvolucrado)
         {
-            var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion(IdPersona);
-            return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
+            var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion(IdPersona, idAccidente, IdInvolucrado);
+            return PartialView("_ModalEditarInvolucrado", listPersonasModel);
         }
 
         [HttpGet]
@@ -823,6 +823,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalAgregarInvolucradoPersona");
         }
+
+	
+		public IActionResult AbrirModalBuscarInvolucrado()
+		{
+			BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+
+
+
+			return PartialView("BusquedaPersonaFisica");
+		}
 		public IActionResult SinInvolucrado()
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
@@ -1274,10 +1284,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListInfracciones.ToDataSourceResult(request));
         }
-        public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado)
+        public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado,int IdInvolucrado)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado);
+            var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado, IdInvolucrado);
 
             //BITACORA
             var ip = HttpContext.Connection.RemoteIpAddress.ToString();
@@ -1306,9 +1316,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(ListInvolucrados.ToDataSourceResult(request));
         }
 
-        public IActionResult EliminaInvolucrado(int IdAccidente, int idPersona)
+        public IActionResult EliminaInvolucrado(int IdAccidente, int idPersona, int IdInvolucrado)
         {
-            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(idPersona);
+            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(IdInvolucrado);
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 

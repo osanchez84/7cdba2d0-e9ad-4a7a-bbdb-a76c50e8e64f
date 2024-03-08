@@ -354,8 +354,7 @@
                 var grid = $("#gridConductores").data("kendoGrid");
 
                 if (result && result.data) {
-                    var dataArray = [result.data];
-                    grid.dataSource.data(dataArray);
+                  sitteg_success("Información actualizada correctamente")
                 } else {
                     console.error("La respuesta no tiene la estructura esperada:", result);
                 }

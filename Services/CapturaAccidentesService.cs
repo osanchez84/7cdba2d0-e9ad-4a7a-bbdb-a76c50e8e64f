@@ -1657,9 +1657,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE conductoresVehiculosAccidente SET estatus = 0 WHERE idAccidente = @IdAccidente AND idPersona = @IdPropietarioInvolucrado AND idVehiculo = @IdVehiculoInvolucrado;";
+					string query = "DELETE FROM conductoresVehiculosAccidente WHERE idAccidente = @IdAccidente AND idPersona = @IdPropietarioInvolucrado AND idVehiculo = @IdVehiculoInvolucrado;";
 
-                    SqlCommand command = new SqlCommand(query, connection);
+					SqlCommand command = new SqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@idAccidente", IdAccidente);
                     command.Parameters.AddWithValue("@IdPropietarioInvolucrado", IdPropietarioInvolucrado);

@@ -9,6 +9,9 @@ c
 
 <script>
 
+    window.idInfraccion = "@Model.idInfraccion"
+
+
     $(document).ready(function () {
         var access = @listaIdsPermitidosJson;
         var auth = @autorizaciones;
@@ -561,6 +564,14 @@ c
 
                                 <div class="col-12 col-md-6 col-lg-7 col-xl-auto">
                                 <div class="row">
+
+                                        <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+                                            <button href="#" id="btnOmitirConductor" onclick="OmitirConductor()">
+                                                <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Se Ignorar Conductor</b></h6>
+                                            </button>
+                                        </div>
+
+
                                 <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                                 <button href="#" id="btnEditarConductor" onclick="editarConductor()">
                                 <h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Editar conductor</b></h6>
@@ -904,6 +915,41 @@ c
         </div>
     </div>
 </div>
+
+
+<script>
+
+function  OmitirConductor() {
+
+        showLoading();
+
+        $.ajax({
+            url: '@Url.Action("ajax_OmitirConductor2")',
+            type: 'POST',
+            data: { idInfraccion: window.idInfraccion },
+            success: function (result) {
+
+                $("#detallePersonas").empty().append(result)
+                hideLoading();
+
+
+            },
+            error: function (xhr, status) {
+                var errmsg = xhr.responseText;
+                console.log(errmsg)
+                sitteg_warning('Lo sentimos, ha ocurrido un error.');
+                hideLoading();
+            }
+        });
+
+
+
+
+}
+
+</script>
+
+
 <script>
 
 

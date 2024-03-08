@@ -1925,7 +1925,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
 		public void ActualizConductor(int idInfraccion, int idConductor)
 		{
-			string strQuery = @"update infracciones set idPersonaInfraccion=@idConductor where idInfraccion=@idInfraccion";
+			string strQuery = @"update infracciones set idPersonaInfraccion=@idConductor where idInfraccion=@idInfraccion;
+								update personasInfracciones set nombre=(select concat(isnull(nombre,''),' ',isnull(apellidoPaterno,''),' ',isnull(apellidoMaterno,'')) 
+																		from personas where idpersona=@idConductor) where idInfraccion=@idInfraccion
+";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
 				try

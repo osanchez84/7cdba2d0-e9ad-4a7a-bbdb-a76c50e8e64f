@@ -992,6 +992,7 @@ c
 
         showLoading();
 
+
         $.ajax({
             url: '@Url.Action("ajax_PropietarioConductor2")',
             type: 'POST',
@@ -1004,6 +1005,8 @@ c
                     return
                 }
                 else{
+
+                    window.idPersona=window.propietario
                     sitteg_success("Informacion Actualizada");
                     $("#detallePersonas").empty().append(result)
                     hideLoading();

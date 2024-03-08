@@ -11,6 +11,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using GuanajuatoAdminUsuarios.Util;
+using GuanajuatoAdminUsuarios.Entity;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -593,6 +594,60 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             }
             return resultados;
+        }
+
+
+
+        public List<MarcasVehiculo> GetMarcasSalidaPension(int idPension)
+        {
+            //
+            List<MarcasVehiculo> marcas = new List<MarcasVehiculo>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"  SELECT B.idMarcaVehiculo, B.marcaVehiculo 
+                                                            FROM depositos AS d INNER JOIN catMarcasVehiculos B ON D.idMarca = B.idMarcaVehiculo
+                                                            LEFT JOIN vehiculos AS v ON d.idVehiculo = v.idVehiculo 
+                                                            LEFT JOIN catMarcasVehiculos AS mv ON d.idMarca = mv.idMarcaVehiculo
+                                                            LEFT JOIN catSubmarcasVehiculos AS smv ON d.idSubmarca = smv.idSubmarca
+                                                            LEFT JOIN catColores AS co ON d.idColor = co.idColor
+                                                            LEFT JOIN personas AS per ON v.idPersona = per.idPersona 
+                                                            LEFT JOIN solicitudes AS sol ON d.idSolicitud = sol.idSolicitud 
+                                                            LEFT JOIN pensiones AS pen ON d.idPension = pen.idPension
+                                                            WHERE estatusSolicitud=5 and d.liberado = 1 AND D.idPension = @idPension AND B.estatus=1 
+                                                            ORDER BY B.fechaActualizacion DESC", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
+                    //sqlData Reader sirve para la obtencion de datos 
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            MarcasVehiculo marcasVehiculo = new MarcasVehiculo();
+                            marcasVehiculo.IdMarcaVehiculo = Convert.ToInt32(reader["idMarcaVehiculo"].ToString());
+                            marcasVehiculo.MarcaVehiculo = reader["marcaVehiculo"].ToString();
+                            marcas.Add(marcasVehiculo);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return marcas;
+
+
         }
 
     }

@@ -25,6 +25,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IGruasService _gruasService;
         private readonly IBitacoraService _bitacoraServices;
         private readonly string _rutaArchivo;
+        private bool editar = true;
 
         public AsignacionGruasController(IAsignacionGruasService asignacionGruasService, IGruasService gruasService, IBitacoraService bitacoraServices, IConfiguration configuration)
 
@@ -36,7 +37,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult Index(string folio)
         {
-           
+
+                GruasTodas_Drop();
                 //var resultadoSolicitudes = _asignacionGruasService.ObtenerTodasSolicitudes();
                 var q = User.FindFirst(CustomClaims.Nombre).Value;
                 ViewBag.FolioSolicitud= folio ?? "";
@@ -84,6 +86,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public IActionResult ModalAgregarGrua()
         {
+            this.editar = false;
             return PartialView("_ModalAgregarGrua");
         }
 
@@ -141,6 +144,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_gruasService.GetGruaByPension(iPg), "idGrua", "noEconomico");
             return Json(result);
         }
+
+
+        public JsonResult GruasTodas_Drop()
+        {
+            int iPg = HttpContext.Session.GetInt32("iPg") ?? 0;
+
+            var result = new SelectList(_gruasService.GetGruas(), "IdGrua", "noEconomico");
+            return Json(result);
+        }
         [HttpPost]
 
         public IActionResult ActualizarDatos(IFormCollection formData, int abanderamiento, int arrastre, int salvamento)
@@ -162,7 +174,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
-            var DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
+
+            int DatosGruas = 0;
+            if (editar) 
+                DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
+            else
+                DatosGruas = _asignacionGruasService.InsertDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep, iSo);
+
+
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 
             //BITACORA
@@ -225,6 +244,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult ModalEditarGrua(int idAsignacion)
         {
+            this.editar = true;
             var eliminarGrua = _asignacionGruasService.ObtenerAsignacionPorId(idAsignacion);
 
             return PartialView("_ModalEditarGrua",eliminarGrua);

@@ -2752,7 +2752,7 @@ namespace GuanajuatoAdminUsuarios.Services
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 string query = @"SELECT idEstatusReporte,
-                                    montoCamino, montoCarga, montoPropietarios, montoOtros,
+                                    montoCamino, montoCarga, CASE WHEN montoPropietarios = 0 THEN B.montoVehiculo ELSE montoPropietarios END montoPropietarios, montoOtros,
                                     latitud ,longitud ,idCertificado ,
                                     armas ,drogas ,valores ,prendas ,otros ,entregaObjetos, entregaOtros ,
                                     consignacionHechos, idCiudad , convenio ,
@@ -2760,8 +2760,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                     numeroOficio , idAgenciaMinisterio ,recibeMinisterio , 
                                     idElabora , idAutoriza , idSupervisa,armasTexto,drogasTexto,valoresTexto,prendasTexto,otrosTexto,
                                     observacionesConvenio, idEntidadCompetencia
-                                    FROM accidentes a 
-                                    WHERE idAccidente = @IdAccidente
+                                    FROM accidentes a LEFT JOIN vehiculosAccidente b ON A.idAccidente = B.idAccidente 
+                                    WHERE A.idAccidente = @IdAccidente
                                     ";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {

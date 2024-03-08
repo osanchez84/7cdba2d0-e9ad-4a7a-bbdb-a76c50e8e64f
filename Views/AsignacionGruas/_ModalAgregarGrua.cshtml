@@ -46,21 +46,18 @@
                     <div class="col-12">
                         <div class="controlForm my-3">
                             <label for="ddgrua">Número económico <b>(obligatorio)</b>:</label>
-                            @(Html.Kendo().DropDownListFor(m => m.idGrua)
-                                .Label(label => label.Content("No. Económico:"))
+                            @(Html.Kendo().DropDownListFor(d => d.idGrua)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
-                                .Filter(FilterType.Contains)
-
-                                .OptionLabel("Selecciona una opcion")
-                                .HtmlAttributes(new { style = "max-width: 340px;width: 100%", required = "required" })
+                           
                                 .DataSource(source =>
                                 {
-                                source.Read(read =>
-                                {
-                                    read.Action("Gruas_Drop", "AsignacionGruas");
-                                });
+                                    source.Read(read =>
+                                    {
+                                        read.Action("GruasTodas_Drop", "AsignacionGruas");
+                                    });
                                 })
+                                .HtmlAttributes(new { style = "width:100%;", id = "idGrua2" })
                                 )
                         </div>
                     </div>

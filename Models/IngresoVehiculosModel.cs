@@ -6,6 +6,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public string serie { get; set; }
         public DateTime fechaIngreso { get; set; }
+        public TimeSpan? horaIngreso { get; set; }
         public string folioInventario { get; set; }
         public int? idDeposito { get; set; }
         public int idVehiculo { get; set; }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Numerics;
+using Telerik.SvgIcons;
 using CommandType = System.Data.CommandType;
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -155,8 +156,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand();
                     
                         command = new SqlCommand(@"SELECT d.idDeposito, d.placa FROM depositos d
-                                                WHERE d.idPension = @idPension AND d.estatusSolicitud = 3 AND d.liberado = 0 AND d.fechaIngreso is Null", connection);
-                   
+                                                WHERE d.fechaIngreso is null AND d.idPension = @idPension AND d.liberado = 0 AND d.estatusSolicitud = 3 ", connection);
+
+
 
                     command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;
                     command.CommandType = CommandType.Text;

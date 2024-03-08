@@ -155,7 +155,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand();
                     
                         command = new SqlCommand(@"SELECT d.idDeposito, d.placa FROM depositos d
-                                                WHERE idPension = idPension AND estatusSolicitud = 3 AND d.liberado = 0 AND d.fechaIngreso is Null", connection);
+                                                WHERE d.idPension = @idPension AND d.estatusSolicitud = 3 AND d.liberado = 0 AND d.fechaIngreso is Null", connection);
                    
 
                     command.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = idPension;

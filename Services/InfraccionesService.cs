@@ -18,6 +18,7 @@ using Azure;
 using Org.BouncyCastle.Asn1.Cmp;
 using System.ServiceModel.Channels;
 using GuanajuatoAdminUsuarios.Util;
+using static GuanajuatoAdminUsuarios.RESTModels.ConsultarDocumentoResponseModel;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -1922,8 +1923,36 @@ namespace GuanajuatoAdminUsuarios.Services
 
 		}
 
+		public void ActualizConductor(int idInfraccion, int idConductor)
+		{
+			string strQuery = @"update infracciones set idPersonaInfraccion=@idConductor where idInfraccion=@idInfraccion;
+								update personasInfracciones set nombre=(select concat(isnull(nombre,''),' ',isnull(apellidoPaterno,''),' ',isnull(apellidoMaterno,'')) 
+																		from personas where idpersona=@idConductor) where idInfraccion=@idInfraccion
+";
+			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+			{
+				try
+				{
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(strQuery, connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)idInfraccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idConductor", SqlDbType.Int)).Value = (object)idConductor ?? DBNull.Value;
+                   var  result = Convert.ToInt32(command.ExecuteScalar());
+                }
+				catch(Exception e)
+				{
 
-		public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia)
+				}
+				finally
+				{
+                    connection.Close();
+				}
+
+			}
+		}
+
+        public InfraccionesModel GetInfraccion2ById(int idInfraccion, int idDependencia)
 		{
 			List<InfraccionesModel> modelList = new List<InfraccionesModel>();
 			string strQuery = @"SELECT inf.idInfraccion
@@ -3782,10 +3811,22 @@ namespace GuanajuatoAdminUsuarios.Services
 
            int resultado = 0;
             string strQuery = @"SELECT 1 as resultado	                                  
-                                FROM diasInhabiles as f, delegaciones i  
-                                WHERE f.idMunicipio = i.idMunicipio
-									and i.idDelegacion = @idDelegacion
-									and f.fecha = CONVERT(DATE, @fecha,103) 
+                                FROM catDelegaciones as d, catMunicipios as m, catDiasInhabiles as i
+                                WHERE d.idDelegacion = @idDelegacion
+									and d.idDelegacion = m.idOficinaTransporte
+									and m.estatus=1
+									and i.idMunicipio = m.idMunicipio
+									and i.estatus = 1
+									and i.fecha = CONVERT(DATE, @fecha,103) 
+									
+									
+								UNION 
+
+								select 1 as resultado 
+								from catDiasInhabiles i
+								WHERE i.fecha = CONVERT(DATE, @fecha,103) 
+								and i.todosMunicipiosDesc = 'Si'
+								and i.estatus = 1
 								";
             
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

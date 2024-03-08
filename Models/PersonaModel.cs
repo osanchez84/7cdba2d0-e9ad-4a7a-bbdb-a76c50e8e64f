@@ -14,7 +14,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numeroLicenciaBusqueda { get; set; }
         public string numeroLicenciaFisico { get; set; }
 
-        public string CURP { get; set; }
+        public string CURP { get; set; } = "";
 
 
         [MinLength(10, ErrorMessage = "El CURO debe tener al menos 10 caracteres.")]

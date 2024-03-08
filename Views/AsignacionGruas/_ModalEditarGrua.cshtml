@@ -201,6 +201,7 @@
                 success: function (data) {
                     sitteg_success("Se ha actualizado la información");
                     $('#modalAgregarGrua').modal('hide');
+                    $('#editarGruaModal').modal('hide');
                     var grid = $("#gridGruas").data("kendoGrid");
                     grid.dataSource.data(data);
                     grid.refresh();

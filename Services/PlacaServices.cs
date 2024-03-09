@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Numerics;
-using Telerik.SvgIcons;
+//using Telerik.SvgIcons;
 using CommandType = System.Data.CommandType;
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -94,7 +94,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                         "LEFT JOIN " +
                                          "   catCarreteras car ON car.idCarretera = sol.idCarreteraUbicacion " +
                                         "WHERE " +
-                                            "d.liberado = 0 AND d.estatusSolicitud = 3 AND d.idDelegacion = @idPension GROUP BY " +
+                                            "d.liberado = 1 AND d.estatusSolicitud = 5 AND d.idDelegacion = @idPension GROUP BY " +
                                             "d.IdDeposito, " +
                                             "sol.solicitanteNombre, " +
                                             "sol.solicitanteAp, " +

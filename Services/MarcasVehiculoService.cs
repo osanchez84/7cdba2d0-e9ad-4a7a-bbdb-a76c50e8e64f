@@ -60,6 +60,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+
+
+        
+
         public MarcasVehiculo GetMarcayById(int IdMarcaVehiculo)
         {
             MarcasVehiculo marca = new MarcasVehiculo();

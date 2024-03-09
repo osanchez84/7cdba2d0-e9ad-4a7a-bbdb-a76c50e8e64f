@@ -632,7 +632,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
 
 
-        public int InsertDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo)
+        public int InsertDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo, string horaInicioInsert, string horaArriboInsert, string horaTerminoInsert)
         {
             int result = 0;
 
@@ -645,15 +645,32 @@ namespace GuanajuatoAdminUsuarios.Services
                                     "VALUES(@fechaArribo,@fechaInicio,@fechaFinal,@operadorGrua,@abanderamiento,@arrastre,@salvamento,@idGrua,@minutosManiobra,@idDeposito,@actualizadoPor,@fechaActualizacion,@estatus)";
 
                     SqlCommand command = new SqlCommand(query, connection);
+                    DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
+                    TimeSpan horaInicio = TimeSpan.Parse(Convert.ToDateTime(formData["horaInicioInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    DateTime fechaHoraInicio = fechaInicio.Date.Add(horaInicio);
+                    command.Parameters.AddWithValue("@fechaInicio", fechaHoraInicio);
 
-                    command.Parameters.AddWithValue("@fechaArribo", DateTime.Parse(formData["fechaArribo"].ToString()));
-                    command.Parameters.AddWithValue("@fechaInicio", DateTime.Parse(formData["fechaInicio"].ToString()));
-                    command.Parameters.AddWithValue("@fechaFinal", DateTime.Parse(formData["fechaFinal"].ToString()));
+                    DateTime fechaArribo = DateTime.Parse(formData["fechaArribo"]);
+                    TimeSpan horaArribo = TimeSpan.Parse(Convert.ToDateTime(formData["horaArriboInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    DateTime fechaHoraArribo = fechaArribo.Date.Add(horaArribo);
+                    command.Parameters.AddWithValue("@fechaArribo", fechaHoraArribo);
+
+                    DateTime fechaFinal = DateTime.Parse(formData["fechaFinal"]);
+                    TimeSpan horaTermino = TimeSpan.Parse(Convert.ToDateTime(formData["horaTerminoInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm")) ;
+                    DateTime fechaHoraFinal = fechaFinal.Date.Add(horaTermino);
+                    command.Parameters.AddWithValue("@fechaFinal", fechaHoraFinal);
+
+                    //command.Parameters.AddWithValue("@fechaArribo", DateTime.Parse(formData["fechaArribo"].ToString()));
+                    //command.Parameters.AddWithValue("@fechaInicio", DateTime.Parse(formData["fechaInicio"].ToString()));
+                    //command.Parameters.AddWithValue("@fechaFinal", DateTime.Parse(formData["fechaFinal"].ToString()));
                     command.Parameters.AddWithValue("@operadorGrua", formData["operadorGrua"].ToString());
                     command.Parameters.AddWithValue("@abanderamiento", abanderamiento);
                     command.Parameters.AddWithValue("@arrastre", arrastre);
                     command.Parameters.AddWithValue("@salvamento", salvamento);
-                    command.Parameters.AddWithValue("@minutosManiobra", int.Parse(formData["tiempoManiobras"].ToString()));
+                    if (formData["tiempoManiobras"].ToString()!="")
+                        command.Parameters.AddWithValue("@minutosManiobra", int.Parse(formData["tiempoManiobras"].ToString()));
+                    else
+                        command.Parameters.AddWithValue("@minutosManiobra", 0);
                     command.Parameters.AddWithValue("@idDeposito", iDep);
                     //command.Parameters.AddWithValue("@idSolicitud", iSo);
 
@@ -667,9 +684,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
                     else
                     {
-
-
-
                         command.Parameters.AddWithValue("@idGrua", DBNull.Value);
                     }
 

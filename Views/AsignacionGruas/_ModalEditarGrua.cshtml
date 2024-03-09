@@ -47,6 +47,7 @@
               
             </div>
             <form id="datosGruaForm">
+                <input type="hidden" id="Accion" value="Update" />
                 <div class="row px-4" id="contenedor">
                     <div class="col-12">
                         <div class="controlForm my-3">
@@ -193,7 +194,7 @@
             console.log("formData:", formData);
             showLoading();
             $.ajax({
-                url: '/AsignacionGruas/InsertarDatos',
+                url: '/AsignacionGruas/ActualizarDatos2',
                 type: 'POST',
                 data: formData,
                 processData: false,

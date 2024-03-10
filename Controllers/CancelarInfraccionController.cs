@@ -49,7 +49,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ObtenerInfracciones(CancelarInfraccionModel model, string FolioInfraccion)
         {
 
-            var ListInfraccionesModel = _cancelarInfraccionService.ObtenerInfraccionPorFolio(FolioInfraccion);
+
+            var corp = HttpContext.Session.GetInt32("IdDependencia").Value;
+
+
+            var ListInfraccionesModel = _cancelarInfraccionService.ObtenerInfraccionPorFolio(FolioInfraccion,corp);
 
             if (ListInfraccionesModel == null || ListInfraccionesModel.Count == 0)
             {

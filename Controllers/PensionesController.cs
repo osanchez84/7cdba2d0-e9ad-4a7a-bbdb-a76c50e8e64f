@@ -21,14 +21,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
         private readonly IPensionesService _pensionesService;
         private readonly ICatDictionary _catDictionary;
         private readonly IBitacoraService _bitacoraServices;
+        private readonly ICatDelegacionesOficinasTransporteService _catDelegacionesOficinasTransporteService;
         public PensionesController(
             ICatDictionary catDictionary,
             IPensionesService pensionesService,
-            IBitacoraService bitacoraServices)
+            IBitacoraService bitacoraServices,
+            ICatDelegacionesOficinasTransporteService catDelegacionesOficinasTransporteService)
         {
             _pensionesService = pensionesService;
             _catDictionary = catDictionary;
             _bitacoraServices = bitacoraServices;
+            _catDelegacionesOficinasTransporteService = catDelegacionesOficinasTransporteService;
         }
 
 
@@ -62,19 +65,31 @@ namespace GuanajuatoAdminUsuarios.Controllers
          }
 
 
-            [HttpPost]
+       [HttpPost]
         public ActionResult ajax_ModalCrearPension()
         {
       
-                var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            //var catDelegaciones = _catDictionary.GetCatalog("CatDelegaciones", "0");
+            int idDependencia = 1;
+
+            ViewBag.CatDelegaciones = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia), "IdOficinaTransporte", "NombreOficina");
+
             var catResponsablesPensiones = _catDictionary.GetCatalog("CatResponsablesPensiones", "0");
             var catMunicipios = _catDictionary.GetCatalog("CatMunicipios", "0");
 
-            ViewBag.CatDelegaciones = new SelectList(catDelegaciones.CatalogList, "Id", "Text");
+            //ViewBag.CatDelegaciones = catDelegaciones ; //new SelectList(catDelegaciones, "IdOficinaTransporte", "NombreOficina");
             ViewBag.CatResponsablesPensiones = new SelectList(catResponsablesPensiones.CatalogList, "Id", "Text");
             ViewBag.CatMunicipios = new SelectList(catMunicipios.CatalogList, "Id", "Text");
             return PartialView("_CrearPension", new PensionModel());
-            }
+        }
+
+        public JsonResult Delegaciones_DropExt()
+        {
+            int idDependencia = 1;
+
+            var result = new SelectList(_catDelegacionesOficinasTransporteService.GetDelegacionesOficinasFiltrado(idDependencia), "IdOficinaTransporte", "NombreOficina");
+            return Json(result);
+        }
 
 
 

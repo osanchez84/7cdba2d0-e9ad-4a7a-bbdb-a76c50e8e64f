@@ -116,11 +116,27 @@
                 <div class="controlForm my-3">
                         @Html.HiddenFor(model => model.idInfraccion, new { id = "idInfraccionHdn" })
                     <label>Fecha <b>(obligatorio)</b>:</label>
-                        @(Html.Kendo().DateTimePickerFor(t => t.fechaSolicitud).Format("dd/MM/yyyy HH:mm:ss").Interval(1)
+                        @(Html.Kendo().DatePickerFor(t => t.fechaSolicitud).Format("dd/MM/yyyy").Max(DateTime.Now)
+                        .Events(e =>
+											{
+												e.Change("cambiaFecha");
+											})
                             .HtmlAttributes(new { style = "width: 100%", 
                             title = "datepicker", 
-                            required = "required" }).Value("")
+                            required = "required", id="fechaSolicitud" }).Value("")
                     )
+                </div>
+            </div>
+              <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+                <div class="controlForm my-3">
+                    <label>Fecha <b>(obligatorio)</b>:</label>
+                        @(Html.Kendo().TimePickerFor(t => t.horaSolicitud).Interval(1)
+                            .Label(l => l.Content("Hora:"))
+                            .Format("HH:mm")
+                            .Culture("es-ES")
+                            .Value("")
+                            .HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
+                            )
                 </div>
             </div>
 
@@ -744,7 +760,8 @@
                 //fechaSolicitud: $('#fechaSolicitud').val(),
                 idInfraccion:$("#idInfraccionHdn").val(),
                 folioBusquedaInfraccion:$('#folioBusquedaInfraccion').val(),
-                fechaSolicitud: kendo.toString($("#fechaSolicitud").data("kendoDateTimePicker").value(), "yyyy-MM-ddTHH:mm:ss"),
+                fechaSolicitud: kendo.toString($("#fechaSolicitud").data("kendoDatePicker").value(), "yyyy-MM-dd"),
+                horaSolicitud: kendo.toString($("#dateTime").data("kendoTimePicker").value(), "HH:mm"),
                 idTipoVehiculo: $('#idTipoVehiculo').val(),
                 idConcecionario: $('#idConcecionario').val(),
                 idServicioRequiere: $("#idServicioRequiere").val(),
@@ -1010,4 +1027,37 @@ function requiredControlsOfficer(){
         depositControlsValidate.push({ 'controlName': 'idPensionUbicacion','isDropDown':true });
 }
 
+    function cambiaFecha() {
+        var timepickerControl = $("#dateTime").data("kendoTimePicker");
+
+
+
+
+        var varFechaInfraccion = kendo.toString(this.value(), 'd');
+        var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+        var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+
+        let date = new Date();
+
+        if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {
+            timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+            var hora = timepickerControl.value()
+            if (hora != null && hora.getHours() > date.getHours()) {
+
+                if (hora.getMinutes() > date.getMinutes()) {
+                    timepickerControl.value("")
+                }
+            }
+        }
+        else {
+
+            timepickerControl.max("23:59");
+        }
+
+
+    }
   </script>

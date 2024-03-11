@@ -116,6 +116,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreOficial { get; set; }  
         public string municipio { get; set; }
         public string carretera { get; set; }
+        public string colonia { get; set; }
+        public string calle { get; set; }
+        
+        public string numero { get; set; }
+        public string entreCalle { get; set; }
+
         public string tramo { get; set; }
         public string kmCarretera { get; set; }
         public string nombreConductor { get; set; }

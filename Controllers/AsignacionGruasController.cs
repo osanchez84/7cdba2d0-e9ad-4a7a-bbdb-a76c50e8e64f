@@ -171,17 +171,30 @@ namespace GuanajuatoAdminUsuarios.Controllers
         
         [HttpPost]
 
-        public IActionResult InsertarDatos(IFormCollection formData, int abanderamiento, int arrastre, int salvamento)
+        public IActionResult ActualizarDatos2(IFormCollection formData, int abanderamiento, int arrastre, int salvamento)
+        {
+            int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
+            int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
+            int DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
+           
+            var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
+
+            //BITACORA
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
+            var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
+            _bitacoraServices.insertBitacora(iDep, ip, "AsignacionGruas_DatosGrua", "Insertar", "insert", user);
+
+            return Json(DatosTabla);
+        }
+
+
+        public IActionResult InsertarDatos(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, string horaInicioInsert, string horaArriboInsert, string horaTerminoInsert)
         {
             int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
 
             int DatosGruas = 0;
-            if (editar) 
-                DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo);
-            else
-                DatosGruas = _asignacionGruasService.InsertDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep, iSo);
-
+            DatosGruas = _asignacionGruasService.InsertDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep, iSo, horaInicioInsert, horaArriboInsert, horaTerminoInsert);
 
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 

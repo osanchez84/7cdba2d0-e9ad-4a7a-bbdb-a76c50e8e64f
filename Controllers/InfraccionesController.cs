@@ -867,8 +867,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonasFisicas = new List<PersonaModel>();
             models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            models.placas = "XXXXOXO";
-            models.serie = "XXXXOXOhf5321";
+            models.placas = "";
+            models.serie = "";
             models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;

@@ -38,6 +38,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
         public JsonResult Marcas_Read()
         {
+            int idPension = HttpContext.Session.GetInt32("IdPension") ?? 0;
             var result = new SelectList(_marcaServices.GetMarcas(), "IdMarcaVehiculo", "MarcaVehiculo");
             return Json(result);
         }

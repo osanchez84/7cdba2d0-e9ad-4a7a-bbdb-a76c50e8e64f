@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using GuanajuatoAdminUsuarios.Models;
 using System.Collections.Generic;
+using GuanajuatoAdminUsuarios.Entity;
 
 namespace GuanajuatoAdminUsuarios.Interfaces
 {
@@ -20,6 +21,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public int GuardarInforSalidaOtrasDep(SalidaVehiculosModel model);
 
         public List<SalidaVehiculosModel> ObtenerTotal(int iDp);
+
+        public List<MarcasVehiculo> GetMarcasSalidaPension(int idPension);
 
     }
 }

@@ -1113,6 +1113,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(result);
         }
+
+        public JsonResult Oficiales_DropCorpTodos()
+        {
+            //int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficialesByCorporacion(idDependencia)// .GetOficialesFiltrados(idOficina, idDependencia)
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+                });
+            oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+
+
         public JsonResult CambiosDDLOficiales()
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
@@ -1814,8 +1832,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     apellidoMaterno = modelList.apellidoMaterno,
                     RFC = modelList.RFC,
                     CURP = modelList.CURP,
-                    fechaNacimiento = modelList.fechaNacimiento,
-                    numeroLicencia = modelList.numeroLicencia
+					fechaNacimiento = modelList.fechaNacimiento != null ? ((DateTime)modelList.fechaNacimiento).ToString("dd/MM/yyyy") : "" ,                   
+                    numeroLicencia = modelList.numeroLicencia,
+                    entidad = modelList.PersonaDireccion.entidad,
+                    municipio = modelList.PersonaDireccion.municipio,
+                    calle= modelList.PersonaDireccion.calle,
+                    numero = modelList.PersonaDireccion.numero,
+                    colonia = modelList.PersonaDireccion.colonia,
+                    telefono = modelList.PersonaDireccion.telefono,
+                    correo = modelList.PersonaDireccion.correo,
+                    genero = modelList.genero
                 };
                 return Json(new { data = formattedModelList });
             }
@@ -2021,8 +2047,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonasFisicas = new List<PersonaModel>();
             models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            models.placas = "XXXXOXO";
-            models.serie = "XXXXOXOhf5321";
+            models.placas = "";
+            models.serie = "";
             models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;

@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
 
-        public List<CancelarInfraccionModel> ObtenerInfraccionPorFolio(string FolioInfraccion)
+        public List<CancelarInfraccionModel> ObtenerInfraccionPorFolio(string FolioInfraccion, int corp)
         {
             //
             List<CancelarInfraccionModel> ListaInfracciones = new List<CancelarInfraccionModel>();
@@ -39,8 +39,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             LEFT JOIN personas AS pI ON pI.IdPersona = i.IdPersona 
                                                             LEFT JOIN personas AS pV ON pV.IdPersona = v.idPersona 
 									                        LEFT JOIN catDelegaciones AS del ON del.idDelegacion = i.idDelegacion 
-                                                            WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ORDER BY i.idInfraccion DESC;", connection);
+                                                            WHERE i.folioInfraccion LIKE '%' + @FolioInfraccion + '%'
+                                                            and idEstatusInfraccion<>5 and trancito = @corp
+                                                            ORDER BY i.idInfraccion DESC;", connection);
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
+                    command.Parameters.Add(new SqlParameter("@corp", SqlDbType.Int)).Value = corp;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

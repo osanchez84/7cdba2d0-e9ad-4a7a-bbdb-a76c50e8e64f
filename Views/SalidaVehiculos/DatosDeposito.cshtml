@@ -187,28 +187,29 @@
                 <div style="width: 50%; float: left;">
                     <h4 class="colorPrimary"><b>Ubicación</b></h4>
                     <p><b>Tramo:</b> <span id="tramo">@{ if (Model.tramo != null) { @Model.tramo; } else { @("-"); } }</span></p>
-                    <p><b>Carretera:</b> <span id="carretera">@{ if (Model.carretera != null) { @Model.carretera; } else { @("-"); } }</span></p>
+                    <p><b>Carretera:</b> <span id="carretera">@{
+                                if (Model.carretera != null) { 
+                                    @Model.carretera
+                                    ; } else { 
+                                    @(
+                                        "-"
+                                        )
+                                    ; }
+                            }</span></p>
                     <p><b>Kilometro:</b> 
                         <span id="kilometro">
+
                             @{
-                                int km;
-                                bool success = int.TryParse(Model.kilometro, out km);
-                                if (success)
+                                if (Model.kilometro != null)
                                 {
-                                   Convert.ToInt32(@km).ToString("N1");
+                                    @Model.kilometro
+                                    ;
                                 }
                                 else
                                 {
-                                    @("-");
+                                    @("-")
+                                    ;
                                 }
-
-
-                                //if (!String.IsNullOrEmpty(Model.kilometro)) { Convert.ToInt32(@Model.kilometro).ToString("N1"); }
-                                //else
-                                //{
-                                //    @("-")
-                                //    ;
-                                //}
                             }
 
                         </span></p>

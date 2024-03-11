@@ -290,6 +290,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return PartialView("_AgregarEditarConductor");
         }
 
+        public IActionResult CambiarVehiculo()
+        {
+            return PartialView("_CambiarVehiculo");
+        }
+
 
         public IActionResult ajax_PropietarioConductor2(int idInfraccion,int idConductor)
         {

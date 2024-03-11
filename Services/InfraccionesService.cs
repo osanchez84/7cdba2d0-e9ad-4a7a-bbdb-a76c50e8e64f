@@ -1150,6 +1150,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.kmCarretera
                                             ,inf.idPersona
                                             ,inf.idPersonaInfraccion
+											,inf.lugarColonia
+											,inf.lugarCalle
+											,inf.lugarNumero
+											,inf.lugarEntreCalle
                                             ,CONCAT(pInf.nombre, ' ', pInf.apellidoPaterno, ' ', pInf.apellidoMaterno) as nombreConductor
                                             ,UPPER(CONCAT(dirconduct.calle,' ', dirconduct.numero, ', ',dirconduct.colonia, ', ', dirconductmuni.municipio, ', ', dirconductenti.nombreEntidad)) as domicilioConductor 
                                             ,conduct.fechaNacimiento fechaNacimientoConductor
@@ -1241,7 +1245,14 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.carretera = reader["carretera"] == System.DBNull.Value ? string.Empty : reader["carretera"].ToString();
 							model.tramo = reader["tramo"] == System.DBNull.Value ? string.Empty : reader["tramo"].ToString();
 							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-							model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
+
+                            model.colonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+                            model.calle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+                            model.numero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+                            model.entreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+
+
+                            model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
 							model.domicilioConductor = reader["domicilioConductor"] == System.DBNull.Value ? string.Empty : reader["domicilioConductor"].ToString();
 							model.fechaNacimientoConductor = reader["fechaNacimientoConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimientoConductor"].ToString());
 							model.edadConductor = reader["edadConductor"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["edadConductor"].ToString());
@@ -2261,7 +2272,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			decimal umas = 0M;
 			string strQuery = @"SELECT top 1 salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 and fecha<=@fecha order by fecha desc"
+                               WHERE estatus = 1 and fecha<=@fecha order by fecha DESC"
 			;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

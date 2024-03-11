@@ -75,9 +75,11 @@
                                 @(Html.Kendo().DatePickerFor(t => t.Fecha).Max(DateTime.Now)
                                     .Label(l => l.Content("Fecha <b>(obligatorio)</b>:"))
                                     .Culture("es-ES")
-                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
-                                    .Events(e => e
-                                    .Change("validarFecha"))
+                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date", id = "fechaAccidente" })
+                                    .Events(e =>
+                                    {
+                                        e.Change("cambiaFecha");
+                                    })
                                     )
                             </span>
                         </div>
@@ -92,7 +94,7 @@
                                     
                                     .Label(l => l.Content("Hora <b>(obligatorio)</b>:"))
                                     .Value("")
-                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
+                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker", id="dateTime" })
                                     )
                             </span>
                         </div>
@@ -281,5 +283,38 @@
             var datePicker = $("#Hora").data("TimePickerFor");
             datePicker.value(null);
         });
+    }
+    function cambiaFecha() {
+        var timepickerControl = $("#dateTime").data("kendoTimePicker");
+
+
+
+
+        var varFechaInfraccion = kendo.toString(this.value(), 'd');
+        var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+        var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+
+        let date = new Date();
+
+        if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {
+            timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+            var hora = timepickerControl.value()
+            if (hora != null && hora.getHours() > date.getHours()) {
+
+                if (hora.getMinutes() > date.getMinutes()) {
+                    timepickerControl.value("")
+                }
+            }
+        }
+        else {
+
+            timepickerControl.max("23:59");
+        }
+
+
     }
    </script>

@@ -1799,8 +1799,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                 model.genero = reader["genero"].ToString();
                                 model.idTipoLicencia = reader["idTipoLicencia"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idTipoLicencia"].ToString());
                                 model.tipoLicencia = reader["tipoLicencia"].ToString();
-                                model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
-                                model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
+								//model.fechaNacimiento = reader["fechaNacimiento"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+								model.fechaNacimiento = reader["fechaNacimiento"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["fechaNacimiento"].ToString());
+
+								model.vigenciaLicencia = reader["vigenciaLicencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["vigenciaLicencia"].ToString());
                                 model.PersonaDireccion = GetPersonaDireccionByIdPersona((int)model.idPersona);
                                 model.total = Convert.ToInt32(reader["Total"]);
                                 modelList.Add(model);

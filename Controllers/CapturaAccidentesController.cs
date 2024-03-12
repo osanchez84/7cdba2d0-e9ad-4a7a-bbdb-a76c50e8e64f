@@ -183,6 +183,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
         {
+
             //filterValue(request.Filters);
 
             Pagination pagination = new Pagination();
@@ -808,7 +809,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult SubmodalBuscarInvolucrado()
         {
             BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-            //var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            //var ListInvolucradoModel = _personasService.GetAllPersonasFisicasPagination(pagination);
             //ViewBag.ModeInvolucrado = ListInvolucradoModel;
 
             return PartialView("_ModalAgregarInvolucrado");
@@ -1401,8 +1402,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult SetLastInsertedIdEdit(bool modoSoloLectura, int idAccidente)
         {
 
-            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             ViewBag.ModoSoloLectura = modoSoloLectura;
+            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
 
             return RedirectToAction("CapturaAaccidente");
         }

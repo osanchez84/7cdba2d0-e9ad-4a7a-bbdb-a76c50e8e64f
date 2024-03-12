@@ -1,5 +1,21 @@
 ﻿@model PensionModel
 
+<script>
+
+    function dataToMunc(){
+        var val = document.getElementById("ddlDelegaciones").value//  $("#idDelegacion").val()
+
+        return { del: val }
+
+    }
+
+    function GetMunc(){
+        var dll = $("#idMunicipio").data("kendoDropDownList").dataSource
+        dll.read()
+    }
+
+    </script>
+
 <div class="panel">
     <div class="panel-body container-fluid">
         <div class="row row-lg">
@@ -41,13 +57,14 @@
                                         .DataTextField("Text")
                                         .DataValueField("Value")
                                         // .BindTo((SelectList)ViewBag.CatDelegaciones)
+                                        .Events(ev => ev.Change("GetMunc"))
                                         .OptionLabel("-- Seleccione --")
                                         .Filter(FilterType.Contains)
                                         .DataSource(source =>
                                         {
                                             source.Read(read =>
                                             {
-                                                read.Action("Delegaciones_DropExt", "Estadisticas");
+                                                read.Action("Delegaciones_DropExt2", "Estadisticas");
                                             });
                                         })
                                         .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
@@ -59,6 +76,7 @@
                                     <label>Municipio:</label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idMunicipio")
+                                        
                                         .DataTextField("Text")
                                         .DataValueField("Value")
                                         .OptionLabel("Seleccione Municipio...")
@@ -68,7 +86,7 @@
                                         {
                                             source.Read(read =>
                                             {
-                                                read.Action("Municipios_Guanajuato", "PadronDepositosGruas");
+                                                read.Action("Municipios_Guanajuatofilter", "PadronDepositosGruas").Data("dataToMunc");
                                             });
                                         }))
                                 </div>

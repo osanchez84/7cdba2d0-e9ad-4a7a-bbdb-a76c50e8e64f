@@ -274,7 +274,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			
 				// filterValue(request.Filters);
 
-				Pagination pagination = new Pagination();
+			Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
             pagination.PageSize = 10;
             // pagination.Filter = resultValue;

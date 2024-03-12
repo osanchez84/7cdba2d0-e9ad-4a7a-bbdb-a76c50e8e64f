@@ -1097,19 +1097,23 @@ namespace GuanajuatoAdminUsuarios.Services
 				}
 			return model;
 		}
-		public decimal getUMAValue()
+		public decimal getUMAValue(DateTime fechaInfraccion)
 		{
 			decimal value = 0;
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 				try
 				{
-					connection.Open();
+                    int anio = fechaInfraccion.Year;
+                    connection.Open();
 					const string SqlTransact =
-											@"select format(salario,'#.##') salario from catSalariosMinimos where idSalario=1";
+                                            @"select format(salario,'#.##') salario from catSalariosMinimos catSal
+												where catSal.estatus =1 AND catSal.anio = @anio";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.CommandType = CommandType.Text;
-					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.Int)).Value = anio;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
 						{
@@ -1150,6 +1154,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                             ,inf.kmCarretera
                                             ,inf.idPersona
                                             ,inf.idPersonaInfraccion
+											,inf.lugarColonia
+											,inf.lugarCalle
+											,inf.lugarNumero
+											,inf.lugarEntreCalle
                                             ,CONCAT(pInf.nombre, ' ', pInf.apellidoPaterno, ' ', pInf.apellidoMaterno) as nombreConductor
                                             ,UPPER(CONCAT(dirconduct.calle,' ', dirconduct.numero, ', ',dirconduct.colonia, ', ', dirconductmuni.municipio, ', ', dirconductenti.nombreEntidad)) as domicilioConductor 
                                             ,conduct.fechaNacimiento fechaNacimientoConductor
@@ -1241,7 +1249,14 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.carretera = reader["carretera"] == System.DBNull.Value ? string.Empty : reader["carretera"].ToString();
 							model.tramo = reader["tramo"] == System.DBNull.Value ? string.Empty : reader["tramo"].ToString();
 							model.kmCarretera = reader["kmCarretera"] == System.DBNull.Value ? string.Empty : reader["kmCarretera"].ToString();
-							model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
+
+                            model.colonia = reader["lugarColonia"] == System.DBNull.Value ? string.Empty : reader["lugarColonia"].ToString();
+                            model.calle = reader["lugarCalle"] == System.DBNull.Value ? string.Empty : reader["lugarCalle"].ToString();
+                            model.numero = reader["lugarNumero"] == System.DBNull.Value ? string.Empty : reader["lugarNumero"].ToString();
+                            model.entreCalle = reader["lugarEntreCalle"] == System.DBNull.Value ? string.Empty : reader["lugarEntreCalle"].ToString();
+
+
+                            model.nombreConductor = reader["nombreConductor"] == System.DBNull.Value ? string.Empty : reader["nombreConductor"].ToString();
 							model.domicilioConductor = reader["domicilioConductor"] == System.DBNull.Value ? string.Empty : reader["domicilioConductor"].ToString();
 							model.fechaNacimientoConductor = reader["fechaNacimientoConductor"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaNacimientoConductor"].ToString());
 							model.edadConductor = reader["edadConductor"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["edadConductor"].ToString());
@@ -1988,6 +2003,9 @@ namespace GuanajuatoAdminUsuarios.Services
 								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
 									  ,car.carretera,tra.tramo,mun.municipio,pdir.telefono
 									  ,inf.fechaVencimiento
+									  ,inf.ObservacionesSub
+									  ,inf.ObservacionsesApl
+
                                FROM infracciones AS inf
 							   LEFT JOIN catOficiales AS ofi ON inf.idOficial = ofi.idOficial
 							   LEFT JOIN catCarreteras AS car ON inf.idCarretera = car.idCarretera
@@ -2029,8 +2047,13 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.folioInfraccion = reader["folioInfraccion"].ToString();
 							model.nombreOficial = reader["nombreOficial"].ToString();
 							model.apellidoPaternoOficial = reader["apellidoPaternoOficial"].ToString();
-							model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
-							model.carretera = reader["carretera"].ToString();
+							model.ObservacionesSub = reader["ObservacionesSub"].ToString();
+							model.ObservacionsesApl = reader["ObservacionsesApl"].ToString();
+                            model.idCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? 0 : ((int)reader["infraccionCortesia"]) ;
+
+
+
+                            model.carretera = reader["carretera"].ToString();
 							model.tramo = reader["tramo"].ToString();
 							model.municipio = reader["municipio"].ToString();
 							model.telefono = reader["telefono"].ToString();
@@ -2261,7 +2284,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			decimal umas = 0M;
 			string strQuery = @"SELECT top 1 salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 and fecha<=@fecha order by fecha desc"
+                               WHERE estatus = 1 and fecha<=@fecha order by fecha DESC"
 			;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))

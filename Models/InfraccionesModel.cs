@@ -11,6 +11,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
 
 
+        public int estatusCortesia { get; set; } = 0;
+        public string ObservacionesSub { get; set; } = "";
+        public string ObservacionsesApl { get; set; } = "";
         public int? transito { get; set; }
         public string ObsevacionesApl { get; set; }
         public int idInfraccion { get; set; }
@@ -116,6 +119,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string nombreOficial { get; set; }  
         public string municipio { get; set; }
         public string carretera { get; set; }
+        public string colonia { get; set; }
+        public string calle { get; set; }
+        
+        public string numero { get; set; }
+        public string entreCalle { get; set; }
+
         public string tramo { get; set; }
         public string kmCarretera { get; set; }
         public string nombreConductor { get; set; }

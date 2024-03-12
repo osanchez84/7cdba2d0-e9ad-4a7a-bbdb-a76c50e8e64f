@@ -190,7 +190,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"delegacion","Delegación/Oficina"}
             };
             var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion, idDependencia);
-            var uma = _infraccionesService.getUMAValue();
+            var uma = _infraccionesService.getUMAValue(InfraccionModel.fechaInfraccion);
             InfraccionModel.Uma = uma;
             var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
             return File(report.File.ToArray(), "application/pdf", report.FileName);
@@ -1536,9 +1536,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
 
-                var modelList = _personasService.GetAllPersonas();
+               // var modelList = _personasService.GetAllPersonas();
                 ViewBag.EditarVehiculo = true;
-                return PartialView("_ListadoPersonas", modelList);
+                return PartialView("_ListadoPersonas");
             }
         }
 
@@ -1912,7 +1912,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int contador = 0;
             DateTime fechavigencia = fechaInfraccion;
-            while (contador < 9)
+            while (contador < 10)
             {
                 fechavigencia= fechaInfraccion.AddDays(1);
                 Console.WriteLine(fechavigencia.ToString("dddd"));

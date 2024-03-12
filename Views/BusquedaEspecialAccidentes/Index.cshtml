@@ -71,6 +71,7 @@
                             <label>Fecha Inicio:</label>
                             @(Html.Kendo().DatePickerFor(t => t.FechaInicio).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Inicio:"))
+                                .Format("dd/MM/yyyy")
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateInicio" })
                                 )
                            
@@ -81,6 +82,7 @@
                             <label>Fecha Fin:</label>
                             @(Html.Kendo().DatePickerFor(t => t.FechaFin).Max(DateTime.Now)
                                 .Label(l => l.Content("Fecha Fin:"))
+                                .Format("dd/MM/yyyy")
                                 .HtmlAttributes(new { style = "width: 100%", id = "dateFinal" })
                                 )
                         </div>

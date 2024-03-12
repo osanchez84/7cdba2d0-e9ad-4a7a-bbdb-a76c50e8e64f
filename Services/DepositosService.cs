@@ -97,7 +97,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    //command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    DateTime fechaSol = model.fechaSolicitud;
+                    TimeSpan horaSol = model.horaSolicitud;
+                    DateTime fechaHoraSolicitud = fechaSol.Date + horaSol;
+                    command.Parameters.AddWithValue("@fechaSolicitud", fechaHoraSolicitud);
                     command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietaroGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;

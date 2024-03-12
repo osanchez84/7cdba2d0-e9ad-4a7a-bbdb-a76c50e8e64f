@@ -171,6 +171,8 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.AddCell(FieldCellTitleBox("Lugar"));
                 nested.AddCell(FieldCellBox("Carretera: ", (ModelDataInfracciones.carretera==null) ? "" : ModelDataInfracciones.carretera.ToString()));                
                 nested.AddCell(FieldCellBox("Tramo: ", (ModelDataInfracciones.tramo == null) ? "" : ModelDataInfracciones.tramo.ToString()));
+                nested.AddCell(FieldCellBox("Kilómetro: ", (ModelDataInfracciones.kmCarretera == null) ? "" : ModelDataInfracciones.kmCarretera));
+
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;
@@ -183,7 +185,11 @@ namespace GuanajuatoAdminUsuarios.Services.CustomReportsService
                 nested.DefaultCell.Border = Rectangle.NO_BORDER;
                 nested.AddCell(FieldCellEmptyBox());
                 nested.AddCell(FieldCellEmptyBox());
-                nested.AddCell(FieldCellBox("Kilómetro: ", (ModelDataInfracciones.kmCarretera == null) ? "" : ModelDataInfracciones.kmCarretera));
+                nested.AddCell(FieldCellBox("Colonia: ", (ModelDataInfracciones.colonia == null) ? "" : ModelDataInfracciones.colonia.ToString()));
+                nested.AddCell(FieldCellBox("Calle: ", (ModelDataInfracciones.calle == null) ? "" : ModelDataInfracciones.calle.ToString()));
+                nested.AddCell(FieldCellBox("Número: ", (ModelDataInfracciones.numero == null) ? "" : ModelDataInfracciones.numero.ToString()));
+                nested.AddCell(FieldCellBox("Entre Calle: ", (ModelDataInfracciones.entreCalle == null) ? "" : ModelDataInfracciones.entreCalle.ToString()));
+
                 nested.AddCell("");
                 PdfPCell nesthousing = new PdfPCell(nested);
                 nesthousing.Border = Rectangle.NO_BORDER;

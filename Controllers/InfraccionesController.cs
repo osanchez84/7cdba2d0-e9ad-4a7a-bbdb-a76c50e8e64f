@@ -1199,14 +1199,14 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
 
             HttpContext.Session.SetInt32("idPersonaEdit", model.idPersona == null ? 0 : (int)model.idPersona);
-            HttpContext.Session.SetString("placasEdit", (string)model.placas);
-            HttpContext.Session.SetString("tarjetaEdit", (string)model.tarjeta);
-            HttpContext.Session.SetString("vigenciaTarjetaEdit", model.vigenciaTarjeta.ToString());
-            HttpContext.Session.SetString("motorEdit", (string)model.motor);
-            HttpContext.Session.SetString("numeroEconomicoEdit", (string)model.numeroEconomico);
-            HttpContext.Session.SetString("otrosEdit", (string)model.otros);
-            HttpContext.Session.SetString("polizaEdit", (string)model.poliza);
-            HttpContext.Session.SetInt32("capacidadEdit", (int)model.capacidad);
+            HttpContext.Session.SetString("placasEdit", model.placas == null ? "" : (string)model.placas);
+            HttpContext.Session.SetString("tarjetaEdit", model.tarjeta == null ? "" : (string)model.tarjeta);
+            HttpContext.Session.SetString("vigenciaTarjetaEdit", model.vigenciaTarjeta == null ? "" : model.vigenciaTarjeta.ToString());
+            HttpContext.Session.SetString("motorEdit", model.motor == null ? "" : (string)model.motor);
+            HttpContext.Session.SetString("numeroEconomicoEdit", model.numeroEconomico == null ? "" : (string)model.numeroEconomico);
+            HttpContext.Session.SetString("otrosEdit", model.otros == null ? "" : (string)model.otros);
+            HttpContext.Session.SetString("polizaEdit", model.poliza == null ? "" : (string)model.poliza);
+            HttpContext.Session.SetInt32("capacidadEdit", model.capacidad == null ? 0 : (int)model.capacidad);
             HttpContext.Session.SetInt32("idEntidadEdit", (int)model.idEntidad);
             HttpContext.Session.SetInt32("idColorEdit", (int)model.idColor);
 

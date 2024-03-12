@@ -1097,19 +1097,23 @@ namespace GuanajuatoAdminUsuarios.Services
 				}
 			return model;
 		}
-		public decimal getUMAValue()
+		public decimal getUMAValue(DateTime fechaInfraccion)
 		{
 			decimal value = 0;
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 				try
 				{
-					connection.Open();
+                    int anio = fechaInfraccion.Year;
+                    connection.Open();
 					const string SqlTransact =
-											@"select format(salario,'#.##') salario from catSalariosMinimos where idSalario=1";
+                                            @"select format(salario,'#.##') salario from catSalariosMinimos catSal
+												where catSal.estatus =1 AND catSal.anio = @anio";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.CommandType = CommandType.Text;
-					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.Int)).Value = anio;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())
 						{

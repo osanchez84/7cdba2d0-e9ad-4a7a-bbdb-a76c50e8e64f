@@ -75,7 +75,7 @@
                                 @(Html.Kendo().DatePickerFor(t => t.Fecha).Max(DateTime.Now)
                                     .Label(l => l.Content("Fecha <b>(obligatorio)</b>:"))
                                     .Culture("es-ES")
-                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date", id = "fechaAccidente" })
+                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
                                     .Events(e =>
                                     {
                                         e.Change("cambiaFecha");
@@ -94,7 +94,7 @@
                                     
                                     .Label(l => l.Content("Hora <b>(obligatorio)</b>:"))
                                     .Value("")
-                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker", id="dateTime" })
+                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
                                     )
                             </span>
                         </div>
@@ -285,7 +285,7 @@
         });
     }
     function cambiaFecha() {
-        var timepickerControl = $("#dateTime").data("kendoTimePicker");
+        var timepickerControl = $("#Hora").data("kendoTimePicker");
 
 
 

@@ -574,6 +574,23 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
 
+            VehiculoModel vehiculo = new VehiculoModel();
+
+            vehiculo.idPersona = HttpContext.Session.GetInt32("idPersonaEdit");
+            var placasEd = HttpContext.Session.GetString("placasEdit");
+            vehiculo.placas = placasEd;
+            vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
+            vehiculo.vigenciaTarjeta = DateTime.Parse(HttpContext.Session.GetString("vigenciaTarjetaEdit"));
+            vehiculo.motor = HttpContext.Session.GetString("motorEdit");
+            vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
+            vehiculo.otros = HttpContext.Session.GetString("otrosEdit");
+            vehiculo.poliza = HttpContext.Session.GetString("polizaEdit");
+            vehiculo.capacidad = HttpContext.Session.GetInt32("capacidadEdit");
+            vehiculo.idEntidad = (int)HttpContext.Session.GetInt32("idEntidadEdit");
+            vehiculo.idColor = (int)HttpContext.Session.GetInt32("idColorEdit");
+
+            model.Vehiculo = vehiculo;
+
             var isedition = HttpContext.Session.GetString("isedition");
 
 
@@ -1180,6 +1197,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
+
+            HttpContext.Session.SetInt32("idPersonaEdit", model.idPersona == null ? 0 : (int)model.idPersona);
+            HttpContext.Session.SetString("placasEdit", (string)model.placas);
+            HttpContext.Session.SetString("tarjetaEdit", (string)model.tarjeta);
+            HttpContext.Session.SetString("vigenciaTarjetaEdit", model.vigenciaTarjeta.ToString());
+            HttpContext.Session.SetString("motorEdit", (string)model.motor);
+            HttpContext.Session.SetString("numeroEconomicoEdit", (string)model.numeroEconomico);
+            HttpContext.Session.SetString("otrosEdit", (string)model.otros);
+            HttpContext.Session.SetString("polizaEdit", (string)model.poliza);
+            HttpContext.Session.SetInt32("capacidadEdit", (int)model.capacidad);
+            HttpContext.Session.SetInt32("idEntidadEdit", (int)model.idEntidad);
+            HttpContext.Session.SetInt32("idColorEdit", (int)model.idColor);
+
+
             return PartialView("_DetalleVehiculo", model);
         }
 

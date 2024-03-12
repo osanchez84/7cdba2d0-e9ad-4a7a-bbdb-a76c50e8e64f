@@ -1,5 +1,5 @@
 ﻿@model InfraccionesModel
-c
+
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
@@ -669,6 +669,39 @@ c
                                                     @Html.ValidationMessageFor(x => x.idAplicacion)
                                                 </div>
                                             </div>
+
+                                            <br />
+                                            @if (Model.idCortesia == 3)
+                                                    {
+                                            <div class="form-group col-md-8">
+                                                <br/>
+                                                <div class="controlForm">  
+                                                    @(Html.Kendo().TextArea()
+                                                    .Name("ObsSub")
+                                                            .Rows(2)
+                                                    .Value(Model.ObservacionesSub)
+                                                    .Readonly(true))
+                                                        
+                                                </div>
+                                            </div>
+
+                                                    }
+                                                    else if (Model.idCortesia == 4)
+                                                    {
+                                            <div class="form-group col-md-8">
+                                                    
+                                                <div class="controlForm">    
+                                                        @(Html.Kendo().TextArea()
+                                                            .Name("ObsApl")
+                                                            .Rows(2)
+                                                            .Value(Model.ObservacionsesApl)
+                                                            .Readonly(true))
+
+                                                </div>
+                                            </div>
+                                                    }
+
+
                                             <div class="form-group col-md-8">
                                                 <div class="controlForm">
                                                     @(Html.Kendo().TextAreaFor(t => t.observaciones)

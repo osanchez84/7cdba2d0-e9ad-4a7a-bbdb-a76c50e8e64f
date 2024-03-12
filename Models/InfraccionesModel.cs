@@ -11,6 +11,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
 
 
+        public int estatusCortesia { get; set; } = 0;
+        public string ObservacionesSub { get; set; } = "";
+        public string ObservacionsesApl { get; set; } = "";
         public int? transito { get; set; }
         public string ObsevacionesApl { get; set; }
         public int idInfraccion { get; set; }

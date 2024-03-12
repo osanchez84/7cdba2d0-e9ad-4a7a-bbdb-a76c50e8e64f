@@ -229,6 +229,55 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+
+        public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesFiltrado(int idDependencia)
+        {
+            //
+            List<CatDelegacionesOficinasTransporteModel> ListaDelegacionsOficinas = new List<CatDelegacionesOficinasTransporteModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"SELECT idDelegacion,delegacion 
+                                                          FROM catDelegaciones AS d                                                           
+                                                            WHERE d.transito = @idDependencia;", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = (object)idDependencia ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatDelegacionesOficinasTransporteModel delegacionOficina = new CatDelegacionesOficinasTransporteModel();
+                            delegacionOficina.IdOficinaTransporte = Convert.ToInt32(reader["idDelegacion"].ToString());
+                            delegacionOficina.NombreOficina = reader["delegacion"].ToString();
+
+                            ListaDelegacionsOficinas.Add(delegacionOficina);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaDelegacionsOficinas;
+
+
+        }
+
+
+
+
         public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesDropDown()
         {
             //

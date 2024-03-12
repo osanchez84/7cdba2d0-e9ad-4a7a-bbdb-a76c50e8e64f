@@ -1999,6 +1999,9 @@ namespace GuanajuatoAdminUsuarios.Services
 								      ,ofi.apellidoMaterno AS apellidoMaternoOficial
 									  ,car.carretera,tra.tramo,mun.municipio,pdir.telefono
 									  ,inf.fechaVencimiento
+									  ,inf.ObservacionesSub
+									  ,inf.ObservacionsesApl
+
                                FROM infracciones AS inf
 							   LEFT JOIN catOficiales AS ofi ON inf.idOficial = ofi.idOficial
 							   LEFT JOIN catCarreteras AS car ON inf.idCarretera = car.idCarretera
@@ -2040,8 +2043,13 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.folioInfraccion = reader["folioInfraccion"].ToString();
 							model.nombreOficial = reader["nombreOficial"].ToString();
 							model.apellidoPaternoOficial = reader["apellidoPaternoOficial"].ToString();
-							model.apellidoMaternoOficial = reader["apellidoMaternoOficial"].ToString();
-							model.carretera = reader["carretera"].ToString();
+							model.ObservacionesSub = reader["ObservacionesSub"].ToString();
+							model.ObservacionsesApl = reader["ObservacionsesApl"].ToString();
+                            model.idCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? 0 : ((int)reader["infraccionCortesia"]) ;
+
+
+
+                            model.carretera = reader["carretera"].ToString();
 							model.tramo = reader["tramo"].ToString();
 							model.municipio = reader["municipio"].ToString();
 							model.telefono = reader["telefono"].ToString();

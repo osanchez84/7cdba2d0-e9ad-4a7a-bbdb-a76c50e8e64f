@@ -9,6 +9,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinas();
         List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasActivos();
         List<CatDelegacionesOficinasTransporteModel> GetDelegacionesOficinasFiltrado(int idDependencia);
+        List<CatDelegacionesOficinasTransporteModel> GetDelegacionesFiltrado(int idDependencia);
         public List<CatDelegacionesOficinasTransporteModel> GetDelegacionesDropDown();
 
 

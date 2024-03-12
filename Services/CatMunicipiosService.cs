@@ -257,7 +257,7 @@ finally
 
 				{
 					connection.Open();
-					SqlCommand command = new SqlCommand("SELECT m.*,e.estatus FROM catMunicipios AS m LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idOficinaTransporte = @idOficina and m.estatus=1;\r\n", connection);
+					SqlCommand command = new SqlCommand("SELECT m.*,e.estatus FROM catMunicipios AS m LEFT JOIN estatus AS e ON m.estatus = e.estatus WHERE m.idOficinaTransporte = @idOficina and m.estatus=1 and idEntidad=11;\r\n", connection);
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
 

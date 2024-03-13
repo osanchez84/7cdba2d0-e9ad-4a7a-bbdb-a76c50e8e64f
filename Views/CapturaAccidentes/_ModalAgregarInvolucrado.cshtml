@@ -1,67 +1,109 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel
 
 <script>
+
 	function buscarConductor() {
-		//var Mydata = $("#buscarInvolucradoForm").serialize();
-		 var formData = $("#buscarInvolucradoForm").serializeArray();
+		// HMG: Se cambian funcionalidades por lentitud en la carga y se hace el paginado.
+		var licenciaBusqueda = $("#PersonaModel_numeroLicenciaBusqueda").val().trim();
+		var rfcBusqueda = $("#PersonaModel_RFCBusqueda").val().trim();
+		var curpBusqueda = $("#PersonaModel_CURPBusqueda").val().trim();
+		var nombreBusqueda = $("#PersonaModel_nombreBusqueda").val().trim();
+		var apellidoPaternoBusqueda = $("#PersonaModel_apellidoPaternoBusqueda").val().trim();
 
-		 
-        // Aplica Trim a cada valor en formData
-        $.each(formData, function (index, field) {
-            field.value = $.trim(field.value);
-        });
+		if (licenciaBusqueda !== "") {
+			if (licenciaBusqueda.length < 10) {
+				sitteg_warning("El número de licencia debe tener al menos 10 caracteres.");
+				return;
+			}
+		}
+		if (rfcBusqueda !== "") {
+			if (rfcBusqueda.length < 10) {
+				sitteg_warning("El RFC debe tener al menos 10 caracteres.");
+				return;
+			}
+		}
 
-        // Convierte de nuevo a objeto
-        var trimmedData = {};
-        var findData = false;
-        $.each(formData, function (index, field) {
-            trimmedData[field.name] = field.value;
-            if (!findData) {
-                if (field.value != '' && field.value != undefined) {
-                    findData = true;
-                }
-            }
-        });
+		if (curpBusqueda !== "") {
+			if (curpBusqueda.length < 10) {
+				sitteg_warning("El CURP debe tener al menos 10 caracteres.");
+				return;
+			}
+		}
+
+		if ((nombreBusqueda !== "" || apellidoPaternoBusqueda !== "") &&
+			(nombreBusqueda.length < 3 || apellidoPaternoBusqueda.length < 3)) {
+			sitteg_warning("El nombre y el apellido paterno deben tener al menos 3 caracteres.");
+			return;
+		}
+
+		//    var grid = $("#gridPersonas").data("kendoGrid");
+		//   grid.dataSource.data([]);
+		var formData = $("#buscarConductorForm").serializeArray();
+
+
+		console.log("busqueda: " + formData);
+
+		// Aplica Trim a cada valor en formData
+		$.each(formData, function (index, field) {
+			field.value = $.trim(field.value);
+		});
+
+		// Convierte de nuevo a objeto
+		var trimmedData = {};
+		var findData = false;
+		$.each(formData, function (index, field) {
+			trimmedData[field.name] = field.value;
+			if (!findData) {
+				if (field.value != '' && field.value != undefined) {
+					findData = true;
+				}
+			}
+		});
+
 
 
 
 		showLoading();
-		console.log(trimmedData);
+		console.log("busqueda: " + trimmedData);
+
 		$.ajax({
-		//	url: '/CapturaAccidentes/BuscarPorParametro',
-			url: '/CapturaAccidentes/BuscarPorParametroPaginado',
+			//  url: '/Personas/BuscarPorParametro',
+			url: '/Personas/BuscarPorParametroPaginado',
 			type: 'POST',
-			data: Mydata,
+			data: trimmedData,
 			success: function (response) {
-				console.log("RESP",response)
-				if (response.tipo === "success") {
-					mostrarModal(response.datos);
+				console.log("response: ", response);
+				//   if (response.tipo == "success") {
+				//     mostrarModal(response.Data);
+				//     hideLoading();
+				//    return;
+				// }
+				if (response.Data == "1") {
 					hideLoading();
-				} else if (response.encontrada !== undefined && response.encontrada === false) {
-					sitteg_warning("No se pudieron obtener resultados.");
-				} else if (response.tipo === "warning") {
-					sitteg_warning("No se pudieron obtener resultados, verifique los datos ingresados.");
-				} else {
-					// Otro tipo de respuesta, si es necesario manejarla
+					buscaEnLicencias()
+					return;
 				}
-
-				var personasList = response.data;
-				var grid = $("#gridConductores").data("kendoGrid");
-				grid.dataSource.data(personasList);
-
-				if (personasList.count === 0 && response.tipo !== "success") {
+				var personasList = response.Data;
+				if (personasList != null) {
+					var grid = $("#gridPersonas").data("kendoGrid");
+					grid.dataSource.data(response.Data);
+					grid.dataSource._total = response.Total;
+				}
+				else {
 					sitteg_warning("La búsqueda no arrojó resultados.");
+					var grid = $("#gridPersonas").data("kendoGrid");
 					grid.dataSource.data([]);
 				}
 
 				hideLoading();
 			},
-            error: function (error) {
-                sitteg_warning('Ocurrió un error en la búsqueda.');
-                hideLoading();
-            }
-        });
-    }
+			error: function (error) {
+				sitteg_warning('Ocurrió un error en la búsqueda.');
+				hideLoading();
+			}
+		});
+	}
+
 
 	function mostrarModal(jsonData) {
 		const modal = document.getElementById('modalLicencias');
@@ -303,7 +345,9 @@
 				config.TextoBotonAgregarPersona = "Agregar un nuevo involucrado";
 			}
 				@await Component.InvokeAsync("BusquedaPersonaFisica",new{config})
-			
+			<div id="tablaPersonas">
+                    <partial name="_InfoPrevioInvolucrados" />
+			</div>
 			<div class="row">
 				<div class="col-12">
 					<div class="tabCustomEnd"></div>

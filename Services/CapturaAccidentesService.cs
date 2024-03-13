@@ -2376,8 +2376,8 @@ namespace GuanajuatoAdminUsuarios.Services
 											 "LEFT JOIN catGeneros AS cg ON cg.idGenero = p.idGenero " +
 											 "LEFT JOIN catMarcasVehiculos AS cm ON v.idMarcaVehiculo = cm.idMarcaVehiculo " +
 											 "LEFT JOIN catSubmarcasVehiculos AS csv ON v.idSubmarca = csv.idSubmarca " +
-                                             "LEFT JOIN catEntidades AS e ON v.idEntidad = e.idEntidad " +
 											 "LEFT JOIN personasDirecciones AS pd ON p.idPersona = pd.idPersona " +
+										     "LEFT JOIN catEntidades AS e ON e.idEntidad = pd.idEntidad " +
 											 "LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = pd.idMunicipio " +
 											 "LEFT JOIN vehiculosAccidente AS va ON  va.idAccidente = a.idAccidente " +
 											 "LEFT JOIN catTipoInvolucrado ct ON ct.idTipoInvolucrado = ia.idTipoInvolucrado " +

@@ -519,7 +519,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idGrua", SqlDbType.Int)).Value = (object)idConcesionario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idConcesionario", SqlDbType.Int)).Value = (object)idConcesionario ?? DBNull.Value;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

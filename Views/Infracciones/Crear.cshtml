@@ -580,6 +580,8 @@
 
 		// ARRAY DE CONTROLES REQUERIDOS PARA QUE SEAN VALIDADOS
 		controlsValidate.push({ 'controlName': 'fechaInfraccion' });
+		controlsValidate.push({ 'controlName': 'dateTime' });
+
 		controlsValidate.push({ 'controlName': 'folioInfraccion' });
 		if (!isControlsValid(controlsValidate)) { isValid = false; }
 
@@ -863,39 +865,30 @@
             });
         }
 
-	function cambiaFecha()
-	{
+	function cambiaFecha() {
 		var timepickerControl = $("#dateTime").data("kendoTimePicker");
-
-
-
-
 		var varFechaInfraccion = kendo.toString(this.value(), 'd');
 		var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
-
-		varFechaInfraccion =varFechaInfraccion.slice( varFechaInfraccion.indexOf("/") +1,varFechaInfraccion.length);
-		var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));		
-
-		varFechaInfraccion =varFechaInfraccion.slice( varFechaInfraccion.indexOf("/") +1,varFechaInfraccion.length);
-
+		varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+		var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+		varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
 		let date = new Date();
-		
-		if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {		
-			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
-			var hora = timepickerControl.value()
-			if (hora != null && hora.getHours() > date.getHours()) {
 
-				if (hora.getMinutes() > date.getMinutes()) {
-					timepickerControl.value("")
+		if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {
+			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+
+			timepickerControl.bind("change", function (e) {
+				var hora = timepickerControl.value();
+				if (hora != null && hora.getHours() > date.getHours()) {
+					if (hora.getMinutes() > date.getMinutes()) {
+						timepickerControl.value("");
+					}
 				}
-			}			
-		}
-		else{
-			
+			});
+		} else {
 			timepickerControl.max("23:59");
 		}
-
-		
 	}
+
 </script>
 

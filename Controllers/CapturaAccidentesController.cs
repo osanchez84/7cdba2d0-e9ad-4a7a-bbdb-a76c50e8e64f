@@ -1405,7 +1405,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             ViewBag.ModoSoloLectura = modoSoloLectura;
             HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
 
-            return RedirectToAction("CapturaAaccidente");
+            return Ok();
         }
         public IActionResult ConsultaAccidente(bool modoSoloLectura, int idAccidente)
         {

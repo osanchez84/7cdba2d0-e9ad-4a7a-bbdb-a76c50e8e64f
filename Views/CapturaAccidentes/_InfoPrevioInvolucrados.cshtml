@@ -4,9 +4,9 @@
 	function onRowSelect(e) {
 		var selectedRow = this.select();
 		var dataItem = this.dataItem(selectedRow);
-		var idPersona = dataItem.IdPersona;
+		var idPersona = dataItem.idPersona;
 		$('#idPersonaInput').val(idPersona);
-		console.log("FEC", dataItem.fechaNacimiento)
+		console.log("FEC", idPersona)
 		var nombre = dataItem.nombre
 		var apellidoPaterno = dataItem.apellidoPaterno
 		var apellidoMaterno = dataItem.apellidoMaterno
@@ -82,6 +82,8 @@
 			.Columns(columns =>
 			{
 				columns.Bound(c => c.IdPersona).Hidden();
+				columns.Bound(c => c.idPersona).Hidden();
+
 				columns.Select().Width(50).ClientHeaderTemplate(" ");
 				columns.Bound(c => c.nombre).Title("Nombre").Width(80);
 				columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);

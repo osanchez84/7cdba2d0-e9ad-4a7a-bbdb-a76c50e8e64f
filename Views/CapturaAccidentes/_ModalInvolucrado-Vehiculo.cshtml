@@ -320,7 +320,7 @@
                 var curp = data.CURP==null?'':data.CURP;
                 var rfc = data.RFC==null?'':data.RFC;
                 var fechaNacimiento = data.fechaNacimiento.includes('0001-01-01')?'':data.fechaNacimiento;
-
+                console.log("ID",idPersona)
                 if(fechaNacimiento.length>0){
                     fechaNacimiento = kendo.toString(new Date(fechaNacimiento), "dd/MM/yyyy");
                 }
@@ -329,7 +329,7 @@
                 $('#gridVehiculosInvolucrados').data('idPersona', idPersona);
 
                 //Se asignan valores de persona seleccionada
-                $('#idPersonaInput').val(data.idPersona);
+                $('#idPersonaInput').val(idPersona);
                 $('#nombreModal').text(nombreCompleto.trim().toUpperCase());
                 $('#curpModal').text(curp.toUpperCase());
                 $('#fechaNacimientoModal').text(fechaNacimiento);

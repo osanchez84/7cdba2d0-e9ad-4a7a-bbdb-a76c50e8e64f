@@ -146,13 +146,13 @@
             </div>
               <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                 <div class="controlForm my-3">
-                    <label>Fecha <b>(obligatorio)</b>:</label>
+                    <label>Hora <b>(obligatorio)</b>:</label>
                         @(Html.Kendo().TimePickerFor(t => t.horaSolicitud).Interval(1)
                             .Label(l => l.Content("Hora:"))
                             .Format("HH:mm")
                             .Culture("es-ES")
                             .Value("")
-                            .HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
+                            .HtmlAttributes(new { style = "width: 60%", id = "dateTime" })
                             )
                 </div>
             </div>
@@ -934,8 +934,25 @@
                           
                             $("#idMunicipioUbicacion").data("kendoDropDownList").value(selectedValueMun);
                         });
+                // Suponiendo que data.fechaSolicitud es una cadena en formato ISO 8601
+                var fechaSolicitud = new Date(data.fechaSolicitud);
 
-                $("#idInfraccionHdn").val(data.idInfraccion);
+                // Extraer los componentes de la fecha (día, mes, año)
+                var dia = fechaSolicitud.getDate();
+                var mes = fechaSolicitud.getMonth() + 1; // Sumamos 1 porque los meses comienzan desde 0
+                var año = fechaSolicitud.getFullYear();
+
+                // Formatear la fecha en el formato "dd/mm/yyyy"
+                var fechaFormateada = ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + año;
+
+                // Asignar la fecha formateada al control #fechaSolicitud
+                $("#fechaSolicitud").val(fechaFormateada);
+                var horaSolicitud = data.horaSolicitudStr;
+var tiempoConvertido = convertirTiempoATimeSpan(horaSolicitud);
+
+                // Asignar tiempoConvertido al Kendo TimePicker
+                $("#dateTime").data("kendoTimePicker").value(tiempoConvertido);
+$("#idInfraccionHdn").val(data.idInfraccion);
                 $("#numeroUbicacion").val(data.numeroUbicacion); 
                 $("#calleUbicacion").val(data.calleUbicacion);
                 $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion
@@ -1004,7 +1021,14 @@
         addOnLostFocusRequiredControls(depositControlsValidate);
 
     });
-    
+    function convertirTiempoATimeSpan(tiempo) {
+        // Extraer las horas y los minutos del string
+        var horas = parseInt(tiempo.substring(0, 2)); // Las primeras dos posiciones representan las horas
+        var minutos = parseInt(tiempo.substring(2)); // Las últimas dos posiciones representan los minutos
+
+        // Crear un nuevo Date con las horas y minutos extraídos
+        return new Date(1970, 0, 1, horas, minutos);
+    }
 function requiredControlsUser(){
     depositControlsValidate =[];
     // Se crea el arreglo de controles requeridos de deposito

@@ -99,7 +99,11 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    //command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    DateTime fechaSol = model.fechaSolicitud;
+                    TimeSpan horaSol = model.horaSolicitud;
+                    DateTime fechaHoraSolicitud = fechaSol.Date + horaSol;
+                    command.Parameters.AddWithValue("@fechaSolicitud", fechaHoraSolicitud);
                     command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietaroGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
@@ -445,6 +449,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     string SqlTransact =
                                            @"SELECT TOP 1 inf.idInfraccion
+                                                    ,inf.fechainfraccion
+                                                    ,inf.horaInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -510,6 +516,10 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+                            model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
+                            model.horaSolicitud = reader["horaInfraccion"] == DBNull.Value ? TimeSpan.MinValue : TimeSpan.Parse(reader["horaInfraccion"].ToString());
+                            model.horaSolicitudStr = reader["horaInfraccion"] == System.DBNull.Value ? string.Empty : reader["horaInfraccion"].ToString();
+
                             model.idMunicipioUbicacion = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
                             model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
                             model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());

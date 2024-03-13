@@ -4,16 +4,16 @@
 	function onRowSelect(e) {
 		var selectedRow = this.select();
 		var dataItem = this.dataItem(selectedRow);
-		var idPersona = dataItem.IdPersona;
+		var idPersona = dataItem.idPersona;
 		$('#idPersonaInput').val(idPersona);
-		console.log("FEC", dataItem.fechaNacimiento)
+		console.log("FEC", idPersona)
 		var nombre = dataItem.nombre
 		var apellidoPaterno = dataItem.apellidoPaterno
 		var apellidoMaterno = dataItem.apellidoMaterno
 		var CURP = dataItem.CURP
 		var fechaNacimiento = dataItem.fechaNacimiento;
 		console.log("FEC", fechaNacimiento)
-		fechaNacimiento = fechaNacimiento == "01/01/0001" ? "" : fechaNacimiento;
+		fechaNacimiento = fechaNacimiento == "01/01/0001" ? "" : formatDate(fechaNacimiento); 
 		var RFC = dataItem.RFC
 
 		var nombreCompleto = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
@@ -30,6 +30,21 @@
 		$('#sinBuqueda').hide();
 		$('#involucradoSeleccionado').show();
 
+	}
+
+	function formatDate(fecha) {
+		var fechaNacimiento = new Date(fecha);
+		var dia = fechaNacimiento.getDate();
+		var mes = fechaNacimiento.getMonth() + 1; 
+		var anio = fechaNacimiento.getFullYear();
+
+		dia = dia < 10 ? '0' + dia : dia;
+		mes = mes < 10 ? '0' + mes : mes;
+
+		
+		var fechaFormateada = dia + '/' + mes + '/' + anio;
+
+		return fechaFormateada;
 	}
 
 	function editarPersona(id) {
@@ -67,6 +82,8 @@
 			.Columns(columns =>
 			{
 				columns.Bound(c => c.IdPersona).Hidden();
+				columns.Bound(c => c.idPersona).Hidden();
+
 				columns.Select().Width(50).ClientHeaderTemplate(" ");
 				columns.Bound(c => c.nombre).Title("Nombre").Width(80);
 				columns.Bound(c => c.apellidoPaterno).Title("Apellido Paterno").Width(100);
@@ -92,8 +109,8 @@
 			.Pageable(pager => pager.AlwaysVisible(true).Position(GridPagerPosition.Bottom).PageSizes(true))
 			.DataSource(dataSource => dataSource
 			.Ajax()
-			.ServerOperation(false)
-			.PageSize(5).Model(model => model.Id(p => p.nombre))
+			.Read("GetAllPersonasPagination", "Infracciones")
+			.PageSize(10)
 			)
 			.ToolBar(t => t.Search().Text("Buscar..."))
 			.Search(s =>

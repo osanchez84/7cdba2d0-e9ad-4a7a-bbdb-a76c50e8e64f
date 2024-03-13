@@ -59,9 +59,12 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("Select * from concesionarios where estatus = 1 and concesionarios.idDelegacion = @idOficina", connection);
+                    SqlCommand command = new SqlCommand(@"Select IdConcesionario,delegacion+' - '+Concesionario Concesionario from concesionarios a 
+                                        join catDelegaciones b on a.idDelegacion=b.idDelegacion where a.estatus = 1 
+--and b.idDelegacion =  @idOficina
+", connection);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+  //                  command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

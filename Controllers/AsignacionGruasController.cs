@@ -142,7 +142,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             int iPg = HttpContext.Session.GetInt32("iPg") ?? 0;
 
-            var result = new SelectList(_gruasService.GetGruaByPension(iPg), "idGrua", "noEconomico");
+            var result = new SelectList(_gruasService.GetGruasByIdConcesionario(iPg), "idGrua", "noEconomico");
             return Json(result);
         }
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+//using Telerik.SvgIcons;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GuanajuatoAdminUsuarios.Services
@@ -111,6 +112,277 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return ListPensiones;
         }
+        public List<PensionModel> GetAllPensiones2()
+        {
+
+            List<PensionModel> ListPensiones = new List<PensionModel>();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact = @"SELECT 
+                                                  p.idPension
+                                                 ,p.indicador
+                                                 ,m.municipio+'-'+p.pension  pension
+                                                 ,p.permiso
+                                                 ,p.idDelegacion
+                                                 ,p.idMunicipio
+                                                 ,p.direccion
+                                                 ,p.telefono
+                                                 ,p.correo
+                                                 ,p.fechaActualizacion
+                                                 ,p.actualizadoPor
+                                                 ,p.estatus
+                                                 ,p.idResponsable
+                                                 ,d.delegacion
+                                                 ,m.municipio
+                                                 ,cr.responsable
+                                                 ,g.placas
+                                                 ,c.concesionario
+												 ,g.placas
+												 ,c.concesionario
+                                                 FROM pensiones p
+                                                 INNER JOIN catDelegaciones d
+                                                 on p.idDelegacion = d.idDelegacion 
+                                                 AND d.estatus = 1
+                                                 INNER JOIN catMunicipios m
+                                                 on p.idMunicipio = m.idMunicipio 
+                                                 AND m.estatus = 1
+                                                 INNER JOIN catResponsablePensiones cr
+                                                 on p.idResponsable = cr.idResponsable
+                                                 AND cr.estatus = 1
+                                                 LEFT JOIN pensionGruas pg
+                                                 on p.idPension = pg.idPension
+                                                 LEFT JOIN gruas g
+                                                 on pg.idGrua = g.idGrua
+                                                 AND g.estatus = 1
+                                                 LEFT JOIN concesionarios c
+                                                 on g.idConcesionario = c.idConcesionario
+                                                 AND c.estatus = 1
+                                                 WHERE p.estatus = 1 ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+//                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            PensionModel pension = new PensionModel();
+                            pension.IdPension = Convert.ToInt32(reader["idPension"].ToString());
+                            pension.Indicador = reader["indicador"] == System.DBNull.Value ? default(int?) : (int?)reader["indicador"];
+                            pension.Pension = reader["pension"].ToString();
+                            pension.Permiso = reader["permiso"].ToString();
+                            pension.IdDelegacion = Convert.ToInt32(reader["idDelegacion"].ToString());
+                            pension.IdMunicipio = Convert.ToInt32(reader["idMunicipio"].ToString());
+                            pension.Direccion = reader["direccion"].ToString();
+                            pension.Telefono = reader["telefono"].ToString();
+                            pension.Correo = reader["correo"].ToString();
+                            pension.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            pension.ActualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
+                            pension.estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            pension.delegacion = reader["delegacion"].ToString();
+                            pension.municipio = reader["municipio"].ToString();
+                            pension.responsable = reader["responsable"].ToString();
+                            pension.placas = reader["placas"].ToString();
+                            pension.concesionario = reader["concesionario"].ToString();
+                            ListPensiones.Add(pension);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListPensiones;
+        }
+
+        public bool ExistData(int Pencion, int idAsociado)
+        {
+            var result = false;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" select count(*) as result from [dbo].[AsosiadosPension] where idPension=@IdPension and idAsociado=@idAsociado ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)Pencion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idAsociado", SqlDbType.Int)).Value = (object)idAsociado ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                           
+                           result = (int)reader["result"]==0;
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+            return result;
+        }
+        public bool InsertAsociado(int Pencion, int idAsociado)
+        {
+            var result = false;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" insert into [dbo].[AsosiadosPension] (idPension,idAsociado) values (@IdPension,@idAsociado);select SCOPE_IDENTITY() as result";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)Pencion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idAsociado", SqlDbType.Int)).Value = (object)idAsociado ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return result;
+        }
+
+
+        public List<Gruas2Model> GetAsociados(int idPension, int Asociado)
+        {
+            var result = new List<Gruas2Model>();
+
+
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" 
+                                            select id,concesionario from [dbo].[AsosiadosPension] a 
+                                                        join concesionarios b on a.idAsociado=b.idConcesionario
+                                                        where idPension=@IdPension";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)idPension ?? DBNull.Value;
+                    
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            var list = new Gruas2Model();
+
+                            list.idDeposito = (int)reader["id"];
+                            list.concesionario = reader["concesionario"].ToString();
+
+                            result.Add(list);
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+
+            return result;
+        }
+
+
+        public List<CatalogModel> GetConcesionarios(int delegacionDDValue)
+        {
+            var result = new List<CatalogModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    string SqlTransact = @" select idConcesionario,concesionario from concesionarios where idDelegacion=@idDelegacion ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = (object)delegacionDDValue ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatalogModel data = new CatalogModel();
+
+                            data.value = reader["idConcesionario"].ToString();
+                            data.text = reader["concesionario"].ToString();
+
+
+                            result.Add(data);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+
+
+            return result;
+        }
+
+
 
         public List<PensionModel> GetPensionesToGrid(string strPension, int? idOficina)
         {
@@ -121,6 +393,11 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     connection.Open();
                     string SqlTransact = @"SELECT TOP 200
+isnull((select STRING_AGG(concesionario,',') 
+							from [dbo].[AsosiadosPension] a 
+							join concesionarios b on a.idAsociado=b.idConcesionario
+							where a.idPension=p.idPension
+							),'') asociado ,
                             p.idPension,
                             p.indicador,
                             p.pension,
@@ -178,7 +455,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             pensionModel.responsable = reader["responsable"] != DBNull.Value ? reader["responsable"].ToString() : string.Empty;
                             pensionModel.placas = reader["placas"] != DBNull.Value ? reader["placas"].ToString() : string.Empty;
                             pensionModel.concesionario = reader["concesionario"] != DBNull.Value ? reader["concesionario"].ToString() : string.Empty;
-
+                            pensionModel.Asociados = reader["asociado"].ToString();
                             ListPensiones.Add(pensionModel);
 
                         }

@@ -1,7 +1,14 @@
 ﻿@model PersonaModel
 @{
+
+    var text = Model;
+
     bool esSoloLectura = ViewBag.EsSoloLectura ?? false;
 }
+
+<script>
+    window.idPersona = "@Model.idPersona"
+</script>
 
 <div>
 <form id="frmEditarConductor">

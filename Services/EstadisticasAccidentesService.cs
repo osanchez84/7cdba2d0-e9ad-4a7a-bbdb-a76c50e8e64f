@@ -909,7 +909,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             vehiculo.Municipio = reader["Municipio"] == System.DBNull.Value ? default(string) : reader["Municipio"].ToString();
                             vehiculo.Carretera = reader["Carretera"] == System.DBNull.Value ? default(string) : reader["Carretera"].ToString();
                             vehiculo.Tramo = reader["Tramo"] == System.DBNull.Value ? default(string) : reader["Tramo"].ToString();
-                            vehiculo.Kilómetro = reader["Kilómetro"] == System.DBNull.Value ? default(string) : reader["Kilómetro"].ToString();
+                            vehiculo.Kilómetro = reader["Kilómetro"] == System.DBNull.Value ? default(string) : Decimal.Parse((string)reader["Kilómetro"]).ToString("G29"); 
                             vehiculo.Latitud = reader["Latitud"] == System.DBNull.Value ? default(string) : reader["Latitud"].ToString();
                             vehiculo.Longitud = reader["Longitud"] == System.DBNull.Value ? default(string) : reader["Longitud"].ToString();
                             vehiculo.NombredelOficial = reader["NombredelOficial"] == System.DBNull.Value ? default(string) : reader["NombredelOficial"].ToString();

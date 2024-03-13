@@ -183,6 +183,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index(CapturaAccidentesModel capturaAccidentesService, [DataSourceRequest] DataSourceRequest request)
         {
+
             //filterValue(request.Filters);
 
             Pagination pagination = new Pagination();
@@ -359,7 +360,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             return PartialView("_ModalEliminarInvolucrado");
         }
-        public ActionResult ModalBorraRegistroPersona(int IdPersona, int IdAccidente)
+        public ActionResult ModalBorraRegistroPersona(int IdPersona, int IdAccidente, int IdInvolucrado)
         {
             return PartialView("_ModalEliminarPersonaInvolucrada");
         }
@@ -798,17 +799,17 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var listPersonasModel = _capturaAccidentesService.ObtenerDetallePersona(IdPersona);
             return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
         }
-        public ActionResult NuevoInvolucradoPersona(int IdPersona)
+        public ActionResult NuevoInvolucradoPersona(int IdPersona, int idAccidente, int IdInvolucrado)
         {
-            var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion(IdPersona);
-            return PartialView("_ModalInvolucrado-Vehiculo-Persona", listPersonasModel);
+            var listPersonasModel = _capturaAccidentesService.DatosInvolucradoEdicion(IdPersona, idAccidente, IdInvolucrado);
+            return PartialView("_ModalEditarInvolucrado", listPersonasModel);
         }
 
         [HttpGet]
         public IActionResult SubmodalBuscarInvolucrado()
         {
             BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
-            //var ListInvolucradoModel = _capturaAccidentesService.BusquedaPersonaInvolucrada(model);
+            //var ListInvolucradoModel = _personasService.GetAllPersonasFisicasPagination(pagination);
             //ViewBag.ModeInvolucrado = ListInvolucradoModel;
 
             return PartialView("_ModalAgregarInvolucrado");
@@ -823,6 +824,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return PartialView("_ModalAgregarInvolucradoPersona");
         }
+
+	
+		public IActionResult AbrirModalBuscarInvolucrado()
+		{
+			BusquedaInvolucradoModel model = new BusquedaInvolucradoModel();
+
+
+
+			return PartialView("BusquedaPersonaFisica");
+		}
 		public IActionResult SinInvolucrado()
 		{
 			int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0; // Obtener el valor de lastInsertedId desde la variable de sesión
@@ -1103,6 +1114,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(result);
         }
+
+        public JsonResult Oficiales_DropCorpTodos()
+        {
+            //int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
+            var oficiales = _oficialesService.GetOficialesByCorporacion(idDependencia)// .GetOficialesFiltrados(idOficina, idDependencia)
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+                });
+            oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+
+
         public JsonResult CambiosDDLOficiales()
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
@@ -1274,10 +1303,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             return Json(ListInfracciones.ToDataSourceResult(request));
         }
-        public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado)
+        public IActionResult GuardarRelacionPersonaVehiculo(int IdPersona, int IdVehiculoInvolucrado,int IdInvolucrado)
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
-            var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado);
+            var PersonaVehiculo = _capturaAccidentesService.RelacionPersonaVehiculo(IdPersona, idAccidente, IdVehiculoInvolucrado, IdInvolucrado);
 
             //BITACORA
             var ip = HttpContext.Connection.RemoteIpAddress.ToString();
@@ -1306,9 +1335,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(ListInvolucrados.ToDataSourceResult(request));
         }
 
-        public IActionResult EliminaInvolucrado(int IdAccidente, int idPersona)
+        public IActionResult EliminaInvolucrado(int IdAccidente, int idPersona, int IdInvolucrado)
         {
-            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(idPersona);
+            var eliminarInvolucrado = _capturaAccidentesService.EliminarInvolucrado(IdInvolucrado);
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var ListInvolucrados = _capturaAccidentesService.InvolucradosAccidente(idAccidente);
 
@@ -1373,10 +1402,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public ActionResult SetLastInsertedIdEdit(bool modoSoloLectura, int idAccidente)
         {
 
-            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
             ViewBag.ModoSoloLectura = modoSoloLectura;
+            HttpContext.Session.SetInt32("LastInsertedId", idAccidente);
 
-            return RedirectToAction("CapturaAaccidente");
+            return Ok();
         }
         public IActionResult ConsultaAccidente(bool modoSoloLectura, int idAccidente)
         {
@@ -1804,8 +1833,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     apellidoMaterno = modelList.apellidoMaterno,
                     RFC = modelList.RFC,
                     CURP = modelList.CURP,
-                    fechaNacimiento = modelList.fechaNacimiento,
-                    numeroLicencia = modelList.numeroLicencia
+					fechaNacimiento = modelList.fechaNacimiento != null ? ((DateTime)modelList.fechaNacimiento).ToString("dd/MM/yyyy") : "" ,                   
+                    numeroLicencia = modelList.numeroLicencia,
+                    entidad = modelList.PersonaDireccion.entidad,
+                    municipio = modelList.PersonaDireccion.municipio,
+                    calle= modelList.PersonaDireccion.calle,
+                    numero = modelList.PersonaDireccion.numero,
+                    colonia = modelList.PersonaDireccion.colonia,
+                    telefono = modelList.PersonaDireccion.telefono,
+                    correo = modelList.PersonaDireccion.correo,
+                    genero = modelList.genero
                 };
                 return Json(new { data = formattedModelList });
             }
@@ -2011,8 +2048,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonasFisicas = new List<PersonaModel>();
             models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            models.placas = "XXXXOXO";
-            models.serie = "XXXXOXOhf5321";
+            models.placas = "";
+            models.serie = "";
             models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;

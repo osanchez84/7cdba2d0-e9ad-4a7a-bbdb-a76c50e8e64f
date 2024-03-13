@@ -340,15 +340,23 @@
             type: 'POST',
             data: formData,
             success: function (result) {
+                console.log("PEr",result)
                 if (result.success === false) {
                     sitteg_warning(result.message);
                     $("#btnSave").prop("disabled", false);
                 }
                 else {
-                    $("#listadoPersonas").html(result);
+                    var gridData = [result]; // Envuelve el objeto en un array
+
+                    // Obtén una referencia al Grid de Kendo
+                    var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
+
+                    // Actualiza los datos del Grid con los datos recibidos en result
+                    grid.dataSource.data(gridData);
+
                     $('#modalCrearPersona').modal('hide');
                     $('#agregarConductorModal').modal('hide');
-                    sitteg_success('Elemento guardado correctamente')
+                    sitteg_success('Elemento guardado correctamente');
                 }
                 hideLoading();
             },

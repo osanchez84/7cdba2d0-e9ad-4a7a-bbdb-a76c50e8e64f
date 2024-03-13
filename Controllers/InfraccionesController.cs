@@ -190,7 +190,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             {"delegacion","Delegación/Oficina"}
             };
             var InfraccionModel = _infraccionesService.GetInfraccionReportById(IdInfraccion, idDependencia);
-            var uma = _infraccionesService.getUMAValue();
+            var uma = _infraccionesService.getUMAValue(InfraccionModel.fechaInfraccion);
             InfraccionModel.Uma = uma;
             var report = new InfraccionReportService("Infracción", "INFRACCIÓN").CreatePdf(InfraccionModel);
             return File(report.File.ToArray(), "application/pdf", report.FileName);
@@ -264,7 +264,59 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
-		public JsonResult Cortesias_Read()
+
+        public IActionResult ajax_OmitirConductor2(int idInfraccion)
+        {
+            var personamodel = new PersonaModel();
+            personamodel.nombre = "SE Ignora";
+            personamodel.idCatTipoPersona = 1;
+            personamodel.PersonaDireccion = new PersonaDireccionModel();
+
+            var result = _personasService.CreatePersona(personamodel);
+
+            var persona = _personasService.GetPersonaById(result);
+            _infraccionesService.ActualizConductor(idInfraccion, result);
+
+            ViewBag.EsSoloLectura = false;
+
+            var q = PartialView("_EditarDetallePersona", persona);
+
+            return q;
+        }
+
+
+        public IActionResult AgregarPersonasConductor()
+        {
+			return PartialView("_AgregarEditarConductor");
+        }
+
+        public IActionResult CambiarVehiculo()
+        {
+            return PartialView("_CambiarVehiculo");
+        }
+
+
+        public IActionResult ajax_PropietarioConductor2(int idInfraccion,int idConductor)
+        {
+            
+            var persona = _personasService.GetPersonaById(idConductor);
+
+            if(persona.idCatTipoPersona == 2)
+            {
+                return Json(new {Error=1});
+            }
+
+            _infraccionesService.ActualizConductor(idInfraccion, idConductor);
+
+            ViewBag.EsSoloLectura = false;
+
+            var q = PartialView("_EditarDetallePersona", persona);
+
+            return q;
+        }
+
+
+        public JsonResult Cortesias_Read()
         {
             //catTipoCortesia
             var result = new SelectList(_tipoCortesiaService.GetTipoCortesias(), "idTipoCortesia", "tipoCortesia");
@@ -521,6 +573,61 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
+
+            VehiculoModel vehiculo = new VehiculoModel();
+
+            vehiculo.idPersona = HttpContext.Session.GetInt32("idPersonaEdit");
+            var placasEd = HttpContext.Session.GetString("placasEdit");
+            vehiculo.placas = placasEd;
+            vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
+
+            var auxas = HttpContext.Session.GetString("vigenciaTarjetaEdit");
+
+                DateTime? test2 = null;
+
+            try
+            {
+                test2 = DateTime.Parse(auxas);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.vigenciaTarjeta = test2 ;
+
+
+
+            vehiculo.motor = HttpContext.Session.GetString("motorEdit");
+            vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
+            vehiculo.otros = HttpContext.Session.GetString("otrosEdit");
+            vehiculo.poliza = HttpContext.Session.GetString("polizaEdit");
+            vehiculo.capacidad = HttpContext.Session.GetInt32("capacidadEdit");
+
+            int test = 0;
+            try
+            {
+                test= HttpContext.Session.GetInt32("idEntidadEdit").Value;
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.idEntidad = test;
+
+            try
+            {
+                test = HttpContext.Session.GetInt32("idColorEdit").Value;
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.idColor = test;
+
+            model.Vehiculo = vehiculo;
 
             var isedition = HttpContext.Session.GetString("isedition");
 
@@ -820,8 +927,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.PersonasFisicas = new List<PersonaModel>();
             models.PersonaMoralBusquedaModel = new PersonaMoralBusquedaModel();
             models.PersonaMoralBusquedaModel.PersonasMorales = new List<PersonaModel>();
-            models.placas = "XXXXOXO";
-            models.serie = "XXXXOXOhf5321";
+            models.placas = "";
+            models.serie = "";
             models.RepuveRobo = new RepuveRoboModel();
             var result = await this.RenderViewAsync2("", models);
             return result;
@@ -1128,6 +1235,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
+
+            HttpContext.Session.SetInt32("idPersonaEdit", model.idPersona == null ? 0 : (int)model.idPersona);
+            HttpContext.Session.SetString("placasEdit", model.placas == null ? "" : (string)model.placas);
+            HttpContext.Session.SetString("tarjetaEdit", model.tarjeta == null ? "" : (string)model.tarjeta);
+            HttpContext.Session.SetString("vigenciaTarjetaEdit", model.vigenciaTarjeta == null ? "" : model.vigenciaTarjeta.ToString());
+            HttpContext.Session.SetString("motorEdit", model.motor == null ? "" : (string)model.motor);
+            HttpContext.Session.SetString("numeroEconomicoEdit", model.numeroEconomico == null ? "" : (string)model.numeroEconomico);
+            HttpContext.Session.SetString("otrosEdit", model.otros == null ? "" : (string)model.otros);
+            HttpContext.Session.SetString("polizaEdit", model.poliza == null ? "" : (string)model.poliza);
+            HttpContext.Session.SetInt32("capacidadEdit", model.capacidad == null ? 0 : (int)model.capacidad);
+            HttpContext.Session.SetInt32("idEntidadEdit", (int)model.idEntidad);
+            HttpContext.Session.SetInt32("idColorEdit", (int)model.idColor);
+
+
             return PartialView("_DetalleVehiculo", model);
         }
 
@@ -1453,9 +1574,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
 
-                var modelList = _personasService.GetAllPersonas();
+               var modelList = _personasService.GetPersonaById(id);
                 ViewBag.EditarVehiculo = true;
-                return PartialView("_ListadoPersonas", modelList);
+                return Json(modelList);
             }
         }
 

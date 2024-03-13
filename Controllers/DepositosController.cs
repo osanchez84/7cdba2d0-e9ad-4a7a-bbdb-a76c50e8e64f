@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Components.Web;
@@ -207,6 +208,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_pensionesService.GetAllPensiones(idOficina), "IdPension", "Pension");
             return Json(result);
         }
+
+        public JsonResult Pensiones_Drop2()
+        {
+           // int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_pensionesService.GetAllPensiones2(), "IdPension", "Pension");
+            return Json(result);
+        }
+
+
         public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, [FromBody] SolicitudDepositoModel model)
         {
           

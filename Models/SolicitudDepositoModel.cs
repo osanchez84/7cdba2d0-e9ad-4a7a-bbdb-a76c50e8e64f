@@ -13,6 +13,9 @@ namespace GuanajuatoAdminUsuarios.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime fechaSolicitud { get; set; }
         public TimeSpan horaSolicitud { get; set; }
+        public string horaSolicitudStr { get; set; }
+
+        
         public int? idTipoVehiculo { get; set; }
         public string tipoVehiculo { get; set; }
         public int? idServicioRequiere { get; set; }
@@ -59,6 +62,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string interseccion { get; set; }
 
         public int idInfraccion { get; set; }
+        
+       public DateTime? fechaInfraccion { get; set; }
+        public TimeSpan horaInfraccion { get; set; }
 
 
 

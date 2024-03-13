@@ -34,7 +34,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 				if (credencialesValidas)
 				{
-					// Las credenciales son válidas, continuar con la lógica de actualización de contraseña
 					var handler = new HttpClientHandler
 					{
 						ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
@@ -46,13 +45,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
 					using (HttpClient client = new HttpClient(handler))
 					{
-						string url = $"https://10.16.157.142:9096/serviciosinfracciones/getActualizaPwd?userWS=1&claveWS=18&idUsuario={IdUsuario}&contraseña={NuevaContrasena}";
+						string url = $"https://10.16.158.31:9096/serviciosinfracciones/getActualizaPwd?userWS=1&claveWS=18&idUsuario={IdUsuario}&contraseña={NuevaContrasena}";
 
 						var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 
 						HttpResponseMessage response = await client.GetAsync(url);
 
-						// Devolver la URL como JSON (puedes ajustar esto según tus necesidades)
 						return Json(url);
 					}
 				}

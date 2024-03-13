@@ -85,6 +85,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
+
+        public JsonResult Municipios_Guanajuatofilter(int del)
+        {
+            
+            var result = new SelectList(_catMunicipiosService.GetMunicipiosPorDelegacion2(del), "IdMunicipio", "Municipio");
+            return Json(result);
+        }
+
+
         public JsonResult Concesionarios_Read()
         {
 

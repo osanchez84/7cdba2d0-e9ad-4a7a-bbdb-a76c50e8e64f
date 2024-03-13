@@ -251,7 +251,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     insertCommand.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = (object)model.Vehiculo.idColor ?? DBNull.Value;
                     insertCommand.Parameters.Add(new SqlParameter("@placa", SqlDbType.VarChar)).Value = (object)model.Vehiculo.placas ?? DBNull.Value;
                     insertCommand.Parameters.Add(new SqlParameter("@serie", SqlDbType.VarChar)).Value = (object)model.Vehiculo.serie ?? DBNull.Value;
-                    insertCommand.Parameters.Add(new SqlParameter("@fechaIngreso", SqlDbType.DateTime)).Value = model.FechaSolicitud;
+                    insertCommand.Parameters.Add(new SqlParameter("@fechaIngreso", SqlDbType.DateTime)).Value = model.FechaSolicitud + model.HoraSolicitud;
                     insertCommand.Parameters.Add(new SqlParameter("@idPropietario", SqlDbType.Int)).Value = (object)model.Vehiculo.idPersona?? DBNull.Value;
                     insertCommand.Parameters.Add(new SqlParameter("@idEnviaVehiculo", SqlDbType.Int)).Value = model.IdDependenciaEnvia;
                     insertCommand.Parameters.Add(new SqlParameter("@idMotivoIngreso", SqlDbType.Int)).Value = model.IdTipoMotivoIngreso;

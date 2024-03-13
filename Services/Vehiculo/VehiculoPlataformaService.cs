@@ -130,11 +130,17 @@ namespace GuanajuatoAdminUsuarios.Services
                         // Logger.Debug("Infracciones - ajax_BuscarVehiculo - GetVEiculoModelFromFinanzas - Response - " + JsonConvert.SerializeObject(result));
                         vehiculoModel = GetVehiculoModelFromFinanzas(result);
 
-                        //Se asigna el objeto de la consulta de robado a repuve
-                        vehiculoModel.RepuveRobo = repuveRoboModel;
-                        vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
 
-                        return vehiculoModel;
+                        if (!vehiculoModel.serie.Contains("SINSERIE"))
+                        {
+
+                            //Se asigna el objeto de la consulta de robado a repuve
+                            vehiculoModel.RepuveRobo = repuveRoboModel;
+                            vehiculoModel.ReporteRobo = repuveRoboModel.EsRobado;
+
+                            return vehiculoModel;
+                        }
+
                     }
                 }
                 //Se busca en REPUVE

@@ -59,6 +59,10 @@
                 grid.clearSelection();
             };
 
+            if (window.OtherOption){
+                window.OtherOption(idPersona)
+            }
+
             buscarPersona(idPersona);
             //getListadoPersonasInfracciones();
             $('#agregarConductorModal').modal('hide');

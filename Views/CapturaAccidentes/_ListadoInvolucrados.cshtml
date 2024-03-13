@@ -96,6 +96,10 @@
 				columns.Bound(i => i.Submarca).Hidden();
 				columns.Bound(i => i.TipoVehiculo).Hidden();
 				columns.Bound(i => i.Modelo).Hidden();
+			    columns.Bound(i => i.IdInvolucrado).Hidden();
+				columns.Bound(i => i.IdInvolucrado).Hidden();
+
+
 				@*columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
 		columns.Command(c => c.Custom("Eliminar").Click("getId")).Width(100); *@
 
@@ -242,13 +246,16 @@
 		var dataItem = grid.dataItem(row);
 		var IdAccidente = dataItem.IdAccidente
 		var IdPersona = dataItem.IdPersona
+	     var IdInvolucrado = dataItem.IdInvolucrado
+
 		showLoading();
 		$.ajax({
 			url: '@Url.Action("ModalBorraRegistroPersona", "CapturaAccidentes")',
 			type: 'POST',
 			data: {
 				IdAccidente: IdAccidente,
-				IdPersona: IdPersona
+				IdPersona: IdPersona,
+				IdInvolucrado: IdInvolucrado
 			},
 			success: (data) => {
 				$('#ModalBodyEliminar').html(data);
@@ -268,13 +275,18 @@
 		var row = $(event.target).closest("tr");
 		var dataItem = grid.dataItem(row);
 		var IdPersona = dataItem.IdPersona
+		var IdAccidente = dataItem.IdAccidente
+		var IdInvolucrado = dataItem.IdInvolucrado
+
 		console.log(dataItem);
 		showLoading();
 		$.ajax({
-			url: '@Url.Action("ModalAgregarInvolucradoPersona", "CapturaAccidentes")',
+			url: '@Url.Action("NuevoInvolucradoPersona", "CapturaAccidentes")',
 			type: 'POST',
 			data: {
-				IdPersona: IdPersona
+				IdPersona: IdPersona,
+				IdAccidente: IdAccidente,
+				IdInvolucrado: IdInvolucrado
 			},
 			success: (data) => {
 				$('#ModalBodyAgregarInvolucrado').html(data);

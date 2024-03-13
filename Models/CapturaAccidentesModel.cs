@@ -8,12 +8,15 @@ namespace GuanajuatoAdminUsuarios.Models
     public class CapturaAccidentesModel
     {
         public string jefeOficina { get; set; }
-        public int? IdAccidente { get; set; }
+		
+		public int? IdAccidente { get; set; }
         public int? IdInfAcc { get; set; }
         public int? idAccidenteCausa { get; set; }
         public int? IdAccidenteFactorOpcion { get; set; }
         public int? idEstatusReporte { get; set; }
-        public string NumeroReporte { get; set; }
+		public int? IdInvolucrado { get; set; }
+
+		public string NumeroReporte { get; set; }
         [Required(ErrorMessage = "-El campo Fecha es obligatorio")]
         public DateTime? Fecha { get; set; }
         public string FechaFormateada => Fecha.HasValue ? Fecha.Value.ToString("dd/MM/yyyy") : string.Empty;
@@ -293,5 +296,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string garantia { get; set; }
         public int Total { get; set; }
-    }
+
+		//Por Modelo Personas
+		public int idPersona { get; set; }
+
+	}
 }

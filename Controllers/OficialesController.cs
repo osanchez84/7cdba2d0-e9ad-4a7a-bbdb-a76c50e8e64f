@@ -301,7 +301,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<CatOficialesModel> ListOfcialesDelegacion = new List<CatOficialesModel>();
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            ListOfcialesDelegacion = _oficialesService.GetOficialesByCorporacion(idDependencia);
+            ListOfcialesDelegacion = _oficialesService.GetOficiales();
 
           
 
@@ -314,19 +314,19 @@ namespace GuanajuatoAdminUsuarios.Controllers
             if (nombre != null)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
-                                          where s.Nombre == nombre.ToUpper()
+                                          where s.Nombre.ToUpper().Contains(nombre.ToUpper())
                                           select s).ToList();
             }
             if (apellidoPaterno != null)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
-                                          where s.ApellidoPaterno == apellidoPaterno.ToUpper()
+                                          where s.ApellidoPaterno.ToUpper().Contains(apellidoPaterno.ToUpper())
                                           select s).ToList();
             }
             if (apellidoMaterno != null)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
-                                          where s.ApellidoMaterno == apellidoMaterno.ToUpper()
+                                          where s.ApellidoMaterno.ToUpper().Contains(apellidoMaterno.ToUpper())
                                           select s).ToList();
             }
 

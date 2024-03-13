@@ -266,11 +266,26 @@ namespace GuanajuatoAdminUsuarios.Services
                     //Se incrementa en 1 el consecutivo
                     consecutivo++;
 
-                    //Se completa con ceros a la izquierda
-                    string consecutivoConCeros = consecutivo.ToString("D5");
+					command = new SqlCommand("select abreviatura from catMunicipios where idMunicipio =@idMunicipio", connection)
+					{
+						CommandType = CommandType.Text
+					};
+					command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.VarChar)).Value = model.IdMunicipio;
+                    string abreviaturaMun = "";
+
+					using (SqlDataReader reader = command.ExecuteReader())
+					{
+						if (reader.Read()) // Intenta leer un registro del resultado
+						{
+							abreviaturaMun = reader["abreviatura"].ToString();
+
+						}
+					}
+					//Se completa con ceros a la izquierda
+					string consecutivoConCeros = consecutivo.ToString("D5");
                     string anio2 = "/" + (anio % 100);
 
-                    string newFolio = $"{abreviaturaMunicipio}{consecutivoConCeros}{anio2}";
+                    string newFolio = $"{abreviaturaMun}{consecutivoConCeros}{anio2}";
 
                     //Se actualiza el consecutivo en la tabla de foliosSolicitud
                     command = new SqlCommand(@"update foliosAccidentes set consecutivo=@consecutivo where id=@id", connection);
@@ -2414,7 +2429,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.TipoVehiculo = reader["tipoVehiculo"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["tipoVehiculo"].ToString());
 							involucrado.EstadoVictima = reader["estadoVictima"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["estadoVictima"].ToString());
 							involucrado.NombreHospital = reader["nombreHospital"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombreHospital"].ToString());
-							involucrado.Asiento = reader["asiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["asiento"].ToString());
+							involucrado.Asiento = reader["idAsiento"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["idAsiento"].ToString());
 							involucrado.InstitucionTraslado = reader["institucionTraslado"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["institucionTraslado"].ToString());
 							involucrado.Placa = reader["placas"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["placas"].ToString());
 							involucrado.Sexo = reader["genero"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["genero"].ToString());

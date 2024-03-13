@@ -296,5 +296,9 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string garantia { get; set; }
         public int Total { get; set; }
-    }
+
+		//Por Modelo Personas
+		public int idPersona { get; set; }
+
+	}
 }

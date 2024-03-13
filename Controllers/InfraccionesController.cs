@@ -1500,9 +1500,9 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 //int idDireccion = _personasService.CreatePersonaDireccion(model.PersonaDireccion);
 
 
-               // var modelList = _personasService.GetAllPersonas();
+               var modelList = _personasService.GetPersonaById(id);
                 ViewBag.EditarVehiculo = true;
-                return PartialView("_ListadoPersonas");
+                return Json(modelList);
             }
         }
 

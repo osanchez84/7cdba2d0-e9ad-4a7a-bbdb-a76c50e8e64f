@@ -56,7 +56,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,[fechaActualizacion]
                                         ,[actualizadoPor]
                                         ,[estatus]
-                                        ,[idServicioRequiere])
+                                        ,[idServicioRequiere]
+                                        ,BanderaTransito)
                                 VALUES (
                                         @fechaSolicitud
                                         ,@idInfraccion
@@ -88,7 +89,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                         ,@fechaActualizacion
                                         ,@actualizadoPor
                                         ,@estatus
-                                        ,@idServicioRequiere);
+                                        ,@idServicioRequiere
+                                        ,@Dependencia);
                                     SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
@@ -114,7 +116,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@telefonoUsuario", SqlDbType.NVarChar)).Value = (object)model.telefonoUsuario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMotivoAsignacion", SqlDbType.Int)).Value = (object)model.idMotivoAsignacion ?? DBNull.Value;
-                    //command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = idOficina;
+                    
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
@@ -129,6 +131,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idEntidadUbicacion", SqlDbType.Int)).Value = (object)model.idEntidadUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@Dependencia", SqlDbType.Int)).Value = dependencia;
                     result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
 
                     //Se busca el ultimo consecutivo

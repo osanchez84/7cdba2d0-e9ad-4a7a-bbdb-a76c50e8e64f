@@ -41,7 +41,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 "ent.nombreEntidad, " +
                                 "tip_us.tipoUsuario, " +
                                 "ofi.nombre,ofi.apellidoPaterno,ofi.apellidoMaterno " +
-                                "From solicitudes AS sol INNER JOIN depositos DEP ON SOL.idSolicitud = DEP.idSolicitud" +
+                                "From solicitudes AS sol INNER JOIN depositos DEP ON SOL.idSolicitud = DEP.idSolicitud " +
                                 "LEFT JOIN catMunicipios AS mun ON sol.idMunicipioUbicacion = mun.idMunicipio " +
                                 "LEFT JOIN catCarreteras AS car ON sol.idCarreteraUbicacion = car.idCarretera " +
                                 "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +

@@ -10,8 +10,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-
-
+using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Controllers
 {
@@ -91,18 +90,41 @@ namespace GuanajuatoAdminUsuarios.Controllers
     [HttpGet]
         public FileResult CreatePdf(string data)
         {
-           var model = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel>(data);
+           var model2 = JsonConvert.DeserializeObject<ReporteAsignacionBusquedaModel2>(data);
 
-            if (model.FechaInicio == null)
+            var model = new ReporteAsignacionBusquedaModel();
+
+            model.IdGrua = model2.IdGrua;
+            model.IdPension = model2.IdPension;
+            model.IdEvento = model2.IdEvento;
+            model.idDelegacion = model2.idDelegacion;
+            model.Evento = model2.Evento;
+
+            var axudate1 = DateTime.ParseExact(model2.FechaInicio, "dd/MM/yyyy",CultureInfo.InvariantCulture);
+            var axudate2 = DateTime.ParseExact(model2.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+
+
+            if (String.IsNullOrEmpty(model2.FechaInicio))
             {
                 model.FechaInicio = DateTime.MinValue;
             }
+            else
+            {
+                model.FechaInicio = axudate1;
+            }
 
-            if (model.FechaFin == null)
+            if (String.IsNullOrEmpty( model2.FechaFin ))
             {
                 model.FechaFin = DateTime.MinValue;
             }
-            model.Evento = model.Evento == string.Empty ? null : model.Evento;
+            else
+            {
+                model.FechaFin = axudate2;
+            }
+
+
+            model.Evento = model2.Evento == string.Empty ? null : model2.Evento;
 
             Dictionary<string, string> ColumnsNames = new Dictionary<string, string>()
             {

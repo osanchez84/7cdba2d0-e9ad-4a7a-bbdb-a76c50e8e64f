@@ -19,4 +19,22 @@ namespace GuanajuatoAdminUsuarios.Models
         public DateTime? FechaFin { get; set; }
         public List<ReporteAsignacionModel> ListReporteAsignacion { get; set; }
     }
+
+
+
+    public class ReporteAsignacionBusquedaModel2
+    {
+        public int? IdGrua { get; set; }
+
+        public int? IdPension { get; set; }
+        public int? IdEvento { get; set; }
+        public int? idDelegacion { get; set; }
+
+        public string Evento { get; set; } = null!;
+        public string FechaInicio { get; set; }
+        public string FechaFin { get; set; }
+        public List<ReporteAsignacionModel> ListReporteAsignacion { get; set; }
+    }
+
+
 }

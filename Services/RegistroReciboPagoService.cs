@@ -94,12 +94,39 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         ;", connection);
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
                     command.CommandType = CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             infraccion.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"].ToString());
                             infraccion.FolioInfraccion = reader["FolioInfraccion"].ToString();
+                            infraccion.Monto = (reader["monto"] != DBNull.Value) ? float.Parse(reader["monto"].ToString()) : 0.0f;
+
+                        }
+
+                    }
+
+                    SqlCommand command1 = new SqlCommand(@"declare 
+                                                                @date datetime,
+                                                                @calificacion decimal,
+                                                                @uma decimal 
+
+                                                                select top 1 @date= fechaInfraccion from infracciones where idinfraccion=@Id
+
+
+                                                                select @calificacion= sum(calificacion) from motivosInfraccion where idInfraccion=@Id
+
+                                                                select top 1 @uma= salario from catSalariosMinimos where fecha<=(@date)
+                                                                and estatus=1 order by fecha desc
+
+                                                                select (@calificacion * @uma) monto", connection);
+                    command1.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
+                    command1.CommandType = CommandType.Text;
+
+                    using (SqlDataReader reader = command1.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
                             infraccion.Monto = (reader["monto"] != DBNull.Value) ? float.Parse(reader["monto"].ToString()) : 0.0f;
 
                         }

@@ -112,6 +112,99 @@ namespace GuanajuatoAdminUsuarios.Services
                 }
             return ListPensiones;
         }
+        public List<PensionModel> GetAllPensiones2()
+        {
+
+            List<PensionModel> ListPensiones = new List<PensionModel>();
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    const string SqlTransact = @"SELECT 
+                                                  p.idPension
+                                                 ,p.indicador
+                                                 ,m.municipio+'-'+p.pension  pension
+                                                 ,p.permiso
+                                                 ,p.idDelegacion
+                                                 ,p.idMunicipio
+                                                 ,p.direccion
+                                                 ,p.telefono
+                                                 ,p.correo
+                                                 ,p.fechaActualizacion
+                                                 ,p.actualizadoPor
+                                                 ,p.estatus
+                                                 ,p.idResponsable
+                                                 ,d.delegacion
+                                                 ,m.municipio
+                                                 ,cr.responsable
+                                                 ,g.placas
+                                                 ,c.concesionario
+												 ,g.placas
+												 ,c.concesionario
+                                                 FROM pensiones p
+                                                 INNER JOIN catDelegaciones d
+                                                 on p.idDelegacion = d.idDelegacion 
+                                                 AND d.estatus = 1
+                                                 INNER JOIN catMunicipios m
+                                                 on p.idMunicipio = m.idMunicipio 
+                                                 AND m.estatus = 1
+                                                 INNER JOIN catResponsablePensiones cr
+                                                 on p.idResponsable = cr.idResponsable
+                                                 AND cr.estatus = 1
+                                                 LEFT JOIN pensionGruas pg
+                                                 on p.idPension = pg.idPension
+                                                 LEFT JOIN gruas g
+                                                 on pg.idGrua = g.idGrua
+                                                 AND g.estatus = 1
+                                                 LEFT JOIN concesionarios c
+                                                 on g.idConcesionario = c.idConcesionario
+                                                 AND c.estatus = 1
+                                                 WHERE p.estatus = 1 ";
+
+                    SqlCommand command = new SqlCommand(SqlTransact, connection);
+//                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
+
+                    command.CommandType = CommandType.Text;
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            PensionModel pension = new PensionModel();
+                            pension.IdPension = Convert.ToInt32(reader["idPension"].ToString());
+                            pension.Indicador = reader["indicador"] == System.DBNull.Value ? default(int?) : (int?)reader["indicador"];
+                            pension.Pension = reader["pension"].ToString();
+                            pension.Permiso = reader["permiso"].ToString();
+                            pension.IdDelegacion = Convert.ToInt32(reader["idDelegacion"].ToString());
+                            pension.IdMunicipio = Convert.ToInt32(reader["idMunicipio"].ToString());
+                            pension.Direccion = reader["direccion"].ToString();
+                            pension.Telefono = reader["telefono"].ToString();
+                            pension.Correo = reader["correo"].ToString();
+                            pension.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            pension.ActualizadoPor = Convert.ToInt32(reader["actualizadoPor"].ToString());
+                            pension.estatus = Convert.ToInt32(reader["estatus"].ToString());
+                            pension.delegacion = reader["delegacion"].ToString();
+                            pension.municipio = reader["municipio"].ToString();
+                            pension.responsable = reader["responsable"].ToString();
+                            pension.placas = reader["placas"].ToString();
+                            pension.concesionario = reader["concesionario"].ToString();
+                            ListPensiones.Add(pension);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListPensiones;
+        }
 
         public bool ExistData(int Pencion, int idAsociado)
         {

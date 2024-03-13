@@ -580,14 +580,52 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var placasEd = HttpContext.Session.GetString("placasEdit");
             vehiculo.placas = placasEd;
             vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
-            vehiculo.vigenciaTarjeta = DateTime.Parse(HttpContext.Session.GetString("vigenciaTarjetaEdit"));
+
+            var auxas = HttpContext.Session.GetString("vigenciaTarjetaEdit");
+
+                DateTime? test2 = null;
+
+            try
+            {
+                test2 = DateTime.Parse(auxas);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.vigenciaTarjeta = test2 ;
+
+
+
             vehiculo.motor = HttpContext.Session.GetString("motorEdit");
             vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
             vehiculo.otros = HttpContext.Session.GetString("otrosEdit");
             vehiculo.poliza = HttpContext.Session.GetString("polizaEdit");
             vehiculo.capacidad = HttpContext.Session.GetInt32("capacidadEdit");
-            vehiculo.idEntidad = (int)HttpContext.Session.GetInt32("idEntidadEdit");
-            vehiculo.idColor = (int)HttpContext.Session.GetInt32("idColorEdit");
+
+            int test = 0;
+            try
+            {
+                test= HttpContext.Session.GetInt32("idEntidadEdit").Value;
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.idEntidad = test;
+
+            try
+            {
+                test = HttpContext.Session.GetInt32("idColorEdit").Value;
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            vehiculo.idColor = test;
 
             model.Vehiculo = vehiculo;
 

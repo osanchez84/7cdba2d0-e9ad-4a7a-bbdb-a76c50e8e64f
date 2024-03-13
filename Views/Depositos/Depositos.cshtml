@@ -37,6 +37,23 @@
 
         });
 
+
+        function getTramoData(){
+
+        var value = $("#IdCarretera").val()
+
+            return {carreteraDDValue:value}
+
+        }
+
+        function reload(){
+
+            var dll = $("#IdTramo").data("kendoDropDownList").dataSource
+            dll.read()
+        }
+
+
+
 </script>
 <div class="mainContainer bg-light">
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -377,6 +394,7 @@
                                                 .DataTextField("Text")
                                                 .DataValueField("Value")
                                                 .OptionLabel("Selecciona una opción")
+                                                .Value("11")
                                                 .Events(e => e.Change("EntidadDropDownChange"))
                                                 .DataSource(source =>
                                                 {
@@ -562,7 +580,7 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona una Carretera")
-                                .Events(e => e.Change("carreteraDropDownChange"))
+                                .Events(e => e.Change("carreteraDropDownChange").DataBound("reload"))
                                 .HtmlAttributes(new { style = "width: 100%" })
                                 .DataSource(source =>
                                 {
@@ -590,7 +608,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Tramos_Drop", "Depositos");
+                                        read.Action("Tramos_Drop", "Depositos").Data("getTramoData");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;" })
@@ -658,7 +676,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Pensiones_Drop", "Depositos");
+                                        read.Action("Pensiones_Drop2", "Depositos");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;" })
@@ -817,8 +835,8 @@
         window.location.href = "/AsignacionGruas/Index?folio="+ $("#folioPlaceholder").text();
     });
 
-    function carreteraDropDownChange() {
-        var carreteraDDValue = $("#IdCarretera").data("kendoDropDownList").value();
+    function carreteraDropDownChange(a) {
+        var carreteraDDValue = a?? $("#IdCarretera").data("kendoDropDownList").value();
 
         showLoading();
         $.ajax({
@@ -946,6 +964,9 @@
         });
     }
     $(document).ready(function () {
+
+
+
 
     console.log("ready");
     EntidadDropDownChange2();

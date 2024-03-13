@@ -43,18 +43,24 @@ namespace GuanajuatoAdminUsuarios.Services
                     #endregion
 
                     const string SqlTransact =
-                        @"select tg.TipoGrua, tg.IdTipoGrua, g.IdGrua,g.noEconomico,g.Placas,g.Modelo,
-                            c.IdConcesionario,c.Concesionario,g.noEconomico,g.placas,g.modelo,g.capacidad,
-                            c.Concesionario,dep.IdDeposito,dep.IdPension,dep.IdConcesionario,p.Pension,
-                            p.Direccion, p.Telefono,  p.IdMunicipio, m.Municipio
-                            from gruas g 
-                            inner join concesionarios c on g.IdConcesionario= c.IdConcesionario
-                            inner join catTipoGrua tg on g.IdTipoGrua= tg.IdTipoGrua
-                            inner join depositos dep on c.IdConcesionario =dep.IdConcesionario
-                            inner join pensiones p on dep.idPension= p.idPension
-                            inner join catMunicipios m on p.idMunicipio = m.idMunicipio 
-                            WHERE c.idDelegacion = @idOficina
-                            order by  g.IdGrua,c.IdConcesionario";
+                        @"select 
+m.municipio,
+b.concesionario,
+isnull(p.pension+'-'+p.direccion + '|','')+isnull((select string_agg(l.pension+'-'+l.direccion,'|') aux  from pensionGruas k
+ join pensiones l on k.idPension=l.idPension where k.idGrua=b.idConcesionario),'') Deposito,
+a.noEconomico,
+a.modelo,
+a.placas,
+tg.TipoGrua
+
+
+from gruas a
+join concesionarios b on a.idConcesionario=b.idConcesionario
+join catTipoGrua tg on a.IdTipoGrua= tg.IdTipoGrua
+join pensiones p on p.idResponsable=b.idConcesionario       
+join catMunicipios m on m.idMunicipio = p.idMunicipio
+where a.idSituacion=1 and a.estatus=1
+";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
@@ -65,20 +71,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             PadronDepositosGruasModel padronDepositosGruas = new PadronDepositosGruasModel();
 
-                            padronDepositosGruas.IdTipoGrua = Convert.ToInt32(reader["IdTipoGrua"].ToString());
                             padronDepositosGruas.TipoGrua = reader["TipoGrua"].ToString();
-                            padronDepositosGruas.IdGrua = Convert.ToInt32(reader["IdGrua"].ToString());
+
                             padronDepositosGruas.noEconomico = reader["noEconomico"].ToString();
                             padronDepositosGruas.Placas = reader["placas"].ToString();
                             padronDepositosGruas.Modelo = reader["modelo"].ToString();
                             padronDepositosGruas.Concesionario = reader["Concesionario"].ToString();
-                            padronDepositosGruas.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
-                            padronDepositosGruas.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"].ToString());
-                            padronDepositosGruas.IdPension = Convert.ToInt32(reader["IdPension"].ToString());
                             padronDepositosGruas.Pension = reader["Pension"].ToString();
-                            padronDepositosGruas.Direccion = reader["Direccion"].ToString();
-                            padronDepositosGruas.Telefono = reader["Telefono"].ToString();
-                            padronDepositosGruas.IdMunicipio = Convert.ToInt32(reader["IdMunicipio"].ToString());
                             padronDepositosGruas.Municipio = reader["Municipio"].ToString();
                             PadronDepositosGruasList.Add(padronDepositosGruas);
                         }
@@ -203,15 +202,27 @@ namespace GuanajuatoAdminUsuarios.Services
                         condiciones = "";
                     }
                     string SqlTransact =
-                        @"select m.municipio,c.concesionario,c.idMunicipio,p.idPension,p.pension,p.direccion,p.telefono,g.idGrua,
-                                    g.idTipoGrua,g.noEconomico,g.modelo,g.placas,ctg.TipoGrua
-                                    FROM concesionarios c
-                                    LEFT JOIN gruas g ON g.idConcesionario = c.idConcesionario
-                                    LEFT JOIN pensionGruas pg ON pg.idGrua = g.idGrua
-                                    LEFT JOIN pensiones p ON p.idPension = pg.idPension
-                                    LEFT JOIN catMunicipios m ON m.idMunicipio = c.idMunicipio
-                                    LEFT JOIN catTipoGrua ctg ON ctg.IdTipoGrua = g.idTipoGrua
-                                    WHERE c.estatus = 1 " + condiciones;
+                        @"
+                                    select 
+                                    m.municipio,
+                                    isnull(b.concesionario,'') concesionario,
+                                    isnull(p.pension+'-'+p.direccion + '|','')+isnull((select string_agg(l.pension+'-'+l.direccion,'|') aux  from pensionGruas k
+                                     join pensiones l on k.idPension=l.idPension where k.idGrua=b.idConcesionario),'') Deposito,
+                                    a.noEconomico,
+                                    a.modelo,
+                                    a.placas,
+                                    tg.TipoGrua
+
+
+                                    from gruas a
+                                    join concesionarios b on a.idConcesionario=b.idConcesionario
+                                    join catTipoGrua tg on a.IdTipoGrua= tg.IdTipoGrua
+                                    join pensiones p on p.idResponsable=b.idConcesionario       
+                                    join catMunicipios m on m.idMunicipio = p.idMunicipio
+                                    where a.idSituacion=1 and a.estatus=1
+
+
+                                    " + condiciones;
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@IdMunicipio", SqlDbType.Int)).Value = (object)model.IdMunicipio ?? DBNull.Value;
@@ -225,9 +236,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             PadronDepositosGruasModel padronDepositosGruas = new PadronDepositosGruasModel();
 
-                            padronDepositosGruas.IdTipoGrua = reader["IdTipoGrua"] != DBNull.Value ? Convert.ToInt32(reader["IdTipoGrua"]) : 0;
-                            padronDepositosGruas.IdGrua = reader["IdGrua"] != DBNull.Value ? Convert.ToInt32(reader["IdGrua"]) : 0;
-                            padronDepositosGruas.IdMunicipio = reader["IdMunicipio"] != DBNull.Value ? Convert.ToInt32(reader["IdMunicipio"]) : 0;
+                            //padronDepositosGruas.IdTipoGrua = reader["IdTipoGrua"] != DBNull.Value ? Convert.ToInt32(reader["IdTipoGrua"]) : 0;
+                            //padronDepositosGruas.IdGrua = reader["IdGrua"] != DBNull.Value ? Convert.ToInt32(reader["IdGrua"]) : 0;
+                            //padronDepositosGruas.IdMunicipio = reader["IdMunicipio"] != DBNull.Value ? Convert.ToInt32(reader["IdMunicipio"]) : 0;
 
                             padronDepositosGruas.TipoGrua = reader["TipoGrua"].ToString();
                             padronDepositosGruas.noEconomico = reader["noEconomico"].ToString();
@@ -236,10 +247,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             padronDepositosGruas.Concesionario = reader["Concesionario"].ToString();
                             //padronDepositosGruas.IdDeposito = Convert.ToInt32(reader["IdDeposito"].ToString());
                             // padronDepositosGruas.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"].ToString());
-                            padronDepositosGruas.IdPension = reader["IdPension"] != DBNull.Value ? Convert.ToInt32(reader["IdPension"]) : 0;
-                            padronDepositosGruas.Pension = reader["pension"].ToString();
-                            padronDepositosGruas.Direccion = reader["direccion"].ToString();
-                            padronDepositosGruas.Telefono = reader["telefono"].ToString();
+                            //padronDepositosGruas.IdPension = reader["IdPension"] != DBNull.Value ? Convert.ToInt32(reader["IdPension"]) : 0;
+                            padronDepositosGruas.Pension = reader["Deposito"].ToString();
+                            //padronDepositosGruas.Direccion = reader["direccion"].ToString();
+                            //padronDepositosGruas.Telefono = reader["telefono"].ToString();
                             padronDepositosGruas.Municipio = reader["Municipio"].ToString();
                             PadronDepositosGruasList.Add(padronDepositosGruas);
                         }

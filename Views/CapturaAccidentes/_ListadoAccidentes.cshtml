@@ -5,7 +5,9 @@
         Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.CapturaAccidentesModel>()
         .Name("gridAciidentesIncompletos")
             .Columns(columns =>
-             {
+            {
+                columns.Bound(i => i.IdAccidente).Hidden();
+
             columns.Bound(c => c.NumeroReporte).Title("Número de Reporte").Width(100);
                  columns.Bound(c => c.Fecha).Format("{0:dd/MM/yyyy}").Width(90);
                  columns.Bound(c => c.Hora).Width(90);

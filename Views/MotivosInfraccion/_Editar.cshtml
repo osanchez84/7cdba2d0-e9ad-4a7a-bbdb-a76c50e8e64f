@@ -82,7 +82,7 @@
         <div class="col-12 col-md-3">
             <div class="controlForm my-3">
                 @(Html.Kendo().TextBoxFor(t=>t.CalificacionMinima)
-                                .Label(l => l.Content("Calificación mínima:"))
+                    .Label(l => l.Content("Calificación mínima <b>(obligatorio)</b>:"))
                                 .Placeholder("Mínima")
                                 .HtmlAttributes(new { style = "width: 100%", type = "number" })
                                 )
@@ -92,7 +92,7 @@
         <div class="col-12 col-md-3">
             <div class="controlForm my-3">
                 @(Html.Kendo().TextBoxFor(t=>t.CalificacionMaxima)
-                                .Label(l => l.Content("Calificación máxima:"))
+                    .Label(l => l.Content("Calificación máxima <b>(obligatorio)</b>:"))
                                 .HtmlAttributes(new { style = "width: 100%", type = "number" })
                                 )
 
@@ -114,10 +114,10 @@
                         <div class="controlForm my-3">
                             <label>Fecha inicio de vigencia</label>
                             <span>
-                                @(Html.Kendo().DatePickerFor(t => t.fechaInicioVigencia)
-                                    //.Max(DateTime.Now)
-                                    .Culture("es-ES")
-                                    .HtmlAttributes(new { style = "width: 100%"})
+                    @(Html.Kendo().DatePickerFor(t => t.fechaInicioVigencia).Format("dd/MM/yyyy")
+                        .Culture("es-ES")
+                        .HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+                                    
                                     )
                             </span>
                         </div>
@@ -126,10 +126,10 @@
             <div class="controlForm my-3">
                <label>Fecha final de vigencia</label>
                 <span>
-                    @(Html.Kendo().DatePickerFor(t => t.fechaFinVigencia)
-                        //.Max(DateTime.Now)
+                    @(Html.Kendo().DatePickerFor(t => t.fechaFinVigencia).Format("dd/MM/yyyy")
                         .Culture("es-ES")
-                        .HtmlAttributes(new { style = "width: 100%" })
+                        .HtmlAttributes(new { style = "width: 100%", title = "startDate" })
+                        
                         )
                 </span>
             </div>

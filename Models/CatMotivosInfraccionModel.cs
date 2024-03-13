@@ -22,9 +22,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string estatusDesc { get; set; }
         public string fechaInicio { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime fechaFinVigencia { get; set; }
+        public DateTime? fechaFinVigencia { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime fechaInicioVigencia { get; set; }
+        public DateTime? fechaInicioVigencia { get; set; }
 
         public DateTime? InicioVigenciaDesde { get; set; }
         public DateTime? InicioVigenciaHasta { get; set; }

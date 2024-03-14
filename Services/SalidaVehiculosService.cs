@@ -505,12 +505,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         nombreRecibe = @nombreRecibe,
                         nombreEntrega = @nombreEntrega,
                         observaciones = @observaciones,
-                        estatus = @estatus,                       
+                        estatus = @estatus,
+                         estatusSolicitud = 6,
                         actualizadoPor = @actualizadoPor,
                         fechaActualizacion = @fechaActualizacion
                 WHEN NOT MATCHED THEN
-                    INSERT (idDeposito, fechaIngreso, fechaSalida, diasResguardo, costoDeposito, oficio,fechaOficio, nombreRecibe, nombreEntrega, observaciones, estatus, actualizadoPor, fechaActualizacion)
-                    VALUES (@idDeposito, @fechaIngreso, @fechaSalida, @diasResguardo, @costoDeposito, @oficio,@fechaOficio, @nombreRecibe, @nombreEntrega, @observaciones, @estatus, @actualizadoPor, @fechaActualizacion);";
+                    INSERT (idDeposito, fechaIngreso, fechaSalida, diasResguardo, costoDeposito, oficio,fechaOficio, nombreRecibe, nombreEntrega, observaciones, estatus, actualizadoPor, fechaActualizacion, estatusSolicitud)
+                    VALUES (@idDeposito, @fechaIngreso, @fechaSalida, @diasResguardo, @costoDeposito, @oficio,@fechaOficio, @nombreRecibe, @nombreEntrega, @observaciones, @estatus, @actualizadoPor, @fechaActualizacion,6);";
 
                     SqlCommand command = new SqlCommand(mergeQuery, connection);
 

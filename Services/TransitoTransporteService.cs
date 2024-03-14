@@ -202,16 +202,16 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
                     condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,''))  LIKE '%' + @Propietario + '%' ";
                     condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
-                    condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND d.idDelegacion = @IdDelegacion ";
-                    condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idpension = @IdPension ";
-                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND d.estatusSolicitud = @idEstatus ";
+                    condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND ISNULL(d.idDelegacion, @IdDelegacion) = @IdDelegacion ";
+                    condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND ISNULL(d.idpension,@IdPension) = @IdPension ";
+                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND ISNULL(d.estatusSolicitud,@idEstatus) = @idEstatus ";
                     //condiciones += model.IdDependenciaGenera.Equals(null) || model.IdDependenciaGenera == 0 ? "" : " AND d.IdDependenciaGenera = @IdDependenciaGenera ";
                     if (model.IdDependenciaTransito == 0)
-                        condiciones += " AND inf.transito = 1 ";
+                        condiciones += " AND ISNULL(sol.BanderaTransito,1) = 1 ";
                     else if (model.IdDependenciaTransito == 1)
-                        condiciones += " AND inf.transito = 0 ";
+                        condiciones += " AND ISNULL(sol.BanderaTransito,0) = 0 ";
                     else 
-                        condiciones += " AND inf.transito IN(0,1) ";
+                        condiciones += " AND ISNULL(sol.BanderaTransito,0) IN(0,1) ";
 
                     condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito <= 0 ? "" : " AND d.idEnviaVehiculo = CASE WHEN @IdDependenciaNoTransito<=0 THEN  d.idEnviaVehiculo ELSE @IdDependenciaNoTransito END";
                     if (model.FechaIngreso != null || model.FechaIngresoFin != null)
@@ -251,14 +251,14 @@ namespace GuanajuatoAdminUsuarios.Services
                                          CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
                                          ISNULL(evt.DescripcionEvento,'') Evento,
                                          inf.transito,d.idGrua
-                                FROM depositos d
+                                FROM solicitudes sol 
+								LEFT JOIN depositos d ON d.idsolicitud = sol.idsolicitud 
                                 LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
                                 LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
                                 LEFT JOIN catColores col ON d.idcolor = col.idcolor
                                 LEFT JOIN pensiones pen ON d.idpension = pen.idpension
                                 LEFT JOIN catTramos ctra ON d.idtramo = ctra.idtramo
                                 LEFT JOIN catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
-                                LEFT JOIN solicitudes sol ON d.idsolicitud = sol.idsolicitud
                                 LEFT JOIN infracciones inf ON sol.idinfraccion = inf.idinfraccion
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
@@ -266,7 +266,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
                                 LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-                                WHERE d.estatus != 0  AND (esExterno<>1 OR esExterno IS NULL)and d.idDelegacion=@idOficina" + condiciones;
+                                WHERE ISNULL(d.estatus,1) != 0  AND (esExterno<>1 OR esExterno IS NULL) and ISNULL(d.idDelegacion,@idOficina)=@idOficina" + condiciones;
 
                     //HMG - 01-03-24 Se quita la oficina por acuerdo en comun con Criss
                     //and d.idDelegacion = @idOficina

@@ -56,6 +56,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         {
           
              var diasInhabilesModel = _diasInhabiles.GetDiasById(idDiaInhabil);
+
+            
+
+
             Municipios_Read();
             return View("_Editar", diasInhabilesModel);
          }
@@ -70,7 +74,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public JsonResult Municipios_Read()
         {
-            var result = new SelectList(_catMunicipiosService.GetMunicipiosGuanajuato(), "IdMunicipio", "Municipio");
+            var q = _catMunicipiosService.GetMunicipiosGuanajuato();
+
+            var data = q.GroupBy(s => s.Municipio).Select(s => s.FirstOrDefault()).ToList();
+
+            var result = new SelectList(data, "IdMunicipio", "Municipio");
             return Json(result);
         }
 

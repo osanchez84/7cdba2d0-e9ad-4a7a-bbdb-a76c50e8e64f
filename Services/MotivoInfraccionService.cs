@@ -73,8 +73,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.idSubConcepto = reader["IdSubConcepto"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["IdSubConcepto"].ToString());
                             model.subConcepto = reader["subConcepto"].ToString();
                             model.ValorEstatusMotivosInfraccion = reader["ValorEstatusMotivosInfraccion"].ToString() == "inactivo" ? false :true;
-                            model.fechaInicioVigencia = reader["fechaInicio"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaInicio"]);
-                            model.fechaFinVigencia = reader["fechaFinVigencia"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(reader["fechaFinVigencia"]);
+                            model.fechaInicioVigencia = reader["fechaInicio"] == System.DBNull.Value ? null : Convert.ToDateTime(reader["fechaInicio"]);
+                            model.fechaFinVigencia = reader["fechaFinVigencia"] == System.DBNull.Value ? null : Convert.ToDateTime(reader["fechaFinVigencia"]);
 
                             motivos.Add(model);
                         }
@@ -243,7 +243,6 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
                     command.CommandType = CommandType.Text;
-                    command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@idDependencia", idDependencia);
 					command.Parameters.AddWithValue("@nombre", motivo.Nombre);
                     command.Parameters.AddWithValue("@IdSubConcepto", motivo.idSubConcepto);
@@ -251,8 +250,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@calificacionMinima", motivo.CalificacionMinima);
                     command.Parameters.AddWithValue("@calificacionMaxima", motivo.CalificacionMaxima);
                     command.Parameters.AddWithValue("@fundamento", motivo.Fundamento);
-                    command.Parameters.AddWithValue("@fechaInicioVigencia", motivo.fechaInicioVigencia);
-                    command.Parameters.AddWithValue("@fechaFinalVigencia", motivo.fechaFinVigencia);
+                    command.Parameters.AddWithValue("@fechaInicioVigencia", (motivo.fechaInicioVigencia == null) ? DBNull.Value : motivo.fechaInicioVigencia);
+                    command.Parameters.AddWithValue("@fechaFinalVigencia", (motivo.fechaFinVigencia==null) ? DBNull.Value : motivo.fechaFinVigencia);
 
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);

@@ -3,6 +3,9 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
+
+
+    var q = Model.idEntidad;
 }
 
 <script>
@@ -379,7 +382,7 @@
                                     <div class="controlForm my-3">
                                         <label>Entidad <b>(obligatorio)</b>:</label>
                                         <span>
-                                            @(Html.Kendo().DropDownListFor(m => m.idEntidad).Filter(FilterType.Contains)
+                                            @(Html.Kendo().DropDownListFor(m=>m.idEntidad).Filter(FilterType.Contains)
                                                 .DataTextField("Text")
                                                 .DataValueField("Value")
                                                 .OptionLabel("Selecciona una opción")
@@ -392,7 +395,6 @@
                                                     });
                                                 })
                                                 .HtmlAttributes(new { style = "width:100%;" })
-                                                .Value("11")
                                                 )
                                         </span>
 
@@ -623,7 +625,7 @@
                                         read.Action("Entidades_Drop", "Depositos");
                                     });
                                 })
-                                .SelectedIndex(12)
+                                .Value("11")
                                 .HtmlAttributes(new { style = "width:100%;" })
                                 )
                         </span>

@@ -573,61 +573,63 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ajax_editarInfraccion(InfraccionesModel model)
         {
+            var validacion = HttpContext.Session.GetString("cambioVehiculo");
+            if (validacion =="1") { 
+                VehiculoModel vehiculo = new VehiculoModel();
 
-            VehiculoModel vehiculo = new VehiculoModel();
-
-            vehiculo.idPersona = HttpContext.Session.GetInt32("idPersonaEdit");
-            var placasEd = HttpContext.Session.GetString("placasEdit");
-            vehiculo.placas = placasEd;
-            vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
-
-            var auxas = HttpContext.Session.GetString("vigenciaTarjetaEdit");
+                vehiculo.idPersona = HttpContext.Session.GetInt32("idPersonaEdit");
+                var placasEd = HttpContext.Session.GetString("placasEdit");
+                vehiculo.placas = placasEd;
+                vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
+                var auxas = HttpContext.Session.GetString("vigenciaTarjetaEdit");
 
                 DateTime? test2 = null;
 
-            try
-            {
-                test2 = DateTime.Parse(auxas);
-            }
-            catch (Exception e)
-            {
+                try
+                {
+                    test2 = DateTime.Parse(auxas);
+                }
+                catch (Exception e)
+                {
 
-            }
+                }
 
-            vehiculo.vigenciaTarjeta = test2 ;
+                vehiculo.vigenciaTarjeta = test2;
+                vehiculo.motor = HttpContext.Session.GetString("motorEdit");
+                vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
+                vehiculo.otros = HttpContext.Session.GetString("otrosEdit");
+                vehiculo.poliza = HttpContext.Session.GetString("polizaEdit");
+                vehiculo.capacidad = HttpContext.Session.GetInt32("capacidadEdit");
+
+                int test = 0;
+                try
+                {
+                    test = HttpContext.Session.GetInt32("idEntidadEdit").Value;
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                vehiculo.idEntidad = test;
+
+                try
+                {
+                    test = HttpContext.Session.GetInt32("idColorEdit").Value;
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                vehiculo.idColor = test;
+
+                model.Vehiculo = vehiculo;
 
 
+                HttpContext.Session.SetString("cambioVehiculo", "");
 
-            vehiculo.motor = HttpContext.Session.GetString("motorEdit");
-            vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
-            vehiculo.otros = HttpContext.Session.GetString("otrosEdit");
-            vehiculo.poliza = HttpContext.Session.GetString("polizaEdit");
-            vehiculo.capacidad = HttpContext.Session.GetInt32("capacidadEdit");
-
-            int test = 0;
-            try
-            {
-                test= HttpContext.Session.GetInt32("idEntidadEdit").Value;
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            vehiculo.idEntidad = test;
-
-            try
-            {
-                test = HttpContext.Session.GetInt32("idColorEdit").Value;
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            vehiculo.idColor = test;
-
-            model.Vehiculo = vehiculo;
+            }   
 
             var isedition = HttpContext.Session.GetString("isedition");
 
@@ -1236,6 +1238,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var model = _vehiculosService.GetVehiculoById(idVehiculo);
             model.cargaTexto = (model.carga == true) ? "Si" : "No";
 
+            
+            HttpContext.Session.SetString("cambioVehiculo", "1");
             HttpContext.Session.SetInt32("idPersonaEdit", model.idPersona == null ? 0 : (int)model.idPersona);
             HttpContext.Session.SetString("placasEdit", model.placas == null ? "" : (string)model.placas);
             HttpContext.Session.SetString("tarjetaEdit", model.tarjeta == null ? "" : (string)model.tarjeta);

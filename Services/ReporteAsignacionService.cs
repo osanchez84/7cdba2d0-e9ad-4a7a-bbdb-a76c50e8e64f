@@ -160,7 +160,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.IdEvento.Equals(null) || model.IdEvento == 0 ? "" : " AND sol.idEvento = @IdEvento ";
 
 
-                    if (model.FechaInicio != DateTime.MinValue || model.FechaFin != DateTime.MinValue)
+                    if (model.FechaInicio != DateTime.MinValue || model.FechaFin != DateTime.MaxValue)
                     {
                         condiciones += @" AND (CONVERT(VARCHAR,sol.fechasolicitud,112)
                                            BETWEEN CONVERT(VARCHAR,ISNULL(@FechaIngreso,sol.fechasolicitud),112)

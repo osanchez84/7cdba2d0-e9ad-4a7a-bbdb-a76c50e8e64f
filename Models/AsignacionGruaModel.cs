@@ -80,6 +80,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string RFC { get; set; }
         public string observaciones { get; set; }
         public string numeroInventario { get; set; }
+        public string inventarios { get; set; }
         public int IdDeposito { get; set; }
         public IFormFile MyFile { get; set; }
 

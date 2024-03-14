@@ -9,6 +9,7 @@ namespace GuanajuatoAdminUsuarios.Models
 	{
         public int transito { get; set; }
         public int cons { get; set; }
+        public string nombreEstatus { get; set; }
 
         #region Depositos
 

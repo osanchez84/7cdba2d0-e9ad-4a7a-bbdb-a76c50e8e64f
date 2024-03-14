@@ -330,7 +330,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"] is DBNull ? DateTime.MinValue : reader["FechaIngreso"]);
                             transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"] is DBNull ? DateTime.MinValue : reader["FechaLiberacion"]);
                             transito.Folio = reader["Folio"] is DBNull ? "" : reader["Folio"].ToString();
-                            transito.Km = reader["Km"] is DBNull ? "" : Convert.ToDecimal(reader["Km"]).ToString("G29");
+                            transito.Km = reader["Km"] is DBNull ? "" : reader["Km"].ToString();
+
+                            //transito.Km = reader["Km"] is DBNull ? "" : Convert.ToDecimal(reader["Km"]).ToString("G29");
                             transito.Liberado = Convert.ToInt32(reader["Liberado"] is DBNull ? 0 : reader["Liberado"]);
                             transito.Autoriza = reader["Autoriza"] is DBNull ? "" : reader["Autoriza"].ToString();
                             transito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);

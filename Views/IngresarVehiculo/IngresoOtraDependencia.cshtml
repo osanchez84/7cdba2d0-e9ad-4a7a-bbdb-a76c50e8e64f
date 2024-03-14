@@ -1,5 +1,25 @@
 ﻿@model GuanajuatoAdminUsuarios.Models.IngresoOtraDependenciaModel
+<script>
+    function cambiaFecha() {
+        var timepickerControl = $("#HoraIngreso").data("kendoTimePicker");
+        var fechaSeleccionada = $("#FechaIngreso").data("kendoDatePicker").value();
+        var horaSeleccionada = timepickerControl.value(); 
+        var fechaActual = new Date();
 
+        if (fechaSeleccionada.getDate() == fechaActual.getDate() &&
+            fechaSeleccionada.getMonth() == fechaActual.getMonth() &&
+            fechaSeleccionada.getFullYear() == fechaActual.getFullYear()) {
+
+            var horaActual = fechaActual.getHours() * 60 + fechaActual.getMinutes();
+
+            if (horaSeleccionada != null && horaSeleccionada.getHours() * 60 + horaSeleccionada.getMinutes() > horaActual) {
+                timepickerControl.value(""); 
+            }
+        }
+
+        timepickerControl.max(fechaActual);
+    }
+</script>
 <div class="mainContainer bg-light">
 
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -41,7 +61,11 @@
                                 @(Html.Kendo().DatePickerFor(t => t.FechaIngreso)
                                     .Label(l => l.Content("Fecha <b>(obligatorio)</b>:"))
                                     .Culture("es-ES")
-                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
+                                    .Events(e =>
+                                    {
+                                        e.Change("cambiaFecha");
+                                    })
+                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date", id = "FechaIngreso" })
                                     )
                             </span>
                         </div>
@@ -54,9 +78,8 @@
                                     .Format("HH:mm")
                                     .Interval(1)
                                     .Label(l => l.Content("Hora <b>(obligatorio)</b>:"))
-                                    .HtmlAttributes(new { style = "width: 100%", title = "please enter date" })
                                     .Value((DateTime?)null)
-                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker" })
+                                    .HtmlAttributes(new { style = "width: 100%", title = "timepicker",id ="HoraIngreso" })
                                     )
                             </span>
                         </div>
@@ -379,3 +402,5 @@
         </div>
     </section>
 </div>
+
+

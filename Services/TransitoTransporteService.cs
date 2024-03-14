@@ -397,17 +397,18 @@ namespace GuanajuatoAdminUsuarios.Services
                  
 
                     const string SqlTransact =
-                                       @"SELECT d.idDeposito,d.placa,d.idInfraccion,d.fechaIngreso,d.idVehiculo,
+									   @"SELECT d.idDeposito,d.placa,d.idInfraccion,d.fechaIngreso,d.idVehiculo,d.fechaLiberacion,
                                                     sol.idSolicitud,sol.fechaSolicitud,sol.idEvento,sol.idTipoUsuario,
                                                     sol.solicitanteNombre,sol.solicitanteAp,sol.solicitanteAm,sol.folio,
 													sol.vehiculoCalle,sol.vehiculoNumero,sol.vehiculoColonia,sol.idCarreteraUbicacion,
-													sol.idTramoUbicacion,sol.idPension,sol.vehiculoInterseccion,sol.vehiculoKm,
+													sol.idTramoUbicacion,sol.idPension,sol.vehiculoInterseccion,sol.vehiculoKm,sol.solicitanteColonia,
+													sol.solicitanteCalle,sol.solicitanteNumero,
                                                     tas.tipoAsignacion,
                                                     te.descripcionEvento,tu.tipoUsuario,tve.tipoVehiculo,c.concesionario,
                                                     ga.abanderamiento,ga.arrastre,ga.salvamento,ofi.nombre,ofi.apellidoPaterno,ofi.apellidoMaterno,
                                                     ga.fechaArribo,ga.fechaInicio,ga.fechaFinal,ga.minutosManiobra,ga.operadorGrua,
 													ent.nombreEntidad,mun.municipio,v.idPersona,v.serie,per.nombre AS nombrePropietario,per.apellidoPaterno AS propietarioAP,
-                                                    per.apellidoMaterno AS propietarioAM,v.modelo,mv.marcaVehiculo,sbv.nombreSubmarca,
+                                                    per.apellidoMaterno AS propietarioAM,per.CURP,v.modelo,mv.marcaVehiculo,sbv.nombreSubmarca,
                                                     inf.folioInfraccion,sde.fechaSalida,car.carretera AS carreteraUbicacion,tra.tramo AS tramoUbicacion,
 													pen.pension,g.noEconomico,g.idTipoGrua,g.placas AS placasGrua,ctg.TipoGrua
                                                     FROM depositos AS d
@@ -425,7 +426,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                     LEFT JOIN catMunicipios AS mun ON mun.idMunicipio = sol.idmunicipioUbicacion
 										            LEFT JOIN catCarreteras AS car ON car.idCarretera = sol.idCarreteraUbicacion
                                                     LEFT JOIN catTramos AS tra ON tra.idTramo = sol.idTramoUbicacion
-													LEFT JOIN vehiculos AS v ON v.placas = d.placa
+													LEFT JOIN vehiculos AS v ON v.idVehiculo = d.idVehiculo
                                                     LEFT JOIN catMarcasVehiculos AS mv ON mv.idMarcaVehiculo = v.idMarcaVehiculo
                                                     LEFT JOIN catSubmarcasVehiculos AS sbv ON sbv.idSubmarca = v.idSubmarca
                                                     LEFT JOIN personas AS per ON per.idPersona = v.idPersona
@@ -454,16 +455,16 @@ namespace GuanajuatoAdminUsuarios.Services
                             string fechaIngresoStr = reader["fechaIngreso"].ToString();
                             if (DateTime.TryParse(fechaIngresoStr, out DateTime fechaIngreso) && fechaIngreso != DateTime.MinValue)
                             {
-                                transito.FechaSolicitud = fechaIngreso;
+                                transito.FechaIngreso = fechaIngreso;
                             }
                             else
                             {
                         
                             }
-                            string fechaLiberacionStr = reader["fechaSolicitud"].ToString();
+                            string fechaLiberacionStr = reader["fechaLiberacion"].ToString();
                             if (DateTime.TryParse(fechaLiberacionStr, out DateTime fechaLiberacion) && fechaLiberacion != DateTime.MinValue)
                             {
-                                transito.FechaSolicitud = fechaLiberacion;
+                                transito.FechaLiberacion = fechaLiberacion;
                             }
                             else
                             {
@@ -483,10 +484,16 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.solicitanteNombre = reader["solicitanteNombre"].ToString();
                             transito.solicitanteAp = reader["solicitanteAp"].ToString();
                             transito.solicitanteAm = reader["solicitanteAm"].ToString();
-                            transito.pension = reader["pension"].ToString();
+
+							transito.solicitanteColonia = reader["solicitanteColonia"].ToString();
+							transito.solicitanteCalle = reader["solicitanteCalle"].ToString();
+							transito.solicitanteNumero = reader["solicitanteNumero"].ToString();
+
+							transito.pension = reader["pension"].ToString();
                             transito.tramo = reader["tramoUbicacion"].ToString();
                             transito.calle = reader["vehiculoCalle"].ToString();
-                            transito.carretera = reader["carreteraUbicacion"].ToString();
+						
+							transito.carretera = reader["carreteraUbicacion"].ToString();
                             transito.numero = reader["vehiculoNumero"].ToString();
                             transito.colonia = reader["vehiculoColonia"].ToString();
                             transito.interseccion = reader["vehiculoInterseccion"].ToString();
@@ -509,7 +516,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.propietarioNombre = reader["nombrePropietario"].ToString();
                             transito.propietarioApellidoPaterno = reader["propietarioAP"].ToString();
                             transito.propietarioApellidoMaterno = reader["propietarioAM"].ToString();
-                            transito.oficialNombre = reader["nombre"].ToString();
+							transito.CURP = reader["CURP"].ToString();
+
+							transito.oficialNombre = reader["nombre"].ToString();
                             transito.oficialApellidoPaterno = reader["apellidoPaterno"].ToString();
                             transito.oficialApellidoMaterno = reader["apellidoMaterno"].ToString();
 

@@ -71,7 +71,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
                 if (model.FechaFin == null)
                 {
-                    model.FechaFin = DateTime.MinValue;
+                    model.FechaFin = DateTime.MaxValue;
                 }
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
 
@@ -100,26 +100,26 @@ namespace GuanajuatoAdminUsuarios.Controllers
             model.idDelegacion = model2.idDelegacion;
             model.Evento = model2.Evento;
 
-            var axudate1 = DateTime.ParseExact(model2.FechaInicio, "dd/MM/yyyy",CultureInfo.InvariantCulture);
-            var axudate2 = DateTime.ParseExact(model2.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-
-
             if (String.IsNullOrEmpty(model2.FechaInicio))
             {
                 model.FechaInicio = DateTime.MinValue;
             }
             else
             {
+                var axudate1 = DateTime.ParseExact(model2.FechaInicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
                 model.FechaInicio = axudate1;
             }
 
             if (String.IsNullOrEmpty( model2.FechaFin ))
             {
+
                 model.FechaFin = DateTime.MinValue;
             }
             else
             {
+                var axudate2 = DateTime.ParseExact(model2.FechaFin, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
                 model.FechaFin = axudate2;
             }
 

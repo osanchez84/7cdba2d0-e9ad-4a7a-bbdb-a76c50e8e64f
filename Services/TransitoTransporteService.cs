@@ -219,13 +219,13 @@ namespace GuanajuatoAdminUsuarios.Services
                         condiciones += "and (";
 
                         if (model.FechaIngreso != null && model.FechaIngresoFin != null)
-                            condiciones += " CONVERT(VARCHAR,fechaingreso,112) between CONVERT(VARCHAR,@FechaInicio,112) and CONVERT(VARCHAR,@FechaFin,112)";
+                            condiciones += " fechaingreso between @FechaInicio and @FechaFin";
 
                         else if (model.FechaIngreso != null)
-                            condiciones += "CONVERT(VARCHAR,fechaingreso,112) >= CONVERT(VARCHAR,@FechaInicio,112)";
+                            condiciones += "fechaingreso >= @FechaInicio";
                                                                                                
                         else if (model.FechaIngresoFin != null)
-                            condiciones += "CONVERT(VARCHAR,d.fechaingreso,112) <= CONVERT(VARCHAR,@FechaFin,112)";
+                            condiciones += "d.fechaingreso <= @FechaFin";
 
                         else
                             condiciones += "1 = 1";
@@ -266,7 +266,8 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
                                 LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-                                WHERE ISNULL(d.estatus,1) != 0  AND (esExterno<>1 OR esExterno IS NULL) and ISNULL(d.idDelegacion,@idOficina)=@idOficina" + condiciones;
+                                WHERE ISNULL(d.estatus,1) != 0  AND (esExterno<>1 OR esExterno IS NULL) and 
+                                ISNULL(d.idDelegacion,@idOficina)=@idOficina" + condiciones;
 
                     //HMG - 01-03-24 Se quita la oficina por acuerdo en comun con Criss
                     //and d.idDelegacion = @idOficina
@@ -315,7 +316,7 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             TransitoTransporteModel transito = new TransitoTransporteModel();
                             transito.transito = reader["transito"].GetType() == typeof(DBNull) ? 0 : (int)reader["transito"];
-                            transito.cons = Convert.ToInt32(reader["cons"].ToString());
+                            transito.cons = Convert.ToInt32(reader["cons"]  .ToString());
                             transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"] is DBNull ? 0 : reader["IdDeposito"]);
                             transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"] is DBNull ? 0 : reader["IdSolicitud"]);
                             transito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"] is DBNull ? 0 : reader["IdDelegacion"]);
@@ -324,47 +325,48 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.IdPension = Convert.ToInt32(reader["IdPension"] is DBNull ? 0 : reader["IdPension"]);
                             transito.IdTramo = Convert.ToInt32(reader["IdTramo"] is DBNull ? 0 : reader["IdTramo"]);
                             transito.IdColor = Convert.ToInt32(reader["IdColor"] is DBNull ? 0 : reader["IdColor"]);
-                            transito.Serie = reader["Serie"].ToString();
-                            transito.Placa = reader["Placa"].ToString();
+                            transito.Serie = reader["Serie"] is DBNull ? "" : reader["Serie"].ToString();
+                            transito.Placa = reader["Placa"] is DBNull ? "" : reader["Placa"].ToString(); 
                             transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"] is DBNull ? DateTime.MinValue : reader["FechaIngreso"]);
                             transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"] is DBNull ? DateTime.MinValue : reader["FechaLiberacion"]);
-                            transito.Folio = reader["Folio"].ToString();
-                            transito.Km = reader["Km"].ToString();
+                            transito.Folio = reader["Folio"] is DBNull ? "" : reader["Folio"].ToString();
+                            transito.Km = reader["Km"] is DBNull ? "" : Convert.ToDecimal(reader["Km"]).ToString("G29");
                             transito.Liberado = Convert.ToInt32(reader["Liberado"] is DBNull ? 0 : reader["Liberado"]);
-                            transito.Autoriza = reader["Autoriza"].ToString();
+                            transito.Autoriza = reader["Autoriza"] is DBNull ? "" : reader["Autoriza"].ToString();
                             transito.FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"] is DBNull ? DateTime.MinValue : reader["FechaActualizacion"]);
                             transito.ActualizadoPor = Convert.ToInt32(reader["ActualizadoPor"] is DBNull ? 0 : reader["ActualizadoPor"]);
                             transito.DepositoEstatus = Convert.ToInt32(reader["Estatus"] is DBNull ? 0 : reader["Estatus"]);
-                            transito.marcaVehiculo = reader["marcaVehiculo"].ToString();
-                            transito.nombreSubmarca = reader["nombreSubmarca"].ToString();
-                            transito.delegacion = reader["delegacion"].ToString();
-                            transito.modelo = reader["modelo"].ToString();
-                            transito.solicitanteNombre = reader["solicitanteNombre"].ToString();
-                            transito.solicitanteAp = reader["solicitanteAp"].ToString();
-                            transito.solicitanteAm = reader["solicitanteAm"].ToString();
-                            transito.Color = reader["Color"].ToString();
-                            transito.pension = reader["pension"].ToString();
-                            transito.tramo = reader["tramo"].ToString();
+                            transito.marcaVehiculo = reader["marcaVehiculo"] is DBNull ? "" : reader["marcaVehiculo"].ToString();
+                            transito.nombreSubmarca = reader["nombreSubmarca"] is DBNull ? "" : reader["nombreSubmarca"].ToString();
+                            transito.delegacion = reader["delegacion"] is DBNull ? "" : reader["delegacion"].ToString();
+                            transito.modelo = reader["modelo"] is DBNull ? "" : reader["modelo"].ToString();
+                            transito.solicitanteNombre = reader["solicitanteNombre"] is DBNull ? "" : reader["solicitanteNombre"].ToString();
+                            transito.solicitanteAp = reader["solicitanteAp"] is DBNull ? "" : reader["solicitanteAp"].ToString();
+                            transito.solicitanteAm = reader["solicitanteAm"] is DBNull ? "" : reader["solicitanteAm"].ToString();
+                            transito.Color = reader["Color"] is DBNull ? "" : reader["Color"].ToString();
+                            transito.pension = reader["pension"] is DBNull ? "" : reader["pension"].ToString();
+                            transito.tramo = reader["tramo"] is DBNull ? "" : reader["tramo"].ToString();
                             transito.IdGrua = Convert.ToInt32(reader["idGrua"] is DBNull ? 0 : reader["idGrua"]);
 
                             // Nuevos
                             transito.FechaSolicitud = Convert.ToDateTime(reader["FechaSolicitud"] is DBNull ? DateTime.MinValue : reader["FechaSolicitud"]);
                             transito.IdDependencia = Convert.ToInt32(reader["IdDependencia"] is DBNull ? 0 : reader["IdDependencia"]);
-                            transito.NombreDependencia = reader["NombreDependencia"].ToString();
+                            transito.NombreDependencia = reader["NombreDependencia"] is DBNull ? "" : reader["NombreDependencia"].ToString();
                             transito.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"] is DBNull ? 0 : reader["IdInfraccion"]);
-                            transito.FolioInfraccion = reader["folioInfraccion"].ToString();
+                            transito.FolioInfraccion = reader["folioInfraccion"] is DBNull ? "" : reader["folioInfraccion"].ToString();
                             transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"] is DBNull ? 0 : reader["IdVehiculo"]);
-                            transito.propietario = reader["propietario"].ToString();
-                            transito.numeroEconomico = reader["numeroEconomico"].ToString();
-                            transito.FolioSolicitud = reader["FolioSolicitud"].ToString();
+                            transito.propietario = reader["propietario"] is DBNull ? "" : reader["propietario"].ToString();
+                            transito.numeroEconomico = reader["numeroEconomico"] is DBNull ? "" : reader["numeroEconomico"].ToString();
+                            transito.FolioSolicitud = reader["FolioSolicitud"] is DBNull ? "" : reader["FolioSolicitud"].ToString();
                             transito.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"] is DBNull ? 0 : reader["IdConcesionario"]);
                             transito.estatusSolicitud = string.Concat(reader["nombreEstatus"], " ", reader["delegacion"]);
+                            transito.nombreEstatus = reader["nombreEstatus"] is DBNull ? "" : reader["nombreEstatus"].ToString();
                             transito.SolicitudEstatus = Convert.ToInt32(reader["estatusSolicitud"] is DBNull ? 0 : reader["estatusSolicitud"]);
-                            transito.Concesionario = reader["concesionario"].ToString();
+                            transito.Concesionario = reader["concesionario"] is DBNull ? "" : reader["concesionario"].ToString();
                             transito.IdDependenciaGenera = reader["IdDependenciaGenera"] is DBNull ? 0 : (int)reader["IdDependenciaGenera"];
                             transito.IdDependenciaTransito = reader["IdDependenciaTransito"] is DBNull ? 0 : (int)reader["IdDependenciaTransito"];
                             transito.IdDependenciaNoTransito = reader["IdDependenciaNoTransito"] is DBNull ? 0 : (int)reader["IdDependenciaNoTransito"];
-                            transito.evento  = reader["Evento"].ToString();
+                            transito.evento  = reader["Evento"] is DBNull ? "" : reader["Evento"].ToString();
                             transitoList.Add(transito);
 
                         }
@@ -376,6 +378,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     //Guardar la excepcion en algun log de errores
                     //ex
+                    var q = ex;
                 }
                 finally
                 {

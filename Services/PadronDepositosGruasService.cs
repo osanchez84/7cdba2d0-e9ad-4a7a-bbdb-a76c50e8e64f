@@ -193,8 +193,8 @@ where a.idSituacion=1 and a.estatus=1
                 {
                     connection.Open();
                     string condiciones = "";
-                    condiciones += model.IdMunicipio.Equals(null) || model.IdMunicipio == 0 ? "" : " AND c.IdMunicipio = @IdMunicipio ";
-                    condiciones += model.IdConcesionario.Equals(null) || model.IdConcesionario == 0 ? "" : " AND c.idConcesionario = @IdConcesionario ";
+                    condiciones += model.IdMunicipio.Equals(null) || model.IdMunicipio == 0 ? "" : " AND b.IdMunicipio = @IdMunicipio ";
+                    condiciones += model.IdConcesionario.Equals(null) || model.IdConcesionario == 0 ? "" : " AND b.idConcesionario = @IdConcesionario ";
                     condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND p.idPension = @IdPension ";
                     condiciones += model.IdTipoGrua.Equals(null) || model.IdTipoGrua == 0 ? "" : " AND g.idTipoGrua = @IdTipoGrua ";
                     if (string.IsNullOrEmpty(condiciones.Trim()))
@@ -205,9 +205,9 @@ where a.idSituacion=1 and a.estatus=1
                         @"
                                     select 
                                     m.municipio,
-                                    isnull(b.concesionario,'') concesionario,
-                                    isnull(p.pension+'-'+p.direccion + '|','')+isnull((select string_agg(l.pension+'-'+l.direccion,'|') aux  from pensionGruas k
-                                     join pensiones l on k.idPension=l.idPension where k.idGrua=b.idConcesionario),'') Deposito,
+                                   isnull(b.concesionario,'') concesionario,
+                                    isnull(p.pension+'-'+p.direccion + '|','')+isnull((select string_agg(isnull(l.pension+'-','')+isnull(l.direccion,''),'|') aux  from [AsosiadosPension] k
+                                     join pensiones l on k.idPension=l.idPension where k.idAsociado=b.idConcesionario),'') Deposito,
                                     a.noEconomico,
                                     a.modelo,
                                     a.placas,

@@ -1735,14 +1735,10 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
             success: function (result) {
                 if (result.success) {
                     sitteg_success('Elemento guardado correctamente');
-                    alert("aca")
                     $('#VehiculoServiceModal').modal('hide');
                     var grid = $("#gridPrevioVehiculo").data("kendoGrid");
-                    alert("aqui")
                     if (result.data) {
-                        alert("si")
                         var dataArray = Array.isArray(result.data) ? result.data : [result.data];
-                        alert("no")
                         grid.dataSource.data(dataArray);
                     }
                 } else {

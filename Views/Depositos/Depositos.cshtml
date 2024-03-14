@@ -1,11 +1,12 @@
 @model GuanajuatoAdminUsuarios.Models.SolicitudDepositoModel
 @{
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+    var q = Model.IdTramo;
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 
 
-    var q = Model.idEntidad;
+   
 }
 
 <script>
@@ -836,6 +837,10 @@
             success: function (data) {
                 var TramosDropDown = $("#IdTramo").data("kendoDropDownList");
                 TramosDropDown.dataSource.data(data);
+                TramosDropDown.value("@q");
+                TramosDropDown.trigger("change");
+
+
                 hideLoading();
                 $("#IdTramo").trigger("onFinishLoading");
             },
@@ -968,6 +973,7 @@
 
         console.log("ready");
         EntidadDropDownChange2();
+        carreteraDropDownChange();
 
         $("#kilometroUbicacion").on("input", function () {
             var value = this.value;

@@ -535,7 +535,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					string query = @"
                             DECLARE @exist INT
-                            SET @exist = (SELECT COUNT(*) FROM vehiculosAccidente WHERE placa = @Placa AND idAccidente = @idAccidente AND estatus = 1)
+                            SET @exist = (SELECT COUNT(*) FROM vehiculosAccidente WHERE idVehiculo = @idVehiculo AND idAccidente = @idAccidente AND estatus = 1)
 
                             IF @exist = 0
                             BEGIN

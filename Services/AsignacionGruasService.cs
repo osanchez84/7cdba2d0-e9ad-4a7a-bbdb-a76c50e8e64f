@@ -49,7 +49,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                                 "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
 
-                                "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = @fechaSolicitud) AND DEP.estatusSolicitud IS NULL";
+                                "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,'01-01-1900')) AND DEP.estatusSolicitud IS NULL";
 
 
                         /*        " sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
@@ -297,7 +297,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                                                ISNULL(A.folio,'') folio ,
 		                                                                A.observaciones,
 		                                                                A.numeroInventario,
-		                                                                A.inventario,
+		                                                                inf.inventario,
 		                                                                inf.idInfraccion, 
 		                                                                inf.idVehiculo,
 		                                                                inf.idPersona,
@@ -347,7 +347,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
-
+                            solicitud.inventarios = searchReader["inventario"] is DBNull ? "":searchReader["inventario"].ToString();
 
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.IdDeposito = int.Parse(searchReader["idDeposito"].ToString());

@@ -248,7 +248,8 @@
                             <label>Asiento que ocupaba:</label>
                             <span>
                                 @(Html.Kendo().TextBoxFor(t => t.IdAsiento)
-                                    .HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number" })
+                                    .HtmlAttributes(new { style = "width: 100%", Id = "IdAsiento", type = "number", min = "1" })
+
                                     //.Spinners(true)
                                     )
                             </span>
@@ -434,5 +435,16 @@
             }
         });
     }
+    $(document).ready(function () {
+        $("#IdAsiento").on("keydown", function (e) {
+            // Obtener el código de la tecla presionada
+            var keyCode = e.keyCode || e.which;
 
+            // Verificar si la tecla presionada es el cero
+            if (keyCode === 48 || keyCode === 96) {
+                // Si se presionó el cero, prevenir su inserción
+                e.preventDefault();
+            }
+        });
+    });
 </script>

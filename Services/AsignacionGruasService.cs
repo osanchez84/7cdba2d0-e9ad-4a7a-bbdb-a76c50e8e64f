@@ -41,15 +41,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                 "ent.nombreEntidad, " +
                                 "tip_us.tipoUsuario, " +
                                 "ofi.nombre,ofi.apellidoPaterno,ofi.apellidoMaterno " +
-                                "From solicitudes AS sol INNER JOIN depositos DEP ON SOL.idSolicitud = DEP.idSolicitud " +
+                                "From solicitudes AS sol LEFT JOIN depositos DEP ON SOL.idSolicitud = DEP.idSolicitud " +
                                 "LEFT JOIN catMunicipios AS mun ON sol.idMunicipioUbicacion = mun.idMunicipio " +
                                 "LEFT JOIN catCarreteras AS car ON sol.idCarreteraUbicacion = car.idCarretera " +
                                 "LEFT JOIN catEntidades AS ent ON sol.idEntidadUbicacion = ent.idEntidad " +
                                 "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
                                 "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                                 "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
-                               " WHERE sol.folio = @folioBusqueda AND (@fechaSolicitud IS NULL OR sol.fechaSolicitud = @fechaSolicitud) AND DEP.estatusSolicitud = 3";
-                                
+
+                                "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud)) AND DEP.estatusSolicitud IS NULL";
+
 
                         /*        " sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
                                 " mun.municipio, " +

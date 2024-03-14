@@ -580,7 +580,7 @@ namespace GuanajuatoAdminUsuarios.Services
 								,ctg.TipoGrua
 								,csg.situacion
                                 FROM gruas g
-								INNER JOIN catClasificacionGruas ccg
+								LEFT JOIN catClasificacionGruas ccg
 								on g.idClasificacion = ccg.idClasificacionGrua
 								INNER JOIN catTipoGrua ctg
 								on g.idTipoGrua = ctg.IdTipoGrua

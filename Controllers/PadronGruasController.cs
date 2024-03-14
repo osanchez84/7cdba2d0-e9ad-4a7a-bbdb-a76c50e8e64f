@@ -112,15 +112,15 @@ namespace GuanajuatoAdminUsuarios.Controllers
         public IActionResult ajax_createGrua(Gruas2Model model)
         {
             //var model = json.ToObject<Gruas2Model>();
-            var errors = ModelState.Values.Select(s => s.Errors);
-            if (ModelState.IsValid)
-            {
+            //var errors = ModelState.Values.Select(s => s.Errors);
+            //if (ModelState.IsValid)
+            //{
                 int index = _gruasService.CrearGrua(model);
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 var listPadronGruas = _gruasService.GetAllGruas(idOficina);
                 return PartialView("_ListadoGruas", listPadronGruas);
-            }
-            return RedirectToAction("_ListadoGruas");
+            //}
+            //return RedirectToAction("_ListadoGruas");
         }
         /// <summary>
         /// Accion que redirige a la vista

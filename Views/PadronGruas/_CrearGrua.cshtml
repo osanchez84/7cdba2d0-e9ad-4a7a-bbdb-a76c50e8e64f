@@ -100,14 +100,14 @@
                                         .BindTo((SelectList)ViewBag.CatClasificacionGruas)
                                         .OptionLabel("-- Seleccione --")
                                         .Filter(FilterType.Contains)
-
+                                        .SelectedIndex(0)
                                         .HtmlAttributes(new { style = "width:100%;", id = "idClasificacion" })
                                         )
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <div class="controlForm">
-                                    <label>Tipo:<b>(obligatorio)</b></label>
+                                <div class="controlForm" id="divTipoGrua">
+                                    <label>Tipo <b>(obligatorio):</b></label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idTipoGrua")
                                         .BindTo((SelectList)ViewBag.CatTipoGruas)
@@ -119,8 +119,8 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <div class="controlForm">
-                                    <label>Situación:<b>(obligatorio)</b></label>
+                                <div class="controlForm" id="divSituacion">
+                                    <label>Situación <b>(obligatorio):</b></label>
                                     @(Html.Kendo().DropDownList()
                                         .Name("idSituacion")
                                         .BindTo((SelectList)ViewBag.CatSituacionGruas)
@@ -158,7 +158,9 @@
 </div>
 <script>
     function crearGrua() {
+        console.log(1);
         var formData = $("#frmCrearGrua").serialize();
+        console.log(2);
         var isValid = true;
         var controlsValidate = [];
         controlsValidate.push({ 'controlName': 'capacidad' });
@@ -167,15 +169,25 @@
         controlsValidate.push({ 'controlName': 'placas' });
         controlsValidate.push({ 'controlName': 'idTipoGrua' });
         controlsValidate.push({ 'controlName': 'idSituacion' });
+        controlsValidate.push({ 'controlName': 'idConcesionario' });
+
+        console.log(3);
+        
 
         // INPUTS
         if (!isControlsValid(controlsValidate)) { isValid = false; }
 
         if (!isValid) {
+
+            $('#divConcesionario').children('span').addClass("errorData");
+            $('#divTipoGrua').children('span').addClass("errorData");
+            $('#divSituacion').children('span').addClass("errorData");
+            console.log('si');
             sitteg_warning('Hacen falta datos o existen datos incorrectos, favor de verificar.');
             return;
         }
         showLoading();
+        console.log(4);
         $.ajax({
             url: '@Url.Action("ajax_createGrua")',
             type: 'POST',
@@ -189,10 +201,10 @@
                 window.location.href = "/PadronGruas/Index"; //will redirect to your blog page (an ex: blog.html)
                 }, 2000);
             },
-            error: function (xhr, status) 
+            error: function (e) 
             {
-                var errmsg = xhr.responseText;
-                console.log(errmsg)
+                //var errmsg = xhr.responseText;
+                console.log(e)
                 sitteg_warning('Lo sentimos, ha ocurrido un error.');
                 hideLoading();
             }

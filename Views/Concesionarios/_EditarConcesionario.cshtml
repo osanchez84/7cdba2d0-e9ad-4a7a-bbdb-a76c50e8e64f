@@ -51,30 +51,36 @@
    @Html.HiddenFor(m=> m.idConcesionario)
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBoxFor(m=> m.nombre)
-                .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
-                .Placeholder("Ingresa un nombre")
-                .HtmlAttributes(new { style = "width: 100%" })
+            @(
+                Html.Kendo().TextBoxFor(m => m.nombre)
+                        .Label(l => l.Content("Nombre <b>(obligatorio)</b>:"))
+                        .Placeholder("Ingresa un nombre")
+                        .HtmlAttributes(new { style = "width: 100%" })
 
-                )
+                        )
         </div>
     </div>
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
             <label for="shipTo">Delegación <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownListFor(f=>f.idDelegacion).Filter(FilterType.Contains)
-                .BindTo((SelectList)ViewBag.CatDelegaciones)
-                .OptionLabel("-- Seleccione --")
-                .HtmlAttributes(new { style = "width:100%;" }))
+            @(
+                Html.Kendo().DropDownListFor(f => f.idDelegacion).Filter(FilterType.Contains)
+                        .BindTo((SelectList)ViewBag.CatDelegaciones)
+                        .OptionLabel("-- Seleccione --")
+                        .Events(e => e.Change("municipiosDropDownChangeEditar"))
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacionesEditar" })
+                )
         </div>
     </div>
     <div class="col-12 col-md-6">
         <div class="controlForm my-3">
             <label for="shipTo">Municipio <b>(obligatorio):</b> </label>
-            @(Html.Kendo().DropDownListFor(f => f.idMunicipio).Filter(FilterType.Contains)
-                .BindTo((SelectList)ViewBag.CatMunicipios)
-                .OptionLabel("-- Seleccione --")
-                .HtmlAttributes(new { style = "width:100%;" }))
+            @(
+                Html.Kendo().DropDownListFor(f => f.idMunicipio).Filter(FilterType.Contains)
+                        .BindTo((SelectList)ViewBag.CatMunicipios)
+                        .OptionLabel("-- Seleccione --")
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipiosEditar" })
+                )
         </div>
     </div>
     <div class="col-12 col-md-6">
@@ -132,8 +138,8 @@
 
         // DROP DOWN LIST
         controlsValidate = [];
-        controlsValidate.push({ 'controlName': 'idDelegacion' });
-        controlsValidate.push({ 'controlName': 'idMunicipio' });
+        controlsValidate.push({ 'controlName': 'ddlDelegacionesEditar' });
+        controlsValidate.push({ 'controlName': 'ddlMunicipiosEditar' });
         if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
         if (!isValid) {
@@ -160,4 +166,6 @@
             }
         });
     }
+
+    
 </script>

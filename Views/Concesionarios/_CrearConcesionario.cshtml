@@ -52,6 +52,7 @@
             .Name("idDelegacion")
                 .BindTo((SelectList)ViewBag.CatDelegaciones)
                 .OptionLabel("-- Seleccione --")
+                .Events(e => e.Change("municipiosDropDownChangeCrear"))
                 .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegacionesCrear" }))
         </div>
     </div>
@@ -63,8 +64,8 @@
                 .BindTo((SelectList)ViewBag.CatMunicipios)
                 .OptionLabel("-- Seleccione --")
                 .Filter(FilterType.Contains)
-
                 .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipio" }))
+
         </div>
     </div>
     <div class="col-12 col-md-6">
@@ -149,4 +150,6 @@
             }
         });
     }
+
+   
 </script>

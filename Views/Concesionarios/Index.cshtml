@@ -77,23 +77,26 @@
         <br/>
         <div id="concesionarioForm">
         <div class="row align-items-end px-4">
-            <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
-                <label>Municipio</label>
-                    @(Html.Kendo().DropDownList()
-                        .Name("idMunicipio")
-                        .BindTo((SelectList)ViewBag.CatMunicipios)
-                        .OptionLabel("-- Seleccione --")
-                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipios" })
-                        .Filter(FilterType.Contains))
-                </div>
+           
             <div class="controlForm  my-3 col-12 col-md-6 col-lg-3">
                     <label>Delegación:</label>
                     @(Html.Kendo().DropDownList()
                         .Name("idDelegacion")
                         .BindTo((SelectList)ViewBag.CatDelegaciones)
                         .OptionLabel("-- Seleccione --")
-
+                        .Events(e => e.Change("municipiosDropDownChange"))
                         .HtmlAttributes(new { style = "width:100%;", id = "ddlDelegaciones" })
+                        .Filter(FilterType.Contains))
+
+                </div>
+
+                <div class="controlForm my-3 col-12 col-md-6 col-lg-3">
+                    <label>Municipio</label>
+                    @(Html.Kendo().DropDownList()
+                        .Name("idMunicipio")
+                        .BindTo((SelectList)ViewBag.CatMunicipios)
+                        .OptionLabel("-- Seleccione --")
+                        .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipios" })
                         .Filter(FilterType.Contains))
                 </div>
 
@@ -233,4 +236,65 @@
                 }
             });
         }
+
+
+    function municipiosDropDownChange() {
+        var carreteraDDValue = $("#ddlDelegaciones").data("kendoDropDownList").value();
+        console.log("IDK", carreteraDDValue)
+        showLoading();
+        $.ajax({
+            url: "/Concesionarios/Municipios_Drop",
+            type: "POST",
+            data: { idDelegacion: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#ddlMunicipios").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("EE", error)
+                hideLoading();
+            }
+        });
+    }
+
+    function municipiosDropDownChangeCrear() {
+        var carreteraDDValue = $("#ddlDelegacionesCrear").data("kendoDropDownList").value();
+        console.log("IDK", carreteraDDValue)
+        showLoading();
+        $.ajax({
+            url: "/Concesionarios/Municipios_Drop",
+            type: "POST",
+            data: { idDelegacion: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#ddlMunicipio").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("EE", error)
+                hideLoading();
+            }
+        });
+    }
+
+    function municipiosDropDownChangeEditar() {
+        var carreteraDDValue = $("#ddlDelegacionesEditar").data("kendoDropDownList").value();
+        console.log("IDK", carreteraDDValue)
+        showLoading();
+        $.ajax({
+            url: "/Concesionarios/Municipios_Drop",
+            type: "POST",
+            data: { idDelegacion: carreteraDDValue },
+            success: function (data) {
+                var TramosDropDown = $("#ddlMunicipiosEditar").data("kendoDropDownList");
+                TramosDropDown.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("EE", error)
+                hideLoading();
+            }
+        });
+    }
 </script>

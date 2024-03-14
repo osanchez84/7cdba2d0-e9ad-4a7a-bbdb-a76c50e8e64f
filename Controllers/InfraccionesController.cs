@@ -581,7 +581,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var placasEd = HttpContext.Session.GetString("placasEdit");
                 vehiculo.placas = placasEd;
                 vehiculo.tarjeta = HttpContext.Session.GetString("tarjetaEdit");
-
                 var auxas = HttpContext.Session.GetString("vigenciaTarjetaEdit");
 
                 DateTime? test2 = null;
@@ -596,9 +595,6 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 }
 
                 vehiculo.vigenciaTarjeta = test2;
-
-
-
                 vehiculo.motor = HttpContext.Session.GetString("motorEdit");
                 vehiculo.numeroEconomico = HttpContext.Session.GetString("numeroEconomicoEdit");
                 vehiculo.otros = HttpContext.Session.GetString("otrosEdit");

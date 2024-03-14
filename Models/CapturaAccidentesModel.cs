@@ -227,7 +227,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public int IdEstadoVictima { get; set; }
         public int IdHospital { get; set; }
         public int IdInstitucionTraslado { get; set; }
-        public int IdAsiento { get; set; }
+        public int? IdAsiento { get; set; }
         public int IdCinturon { get; set; }
         public float Latitud { get; set; }
         public float Longitud { get; set; }

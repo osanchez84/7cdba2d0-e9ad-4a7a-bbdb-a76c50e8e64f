@@ -176,7 +176,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso, idDependenciaGenera = @idDependenciaGenera, imagenDeposito = @imagenDeposito WHERE idDeposito = @idDeposito";
+                    string query = "UPDATE depositos SET fechaIngreso = @fechaIngreso, idDependenciaGenera = @idDependenciaGenera, imagenDeposito = @imagenDeposito, estatusSolicitud = 4 WHERE idDeposito = @idDeposito";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@fechaIngreso", model.fechaIngreso);

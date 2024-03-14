@@ -1559,6 +1559,12 @@ namespace GuanajuatoAdminUsuarios.Services
 								Convert.ToInt32(reader["idVehiculo"]) :
 								0;
 							involucrado.IdPersona = Convert.ToInt32(reader["idPersona"].ToString());
+							involucrado.IdAsiento = Convert.ToInt32(reader["idAsiento"].ToString());
+							if (involucrado.IdAsiento == 0)
+							{
+								involucrado.IdAsiento = null; 
+							}
+
 							involucrado.nombre = reader["nombre"].ToString();
 							involucrado.apellidoPaterno = reader["apellidoPaterno"].ToString();
 							involucrado.apellidoMaterno = reader["apellidoMaterno"].ToString();
@@ -1582,9 +1588,20 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.Modelo = reader["modelo"].ToString();
 							involucrado.Propietario = $"{reader["propietarioNombre"]} {reader["apPaternoPropietario"]} {reader["apMaternoPropietario"]}";					
 							involucrado.Correo = reader["correo"].ToString();
-							involucrado.FormatDateNacimiento = reader.GetDateTime(reader.GetOrdinal("fechaNacimiento")).ToString("dd/MM/yyyy");
-							involucrado.IdAsiento = Convert.ToInt32(reader["idAsiento"].ToString());
-							involucrado.IdInstitucionTraslado = Convert.ToInt32(reader["idInstitucionTraslado"].ToString());
+                            int fechaNacimientoIndex = reader.GetOrdinal("fechaNacimiento");
+
+                            // Verificar si el valor del campo es DBNull.Value
+                            if (!reader.IsDBNull(fechaNacimientoIndex))
+                            {
+                                DateTime fechaNacimiento = reader.GetDateTime(fechaNacimientoIndex);
+                                involucrado.FormatDateNacimiento = fechaNacimiento.ToString("dd/MM/yyyy");
+                            }
+                            else
+                            {
+                                involucrado.FormatDateNacimiento = ""; // O asignar cualquier otro valor predeterminado
+                            }
+
+                            involucrado.IdInstitucionTraslado = Convert.ToInt32(reader["idInstitucionTraslado"].ToString());
 							involucrado.IdTipoInvolucrado = Convert.ToInt32(reader["idTipoInvolucrado"].ToString());
 							involucrado.IdEstadoVictima = Convert.ToInt32(reader["idEstadoVictima"].ToString());
 							involucrado.IdHospital = Convert.ToInt32(reader["idHospital"].ToString());
@@ -2186,7 +2203,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					// Verificar si IdInvolucrado no es nulo y si existe en la tabla
 					if (IdInvolucrado != 0)
 					{
-						string queryExistencia = "SELECT COUNT(*) FROM involucradosAccidente WHERE IdInvolucrado = @IdInvolucrado";
+						string queryExistencia = "SELECT COUNT(*) FROM involucradosAccidente WHERE IdInvolucradosAccidente = @IdInvolucrado";
 						SqlCommand commandExistencia = new SqlCommand(queryExistencia, connection);
 						commandExistencia.Parameters.AddWithValue("@IdInvolucrado", IdInvolucrado);
 						int count = (int)commandExistencia.ExecuteScalar();
@@ -2194,7 +2211,7 @@ namespace GuanajuatoAdminUsuarios.Services
 						if (count > 0)
 						{
 							// Si existe, ejecutar un UPDATE en lugar de un INSERT
-							string queryUpdate = @"UPDATE involucradosAccidente SET idPersona = @idPersona, idAccidente = @idAccidente, idVehiculo = @idVehiculoInvolucrado WHERE IdInvolucrado = @IdInvolucrado";
+							string queryUpdate = @"UPDATE involucradosAccidente SET idPersona = @idPersona, idAccidente = @idAccidente, idVehiculo = @idVehiculoInvolucrado WHERE IdInvolucradosAccidente = @IdInvolucrado";
 							SqlCommand commandUpdate = new SqlCommand(queryUpdate, connection);
 							commandUpdate.Parameters.AddWithValue("@idPersona", IdPersona);
 							commandUpdate.Parameters.AddWithValue("@idAccidente", idAccidente);
@@ -2288,8 +2305,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         comandoUpdate.Parameters.AddWithValue("@idEstadoVictima", model.IdEstadoVictima);
                         comandoUpdate.Parameters.AddWithValue("@idHospital", model.IdHospital);
                         comandoUpdate.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
-                        comandoUpdate.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
-                        comandoUpdate.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
+						comandoUpdate.Parameters.AddWithValue("@idAsiento", model.IdAsiento ?? 0);
+						comandoUpdate.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
                         comandoUpdate.Parameters.AddWithValue("@estatus", 1);
 
                         result = comandoUpdate.ExecuteNonQuery();
@@ -2305,8 +2322,8 @@ namespace GuanajuatoAdminUsuarios.Services
                         comandoInsert.Parameters.AddWithValue("@idEstadoVictima", model.IdEstadoVictima);
                         comandoInsert.Parameters.AddWithValue("@idHospital", model.IdHospital);
                         comandoInsert.Parameters.AddWithValue("@idInstitucionTraslado", model.IdInstitucionTraslado);
-                        comandoInsert.Parameters.AddWithValue("@idAsiento", model.IdAsiento);
-                        comandoInsert.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
+						comandoInsert.Parameters.AddWithValue("@idAsiento", model.IdAsiento ?? 0);
+						comandoInsert.Parameters.AddWithValue("@idCinturon", model.IdCinturon);
                         comandoInsert.Parameters.AddWithValue("@estatus", 1);
 
                         result = comandoInsert.ExecuteNonQuery();
@@ -2418,7 +2435,11 @@ namespace GuanajuatoAdminUsuarios.Services
 							involucrado.IdEstadoVictima = reader["idEstadoVictima"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idEstadoVictima"].ToString());
 							involucrado.IdInstitucionTraslado = reader["idInstitucionTraslado"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInstitucionTraslado"].ToString());
 							involucrado.IdHospital = reader["idHospital"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idHospital"].ToString());
-							involucrado.IdAsiento = reader["idAsiento"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idAsiento"].ToString());
+							involucrado.IdAsiento = Convert.ToInt32(reader["idAsiento"].ToString());
+							if (involucrado.IdAsiento == 0)
+							{
+								involucrado.IdAsiento = null;
+							}
 							involucrado.IdCinturon = reader["idCinturon"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idCinturon"].ToString());
 							involucrado.nombre = reader["nombre"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["nombre"].ToString());
 							involucrado.apellidoPaterno = reader["apellidoPaterno"] == System.DBNull.Value ? string.Empty : Convert.ToString(reader["apellidoPaterno"].ToString());

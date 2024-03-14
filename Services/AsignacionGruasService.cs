@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     string SQL = "SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
-                                "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
+                                "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension,sol.idPropietarioGrua, " +
                                 "mun.municipio, " +
                                 "car.carretera, " +
                                 "ent.nombreEntidad, " +

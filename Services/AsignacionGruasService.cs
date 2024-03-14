@@ -35,7 +35,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                 {
                     string SQL = "SELECT sol.idSolicitud,sol.folio,sol.fechaSolicitud,sol.idMunicipioUbicacion,sol.idCarreteraUbicacion, " + "" +
-                                "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
+                                "sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension,sol.idPropietarioGrua, " +
                                 "mun.municipio, " +
                                 "car.carretera, " +
                                 "ent.nombreEntidad, " +
@@ -49,7 +49,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                                 "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
 
-                                "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud)) AND DEP.estatusSolicitud IS NULL";
+                                "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = @fechaSolicitud) AND DEP.estatusSolicitud IS NULL";
 
 
                         /*        " sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +

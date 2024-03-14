@@ -115,11 +115,15 @@
         <div class="row">
             <div class="col-12 col-md-7">
                 <div class="controlForm my-3 selecciondeFecha">
-                    <label>Fecha Ingreso (obligatorio):</label>
+                    <label>Fecha Ingreso(obligatorio):</label>
                         @(Html.Kendo().DatePickerFor(t => t.fechaIngreso).Max(DateTime.Now)
                         .Label(l => l.Content("Fecha Ingreso:"))
                             .Value("")
                             .Culture("es-ES")
+                            .Events(e =>
+                            {
+                                e.Change("cambiaFecha");
+                            })
                         .Format("dd/MM/yyyy") 
                         .HtmlAttributes(new { style = "width: 45%", id="ingreso" })
                         )            
@@ -137,7 +141,7 @@
                             {
                                 style = "width: 100%",
                                 required = "required",
-                                id="horaIngreso"
+                                id= "horaIngreso"
                             })
                             )
                     </div>
@@ -285,6 +289,30 @@
                 hideLoading();
             }
         });
+    }
+    function cambiaFecha() {
+        var timepickerControl = $("#horaIngreso").data("kendoTimePicker");
+        var varFechaInfraccion = kendo.toString(this.value(), 'd');
+        var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+        var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
+        varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
+        let date = new Date();
+
+        if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {
+            timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+
+            timepickerControl.bind("change", function (e) {
+                var hora = timepickerControl.value();
+                if (hora != null && hora.getHours() > date.getHours()) {
+                    if (hora.getMinutes() > date.getMinutes()) {
+                        timepickerControl.value("");
+                    }
+                }
+            });
+        } else {
+            timepickerControl.max("23:59");
+        }
     }
 
 </script>

@@ -86,8 +86,12 @@ namespace GuanajuatoAdminUsuarios.Models
         public string solicitanteAp { get; set; }
 
         public string solicitanteAm { get; set; }
+		public string solicitanteColonia { get; set; }
+		public string solicitanteCalle { get; set; }
+		public string solicitanteNumero { get; set; }
+		
 
-        public int IdVehiculo { get; set; }
+		public int IdVehiculo { get; set; }
 
         public int IdInfraccion { get; set; }
         public int SolicitudEstatus { get; set; }
@@ -292,7 +296,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string propietarioNombre { get; set; }
         public string propietarioApellidoPaterno{ get; set; }
         public string propietarioApellidoMaterno { get; set; }
-        public string fullPropietario
+		public string CURP { get; set; }
+
+		public string fullPropietario
         {
             get
             {

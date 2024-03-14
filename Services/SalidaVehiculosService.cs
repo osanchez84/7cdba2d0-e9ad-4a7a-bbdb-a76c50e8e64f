@@ -115,8 +115,8 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     const string SqlTransact =
                                             @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,
-                                            v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,
-                                            mv.marcaVehiculo,tv.tipoVehiculo,c.color,
+                                            v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,v.serie,
+                                            mv.marcaVehiculo,tv.tipoVehiculo,c.color,smv.nombreSubmarca,
                                             per.nombre,per.apellidoPaterno,per.apellidoMaterno,
                                             sol.solicitanteNombre,sol.solicitanteAp,sol.solicitanteAm,
                                             sol.idPropietarioGrua,sol.idEvento,sol.fechaSolicitud,
@@ -127,6 +127,7 @@ namespace GuanajuatoAdminUsuarios.Services
 										    FROM depositos AS d
                                             LEFT JOIN vehiculos AS v ON d.idVehiculo = v.idVehiculo
                                             LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo
+											LEFT JOIN catSubmarcasVehiculos AS smv ON smv.idSubmarca = v.idSubmarca
                                             LEFT JOIN catTiposVehiculo AS tv ON tv.idTipoVehiculo = v.idTipoVehiculo
                                             LEFT JOIN catColores AS c ON c.idColor = v.idColor
                                             LEFT JOIN personas AS per ON per.idPersona = v.idPersona
@@ -154,6 +155,10 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.tipoVehiculo = reader["tipoVehiculo"].ToString();
                             model.marca = reader["marcaVehiculo"].ToString();
                             model.modelo = reader["modelo"].ToString();
+                            model.serie = reader["serie"].ToString();
+                            model.submarca = reader["nombreSubmarca"].ToString();
+
+
                             model.color = reader["color"].ToString();
                             model.propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
                             model.solicitante = $"{reader["solicitanteNombre"]} {reader["solicitanteAp"]} {reader["solicitanteAm"]}";
@@ -202,13 +207,14 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact =
                                             @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,munDep.municipio,car.carretera,tra.tramo,d.km,d.depenColonia,d.depenCalle
 											,d.depenNumero,d.depenInterseccion,
-                                            v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,
-                                            mv.marcaVehiculo,tv.tipoVehiculo,c.color,
+                                            v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,v.serie,
+                                            mv.marcaVehiculo,tv.tipoVehiculo,c.color,smv.nombreSubmarca,
                                             per.nombre,per.apellidoPaterno,per.apellidoMaterno,cde.nombreDependencia,
 											ti.nombre AS motivoIngreso                                              
 										    FROM depositos AS d
                                             LEFT JOIN vehiculos AS v ON d.idVehiculo = v.idVehiculo
                                             LEFT JOIN catMarcasVehiculos AS mv ON v.idMarcaVehiculo = mv.idMarcaVehiculo
+										    LEFT JOIN catSubmarcasVehiculos AS smv ON v.idSubmarca = smv.idSubmarca
                                             LEFT JOIN catTiposVehiculo AS tv ON tv.idTipoVehiculo = v.idTipoVehiculo
                                             LEFT JOIN catColores AS c ON c.idColor = v.idColor
                                             LEFT JOIN personas AS per ON per.idPersona = v.idPersona
@@ -233,6 +239,8 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.tipoVehiculo = reader["tipoVehiculo"].ToString();
                             model.marca = reader["marcaVehiculo"].ToString();
                             model.modelo = reader["modelo"].ToString();
+                            model.serie = reader["serie"].ToString();
+                            model.submarca = reader["nombreSubmarca"].ToString();
                             model.color = reader["color"].ToString();
                             model.propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";
                             model.motivoIngreso = reader["motivoIngreso"].ToString();

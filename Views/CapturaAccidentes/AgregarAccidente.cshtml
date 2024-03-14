@@ -271,23 +271,19 @@
     function cambiaFecha() {
         var timepickerControl = $("#Hora").data("kendoTimePicker");
         var fechaSeleccionada = new Date(this.value());
-        var horaSeleccionada = timepickerControl.value(); // Obtener la hora seleccionada del TimePicker
+        var horaSeleccionada = timepickerControl.value(); 
 
-        // Obtener la fecha actual
         var fechaActual = new Date();
 
-        // Verificar si la fecha seleccionada es la fecha actual
         if (fechaSeleccionada.getDate() == fechaActual.getDate() &&
             fechaSeleccionada.getMonth() == fechaActual.getMonth() &&
             fechaSeleccionada.getFullYear() == fechaActual.getFullYear()) {
 
-            // Obtener la hora actual
             var horaActual = fechaActual.getHours() * 60 + fechaActual.getMinutes();
 
-            // Si la hora seleccionada es posterior a la hora actual, limpiar la selección
             if (horaSeleccionada != null && horaSeleccionada.getHours() * 60 + horaSeleccionada.getMinutes() > horaActual) {
                 console.log("La hora seleccionada es posterior a la hora actual. Limpiando selección.");
-                timepickerControl.value(""); // Limpiar la hora seleccionada
+                timepickerControl.value("");
             }
         }
 

@@ -98,7 +98,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				PdfPTable nested = new PdfPTable(1);
 				nested.DefaultCell.Border = Rectangle.NO_BORDER;
 				nested.AddCell(FieldCellBox("Folio: ", ModelTransitoTransporte.Folio));
-				nested.AddCell(FieldCellBox("Fecha: ", ModelTransitoTransporte.FechaSolicitud.ToString("dd/MM/yyyy")));
+				nested.AddCell(FieldCellBox("Fecha: ", ModelTransitoTransporte.FechaSolicitud != DateTime.MinValue ? ModelTransitoTransporte.FechaSolicitud.ToString("dd/MM/yyyy HH:mm") : "-"));
 				nested.AddCell(FieldCellBox("Descripción del evento: ", ModelTransitoTransporte.evento));
 				nested.AddCell(FieldCellBox("Tipo de usuario: ", ModelTransitoTransporte.tipoUsuario));
 				nested.AddCell(FieldCellBox("Tipo de vehículo: ", ModelTransitoTransporte.tipoVehiculo));
@@ -132,7 +132,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				string nombreSolicitante = $"{ModelTransitoTransporte.solicitanteNombre} {ModelTransitoTransporte.solicitanteAp} {ModelTransitoTransporte.solicitanteAm}";
 				nested.AddCell(FieldCellBox("Nombre del solicitante: ", (nombreSolicitante != ""? nombreSolicitante : "- - -")));
 				nested.AddCell(FieldCellBox("", ""));
-				nested.AddCell(FieldCellBox("Domicilio: ", $"{ModelTransitoTransporte.calle}, {ModelTransitoTransporte.numero}, {ModelTransitoTransporte.colonia}, {ModelTransitoTransporte.municipio}"));
+				nested.AddCell(FieldCellBox("Domicilio: ", $"{ModelTransitoTransporte.solicitanteCalle}, {ModelTransitoTransporte.solicitanteNumero}, {ModelTransitoTransporte.solicitanteColonia}, {ModelTransitoTransporte.municipio}"));
 				nested.AddCell("");
 				PdfPCell nesthousing = new PdfPCell(nested);
 				nesthousing.Border = Rectangle.NO_BORDER;
@@ -236,7 +236,11 @@ namespace GuanajuatoAdminUsuarios.Services
 				nested.AddCell(FieldCellBox("Municipio: ", ModelTransitoTransporte.municipio));
 				nested.AddCell(FieldCellBox("Pensión: ", ModelTransitoTransporte.pension));
 				nested.AddCell(FieldCellBox("Intersección: ", ModelTransitoTransporte.interseccion));
-				nested.AddCell(FieldCellBox("Kilómetro: ", ModelTransitoTransporte.Km));
+				if (decimal.TryParse(ModelTransitoTransporte.Km, out decimal kmValue))
+				{
+					string formattedKm = kmValue.ToString("N2");
+					nested.AddCell(FieldCellBox("Kilómetro: ", formattedKm));
+				}
 				nested.AddCell(FieldCellEmptyBox());
 				nested.AddCell("");
 				PdfPCell nesthousing = new PdfPCell(nested);
@@ -281,9 +285,9 @@ namespace GuanajuatoAdminUsuarios.Services
 				nested.DefaultCell.Border = Rectangle.NO_BORDER;
 				nested.AddCell(FieldCellTitleBox("Vehículo"));
 				nested.AddCell(FieldCellBox("Placas: ", ModelTransitoTransporte.Placa));
-				nested.AddCell(FieldCellBox("Serie: ", ModelTransitoTransporte.serie));
-				nested.AddCell(FieldCellBox("Marca: ", ModelTransitoTransporte.marca));
-				nested.AddCell(FieldCellBox("Submarca: ", ModelTransitoTransporte.submarca));
+				nested.AddCell(FieldCellBox("Serie: ", ModelTransitoTransporte.Serie));
+				nested.AddCell(FieldCellBox("Marca: ", ModelTransitoTransporte.marcaVehiculo));
+				nested.AddCell(FieldCellBox("Submarca: ", ModelTransitoTransporte.nombreSubmarca));
 				nested.AddCell(FieldCellBox("Modelo: ", ModelTransitoTransporte.modelo));
 				nested.AddCell("");
 				PdfPCell nesthousing = new PdfPCell(nested);
@@ -311,8 +315,8 @@ namespace GuanajuatoAdminUsuarios.Services
 				PdfPTable nested = new PdfPTable(1);
 				nested.DefaultCell.Border = Rectangle.NO_BORDER;
 				nested.AddCell(FieldCellTitleBox("Propietario"));
-				nested.AddCell(FieldCellBox("Nombre: ", ModelTransitoTransporte.Placa));
-				nested.AddCell(FieldCellBox("CURP/RFC: ", ModelTransitoTransporte.serie));
+				nested.AddCell(FieldCellBox("Nombre: ", ModelTransitoTransporte.fullPropietario));
+				nested.AddCell(FieldCellBox("CURP/RFC: ", ModelTransitoTransporte.CURP));
 				nested.AddCell(FieldCellEmptyBox());
 				nested.AddCell(FieldCellEmptyBox());
 				nested.AddCell(FieldCellEmptyBox());
@@ -438,9 +442,9 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				PdfPTable nested = new PdfPTable(1);
 				nested.DefaultCell.Border = Rectangle.NO_BORDER;
-				nested.AddCell(FieldCellBox("Arribo: ", ModelTransitoTransporte.FechaArribo.ToString("dd/MM/yyyy HH:mm")));
-				nested.AddCell(FieldCellBox("Inicio: ", ModelTransitoTransporte.FechaInicio.ToString("dd/MM/yyyy HH:mm")));
-				nested.AddCell(FieldCellBox("Término: ", ModelTransitoTransporte.FechaFinal.ToString("dd/MM/yyyy HH:mm")));
+				nested.AddCell(FieldCellBox("Arribo: ", ModelTransitoTransporte.FechaArribo != DateTime.MinValue ? ModelTransitoTransporte.FechaArribo.ToString("dd/MM/yyyy HH:mm") : "-"));
+				nested.AddCell(FieldCellBox("Inicio: ", ModelTransitoTransporte.FechaInicio != DateTime.MinValue ? ModelTransitoTransporte.FechaInicio.ToString("dd/MM/yyyy HH:mm") : "-"));
+				nested.AddCell(FieldCellBox("Término: ", ModelTransitoTransporte.FechaFinal != DateTime.MinValue ? ModelTransitoTransporte.FechaFinal.ToString("dd/MM/yyyy HH:mm") : "-"));
 				nested.AddCell(FieldCellBox("Tiempo: ", ModelTransitoTransporte.minutosManiobra));
 				nested.AddCell(FieldCellEmptyBox());
 				nested.AddCell("");

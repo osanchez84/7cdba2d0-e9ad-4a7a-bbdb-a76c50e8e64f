@@ -38,7 +38,38 @@
 			}, 200);
 		}
 	});
+	function validacionHora(){
+		var val = $("#dateTime").val()
+		var element =$("#dateTime").data("kendoTimePicker")
+		var fecha = $("#fechaInfraccion").val()
+		var auxiliarFecha = new Date(Date.now())
+		var fechaActual = new Date(auxiliarFecha.getFullYear(),auxiliarFecha.getMonth(),auxiliarFecha.getDate())
+		var splitFecha = fecha.split('/')
+		var fechaSeleccion = fecha == "" ? new Date(1910,0,1):new Date(parseInt(splitFecha[2]),parseInt(splitFecha[1])-1,parseInt(splitFecha[0])) 
+		var horaActual = (auxiliarFecha.getHours()*100) + auxiliarFecha.getMinutes()
+		
+		if (val){
+			var can = val.indexOf(':') > -1
+			if (can){
+				var horaAjustada = val.replace(':')
+				var horaSeleccion = parseInt(horaAjustada)
+				if(fechaActual > fechaSeleccion){
 
+				}else{
+					if(horaActual < horaSeleccion){
+							element.value("")
+						element.trigger("change")
+					}
+				}
+
+			}else{
+				element.value("")
+				element.trigger("change")
+			}
+			console.log(val)
+
+		}
+	}
 
 	function DataFilterCatalogTramo(){
 		
@@ -209,7 +240,8 @@
 										
 										<label class="text-muted">Hora:</label>
 										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)											
-											.Label(l => l.Content("Hora:"))																			
+											.Label(l => l.Content("Hora:"))	
+											.Events(s=>s.Change("validacionHora"))
 											.Format("HH:mm")
 											.Culture("es-ES")
 											.Value("")

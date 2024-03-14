@@ -279,6 +279,53 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+        public List<CatCarreterasModel> GetCarreterasParaIngreso(int idMunicipio)
+        {
+            //
+            List<CatCarreterasModel> ListaCarreteras = new List<CatCarreterasModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(@"
+                                                        SELECT DISTINCT catCar.idCarretera, catCar.carretera
+                                                        FROM catCarreteras catCar 
+                                                        LEFT JOIN catMunicipios mun ON mun.idOficinaTransporte = catCar.idOficinaTransporte
+                                                        WHERE (mun.idMunicipio = @idMunicipio OR catCar.idOficinaTransporte = 1) AND mun.idEntidad = 11;
+                                                        ", connection);
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)idMunicipio ?? DBNull.Value;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatCarreterasModel carretera = new CatCarreterasModel();
+                            carretera.IdCarretera = Convert.ToInt32(reader["idCarretera"].ToString());
+                            carretera.Carretera = reader["carretera"].ToString();                          
+                            ListaCarreteras.Add(carretera);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListaCarreteras;
+
+
+        }
+
 
 
     }

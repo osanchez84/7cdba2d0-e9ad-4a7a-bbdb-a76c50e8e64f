@@ -87,13 +87,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(catMunicipiosService.GetMunicipiosPorEntidad(CatEntidadesModel.GUANAJUATO), "IdMunicipio", "Municipio");
             return Json(result);
         }
-        public JsonResult Carreteras_Drop([FromServices] ICatCarreterasService catCarreterasService)
+        public JsonResult Carreteras_Drop([FromServices] ICatCarreterasService catCarreterasService, int idMunicipio)
         {
-            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
-
-            var result = new SelectList(catCarreterasService.GetCarreterasPorDelegacion2(idOficina), "IdCarretera", "Carretera");
+            var result = new SelectList(catCarreterasService.GetCarreterasParaIngreso(idMunicipio), "IdCarretera", "Carretera");
             return Json(result);
         }
+
 
         public JsonResult Tramos_Drop([FromServices] ICatTramosService catTramosService, int carreteraDDValue)
         {

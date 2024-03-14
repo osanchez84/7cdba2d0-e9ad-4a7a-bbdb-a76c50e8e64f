@@ -160,13 +160,21 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.IdEvento.Equals(null) || model.IdEvento == 0 ? "" : " AND sol.idEvento = @IdEvento ";
 
 
-                    if (model.FechaInicio != DateTime.MinValue || model.FechaFin != DateTime.MaxValue)
+                    if (model.FechaInicio != DateTime.MinValue && model.FechaFin != DateTime.MinValue)
                     {
                         condiciones += @" AND (CONVERT(VARCHAR,sol.fechasolicitud,112)
                                            BETWEEN CONVERT(VARCHAR,ISNULL(@FechaIngreso,sol.fechasolicitud),112)
                                             AND CONVERT(VARCHAR,ISNULL(@FechaIngresoFin,sol.fechasolicitud),112)) ";
-                    }                   
-                        condiciones += model.Evento.IsNullOrEmpty() ? "" : "UPPER(t.evento) = UPPER(@Evento)";
+                    }
+
+                    //if (!model.Evento.IsNullOrEmpty())
+                    //{
+                    //    if (model.Evento.ToUpper().Contains("SELECCIONE EVENTO"))
+                    //    {
+                    //        condiciones += model.Evento.IsNullOrEmpty() ? "" : "UPPER(t.evento) = UPPER(@Evento)";
+                    //    }
+                    //}
+                    
                     if (string.IsNullOrEmpty(condiciones.Trim()))
                     {
                         condiciones = "";
@@ -201,7 +209,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
                     command.Parameters.Add(new SqlParameter("@IdGrua", SqlDbType.Int)).Value = (object)model.IdGrua ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdEvento", SqlDbType.NVarChar)).Value = (object)model.Evento != null ? model.Evento.ToUpper() : DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@IdEvento", SqlDbType.Int)).Value = (object)model.IdEvento != null ? model.IdEvento : DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (model.FechaInicio == DateTime.MinValue) ? DBNull.Value : (object)model.FechaInicio;
                     command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (model.FechaFin == DateTime.MinValue) ? DBNull.Value : (object)model.FechaFin;
                     command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;

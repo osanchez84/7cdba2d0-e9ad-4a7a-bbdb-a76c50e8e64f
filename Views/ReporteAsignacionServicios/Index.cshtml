@@ -110,7 +110,8 @@
                 IdEvento: $('#ddlEvento').val(),
                 Evento: $('#hdnEvento').val(),
                 FechaInicio: $('#start').val(),
-                FechaFin: $('#end').val()
+                FechaFin: $('#end').val(),
+                idDelegacion: $('#ddlDelegacion').val()
             };
             var json = JSON.stringify(data);
             window.location = '/ReporteAsignacionServicios/CreatePdf?data=' + json;

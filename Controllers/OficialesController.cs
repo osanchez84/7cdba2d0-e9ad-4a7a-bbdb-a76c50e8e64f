@@ -305,7 +305,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
           
 
-             if (idDelegacionFiltro > 0)
+            if (idDelegacionFiltro > 0)
             {
                 ListOfcialesDelegacion = (from s in ListOfcialesDelegacion
                                           where s.IdOficina == idDelegacionFiltro

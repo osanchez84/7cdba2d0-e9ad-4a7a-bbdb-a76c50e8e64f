@@ -358,6 +358,7 @@ var personControlsValidate=[];
                 type: 'POST',
                 data: formData,
                 success: function (result) {
+                    alert('Se guardó correctamente........');
                     $('#modalCrearPersona').modal('hide');
                     var grid = $("#gridPersonas").data("kendoGrid");
 

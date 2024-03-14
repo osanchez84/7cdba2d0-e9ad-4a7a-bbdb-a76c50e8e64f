@@ -21,6 +21,19 @@
             columns.Bound(p => p.RFC).Title("RFC");
             columns.Bound(p => p.numeroLicencia).Title("No. Licencia");
             columns.Bound(p => p.tipoLicencia).Title("Tipo de Licencia");
+
+            columns.Bound(p => p.calle).Hidden();
+            columns.Bound(p => p.numero).Hidden();
+            columns.Bound(p => p.colonia).Hidden();
+            columns.Bound(p => p.idGenero).Hidden();
+            columns.Bound(p => p.PersonaDireccion.idMunicipio).Hidden();
+            columns.Bound(p => p.PersonaDireccion.municipio).Hidden();
+            columns.Bound(p => p.PersonaDireccion.codigoPostal).Hidden();
+            columns.Bound(p => p.PersonaDireccion.entidad).Hidden();
+            columns.Bound(p => p.PersonaDireccion.telefono).Hidden();
+            columns.Bound(p => p.PersonaDireccion.correo).Hidden();
+
+
          //   columns.Bound(c => c.tipoPersona).Title("Tipo persona");
         })
 

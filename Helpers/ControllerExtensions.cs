@@ -45,9 +45,10 @@ namespace GuanajuatoAdminUsuarios.Helpers
 
         public static async Task<string> RenderViewAsync2<TModel>(this Controller controller, string viewName, TModel model, bool partial = false)
         {
-            if (string.IsNullOrEmpty(viewName))
+
+            if(string.IsNullOrEmpty(viewName))
             {
-                viewName = controller.ControllerContext.ActionDescriptor.ActionName;
+                viewName = "infracciones";
             }
 
             controller.ViewData.Model = model;
@@ -55,7 +56,7 @@ namespace GuanajuatoAdminUsuarios.Helpers
             using (var writer = new StringWriter())
             {
                 IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-                ViewEngineResult viewResult = viewEngine.GetView("", "Views/infracciones/_Create.cshtml", false);// controller.ControllerContext, viewName, !partial);
+                ViewEngineResult viewResult = viewEngine.GetView("", "Views/"+ viewName +"/_Create.cshtml", false);// controller.ControllerContext, viewName, !partial);
 
                 if (viewResult.Success == false)
                 {

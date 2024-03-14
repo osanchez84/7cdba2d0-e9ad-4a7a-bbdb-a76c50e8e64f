@@ -1390,7 +1390,7 @@ function  OmitirConductor() {
         var grid = $("#gridPersonasLicencia").data("kendoGrid");
         var selectedRowData = grid.dataItem(grid.select());
 
-        console.log("EE", selectedRowData);
+        console.log("_ListaPersonasLicencias", selectedRowData);
 
         const tipoLicenciaMapping = {
             "TIPO A  CHOFER AUTOMOVILISTA": 1,
@@ -1432,6 +1432,16 @@ function  OmitirConductor() {
         fd.append("idGenero", selectedRowData.idGenero);
         fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
         fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+        fd.append("calle", selectedRowData.calle);
+        fd.append("numero", selectedRowData.numero);
+        fd.append("colonia", selectedRowData.colonia);
+
+        fd.append("idMunicipio", selectedRowData.PersonaDireccion.idMunicipio);
+        fd.append("municipio", selectedRowData.PersonaDireccion.municipio);
+        fd.append("codigoPostal", selectedRowData.PersonaDireccion.codigoPostal);
+        fd.append("entidad", selectedRowData.PersonaDireccion.entidad);
+        fd.append("telefono", selectedRowData.PersonaDireccion.telefono);
+        fd.append("correo", selectedRowData.PersonaDireccion.correo);
 
 
 

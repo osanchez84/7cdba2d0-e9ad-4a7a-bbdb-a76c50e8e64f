@@ -48,7 +48,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 "LEFT JOIN catTiposUsuario AS tip_us ON sol.idTipoUsuario = tip_us.idTipoUsuario " +
                                 "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                                 "LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
+
                                 "WHERE( sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud)) AND DEP.estatusSolicitud IS NULL";
+
 
                         /*        " sol.idEntidadUbicacion,sol.vehiculoCalle,sol.vehiculoCarretera,sol.vehiculoColonia,sol.idOficial,sol.idTipoUsuario,sol.idPension, ISNULL(X.IdConcesionario,0) idPropietarioGrua, " +
                                 " mun.municipio, " +
@@ -64,14 +66,14 @@ namespace GuanajuatoAdminUsuarios.Services
                                 " LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
                                 " LEFT JOIN depositos x on sol.idSolicitud = X.idSolicitud " +
                                 " WHERE sol.folio = @folioBusqueda OR sol.fechaSolicitud = ISNULL(@fechaSolicitud,sol.fechaSolicitud) AND DEP.estatusSolicitud = 3";
-*/
+                        */
                     connection.Open();
                     SqlCommand command = new SqlCommand(SQL, connection);
 
 
                     command.CommandType = System.Data.CommandType.Text;
                     command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.NVarChar)).Value = model.FolioSolicitud??"";
-                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value = model.fecha;
+                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value =  (model.fecha.Year==1) ? DBNull.Value: model.fecha;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

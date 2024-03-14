@@ -337,8 +337,25 @@ namespace GuanajuatoAdminUsuarios.Controllers
         //  [HttpPost]
 
         //public ActionResult GuardaDesdeServicio(PersonaModel personaDatos)
-        public async Task<IActionResult> GuardaDesdeServicio(string nombre, string apellidoPaterno, string apellidoMaterno, string CURP, string RFC, string numeroLicencia, string tipoLicencia,
-                                                             string idGenero, DateTime fechaNacimiento, DateTime fechaVigencia)
+        public async Task<IActionResult> GuardaDesdeServicio(   string nombre, 
+                                                                string apellidoPaterno, 
+                                                                string apellidoMaterno, 
+                                                                string CURP, 
+                                                                string RFC, 
+                                                                string numeroLicencia, 
+                                                                string tipoLicencia,
+                                                                string idGenero, 
+                                                                DateTime fechaNacimiento, 
+                                                                DateTime fechaVigencia,
+                                                                int idMunicipio,
+                                                                string municipio,
+                                                                string codigoPostal,
+                                                                string entidad,
+                                                                string telefono,
+                                                                string correo,
+                                                                string calle,
+                                                                string numero,
+                                                                string colonia)
         {
             try
             {
@@ -353,6 +370,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 personaDatos.ID_GENERO = Convert.ToInt32(idGenero);
                 personaDatos.FECHA_NACIMIENTO = fechaNacimiento;
                 personaDatos.FECHA_TERMINO_VIGENCIA = fechaVigencia;
+                personaDatos.ID_MUNICIPIO = idMunicipio;
+                personaDatos.MUNICIPIO = municipio;
+                personaDatos.CP = codigoPostal;
+                personaDatos.ESTADO_NACIMIENTO = entidad;
+                personaDatos.TELEFONO1 = telefono;
+                personaDatos.EMAIL = correo;
+                personaDatos.CALLE = calle;
+                personaDatos.NUM_EXT = numero;
+                personaDatos.COLONIA = colonia;
+
 
                 int idPersona = _personasService.InsertarDesdeServicio(personaDatos);
                 //var datosTabla = _personasService.BuscarPersonaSoloLicencia(personaDatos.NUM_LICENCIA);
@@ -434,6 +461,22 @@ namespace GuanajuatoAdminUsuarios.Controllers
                         pm.idGenero = pivote.ID_GENERO==null? 0 :(int)pivote.ID_GENERO;
                         pm.fechaNacimiento = pivote.FECHA_NACIMIENTO;
                         pm.vigenciaLicencia = pivote.FECHA_TERMINO_VIGENCIA;
+
+
+                        pm.calle = pivote.CALLE;
+                        pm.numero = pivote.NUM_EXT;
+                        pm.colonia = pivote.COLONIA;
+                        pm.idGenero = pivote.ID_GENERO == null ? 1 : Convert.ToInt16(pivote.ID_GENERO);
+
+                        pm.PersonaDireccion = new PersonaDireccionModel
+                        {
+                            idMunicipio = pivote.ID_MUNICIPIO,
+                            municipio = pivote.MUNICIPIO,
+                            codigoPostal = pivote.CP,
+                            entidad = pivote.ESTADO_NACIMIENTO,
+                            telefono = pivote.TELEFONO1,
+                            correo = pivote.EMAIL,
+                        };
                         pEncontradas.Add(pm);
                     }
 

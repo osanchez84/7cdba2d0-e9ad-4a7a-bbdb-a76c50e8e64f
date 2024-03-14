@@ -14,6 +14,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
         public CapturaAccidentesModel ObtenerAccidentePorId(int idAccidente, int idOficina);
 
         List<CapturaAccidentesModel> BuscarPorParametro(string Placa, string Serie, string Folio);
+        List<CapturaAccidentesModel> BuscarPorParametroid(string id);
 
 
         public int ActualizarConVehiculo(int IdVehiculo, int idAccidente,int IdPersona, string Placa, string Serie);

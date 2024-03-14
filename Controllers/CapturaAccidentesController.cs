@@ -555,7 +555,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(ListVehiculosInvolucrados.ToDataSourceResult(request));
         }
 
-        public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa, string Serie)
+        public IActionResult ActualizarAccidenteConVehiculo(int IdVehiculo, int IdPersona, string Placa="", string Serie="")
         {
             int idAccidente = HttpContext.Session.GetInt32("LastInsertedId") ?? 0;
             var can = _capturaAccidentesService.ActualizarConVehiculo(IdVehiculo, idAccidente, IdPersona, Placa, Serie);
@@ -1598,7 +1598,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 var Placa = model.placas;
                 var Serie = model.serie;
                 var folio = "";
-                var resultados = _capturaAccidentesService.BuscarPorParametro(Placa, Serie, folio);
+                var resultados = _capturaAccidentesService.BuscarPorParametroid(IdVehiculo.ToString());
                 return Json(new { success = true, data = resultados });
             }
             else if (IdVehiculo == -1)
@@ -2051,7 +2051,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             models.placas = "";
             models.serie = "";
             models.RepuveRobo = new RepuveRoboModel();
-            var result = await this.RenderViewAsync2("", models);
+            var result = await this.RenderViewAsync2("CapturaAccidentes", models);
             return result;
         }
 

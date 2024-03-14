@@ -119,6 +119,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(result);
         }
 
+        public JsonResult TiposVehiculosActivos_Drop()
+        {
+            var result = new SelectList(_catTiposVehiculoService.GetTiposVehiculos().Where(x=>x.Estatus == 1), "IdTipoVehiculo", "TipoVehiculo");
+            return Json(result);
+        }
+
         public JsonResult Concecionarios_Drop()
         {
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;

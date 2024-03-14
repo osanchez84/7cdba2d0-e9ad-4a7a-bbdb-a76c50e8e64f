@@ -635,7 +635,6 @@
 				data: formData,
 				dataType: "json",
 				success: function (result) {
-
 					if (result.id) {
 
 						sitteg_success('Elemento guardado correctamente')
@@ -834,11 +833,23 @@
             fd.append("RFC", selectedRowData.RFC);
             fd.append("numeroLicencia", selectedRowData.numeroLicencia);
             fd.append("tipoLicencia", tipoLicenciaNumero);
-           fd.append("idGenero", selectedRowData.idGenero);
-           fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
-           fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+			fd.append("idGenero", selectedRowData.idGenero);
+			fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+			fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
 
+			fd.append("idGenero", selectedRowData.idGenero);
+			fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+			fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+			fd.append("calle", selectedRowData.calle);
+			fd.append("numero", selectedRowData.numero);
+			fd.append("colonia", selectedRowData.colonia);
 
+			fd.append("idMunicipio", selectedRowData.PersonaDireccion.idMunicipio);
+			fd.append("municipio", selectedRowData.PersonaDireccion.municipio);
+			fd.append("codigoPostal", selectedRowData.PersonaDireccion.codigoPostal);
+			fd.append("entidad", selectedRowData.PersonaDireccion.entidad);
+			fd.append("telefono", selectedRowData.PersonaDireccion.telefono);
+			fd.append("correo", selectedRowData.PersonaDireccion.correo);
            
             $.ajax({
                 type: 'POST',

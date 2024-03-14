@@ -28,6 +28,21 @@
                 }, 200);
             }
         });
+
+         function filtroCarretera() {
+             
+        var idMunicipio = $("#ddlMunicipiUbicacion").val();
+        console.log("idMunicipio", idMunicipio)
+
+        return {
+            idMunicipio: idMunicipio,
+        };
+    }
+    function onChangeCarretera() {
+        var ddlidCarretera = $("#IdCarretera").data("kendoDropDownList");
+        ddlidCarretera.dataSource.read();
+
+    }
 </script>
 <div class="mainContainer bg-light">
     <section id="seccionPrincipal" class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
@@ -218,6 +233,7 @@
                                 .DataTextField("Text")
                                 .DataValueField("Value")
                                 .OptionLabel("Selecciona un Municipio")
+                                .Events(e => e.Change("onChangeCarretera"))
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -225,7 +241,7 @@
                                         read.Action("Municipios_Drop2", "DepositosOtraDependencia");
                                     });
                                 })
-                                .HtmlAttributes(new { style = "width:100%;" })
+                                .HtmlAttributes(new { style = "width:100%;", id = "ddlMunicipiUbicacion" })
                                 )
                         </span>
 
@@ -245,7 +261,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Carreteras_Drop", "DepositosOtraDependencia");
+                                        read.Action("Carreteras_Drop", "DepositosOtraDependencia").Data("filtroCarretera"); 
                                     });
                                 })
                                 )

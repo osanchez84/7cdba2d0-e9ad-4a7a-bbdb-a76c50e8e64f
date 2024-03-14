@@ -175,13 +175,20 @@
                 success: function (result) {
                     console.log("RESMOD",result)
                     if (result != 0) {
-                        sitteg_success("Se ha actualizado la información del vehículo");
+                        console.log("1");
+                        
+                        console.log("2");
                         $('#modalComplementoVehiculo').modal('hide');
+                        console.log("3");
                         $('#agregarVehiculoModal').modal('hide');
+                        $("#agregarVehiculoModal").css("display", "none");
+                        console.log("4");
+                        sitteg_success("Se ha 1actualizado la información del vehículo");
 
                         $('#modalComplementoVehiculo').on('hidden.bs.modal', function (e) {
                             $(this).modal('dispose');
                         });
+                        console.log("5");
                         $('#agregarVehiculoModal').on('hidden.bs.modal', function (e) {
                             $(this).modal('dispose');
                         });

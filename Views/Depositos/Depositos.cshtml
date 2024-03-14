@@ -128,7 +128,8 @@
                                 title = "datepicker",
                                 required = "required",
                                 id = "fechaSolicitud"
-                            }).Value("")
+                            })
+                            .Value(Model.fechaSolicitud == DateTime.MinValue ? "" : Model.fechaSolicitud.ToString("dd/MM/yyyy"))
                             )
                     </div>
                 </div>
@@ -139,7 +140,7 @@
                             .Label(l => l.Content("Hora:"))
                             .Format("HH:mm")
                             .Culture("es-ES")
-                            .Value("")
+.Value(Model.horaSolicitud == default(TimeSpan) ? "" : Model.horaSolicitud.ToString(@"hh\:mm"))
                             .HtmlAttributes(new { style = "width: 60%", id = "dateTime" })
                             )
                     </div>

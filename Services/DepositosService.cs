@@ -9,7 +9,7 @@ using GuanajuatoAdminUsuarios.Util;
 using Logger = GuanajuatoAdminUsuarios.Util.Logger;
 using System.Linq;
 using System.Reflection.Metadata;
-
+using System.Globalization;
 
 namespace GuanajuatoAdminUsuarios.Services
 {
@@ -558,6 +558,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     string SqlTransact =
 										   @"SELECT TOP 1 inf.idInfraccion
+                                                    ,inf.horaInfraccion
                                                     ,inf.idOficial
                                                     ,inf.idDependencia
                                                     ,inf.idDelegacion
@@ -624,6 +625,21 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
+							model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
+                            string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
+
+                            TimeSpan horaInfraccionTimeSpan;
+
+                            if (horaInfraccionString != null)
+                            {
+                                horaInfraccionTimeSpan = TimeSpan.ParseExact(horaInfraccionString, "hhmm", CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                horaInfraccionTimeSpan = TimeSpan.Zero;
+                            }
+
+                            model.horaSolicitud = horaInfraccionTimeSpan;
                             model.idMunicipioUbicacion = reader["idMunicipio"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipio"].ToString());
                             model.IdTramo = reader["idTramo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramo"].ToString());
                             model.IdCarretera = reader["idCarretera"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarretera"].ToString());

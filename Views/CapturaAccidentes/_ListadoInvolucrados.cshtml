@@ -98,6 +98,7 @@
 				columns.Bound(i => i.Modelo).Hidden();
 			    columns.Bound(i => i.IdInvolucrado).Hidden();
 				columns.Bound(i => i.IdInvolucrado).Hidden();
+								columns.Bound(i => i.IdAsiento).Hidden();
 
 
 				@*columns.Command(c => c.Custom("Editar").Click("getId")).Width(100);
@@ -111,7 +112,7 @@
 			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
 			"<p><span class='description'>Llevado a : #: NombreHospital# </span></p>" +
 			"<p><span class='description'>Traslado : #: InstitucionTraslado# </span></p>" +
-			"<p><span class='description'>Asiento : #: Asiento# </span></p>" +
+			"<p><span class='description'>Asiento : #: IdAsiento != null ? IdAsiento : '' # </span></p>" + 
 			"<p><span class='description'>Cinturon : #: Cinturon# </span></p>" +
 			"</td>" +
 			"<td class='DatosPersona'>" +
@@ -150,7 +151,7 @@
 			"<p><span class='description'>Estado : #: EstadoVictima# </span></p>" +
 			"<p><span class='description'>Llevado a : #: NombreHospital# </span></p>" +
 			"<p><span class='description'>Traslado : #: InstitucionTraslado# </span></p>" +
-			"<p><span class='description'>Asiento : #: Asiento# </span></p>" +
+			"<p><span class='description'>Asiento : #: IdAsiento != null ? IdAsiento : '' # </span></p>" +
 			"<p><span class='description'>Cinturon : #: Cinturon# </span></p>" +
 			"</td>" +
 			"<td class='DatosPersona'>" +

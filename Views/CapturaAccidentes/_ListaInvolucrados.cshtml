@@ -73,8 +73,8 @@
 
 	function obtenerIdPersonaDesdeModal(IdVehiculoInvolucrado) {
 
-		var idPersona = $('#gridVehiculosInvolucrados').data('idPersona');
-		$('#idPersonaHidden').val(idPersona);
+		var idPersona = $('#idPersonaInput').val();
+		$('#idPersonaInput').val(idPersona);
 		$('#idVehiculoHidden').val(IdVehiculoInvolucrado);
 		var IdInvolucrado = $("#IdInvolucradoHidden").val();
 		showLoading();

@@ -29,7 +29,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand("SELECT m.*, e.estatusdesc, del.nombreOficina, ent.nombreEntidad FROM catMunicipios AS m INNER JOIN estatus AS e ON m.estatus = e.estatus" +
                         " INNER JOIN catDelegacionesOficinasTransporte AS del ON m.idOficinaTransporte = del.idOficinaTransporte" +
-                        " INNER JOIN catEntidades AS ent ON m.idEntidad = ent.idEntidad;", connection);
+                        " INNER JOIN catEntidades AS ent ON m.idEntidad = ent.idEntidad  and m.estatus=1 ;", connection);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

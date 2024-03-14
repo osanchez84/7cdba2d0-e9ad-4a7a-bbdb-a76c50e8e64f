@@ -83,7 +83,8 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito,IdGrua) {
+    function ShowUpdatePopUp(Id,IdDeposito,IdGrua,IdConcesionario) {
+        console.log("CONC",IdConcesionario)
         //Si la solicitud no tiege grua asociada se oculta el boton del modal
         if(IdGrua===undefined || IdGrua<=0)
         $('#divGruaModal').hide();
@@ -92,6 +93,8 @@
 
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
+        $('#hdnIdConcesionario').val(IdConcesionario);
+
         $('#myUpdateModal').modal('show');
     }
 
@@ -125,9 +128,9 @@
 
 
     function EditarTemplate(data){
-
+        console.log("EDTEMPDAT", data)
         if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
-            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
+            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
         else 
         return ""
 
@@ -411,6 +414,8 @@
                 <div class="modal-body" id="ModalBodyUpdate">
                     <input type="hidden" id="hdnIdDeposito" />
                     <input type="hidden" id="hdnIdDepositoInv" />
+                    <input type="hidden" id="hdnIdConcesionario" />
+
                     <div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
                         <div class="controlButton">
                             <button type="button" class="btn btn-primary btn-sm" data-id="solicitud" onclick="datosSolicitud()">
@@ -477,7 +482,9 @@
     function datosGruas() {
         var idSolicitud = document.getElementById('hdnIdDeposito').value;
         var idDeposito = document.getElementById('hdnIdDepositoInv').value;
-        window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?iSo=' + idSolicitud + '&idDeposito=' + idDeposito;
+        var iPg = document.getElementById('hdnIdConcesionario').value;
+        console.log("infunc",iPg)
+        window.location.href = '@Url.Action("DatosGruas", "AsignacionGruas")?iSo=' + idSolicitud + '&iPg=' + iPg + '&idDeposito=' + idDeposito ;
     }
 
     function TemplateEvPolInf(data){

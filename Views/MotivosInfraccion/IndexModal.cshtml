@@ -30,6 +30,26 @@
         }
     });
 
+    // POR EL MOMENTO NO APLICA
+    function loadSubConceptos() {
+        var idConcepto_ = $("#ddlConcepto").data("kendoDropDownList").value();
+        showLoading();
+        $.ajax({
+            url: "/MotivosInfraccion/LoadSubConceptos",
+            type: "POST",
+            data: { idConcepto: idConcepto_ },
+            success: function (data) {
+                var idSubConcepto = $("#idSubConcepto").data("kendoDropDownList");
+                idSubConcepto.dataSource.data(data);
+                hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("EE", error)
+                hideLoading();
+            }
+        });
+    }
+
     function submitSearch() {
         var Mydata = $("#formBuscarMotivo").serialize();
         console.log(Mydata);
@@ -108,34 +128,34 @@
                     <div class="bg-light py-1"></div>
                 </div>
             </div>
-             <form id="formBuscarMotivo" class="row px-4 mb-4 align-items-end" method="post">
+            <form id="formBuscarMotivo" class="row px-4 mb-4 align-items-end" method="post">
 
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm mb-3">
-                    <span>
-                        @(Html.Kendo().TextBoxFor(t => t.Nombre)
-                            .Label(l => l.Content("Nombre:"))
-                            .Placeholder("Ingresa el nombre")
-                            .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas" })
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm mb-3">
+                        <span>
+                            @(Html.Kendo().TextBoxFor(t => t.Nombre)
+                                .Label(l => l.Content("Nombre:"))
+                                .Placeholder("Ingresa el nombre")
+                                .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas" })
+                                )
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm mb-3">
+                        @(Html.Kendo().TextBoxFor(t => t.Fundamento)
+                            .Label(l => l.Content("Fundamento:"))
+                            .Placeholder("Ingresa fundamento")
+                            .HtmlAttributes(new { style = "width: 100%", Id = "txtFundamento" })
                             )
-                    </span>
-                </div>
-            </div>
 
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm mb-3">
-                    @(Html.Kendo().TextBoxFor(t => t.Fundamento)
-                        .Label(l => l.Content("Fundamento:"))
-                        .Placeholder("Ingresa fundamento")
-                        .HtmlAttributes(new { style = "width: 100%", Id = "txtFundamento" })
-                        )
-
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="controlForm mb-3">
-                    <label>Vigencia:</label>
-                @(Html.Kendo().DropDownListFor(d => d.IdVigencia).Filter(FilterType.Contains)
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="controlForm mb-3">
+                        <label>Vigencia:</label>
+                        @(Html.Kendo().DropDownListFor(d => d.IdVigencia).Filter(FilterType.Contains)
                             .DataTextField("Text")
                             .DataValueField("Value")
                             .HtmlAttributes(new { style = "width:50%;", Id = "ddlVigencia" })
@@ -146,10 +166,10 @@
                         new SelectListItem { Text = "No vigentes", Value = "2" }
                         })
                             .Events(e => e.Change("onDropDownChange"))
-                                )
+                            )
 
+                    </div>
                 </div>
-            </div>
                 <div class="row px-2.2 mb-4 align-items-end" id="elementosFecha">
                     <div class="col-12 col-md-5">
                         <div class="controlForm mb-3">
@@ -196,7 +216,7 @@
                     </div>
                 </div>
 
-          </form>
+            </form>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="controlButton my-3">
                     <button id="btnBuscarMotivos" class="btnPrimary" type="button" onclick="submitSearch()">  <h5 class="m-0"><b>Buscar</b></h5></button>
@@ -208,65 +228,56 @@
                     <h6 class="px-4 text-muted">Edita o inactiva los motivos de infracción.</h6>
                 </div>
             </div>
-          
+
             <div class="row">
                 <div class="col-12 mb-4 px-4 rounded gridCustom">
-                       <div class="row">
-                             <div id="tablaMotivosInfraccion">
-                                <partial name="_ListaMotivosInfraccion" model="Model.ListMotivosInfraccion" />
-                             </div>
-                       </div>
-                 </div>
-            </div>
-
-                        
-    <div class="modal fade modalCustom" id="addMotivo"  aria-labelledby="addMotivoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
-            <div class="modal-content">
-               <div class="modal-body" id="addMotivoBody">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-<!--////////////////////////////////////////////////////////////////////////////////////EDITAAR/////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
--->
-
-    <div class="modal fade modalCustom" id="editMotivoInfracion"  aria-labelledby="addMotivoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body" id="editarMotivoBody">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-<!--////////////////////////////////////////////////////////////////////////////////////ELIMINAR/////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
--->
-
-    <div class="modal fade modalCustom" id="eliminarMotivoInfraccion"  aria-labelledby="addMotivoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
-            <div class="modal-content">
-                 <div class="modal-body" id="ModalBodyEliminarMotivo">
-
-                 </div>
-            </div>
-        </div>
-    </div>
-                            </div>
+                    <div class="row">
+                        <div id="tablaMotivosInfraccion">
+                            <partial name="_ListaMotivosInfraccion" model="Model.ListMotivosInfraccion" />
                         </div>
                     </div>
-            </section>
-        </div>
-    </div>
+                </div>
+            </div>
 
+
+            <div class="modal fade modalCustom" id="addMotivo" aria-labelledby="addMotivoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl boxShadow modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body" id="addMotivoBody">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal fade modalCustom" id="editMotivoInfracion" aria-labelledby="addMotivoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body" id="editarMotivoBody">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--////////////////////////////////////////////////////////////////////////////////////ELIMINAR/////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            -->
+
+            <div class="modal fade modalCustom" id="eliminarMotivoInfraccion" aria-labelledby="addMotivoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg boxShadow modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body" id="ModalBodyEliminarMotivo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>
 @*<script src="~/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>*@
 <script>
-
 
     $(document).ready(function () {
         var datePicker = $("#inicioVigenciaDesde").data("kendoDatePicker");
@@ -286,7 +297,7 @@
         var datePicker = $("#FinVigenciaHasta").data("kendoDatePicker");
         datePicker.value(null);
     });
-      $(document).ready(function () {
+    $(document).ready(function () {
         hideShowElements();
 
         $("#ddlVigencia").change(function () {
@@ -299,8 +310,8 @@
             console.log("VAL", selectedValue)
             if (selectedValue === "1" || selectedValue === "2") {
                 $("#elementosFechas").hide();
-            }else{
-            $("#elementosFechas").show();
-            }          
+            } else {
+                $("#elementosFechas").show();
+            }
         }
 </script>

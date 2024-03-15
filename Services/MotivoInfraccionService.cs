@@ -246,7 +246,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					command.Parameters.AddWithValue("@idDependencia", idDependencia);
 					command.Parameters.AddWithValue("@nombre", motivo.Nombre);
                     command.Parameters.AddWithValue("@IdSubConcepto", motivo.idSubConcepto);
-                    command.Parameters.AddWithValue("@IdConcepto", motivo.idConcepto);
+                    command.Parameters.AddWithValue("@IdConcepto", (motivo.idConcepto==null) ? DBNull.Value : motivo.idConcepto);
                     command.Parameters.AddWithValue("@calificacionMinima", motivo.CalificacionMinima);
                     command.Parameters.AddWithValue("@calificacionMaxima", motivo.CalificacionMaxima);
                     command.Parameters.AddWithValue("@fundamento", motivo.Fundamento);

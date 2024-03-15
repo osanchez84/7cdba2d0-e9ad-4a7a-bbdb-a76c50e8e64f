@@ -426,9 +426,10 @@ Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
 
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(@"SELECT ofi.*, e.estatusDesc 
+                    SqlCommand command = new SqlCommand(@"SELECT ofi.*, e.estatusDesc, ISNULL(X.idOficinaTransporte,0) idOficinaTransporte, ISNULL(x.nombreOficina,'') nombreOficina
                                                             FROM catOficiales AS ofi 
                                                             INNER JOIN estatus AS e ON ofi.estatus = e.estatus
+                                                            LEFT JOIN catDelegacionesOficinasTransporte X ON ofi.idOficina = x.idOficinaTransporte
                                                             WHERE ofi.estatus = 1 AND ofi.transito = @idDependencia
                                                             ORDER BY Nombre ASC;", connection);
                     command.CommandType = CommandType.Text;
@@ -446,6 +447,8 @@ Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
                             oficial.estatusDesc = reader["estatusDesc"].ToString();
                             //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
                             oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
+                            oficial.nombreOficina = reader["nombreOficina"].ToString(); 
+                            oficial.IdOficina = Convert.ToInt32(reader["idOficinaTransporte"].ToString()); 
 
                             oficiales.Add(oficial);
 

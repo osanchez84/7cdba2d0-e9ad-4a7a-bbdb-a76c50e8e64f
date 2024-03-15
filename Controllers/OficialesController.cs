@@ -301,9 +301,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             List<CatOficialesModel> ListOfcialesDelegacion = new List<CatOficialesModel>();
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            ListOfcialesDelegacion = _oficialesService.GetOficiales();
-
-          
+            ListOfcialesDelegacion = _oficialesService.GetOficialesPorDependencia(idDependencia);
 
             if (idDelegacionFiltro > 0)
             {

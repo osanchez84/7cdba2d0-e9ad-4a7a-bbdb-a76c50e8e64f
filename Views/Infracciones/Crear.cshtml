@@ -39,6 +39,7 @@
 		}
 	});
 	function validacionHora(){
+		console.log("---")
 		var val = $("#dateTime").val()
 		var element =$("#dateTime").data("kendoTimePicker")
 		var fecha = $("#fechaInfraccion").val()
@@ -47,12 +48,18 @@
 		var splitFecha = fecha.split('/')
 		var fechaSeleccion = fecha == "" ? new Date(1910,0,1):new Date(parseInt(splitFecha[2]),parseInt(splitFecha[1])-1,parseInt(splitFecha[0])) 
 		var horaActual = (auxiliarFecha.getHours()*100) + auxiliarFecha.getMinutes()
-		
+		console.log(val)
 		if (val){
 			var can = val.indexOf(':') > -1
+			console.log(can)
 			if (can){
 				var horaAjustada = val.replace(':')
 				var horaSeleccion = parseInt(horaAjustada)
+
+				console.log(horaSeleccion)
+				console.log(fechaActual)
+				console.log(fechaSeleccion)
+
 				if(fechaActual > fechaSeleccion){
 
 				}else{
@@ -240,8 +247,10 @@
 										
 										<label class="text-muted">Hora:</label>
 										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)											
-											.Label(l => l.Content("Hora:"))	
-											.Events(s=>s.Change("validacionHora"))
+											.Label(l => l.Content("Hora:"))
+											.Events(s => s.Change("validacionHora"))
+											.DateInput(true)
+											
 											.Format("HH:mm")
 											.Culture("es-ES")
 											.Value("")

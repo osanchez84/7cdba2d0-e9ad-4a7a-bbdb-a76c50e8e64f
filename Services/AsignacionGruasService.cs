@@ -569,7 +569,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return modelList;
         }
-        public int UpdateDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo)
+        public int UpdateDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo, string horaInicioInsert, string horaArriboInsert, string horaTerminoInsert)
         {
             int result = 0;
 
@@ -594,20 +594,22 @@ namespace GuanajuatoAdminUsuarios.Services
                                 WHERE idDeposito = " + iDep.ToString();
 
                     SqlCommand command = new SqlCommand(query, connection);
-                    //DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
-                    //TimeSpan horaInicio = TimeSpan.Parse(formData["fechaInicio"]);
-                    //DateTime fechaHoraInicio = fechaInicio.Date.Add(horaInicio);
-                    command.Parameters.AddWithValue("@fechaInicio", Convert.ToDateTime(formData["fechaInicio"]));
 
-                    //DateTime fechaArribo = DateTime.Parse(formData["fechaArribo"]);
-                    //TimeSpan horaArribo = TimeSpan.Parse(formData["horaArribo"]);
-                    //DateTime fechaHoraArribo = fechaArribo.Date.Add(horaArribo);
-                    command.Parameters.AddWithValue("@fechaArribo", Convert.ToDateTime(formData["fechaArribo"]));
+                    DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
+                    TimeSpan horaInicio = TimeSpan.Parse(Convert.ToDateTime(formData["horaInicioInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    DateTime fechaHoraInicio = fechaInicio.Date.Add(horaInicio);
+                    command.Parameters.AddWithValue("@fechaInicio", fechaHoraInicio);
 
-                    //DateTime fechaFinal = DateTime.Parse(formData["fechaFinal"]);
-                    //TimeSpan horaTermino = TimeSpan.Parse(formData["horaTermino"]);
-                    //DateTime fechaHoraFinal = fechaFinal.Date.Add(horaTermino);
-                    command.Parameters.AddWithValue("@fechaFinal", Convert.ToDateTime(formData["fechaFinal"]));
+                    DateTime fechaArribo = DateTime.Parse(formData["fechaArribo"]);
+                    TimeSpan horaArribo = TimeSpan.Parse(Convert.ToDateTime(formData["horaArriboInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    DateTime fechaHoraArribo = fechaArribo.Date.Add(horaArribo);
+                    command.Parameters.AddWithValue("@fechaArribo", fechaHoraArribo);
+
+                    DateTime fechaFinal = DateTime.Parse(formData["fechaFinal"]);
+                    TimeSpan horaTermino = TimeSpan.Parse(Convert.ToDateTime(formData["horaTerminoInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    DateTime fechaHoraFinal = fechaFinal.Date.Add(horaTermino);
+                    command.Parameters.AddWithValue("@fechaFinal", fechaHoraFinal);
+
 
                     command.Parameters.AddWithValue("@operadorGrua", formData["operadorGrua"].ToString());
                     command.Parameters.AddWithValue("@abanderamiento", abanderamiento);
@@ -876,6 +878,11 @@ namespace GuanajuatoAdminUsuarios.Services
                             asignacion.fechaArribo = reader["fechaArribo"] != DBNull.Value ? Convert.ToDateTime(reader["fechaArribo"]) : DateTime.MinValue;
                             asignacion.fechaInicio = reader["fechaInicio"] != DBNull.Value ? Convert.ToDateTime(reader["fechaInicio"]) : DateTime.MinValue;
                             asignacion.fechaFinal = reader["fechaFinal"] != DBNull.Value ? Convert.ToDateTime(reader["fechaFinal"]) : DateTime.MinValue;
+
+                            asignacion.horaArribo = reader["fechaArribo"] != DBNull.Value ? Convert.ToDateTime(reader["fechaArribo"]).TimeOfDay : TimeSpan.MinValue;
+                            asignacion.horaInicio = reader["fechaInicio"] != DBNull.Value ? Convert.ToDateTime(reader["fechaInicio"]).TimeOfDay : TimeSpan.MinValue;
+                            asignacion.horaTermino = reader["fechaFinal"] != DBNull.Value ? Convert.ToDateTime(reader["fechaFinal"]).TimeOfDay : TimeSpan.MinValue;
+
                             asignacion.operadorGrua = reader["operadorGrua"].ToString();
                             asignacion.numeroEconomico = reader["noEconomico"].ToString();
                             asignacion.Placas = reader["placas"].ToString();

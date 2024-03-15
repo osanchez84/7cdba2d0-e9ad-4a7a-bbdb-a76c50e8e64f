@@ -3031,7 +3031,7 @@ namespace GuanajuatoAdminUsuarios.Services
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
 
-					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion);
+					command.Parameters.AddWithValue("@folioInfraccion", folioInfraccion.Trim());
 					command.Parameters.AddWithValue("@idDependencia", idDependencia);
 
 					using (SqlDataReader reader = command.ExecuteReader())
@@ -3118,7 +3118,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					string horaFormateada = horaInfraccion.ToString("hhmm");
 					string horaInfraccionString = horaFormateada;
 					command.Parameters.Add(new SqlParameter("horaInfraccion", SqlDbType.NVarChar)).Value = horaInfraccionString;
-					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion;
+					command.Parameters.Add(new SqlParameter("folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.folioInfraccion.Trim();
 					command.Parameters.Add(new SqlParameter("idOficial", SqlDbType.Int)).Value = (object)model.idOficial;
 					command.Parameters.Add(new SqlParameter("idDelegacion", SqlDbType.Int)).Value = (object)model.idDelegacion;
 					command.Parameters.Add(new SqlParameter("idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio;

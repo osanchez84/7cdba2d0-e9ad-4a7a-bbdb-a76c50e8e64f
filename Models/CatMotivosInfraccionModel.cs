@@ -11,7 +11,7 @@ namespace GuanajuatoAdminUsuarios.Models
         public string Fundamento { get; set; }
         public int CalificacionMinima { get; set; }
         public int CalificacionMaxima { get; set; }
-        public int idConcepto { get; set; }
+        public int? idConcepto { get; set; }
         public string concepto { get; set; }
         public int idSubConcepto { get; set; }
         public int IdVigencia { get; set; }

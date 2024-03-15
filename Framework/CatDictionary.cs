@@ -350,7 +350,19 @@ namespace GuanajuatoAdminUsuarios.Framework
 							.OrderBy(s => s.Text)
 							.ToList();
 					break;
-				case "CatSubConceptoInfraccion":
+                case "CatSubConceptoInfraccionTodos":
+                    catalogModel.CatalogName = catalog;
+                    campos = new string[] { "idSubConcepto", "subConcepto" };
+                    catalogModel.CatalogList = _catalogosService.GetGenericCatalogos("CatSubConceptoInfraccion", campos)
+                            .Select(s => new SystemCatalogListModel()
+                            {
+                                Id = Convert.ToInt32(s["idSubConcepto"]),
+                                Text = Convert.ToString(s["subConcepto"])
+                            })
+                            .OrderBy(s => s.Text)
+                            .ToList();
+                    break;
+                case "CatSubConceptoInfraccion":
 					if (int.TryParse(parameter, out intId))
 					{
 						catalogModel.CatalogName = catalog;

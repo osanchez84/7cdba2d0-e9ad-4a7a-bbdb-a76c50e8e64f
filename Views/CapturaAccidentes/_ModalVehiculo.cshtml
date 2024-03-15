@@ -313,8 +313,17 @@
     })
 
 	function goBack() {
-
+        console.log("goBack");
+        $("#agregarVehiculoModal").css("display", "none");
+        console.log("goBack1");
 		$('#agregarVehiculoModal').modal('hide');
+        console.log("goBack2");
+        $('#agregarVehiculoModal').on('hidden.bs.modal', function (e) {
+                            $(this).modal('dispose');
+                        });
+                        console.log("goBack3");
+                        $('.modal-backdrop').remove();
+                        console.log("goBack5");
 
 	}
 

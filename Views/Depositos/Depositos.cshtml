@@ -798,6 +798,7 @@
             idPensionUbicacion: $('#idPensionUbicacion').val(),
             interseccion: $('#interseccion').val(),
         }
+        console.log("DATA",Mydata )
         showLoading();
         $.ajax({
             url: '/Depositos/ajax_EnviarSolicitudDeposito',
@@ -933,10 +934,10 @@
                 var mes = fechaSolicitud.getMonth() + 1;
                 var año = fechaSolicitud.getFullYear();
 
-                var fechaFormateada = ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + año;
+                //var fechaFormateada = ("0" + dia).slice(-2) + "/" + ("0" + mes).slice(-2) + "/" + año;
 
-                $("#fechaSolicitud").val(fechaFormateada);
-                var horaSolicitud = data.horaSolicitudStr;
+                    $("#fechaSolicitud").data("kendoDatePicker").value(fechaSolicitud);
+                    var horaSolicitud = data.horaSolicitudStr;
                 var tiempoConvertido = convertirTiempoATimeSpan(horaSolicitud);
 
                 // Asignar tiempoConvertido al Kendo TimePicker

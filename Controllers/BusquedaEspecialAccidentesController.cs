@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace GuanajuatoAdminUsuarios.Controllers
@@ -277,11 +278,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			Pagination pagination = new Pagination();
             pagination.PageIndex = request.Page - 1;
             pagination.PageSize = 10;
-            // pagination.Filter = resultValue;
-            if (AccidentesEspecialNewModel == null)
-                AccidentesEspecialNewModel = model;
 
-            var accidentesList = _busquedaEspecialAccidentesService.GetAllAccidentesPagination(pagination, AccidentesEspecialNewModel);
+            model.FechaInicio = String.IsNullOrEmpty(model.FechaInicioStr) ? null : DateTime.ParseExact(model.FechaInicioStr, "dd/MM/yyyy",CultureInfo.InvariantCulture);
+            model.FechaFin = String.IsNullOrEmpty(model.FechaFinStr) ? null : DateTime.ParseExact(model.FechaFinStr, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+
+            // pagination.Filter = resultValue;
+            //if (AccidentesEspecialNewModel == null)
+            //    AccidentesEspecialNewModel = model;
+
+            var accidentesList = _busquedaEspecialAccidentesService.GetAllAccidentesPagination(pagination, model);
             var total = 0;
             if (accidentesList.Count() > 0)
                 total = accidentesList.ToList().FirstOrDefault().total;

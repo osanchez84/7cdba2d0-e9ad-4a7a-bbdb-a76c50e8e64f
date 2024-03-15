@@ -259,20 +259,22 @@
 
                         </div>
 
-                    }        
 
-                        
+
+
                         <div class="row ">
                             <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
                                 <div class="controlButton my-3" onclick="enviarImagen()">
-                                    @(Html.Kendo().Button()
-                                        .Name("vehiculoBtn")
-                                        .HtmlAttributes(new { @class = "btnPrimary" })
-                                        .Content("<h5 class=\"m-0\"><b>Agregar Inventario</b></h5>"))
+                                    @(
+                                    Html.Kendo().Button()
+                        .Name("vehiculoBtn")
+                        .HtmlAttributes(new { @class = "btnPrimary" })
+                        .Content("<h5 class=\"m-0\"><b>Agregar Inventario</b></h5>")
+                                    )
                                 </div>
                             </div>
                         </div>
-                    
+                    }
                     <br />
                         <br />
                         <section>

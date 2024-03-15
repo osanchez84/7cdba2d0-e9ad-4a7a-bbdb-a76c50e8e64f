@@ -320,36 +320,9 @@
 
     });
     function buscarAccidente() {
-        var data = {
-            FechaInicio: $('#dateInicio').val(),
-            FechaFin: $('#dateFinal').val(),
-            placasBusqueda: $('#txtPlacas').val(),
-            serieBusqueda: $('#txtSerie').val(),
-            folioBusqueda: $('#txtFolio').val(),
-            IdDelegacionBusqueda: $('#ddlDelegaciones').val(),
-            idCarreteraBusqueda: $('#ddlCarreteras').val(),
-            idTramoBusqueda: parseInt($('#ddlTramos').val()),
-            propietarioBusqueda: $('#txtPropietarios').val(),
-            conductorBusqueda: $('#txtConductores').val(),
-            IdOficialBusqueda: $('#ddlOficiales').val(),
-            IdEstatusReporte: $('#ddlEstatus').val(),
-        };
-        showLoading();
-        $.ajax({
-            url: '/BusquedaEspecialAccidentes/ajax_BusquedaEspecialAccidentes',
-            type: 'GET',
-            data: data,
-            success: function (result) {
-                
-                $("#tablaBusquedaEspAccidentes").html(result);
-                hideLoading();
-                
-            },
-            error: function () {
-                sitteg_warning("Ocurrieron los siguientes errores");
-                hideLoading();
-            }
-        });
+
+        var grd = $("#gridBusquedaEspecialAccidentes").data("kendoGrid").dataSource
+        grd.read()
     }
 
     function downLoadPdfFiltered() {

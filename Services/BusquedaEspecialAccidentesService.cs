@@ -651,25 +651,9 @@ GROUP BY
                         cmd.Parameters.AddWithValue("@PropietarioBusqueda", model.propietarioBusqueda);
                         cmd.Parameters.AddWithValue("@SerieBusqueda", model.serieBusqueda);
                         cmd.Parameters.AddWithValue("@ConductorBusqueda", model.conductorBusqueda);
-                        if (model.FechaInicio != DateTime.MinValue)
-                        {
+
                             cmd.Parameters.AddWithValue("@FechaInicio", model.FechaInicio);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@FechaInicio", null);
-
-                        }
-
-                        if (model.FechaFin != DateTime.MinValue)
-                        {
                             cmd.Parameters.AddWithValue("@FechaFin", model.FechaFin);
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@FechaFin", null);
-
-                        }
 
 
                         /*if (pagination.Filter.Trim() != "")

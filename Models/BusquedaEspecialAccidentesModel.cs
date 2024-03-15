@@ -6,6 +6,10 @@ namespace GuanajuatoAdminUsuarios.Models
     {
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
+
+        public string FechaInicioStr { get; set; }
+        public string FechaFinStr { get; set; }
+
 		public int Numero { get; set; }
 		
 		public int IdAccidente { get; set; }

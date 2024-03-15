@@ -76,7 +76,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             VehiculoBusquedaModel busquedaModel = new()
             {
                 IdEntidadBusqueda = model.IdEntidadBusqueda,
-                PlacasBusqueda = model.PlacaBusqueda,
+                PlacasBusqueda = model.PlacaBusqueda.ToUpper(),
                 SerieBusqueda = model.SerieBusqueda
             };
 

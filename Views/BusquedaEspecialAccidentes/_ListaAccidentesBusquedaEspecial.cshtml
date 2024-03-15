@@ -3,6 +3,32 @@
     var listaIdsPermitidosJson = @HttpContextAccessor.HttpContext.Session.GetString("IdsPermitidos").ToString();
     var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 }
+
+<script>
+
+    function DataBusquedaEsp() {
+                var data = {
+            FechaInicioStr: $('#dateInicio').val(),
+            FechaFinStr: $('#dateFinal').val(),
+            placasBusqueda: $('#txtPlacas').val(),
+            serieBusqueda: $('#txtSerie').val(),
+            folioBusqueda: $('#txtFolio').val(),
+            IdDelegacionBusqueda: $('#ddlDelegaciones').val(),
+            idCarreteraBusqueda: $('#ddlCarreteras').val(),
+            idTramoBusqueda: parseInt($('#ddlTramos').val()),
+            propietarioBusqueda: $('#txtPropietarios').val(),
+            conductorBusqueda: $('#txtConductores').val(),
+            IdOficialBusqueda: $('#ddlOficiales').val(),
+            IdEstatusReporte: $('#ddlEstatus').val(),
+        };
+
+        return data
+    }
+
+
+    </script>
+
+
 <div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
@@ -43,7 +69,7 @@
             .EnableCustomBinding(true)
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read("GetAccidentesBusquedaPagination", "BusquedaEspecialAccidentes")
+            .Read(s=>s.Action("GetAccidentesBusquedaPagination", "BusquedaEspecialAccidentes").Data("DataBusquedaEsp"))
             .PageSize(10)
             .Events(events => events.Error("handleError"))
             )

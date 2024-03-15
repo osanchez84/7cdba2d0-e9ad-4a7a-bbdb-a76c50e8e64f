@@ -32,7 +32,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN gruas AS g on g.idGrua = ga.idGrua
                                 LEFT JOIN catTipoGrua tg on g.idTipoGrua = tg.idTipoGrua
                                 LEFT JOIN depositos d on d.idDeposito = ga.idDeposito
-                                WHERE ga.idDeposito = @idDeposito";
+                                WHERE ga.idDeposito = @idDeposito and ga.estatus=1";
 
                     SqlCommand command = new SqlCommand(SqlTransact, connection);
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = (object)Id ?? DBNull.Value;

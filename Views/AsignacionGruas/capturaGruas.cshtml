@@ -229,10 +229,11 @@
                     </div>
                 </div>
             </div>
-        @if(!String.IsNullOrEmpty( Model.inventarios))
-            {
+        
                 <div class="row px-4 mt-4 pb-5 align-items-end">
                     <div class="col-12 col-md-10 mx-md-auto text-center">
+                    @if (!String.IsNullOrEmpty(Model.inventarios))
+                    {
                         <h3><b>Adjunta una imagen del inventario del vehículo</b></h3>
                         <div class="row justify-content-center">
                             <div class="drop-zone">
@@ -254,20 +255,22 @@
                                 <input type="file" id="myFile" name="myFile" class="drop-zone__input">
                             </div>
 
-                        </div>
-                        <div class="row ">
-                            <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
-                                <div class="controlButton my-3" onclick="enviarImagen()">
-                                    @(Html.Kendo().Button()
-                                        .Name("vehiculoBtn")
-                                        .HtmlAttributes(new { @class = "btnPrimary" })
-                                        .Content("<h5 class=\"m-0\"><b>Agregar Inventario</b></h5>"))
+
+                            <div class="row ">
+                                <div class="col-12 col-md-8 mx-md-auto col-lg-5 ">
+                                    <div class="controlButton my-3" onclick="enviarImagen()">
+                                        @(
+                                            Html.Kendo().Button()
+                        .Name("vehiculoBtn")
+                        .HtmlAttributes(new { @class = "btnPrimary" })
+                        .Content("<h5 class=\"m-0\"><b>Agregar Inventario</b></h5>")
+                                            )
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-                        <br />
+                    }
+                    <br />
                         <br />
                         <section>
                             <div class="row">
@@ -295,7 +298,7 @@
                     </div>
                 </div>
 
-            }
+            
        
         
         

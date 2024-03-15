@@ -202,9 +202,9 @@ namespace GuanajuatoAdminUsuarios.Services
                     condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
                     condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,''))  LIKE '%' + @Propietario + '%' ";
                     condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
-                    condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND ISNULL(d.idDelegacion, @IdDelegacion) = @IdDelegacion ";
-                    condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND ISNULL(d.idpension,@IdPension) = @IdPension ";
-                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND ISNULL(d.estatusSolicitud,@idEstatus) = @idEstatus ";
+                    condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND d.idDelegacion = ISNULL(@IdDelegacion,d.idDelegacion) ";
+                    condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idpension = ISNULL(@IdPension,d.idpension) ";
+                    condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND d.estatusSolicitud = ISNULL(@idEstatus,d.estatusSolicitud) ";
                     //condiciones += model.IdDependenciaGenera.Equals(null) || model.IdDependenciaGenera == 0 ? "" : " AND d.IdDependenciaGenera = @IdDependenciaGenera ";
                     if (model.IdDependenciaTransito == 0)
                         condiciones += " AND ISNULL(sol.BanderaTransito,1) = 1 ";
@@ -267,7 +267,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
                                 WHERE ISNULL(d.estatus,1) != 0  AND (esExterno<>1 OR esExterno IS NULL) and 
-                                ISNULL(d.idDelegacion,@idOficina)=@idOficina" + condiciones;
+                                d.idDelegacion = ISNULL(@idOficina,d.idDelegacion)" + condiciones;
 
                     //HMG - 01-03-24 Se quita la oficina por acuerdo en comun con Criss
                     //and d.idDelegacion = @idOficina

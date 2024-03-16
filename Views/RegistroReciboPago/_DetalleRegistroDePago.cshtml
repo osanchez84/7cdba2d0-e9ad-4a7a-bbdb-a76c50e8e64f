@@ -40,10 +40,9 @@
 
     <div class="col-12 col-md-2">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBoxFor(m=>m.Monto)
-                .Label(l => l.Content("Monto:"))
-                .Placeholder("monto Pagado")
-                .Value("$" + Model.Monto)
+            @(Html.Kendo().TextBoxFor(m=>m.MontoRecibido)
+                .Label(l => l.Content("Monto Pagado:"))
+                
                 .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly" })
                 )
 

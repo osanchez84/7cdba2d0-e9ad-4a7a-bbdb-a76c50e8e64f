@@ -171,11 +171,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
         
         [HttpPost]
 
-        public IActionResult ActualizarDatos2(IFormCollection formData, int abanderamiento, int arrastre, int salvamento,string horaInicioInsert,string horaArriboInsert,string horaTerminoInsert)
+        public IActionResult ActualizarDatos2(IFormCollection formData, int abanderamiento, int arrastre, int salvamento,string horaInicioInsertEdit, string horaArriboInsertEdit,string horaTerminoInsertEdit)
         {
             int iSo = HttpContext.Session.GetInt32("iSo") ?? 0;
             int iDep = HttpContext.Session.GetInt32("idDeposito") ?? 0;
-            int DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo, horaInicioInsert, horaArriboInsert, horaTerminoInsert);
+            int DatosGruas = _asignacionGruasService.UpdateDatosGrua(formData, abanderamiento, arrastre, salvamento, iDep,iSo, horaInicioInsertEdit, horaArriboInsertEdit, horaTerminoInsertEdit);
            
             var DatosTabla = _asignacionGruasService.BusquedaGruaTabla(iDep);
 

@@ -361,62 +361,67 @@ namespace GuanajuatoAdminUsuarios.Services
                         }
                     }
 
+
+                    // HMG: Se quita porque esta funcionalidad la realiza el SP: usp_InsertaSolicitud
+                    // 15-03-2024
+
+
                     // Continuar con la consulta y la inserción
-                    string whereSolicitud = "WHERE folio = @FolioIdSolicitud";
-                    if (iSo > 0)
-                        whereSolicitud = "WHERE idSolicitud = @FolioIdSolicitud";
-                    SqlCommand command = new SqlCommand("SELECT ISNULL(sol.idSolicitud,0) idSolicitud,sol.fechaSolicitud,ISNULL(sol.folio,'') folio ,ISNULL(sol.idPropietarioGrua,0) idPropietarioGrua,ISNULL(sol.idPension,0) idPension,ISNULL(sol.idTramoUbicacion,0) idTramoUbicacion, " +
-                                                        "sol.vehiculoKm, sol.idInfraccion " +
-                                                        "FROM solicitudes AS sol " +
-                                                        whereSolicitud, connection);
-                    if(!folio.IsNullOrEmpty())
-                    command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
-                    else
-                    command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = iSo;
+                    //string whereSolicitud = "WHERE folio = @FolioIdSolicitud";
+                    //if (iSo > 0)
+                    //    whereSolicitud = "WHERE idSolicitud = @FolioIdSolicitud";
+                    //SqlCommand command = new SqlCommand("SELECT ISNULL(sol.idSolicitud,0) idSolicitud,sol.fechaSolicitud,ISNULL(sol.folio,'') folio ,ISNULL(sol.idPropietarioGrua,0) idPropietarioGrua,ISNULL(sol.idPension,0) idPension,ISNULL(sol.idTramoUbicacion,0) idTramoUbicacion, " +
+                    //                                    "sol.vehiculoKm, sol.idInfraccion " +
+                    //                                    "FROM solicitudes AS sol " +
+                    //                                    whereSolicitud, connection);
+                    //if(!folio.IsNullOrEmpty())
+                    //command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
+                    //else
+                    //command.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = iSo;
 
-                    command.CommandType = System.Data.CommandType.Text;
-                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
-                    {
-                        while (reader.Read())
-                        {
-                            solicitud.idSolicitud = reader["idSolicitud"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"]) : 0;
-                            solicitud.idInfraccion = reader["idInfraccion"] != DBNull.Value ? Convert.ToInt32(reader["idInfraccion"]) : 0;
+                    //command.CommandType = System.Data.CommandType.Text;
+                    //using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    //{
+                    //    while (reader.Read())
+                    //    {
+                    //        solicitud.idSolicitud = reader["idSolicitud"] != DBNull.Value ? Convert.ToInt32(reader["idSolicitud"]) : 0;
+                    //        solicitud.idInfraccion = reader["idInfraccion"] != DBNull.Value ? Convert.ToInt32(reader["idInfraccion"]) : 0;
 
-                            solicitud.idPropietarioGrua = reader["idPropietarioGrua"] != DBNull.Value ? Convert.ToInt32(reader["idPropietarioGrua"]) : 0;
-                            solicitud.FolioSolicitud = reader["folio"].ToString();
-                            solicitud.idPension = reader["idPension"] != DBNull.Value ? Convert.ToInt32(reader["idPension"]) : 0;
-                            solicitud.idTramoUbicacion = reader["idTramoUbicacion"] != DBNull.Value ? Convert.ToInt32(reader["idTramoUbicacion"]) : 0;
-                            solicitud.kilometro = reader["vehiculoKm"].ToString();
-                            solicitud.fechaSolicitud = reader["fechaSolicitud"] != DBNull.Value ? Convert.ToDateTime(reader["fechaSolicitud"]) : DateTime.MinValue;
+                    //        solicitud.idPropietarioGrua = reader["idPropietarioGrua"] != DBNull.Value ? Convert.ToInt32(reader["idPropietarioGrua"]) : 0;
+                    //        solicitud.FolioSolicitud = reader["folio"].ToString();
+                    //        solicitud.idPension = reader["idPension"] != DBNull.Value ? Convert.ToInt32(reader["idPension"]) : 0;
+                    //        solicitud.idTramoUbicacion = reader["idTramoUbicacion"] != DBNull.Value ? Convert.ToInt32(reader["idTramoUbicacion"]) : 0;
+                    //        solicitud.kilometro = reader["vehiculoKm"].ToString();
+                    //        solicitud.fechaSolicitud = reader["fechaSolicitud"] != DBNull.Value ? Convert.ToDateTime(reader["fechaSolicitud"]) : DateTime.MinValue;
 
-                        }
-                    }
+                    //    }
+                    //}
 
-                    int idDeposito = -1;
-                    using (SqlConnection insertConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
-                    {
-                        insertConnection.Open();
-                        SqlCommand insertCommand = new SqlCommand("INSERT INTO depositos " +
-                                                                "(idSolicitud,folio,idTramo,idPension,idInfraccion,km,liberado,IdConcesionario,idDelegacion,idDependenciaGenera,estatus,esExterno) " +
-                                                                "VALUES (@idSolicitud,@folio,@idTramo,@idPension,@idInfraccion,@km,@liberado,@idPropietarioGruas,@idDelegacion,@idDependencia,@estatus,@esExterno);" +
-                                                                "SELECT SCOPE_IDENTITY()", insertConnection);
-                        insertCommand.Parameters.Add(new SqlParameter("@idSolicitud", SqlDbType.Int)).Value = solicitud.idSolicitud;
-                        insertCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
-                        insertCommand.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = solicitud.idInfraccion;
+                    //int idDeposito = -1;
+                    //using (SqlConnection insertConnection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                    //{
+                    //    insertConnection.Open();
+                    //    SqlCommand insertCommand = new SqlCommand("INSERT INTO depositos " +
+                    //                                            "(idSolicitud,folio,idTramo,idPension,idInfraccion,km,liberado,IdConcesionario,idDelegacion,idDependenciaGenera,estatus,esExterno) " +
+                    //                                            "VALUES (@idSolicitud,@folio,@idTramo,@idPension,@idInfraccion,@km,@liberado,@idPropietarioGruas,@idDelegacion,@idDependencia,@estatus,@esExterno);" +
+                    //                                            "SELECT SCOPE_IDENTITY()", insertConnection);
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idSolicitud", SqlDbType.Int)).Value = solicitud.idSolicitud;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = solicitud.idInfraccion;
 
-                        insertCommand.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar, 50)).Value = solicitud.FolioSolicitud;
-                        insertCommand.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = solicitud.idTramoUbicacion;
-                        insertCommand.Parameters.Add(new SqlParameter("@idPropietarioGruas", SqlDbType.Int)).Value = solicitud.idPropietarioGrua;
-                        insertCommand.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = solicitud.idPension;
-                        insertCommand.Parameters.Add(new SqlParameter("@km", SqlDbType.NVarChar)).Value = solicitud.kilometro;
-                        insertCommand.Parameters.Add(new SqlParameter("@liberado", SqlDbType.Int)).Value = 0;
-                        insertCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
-                        insertCommand.Parameters.Add(new SqlParameter("@esExterno", SqlDbType.Bit)).Value = 0;
-                        insertCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar, 50)).Value = solicitud.FolioSolicitud;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = solicitud.idTramoUbicacion;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idPropietarioGruas", SqlDbType.Int)).Value = solicitud.idPropietarioGrua;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idPension", SqlDbType.Int)).Value = solicitud.idPension;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@km", SqlDbType.NVarChar)).Value = solicitud.kilometro;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@liberado", SqlDbType.Int)).Value = 0;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@esExterno", SqlDbType.Bit)).Value = 0;
+                    //    insertCommand.Parameters.Add(new SqlParameter("@idDependencia", SqlDbType.Int)).Value = idDependencia;
 
-                        idDeposito = Convert.ToInt32(insertCommand.ExecuteScalar());
-                        solicitud.IdDeposito = idDeposito;
-                    }
+                    //    idDeposito = Convert.ToInt32(insertCommand.ExecuteScalar());
+                    //    solicitud.IdDeposito = idDeposito;
+                    //}
 
                 }
                 catch (Exception ex)

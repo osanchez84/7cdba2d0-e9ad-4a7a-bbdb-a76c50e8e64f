@@ -21,85 +21,15 @@ namespace GuanajuatoAdminUsuarios.Services
             _sqlClientConnectionBD = sqlClientConnectionBD;
         }
         public string GuardarSolicitud(SolicitudDepositoModel model, int idOficina, string oficina, string abreviaturaMunicipio, int anio, int dependencia)
-
         {
-            int result = 0;
-
-            string strQuery = @"INSERT INTO solicitudes( 
-                                        [fechaSolicitud]
-                                        ,[idInfraccion]
-                                        ,[idTipoVehiculo]
-                                        ,[idPropietarioGrua]
-                                        ,[idOficial]
-                                        ,[idEvento]
-                                        ,[idTipoUsuario]
-                                        ,[solicitanteNombre]
-                                        ,[solicitanteAp]
-                                        ,[solicitanteAm]
-                                        ,[solicitanteColonia] 
-                                        ,[solicitanteCalle] 
-                                        ,[solicitanteNumero]
-                                        ,[solicitanteTel]
-                                        ,[idEntidad]
-                                        ,[idMunicipio]
-                                        ,[idMotivoAsignacion]
-                                        ,[vehiculoNumero] 
-                                        ,[vehiculoCalle] 
-                                        ,[vehiculoColonia] 
-                                        ,[vehiculoKm]  
-                                        ,[idCarreteraUbicacion]  
-                                        ,[idTramoUbicacion] 
-                                        ,[idEntidadUbicacion]
-                                        ,[idMunicipioUbicacion]
-                                        ,[idPension]
-                                        ,[vehiculoInterseccion]  
-                                        ,[fechaActualizacion]
-                                        ,[actualizadoPor]
-                                        ,[estatus]
-                                        ,[idServicioRequiere]
-                                        ,BanderaTransito)
-                                VALUES (
-                                        @fechaSolicitud
-                                        ,@idInfraccion
-                                        ,@idTipoVehiculo
-                                        ,@idPropietaroGrua
-                                        ,@idOficial
-                                        ,@idDescripcionEvento
-                                        ,@idTipoUsuario
-                                        ,@nombreUsuario
-                                        ,@apellidoPaternoUsuario
-                                        ,@apellidoMaternoUsuario
-                                        ,@coloniaUsuario
-                                        ,@calleUsuario
-                                        ,@numeroUsuario
-                                        ,@telefonoUsuario
-                                        ,@idEntidad
-                                        ,@idMunicipio
-                                        ,@idMotivoAsignacion
-                                        ,@numeroUbicacion
-                                        ,@calleUbicacion
-                                        ,@coloniaUbicacion
-                                        ,@kilometroUbicacion
-                                        ,@idCarretera
-                                        ,@idTramo
-                                        ,@idEntidadUbicacion
-                                        ,@idMunicipioUbicacion
-                                        ,@idPensionUbicacion
-                                        ,@interseccion
-                                        ,@fechaActualizacion
-                                        ,@actualizadoPor
-                                        ,@estatus
-                                        ,@idServicioRequiere
-                                        ,@Dependencia);
-                                    SELECT SCOPE_IDENTITY();"; // Obtener el último ID insertado
+            string consecutivo = string.Empty;
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(strQuery, connection);
-                    command.CommandType = CommandType.Text;
-                    //command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    SqlCommand command = new SqlCommand("usp_InsertaSolicitud", connection);
+                    command.CommandType = CommandType.StoredProcedure;
                     DateTime fechaSol = model.fechaSolicitud;
                     TimeSpan horaSol = model.horaSolicitud;
                     DateTime fechaHoraSolicitud = fechaSol.Date + horaSol;
@@ -110,108 +40,115 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idDescripcionEvento", SqlDbType.Int)).Value = (object)model.idDescripcionEvento ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoUsuario", SqlDbType.Int)).Value = (object)model.idTipoUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@nombreUsuario", SqlDbType.NVarChar)).Value = (object)model.nombreUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoPaternoUsuario", SqlDbType.NVarChar)).Value = (object)model.apellidoPaternoUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@apellidoMaternoUsuario", SqlDbType.NVarChar)).Value = (object)model.apellidoMaternoUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@coloniaUsuario", SqlDbType.NVarChar)).Value = (object)model.coloniaUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@calleUsuario", SqlDbType.NVarChar)).Value = (object)model.calleUsuario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroUsuario", SqlDbType.NVarChar)).Value = (object)model.numeroUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@nombreUsuario", SqlDbType.VarChar)).Value = (object)model.nombreUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoPaternoUsuario", SqlDbType.VarChar)).Value = (object)model.apellidoPaternoUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@apellidoMaternoUsuario", SqlDbType.VarChar)).Value = (object)model.apellidoMaternoUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@coloniaUsuario", SqlDbType.VarChar)).Value = (object)model.coloniaUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@calleUsuario", SqlDbType.VarChar)).Value = (object)model.calleUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroUsuario", SqlDbType.VarChar)).Value = (object)model.numeroUsuario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEntidad", SqlDbType.Int)).Value = (object)model.idEntidad ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipio", SqlDbType.Int)).Value = (object)model.idMunicipio ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@telefonoUsuario", SqlDbType.NVarChar)).Value = (object)model.telefonoUsuario ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@telefonoUsuario", SqlDbType.VarChar)).Value = (object)model.telefonoUsuario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMotivoAsignacion", SqlDbType.Int)).Value = (object)model.idMotivoAsignacion ?? DBNull.Value;
-                    
-                    command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@idServicioRequiere", SqlDbType.Int)).Value = (object)model.idServicioRequiere ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@kilometroUbicacion", SqlDbType.NVarChar)).Value = (object)model.kilometroUbicacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@interseccion", SqlDbType.NVarChar)).Value = (object)model.interseccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.VarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.VarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.VarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@kilometroUbicacion", SqlDbType.VarChar)).Value = (object)model.kilometroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@interseccion", SqlDbType.VarChar)).Value = (object)model.interseccion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idCarretera", SqlDbType.Int)).Value = (object)model.IdCarretera ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTramo", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idEntidadUbicacion", SqlDbType.Int)).Value = (object)model.idEntidadUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@Dependencia", SqlDbType.Int)).Value = dependencia;
-                    result = Convert.ToInt32(command.ExecuteScalar()); // Valor de Id de este mismo registro
+                    command.Parameters.Add(new SqlParameter("@abreviaturaMunicipio", SqlDbType.VarChar)).Value = abreviaturaMunicipio ;
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.Int)).Value = anio;
+                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.Int)).Value = idOficina;
 
-                    //Se busca el ultimo consecutivo
-                    command = new SqlCommand("select id,consecutivo from foliosSolicitud where abreviaturaMunicipio =@abreviaturaMunicipio and anio=@anio and idDelegacion=@idDelegacion", connection)
-                    {
-                        CommandType = CommandType.Text
-                    };
-                    command.Parameters.Add(new SqlParameter("@abreviaturaMunicipio", SqlDbType.VarChar)).Value = abreviaturaMunicipio;
-                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.VarChar)).Value = anio;
-                    command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.VarChar)).Value = idOficina;
+                    ////Se busca el ultimo consecutivo
+                    //command = new SqlCommand("select id,consecutivo from foliosSolicitud where abreviaturaMunicipio =@abreviaturaMunicipio and anio=@anio and idDelegacion=@idDelegacion", connection)
+                    //{
+                    //    CommandType = CommandType.Text
+                    //};
+                    //command.Parameters.Add(new SqlParameter("@abreviaturaMunicipio", SqlDbType.VarChar)).Value = abreviaturaMunicipio;
+                    //command.Parameters.Add(new SqlParameter("@anio", SqlDbType.VarChar)).Value = anio;
+                    //command.Parameters.Add(new SqlParameter("@idDelegacion", SqlDbType.VarChar)).Value = idOficina;
 
-                    int consecutivo = -1;
-                    int idFolioSolicitud = -1;
+                    //int consecutivo = -1;
+                    //int idFolioSolicitud = -1;
 
+
+                    //using (SqlDataReader reader = command.ExecuteReader())
+                    //{
+                    //    if (reader.Read()) // Intenta leer un registro del resultado
+                    //    {
+                    //        idFolioSolicitud = reader["id"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["id"]);
+                    //        consecutivo = reader["consecutivo"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["consecutivo"]);
+                    //    }
+                    //}
+
+                    //if (consecutivo == -1)
+                    //    throw new Exception("No se pudo crear el folio ya que no se encontraron registros con los datos de usuario");
+
+                    ////Se incrementa en 1 el consecutivo
+                    //consecutivo++;
+
+                    ////Se completa con ceros a la izquierda
+                    //string consecutivoConCeros = consecutivo.ToString("D5");
+                    //string finalFolio = dependencia == (int)DependenciaEnum.PEC ? "-TTO" : "-TPTE";
+                    //string anio2 = "/" + (anio % 100);
+
+                    //string newFolio = $"{abreviaturaMunicipio}{consecutivoConCeros}{anio2}{finalFolio}";
+
+                    ////Se actualiza el consecutivo en la tabla de foliosSolicitud
+                    //command = new SqlCommand(@"update foliosSolicitud set consecutivo=@consecutivo where id=@id", connection);
+                    //command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = idFolioSolicitud;
+                    //command.Parameters.Add(new SqlParameter("@consecutivo", SqlDbType.Int)).Value = consecutivo;
+                    //command.CommandType = CommandType.Text;
+                    //int rowsAffected = command.ExecuteNonQuery();
+                    //if (rowsAffected <= 0)
+                    //    throw new Exception("No se pudo crear el folio.");
+
+
+
+                    //SqlCommand command2 = new SqlCommand(@"
+                    //        update solicitudes set folio=@folio where idSolicitud=@id
+                    //                    ", connection);
+                    //command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
+                    //command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
+                    //command2.CommandType = CommandType.Text;
+                    //rowsAffected = command2.ExecuteNonQuery();
+
+                    //if (rowsAffected > 0)
+                    //{
+                    //    return newFolio;
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception("No se pudo crear el folio.");
+                    //}
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read()) // Intenta leer un registro del resultado
-                        {
-                            idFolioSolicitud = reader["id"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["id"]);
-                            consecutivo = reader["consecutivo"] == System.DBNull.Value ? -1 : Convert.ToInt32(reader["consecutivo"]);
-                        }
-                    }
-
-                    if (consecutivo == -1)
-                        throw new Exception("No se pudo crear el folio ya que no se encontraron registros con los datos de usuario");
-
-                    //Se incrementa en 1 el consecutivo
-                    consecutivo++;
-
-                    //Se completa con ceros a la izquierda
-                    string consecutivoConCeros = consecutivo.ToString("D5");
-                    string finalFolio = dependencia == (int)DependenciaEnum.PEC ? "-TTO" : "-TPTE";
-                    string anio2 = "/" + (anio % 100);
-
-                    string newFolio = $"{abreviaturaMunicipio}{consecutivoConCeros}{anio2}{finalFolio}";
-
-                    //Se actualiza el consecutivo en la tabla de foliosSolicitud
-                    command = new SqlCommand(@"update foliosSolicitud set consecutivo=@consecutivo where id=@id", connection);
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = idFolioSolicitud;
-                    command.Parameters.Add(new SqlParameter("@consecutivo", SqlDbType.Int)).Value = consecutivo;
-                    command.CommandType = CommandType.Text;
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if (rowsAffected <= 0)
-                        throw new Exception("No se pudo crear el folio.");
-
-
-
-                    SqlCommand command2 = new SqlCommand(@"
-                            update solicitudes set folio=@folio where idSolicitud=@id
-                                        ", connection);
-                    command2.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = (object)result ?? DBNull.Value;
-                    command2.Parameters.Add(new SqlParameter("@folio", SqlDbType.VarChar)).Value = (object)newFolio ?? DBNull.Value;
-                    command2.CommandType = CommandType.Text;
-                    rowsAffected = command2.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        return newFolio;
-                    }
-                    else
-                    {
-                        throw new Exception("No se pudo crear el folio.");
+                        if (reader.Read())
+                            consecutivo= reader["FolioConsecutivo"].ToString();
                     }
                 }
                 catch (SqlException ex)
                 {
 
                     Console.WriteLine("Error de SQL: " + ex.Message);
-                    return null;
                 }
                 finally
                 {
                     // Cerrar la conexión en el bloque finally
                     connection.Close();
                 }
+
+                return consecutivo;
             }
         }
         private string ObtenerFolioSolicitud(SqlConnection connection, int solicitudId)

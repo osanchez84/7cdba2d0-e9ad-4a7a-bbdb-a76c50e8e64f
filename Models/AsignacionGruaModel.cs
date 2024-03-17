@@ -82,7 +82,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string numeroInventario { get; set; }
         public string inventarios { get; set; }
         public int IdDeposito { get; set; }
-        public IFormFile MyFile { get; set; }
+		public int estatusSolicitud { get; set; }
+
+		public IFormFile MyFile { get; set; }
 
 
     }

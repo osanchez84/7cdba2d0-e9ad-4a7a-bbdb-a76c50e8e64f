@@ -83,13 +83,14 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito,IdGrua,IdConcesionario) {
-        console.log("CONC",IdConcesionario)
-        //Si la solicitud no tiege grua asociada se oculta el boton del modal
-        if(IdGrua===undefined || IdGrua<=0)
-        $('#divGruaModal').hide();
-        else
-           $('#divGruaModal').show();
+    function ShowUpdatePopUp(Id, IdDeposito, IdGrua, IdConcesionario, SolicitudEstatus) {
+        console.log("CONC", SolicitudEstatus);
+        //Si la solicitud tiene un estatus menor que 3 se oculta el boton del modal
+        if (SolicitudEstatus === undefined || SolicitudEstatus <= 2) {
+            $('#divGruaModal').hide();
+        } else {
+            $('#divGruaModal').show();
+        }
 
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
@@ -97,6 +98,7 @@
 
         $('#myUpdateModal').modal('show');
     }
+
 
     function downLoadPdf(Id) {
 
@@ -129,8 +131,7 @@
 
     function EditarTemplate(data){
         if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
-            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
-        else 
+return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}','${data.SolicitudEstatus}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`;        else 
         return ""
 
 

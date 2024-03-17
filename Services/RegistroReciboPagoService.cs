@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _infraccionesService = infraccionesService;
         }
 
-        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion)
+        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion, int idDependencia)
         {
             //
             List<RegistroReciboPagoModel> ListaInfracciones = new List<RegistroReciboPagoModel>();
@@ -33,15 +33,18 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             pveh.apellidoMaterno AS apellidoMaterno1, pinf.nombre AS nombre2, 
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
                                                             e.estatusInfraccion, cde.delegacion,v.serie
-                                                        FROM infracciones AS i 
-                                                        LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
-                                                        LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
-                                                        LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
-                                                        LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
-                                                        LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
-                                                        WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada')", connection);
+                                                            FROM infracciones AS i 
+                                                            LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
+                                                            LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
+                                                            LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
+                                                            LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
+                                                            LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
+                                                            WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada')
+                                                            AND i.transito = @transito", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
+                    command.Parameters.Add(new SqlParameter("@transito", SqlDbType.NVarChar)).Value = idDependencia;
+
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -107,19 +110,21 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     SqlCommand command1 = new SqlCommand(@"declare 
-                                                                @date datetime,
-                                                                @calificacion decimal,
-                                                                @uma decimal 
+                                                            @date datetime,
+                                                            @calificacion decimal,
+                                                            @uma float,
+                                                            @year int;
 
-                                                                select top 1 @date= fechaInfraccion from infracciones where idinfraccion=@Id
+                                                        select @date = fechaInfraccion from infracciones where idinfraccion = @Id;
 
+                                                        select @calificacion = sum(calificacion) from motivosInfraccion where idInfraccion = @Id;
 
-                                                                select @calificacion= sum(calificacion) from motivosInfraccion where idInfraccion=@Id
+                                                        set @year = year(@date);
 
-                                                                select top 1 @uma= salario from catSalariosMinimos where fecha<=(@date)
-                                                                and estatus=1 order by fecha desc
+                                                        select @uma = salario from catSalariosMinimos where anio = @year and estatus = 1;
 
-                                                                select (@calificacion * @uma) monto", connection);
+                                                        select (@calificacion * @uma) as monto;
+", connection);
                     command1.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
                     command1.CommandType = CommandType.Text;
 
@@ -127,7 +132,23 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            infraccion.Monto = (reader["monto"] != DBNull.Value) ? float.Parse(reader["monto"].ToString()) : 0.0f;
+                            if (reader["monto"] != DBNull.Value)
+                            {
+                                if (float.TryParse(reader["monto"].ToString(), out float montoFloat))
+                                {
+                                    infraccion.Monto = (float)Math.Round(montoFloat, 2);
+                                }
+                                else
+                                {
+
+                                    infraccion.Monto = 0.0f;
+                                }
+                            }
+                            else
+                            {
+                                infraccion.Monto = 0.0f;
+                            }
+
 
                         }
 

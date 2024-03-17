@@ -113,32 +113,35 @@
             </div>
             <div style="clear: both;"></div>
         </div>
-
+                     @if (Model.idPropietarioGrua != 0)
+                     {
         <div class="row justify-content-between mb-1">
             <div class="col-12 col-md-auto mt-4 mb-2">
                 <h5 class="px-4"><b>Listado de Grúas utilizadas</b></h5>
                 <h6 class="px-4 text-muted">Captura las grúas utlizadas y sus servicios</h6>
             </div>
-            <div class="col">
-                <div class="row justify-content-around justify-content-md-end  align-items-center my-2">
-                    <div class="col-auto btnOutline btnOutlinePrimary">
-                    </div>
+            
+                <div class="col">
+                    <div class="row justify-content-around justify-content-md-end  align-items-center my-2">
+                        <div class="col-auto btnOutline btnOutlinePrimary">
+                        </div>
 
-                    <div class="col-auto btnOutline btnOutlinePrimary mx-4">
-                        <button onclick="agregarGrua()">
-                            <h6 class="m-0"><i class="icon-addGrua me-2"></i><b>Agregar grúa</b></h6>
-                        </button>
-                    </div>
+                        <div class="col-auto btnOutline btnOutlinePrimary mx-4">
+                            <button onclick="agregarGrua()">
+                                <h6 class="m-0"><i class="icon-addGrua me-2"></i><b>Agregar grúa</b></h6>
+                            </button>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="tablaGruas">
+                </div>
+                <div class="row">
+                    <div id="tablaGruas">
                 <partial name="_ListaGruas" model="Model" />
             </div>
 
         </div>
+        }
         <form id="observacionesForm">
             <div class="row px-4">
                 <div class="col-12 mb-4">

@@ -40,10 +40,10 @@
 
     <div class="col-12 col-md-2">
         <div class="controlForm my-3">
-            @(Html.Kendo().TextBoxFor(m=>m.Monto)
+            @(Html.Kendo().TextBox()
+            .Name("MontoInput")
                 .Label(l => l.Content("Monto:"))
                 .Placeholder("monto Pagado")
-                .Value("$" + Model.Monto)
                 .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly" })
                 )
 
@@ -99,7 +99,7 @@
             data: {
                 IdInfraccion: $("#IdInfraccion").val(),
                 ReciboPago: $("#ReciboPago").val(),
-                Monto: $("#Monto").val(),
+                Monto: $("#MontoInput").val(),
                 FechaPago: $("#FechaPago").val(),
                 LugarPago: $("#LugarPago").val()
             },
@@ -148,7 +148,7 @@
                         var importe = response.result.MT_ConsultarDocumento_res.result.IMPORTE;
 
                         $('#FechaPago').data("kendoDateTimePicker").value(new Date(fechaPago));
-                        $('#Monto').data("kendoTextBox").value(importe);
+                        $('#MontoInput').data("kendoTextBox").value(importe);
                     } else {
                         // Mostrar mensaje específico cuando el servicio no responda
                         $('#mensajeError').text("El servicio no está respondiendo en este momento. Por favor, intenta más tarde.");

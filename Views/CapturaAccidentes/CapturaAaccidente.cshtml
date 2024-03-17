@@ -287,6 +287,7 @@
 			<div class="modal-dialog modal-xl" role="document">
 				<div class="modal-content">
 					<div class="modal-body" id="ModalBodyAgregarVehiculo">
+						
 					</div>
 				</div>
 			</div>
@@ -537,7 +538,7 @@
 			contentType: "application/json; charset=utf-8",
 			dataType: "html",
 			success: function (data) {
-				$('#ModalBodymodalComplementoVehiculo').html(data);
+				$('#ModalBodymodalComplementoVehiculo').html(data);				
 				$('#modalComplementoVehiculo').modal('show');
 				hideLoading();
 			}, error: function () {

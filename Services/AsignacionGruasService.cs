@@ -262,6 +262,8 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                                                ISNULL(A.folio,'') folio ,
 		                                                                A.observaciones,
 		                                                                A.numeroInventario,
+                                                                        A.estatusSolicitud,
+                                                                        B.idPropietarioGrua,
 		                                                                inf.inventario,
 		                                                                inf.idInfraccion, 
 		                                                                inf.idVehiculo,
@@ -313,8 +315,17 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
                             solicitud.inventarios = searchReader["inventario"] is DBNull ? "":searchReader["inventario"].ToString();
+							solicitud.estatusSolicitud = int.Parse(searchReader["estatusSolicitud"].ToString());
+							if (!searchReader.IsDBNull(searchReader.GetOrdinal("idPropietarioGrua")))
+							{
+								solicitud.idPropietarioGrua = searchReader.GetInt32(searchReader.GetOrdinal("idPropietarioGrua"));
+							}
+							else
+							{
+								solicitud.idPropietarioGrua = 0;
+							}
 
-                            solicitud.observaciones = searchReader["observaciones"].ToString();
+							solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.IdDeposito = int.Parse(searchReader["idDeposito"].ToString());
                             //HMG - NUEVOS CAMPOS
                             solicitud.idInfraccion = searchReader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(searchReader["idInfraccion"].ToString());
@@ -976,6 +987,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                                                A.observaciones,
 		                                                                A.numeroInventario,
 		                                                                A.inventario,
+                                                                        B.idPropietarioGrua,
 		                                                                inf.idInfraccion, 
 		                                                                inf.idVehiculo,
 		                                                                inf.idPersona,
@@ -1018,7 +1030,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
 
-
+                            if (!searchReader.IsDBNull(searchReader.GetOrdinal("idPropietarioGrua")))
+                            {
+                                solicitud.idPropietarioGrua = searchReader.GetInt32(searchReader.GetOrdinal("idPropietarioGrua"));
+                            }
+                            else
+                            {
+                                solicitud.idPropietarioGrua = 0;
+                            }
                             solicitud.idInfraccion = searchReader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(searchReader["idInfraccion"].ToString());
                             solicitud.IdVehiculo = (int)(searchReader["idVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(searchReader["idVehiculo"].ToString()));
                             solicitud.folioInfraccion = searchReader["FolioVinculado"].ToString();

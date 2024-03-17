@@ -108,19 +108,21 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     SqlCommand command1 = new SqlCommand(@"declare 
-                                                                @date datetime,
-                                                                @calificacion decimal,
-                                                                @uma decimal 
+                                                            @date datetime,
+                                                            @calificacion decimal,
+                                                            @uma float,
+                                                            @year int;
 
-                                                                select top 1 @date= fechaInfraccion from infracciones where idinfraccion=@Id
+                                                        select @date = fechaInfraccion from infracciones where idinfraccion = @Id;
 
+                                                        select @calificacion = sum(calificacion) from motivosInfraccion where idInfraccion = @Id;
 
-                                                                select @calificacion= sum(calificacion) from motivosInfraccion where idInfraccion=@Id
+                                                        set @year = year(@date);
 
-                                                                select top 1 @uma= salario from catSalariosMinimos where fecha<=(@date)
-                                                                and estatus=1 order by fecha desc
+                                                        select @uma = salario from catSalariosMinimos where anio = @year and estatus = 1;
 
-                                                                select (@calificacion * @uma) monto", connection);
+                                                        select (@calificacion * @uma) as monto;
+", connection);
                     command1.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
                     command1.CommandType = CommandType.Text;
 
@@ -128,7 +130,23 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            infraccion.Monto = (reader["monto"] != DBNull.Value) ? float.Parse(reader["monto"].ToString()) : 0.0f;
+                            if (reader["monto"] != DBNull.Value)
+                            {
+                                if (float.TryParse(reader["monto"].ToString(), out float montoFloat))
+                                {
+                                    infraccion.Monto = (float)Math.Round(montoFloat, 2);
+                                }
+                                else
+                                {
+
+                                    infraccion.Monto = 0.0f;
+                                }
+                            }
+                            else
+                            {
+                                infraccion.Monto = 0.0f;
+                            }
+
 
                         }
 

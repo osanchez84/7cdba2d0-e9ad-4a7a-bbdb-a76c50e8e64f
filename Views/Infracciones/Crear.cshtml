@@ -210,10 +210,8 @@
 										
 										<label class="text-muted">Hora:</label>
 										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)											
-											.Label(l => l.Content("Hora:"))
-											.DateInput(true)
-											
-											.Format("HH:mm")
+											 .Format("HH:mm")                                   
+											 .Label(l => l.Content("Hora <b>(obligatorio)</b>:"))                                  
 											.Culture("es-ES")
 											.Value("")
 											.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })

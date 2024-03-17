@@ -128,7 +128,6 @@
 
 
     function EditarTemplate(data){
-        console.log("EDTEMPDAT", data)
         if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
             return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
         else 

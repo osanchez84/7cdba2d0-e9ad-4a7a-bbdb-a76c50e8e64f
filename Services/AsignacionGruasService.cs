@@ -534,7 +534,7 @@ namespace GuanajuatoAdminUsuarios.Services
 
             return modelList;
         }
-        public int UpdateDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo, string horaInicioInsert, string horaArriboInsert, string horaTerminoInsert)
+        public int UpdateDatosGrua(IFormCollection formData, int abanderamiento, int arrastre, int salvamento, int iDep, int iSo, string horaInicioInsertEdit, string horaArriboInsertEdit, string horaTerminoInsertEdit)
         {
             int result = 0;
 
@@ -556,22 +556,22 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 actualizadoPor  =   @actualizadoPor,
                                                                 fechaActualizacion= @fechaActualizacion,
                                                                 estatus         =   @estatus
-                                WHERE idDeposito = " + iDep.ToString();
+                                WHERE idAsignacion = @idAsignacion";
 
                     SqlCommand command = new SqlCommand(query, connection);
 
                     DateTime fechaInicio = DateTime.Parse(formData["fechaInicio"]);
-                    TimeSpan horaInicio = TimeSpan.Parse(Convert.ToDateTime(formData["horaInicioInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    TimeSpan horaInicio = TimeSpan.Parse(Convert.ToDateTime(formData["horaInicioInsertEdit"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
                     DateTime fechaHoraInicio = fechaInicio.Date.Add(horaInicio);
                     command.Parameters.AddWithValue("@fechaInicio", fechaHoraInicio);
 
                     DateTime fechaArribo = DateTime.Parse(formData["fechaArribo"]);
-                    TimeSpan horaArribo = TimeSpan.Parse(Convert.ToDateTime(formData["horaArriboInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    TimeSpan horaArribo = TimeSpan.Parse(Convert.ToDateTime(formData["horaArriboInsertEdit"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
                     DateTime fechaHoraArribo = fechaArribo.Date.Add(horaArribo);
                     command.Parameters.AddWithValue("@fechaArribo", fechaHoraArribo);
 
                     DateTime fechaFinal = DateTime.Parse(formData["fechaFinal"]);
-                    TimeSpan horaTermino = TimeSpan.Parse(Convert.ToDateTime(formData["horaTerminoInsert"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
+                    TimeSpan horaTermino = TimeSpan.Parse(Convert.ToDateTime(formData["horaTerminoInsertEdit"].ToString().Split("GMT")[0].Trim()).ToString("HH:mm"));
                     DateTime fechaHoraFinal = fechaFinal.Date.Add(horaTermino);
                     command.Parameters.AddWithValue("@fechaFinal", fechaHoraFinal);
 
@@ -583,6 +583,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@minutosManiobra", int.Parse(formData["tiempoManiobras"].ToString()));
                     command.Parameters.AddWithValue("@idDeposito", iDep);
                     //command.Parameters.AddWithValue("@idSolicitud", iSo);
+                    command.Parameters.AddWithValue("@idAsignacion", int.Parse(formData["idAsignacion"].ToString()));
 
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
                     command.Parameters.AddWithValue("@actualizadoPor", 1);

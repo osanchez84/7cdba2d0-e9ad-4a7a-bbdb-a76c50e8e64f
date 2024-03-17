@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _infraccionesService = infraccionesService;
         }
 
-        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion, int idDependencia)
+        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion , string corp)
         {
             //
             List<RegistroReciboPagoModel> ListaInfracciones = new List<RegistroReciboPagoModel>();
@@ -33,18 +33,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                                             pveh.apellidoMaterno AS apellidoMaterno1, pinf.nombre AS nombre2, 
                                                             pinf.apellidoPaterno AS apellidoPaterno2, pinf.apellidoMaterno AS apellidoMaterno2,
                                                             e.estatusInfraccion, cde.delegacion,v.serie
-                                                            FROM infracciones AS i 
-                                                            LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
-                                                            LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
-                                                            LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
-                                                            LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
-                                                            LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
-                                                            WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada')
-                                                            AND i.transito = @transito", connection);
+                                                        FROM infracciones AS i 
+                                                        LEFT JOIN catEstatusInfraccion AS e ON i.idEstatusInfraccion = e.idEstatusInfraccion
+                                                        LEFT JOIN vehiculos AS v ON v.idVehiculo = i.idVehiculo
+                                                        LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
+                                                        LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
+                                                        LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
+                                                        WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada') and i.transito = @corp", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
-                    command.Parameters.Add(new SqlParameter("@transito", SqlDbType.NVarChar)).Value = idDependencia;
-
+                    command.Parameters.Add(new SqlParameter("@corp", SqlDbType.Int)).Value = Convert.ToInt32(corp);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {

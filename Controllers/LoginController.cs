@@ -255,7 +255,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
                             string idOfic = json[0].clave_depOficina;
                             // string idDependenciaStr = json[0].tipo_oficina;
                             string idUsuario = json[0].idUsuario;
-                            string TipoOfi = json[0].tipo_oficina;
+                            string TipoOfi = json[0].tipo_oficina=="2"?"0":"1";
 
                             if (int.TryParse(idOficinaStr, out int idOficina))
                             {

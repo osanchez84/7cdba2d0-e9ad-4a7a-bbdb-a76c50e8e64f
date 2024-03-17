@@ -53,9 +53,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
         [HttpPost]
         public ActionResult ObtenerInfracciones(RegistroReciboPagoModel model, string FolioInfraccion)
         {
-            int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
 
-            var ListInfraccionesModel = _registroReciboPagoService.ObtInfracciones(FolioInfraccion, idDependencia);
+            var q = User.FindFirst(CustomClaims.TipoOficina).Value;
+
+            var ListInfraccionesModel = _registroReciboPagoService.ObtInfracciones(FolioInfraccion,q);
             return Json(ListInfraccionesModel);
 
         }

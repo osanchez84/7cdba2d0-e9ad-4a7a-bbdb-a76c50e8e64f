@@ -3048,7 +3048,86 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
+
+        public bool UpdateFolioS(string id, string folio)
+        {
+            var result = true;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infracciones SET folioinfraccion = @folio WHERE idInfraccion = @idAccidente";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", id);
+                    command.Parameters.AddWithValue("@folio", folio);
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+
+        }
+
+
+
+
+        public bool validarFolio(string folio)
+        {
+            var result = false;
+            var count = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "select count(*) as result from  infracciones where folioInfraccion = @folio  and estatus = 1 and (idEstatusEnvio = 0 or idEstatusEnvio is null)";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@folio", folio);
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+
+                        while (reader.Read())
+                        {
+                            count = (int)reader["result"];
+                        }
+
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                result = count == 0;
+
+                return result;
+            }
+
+
+        }
+
+
+
+        public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
 		{
 			int result = 0;
 			DateTime fechaVencimiento = model.fechaVencimiento.Date;

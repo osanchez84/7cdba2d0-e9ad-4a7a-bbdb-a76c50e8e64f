@@ -8,7 +8,7 @@
     {
 
         <p><b>Folio:</b> @(Model.FolioInfraccion ?? "-")</p>
-        <p><b>Monto Calificacion:</b> $@(Model.Monto.HasValue ? Model.Monto.ToString() : "-")</p>
+        <p><b>Monto Calificacion:</b> @(string.IsNullOrEmpty(Model.MontoSTR) ? "-" : Model.MontoSTR)</p>
 
 
     }

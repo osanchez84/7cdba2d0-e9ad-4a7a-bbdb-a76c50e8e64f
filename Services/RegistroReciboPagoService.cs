@@ -130,22 +130,21 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
+
+
                             if (reader["monto"] != DBNull.Value)
                             {
                                 if (float.TryParse(reader["monto"].ToString(), out float montoFloat))
                                 {
-                                    infraccion.Monto = (float)Math.Round(montoFloat, 2);
+                                    infraccion.MontoSTR = montoFloat.ToString("#,##0.00");
                                 }
                                 else
                                 {
-
-                                    infraccion.Monto = 0.0f;
+                                    infraccion.MontoSTR = "0.00"; // O cualquier otro valor predeterminado si la conversión falla
                                 }
                             }
-                            else
-                            {
-                                infraccion.Monto = 0.0f;
-                            }
+
+
 
 
                         }

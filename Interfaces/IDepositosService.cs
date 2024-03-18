@@ -8,7 +8,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
     {
         string GuardarSolicitud(SolicitudDepositoModel model,int idOficina,string oficina,string abreviaturaMunicipio,int anio,int dependencia);
         SolicitudDepositoModel ObtenerSolicitudPorID(int Isol);
-        int ActualizarSolicitud(int? Isol,SolicitudDepositoModel model);
+        string ActualizarSolicitud(int? Isol,SolicitudDepositoModel model);
         int CompletarSolicitud(SolicitudDepositoModel model);
         SolicitudDepositoModel ImportarInfraccion(string folioBusquedaInfraccion, int idDependencia);
         SolicitudDepositoModel ImportarInfraccion(int folioBusquedaInfraccion,int idDependencia);

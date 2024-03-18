@@ -224,24 +224,24 @@ namespace GuanajuatoAdminUsuarios.Controllers
         }
 
 
-        public ActionResult ajax_EnviarSolicitudDeposito(int? Isol, [FromBody] SolicitudDepositoModel model)
+        public ActionResult ajax_EnviarSolicitudDeposito(int? Isol,[FromBody] SolicitudDepositoModel model)
         {
           
-                if (Isol.HasValue && Isol.Value > 0)
+                if (model.idSolicitud.HasValue && model.idSolicitud.Value > 0)
                 {
-                    // Es una actualizaci�n, as� que actualiza los datos en la base de datos
+                    // mEs una actualizaci�n, as� que actualiza los datos en la base de datos
                     // utilizando el ID 'Isol' para identificar la solicitud existente
-                    var registroActualizado = _catDepositosService.ActualizarSolicitud((int)Isol, model);
+                    var registroActualizado = _catDepositosService.ActualizarSolicitud((int)model.idSolicitud, model);
 
                     //BITACORA
                     var ip = HttpContext.Connection.RemoteIpAddress.ToString();
                     var user = Convert.ToDecimal(User.FindFirst(CustomClaims.IdUsuario).Value);
-                    _bitacoraServices.insertBitacora(registroActualizado, ip, "Depositos_EnviarSolicitudDeposito", "Actualizar", "update", user);
+                    //_bitacoraServices.insertBitacora(registroActualizado, ip, "Depositos_EnviarSolicitudDeposito", "Actualizar", "update", user);
 
-                    return Ok(registroActualizado);
+                return Json(new { success = true, data = registroActualizado,update= true });
 
-                }
-                else
+            }
+            else
             {
                 var oficina = User.FindFirst(CustomClaims.Oficina).Value;
                 int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;

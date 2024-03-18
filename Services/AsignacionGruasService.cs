@@ -988,7 +988,7 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                                                A.numeroInventario,
 		                                                                A.inventario,
                                                                         B.idPropietarioGrua,
-		                                                                inf.idInfraccion, 
+		                                                                A.idInfraccion, 
 		                                                                inf.idVehiculo,
 		                                                                inf.idPersona,
 		                                                                inf.folioInfraccion,
@@ -1012,7 +1012,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 LEFT JOIN solicitudes	B	ON A.idSolicitud = B.idSolicitud
                                                                 LEFT JOIN infracciones	inf ON B.idInfraccion = inf.idInfraccion
                                                                 LEFT JOIN vehiculos		v	ON inf.idVehiculo = v.idVehiculo
-                                                                LEFT JOIN personas		p	ON v.idPersona = p.idPersona
+                                                                LEFT JOIN personas		p	ON inf.idPersona = p.idPersona
                                                                 LEFT JOIN catMarcasVehiculos as cmv ON v.idMarcaVehiculo = cmv.idMarcaVehiculo
                                                                 LEFT JOIN catSubmarcasVehiculos as csv ON v.idSubmarca = csv.idSubmarca
                                                                 LEFT JOIN catColores  col ON v.idColor = col.idColor

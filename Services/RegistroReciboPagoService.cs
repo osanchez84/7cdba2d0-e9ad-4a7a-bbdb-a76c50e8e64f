@@ -119,9 +119,10 @@ namespace GuanajuatoAdminUsuarios.Services
 
                                                         set @year = year(@date);
 
-                                                        select @uma = salario from catSalariosMinimos where anio = @year and estatus = 1;
-
-                                                        select (@calificacion * @uma) as monto;
+SELECT top 1 @uma=format(salario,'#.##') 
+                               FROM catSalariosMinimos
+                               WHERE estatus = 1 and fecha<= @date  order by fecha desc, idSalario asc
+                                                        select (@calificacion * @uma)    as monto , @calificacion cal , @uma uma  ;
 ", connection);
                     command1.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
                     command1.CommandType = CommandType.Text;
@@ -134,9 +135,13 @@ namespace GuanajuatoAdminUsuarios.Services
 
                             if (reader["monto"] != DBNull.Value)
                             {
+
+
+
                                 if (float.TryParse(reader["monto"].ToString(), out float montoFloat))
                                 {
                                     infraccion.MontoSTR = montoFloat.ToString("#,##0.00");
+
                                 }
                                 else
                                 {

@@ -207,6 +207,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     const string SqlTransact =
                                             @"SELECT d.idVehiculo,d.numeroInventario,d.idSolicitud,d.idDeposito,d.fechaIngreso,munDep.municipio,car.carretera,tra.tramo,d.km,d.depenColonia,d.depenCalle
 											,d.depenNumero,d.depenInterseccion,
+                                            v.placas,
                                             v.modelo,v.idMarcaVehiculo,v.idTipoVehiculo,v.idColor,v.idPersona,v.serie,
                                             mv.marcaVehiculo,tv.tipoVehiculo,c.color,smv.nombreSubmarca,
                                             per.nombre,per.apellidoPaterno,per.apellidoMaterno,cde.nombreDependencia,
@@ -240,6 +241,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             model.marca = reader["marcaVehiculo"].ToString();
                             model.modelo = reader["modelo"].ToString();
                             model.serie = reader["serie"].ToString();
+                            model.placa = reader["placas"] is DBNull ? "" : reader["placas"].ToString();
                             model.submarca = reader["nombreSubmarca"].ToString();
                             model.color = reader["color"].ToString();
                             model.propietario = $"{reader["nombre"]} {reader["apellidoPaterno"]} {reader["apellidoMaterno"]}";

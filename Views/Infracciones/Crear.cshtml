@@ -13,44 +13,51 @@
 }
 
 <script>
-	var fechaActualServidor = new Date("@fechaActualISO");
-
 
 	function validacionHora() {
-		var fechaSeleccionadaString = document.getElementById('fechaInfraccion').value;
-		var fechaSeleccionada = new Date(fechaSeleccionadaString);
-		// Obtenemos el desplazamiento de la zona horaria del navegador en minutos
-		var zonaHorariaOffset = fechaSeleccionada.getTimezoneOffset();
-		// Sumamos el desplazamiento para ajustar la fecha seleccionada
-		fechaSeleccionada.setMinutes(fechaSeleccionada.getMinutes() + zonaHorariaOffset);
-
-		var horaSeleccionada = document.getElementById('dateTime').value;
+		var fechaSeleccionadaString = $("#fechaInfraccion").val();
+		var horaSeleccionada = $("#dateTime").val();
 
 		var fechaActual = new Date();
-		var horaActual = fechaActual.getHours();
-		var minutoActual = fechaActual.getMinutes();
+		var fechaSeleccionada = kendo.parseDate(fechaSeleccionadaString, "dd/MM/yyyy");
 
-		console.log('Fecha seleccionada:', fechaSeleccionada);
-		console.log('Hora seleccionada:', horaSeleccionada);
+		var horaMaxima = fechaActual.getHours().toString().padStart(2, '0') + ':' + fechaActual.getMinutes().toString().padStart(2, '0');
+		var horaActual = kendo.parseDate(horaMaxima, "HH:mm");
+
+		console.log('Fecha seleccionada (string):', fechaSeleccionadaString);
+		console.log('Hora seleccionada (string):', horaSeleccionada);
 		console.log('Fecha actual:', fechaActual);
-		console.log('Hora actual:', horaActual);
-		console.log('Minuto actual:', minutoActual);
+		console.log('Fecha seleccionada (objeto):', fechaSeleccionada);
+		console.log('Hora máxima permitida:', horaMaxima);
+		console.log('Hora actual (objeto):', horaActual);
 
-		if (fechaSeleccionada.setHours(0, 0, 0, 0) === fechaActual.setHours(0, 0, 0, 0)) {
-			var horaMaxima = horaActual.toString().padStart(2, '0') + ':' + minutoActual.toString().padStart(2, '0');
-			document.getElementById('dateTime').setAttribute('max', horaMaxima);
+		if (fechaSeleccionada && horaSeleccionada) {
+			var fechaSeleccionadaSinHora = new Date(fechaSeleccionada);
+			fechaSeleccionadaSinHora.setHours(0, 0, 0, 0);
+
+			if (fechaSeleccionadaSinHora.getTime() === fechaActual.setHours(0, 0, 0, 0)) {
+				console.log('Estableciendo límite máximo de hora:', horaMaxima);
+				$("#dateTime").data("kendoTimePicker").max(horaMaxima);
+			} else {
+				console.log('Removiendo límite máximo de hora.');
+				var horaLejana = "23:59";
+				$("#dateTime").data("kendoTimePicker").max(horaLejana);
+			}
+
+			if (fechaSeleccionadaSinHora.getTime() === fechaActual.setHours(0, 0, 0, 0) && kendo.parseDate(horaSeleccionada, "HH:mm") > horaActual) {
+				console.log('Ajustando hora seleccionada a la hora actual:', horaActual);
+				$("#dateTime").data("kendoTimePicker").value(horaActual);
+			}
 		} else {
-			document.getElementById('dateTime').removeAttribute('max');
-		}
-
-		// Si la fecha seleccionada es igual a la fecha actual,
-		// pero la hora seleccionada es mayor que la hora actual,
-		// entonces establecemos la hora seleccionada a la hora actual.
-		if (fechaSeleccionada.setHours(0, 0, 0, 0) === fechaActual.setHours(0, 0, 0, 0)
-			&& parseInt(horaSeleccionada) > horaActual) {
-			document.getElementById('dateTime').value = horaActual.toString().padStart(2, '0') + ':' + minutoActual.toString().padStart(2, '0');
+			console.log('Fecha o hora no seleccionada.');
+			var horaLejana = "23:59";
+			$("#dateTime").data("kendoTimePicker").max(horaLejana);
 		}
 	}
+
+
+
+
 
 	$(document).ready(function () {
 		var access = @listaIdsPermitidosJson;
@@ -226,7 +233,7 @@
 									</div>
 								</div>
 							</div>
-								<div class="row my-4 px-4">
+							<!--<div class="row my-4 px-4">
 									<div class="form-group col-md-2 controlForm">
 										
 											<label asp-for="fechaInfraccion" class="control-label"></label>
@@ -241,6 +248,43 @@
 										<label class="text-muted">Hora:</label>
 									<input type="time" id="dateTime" onchange="validacionHora()" step="60" />
 									</div>
+							</div>-->
+							<div class="row my-4 px-4">
+
+
+								<div class="row my-4 px-4">
+									<div class="form-group col-md-3 controlForm">
+										<label>Fecha infracción <b>(obligatorio)</b>:</label>
+										@(Html.Kendo().DatePickerFor(t => t.fechaInfraccion).Max(DateTime.Now)
+											.Label(l => l.Content("Fecha: <b>(obligatorio)</b>:"))
+											.Format("dd/MM/yyyy")
+											.Culture("es-ES")
+											.Events(e =>
+											{
+												e.Change("validacionHora");
+											})
+											.Value("")
+											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
+											)
+									</div>
+
+
+									<div class="form-group col-md-2 controlForm">
+
+										<label class="text-muted">Hora:</label>
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
+											.Label(l => l.Content("Hora:"))
+											.Events(e =>
+											{
+												e.Change("validacionHora");
+											})
+											.Format("HH:mm")
+											.Culture("es-ES")
+											.Value("")
+											.HtmlAttributes(new { style = "width: 100%", id = "dateTime" })
+											)
+									</div>
+								</div>
 							</div>
 							<br/>
 				           <br/>

@@ -3027,7 +3027,7 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) AND transito = @idDependencia";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) AND transito = @idDependencia and estatus = 1";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
@@ -3094,7 +3094,7 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
                 try
                 {
                     connection.Open();
-                    string query = "select count(*) as result from  infracciones where folioInfraccion = @folio  and estatus = 1 and (idEstatusEnvio = 0 or idEstatusEnvio is null)";
+                    string query = "select count(*) as result from  infracciones where folioInfraccion = @folio  and estatus = 1 ";
 
                     SqlCommand command = new SqlCommand(query, connection);
 

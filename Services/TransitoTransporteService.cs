@@ -197,7 +197,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     
                     string condiciones = "";
 
-                    condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.placa LIKE '%' + @Placa + '%' ";
+                    condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND veh.placas LIKE '%' + @Placa + '%' ";
                     condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND sol.folio LIKE '%' + @FolioSolicitud + '%' ";
                     condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
                     condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,''))  LIKE '%' + @Propietario + '%' ";
@@ -240,7 +240,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 @"SELECT 
                                          ROW_NUMBER() over (order by d.fechaIngreso desc ) cons ,
                                          d.iddeposito, d.idsolicitud, d.idDelegacion, d.idmarca, d.idsubmarca, d.idpension, d.idtramo,
-                                         d.idcolor,d.estatusSolicitud, d.serie, d.placa, d.fechaingreso, d.folio, d.km, d.liberado, d.autoriza, d.fechaactualizacion,
+                                         d.idcolor,d.estatusSolicitud, veh.serie, veh.placas, d.fechaingreso, d.folio, d.km, d.liberado, d.autoriza, d.fechaactualizacion,
                                          ISNULL(del.delegacion,'') delegacion , d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
                                          sol.solicitanteap, sol.solicitanteam, col.color, pen.pension, ctra.tramo,                       
                                          sol.fechasolicitud, sol.folio AS FolioSolicitud, inf.idinfraccion, inf.folioinfraccion,
@@ -320,13 +320,14 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.IdDeposito = Convert.ToInt32(reader["IdDeposito"] is DBNull ? 0 : reader["IdDeposito"]);
                             transito.IdSolicitud = Convert.ToInt32(reader["IdSolicitud"] is DBNull ? 0 : reader["IdSolicitud"]);
                             transito.IdDelegacion = Convert.ToInt32(reader["IdDelegacion"] is DBNull ? 0 : reader["IdDelegacion"]);
+                            transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"] is DBNull ? 0 : reader["IdVehiculo"]);
                             transito.IdMarca = Convert.ToInt32(reader["IdMarca"] is DBNull ? 0 : reader["IdMarca"]);
                             transito.IdSubmarca = Convert.ToInt32(reader["IdSubmarca"] is DBNull ? 0 : reader["IdSubmarca"]);
                             transito.IdPension = Convert.ToInt32(reader["IdPension"] is DBNull ? 0 : reader["IdPension"]);
                             transito.IdTramo = Convert.ToInt32(reader["IdTramo"] is DBNull ? 0 : reader["IdTramo"]);
                             transito.IdColor = Convert.ToInt32(reader["IdColor"] is DBNull ? 0 : reader["IdColor"]);
                             transito.Serie = reader["Serie"] is DBNull ? "" : reader["Serie"].ToString();
-                            transito.Placa = reader["Placa"] is DBNull ? "" : reader["Placa"].ToString(); 
+                            transito.Placa = reader["placas"] is DBNull ? "" : reader["placas"].ToString(); 
                             transito.FechaIngreso = Convert.ToDateTime(reader["FechaIngreso"] is DBNull ? DateTime.MinValue : reader["FechaIngreso"]);
                             transito.FechaLiberacion = Convert.ToDateTime(reader["FechaLiberacion"] is DBNull ? DateTime.MinValue : reader["FechaLiberacion"]);
                             transito.Folio = reader["Folio"] is DBNull ? "" : reader["Folio"].ToString();
@@ -356,7 +357,6 @@ namespace GuanajuatoAdminUsuarios.Services
                             transito.NombreDependencia = reader["NombreDependencia"] is DBNull ? "" : reader["NombreDependencia"].ToString();
                             transito.IdInfraccion = Convert.ToInt32(reader["IdInfraccion"] is DBNull ? 0 : reader["IdInfraccion"]);
                             transito.FolioInfraccion = reader["folioInfraccion"] is DBNull ? "" : reader["folioInfraccion"].ToString();
-                            transito.IdVehiculo = Convert.ToInt32(reader["IdVehiculo"] is DBNull ? 0 : reader["IdVehiculo"]);
                             transito.propietario = reader["propietario"] is DBNull ? "" : reader["propietario"].ToString();
                             transito.numeroEconomico = reader["numeroEconomico"] is DBNull ? "" : reader["numeroEconomico"].ToString();
                             transito.FolioSolicitud = reader["FolioSolicitud"] is DBNull ? "" : reader["FolioSolicitud"].ToString();

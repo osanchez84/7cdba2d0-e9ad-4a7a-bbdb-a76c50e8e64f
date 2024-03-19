@@ -62,8 +62,9 @@ namespace GuanajuatoAdminUsuarios.Models
         public string interseccion { get; set; }
 
         public int idInfraccion { get; set; }
-        
-       public DateTime? fechaInfraccion { get; set; }
+        public int? idVehiculo { get; set; }
+
+        public DateTime? fechaInfraccion { get; set; }
         public TimeSpan horaInfraccion { get; set; }
 
 

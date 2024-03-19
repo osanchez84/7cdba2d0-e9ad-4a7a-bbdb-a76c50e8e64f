@@ -10,7 +10,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
 
 
-
+        public int estatusEnvio { get;set; }
         public int estatusCortesia { get; set; } = 0;
         public string ObservacionesSub { get; set; } = "";
         public string ObservacionsesApl { get; set; } = "";

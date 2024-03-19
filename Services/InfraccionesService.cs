@@ -1106,12 +1106,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     int anio = fechaInfraccion.Year;
                     connection.Open();
 					const string SqlTransact =
-                                            @"select format(salario,'#.##') salario from catSalariosMinimos catSal
-												where catSal.estatus =1 AND catSal.anio = @anio";
+                                            @"select top 1 format(salario,'#.##') salario from catSalariosMinimos catSal
+where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario asc";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.Int)).Value = anio;
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.DateTime)).Value = fechaInfraccion;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -1977,6 +1977,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,inf.idVehiculo
                                       ,inf.idAplicacion
                                       ,inf.idGarantia
+									  ,inf.idEstatusEnvio
                                       ,inf.idEstatusInfraccion
                                       ,inf.idMunicipio
                                       ,inf.idTramo
@@ -2050,7 +2051,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.ObservacionesSub = reader["ObservacionesSub"].ToString();
 							model.ObservacionsesApl = reader["ObservacionsesApl"].ToString();
                             model.idCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? 0 : ((int)reader["infraccionCortesia"]) ;
-
+							model.estatusEnvio = reader["idEstatusEnvio"] is DBNull ?0: (int)reader["idEstatusEnvio"];
 
 
                             model.carretera = reader["carretera"].ToString();
@@ -2282,10 +2283,10 @@ namespace GuanajuatoAdminUsuarios.Services
 			fecha = fecha ?? DateTime.Now;
 
 			decimal umas = 0M;
-			string strQuery = @"SELECT top 1 salario
+			string strQuery = @"SELECT top 1 format(salario,'#.##') salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 and fecha<=@fecha order by fecha DESC"
-			;
+                               WHERE estatus = 1 and fecha<= @fecha  order by fecha desc, idSalario asc"
+            ;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3058,7 +3059,7 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    string query = "UPDATE infracciones SET folioinfraccion = @folio WHERE idInfraccion = @idAccidente";
+                    string query = "UPDATE infracciones SET folioinfraccion = @folio WHERE idInfraccion = @idAccidente and estatus=1 and (idEstatusEnvio = 0 or idEstatusEnvio is null)";
 
                     SqlCommand command = new SqlCommand(query, connection);
 

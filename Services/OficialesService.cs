@@ -237,6 +237,56 @@ Select *, cd.nombreOficina,e.estatusDesc from catOficiales co
 
 
         }
+        public List<CatOficialesModel> GetOficialesActivosTodos(bool todos, int tipo)
+        {
+            //
+            List<CatOficialesModel> oficiales = new List<CatOficialesModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("usp_ObtieneOfialesActivos", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Todos", SqlDbType.Bit)).Value = todos;
+                    command.Parameters.Add(new SqlParameter("@Tipo", SqlDbType.Int)).Value = tipo;
+                    //sqlData Reader sirve para la obtencion de datos 
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            CatOficialesModel oficial = new CatOficialesModel();
+                            oficial.IdOficial = Convert.ToInt32(reader["IdOficial"].ToString());
+                            oficial.Rango = reader["Rango"].ToString();
+                            oficial.Nombre = reader["Nombre"].ToString();
+                            oficial.ApellidoPaterno = reader["ApellidoPaterno"].ToString();
+                            oficial.ApellidoMaterno = reader["ApellidoMaterno"].ToString();
+                            oficial.estatusDesc = reader["estatusDesc"].ToString();
+                            //oficial.FechaActualizacion = Convert.ToDateTime(reader["fechaActualizacion"].ToString());
+                            oficial.Estatus = Convert.ToInt32(reader["Estatus"].ToString());
+                            oficial.transito = (Convert.ToBoolean(reader["transito"])) ? 1 : 0;
+
+                            oficiales.Add(oficial);
+
+                        }
+
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return oficiales;
+
+
+        }
 
         public CatOficialesModel GetOficialById(int IdOficial)
         {

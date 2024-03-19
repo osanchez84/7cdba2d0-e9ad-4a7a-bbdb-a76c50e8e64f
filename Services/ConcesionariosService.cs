@@ -90,6 +90,42 @@ namespace GuanajuatoAdminUsuarios.Services
 
         }
 
+        public List<ConcesionariosModel> GetConcesionariosActivos(int idOficina)
+        {
+            List<ConcesionariosModel> ListConcesionarios = new List<ConcesionariosModel>();
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("usp_ObtieneConcesionariosActivos", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@Tipo", SqlDbType.Int)).Value = idOficina;
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            ConcesionariosModel concesionarios = new ConcesionariosModel();
+                            concesionarios.IdConcesionario = Convert.ToInt32(reader["IdConcesionario"].ToString());
+                            concesionarios.Concesionario = reader["Concesionario"].ToString();
+                            ListConcesionarios.Add(concesionarios);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //Guardar la excepcion en algun log de errores
+                    //ex
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            return ListConcesionarios;
+
+        }
+
         public Concesionarios2Model GetConcesionarioById(int idConcesionario)
         {
             List<Concesionarios2Model> ListConcesionarios = new List<Concesionarios2Model>();

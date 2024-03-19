@@ -57,6 +57,21 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			return Json(result);
 		}
 
+        public JsonResult OficialesDependenciaActivos_Drop()
+        {
+            var tipo = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia").ToString());
+            var oficiales = _oficialesService.GetOficialesActivosTodos(true, tipo)
+                .Select(o => new
+                {
+                    IdOficial = o.IdOficial,
+                    NombreCompleto = (CultureInfo.InvariantCulture.TextInfo.ToTitleCase($"{o.Nombre} {o.ApellidoPaterno} {o.ApellidoMaterno}".ToLower()))
+                });
+            //oficiales = oficiales.Skip(1);
+            var result = new SelectList(oficiales, "IdOficial", "NombreCompleto");
+
+            return Json(result);
+        }
+
         public JsonResult OficialesDependenciaTodos_Drop()
         {
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");

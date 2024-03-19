@@ -121,6 +121,8 @@
                 <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                     <div class="controlForm my-3">
                         @Html.HiddenFor(model => model.idInfraccion, new { id = "idInfraccionHdn" })
+                        @Html.HiddenFor(model => model.idVehiculo, new { id = "idVehiculoHdn" })
+
                         <label>Fecha <b>(obligatorio)</b>:</label>
                         @(Html.Kendo().DatePickerFor(t => t.fechaSolicitud).Format("dd/MM/yyyy").Max(DateTime.Now)
                             .Events(e =>
@@ -186,7 +188,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("Concecionarios_Drop", "Depositos");
+                                        read.Action("ConcecionariosActivos_Drop", "Depositos");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;" })
@@ -229,7 +231,7 @@
                                 {
                                     source.Read(read =>
                                     {
-                                        read.Action("OficialesDependencia_Drop", "Oficiales");
+                                        read.Action("OficialesDependenciaActivos_Drop", "Oficiales");
                                     });
                                 })
                                 .HtmlAttributes(new { style = "width:100%;", required = "required" })
@@ -791,6 +793,7 @@
         var Mydata = {
             idSolicitud: $('#Isol').val(),
             idInfraccion: $("#idInfraccionHdn").val(),
+            idVehiculo: $("#idVehiculoHdn").val(),
             folioBusquedaInfraccion: $('#folioBusquedaInfraccion').val(),
             fechaSolicitud: kendo.toString($("#fechaSolicitud").data("kendoDatePicker").value(), "yyyy-MM-dd"),
             horaSolicitud: kendo.toString($("#dateTime").data("kendoTimePicker").value(), "HH:mm"),
@@ -978,6 +981,8 @@
                 // Asignar tiempoConvertido al Kendo TimePicker
                 $("#dateTime").data("kendoTimePicker").value(tiempoConvertido);
                 $("#idInfraccionHdn").val(data.idInfraccion);
+                $("#idVehiculoHdn").val(data.idVehiculo);
+
                 $("#numeroUbicacion").val(data.numeroUbicacion);
                 $("#calleUbicacion").val(data.calleUbicacion);
                 $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion

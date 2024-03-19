@@ -38,7 +38,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand("usp_CapturaGruasBusquedaDeSolicitudes", connection);
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@folioBusqueda", SqlDbType.VarChar)).Value = (String.IsNullOrEmpty(model.FolioSolicitud)) ? DBNull.Value : model.FolioSolicitud;
-                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value =  (model.fecha.Year==1) ? DBNull.Value: model.fecha;
+                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.Date)).Value = (model.fecha.Year == 1) ? DBNull.Value : model.fecha;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -243,11 +243,11 @@ namespace GuanajuatoAdminUsuarios.Services
             return Vehiculo;
         }
 
-        public AsignacionGruaModel BuscarSolicitudPord(int iSo,string folio, int idOficina,int idDependencia)
+        public AsignacionGruaModel BuscarSolicitudPord(int iSo, string folio, int idOficina, int idDependencia)
         {
             AsignacionGruaModel solicitud = new AsignacionGruaModel();
             string whereDeposito = " WHERE A.idSolicitud = @FolioIdSolicitud";
-            if(!folio.IsNullOrEmpty()){
+            if (!folio.IsNullOrEmpty()) {
                 whereDeposito = " WHERE A.folio = @FolioIdSolicitud";
             }
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -292,11 +292,11 @@ namespace GuanajuatoAdminUsuarios.Services
                                                                 LEFT JOIN personas		p	ON v.idPersona = p.idPersona
                                                                 LEFT JOIN catMarcasVehiculos as cmv ON v.idMarcaVehiculo = cmv.idMarcaVehiculo
                                                                 LEFT JOIN catSubmarcasVehiculos as csv ON v.idSubmarca = csv.idSubmarca
-                                                                LEFT JOIN catColores  col ON v.idColor = col.idColor "+whereDeposito, connection);
-                    if(!folio.IsNullOrEmpty())
-                    searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
+                                                                LEFT JOIN catColores  col ON v.idColor = col.idColor " + whereDeposito, connection);
+                    if (!folio.IsNullOrEmpty())
+                        searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.NVarChar)).Value = folio;
                     else
-                    searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.Int)).Value = iSo;
+                        searchCommand.Parameters.Add(new SqlParameter("@FolioIdSolicitud", SqlDbType.Int)).Value = iSo;
 
                     // Ejecutar la consulta de búsqueda
                     using (SqlDataReader searchReader = searchCommand.ExecuteReader())
@@ -308,24 +308,24 @@ namespace GuanajuatoAdminUsuarios.Services
                             string nombrePropietario = searchReader["nombre"] == System.DBNull.Value ? "" : searchReader["nombre"].ToString().Trim();
                             string apellidoPaternoPropietario = searchReader["apellidoPaterno"] == System.DBNull.Value ? "" : searchReader["apellidoPaterno"].ToString().Trim();
                             string apellidoMaternoPropietario = searchReader["apellidoMaterno"] == System.DBNull.Value ? "" : searchReader["apellidoMaterno"].ToString().Trim();
-                            string nombreCompletoPropietario = nombrePropietario+" "+apellidoPaternoPropietario+" "+apellidoMaternoPropietario;
+                            string nombreCompletoPropietario = nombrePropietario + " " + apellidoPaternoPropietario + " " + apellidoMaternoPropietario;
 
                             solicitud.idSolicitud = int.Parse(searchReader["idSolicitud"].ToString());
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
-                            solicitud.inventarios = searchReader["inventario"] is DBNull ? "":searchReader["inventario"].ToString();
-							solicitud.estatusSolicitud = int.Parse(searchReader["estatusSolicitud"].ToString());
-							if (!searchReader.IsDBNull(searchReader.GetOrdinal("idPropietarioGrua")))
-							{
-								solicitud.idPropietarioGrua = searchReader.GetInt32(searchReader.GetOrdinal("idPropietarioGrua"));
-							}
-							else
-							{
-								solicitud.idPropietarioGrua = 0;
-							}
+                            solicitud.inventarios = searchReader["inventario"] is DBNull ? "" : searchReader["inventario"].ToString();
+                            solicitud.estatusSolicitud = int.Parse(searchReader["estatusSolicitud"].ToString());
+                            if (!searchReader.IsDBNull(searchReader.GetOrdinal("idPropietarioGrua")))
+                            {
+                                solicitud.idPropietarioGrua = searchReader.GetInt32(searchReader.GetOrdinal("idPropietarioGrua"));
+                            }
+                            else
+                            {
+                                solicitud.idPropietarioGrua = 0;
+                            }
 
-							solicitud.observaciones = searchReader["observaciones"].ToString();
+                            solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.IdDeposito = int.Parse(searchReader["idDeposito"].ToString());
                             //HMG - NUEVOS CAMPOS
                             solicitud.idInfraccion = searchReader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(searchReader["idInfraccion"].ToString());
@@ -335,7 +335,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             }
                             else
                             {
-                                solicitud.IdVehiculo = 0; 
+                                solicitud.IdVehiculo = 0;
                             }
                             solicitud.fechaInfraccion = searchReader["fechaInfraccion"] == System.DBNull.Value ? default(DateTime) : Convert.ToDateTime(searchReader["fechaInfraccion"].ToString());
                             solicitud.IdMarcaVehiculo = Convert.IsDBNull(searchReader["IdMarcaVehiculo"]) ? 0 : Convert.ToInt32(searchReader["IdMarcaVehiculo"]);
@@ -351,7 +351,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.CURP = searchReader["CURP"].ToString();
                             solicitud.RFC = searchReader["RFC"].ToString();
 
-                            string filePath = searchReader["inventario"].ToString(); 
+                            string filePath = searchReader["inventario"].ToString();
 
                             if (!string.IsNullOrEmpty(filePath))
                             {
@@ -365,7 +365,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             }
                             else
                             {
-                                solicitud.MyFile = null; 
+                                solicitud.MyFile = null;
                             }
 
                             return solicitud;
@@ -452,40 +452,84 @@ namespace GuanajuatoAdminUsuarios.Services
         public int ActualizarDatos(AsignacionGruaModel selectedRowData, int iDep)
         {
             int result = 0;
+            int idSolicitud = -1; // Variable para almacenar el idSolicitud recuperado
+
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
             {
+                SqlTransaction transaction = null;
+
                 try
                 {
                     connection.Open();
-                    SqlCommand sqlCommand = new
-                        SqlCommand("Update depositos set idVehiculo = @idVehiculo,idMarca = @idMarca,idSubmarca =@idSubmarca, idColor = @idColor,serie = @Serie,placa = @Placa, idInfraccion=@idInfraccion where idDeposito=@idDeposito", connection);
-                    sqlCommand.Parameters.Add(new SqlParameter("@idVehiculo", SqlDbType.Int)).Value = selectedRowData.IdVehiculo;
-                    sqlCommand.Parameters.Add(new SqlParameter("@idMarca", SqlDbType.Int)).Value = selectedRowData.IdMarcaVehiculo;
-                    sqlCommand.Parameters.Add(new SqlParameter("@idSubmarca", SqlDbType.Int)).Value = selectedRowData.IdSubmarca;
-                    sqlCommand.Parameters.Add(new SqlParameter("@idColor", SqlDbType.Int)).Value = selectedRowData.IdColor;
-                    sqlCommand.Parameters.Add(new SqlParameter("@Serie", SqlDbType.NVarChar)).Value = selectedRowData.Serie;
-                    sqlCommand.Parameters.Add(new SqlParameter("@Placa", SqlDbType.NVarChar)).Value = selectedRowData.Placa;
-                    sqlCommand.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = selectedRowData.idInfraccion;
+                    transaction = connection.BeginTransaction();
 
-                    sqlCommand.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDep;
+                    // Actualizar datos en la tabla depositos
+                    SqlCommand updateDepositosCommand = new SqlCommand(@"UPDATE depositos 
+                                                                 SET idVehiculo = @idVehiculo, 
+                                                                     idMarca = @idMarca,
+                                                                     idSubmarca = @idSubmarca, 
+                                                                     idColor = @idColor, 
+                                                                     serie = @Serie,
+                                                                     placa = @Placa, 
+                                                                     idInfraccion = @idInfraccion 
+                                                                 WHERE idDeposito = @idDeposito", connection);
+                    updateDepositosCommand.Parameters.AddWithValue("@idVehiculo", selectedRowData.IdVehiculo);
+                    updateDepositosCommand.Parameters.AddWithValue("@idMarca", selectedRowData.IdMarcaVehiculo);
+                    updateDepositosCommand.Parameters.AddWithValue("@idSubmarca", selectedRowData.IdSubmarca);
+                    updateDepositosCommand.Parameters.AddWithValue("@idColor", selectedRowData.IdColor);
+                    updateDepositosCommand.Parameters.AddWithValue("@Serie", selectedRowData.Serie);
+                    updateDepositosCommand.Parameters.AddWithValue("@Placa", selectedRowData.Placa);
+                    updateDepositosCommand.Parameters.AddWithValue("@idInfraccion", selectedRowData.idInfraccion);
+                    updateDepositosCommand.Parameters.AddWithValue("@idDeposito", iDep);
 
-                    sqlCommand.CommandType = CommandType.Text;
-                    result = sqlCommand.ExecuteNonQuery();
+                    updateDepositosCommand.Transaction = transaction;
+                    result = updateDepositosCommand.ExecuteNonQuery();
+
+                    // Recuperar idSolicitud de la tabla depositos
+                    SqlCommand selectIdSolicitudCommand = new SqlCommand("SELECT idSolicitud FROM depositos WHERE idDeposito = @idDeposito", connection, transaction);
+                    selectIdSolicitudCommand.Parameters.AddWithValue("@idDeposito", iDep);
+
+                    using (SqlDataReader reader = selectIdSolicitudCommand.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            idSolicitud = reader.GetInt32(0);
+                        }
+                    }
+
+                    // Actualizar datos en la tabla solicitudes
+                    if (idSolicitud != -1)
+                    {
+                        SqlCommand updateSolicitudesCommand = new SqlCommand(@"UPDATE solicitudes 
+                                                                       SET idVehiculo = @idVehiculo, 
+                                                                           idInfraccion = @idInfraccion 
+                                                                       WHERE idSolicitud = @idSolicitud", connection, transaction);
+                        updateSolicitudesCommand.Parameters.AddWithValue("@idVehiculo", selectedRowData.IdVehiculo);
+                        updateSolicitudesCommand.Parameters.AddWithValue("@idInfraccion", selectedRowData.idInfraccion);
+                        updateSolicitudesCommand.Parameters.AddWithValue("@idSolicitud", idSolicitud);
+
+                        result += updateSolicitudesCommand.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
                 }
                 catch (SqlException ex)
                 {
-                    return result;
+                    // Si ocurre un error, se hace rollback
+                    transaction?.Rollback();
+                    Console.WriteLine("Error al actualizar los datos: " + ex.Message);
+                    return result; // Esto devuelve 0, lo que indica un fallo en la actualización
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
+
             return result;
-
-
         }
-        public List<AsignacionGruaModel> ObtenerInfracciones(string folioInfraccion)
+
+    public List<AsignacionGruaModel> ObtenerInfracciones(string folioInfraccion)
         {
             List<AsignacionGruaModel> modelList = new List<AsignacionGruaModel>();
             string strQuery = @"SELECT inf.idInfraccion, inf.idVehiculo,inf.idPersona,inf.folioInfraccion,inf.fechaInfraccion,

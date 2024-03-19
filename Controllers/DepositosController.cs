@@ -131,6 +131,12 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var result = new SelectList(_concesionariosService.GetConcesionarios(idOficina), "IdConcesionario", "Concesionario");
             return Json(result);
         }
+        public JsonResult ConcecionariosActivos_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            var result = new SelectList(_concesionariosService.GetConcesionariosActivos(idOficina), "IdConcesionario", "Concesionario");
+            return Json(result);
+        }
         public JsonResult Oficiales_Drop()
         {
             var oficiales = _oficialesService.GetOficialesActivos()

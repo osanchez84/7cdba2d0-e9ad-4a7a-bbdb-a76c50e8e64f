@@ -682,8 +682,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return PartialView("_EditarFolio",q);
         }
 
-        public IActionResult UpdateFolioS(string id,string folio)
+        public IActionResult UpdateFolioS(string id,string folios)
         {
+
+            string folio = folios.Replace(" ","");
 
             var t = _infraccionesService.validarFolio(folio);
             if (t)

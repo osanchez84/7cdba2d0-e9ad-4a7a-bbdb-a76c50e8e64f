@@ -289,6 +289,16 @@ namespace GuanajuatoAdminUsuarios.Controllers
 			var complemntarRegistro = _catDepositosService.ImportarInfraccion(folioBusquedaInfraccion, idDependencia);
             return Json(complemntarRegistro);
         }
-        
+
+
+        public JsonResult PensionesTodas_Drop()
+        {
+            int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+
+            var result = new SelectList(_pensionesService.GetAllPensiones2(), "IdPension", "Pension");
+            return Json(result);
+        }
+
     }
+
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Collections.Generic;
+using System.Runtime;
 
 namespace GuanajuatoAdminUsuarios.Models
 {
@@ -314,6 +315,8 @@ namespace GuanajuatoAdminUsuarios.Models
                 return oficialNombre + " " + oficialApellidoPaterno + " " + oficialApellidoMaterno;
             }
         }
+
+        public int total { get; set; }
 
     }
 }

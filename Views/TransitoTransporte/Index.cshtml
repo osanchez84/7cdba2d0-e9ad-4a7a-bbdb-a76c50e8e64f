@@ -43,25 +43,7 @@
 
 
 <script>
-        function submitSearch() {
-            var Mydata = $("#frmSearch").serialize();
-            //console.log(Mydata);
-            showLoading();
-            $.ajax({
-                url: '@Url.Action("ajax_BuscarTransito")',
-                type: 'POST',
-                data: Mydata,
-                success: function (result) {
-                    $("#listadoTransitoTransporte").html(result);
-                    hideLoading();
-                   // $("#frmSearch")[0].reset();
-            },
-            error: function (error) {
-                sitteg_warning('Sucedió un error, intente mas tarde...');
-                hideLoading();
-            }
-            });
-        }
+
 
 
         function downLoadPdfFiltered() {
@@ -121,7 +103,7 @@
                         @(Html.Kendo().TextBoxFor(t => t.Placas)
                             .Label(l => l.Content("Placas:"))
                             .Placeholder("Ingresa placas")
-                            .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas" })
+                            .HtmlAttributes(new { style = "width: 100%", Id = "txtPlacas", data_query = "Prueba", data_name = "Placas" })
                             )
                     </span>
                 </div>
@@ -429,5 +411,27 @@
             grid.hideColumn(12);
         }
     });
+
+    function submitSearch() {
+        var grid = $("#Grid").data("kendoGrid").dataSource;
+        grid.read();
+        //var Mydata = $("#frmSearch").serialize();
+        ////console.log(Mydata);
+        //showLoading();
+        //$.ajax({
+        //    url: '@Url.Action("ajax_BuscarTransito")',
+        //    type: 'POST',
+        //    data: Mydata,
+        //    success: function (result) {
+        //        $("#listadoTransitoTransporte").html(result);
+        //        hideLoading();
+        //       // $("#frmSearch")[0].reset();
+        //},
+        //error: function (error) {
+        //    sitteg_warning('Sucedió un error, intente mas tarde...');
+        //    hideLoading();
+        //}
+        //});
+    }
 
 </script>

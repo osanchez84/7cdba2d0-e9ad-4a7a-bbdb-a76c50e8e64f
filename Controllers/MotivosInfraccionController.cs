@@ -195,13 +195,13 @@ namespace GuanajuatoAdminUsuarios.Controllers
             return Json(motivo);
         }
 
-        public JsonResult GetMotInf([DataSourceRequest] DataSourceRequest request)
+        public JsonResult GetMotInf([DataSourceRequest] DataSourceRequest request, CatMotivosInfraccionModel model)
         {
 
             int idDependencia = (int)HttpContext.Session.GetInt32("IdDependencia");
-            var ListMotivosInfraccionModel = _motivoInfraccionService.GetMotivos(idDependencia);
+            var ListMotivos = _motivoInfraccionService.GetMotivosBusqueda(model, idDependencia);
 
-            return Json(ListMotivosInfraccionModel.ToDataSourceResult(request));
+            return Json(ListMotivos.ToDataSourceResult(request));
         }
 
 

@@ -262,7 +262,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                 LEFT JOIN infracciones inf ON sol.idinfraccion = inf.idinfraccion
                                 LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
                                 LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
-                                LEFT JOIN personas per ON per.idPersona = d.idPropietario
+                                LEFT JOIN personas per ON per.idPersona = veh.idPersona
                                 LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
                                 LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
                                 LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)

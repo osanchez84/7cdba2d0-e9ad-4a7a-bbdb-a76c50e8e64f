@@ -139,6 +139,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                ON inf.idMunicipio = mun.idMunicipio
                                 LEFT JOIN vehiculos veh
                                ON inf.idVehiculo = veh.idVehiculo
+                                left join garantiasInfraccion gar on gar.idinfraccion = inf.idinfraccion
                                 WHERE m.estatus = 1
                                AND inf.estatus = 1 AND inf.transito = @transito " + condiciones + condicionFecha +
 							   "group by ci.nombre;";

@@ -6,8 +6,8 @@
 }
 <script>
     function onFechaFinalChange() {
-        var fechaFinal = $("#fechaFinalInsert").data("kendoDatePicker").value();
-        var horaTerminoPicker = $("#horaTerminoInsert").data("kendoTimePicker");
+        var fechaFinal = $("#fechaFinalEdit").data("kendoDatePicker").value();
+        var horaTerminoPicker = $("#horaTerminoInsertEdit").data("kendoTimePicker");
 
         if (fechaFinal == null || fechaFinal === "") {
             horaTerminoPicker.max(null);
@@ -25,8 +25,8 @@
         }
     }
     function onFechaInicioChange() {
-        var fechaInicio = $("#fechaInicioInsert").data("kendoDatePicker").value();
-        var horaInicioPicker = $("#horaInicioInsert").data("kendoTimePicker");
+        var fechaInicio = $("#fechaInicioInsertEdit").data("kendoDatePicker").value();
+        var horaInicioPicker = $("#horaInicioInsertEdit").data("kendoTimePicker");
 
         if (fechaInicio == null || fechaInicio === "") {
             horaInicioPicker.max(null);
@@ -44,8 +44,8 @@
         }
     }
     function onFechaArriboChange() {
-        var fechaArribo = $("#fechaArriboInsert").data("kendoDatePicker").value();
-        var horaArriboPicker = $("#horaArriboInsert").data("kendoTimePicker");
+        var fechaArribo = $("#fechaArriboInsertEdit").data("kendoDatePicker").value();
+        var horaArriboPicker = $("#horaArriboInsertEdit").data("kendoTimePicker");
 
         if (fechaArribo == null || fechaArribo === "") {
             horaArriboPicker.max(null);
@@ -107,12 +107,14 @@
             <div class="row justify-content-start align-items-center py-2">
               
             </div>
-            <form id="datosGruaForm">
+            <form id="datosEditGruaForm">
                 <input type="hidden" id="Accion" value="Update" />
                 <div class="row px-4" id="contenedor">
                     <div class="col-12">
                         <div class="controlForm my-3">
                             <label>Número económico <b>(obligatorio)</b>:</label>
+                              @Html.HiddenFor(m=>m.idAsignacion)
+
                             @(Html.Kendo().DropDownListFor(d => d.idGrua)
                                 .DataTextField("Text")
                                 .DataValueField("Value")
@@ -141,7 +143,7 @@
 
                                     events.Change("onFechaArriboChange");
                                 })
-                                .HtmlAttributes(new { style = "width: 90%", id = "fechaArriboInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "fechaArriboInsertEdit", required = "required" })
                                 )
                         </div>
                     </div>
@@ -151,7 +153,7 @@
                             <label for="timepicker1">Hora de arribo <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TimePickerFor(t => t.horaArribo).Max(DateTime.Now)
                                 .Format("HH:mm")
-                                .HtmlAttributes(new { style = "width: 90%", id = "horaArriboInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "horaArriboInsertEdit", required = "required" })
                                 )
                         </div>
                     </div>
@@ -167,7 +169,7 @@
 
                                     events.Change("onFechaInicioChange");
                                 })
-                                .HtmlAttributes(new { style = "width: 90%", id = "fechaInicioInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "fechaInicioInsertEdit", required = "required" })
                                 )
                         </div>
                     </div>
@@ -176,7 +178,7 @@
                             <label for="timepicker2">Hora de inicio <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TimePickerFor(t => t.horaInicio).Max(DateTime.Now)
                                 .Format("HH:mm")
-                                .HtmlAttributes(new { style = "width: 90%", id = "horaInicioInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "horaInicioInsertEdit", required = "required" })
 
                                 )
                         </div>
@@ -187,7 +189,7 @@
                             <label for="datepicker3">Fecha de término <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().DatePickerFor(t => t.fechaFinal).Max(DateTime.Now)
                                 .Format("dd/MM/yyyy")
-                                .HtmlAttributes(new { style = "width: 90%", id = "fechaFinalInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "fechaFinalEdit", required = "required" })
                                 .Events(events =>
                                 {
 
@@ -202,7 +204,7 @@
                             <label for="timepicker3">Hora de término <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TimePickerFor(t => t.horaTermino).Max(DateTime.Now)
                                 .Format("HH:mm")
-                                .HtmlAttributes(new { style = "width: 90%", id = "horaTerminoInsert", required = "required" })
+                                .HtmlAttributes(new { style = "width: 90%", id = "horaTerminoInsertEdit", required = "required" })
 
                                 )
                         </div>
@@ -212,7 +214,7 @@
                         <div class="controlForm my-3">
                             <label for="timeDifference">Diferencia en minutos <b>(obligatorio)</b>:</label>
                             @(Html.Kendo().TextBoxFor(t => t.tiempoManiobras)
-                                .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly", id = "tiempoManiobrasInsert" }) // Marcar como solo lectura
+                                .HtmlAttributes(new { style = "width: 100%", @readonly = "readonly", id = "tiempoManiobrasInsertEdit" }) // Marcar como solo lectura
                                 )
                         </div>
                     </div>
@@ -237,7 +239,7 @@
                                 .Name("salvamentoSwitch")
                                 .Checked(salvamento)
                                 .Messages(c => c.Checked("Si").Unchecked("No"))
-                                .HtmlAttributes(new { data_valor = 1 })
+                                .HtmlAttributes(new { data_valor = "true" })
                                 )
                             </div>
                         </div>
@@ -291,29 +293,31 @@
 </div>
 <script>
     function enviarDatos() {
-        var validator = $("#datosGruaForm").kendoValidator().data('kendoValidator');
+        var validator = $("#datosEditGruaForm").kendoValidator().data('kendoValidator');
    
         validator.validate();
         if (validator.validate()) {
         
-            var formData = new FormData($("#datosGruaForm")[0]);
+            var formDataEdit = new FormData($("#datosEditGruaForm")[0]);
 
             var abanderamientoValue = $("#abanderamientoSwitch").prop("checked") ? 1 : 0;
             var arrastreValue = $("#arrastreSwitch").prop("checked") ? 1 : 0;
             var salvamentoValue = $("#salvamentoSwitch").prop("checked") ? 1 : 0;
 
-            formData.append("abanderamiento", abanderamientoValue);
-            formData.append("arrastre", arrastreValue);
-            formData.append("salvamento", salvamentoValue);
-            formData.append("horaInicioInsert", $("#horaInicioInsert").data("kendoTimePicker").value());
-            formData.append("horaArriboInsert", $("#horaArriboInsert").data("kendoTimePicker").value());
-            formData.append("horaTerminoInsert", $("#horaTerminoInsert").data("kendoTimePicker").value());
-            console.log("formData:", formData);
+            formDataEdit.append("abanderamiento", abanderamientoValue);
+            formDataEdit.append("arrastre", arrastreValue);
+            formDataEdit.append("salvamento", salvamentoValue);
+            formDataEdit.append("horaInicioInsertEdit", $("#horaInicioInsertEdit").data("kendoTimePicker").value());
+            formDataEdit.append("horaArriboInsertEdit", $("#horaArriboInsertEdit").data("kendoTimePicker").value());
+            formDataEdit.append("horaTerminoInsertEdit", $("#horaTerminoInsertEdit").data("kendoTimePicker").value());
+
+         
+            console.log("formDataEdit:", formDataEdit);
             showLoading();
             $.ajax({
                 url: '/AsignacionGruas/ActualizarDatos2',
                 type: 'POST',
-                data: formData,
+                data: formDataEdit,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -338,8 +342,8 @@
     }
    
     function updateDifference() {
-        var horaInicio = $("#horaInicioInsert").data("kendoTimePicker").value();
-        var horaFinal = $("#horaTerminoInsert").data("kendoTimePicker").value();
+        var horaInicio = $("#horaInicioInsertEdit").data("kendoTimePicker").value();
+        var horaFinal = $("#horaTerminoInsertEdit").data("kendoTimePicker").value();
         var timeDifferenceMinutes = Math.abs((horaFinal - horaInicio) / 60000); // Diferencia en minutos
         // Redondear y convertir a entero
         timeDifferenceMinutes = Math.round(timeDifferenceMinutes);
@@ -347,7 +351,7 @@
             timeDifferenceMinutes = 0;
         }
 
-        $("#tiempoManiobrasInsert").val(timeDifferenceMinutes);
+        $("#tiempoManiobrasInsertEdit").val(timeDifferenceMinutes);
     }
 
     // Llamar a la función cuando cambie alguna de las fechas
@@ -364,6 +368,7 @@
         function goBack() {
 
         $('#editarGruaModal').modal('hide');
+        $('#ModalBodyEditarGrua').modal('');
 
     }
 </script>

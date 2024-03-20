@@ -653,7 +653,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
 
-            model.idDelegacion = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+            model.idDelegacion = Convert.ToInt32(  User.FindFirst(CustomClaims.OficinaDelegacion).Value); //HttpContext.Session.GetInt32("IdOficina") ?? 0;
             var idInfraccion = _infraccionesService.ModificarInfraccion(model);
 
             if (isedition == "0")
@@ -670,6 +670,32 @@ namespace GuanajuatoAdminUsuarios.Controllers
             var idVehiculo = model.idVehiculo;
             return Json(new { success = true, idInfraccion = idInfraccion, idVehiculo = idVehiculo });
         }
+
+
+
+        public IActionResult ModalEditarFolio(int id,string folio)
+        {
+            var q = new EditarFolioModel();
+            q.NumeroReporte = folio;
+            q.IdAccidente = id;
+
+            return PartialView("_EditarFolio",q);
+        }
+
+        public IActionResult UpdateFolioS(string id,string folios)
+        {
+
+            string folio = folios.Replace(" ","");
+
+            var t = _infraccionesService.validarFolio(folio);
+            if (t)
+            {
+                var fol = _infraccionesService.UpdateFolioS(id, folio);
+            }
+            return Json(t);
+
+        }
+
 
         [HttpPost]
         public ActionResult ajax_crearInfraccion(InfraccionesModel model, CrearMultasTransitoRequestModel requestMode)

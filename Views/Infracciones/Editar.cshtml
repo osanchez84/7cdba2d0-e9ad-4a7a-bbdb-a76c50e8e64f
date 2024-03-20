@@ -335,15 +335,31 @@
                                 </div>
                             </div>
 
-                            <div class="row my-4 px-4">
+                            <div class="row my-4 px-2">
                                 <div class="form-group col-md-4">
+                                    <div class="row">
                                     <div class="controlForm">
-                                        @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
-                                            .Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
-                                            .Placeholder("Ingresa folio")
-                                            .Enable(!ViewBag.EsSoloLectura)
-                                            .HtmlAttributes(new { style = "width: 100%", required = "required" })
-                                            )
+                                        <div class="row">
+                                            <div class="col-9">
+                                         @(Html.Kendo().TextBoxFor(t => t.folioInfraccion)
+                                                    .Label(l => l.Content("Folio: <b>(obligatorio)</b>:"))
+                                                    .Placeholder("Ingresa folio")
+                                                    .Enable(!ViewBag.EsSoloLectura)
+                                                    .HtmlAttributes(new { style = "width: 100%", required = "required" })
+                                                    )
+                                            </div>    
+                                        <div class="col-3">
+                                                    @if (Model.estatusEnvio == 0)
+                                                    {
+                                                        <button id='btnFolio' onclick="ModalEditarFolio('@Model.idInfraccion','@Model.folioInfraccion')" class='col-3 btn' style="align-items:center;">
+                                                            <h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i><b></b></h6>
+                                                        </button>
+                                                    }
+                                        </div>
+                                        </div>                                        
+                                        </div>
+
+
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
@@ -1145,7 +1161,44 @@
 </div>
 
 
+
+<div class="modal fade modalCustom" id="editarFolioModal" aria-labelledby="editarCarreteraLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="ModalBodyEditarFolio">
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+
+
+    function ModalEditarFolio(id,folio){
+
+         showLoading();
+        $.ajax({
+            url: './ModalEditarFolio', 
+            type: 'POST',
+            data: {
+                id: id,
+                folio: folio
+            },
+            success: function (result) {
+                    $('#ModalBodyEditarFolio').html(result);
+                    $('#editarFolioModal').modal('show');
+                    hideLoading();
+            },
+            error: function (xhr, status, error) {
+                console.log("Error al realizar la solicitud AJAX: " + error);
+                hideLoading();
+            }
+        });
+
+    }
+
+
     function NoSub(event){
         event.preventDefault();
     }
@@ -1660,7 +1713,6 @@ function  OmitirConductor() {
 
 
                 var valgar = $("#ddlTipoGarantia").val()
-
 
 
                 if ("@ViewBag.GoDEpositos" == "0" && valgar == "4") {

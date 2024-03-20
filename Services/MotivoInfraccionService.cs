@@ -286,7 +286,9 @@ namespace GuanajuatoAdminUsuarios.Services
                                 , calificacionMinima=@calificacionMinima
                                 , calificacionMaxima=@calificacionMaxima
                                 , fundamento=@fundamento
-                                , transito=@idDependencia
+                                , fechaInicio = @fechaInicioVigencia
+                                , fechaFinVigencia = @fechaFinalVigencia
+                                , transito=@idDependencia                               
                                 WHERE idCatMotivoInfraccion=@idCatMotivoInfraccion";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -304,7 +306,10 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.AddWithValue("@calificacionMinima",motivo.CalificacionMinima);
                     command.Parameters.AddWithValue("@calificacionMaxima", motivo.CalificacionMaxima);
                     command.Parameters.AddWithValue("@fundamento", motivo.Fundamento);
-                    command.Parameters.AddWithValue("@estatus", motivo.estatus);
+					command.Parameters.AddWithValue("@fechaInicioVigencia", (motivo.fechaInicioVigencia == null) ? DBNull.Value : motivo.fechaInicioVigencia);
+					command.Parameters.AddWithValue("@fechaFinalVigencia", (motivo.fechaFinVigencia == null) ? DBNull.Value : motivo.fechaFinVigencia);
+
+					command.Parameters.AddWithValue("@estatus", motivo.estatus);
 
 
                     command.Parameters.AddWithValue("@fechaActualizacion", DateTime.Now);
@@ -396,7 +401,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         if (model.IdVigencia == 1)
                         {
-                            condiciones += " AND GETDATE() BETWEEN mi.fechaInicio AND mi.fechaFinVigencia";
+                            condiciones += " AND (GETDATE() BETWEEN mi.fechaInicio AND mi.fechaFinVigencia OR mi.fechaFinVigencia IS NULL)";
                         }
                         else if (model.IdVigencia == 2)
                         {

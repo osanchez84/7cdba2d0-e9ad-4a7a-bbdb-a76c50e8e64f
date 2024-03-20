@@ -1,5 +1,16 @@
 ﻿@model List<CatMotivosInfraccionModel>
-
+<script>
+        function filtrosBusqueda() {
+            return {
+                Fundamento: $("#txtFundamento").val(),
+                IdVigencia: $("#ddlVigencia").val(),
+                InicioVigenciaDesde: $("#inicioVigenciaDesde").val(),
+                InicioVigenciaHasta: $("#inicioVigenciaHasta").val(),
+                FinVigenciaDesde: $("#FinVigenciaDesde").val(),
+                FinVigenciaHasta: $("#FinVigenciaHasta").val()
+            };
+        }
+</script>
 <div class="row">
     <div class="col-12 mb-4 px-4 rounded gridCustom">
 
@@ -45,7 +56,7 @@
             .Pageable()
             .DataSource(dataSource => dataSource
             .Ajax()
-            .Read(read => read.Action("GetMotInf", "MotivosInfraccion"))
+            .Read(read => read.Action("GetMotInf", "MotivosInfraccion").Data("filtrosBusqueda"))
             .PageSize(5).Model(model => model.Id(p => p.IdCatMotivoInfraccion))
             )
             .ToolBar(t => t.Search().Text("Buscar..."))

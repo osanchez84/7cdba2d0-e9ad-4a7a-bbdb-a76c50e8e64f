@@ -10,7 +10,7 @@ namespace GuanajuatoAdminUsuarios.Models
     {
 
 
-
+        public int estatusEnvio { get;set; }
         public int estatusCortesia { get; set; } = 0;
         public string ObservacionesSub { get; set; } = "";
         public string ObservacionsesApl { get; set; } = "";
@@ -40,9 +40,12 @@ namespace GuanajuatoAdminUsuarios.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime ?fechaNacimiento { get; set; }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime fechaInfraccion { get; set; } 
+		[Display(Name = "Fecha")]
+		[DataType(DataType.Date)]
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+		public DateTime fechaInfraccion { get; set; } 
 		public DateTime horaInfraccion { get; set; } 
+        public TimeOnly hora { get; set; }
 
 		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime fechaVencimiento { get; set; } = DateTime.Now;

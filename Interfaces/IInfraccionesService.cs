@@ -37,6 +37,8 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 		public GarantiaInfraccionModel GetGarantiaById(int idGarantia);
         public PersonaInfraccionModel GetPersonaInfraccionById(int idPersonaInfraccion);
         public int CrearPersonaInfraccion(int idInfraccion, int idPersona);
+        bool UpdateFolioS(string id, string folio);
+        bool validarFolio(string folio);
         public int CrearGarantiaInfraccion(GarantiaInfraccionModel model,int idInf);
         public int ModificarGarantiaInfraccion(GarantiaInfraccionModel model, int idInf);
         public int CrearMotivoInfraccion(MotivoInfraccionModel model);

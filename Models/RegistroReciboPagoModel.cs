@@ -42,8 +42,11 @@ namespace GuanajuatoAdminUsuarios.Models
 
         public string ReciboPago { get; set; }
         public float? Monto { get; set; }
+		public string MontoRecibido { get; set; }
+        
         public DateTime? FechaPago { get; set; }
         public string LugarPago { get; set; }
+        public string MontoSTR { get; set; }
 
         public int Calificacion { get; set; }
 

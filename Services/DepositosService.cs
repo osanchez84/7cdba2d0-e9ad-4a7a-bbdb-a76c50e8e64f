@@ -35,6 +35,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     DateTime fechaHoraSolicitud = fechaSol.Date + horaSol;
                     command.Parameters.AddWithValue("@fechaSolicitud", fechaHoraSolicitud);
                     command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = (object)model.idInfraccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idVehiculo", SqlDbType.Int)).Value = (object)model.idVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietaroGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idOficial", SqlDbType.Int)).Value = (object)model.idOficial ?? DBNull.Value;
@@ -173,10 +174,10 @@ namespace GuanajuatoAdminUsuarios.Services
         }
 
 
-        public int ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
+        public string ActualizarSolicitud(int? Isol, SolicitudDepositoModel model)
 
         {
-            int idActual = Isol.GetValueOrDefault();
+            string folio = "";
             string strQuery = @"
                                 UPDATE solicitudes
                                 SET fechaSolicitud = @fechaSolicitud,
@@ -195,6 +196,16 @@ namespace GuanajuatoAdminUsuarios.Services
                                     solicitanteTel = @telefonoUsuario,
                                     idEntidad = @idEntidad,
                                     idMunicipio = @idMunicipio,
+                                    vehiculoCalle = @calleUbicacion,
+                                    vehiculoColonia = @coloniaUbicacion,
+                                    vehiculoNumero = @numeroUbicacion,
+                                    vehiculoInterseccion = @interseccion,
+                                    vehiculoKm = @kilometroUbicacion,
+                                    idEntidadUbicacion = @idEntidadUbicacion,
+                                    idMunicipioUbicacion = @idMunicipioUbicacion,
+                                    idCarreteraUbicacion = @idCarreteraUbicacion,
+                                    idTramoUbicacion = @idTramoUbicacion,
+                                    idPension = @idPensionUbicacion,
                                     idMotivoAsignacion = @idMotivoAsignacion,
                                     fechaActualizacion = @fechaActualizacion,
                                     actualizadoPor = @actualizadoPor,
@@ -210,7 +221,18 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(strQuery, connection);
                     command.Parameters.AddWithValue("@idSolicitud", Isol);
                     command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = (object)model.fechaSolicitud ?? DBNull.Value;
+                    DateTime fechaHoraSolicitud = new DateTime(
+                         model.fechaSolicitud.Year,
+                         model.fechaSolicitud.Month,
+                         model.fechaSolicitud.Day,
+                         model.horaSolicitud.Hours,
+                         model.horaSolicitud.Minutes,
+                         model.horaSolicitud.Seconds
+                     );
+
+                    command.Parameters.Add(new SqlParameter("@fechaSolicitud", SqlDbType.DateTime)).Value = fechaHoraSolicitud;
+
+                    command.Parameters.Add(new SqlParameter("@fechaHoraSolicitud", SqlDbType.DateTime)).Value = (object)fechaHoraSolicitud ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idTipoVehiculo", SqlDbType.Int)).Value = (object)model.idTipoVehiculo ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idPropietarioGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@idServicioRequiere", SqlDbType.Int)).Value = (object)model.idServicioRequiere ?? DBNull.Value;
@@ -230,21 +252,50 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@fechaActualizacion", SqlDbType.DateTime)).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     command.Parameters.Add(new SqlParameter("@actualizadoPor", SqlDbType.Int)).Value = 1;
                     command.Parameters.Add(new SqlParameter("@estatus", SqlDbType.Int)).Value = 1;
-                    command.ExecuteNonQuery();
 
+                    command.Parameters.Add(new SqlParameter("@idEntidadUbicacion", SqlDbType.Int)).Value = (object)model.idEntidadUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idMunicipioUbicacion", SqlDbType.Int)).Value = (object)model.idMunicipioUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idCarreteraUbicacion", SqlDbType.Int)).Value = (object)model.IdCarretera ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idTramoUbicacion", SqlDbType.Int)).Value = (object)model.IdTramo ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@idPensionUbicacion", SqlDbType.Int)).Value = (object)model.idPensionUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@calleUbicacion", SqlDbType.NVarChar)).Value = (object)model.calleUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@coloniaUbicacion", SqlDbType.NVarChar)).Value = (object)model.coloniaUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@numeroUbicacion", SqlDbType.NVarChar)).Value = (object)model.numeroUbicacion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@interseccion", SqlDbType.NVarChar)).Value = (object)model.interseccion ?? DBNull.Value;
+                    command.Parameters.Add(new SqlParameter("@kilometroUbicacion", SqlDbType.NVarChar)).Value = (object)model.kilometroUbicacion ?? DBNull.Value;
+
+                    command.ExecuteNonQuery();
+                    command = new SqlCommand("select folio from solicitudes where idSolicitud =@idSolicitud", connection);
+                    command.Parameters.AddWithValue("@idSolicitud", Isol);
+
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.Read()) // Verificar si se obtuvo un resultado
+                    {
+                        // Obtener el folio del registro actualizado
+                        folio = reader["folio"].ToString();
+                    }
+                    reader.Close(); // Cerrar el lector
+                    SqlCommand command2 = new SqlCommand(@"
+                            update depositos SET idConcesionario = @idPropietarioGrua,estatusSolicitud = CASE WHEN ISNULL(@idPropietarioGrua, 0) = 0 THEN 2 ELSE 1 END 
+                                            WHERE idSolicitud = @idSolicitud;
+                                        ", connection);
+                    command2.Parameters.AddWithValue("@idSolicitud", Isol);
+                    command2.Parameters.Add(new SqlParameter("@idPropietarioGrua", SqlDbType.Int)).Value = (object)model.idConcecionario ?? DBNull.Value;
+                    command2.CommandType = CommandType.Text;
+                    command2.ExecuteNonQuery();
                 }
                 catch (SqlException ex)
                 {
-                    return idActual;
+                    // Manejar excepciones si es necesario
+                    return folio; // O regresar idActual
                 }
                 finally
                 {
                     connection.Close();
                 }
             }
-            return idActual;
+            return folio;
         }
-
 
         public SolicitudDepositoModel ObtenerSolicitudPorID(int Isol)
         {
@@ -253,25 +304,27 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("SELECT sol.idSolicitud,sol.folio, sol.fechaSolicitud, sol.idTipoVehiculo, sol.idPropietarioGrua, sol.idOficial, " +
-                                    "sol.idEntidad, sol.idTipoUsuario, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, sol.solicitanteNumero, " +
-                                    "sol.solicitanteColonia, sol.solicitanteCalle, sol.idEntidad, sol.idMunicipio, sol.solicitanteTel,sol.idEvento,sol.idMotivoAsignacion, " +
-                                    "ctv.tipoVehiculo, " +
-                                    "propg.responsable, " +
-                                    "ofi.nombre, ofi.apellidoPaterno, ofi.apellidoMaterno, " +
-                                    "dev.descripcionEvento, " +
-                                    "tu.tipoUsuario, " +
-                                    "ent.nombreEntidad, " +
-                                    "mun.municipio " +
-                            "FROM solicitudes AS sol " +
-                            "LEFT JOIN catTiposVehiculo AS ctv ON sol.idTipoVehiculo = ctv.idTipoVehiculo " +
-                            "LEFT JOIN catResponsablePensiones AS propg ON sol.idPropietarioGrua = propg.idResponsable " +
-                            "LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial " +
-                            "LEFT JOIN catDescripcionesEvento as dev ON sol.idEvento = dev.idDescripcion " +
-                            "LEFT JOIN catTiposUsuario AS tu ON sol.idTipoUsuario = tu.idTipoUsuario " +
-                            "LEFT JOIN catEntidades AS ent ON sol.idEntidad = ent.idEntidad " +
-                            "LEFT JOIN catMunicipios AS mun ON sol.idMunicipio = mun.idMunicipio " +
-                            "WHERE sol.idSolicitud = @Isol", connection);
+                    SqlCommand command = new SqlCommand(@"SELECT sol.idSolicitud,sol.folio, sol.fechaSolicitud, sol.idTipoVehiculo, sol.idPropietarioGrua, sol.idOficial, 
+                                    sol.idEntidad, sol.idTipoUsuario, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, sol.solicitanteNumero, 
+                                    sol.solicitanteColonia, sol.solicitanteCalle, sol.idEntidad, sol.idMunicipio, sol.solicitanteTel,sol.idEvento,sol.idMotivoAsignacion, 
+                                    ctv.tipoVehiculo, 
+                                    propg.responsable, 
+                                    ofi.nombre, ofi.apellidoPaterno, ofi.apellidoMaterno, 
+                                   dev.descripcionEvento, 
+                                    tu.tipoUsuario, 
+                                    ent.nombreEntidad, 
+                                    mun.municipio,
+									sol.vehiculoCalle,sol.vehiculoColonia,sol.vehiculoNumero,sol.idCarreteraUbicacion,sol.idTramoUbicacion,
+									sol.idEntidadUbicacion,sol.idMunicipioUbicacion,sol.vehiculoInterseccion,sol.vehiculoKm, sol.idPension
+                            FROM solicitudes AS sol 
+                            LEFT JOIN catTiposVehiculo AS ctv ON sol.idTipoVehiculo = ctv.idTipoVehiculo 
+                            LEFT JOIN catResponsablePensiones AS propg ON sol.idPropietarioGrua = propg.idResponsable 
+                            LEFT JOIN catOficiales AS ofi ON sol.idOficial = ofi.idOficial 
+                            LEFT JOIN catDescripcionesEvento as dev ON sol.idEvento = dev.idDescripcion 
+                            LEFT JOIN catTiposUsuario AS tu ON sol.idTipoUsuario = tu.idTipoUsuario 
+                            LEFT JOIN catEntidades AS ent ON sol.idEntidad = ent.idEntidad 
+                            LEFT JOIN catMunicipios AS mun ON sol.idMunicipio = mun.idMunicipio 
+                            WHERE sol.idSolicitud = @Isol", connection);
                     command.Parameters.Add(new SqlParameter("@Isol", SqlDbType.Int)).Value = Isol;
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -281,6 +334,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.idSolicitud = reader["idSolicitud"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idSolicitud"].ToString());
                             solicitud.folio = reader["folio"].ToString();
                             solicitud.fechaSolicitud = Convert.ToDateTime(reader["fechaSolicitud"].ToString());
+                            solicitud.horaSolicitud = solicitud.fechaSolicitud.TimeOfDay;
                             solicitud.idTipoVehiculo = reader["idTipoVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoVehiculo"].ToString());
                             solicitud.tipoVehiculo = reader["tipoVehiculo"].ToString();
                             solicitud.idConcecionario = reader["idPropietarioGrua"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPropietarioGrua"].ToString());
@@ -304,6 +358,18 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.municipio = reader["municipio"].ToString();
                             solicitud.telefonoUsuario = reader["solicitanteTel"].ToString();
                             solicitud.idMotivoAsignacion = reader["idMotivoAsignacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMotivoAsignacion"].ToString());
+                            solicitud.idEntidadUbicacion = reader["idEntidadUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idEntidadUbicacion"].ToString());
+
+                            solicitud.idPensionUbicacion = reader["idPension"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPension"].ToString());
+                            solicitud.idMunicipioUbicacion = reader["idMunicipioUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idMunicipioUbicacion"].ToString());
+                            solicitud.IdTramo = reader["idTramoUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTramoUbicacion"].ToString());
+                            solicitud.IdCarretera = reader["idCarreteraUbicacion"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idCarreteraUbicacion"].ToString());
+                            solicitud.calleUbicacion = reader["vehiculoCalle"].ToString();
+                            solicitud.coloniaUbicacion = reader["vehiculoColonia"].ToString();
+                            solicitud.numeroUbicacion = reader["vehiculoNumero"].ToString();
+                            solicitud.kilometroUbicacion = reader["vehiculoKm"].ToString();
+                            solicitud.interseccion = reader["vehiculoInterseccion"].ToString();
+
 
                         }
                     }
@@ -453,7 +519,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-                           model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
+                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
+
+                            model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
                             model.horaSolicitud = reader["horaInfraccion"] == DBNull.Value ? TimeSpan.MinValue : TimeSpan.Parse(reader["horaInfraccion"].ToString());
                             model.horaSolicitudStr = reader["horaInfraccion"] == System.DBNull.Value ? string.Empty : reader["horaInfraccion"].ToString();
 
@@ -565,7 +633,9 @@ namespace GuanajuatoAdminUsuarios.Services
                         while (reader.Read())
                         {
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
-							model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
+                            model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
+
+                            model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
                             string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
 
                             TimeSpan horaInfraccionTimeSpan;

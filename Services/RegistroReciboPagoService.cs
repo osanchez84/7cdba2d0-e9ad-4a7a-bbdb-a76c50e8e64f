@@ -19,7 +19,7 @@ namespace GuanajuatoAdminUsuarios.Services
             _infraccionesService = infraccionesService;
         }
 
-        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion)
+        public List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion , string corp)
         {
             //
             List<RegistroReciboPagoModel> ListaInfracciones = new List<RegistroReciboPagoModel>();
@@ -39,9 +39,10 @@ namespace GuanajuatoAdminUsuarios.Services
                                                         LEFT JOIN personas AS pveh ON pveh.idPersona = v.idPersona
                                                         LEFT JOIN personas AS pinf ON i.idPersona = pinf.idPersona
                                                         LEFT JOIN catDelegaciones AS cde ON cde.idDelegacion = i.idDelegacion 
-                                                        WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada')", connection);
+                                                        WHERE folioInfraccion = @FolioInfraccion and  e.estatusInfraccion in('Capturada','En proceso','Enviada') and i.transito = @corp and estatus=1", connection);
 
                     command.Parameters.Add(new SqlParameter("@FolioInfraccion", SqlDbType.NVarChar)).Value = FolioInfraccion;
+                    command.Parameters.Add(new SqlParameter("@corp", SqlDbType.Int)).Value = Convert.ToInt32(corp);
                     command.CommandType = CommandType.Text;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
@@ -107,19 +108,22 @@ namespace GuanajuatoAdminUsuarios.Services
                     }
 
                     SqlCommand command1 = new SqlCommand(@"declare 
-                                                                @date datetime,
-                                                                @calificacion decimal,
-                                                                @uma decimal 
+                                                            @date datetime,
+                                                            @calificacion decimal,
+                                                            @uma float,
+                                                            @year int;
 
-                                                                select top 1 @date= fechaInfraccion from infracciones where idinfraccion=@Id
+                                                        select @date = fechaInfraccion from infracciones where idinfraccion = @Id;
 
+                                                        select @calificacion = sum(calificacion) from motivosInfraccion where idInfraccion = @Id;
 
-                                                                select @calificacion= sum(calificacion) from motivosInfraccion where idInfraccion=@Id
+                                                        set @year = year(@date);
 
-                                                                select top 1 @uma= salario from catSalariosMinimos where fecha<=(@date)
-                                                                and estatus=1 order by fecha desc
-
-                                                                select (@calificacion * @uma) monto", connection);
+SELECT top 1 @uma=format(salario,'#.##') 
+                               FROM catSalariosMinimos
+                               WHERE estatus = 1 and fecha<= @date  order by fecha desc, idSalario asc
+                                                        select (@calificacion * @uma)    as monto , @calificacion cal , @uma uma  ;
+", connection);
                     command1.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = Id;
                     command1.CommandType = CommandType.Text;
 
@@ -127,7 +131,26 @@ namespace GuanajuatoAdminUsuarios.Services
                     {
                         while (reader.Read())
                         {
-                            infraccion.Monto = (reader["monto"] != DBNull.Value) ? float.Parse(reader["monto"].ToString()) : 0.0f;
+
+
+                            if (reader["monto"] != DBNull.Value)
+                            {
+
+
+
+                                if (float.TryParse(reader["monto"].ToString(), out float montoFloat))
+                                {
+                                    infraccion.MontoSTR = montoFloat.ToString("#,##0.00");
+
+                                }
+                                else
+                                {
+                                    infraccion.MontoSTR = "0.00"; // O cualquier otro valor predeterminado si la conversión falla
+                                }
+                            }
+
+
+
 
                         }
 

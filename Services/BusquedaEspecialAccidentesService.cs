@@ -651,9 +651,8 @@ GROUP BY
                         cmd.Parameters.AddWithValue("@PropietarioBusqueda", model.propietarioBusqueda);
                         cmd.Parameters.AddWithValue("@SerieBusqueda", model.serieBusqueda);
                         cmd.Parameters.AddWithValue("@ConductorBusqueda", model.conductorBusqueda);
-
-                            cmd.Parameters.AddWithValue("@FechaInicio", model.FechaInicio);
-                            cmd.Parameters.AddWithValue("@FechaFin", model.FechaFin);
+                        cmd.Parameters.AddWithValue("@FechaInicio", model.FechaInicio);
+                        cmd.Parameters.AddWithValue("@FechaFin", model.FechaFin);
 
 
                         /*if (pagination.Filter.Trim() != "")

@@ -7,7 +7,7 @@ namespace GuanajuatoAdminUsuarios.Interfaces
 {
     public interface IRegistroReciboPagoService
     {
-        List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion);
+        List<RegistroReciboPagoModel> ObtInfracciones(string FolioInfraccion, string corp);
         RegistroReciboPagoModel ObtenerDetallePorId(int Id);
 
         int GuardarRecibo(string ReciboPago, float Monto, DateTime FechaPago, string LugarPago, int IdInfraccion);

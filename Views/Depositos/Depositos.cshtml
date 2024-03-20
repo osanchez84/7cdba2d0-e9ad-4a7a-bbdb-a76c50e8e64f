@@ -46,7 +46,7 @@
     <section class="mx-md-3 mx-lg-4 mx-xl-5 bg-white boxShadow my-5 rounded">
         @if (Model?.idSolicitud > 0)
         {
-            <input type="hidden" name="Isol" value="@Model.idSolicitud" />
+            <input type="hidden" name="Isol" value="@Model.idSolicitud" id="Isol" />
         }
 
         <div class="row align-items-center justify-content-between px-4 px-md-4 pt-3 pb-2">
@@ -98,6 +98,7 @@
                     <div class="col-12 col-md-6 col-lg-6 col-xl-4">
                         <form id="busquedaInfForm">
                             <div class="controlForm my-3">
+                               
                                 @(Html.Kendo().TextBoxFor(t => t.folioBusquedaInfraccion)
                                     .Label(l => l.Content("Folio de infracción:"))
                                     .Placeholder("Ingrese el folio de la infracción")
@@ -120,6 +121,8 @@
                 <div class="col-12 col-md-6 col-lg-6 col-xl-3">
                     <div class="controlForm my-3">
                         @Html.HiddenFor(model => model.idInfraccion, new { id = "idInfraccionHdn" })
+                        @Html.HiddenFor(model => model.idVehiculo, new { id = "idVehiculoHdn" })
+
                         <label>Fecha <b>(obligatorio)</b>:</label>
                         @(Html.Kendo().DatePickerFor(t => t.fechaSolicitud).Format("dd/MM/yyyy").Max(DateTime.Now)
                             .Events(e =>
@@ -706,7 +709,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nueva solicitud guardada</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" onclick="cieraModal()" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -718,6 +721,28 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="goToAsignacion">Ir a asignación de grúas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="modal fade" id="solicitudEditModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Solicitud Actualizada</h5>
+                    <button type="button" class="close" onclick="cieraModalEdit()"  aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Datos actualizados correctamente en el folio <span id="folioPlaceholderEdit"></span>.</p>
+                    <br />
+                    <br />
+                    <p><b>Puede completar la solicitud de depósito con la información del vehículo depositado y grúas asignadas si las hubo.</b></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="goToAsignacion2">Ir a asignación de grúas</button>
                 </div>
             </div>
         </div>
@@ -766,8 +791,9 @@
         }
 
         var Mydata = {
-            //fechaSolicitud: $('#fechaSolicitud').val(),
+            idSolicitud: $('#Isol').val(),
             idInfraccion: $("#idInfraccionHdn").val(),
+            idVehiculo: $("#idVehiculoHdn").val(),
             folioBusquedaInfraccion: $('#folioBusquedaInfraccion').val(),
             fechaSolicitud: kendo.toString($("#fechaSolicitud").data("kendoDatePicker").value(), "yyyy-MM-dd"),
             horaSolicitud: kendo.toString($("#dateTime").data("kendoTimePicker").value(), "HH:mm"),
@@ -803,19 +829,22 @@
         $.ajax({
             url: '/Depositos/ajax_EnviarSolicitudDeposito',
             type: 'POST',
-            contentType: 'application/json',
+           contentType: 'application/json',
             data: JSON.stringify(Mydata),
             success: function (response) {
-
-                if (!response.success)
-                    sitteg_warning(response.message);
-                else {
+                if (response.update) {
+                    sitteg_success("La información se actualizó correctamente.");
+                    $("#folioPlaceholderEdit").text(response.data);
+                    $("#solicitudEditModal").modal('show');
+                } else if (response.success) {
                     $("#folioPlaceholder").text(response.data);
                     $("#solicitudModal").modal('show');
+                } else {
+                    sitteg_warning(response.message);
                 }
                 hideLoading();
-
             },
+
             error: function () {
                 sitteg_warning("Ocurrió un error, inténtelo de nuevo más tarde");
                 hideLoading();
@@ -823,8 +852,17 @@
         });
 
     }
+    function cieraModal(){
+       $("#solicitudModal").modal('hide');
+    }
+       function cieraModalEdit(){
+        $("#solicitudEditModal").modal('hide');
+    }
     $("#goToAsignacion").on("click", function () {
         window.location.href = "/AsignacionGruas/Index?folio=" + $("#folioPlaceholder").text();
+    });
+    $("#goToAsignacion2").on("click", function () {
+        window.location.href = "/AsignacionGruas/Index?folio=" + $("#folioPlaceholderEdit").text();
     });
 
     function carreteraDropDownChange() {
@@ -943,6 +981,8 @@
                 // Asignar tiempoConvertido al Kendo TimePicker
                 $("#dateTime").data("kendoTimePicker").value(tiempoConvertido);
                 $("#idInfraccionHdn").val(data.idInfraccion);
+                $("#idVehiculoHdn").val(data.idVehiculo);
+
                 $("#numeroUbicacion").val(data.numeroUbicacion);
                 $("#calleUbicacion").val(data.calleUbicacion);
                 $("#coloniaUbicacion").val(data.coloniaUbicacion); kilometroUbicacion

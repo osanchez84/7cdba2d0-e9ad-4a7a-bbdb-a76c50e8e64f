@@ -113,13 +113,14 @@
         });
     }
 
-    function ShowUpdatePopUp(Id,IdDeposito,IdGrua,IdConcesionario) {
-        console.log("CONC",IdConcesionario)
-        //Si la solicitud no tiege grua asociada se oculta el boton del modal
-        if(IdGrua===undefined || IdGrua<=0)
-        $('#divGruaModal').hide();
-        else
-           $('#divGruaModal').show();
+    function ShowUpdatePopUp(Id, IdDeposito, IdGrua, IdConcesionario, SolicitudEstatus) {
+        console.log("CONC", IdConcesionario);
+        //Si la solicitud tiene un estatus menor que 3 se oculta el boton del modal
+        if (SolicitudEstatus === undefined || SolicitudEstatus <= 2) {
+            $('#divGruaModal').hide();
+        } else {
+            $('#divGruaModal').show();
+        }
 
         $('#hdnIdDeposito').val(Id);
         $('#hdnIdDepositoInv').val(IdDeposito);
@@ -127,6 +128,7 @@
 
         $('#myUpdateModal').modal('show');
     }
+
 
     function downLoadPdf(Id) {
 
@@ -138,6 +140,17 @@
 
         return `<p>Estatus:${data.nombreEstatus}</p><p>Delegacion:${data.delegacion}</p><p> Dependencia: ${data.transito == 1 ? "TTO" : "TTE"} </p>`
     }
+
+    function TurnoTemplate(data, columnName) {
+        if (data.transito === 1 && columnName === "TTO") {
+            return "<span style='color: green;'>&#10003;</span>"; // Marca para TTO si transito es 1
+        } else if (data.transito === 0 && columnName === "TTE") {
+            return "<span style='color: red;'>&#10003;</span>"; // Marca para TTE si transito es 0
+        }
+        return ""; // No mostrar marca si no corresponde a ninguna columna o si transito no es ni 0 ni 1
+    }
+
+
 
 
 
@@ -158,10 +171,9 @@
 
 
     function EditarTemplate(data){
-        console.log("EDTEMPDAT", data)
+        console.log("SAS",data)
         if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
-            return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`
-        else 
+return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}','${data.SolicitudEstatus}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`;        else 
         return ""
 
 
@@ -230,7 +242,14 @@
                     columns.Bound(p => p.IdGrua).ClientTemplate("#= EditarTemplate(data) #").Title("Editar").Sortable(false).Width(100);
 
                     columns.Bound(p => p.IdDeposito).ClientTemplate("#= eliminarTemplate(data) #").Title("Eliminar").Sortable(false).Width(100);
-                    columns.Bound(p => p.IdDependenciaGenera).ClientTemplate("#= EstatusTemplate(data) #").Title("Turno Captura").Width(250);
+                    columns.Bound(p => p.transito).ClientTemplate(
+                    "<div class='turno-captura'>" +
+                    "<div class='tto-marked'>TTO:</div>" +
+                    "#= IdDependenciaGenera == 0 ? '✓' : '' #" +
+                    "<div class='dep-marked'>Dep:</div>" +
+                    "#= IdDependenciaGenera == 1 ? '✓' : '' #" +
+                    "</div>"
+                    ).Title("Turno Captura").Width(150);
 
 
 

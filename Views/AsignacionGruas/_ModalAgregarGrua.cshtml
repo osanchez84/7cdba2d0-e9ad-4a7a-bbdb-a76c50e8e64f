@@ -236,7 +236,7 @@
                                                 .Name("salvamentoSwitch1")
                                                 .Checked(false)
                                                 .Messages(c => c.Checked("Si").Unchecked("No"))
-                                                .HtmlAttributes(new { data_valor = 1 })
+                                                .HtmlAttributes(new { data_valor = "true" })
                                                 )
                                         </div>
                                     </div>
@@ -313,6 +313,8 @@ function enviarDatos() {
 
         formData.append("abanderamiento", abanderamientoValue);
         formData.append("arrastre", arrastreValue);
+            formData.append("salvamento", salvamentoValue);
+
             formData.append("horaInicioInsert", $("#horaInicioInsert").data("kendoTimePicker").value());
             formData.append("horaArriboInsert", $("#horaArriboInsert").data("kendoTimePicker").value());
             formData.append("horaTerminoInsert", $("#horaTerminoInsert").data("kendoTimePicker").value());
@@ -369,9 +371,9 @@ function enviarDatos() {
     });
 
     function goBack() {
-
+        
         $('#modalAgregarGrua').modal('hide');
-
+        $('#ModalBodyEditarGrua').modal('');
     }
 
   

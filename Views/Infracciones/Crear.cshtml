@@ -1,4 +1,5 @@
-﻿@model InfraccionesModel
+﻿
+@model InfraccionesModel
 
 @{
 	@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
@@ -6,11 +7,57 @@
 	var autorizaciones = @HttpContextAccessor.HttpContext.Session.GetString("Autorizaciones").ToString();
 	var regreso = ViewBag.Regreso;
 	var horaMaxima = "00:01";
-	
+	 DateTime fechaActualServidor = DateTime.Now;
+    string fechaActualISO = fechaActualServidor.ToString("yyyy-MM-ddTHH:mm:ss");
 
 }
 
 <script>
+
+	function validacionHora() {
+		var fechaSeleccionadaString = $("#fechaInfraccion").val();
+		var horaSeleccionada = $("#dateTime").val();
+
+		var fechaActual = new Date();
+		var fechaSeleccionada = kendo.parseDate(fechaSeleccionadaString, "dd/MM/yyyy");
+
+		var horaMaxima = fechaActual.getHours().toString().padStart(2, '0') + ':' + fechaActual.getMinutes().toString().padStart(2, '0');
+		var horaActual = kendo.parseDate(horaMaxima, "HH:mm");
+
+		console.log('Fecha seleccionada (string):', fechaSeleccionadaString);
+		console.log('Hora seleccionada (string):', horaSeleccionada);
+		console.log('Fecha actual:', fechaActual);
+		console.log('Fecha seleccionada (objeto):', fechaSeleccionada);
+		console.log('Hora máxima permitida:', horaMaxima);
+		console.log('Hora actual (objeto):', horaActual);
+
+		if (fechaSeleccionada && horaSeleccionada) {
+			var fechaSeleccionadaSinHora = new Date(fechaSeleccionada);
+			fechaSeleccionadaSinHora.setHours(0, 0, 0, 0);
+
+			if (fechaSeleccionadaSinHora.getTime() === fechaActual.setHours(0, 0, 0, 0)) {
+				console.log('Estableciendo límite máximo de hora:', horaMaxima);
+				$("#dateTime").data("kendoTimePicker").max(horaMaxima);
+			} else {
+				console.log('Removiendo límite máximo de hora.');
+				var horaLejana = "23:59";
+				$("#dateTime").data("kendoTimePicker").max(horaLejana);
+			}
+
+			if (fechaSeleccionadaSinHora.getTime() === fechaActual.setHours(0, 0, 0, 0) && kendo.parseDate(horaSeleccionada, "HH:mm") > horaActual) {
+				console.log('Ajustando hora seleccionada a la hora actual:', horaActual);
+				$("#dateTime").data("kendoTimePicker").value(horaActual);
+			}
+		} else {
+			console.log('Fecha o hora no seleccionada.');
+			var horaLejana = "23:59";
+			$("#dateTime").data("kendoTimePicker").max(horaLejana);
+		}
+	}
+
+
+
+
 
 	$(document).ready(function () {
 		var access = @listaIdsPermitidosJson;
@@ -38,11 +85,11 @@
 			}, 200);
 		}
 	});
-	
 
 
-	function DataFilterCatalogTramo(){
-		
+
+	function DataFilterCatalogTramo() {
+
 		var value = $("#ddlCarreteras").val()
 		return { idCarretera: value }
 	}
@@ -186,8 +233,24 @@
 									</div>
 								</div>
 							</div>
+							<!--<div class="row my-4 px-4">
+									<div class="form-group col-md-2 controlForm">
+										
+											<label asp-for="fechaInfraccion" class="control-label"></label>
+											<input asp-for="fechaInfraccion" class="form-control" type="date" id="fechaInfraccion" max="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="validacionHora()" value="" />
+											<span asp-validation-for="fechaInfraccion" class="text-danger"></span>
+
+
+									</div>
+								
+							  
+									<div class="form-group col-md-2 controlForm">
+										<label class="text-muted">Hora:</label>
+									<input type="time" id="dateTime" onchange="validacionHora()" step="60" />
+									</div>
+							</div>-->
 							<div class="row my-4 px-4">
-							
+
 
 								<div class="row my-4 px-4">
 									<div class="form-group col-md-3 controlForm">
@@ -198,22 +261,23 @@
 											.Culture("es-ES")
 											.Events(e =>
 											{
-												e.Change("cambiaFecha");
+												e.Change("validacionHora");
 											})
 											.Value("")
 											.HtmlAttributes(new { style = "width: 100%", id = "fechaInfraccion" })
 											)
 									</div>
-								
+
 
 									<div class="form-group col-md-2 controlForm">
-										
+
 										<label class="text-muted">Hora:</label>
-										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)											
+										@(Html.Kendo().TimePickerFor(t => t.horaInfraccion).Interval(1)
 											.Label(l => l.Content("Hora:"))
-											.Events(s => s.Change("validacionHora"))
-											.DateInput(true)
-											
+											.Events(e =>
+											{
+												e.Change("validacionHora");
+											})
 											.Format("HH:mm")
 											.Culture("es-ES")
 											.Value("")
@@ -222,6 +286,8 @@
 									</div>
 								</div>
 							</div>
+							<br/>
+				           <br/>
 							<div class="row my-4 px-4">
 								<div class="form-group col-md-4">
 									<div class="controlForm">
@@ -300,14 +366,14 @@
 										<label>Carretera <b>(obligatorio):</b></label>
 										@(
 											Html.Kendo().DropDownList()
-													.Name("idCarretera")
-													.BindTo((SelectList)ViewBag.CatCarreteras)
-													.Filter(FilterType.Contains)
-													.Events(ev =>
-													{
-														ev.Change("OnChangeCarreteras");											
+											.Name("idCarretera")
+											.BindTo((SelectList)ViewBag.CatCarreteras)
+											.Filter(FilterType.Contains)
+											.Events(ev =>
+											{
+												ev.Change("OnChangeCarreteras");
 
-												})
+											})
 											.OptionLabel("-- Seleccione --")
 											.HtmlAttributes(new { style = "width:100%;", id = "ddlCarreteras", required = "required" })
 											)
@@ -319,18 +385,19 @@
 										<div id="divTramo">
 											@(
 												Html.Kendo().DropDownListFor(f => f.idTramo)
-															.Filter(FilterType.Contains)												
-															.OptionLabel("-- Seleccione --")
-															.DataTextField("Text")
-															.DataValueField("Id")
-															
-															.DataSource(s=> {
-																s.Read(r =>
-																{
-																	r.Action("GetCatalogTramoFilter", "infracciones").Data("DataFilterCatalogTramo");
-																});
-													
-													})
+												.Filter(FilterType.Contains)
+												.OptionLabel("-- Seleccione --")
+												.DataTextField("Text")
+												.DataValueField("Id")
+
+												.DataSource(s =>
+												{
+													s.Read(r =>
+													{
+														r.Action("GetCatalogTramoFilter", "infracciones").Data("DataFilterCatalogTramo");
+													});
+
+												})
 
 												.HtmlAttributes(new { style = "width:100%;", required = "required" })
 												)
@@ -417,15 +484,15 @@
 							@Html.HiddenFor(m=> m.idVehiculo)
 
 							<div class="row my-4 px-4">
-									<div id="detalleVehiculo">
-									</div>
+								<div id="detalleVehiculo">
+								</div>
 
 								<div class="row my-4 px-4">
 									<div id="listadoVehiculos">
 										<partial name="_ListadoVehiculos" model="ViewBag.Vehiculos" />
 									</div>
 								</div>
-							
+
 								<div class="row">
 									<div class="col-12">
 										<div class="tabCustomEnd"></div>
@@ -453,7 +520,7 @@
 												<h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Propietario Como Conductor</b></h6>
 											</button>
 										</div>
-																				<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
+										<div class="col-auto btnOutline btnOutlinePrimary my-2 mx-auto mx-xl-2 p-0">
 											<button type="button" href="#" id="btnNuevoConductor" onclick="OmitirConductor()">
 												<h6 class="m-0 d-flex align-items-center"><i class="icon-addConductor h5 mb-0 me-2"></i><b>Se Ignora</b></h6>
 											</button>
@@ -509,12 +576,9 @@
 		</div>
 	</section>
 </div>
+
 <script>
-
-
-
-
-	function OmitirConductor(){
+	function OmitirConductor() {
 
 		showLoading();
 
@@ -556,21 +620,21 @@
 		$("#textoConductor").empty().append("El propietario es el conductor")
 		var grid = $("#gridInfraccionesPersonas").data("kendoGrid");
 		grid.clearSelection();
-		var result =$("#Persona_idPersona").val()
+		var result = $("#Persona_idPersona").val()
 
-		if(result){
+		if (result) {
 			$("#idPersona").val(result)
 			sitteg_success('Elemento guardado correctamente')
 		}
-		else{
+		else {
 			sitteg_warning('Debes seleccionar un vehiculo con un propietario asignado');
 		}
 
 
 
-		
 
-		
+
+
 
 
 	}
@@ -592,7 +656,7 @@
 		controlsValidate = [];
 		controlsValidate.push({ 'controlName': 'idOficial' });
 		controlsValidate.push({ 'controlName': 'idMunicipio' });
-		
+
 		if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
 		if (!isValid) {
@@ -600,7 +664,7 @@
 			$("#informacionInfraccion-tab").click();
 			return;
 		}
-		
+
 
 		isValid = true;
 		controlsValidate = [];
@@ -610,7 +674,7 @@
 		controlsValidate = [];
 		controlsValidate.push({ 'controlName': 'ddlCarreteras' });
 		controlsValidate.push({ 'controlName': 'idTramo' });
-		
+
 		if (!isControlsValidDropDown(controlsValidate)) { isValid = false; }
 
 		if (!isValid) {
@@ -628,37 +692,39 @@
 			sitteg_warning('Debe seleccionar un conductor');
 			return;
 		}
-		
-			var formData = $("#frmCrearInfraccion").serialize();
+var formData = $("#frmCrearInfraccion").serialize();
 
-			showLoading();
+var horaInfraccion = $("#dateTime").val();
+formData += "&horaInfraccion=" + encodeURIComponent(horaInfraccion);
 
-			$.ajax({
-				url: '@Url.Action("ajax_crearInfraccion")',
-				type: 'POST',
-				data: formData,
-				dataType: "json",
-				success: function (result) {
-					if (result.id) {
+		showLoading();
 
-						sitteg_success('Elemento guardado correctamente')
-						window.setTimeout(function () {
-						window.location.href = '/Infracciones/Editar/?id=' + result.id + '&regreso='+@regreso
-						}, 500);
-						hideLoading();
-					}
-					else{
-						sitteg_warning('El folio ya existe.');
-						hideLoading();
-					}
-				},
-				error: function (xhr, status) {
-					var errmsg = xhr.responseText;
-					console.log(errmsg)
-					sitteg_warning('Lo sentimos, ha ocurrido un error.');
+		$.ajax({
+			url: '@Url.Action("ajax_crearInfraccion")',
+			type: 'POST',
+			data: formData,
+			dataType: "json",
+			success: function (result) {
+				if (result.id) {
+
+					sitteg_success('Elemento guardado correctamente')
+					window.setTimeout(function () {
+						window.location.href = '/Infracciones/Editar/?id=' + result.id + '&regreso=' + @regreso
+							}, 500);
 					hideLoading();
 				}
-			});
+				else {
+					sitteg_warning('El folio ya existe.');
+					hideLoading();
+				}
+			},
+			error: function (xhr, status) {
+				var errmsg = xhr.responseText;
+				console.log(errmsg)
+				sitteg_warning('Lo sentimos, ha ocurrido un error.');
+				hideLoading();
+			}
+		});
 	}
 
 	function isPropietarioOnChange(e) {
@@ -686,8 +752,8 @@
 				"idVehiculo": pidVehiculo,
 			},
 			success: function (data) {
-				console.log("DATVE",data)
-                $("#detalleVehiculo").html(data);
+				console.log("DATVE", data)
+				$("#detalleVehiculo").html(data);
 				hideLoading();
 			}, error: function () {
 				//sitteg_warning("Ocurrio un error al procesar su solicitud.");
@@ -775,133 +841,123 @@
 			}
 		});
 	});
-		
-	 $(document).ready(function () {
-        $("#placas").prop('disabled', true);
-        $("#idEntidad").prop("disabled", true);
-        $('#tarjeta').prop("disabled", true);
-        $('#Persona_nombreCompleto').prop("disabled", true);
-        $("#motor").prop("disabled", true);
-        $("#numeroEconomico").prop("disabled", true);
-        $("#otros").prop("disabled", true);
-        $("#poliza").prop("disabled", true);
-        $("#capacidad").prop("disabled", true);
-        $("#idColor").prop("disabled", true);
-    });
+
+	$(document).ready(function () {
+		$("#placas").prop('disabled', true);
+		$("#idEntidad").prop("disabled", true);
+		$('#tarjeta').prop("disabled", true);
+		$('#Persona_nombreCompleto').prop("disabled", true);
+		$("#motor").prop("disabled", true);
+		$("#numeroEconomico").prop("disabled", true);
+		$("#otros").prop("disabled", true);
+		$("#poliza").prop("disabled", true);
+		$("#capacidad").prop("disabled", true);
+		$("#idColor").prop("disabled", true);
+	});
 
 
 
 
-	
-    function onRowSelect() {
-            
-        var grid = $("#gridPersonasLicencia").data("kendoGrid");
-        var selectedRowData = grid.dataItem(grid.select());
 
-        console.log("EE", selectedRowData);
-        
-        const tipoLicenciaMapping = {
-                "TIPO A  CHOFER AUTOMOVILISTA": 1,
-                "TIPO B CHOFER SERVICIO PÚBLICO": 2,
-                "TIPO C  Chofer Servicio de Carga": 3,
-                "TIPO D -MOTOCICLISTA": 4,
-                "PERMISO A -AUTOMOVIL-": 6,
-                "PERMISO D -MOTOCICLETA-": 7,
-                "NO APLICA": 8,
-                "TIPO A": 1,
-                "TIPO B": 2,
-                "TIPO C": 3,
-                "TIPO D": 4,
-                "PERMISO A": 6,
-                "PERMISO D": 7,
-                "A-AUTOMOVILISTA": 1,
-                "B-CHOFER DE SERVICIO PÚBLICO": 2,
-                "C-CHOFER DE SERVICIO DE CARGA": 3,
-                "D-MOTOCICLISTA": 4,
-                "PA-PERMISO AUTOMOVILISTA": 6,
-                "PD-PERMISO MOTOCICLISTA": 7,
+	function onRowSelect() {
 
-            };
-           
-            const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.tipoLicencia] || 0;
-           
-            selectedRowData.idTipoLicencia = tipoLicenciaNumero;
-         console.log("4..." )
-          console.log("4.1.." + selectedRowData.nombreCompleto)
-         //   showLoading();
-            var fd = new FormData();
-            fd.append("nombre", selectedRowData.nombre);
-            fd.append("apellidoPaterno", selectedRowData.apellidoPaterno);
-            fd.append("apellidoMaterno", selectedRowData.apellidoMaterno);
-            fd.append("CURP", selectedRowData.CURP);
-            fd.append("RFC", selectedRowData.RFC);
-            fd.append("numeroLicencia", selectedRowData.numeroLicencia);
-            fd.append("tipoLicencia", tipoLicenciaNumero);
-			fd.append("idGenero", selectedRowData.idGenero);
-			fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
-			fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+		var grid = $("#gridPersonasLicencia").data("kendoGrid");
+		var selectedRowData = grid.dataItem(grid.select());
 
-			fd.append("idGenero", selectedRowData.idGenero);
-			fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
-			fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
-			fd.append("calle", selectedRowData.calle);
-			fd.append("numero", selectedRowData.numero);
-			fd.append("colonia", selectedRowData.colonia);
+		console.log("EE", selectedRowData);
 
-			fd.append("idMunicipio", selectedRowData.PersonaDireccion.idMunicipio);
-			fd.append("municipio", selectedRowData.PersonaDireccion.municipio);
-			fd.append("codigoPostal", selectedRowData.PersonaDireccion.codigoPostal);
-			fd.append("entidad", selectedRowData.PersonaDireccion.entidad);
-			fd.append("telefono", selectedRowData.PersonaDireccion.telefono);
-			fd.append("correo", selectedRowData.PersonaDireccion.correo);
-           
-            $.ajax({
-                type: 'POST',
-                 url: '/Personas/guardaDesdeServicio',
-                  contentType: false, // Not to set any content header
-                    processData: false, // Not to process data
-                 data: fd,
-                 success: function (result) {
-                       $('#modalLicenciasList').modal('hide');
-                     var grid = $("#gridPersonas").data("kendoGrid");
-                     if (result && result.data) {
-                         var dataArray = [result.data];
-                         grid.dataSource.data(dataArray);
-                     } else {
-                         console.error("La respuesta no tiene la estructura esperada:", result);
-                     }
-                     sitteg_success('Elemento guardado correctamente')
-                     hideLoading();
-                 },
-                 error: function (error) {
-                     sitteg_warning('Error al guardar en la base de datos:');
-                     hideLoading();
-                 }
-            });
-        }
+		const tipoLicenciaMapping = {
+			"TIPO A  CHOFER AUTOMOVILISTA": 1,
+			"TIPO B CHOFER SERVICIO PÚBLICO": 2,
+			"TIPO C  Chofer Servicio de Carga": 3,
+			"TIPO D -MOTOCICLISTA": 4,
+			"PERMISO A -AUTOMOVIL-": 6,
+			"PERMISO D -MOTOCICLETA-": 7,
+			"NO APLICA": 8,
+			"TIPO A": 1,
+			"TIPO B": 2,
+			"TIPO C": 3,
+			"TIPO D": 4,
+			"PERMISO A": 6,
+			"PERMISO D": 7,
+			"A-AUTOMOVILISTA": 1,
+			"B-CHOFER DE SERVICIO PÚBLICO": 2,
+			"C-CHOFER DE SERVICIO DE CARGA": 3,
+			"D-MOTOCICLISTA": 4,
+			"PA-PERMISO AUTOMOVILISTA": 6,
+			"PD-PERMISO MOTOCICLISTA": 7,
 
-	function cambiaFecha() {
-		var timepickerControl = $("#dateTime").data("kendoTimePicker");
-		var varFechaInfraccion = kendo.toString(this.value(), 'd');
-		var dia = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
-		varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
-		var mes = varFechaInfraccion.slice(0, varFechaInfraccion.indexOf("/"));
-		varFechaInfraccion = varFechaInfraccion.slice(varFechaInfraccion.indexOf("/") + 1, varFechaInfraccion.length);
-		let date = new Date();
+		};
 
-		if (varFechaInfraccion == date.getFullYear() && mes == (date.getMonth() + 1) && dia == date.getDate()) {
-			timepickerControl.max(date.getHours() + ":" + date.getMinutes());
+		const tipoLicenciaNumero = tipoLicenciaMapping[selectedRowData.tipoLicencia] || 0;
 
-			timepickerControl.bind("change", function (e) {
-				var hora = timepickerControl.value();
-				if (hora != null && hora.getHours() > date.getHours()) {
-					if (hora.getMinutes() > date.getMinutes()) {
-						timepickerControl.value("");
-					}
+		selectedRowData.idTipoLicencia = tipoLicenciaNumero;
+		console.log("4...")
+		console.log("4.1.." + selectedRowData.nombreCompleto)
+		//   showLoading();
+		var fd = new FormData();
+		fd.append("nombre", selectedRowData.nombre);
+		fd.append("apellidoPaterno", selectedRowData.apellidoPaterno);
+		fd.append("apellidoMaterno", selectedRowData.apellidoMaterno);
+		fd.append("CURP", selectedRowData.CURP);
+		fd.append("RFC", selectedRowData.RFC);
+		fd.append("numeroLicencia", selectedRowData.numeroLicencia);
+		fd.append("tipoLicencia", tipoLicenciaNumero);
+		fd.append("idGenero", selectedRowData.idGenero);
+		fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+		fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+
+		fd.append("idGenero", selectedRowData.idGenero);
+		fd.append("fechaNacimiento", selectedRowData.fechaNacimiento);
+		fd.append("fechaVigencia", selectedRowData.vigenciaLicencia);
+		fd.append("calle", selectedRowData.calle);
+		fd.append("numero", selectedRowData.numero);
+		fd.append("colonia", selectedRowData.colonia);
+
+		fd.append("idMunicipio", selectedRowData.PersonaDireccion.idMunicipio);
+		fd.append("municipio", selectedRowData.PersonaDireccion.municipio);
+		fd.append("codigoPostal", selectedRowData.PersonaDireccion.codigoPostal);
+		fd.append("entidad", selectedRowData.PersonaDireccion.entidad);
+		fd.append("telefono", selectedRowData.PersonaDireccion.telefono);
+		fd.append("correo", selectedRowData.PersonaDireccion.correo);
+
+		$.ajax({
+			type: 'POST',
+			url: '/Personas/guardaDesdeServicio',
+			contentType: false, // Not to set any content header
+			processData: false, // Not to process data
+			data: fd,
+			success: function (result) {
+				$('#modalLicenciasList').modal('hide');
+				var grid = $("#gridPersonas").data("kendoGrid");
+				if (result && result.data) {
+					var dataArray = [result.data];
+					grid.dataSource.data(dataArray);
+				} else {
+					console.error("La respuesta no tiene la estructura esperada:", result);
 				}
-			});
-		} else {
-			timepickerControl.max("23:59");
+				sitteg_success('Elemento guardado correctamente')
+				hideLoading();
+			},
+			error: function (error) {
+				sitteg_warning('Error al guardar en la base de datos:');
+				hideLoading();
+			}
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		document.getElementById('fechaInfraccion').addEventListener('change', validarFecha);
+	});
+
+	function validarFecha() {
+		var fechaInput = document.getElementById('fechaInfraccion');
+		var fechaSeleccionada = new Date(fechaInput.value);
+		var fechaActual = new Date();
+
+		if (fechaSeleccionada > fechaActual) {
+		
+			fechaInput.valueAsDate = fechaActual;
 		}
 	}
 

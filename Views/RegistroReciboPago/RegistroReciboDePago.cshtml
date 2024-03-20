@@ -132,10 +132,12 @@
             type: 'POST',
             data: Data,
             success: function (result) {
+                var grid = $("#gridRegistro").data("kendoGrid");
+
                 if (result.length === 0) {
                     $('#mensajeSinResultados').text("La búsqueda no arrojó resultados.");
+                    grid.dataSource.data([]);
                 } else{
-                    var grid = $("#gridRegistro").data("kendoGrid");
                     grid.dataSource.data(result);
                     $('#mensajeSinResultados').text(" ");
                 }

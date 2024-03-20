@@ -1106,12 +1106,12 @@ namespace GuanajuatoAdminUsuarios.Services
                     int anio = fechaInfraccion.Year;
                     connection.Open();
 					const string SqlTransact =
-                                            @"select format(salario,'#.##') salario from catSalariosMinimos catSal
-												where catSal.estatus =1 AND catSal.anio = @anio";
+                                            @"select top 1 format(salario,'#.##') salario from catSalariosMinimos catSal
+where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario asc";
 
 					SqlCommand command = new SqlCommand(SqlTransact, connection);
 					command.CommandType = CommandType.Text;
-                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.Int)).Value = anio;
+                    command.Parameters.Add(new SqlParameter("@anio", SqlDbType.DateTime)).Value = fechaInfraccion;
 
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
@@ -1977,6 +1977,7 @@ namespace GuanajuatoAdminUsuarios.Services
                                       ,inf.idVehiculo
                                       ,inf.idAplicacion
                                       ,inf.idGarantia
+									  ,inf.idEstatusEnvio
                                       ,inf.idEstatusInfraccion
                                       ,inf.idMunicipio
                                       ,inf.idTramo
@@ -2050,7 +2051,7 @@ namespace GuanajuatoAdminUsuarios.Services
 							model.ObservacionesSub = reader["ObservacionesSub"].ToString();
 							model.ObservacionsesApl = reader["ObservacionsesApl"].ToString();
                             model.idCortesia = reader["infraccionCortesia"] == System.DBNull.Value ? 0 : ((int)reader["infraccionCortesia"]) ;
-
+							model.estatusEnvio = reader["idEstatusEnvio"] is DBNull ?0: (int)reader["idEstatusEnvio"];
 
 
                             model.carretera = reader["carretera"].ToString();
@@ -2282,10 +2283,10 @@ namespace GuanajuatoAdminUsuarios.Services
 			fecha = fecha ?? DateTime.Now;
 
 			decimal umas = 0M;
-			string strQuery = @"SELECT top 1 salario
+			string strQuery = @"SELECT top 1 format(salario,'#.##') salario
                                FROM catSalariosMinimos
-                               WHERE estatus = 1 and fecha<=@fecha order by fecha DESC"
-			;
+                               WHERE estatus = 1 and fecha<= @fecha  order by fecha desc, idSalario asc"
+            ;
 
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3026,7 +3027,7 @@ namespace GuanajuatoAdminUsuarios.Services
 			{
 				connection.Open();
 
-				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) AND transito = @idDependencia";
+				string query = "SELECT COUNT(*) AS Result FROM infracciones WHERE folioInfraccion = @folioInfraccion and  year(fechaInfraccion) = year(getdate()) AND transito = @idDependencia and estatus = 1";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
@@ -3048,7 +3049,86 @@ namespace GuanajuatoAdminUsuarios.Services
 		}
 
 
-		public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
+
+        public bool UpdateFolioS(string id, string folio)
+        {
+            var result = true;
+
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE infracciones SET folioinfraccion = @folio WHERE idInfraccion = @idAccidente and estatus=1 and (idEstatusEnvio = 0 or idEstatusEnvio is null)";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@idAccidente", id);
+                    command.Parameters.AddWithValue("@folio", folio);
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+
+        }
+
+
+
+
+        public bool validarFolio(string folio)
+        {
+            var result = false;
+            var count = 0;
+            using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "select count(*) as result from  infracciones where folioInfraccion = @folio  and estatus = 1 ";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@folio", folio);
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+
+                        while (reader.Read())
+                        {
+                            count = (int)reader["result"];
+                        }
+
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    return result;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                result = count == 0;
+
+                return result;
+            }
+
+
+        }
+
+
+
+        public int CrearInfraccion(InfraccionesModel model, int IdDependencia)
 		{
 			int result = 0;
 			DateTime fechaVencimiento = model.fechaVencimiento.Date;

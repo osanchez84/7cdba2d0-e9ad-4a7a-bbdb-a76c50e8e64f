@@ -53,6 +53,7 @@
     function submitSearch() {
         var grid = $("#gridCatMotivos").data("kendoGrid");
         grid.dataSource.read()
+        grid.dataSource.page(1);
     }
 
 

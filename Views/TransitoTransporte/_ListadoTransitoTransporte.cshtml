@@ -8,6 +8,37 @@
 
 }
 <script>
+    function returnData() {
+        var _placas = $("#txtPlacas").val();
+        var _folioSolicitud = $("#txtFolioSolicitud").val();
+        var _folioInfraccion = $("#txtFolioInfraccion").val();
+        var _propietario = $("#txtPropietario").val();
+        var _numeroEconomico = $("#txtNumeroEconomico").val();
+        var _delegacion = $("#txtDelegacion").val();
+        var _pension = $("#txtPension").val();
+        var _estatus = $("#txtEstatus").val();
+        var _dependenciaTransito = $("#txtDependenciaTransito").val();
+        var _dependenciaNoTransito = $("#txtDependenciaNoTransito").val();
+        var _fechaIngreso = $("#start").val();
+        var _fechaIngresoFin = $("#end").val();
+
+        return { placas: _placas, 
+            folioSolicitud: _folioSolicitud, 
+            folioInfraccion: _folioInfraccion,
+            propietario: _propietario, 
+            numeroEconomico: _numeroEconomico,
+            delegacion: _delegacion,
+            pension: _pension,
+            estatus: _estatus,
+            dependenciaTransito: _dependenciaTransito,
+            dependenciaNoTransito: _dependenciaNoTransito,
+            fechaIngreso: _fechaIngreso,
+            fechaIngresoFin: _fechaIngresoFin
+        }
+    }
+</script>
+
+<script>
 
     window.Eliminar = "@Eliminar"
 
@@ -27,7 +58,6 @@
                     window.location.href = "/Principal";
                 }, 200);
             } else {
-                IMPRIMIR
                 if (!auth.toString().includes("203")) {
                     $("#btnExcelTransito").prop('disabled', true).css({ "opacity": "0.3" });
                 }
@@ -174,7 +204,7 @@
                     </svg>
                     <h5>Generar excel</h5>
                 </button>
-                @(Html.Kendo().Grid(Model)
+                @(Html.Kendo().Grid<GuanajuatoAdminUsuarios.Models.TransitoTransporteModel>()
                 .Name("Grid")
                 .Columns(columns =>
                 {
@@ -207,12 +237,14 @@
                 }).HtmlAttributes(new { style = "height:350" })
                 @*.Pageable(pager => pager.Input(true).Position(GridPagerPosition.Top))*@
                 @*.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }))*@
-                .Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
+                //.Pageable(pager => pager.AlwaysVisible(true).PageSizes(new int[] { 5, 10, 20, 100 }).Position(GridPagerPosition.Bottom))
+                .Pageable()
                 .Sortable()
                 .Scrollable(scr => scr.Height(350))
                 .DataSource(dataSource => dataSource
                 .Ajax()
-                .ServerOperation(false)
+                .Read(read => read.Action("GetListado", "TransitoTransporte").Data("returnData"))
+                //.PageSize(5).Model(model => model.Id(p => p.IdInfraccion))
                 )
                 .ToolBar(t => t.Search().Text("Buscar..."))
                 .Search(s =>

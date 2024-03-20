@@ -2539,6 +2539,7 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
                                         FROM infracciones i
                                         LEFT JOIN motivosInfraccion mi ON i.idInfraccion = mi.idInfraccion
                                         LEFT JOIN vehiculos veh ON i.idVehiculo = veh.idVehiculo
+										left join garantiasInfraccion gar on i.idinfraccion = gar.idinfraccion
                                         WHERE i.estatus = 1 AND i.transito = @transito" + condiciones + condicionFecha + @"
                                         GROUP BY mi.idInfraccion
                                     ) AS InfraccionesConMotivos

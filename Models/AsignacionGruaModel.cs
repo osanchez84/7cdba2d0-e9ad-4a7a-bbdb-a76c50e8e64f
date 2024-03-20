@@ -28,9 +28,9 @@ namespace GuanajuatoAdminUsuarios.Models
         {
             get
             {
-                return nombreEntidad + "   " +
-                       municipio + "<br /><br />" +
-                       vehiculoColonia + "  " +
+                return nombreEntidad + "    " +
+                       municipio + "<br /><br />" +"    "+
+                       vehiculoColonia + "    " +
                        vehiculoCalle + "<br /><br />";
             }
         }

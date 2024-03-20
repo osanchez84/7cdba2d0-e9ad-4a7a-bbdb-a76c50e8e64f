@@ -51,23 +51,8 @@
     }
 
     function submitSearch() {
-        var Mydata = $("#formBuscarMotivo").serialize();
-        console.log(Mydata);
-        showLoading();
-        $.ajax({
-            url: '@Url.Action("ajax_BuscarMotivos")',
-            type: 'POST',
-            data: Mydata,
-            success: function (result) {
-                $("#tablaMotivosInfraccion").html(result);
-                hideLoading();
-                // $("#frmSearch")[0].reset();
-            },
-            error: function (error) {
-                sitteg_warning('Sucedió un error, intente mas tarde...');
-                hideLoading();
-            }
-        });
+        var grid = $("#gridCatMotivos").data("kendoGrid");
+        grid.dataSource.read()
     }
 
 

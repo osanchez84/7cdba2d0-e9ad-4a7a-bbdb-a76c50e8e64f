@@ -250,7 +250,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
             else
             {
                 var oficina = User.FindFirst(CustomClaims.Oficina).Value;
-                int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
+                int idOficina = Convert.ToInt32(User.FindFirst(CustomClaims.OficinaDelegacion).Value); //HttpContext.Session.GetInt32("IdOficina") ?? 0;
                 string  abreviaturaMunicipio = User.FindFirst(CustomClaims.AbreviaturaMunicipio).Value;
                 int dependencia = Convert.ToInt32(HttpContext.Session.GetInt32("IdDependencia"));
 

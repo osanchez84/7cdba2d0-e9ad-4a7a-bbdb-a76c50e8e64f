@@ -67,6 +67,11 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
             var datosInfraccion = _asignacionGruasService.DatosInfraccionAsociada(solicitud.FolioSolicitud);
 
+            datosInfraccion.inventarios = solicitud.inventarios;
+            datosInfraccion.Nombreinventarios = solicitud.Nombreinventarios;
+
+
+
             return View("capturaGruas", datosInfraccion);
         }
         public IActionResult GruasAsignadasTabla([DataSourceRequest] DataSourceRequest request)
@@ -232,9 +237,10 @@ namespace GuanajuatoAdminUsuarios.Controllers
                     {
                         await model.MyFile.CopyToAsync(fileStream);
                     }
+                    var nombre = model.MyFile.FileName;
 
-    
-                    int resultado= _asignacionGruasService.InsertarInventario(nombreArchivo, iDep, model.numeroInventario);
+
+                    int resultado= _asignacionGruasService.InsertarInventario(nombreArchivo, iDep, model.numeroInventario, nombre);
                     if (resultado == 0)
                         return Json(new { success = false, message = "Ocurrió un error al actualizar depósito" });
 

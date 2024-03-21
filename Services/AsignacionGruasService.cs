@@ -264,7 +264,9 @@ namespace GuanajuatoAdminUsuarios.Services
 		                                                                A.numeroInventario,
                                                                         A.estatusSolicitud,
                                                                         B.idPropietarioGrua,
-		                                                                inf.inventario,
+		                                                                isnull(A.archivoInventario, inf.archivoInventario) ExistInv ,
+		                                                                isnull(A.nombreArchivo, inf.nombreArchivo) nombreArchivo,
+                                                                        a.archivoInventario  inventario,
 		                                                                inf.idInfraccion, 
 		                                                                inf.idVehiculo,
 		                                                                inf.idPersona,
@@ -314,7 +316,9 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.FolioSolicitud = searchReader["folio"].ToString();
                             solicitud.observaciones = searchReader["observaciones"].ToString();
                             solicitud.numeroInventario = searchReader["numeroInventario"].ToString();
-                            solicitud.inventarios = searchReader["inventario"] is DBNull ? "" : searchReader["inventario"].ToString();
+                            solicitud.inventarios = searchReader["ExistInv"] is DBNull ? "" : searchReader["ExistInv"].ToString();
+                            solicitud.Nombreinventarios = searchReader["nombreArchivo"] is DBNull ? "" : searchReader["nombreArchivo"].ToString();
+
                             solicitud.estatusSolicitud = int.Parse(searchReader["estatusSolicitud"].ToString());
                             if (!searchReader.IsDBNull(searchReader.GetOrdinal("idPropietarioGrua")))
                             {
@@ -846,12 +850,13 @@ namespace GuanajuatoAdminUsuarios.Services
                 return result;
             }
         }
-        public int InsertarInventario(string archivoInventario, int iDep, string numeroInventario)
+        public int InsertarInventario(string archivoInventario, int iDep, string numeroInventario, string nombre = "GenericFile.txt")
         {
             int result = 0;
             string strQuery = @"UPDATE depositos
                    SET archivoInventario = @inventario,
-                       numeroInventario = @numeroInventario
+                       numeroInventario = @numeroInventario,
+                       nombreArchivo=@Filename
                    WHERE idDeposito = @idDeposito";
 
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
@@ -864,6 +869,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@idDeposito", SqlDbType.Int)).Value = iDep;
                     command.Parameters.AddWithValue("@numeroInventario",numeroInventario==null? DBNull.Value:numeroInventario);
                     command.Parameters.Add(new SqlParameter("@inventario", SqlDbType.VarChar)).Value = archivoInventario;
+                    command.Parameters.Add(new SqlParameter("@Filename", SqlDbType.VarChar)).Value = nombre;
 
                     result = command.ExecuteNonQuery();
                 }

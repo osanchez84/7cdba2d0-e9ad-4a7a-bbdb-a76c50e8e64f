@@ -194,83 +194,6 @@ namespace GuanajuatoAdminUsuarios.Services
             using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
                 try
                 {
-        //            string condiciones = "";
-
-        //            condiciones += model.Placas.IsNullOrEmpty() ? "" : " AND d.placa LIKE '%' + @Placa + '%' ";
-        //            condiciones += model.FolioSolicitud.IsNullOrEmpty() ? "" : " AND sol.folio LIKE '%' + @FolioSolicitud + '%' ";
-        //            condiciones += model.FolioInfraccion.IsNullOrEmpty() ? "" : " AND inf.folioInfraccion LIKE '%' + @FolioInfraccion + '%' ";
-        //            condiciones += model.Propietario.IsNullOrEmpty() ? "" : " AND CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,''))  LIKE '%' + @Propietario + '%' ";
-        //            condiciones += model.NumeroEconomico.IsNullOrEmpty() ? "" : " AND veh.numeroEconomico LIKE '%' + @numeroEconomico + '%' ";
-        //            condiciones += model.IdDelegacion.Equals(null) || model.IdDelegacion == 0 ? "" : " AND d.idDelegacion = ISNULL(@IdDelegacion,d.idDelegacion) ";
-        //            condiciones += model.IdPension.Equals(null) || model.IdPension == 0 ? "" : " AND d.idpension = ISNULL(@IdPension,d.idpension) ";
-        //            condiciones += model.IdEstatus.Equals(null) || model.IdEstatus == 0 ? "" : " AND d.estatusSolicitud = ISNULL(@idEstatus,d.estatusSolicitud) ";
-        //            if (model.IdDependenciaTransito == 0)
-        //                condiciones += " AND ISNULL(sol.BanderaTransito,1) = 1 ";
-        //            else if (model.IdDependenciaTransito == 1)
-        //                condiciones += " AND ISNULL(sol.BanderaTransito,0) = 0 ";
-        //            else 
-        //                condiciones += " AND ISNULL(sol.BanderaTransito,0) IN(0,1) ";
-
-        //            condiciones += model.IdDependenciaNoTransito.Equals(null) || model.IdDependenciaNoTransito <= 0 ? "" : " AND d.idEnviaVehiculo = CASE WHEN @IdDependenciaNoTransito<=0 THEN  d.idEnviaVehiculo ELSE @IdDependenciaNoTransito END";
-        //            if (model.FechaIngreso != null || model.FechaIngresoFin != null)
-        //            {
-        //                condiciones += "and (";
-
-        //                if (model.FechaIngreso != null && model.FechaIngresoFin != null)
-        //                    condiciones += " fechaingreso between @FechaInicio and @FechaFin";
-
-        //                else if (model.FechaIngreso != null)
-        //                    condiciones += "fechaingreso >= @FechaInicio";
-                                                                                               
-        //                else if (model.FechaIngresoFin != null)
-        //                    condiciones += "d.fechaingreso <= @FechaFin";
-
-        //                else
-        //                    condiciones += "1 = 1";
-
-        //                condiciones += ")";
-
-        //            }
-
-
-
-        //            string SqlTransact =
-        //                        @"SELECT 
-        //                                 ROW_NUMBER() over (order by d.fechaIngreso desc ) cons ,
-        //                                 d.iddeposito, d.idsolicitud, d.idDelegacion, d.idmarca, d.idsubmarca, d.idpension, d.idtramo,
-        //                                 d.idcolor,d.estatusSolicitud, d.serie, d.placa, d.fechaingreso, d.folio, d.km, d.liberado, d.autoriza, d.fechaactualizacion,
-        //                                 ISNULL(del.delegacion,'') delegacion , d.actualizadopor, d.estatus, m.marcavehiculo, subm.nombresubmarca, sol.solicitantenombre,
-        //                                 sol.solicitanteap, sol.solicitanteam, col.color, pen.pension, ctra.tramo,                       
-        //                                 sol.fechasolicitud, sol.folio AS FolioSolicitud, inf.idinfraccion, inf.folioinfraccion,
-        //                                 veh.idvehiculo, veh.numeroeconomico, veh.modelo, ISNULL(cett.nombreEstatus,'') nombreEstatus,
-        //                                 con.IdConcesionario, con.concesionario, d.FechaLiberacion,
-        //                                 d.IdDependenciaGenera, d.IdDependenciaTransito, d.IdDependenciaNoTransito,
-        //                                 dep.idDependencia, dep.nombreDependencia,
-        //                                 CONCAT(ISNULL(per.nombre,''), ' ', ISNULL(per.apellidoMaterno,''),  ' ', ISNULL(per.apellidoMaterno,'')) Propietario,
-        //                                 ISNULL(evt.DescripcionEvento,'') Evento,
-        //                                 inf.transito,d.idGrua
-        //                        FROM solicitudes sol 
-								//LEFT JOIN depositos d ON d.idsolicitud = sol.idsolicitud 
-        //                        LEFT JOIN catDelegaciones del ON d.idDelegacion = del.idDelegacion
-        //                        LEFT JOIN catMarcasVehiculos m ON d.idMarca = m.idMarcaVehiculo
-        //                        LEFT JOIN catColores col ON d.idcolor = col.idcolor
-        //                        LEFT JOIN pensiones pen ON d.idpension = pen.idpension
-        //                        LEFT JOIN catTramos ctra ON d.idtramo = ctra.idtramo
-        //                        LEFT JOIN catSubmarcasVehiculos subm ON d.idSubmarca = subm.idSubmarca
-        //                        LEFT JOIN infracciones inf ON sol.idinfraccion = inf.idinfraccion
-        //                        LEFT JOIN vehiculos veh ON sol.idvehiculo = veh.idvehiculo 
-        //                        LEFT JOIN concesionarios con ON con.IdConcesionario = d.IdConcesionario
-        //                        LEFT JOIN personas per ON per.idPersona = d.idPropietario
-        //                        LEFT JOIN catDescripcionesEvento evt ON sol.evento = evt.idDescripcion
-        //                        LEFT JOIN catEstatusTransitoTransporte cett ON cett.idEstatusTransitoTransporte = d.estatusSolicitud
-        //                        LEFT JOIN catDependencias dep ON (dep.idDependencia = d.IdDependenciaTransito OR dep.idDependencia = d.IdDependenciaNoTransito)
-        //                        WHERE ISNULL(d.estatus,1) != 0  AND (esExterno<>1 OR esExterno IS NULL) and 
-        //                        d.idDelegacion = ISNULL(@idOficina,d.idDelegacion)" + condiciones;
-
-        //            //HMG - 01-03-24 Se quita la oficina por acuerdo en comun con Criss
-        //            //and d.idDelegacion = @idOficina
-
-
                     SqlCommand command = new SqlCommand("[usp_ObtieneListadoTransitoTransporte]", connection);
 
                     command.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value = pagination.PageIndex;
@@ -290,23 +213,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (object)model.FechaIngreso ?? DBNull.Value;
                     command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
 
-                    //if (model.FechaIngreso != null || model.FechaIngresoFin != null)
-                    //{
-
-                    //    if (model.FechaIngreso != null && model.FechaIngresoFin != null)
-                    //    {
-                    //        command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = (object)model.FechaIngreso ?? DBNull.Value;
-                    //        command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
-
-                    //    }
-
-                    //    else if (model.FechaIngreso != null)
-                    //        command.Parameters.Add(new SqlParameter("@FechaInicio", SqlDbType.DateTime)).Value = (object)model.FechaIngreso ?? DBNull.Value;
-
-                    //    else if (model.FechaIngresoFin != null)
-                    //        command.Parameters.Add(new SqlParameter("@FechaFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
-                    //}
-
+                    command.CommandTimeout = 8000;
                     command.CommandType = CommandType.StoredProcedure;
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -592,6 +499,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     connection.Open();
                     SqlCommand command = new SqlCommand("Select * from pensiones where estatus=1", connection);
                     command.CommandType = CommandType.Text;
+                    command.CommandTimeout = 3000;
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())

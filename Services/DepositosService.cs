@@ -28,7 +28,9 @@ namespace GuanajuatoAdminUsuarios.Services
                 try
                 {
                     connection.Open();
+
                     SqlCommand command = new SqlCommand("usp_InsertaSolicitud", connection);
+                    command.CommandTimeout = 6000;
                     command.CommandType = CommandType.StoredProcedure;
                     DateTime fechaSol = model.fechaSolicitud;
                     TimeSpan horaSol = model.horaSolicitud;

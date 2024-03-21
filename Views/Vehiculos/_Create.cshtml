@@ -1804,12 +1804,16 @@ function asignarMensajeError(contenedorErrorId, mensaje) {
                 type: 'POST',
                 data: formData,
                 success: function (result) {
-                    console.log("hd", result)
-                    sitteg_success('Elemento guardado correctamente')
+                    console.log("hd", result);
+                    sitteg_success('Elemento guardado correctamente');
                     if (result.esEdicion) {
-                        window.location = '/Vehiculos/Editar';
+                            setTimeout(function () {
+                                 window.location = '/Vehiculos/Editar';
+                            }, 2000); 
                         } else {
-                            window.location = '/Vehiculos/Index';
+                            setTimeout(function () {
+                             window.location = '/Vehiculos/Index';
+                            }, 2000); 
                         }
                     hideLoading();
                 },

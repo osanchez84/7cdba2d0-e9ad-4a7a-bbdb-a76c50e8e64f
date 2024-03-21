@@ -360,7 +360,7 @@ namespace GuanajuatoAdminUsuarios.Utils
                         if (x == 0)
                         {
                             AddCellToBodyReporteAsignacion(tableLayout,
-                                                             count,
+                                                             x,
                                                             "\n" + row.ToString() + "\n");
                         row++;
                     } else if (x== 1)
@@ -410,7 +410,7 @@ namespace GuanajuatoAdminUsuarios.Utils
 
                         }
                    
-                    count++;
+                    //count++;
                 }
             }
             return tableLayout;

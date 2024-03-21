@@ -2812,8 +2812,11 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
 				catch(Exception ex) {
 					var q = ex;	
 				}
+
 				
-			}
+				command.Clone();
+                command.Dispose();
+            }
 			catch (SqlException ex)
 			{
 
@@ -2825,7 +2828,10 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
 			finally
 			{
 				connection.Close();
-			}
+                
+
+
+            }
 			
 			return modelList;
 		}
@@ -3233,11 +3239,12 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
 			}
 			return result;
 		}
-		public int InsertarImagenEnInfraccion(string rutaInventario, int idInfraccion)
+		public int InsertarImagenEnInfraccion(string rutaInventario, int idInfraccion, string nombreArchivo ="GenericFile.txt" )
 		{
 			int result = 0;
 			string strQuery = @"UPDATE infracciones
-                       SET archivoInventario = @inventario
+                       SET archivoInventario =@inventario , nombreArchivo=@nameFile
+
                        WHERE idInfraccion = @idInfraccion";
 			using (SqlConnection connection = new SqlConnection(_sqlClientConnectionBD.GetConnection()))
 			{
@@ -3248,6 +3255,7 @@ where catSal.estatus =1 AND catSal.fecha <=@anio  order by fecha desc, idSalario
 					command.CommandType = CommandType.Text;
 					command.Parameters.Add(new SqlParameter("@idInfraccion", SqlDbType.Int)).Value = idInfraccion;
 					command.Parameters.Add(new SqlParameter("@inventario", SqlDbType.VarChar)).Value = rutaInventario;
+					command.Parameters.Add(new SqlParameter("@nameFile", SqlDbType.VarChar)).Value = nombreArchivo;
 
 					result = command.ExecuteNonQuery();
 				}

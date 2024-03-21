@@ -85,7 +85,7 @@
                             </div>
                         </button>
                         <button class="nav-link col" id="serie-vehiculo-tab" data-bs-toggle="tab" data-bs-target="#splaca-vehiculo" type="button" role="tab" aria-controls="splaca-vehiculo" aria-selected="false"
-                                onclick="crearSinPlaca()">
+                                onclick="buscarVehiculoEnPlataformas()">
                             <div class="row justify-content-center align-items-center px-3 py-2">
                                 <div class="col-auto radioCustom p-0">
                                     <div class="rounded-circle m-2"></div>
@@ -137,7 +137,7 @@
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="controlForm my-3">
                                     <div class="col-12 col-md-6 mx-md-auto col-lg-4 mx-lg-0 ">
-                                        <div class="controlButton my-3" onclick="crearSinPlaca()">
+                                        <div class="controlButton my-3" onclick="buscarVehiculoEnPlataformas()">
                                             @(Html.Kendo().Button()
                                                 .Name("buscar")
                                                 .HtmlAttributes(new { @class = "btnPrimary" })
@@ -225,11 +225,11 @@
 
         console.log("Placa Busqueda", placaValue);
 
-        if (!placaValue && !serieValue) {
+        /*if (!placaValue && !serieValue) {
             $('#PlacaBusqueda').focus();
             sitteg_warning('Debes ingresar una placa o serie.');
             return;
-        }
+        }*/
 
         var modeloBusqueda = $("#busquedaVehiculoForm").serialize();
         showLoading();
@@ -264,9 +264,12 @@
                             $("#listaVehiculosContainer").html(result.view.Result);
                        }
                        if(result.crearVehiculo){
+                        console.log("crearVehiculo Modal")
                                 $('#vehiculoModal').modal({ backdrop: 'static', keyboard: false });
                                 $("#vehiculoModalContainer").html(result.view.Result);
                                 $('#vehiculoModal').modal('show');  
+
+                          
                        }
                     } 
 
@@ -296,18 +299,22 @@
             type: 'POST',
             data: modeloBusqueda,
             success: function (result) {
+                console.log("result",result);
                 hideLoading();
                 if (result.idVehiculo) {
+                    console.log("Si hubo vehiculo");
                     $('#IdVehiculoAsignado').val(result.idVehiculo);
                     $('#agregarVehiculoModal').modal('hide');
                     $('#IdVehiculoAsignado').change();
                 }
                 else {
                     if (result.listaVehiculos) {
+                        console.log("listVehiculos");
                         $('#resultadoContainer').fadeIn();
                         $("#listaVehiculosContainer").html(result.view.Result);
                     }
                     if (result.crearVehiculo) {
+                        console.log("crearVehiculo");
                         $('#vehiculoModal').modal({ backdrop: 'static', keyboard: false });
                         $("#vehiculoModalContainer").html(result.view.Result);
                         $('#vehiculoModal').modal('show');

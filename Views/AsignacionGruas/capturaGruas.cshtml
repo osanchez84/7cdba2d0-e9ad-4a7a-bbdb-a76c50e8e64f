@@ -357,6 +357,7 @@
 
     function finalizar() {
         var Mydata = $("#observacionesForm").serialize();
+        console.log("Mydata",Mydata);
         showLoading();
         $.ajax({
             url: '/AsignacionGruas/AgregarObservaciones',
@@ -602,7 +603,7 @@
             data: { 'idVehiculo': idVehiculo },
             success: function (result) {
                 datosVehiculo
-                $('#datosVehiculo').show();
+                $('#datosVehiculo').hide();
                 $('#vehiculoPropietarioDatosContainer').show();
                 $("#vehiculoPropietarioDatos").html(result);
                 hideLoading();

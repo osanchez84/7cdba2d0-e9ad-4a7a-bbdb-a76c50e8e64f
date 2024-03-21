@@ -957,12 +957,22 @@ $("#ddlCatTipoServicio").on("change", function () {
                 data: formData,
                 success: function (result) {
                     sitteg_success('Elemento guardado correctamente')
-                        if (result.success) {
+                        if (result.success || result.crearVehiculo) {
+                            console.log("success");
                             $('#IdVehiculoAsignado').val(result.data);
                             $('#IdVehiculoAsignado').change();
                             $('#vehiculoModal').modal('hide');
                             $('#agregarVehiculoModal').modal('hide');
                             $('.modal-backdrop').remove();
+
+                             try{
+                                $('#modalVehiculos').modal('hide');
+                                 console.log("mostrara info vehiculo");
+                                mostrarInfoVehiculo();
+                            } catch (error) {
+                                console.error(error);
+                            }
+
                         } else {
                              sitteg_warning('Lo sentimos, ha ocurrido un error favor de report');
                         }

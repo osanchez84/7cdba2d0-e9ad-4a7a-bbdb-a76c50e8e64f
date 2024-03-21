@@ -81,8 +81,8 @@ namespace GuanajuatoAdminUsuarios.Controllers
                 busquedaModel = new()
                 {
                     IdEntidadBusqueda = model.IdEntidadBusqueda,
-                    PlacasBusqueda = model.PlacaBusqueda != null ? model.PlacaBusqueda.ToUpper() : "",
-                    SerieBusqueda = model.SerieBusqueda != null ? model.SerieBusqueda : ""
+                    PlacasBusqueda =  model.PlacaBusqueda.ToUpper(),
+                    SerieBusqueda =  model.SerieBusqueda
                 };
 
             }

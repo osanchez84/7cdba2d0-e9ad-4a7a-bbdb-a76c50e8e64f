@@ -36,6 +36,17 @@
             fechaIngresoFin: _fechaIngresoFin
         }
     }
+
+    function onError() {
+        $("#message").css("display", "block");
+        //Swal.fire({
+        //    icon: "info",
+        //    text: "¡No se encontraron registros que cumplan con los criterios de búsqueda.!",
+        //});
+        $("#Grid").data("kendoGrid").dataSource.data([]);
+    }
+
+
 </script>
 
 <script>
@@ -184,13 +195,14 @@ return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposit
 
 </script>
 <div class="row">
-    <div class="col-md-12">
-        @if (ViewBag.NoResultsMessage != null)
-        {
+    <div class="col-md-12" id="message" style="display: none">
+@*        @if (ViewBag.NoResultsMessage != null)
+        {*@
             <div class="alert alert-danger">
-                @ViewBag.NoResultsMessage
+                @*@ViewBag.NoResultsMessage*@
+            No se encontraron registros que cumplan con los criterios de búsqueda.
             </div>
-        }
+        @*}*@
     </div>
 </div>
 
@@ -263,8 +275,9 @@ return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposit
                 .DataSource(dataSource => dataSource
                 .Ajax()
                 .Read(read => read.Action("GetListado", "TransitoTransporte").Data("returnData"))
-                //.PageSize(5).Model(model => model.Id(p => p.IdInfraccion))
+                .Events(e => e.Error("onError"))
                 )
+                //.Events(events => events.DataBound("dataBound"))
                 .ToolBar(t => t.Search().Text("Buscar..."))
                 .Search(s =>
                 {
@@ -276,7 +289,6 @@ return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposit
                     s.Field(c => c.Concesionario);
                 })
                     )
-
             }
             catch (Exception ex)
             {

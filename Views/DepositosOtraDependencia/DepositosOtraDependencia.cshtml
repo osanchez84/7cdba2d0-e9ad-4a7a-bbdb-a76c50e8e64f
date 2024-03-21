@@ -428,9 +428,12 @@
 
             //Si hay un cambio en el id de vehiculo se muestra los datos
             $("#IdVehiculoAsignado").bind("change", function() {
-                if($(this).val()==='' || $(this).val()==0 || $(this).val()===undefined)
+                if($(this).val()==='' || $(this).val()==0 || $(this).val()===undefined){
                  $('#vehiculoPropietarioDatosContainer').hide();
-                else {
+                    $('#ModalBodyVehiculos').hide();
+                    concole.log("cierra modales 0");
+                 
+                } else {
                         $.ajax({
                                 url: '@Url.Action("MostrarDatosVehiculo","DepositosOtraDependencia")',
                                 type: "GET",

@@ -170,13 +170,11 @@
 
 
 
-    function EditarTemplate(data){
-        console.log("SAS",data)
+    function EditarTemplate(data){      
         if ((data.SolicitudEstatus == 1 || data.SolicitudEstatus == 2 || data.SolicitudEstatus == 3 || data.SolicitudEstatus == 4))
-return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}','${data.SolicitudEstatus}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`;        else 
+        return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposito}','${data.IdGrua}','${data.IdConcesionario}','${data.SolicitudEstatus}')" class='w-100 btn'><h6 class='m-0 colorPrimary'><i class='icon-edit me-2'></i></h6></button>`;        
+        else 
         return ""
-
-
     }
 
 
@@ -249,7 +247,7 @@ return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposit
                     "<div class='dep-marked'>Dep:</div>" +
                     "#= IdDependenciaGenera == 1 ? '✓' : '' #" +
                     "</div>"
-                    ).Title("Turno Captura").Width(150);
+                    ).Title("Turno Captura").Width(150);//cambiar por esExterno
 
 
 
@@ -301,19 +299,19 @@ return `<button onclick="ShowUpdatePopUp('${data.IdSolicitud}','${data.IdDeposit
 
                 //ELIMINAR
                 if (!auth.toString().includes("205")) {
-                    grid.hideColumn(12);
+                    grid.hideColumn(13);
                 }
                 // EDITAR
                 if (!auth.toString().includes("206")) {
-                    grid.hideColumn(11);
+                    grid.hideColumn(12);
                 }
                 //EXPORTAR
                 if (!auth.toString().includes("203")) {
-                    grid.hideColumn(9);
+                    grid.hideColumn(10);
                 }
                 //CONSULTAR
                 if (!auth.toString().includes("202")) {
-                    grid.hideColumn(8);
+                    grid.hideColumn(9);
                 }
 
             });

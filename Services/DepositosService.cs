@@ -307,7 +307,7 @@ namespace GuanajuatoAdminUsuarios.Services
                     SqlCommand command = new SqlCommand(@"SELECT sol.idSolicitud,sol.folio, sol.fechaSolicitud, sol.idTipoVehiculo, sol.idPropietarioGrua, sol.idOficial, 
                                     sol.idEntidad, sol.idTipoUsuario, sol.solicitanteNombre, sol.solicitanteAp, sol.solicitanteAm, sol.solicitanteNumero, 
                                     sol.solicitanteColonia, sol.solicitanteCalle, sol.idEntidad, sol.idMunicipio, sol.solicitanteTel,sol.idEvento,sol.idMotivoAsignacion, 
-                                    ctv.tipoVehiculo, 
+                                    ctv.tipoVehiculo,sol.idServicioRequiere,
                                     propg.responsable, 
                                     ofi.nombre, ofi.apellidoPaterno, ofi.apellidoMaterno, 
                                    dev.descripcionEvento, 
@@ -336,6 +336,7 @@ namespace GuanajuatoAdminUsuarios.Services
                             solicitud.fechaSolicitud = Convert.ToDateTime(reader["fechaSolicitud"].ToString());
                             solicitud.horaSolicitud = solicitud.fechaSolicitud.TimeOfDay;
                             solicitud.idTipoVehiculo = reader["idTipoVehiculo"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idTipoVehiculo"].ToString());
+                            solicitud.idServicioRequiere = reader["idServicioRequiere"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idServicioRequiere"].ToString());
                             solicitud.tipoVehiculo = reader["tipoVehiculo"].ToString();
                             solicitud.idConcecionario = reader["idPropietarioGrua"] == System.DBNull.Value ? default(int?) : Convert.ToInt32(reader["idPropietarioGrua"].ToString());
                             solicitud.propietarioGrua = reader["responsable"].ToString();
@@ -634,7 +635,6 @@ namespace GuanajuatoAdminUsuarios.Services
                         {
                             model.idInfraccion = reader["idInfraccion"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idInfraccion"].ToString());
                             model.idVehiculo = reader["idVehiculo"] == System.DBNull.Value ? default(int) : Convert.ToInt32(reader["idVehiculo"].ToString());
-
                             model.fechaSolicitud = reader["fechaInfraccion"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["fechaInfraccion"]);
                             string horaInfraccionString = reader["horaInfraccion"] == DBNull.Value ? null : reader["horaInfraccion"].ToString();
 

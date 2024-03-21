@@ -31,6 +31,7 @@ namespace GuanajuatoAdminUsuarios.Services
 					connection.Open();
 					SqlCommand command = new SqlCommand(strQuery, connection);
 					command.CommandType = CommandType.Text;
+					command.CommandTimeout = 3000;
 					using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
 					{
 						while (reader.Read())

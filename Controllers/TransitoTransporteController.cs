@@ -44,7 +44,7 @@ namespace GuanajuatoAdminUsuarios.Controllers
 
         public IActionResult Index()
         {
-
+            HttpContext.Session.Remove("Busqueda");
             int idOficina = HttpContext.Session.GetInt32("IdOficina") ?? 0;
             TransitoTransporteBusquedaModel searchModel = new TransitoTransporteBusquedaModel();
             //List<TransitoTransporteModel> listTransitoTransporte = _transitoTransporteService.GetAllTransitoTransporte(idOficina);
@@ -254,7 +254,18 @@ namespace GuanajuatoAdminUsuarios.Controllers
             }
 
             Pagination pagination = new Pagination();
-            pagination.PageIndex = request.Page - 1;
+            if (HttpContext.Session.GetInt32("Busqueda") != null)
+            {
+                if (HttpContext.Session.GetInt32("Busqueda") == 1)
+                {
+                    request.Page = 1;
+                }
+                pagination.PageIndex = request.Page - 1;
+                HttpContext.Session.Remove("Busqueda");
+            } else
+            {
+                pagination.PageIndex = request.Page - 1;
+            }
             pagination.PageSize = (request.PageSize != 0) ? request.PageSize : 10;
             var total = 0;
 
@@ -270,9 +281,20 @@ namespace GuanajuatoAdminUsuarios.Controllers
             };
             if (ListTransitoModel.Count == 0)
             {
-                ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+                //ViewBag.NoResultsMessage = "No se encontraron registros que cumplan con los criterios de búsqueda.";
+                throw new Exception("No se encontraron registros que cumplan con los criterios de búsqueda.");
             }
             return Json(result);
         }
+
+
+
+        public JsonResult SetBuscar()
+
+        {
+            HttpContext.Session.SetInt32("Busqueda",1);
+            return Json(new { ok = false });
+        }
+
     }
 }

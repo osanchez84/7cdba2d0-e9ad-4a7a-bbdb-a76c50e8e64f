@@ -46,29 +46,29 @@
 
 
 
-        function downLoadPdfFiltered() {
+    function downLoadPdfFiltered() {
 
-            var data = {
-                Placas: $('#txtPlacas').val(),
-                FolioSolicitud: $('#txtFolioSolicitud').val(),
-                FolioInfraccion: $('#txtFolioInfraccion').val(),
-                Propietario: $('#txtPropietario').val(),
-                NumeroEconomico: $('#txtNumeroEconomico').val(),
-                IdDelegacion: parseInt($('#txtDelegacion').val()),
-                IdPension: $('#txtPension').val(),
-                IdEstatus: $('#txtEstatus').val(),
-                IdDependenciaGenera: $('#txtDependenciaGenera').val(),
-                IdDependenciaTransito: $('#txtDependenciaTransito').val(),
-                IdDependenciaNoTransito: $('#txtDependenciaNoTransito').val(),
-                FechaIngreso: $('#start').val(),
-                FechaIngresoFin: $('#end').val()
-            };
-            var json = JSON.stringify(data);
-            window.location = '/TransitoTransporte/CreatePdf?data=' + json;
-     
-        }
+        var data = {
+            Placas: $('#txtPlacas').val(),
+            FolioSolicitud: $('#txtFolioSolicitud').val(),
+            FolioInfraccion: $('#txtFolioInfraccion').val(),
+            Propietario: $('#txtPropietario').val(),
+            NumeroEconomico: $('#txtNumeroEconomico').val(),
+            IdDelegacion: parseInt($('#txtDelegacion').val()),
+            IdPension: $('#txtPension').val(),
+            IdEstatus: $('#txtEstatus').val(),
+            IdDependenciaGenera: $('#txtDependenciaGenera').val(),
+            IdDependenciaTransito: $('#txtDependenciaTransito').val(),
+            IdDependenciaNoTransito: $('#txtDependenciaNoTransito').val(),
+            FechaIngreso: $('#start').val(),
+            FechaIngresoFin: $('#end').val()
+        };
+        var json = JSON.stringify(data);
+        window.location = '/TransitoTransporte/CreatePdf?data=' + json;
 
-    </script>
+    }
+
+</script>
 
 
 <div class="mainContainer bg-light">
@@ -156,12 +156,12 @@
                     <span>
                         @(
                             Html.Kendo().DropDownListFor(d => d.IdDelegacion).Filter(FilterType.Contains)
-                        .DataTextField("Text")
-                        .DataValueField("Value")
-                        .Value(oficinadelegacion)
-                        .Enable(false)
-                                        .OptionLabel("Seleccione Delegación...")
-                                        .HtmlAttributes(new { style = "width:100%;", Id = "txtDelegacion" })
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .Value(oficinadelegacion)
+                            .Enable(false)
+                            .OptionLabel("Seleccione Delegación...")
+                            .HtmlAttributes(new { style = "width:100%;", Id = "txtDelegacion" })
                             .Filter(FilterType.Contains)
                             .DataSource(source =>
                             {
@@ -170,7 +170,7 @@
                                     read.Action("Delegacion_Read", "TransitoTransporte");
                                 });
                             })
-                        )
+                            )
                     </span>
                 </div>
             </div>
@@ -229,7 +229,7 @@
                             .Filter(FilterType.Contains)
                             .Events(e => e.Change("OnChange"))
                             .BindTo(new List<SelectListItem>
-                            
+
                         {
                         new SelectListItem { Text = "Tránsito/Transporte", Value = "1" },
                         new SelectListItem { Text = "Otras", Value = "0" }
@@ -331,7 +331,7 @@
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
-                <div  class=" btnOutline btnOutlinePrimary controlButton my-3">
+                <div class=" btnOutline btnOutlinePrimary controlButton my-3">
                     <button id="btnPDFTransito" class=" " type="button" onclick="downLoadPdfFiltered()">  <h5 class="m-0"><i class='icon-data m-0'></i>&nbsp;&nbsp<b>Reporte</b></h5></button>
 
                     @*<button type="button" class='btnPrimary'>@Html.ActionLink("Reporte",  "CreatePdf","TransitoTransporte", new{Placas=Model.Placas}, new {@class="m-0"})</button>*@
@@ -351,13 +351,13 @@
 <script>
 
 
-    function OnChange(data){
+    function OnChange(data) {
         var val = data.sender.element.context.value
         var Dep = document.getElementById("dataDep")
         var Env = document.getElementById("dataEnv")
-        console.log(val+"")
+        console.log(val + "")
 
-        if(val==="1"){
+        if (val === "1") {
             $(Dep).removeClass("d-none")
             $(Env).addClass("d-none")
 
@@ -368,8 +368,8 @@
             test._oldIndex = 0;
 
         }
-        else if(val==="0"){
-            console.log(val+"--")
+        else if (val === "0") {
+            console.log(val + "--")
 
             var test = $("#txtDependenciaTransito").data("kendoDropDownList");
             test.text(test.options.optionLabel);
@@ -378,9 +378,9 @@
             test._oldIndex = 0;
 
             $(Dep).addClass("d-none")
-            $(Env).removeClass("d-none")            
+            $(Env).removeClass("d-none")
         }
-        else{
+        else {
             $(Dep).removeClass("d-none")
             $(Env).removeClass("d-none")
         }
@@ -396,7 +396,7 @@
         datePicker.value(null);
     });
     $(document).ready(function () {
-        var auth = @autorizaciones; 
+        var auth = @autorizaciones;
         var grid = $("#Grid").data("kendoGrid");
 
         if (!auth.toString().includes("203")) {
@@ -413,25 +413,23 @@
     });
 
     function submitSearch() {
-        var grid = $("#Grid").data("kendoGrid").dataSource;
-        grid.read();
-        //var Mydata = $("#frmSearch").serialize();
-        ////console.log(Mydata);
-        //showLoading();
-        //$.ajax({
-        //    url: '@Url.Action("ajax_BuscarTransito")',
-        //    type: 'POST',
-        //    data: Mydata,
-        //    success: function (result) {
-        //        $("#listadoTransitoTransporte").html(result);
-        //        hideLoading();
-        //       // $("#frmSearch")[0].reset();
-        //},
-        //error: function (error) {
-        //    sitteg_warning('Sucedió un error, intente mas tarde...');
-        //    hideLoading();
-        //}
-        //});
+                $("#message").css("display", "none");
+        showLoading();
+        $.ajax({
+            url: '@Url.Action("SetBuscar")',
+            type: 'POST',
+
+            success: function (result) {
+                setTimeout(function () {
+                    var grid = $("#Grid").data("kendoGrid").dataSource;
+                    grid.read();
+                    hideLoading();
+                }, 3500);
+            },
+            error: function (error) {
+                hideLoading();
+            }
+        });
     }
 
 </script>

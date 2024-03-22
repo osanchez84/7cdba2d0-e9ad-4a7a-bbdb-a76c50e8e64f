@@ -196,26 +196,28 @@ namespace GuanajuatoAdminUsuarios.Services
                 {
                     SqlCommand command = new SqlCommand("[usp_ObtieneListadoTransitoTransporte]", connection);
 
-                    command.Parameters.Add(new SqlParameter("@PageIndex", SqlDbType.Int)).Value = pagination.PageIndex;
-                    command.Parameters.Add(new SqlParameter("@PageSize", SqlDbType.Int)).Value = pagination.PageSize;
-
-                    command.Parameters.Add(new SqlParameter("@Placa", SqlDbType.NVarChar)).Value = (object)model.Placas ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FolioSolicitud", SqlDbType.NVarChar)).Value = (object)model.FolioSolicitud ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@folioInfraccion", SqlDbType.NVarChar)).Value = (object)model.FolioInfraccion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@Propietario", SqlDbType.NVarChar)).Value = (object)model.Propietario ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@numeroEconomico", SqlDbType.NVarChar)).Value = (object)model.NumeroEconomico ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idOficina", SqlDbType.Int)).Value = (object)idOficina ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdDelegacion", SqlDbType.Int)).Value = (object)model.IdDelegacion ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdPension", SqlDbType.Int)).Value = (object)model.IdPension ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdDependenciaNoTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@IdDependenciaTransito", SqlDbType.Int)).Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@idEstatus", SqlDbType.Int)).Value = (object)model.IdEstatus ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngreso", SqlDbType.DateTime)).Value = (object)model.FechaIngreso ?? DBNull.Value;
-                    command.Parameters.Add(new SqlParameter("@FechaIngresoFin", SqlDbType.DateTime)).Value = (object)model.FechaIngresoFin ?? DBNull.Value;
-
                     command.CommandTimeout = 8000;
                     command.CommandType = CommandType.StoredProcedure;
                     connection.Open();
+                    SqlCommandBuilder.DeriveParameters(command);
+
+                    command.Parameters["@PageIndex"].Value = pagination.PageIndex;
+                    command.Parameters["@PageSize"].Value = pagination.PageSize;
+
+                    command.Parameters["@Placa"].Value = (object)model.Placas ?? DBNull.Value;
+                    command.Parameters["@FolioSolicitud"].Value = (object)model.FolioSolicitud ?? DBNull.Value;
+                    command.Parameters["@folioInfraccion"].Value = (object)model.FolioInfraccion ?? DBNull.Value;
+                    command.Parameters["@Propietario"].Value = (object)model.Propietario ?? DBNull.Value;
+                    command.Parameters["@numeroEconomico"].Value = (object)model.NumeroEconomico ?? DBNull.Value;
+                    command.Parameters["@idOficina"].Value = (object)idOficina ?? DBNull.Value;
+                    command.Parameters["@IdDelegacion"].Value = (object)model.IdDelegacion ?? DBNull.Value;
+                    command.Parameters["@IdPension"].Value = (object)model.IdPension ?? DBNull.Value;
+                    command.Parameters["@IdDependenciaNoTransito"].Value = (object)model.IdDependenciaNoTransito ?? DBNull.Value;
+                    command.Parameters["@IdDependenciaTransito"].Value = (object)model.IdDependenciaTransito ?? DBNull.Value;
+                    command.Parameters["@idEstatus"].Value = (object)model.IdEstatus ?? DBNull.Value;
+                    command.Parameters["@FechaIngreso"].Value = (object)model.FechaIngreso ?? DBNull.Value;
+                    command.Parameters["@FechaIngresoFin"].Value = (object)model.FechaIngresoFin ?? DBNull.Value;
+
                     using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         while (reader.Read())
